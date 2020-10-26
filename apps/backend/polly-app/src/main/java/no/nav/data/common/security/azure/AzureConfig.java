@@ -2,6 +2,7 @@ package no.nav.data.common.security.azure;
 
 import com.microsoft.aad.msal4j.ClientCredentialFactory;
 import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.PublicClientApplication;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
@@ -45,6 +46,14 @@ public class AzureConfig {
                 .builder(aadAuthProps.getClientId(), ClientCredentialFactory.createFromSecret(aadAuthProps.getClientSecret()))
                 .authority(oidcProviderMetadata.getAuthorizationEndpointURI().toString())
                 .executorService(msalThreadPool())
+                .build();
+    }
+
+    @Bean
+    public PublicClientApplication msalPublicClient(AADAuthenticationProperties aadAuthProps, OIDCProviderMetadata oidcProviderMetadata) throws MalformedURLException {
+        return PublicClientApplication
+                .builder(aadAuthProps.getClientId())
+                .authority(oidcProviderMetadata.getAuthorizationEndpointURI().toString())
                 .build();
     }
 

@@ -1,10 +1,8 @@
 package no.nav.data.common.utils;
 
-import no.nav.data.common.security.dto.UserInfo;
+import no.nav.data.common.security.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +17,7 @@ public final class MdcUtils {
     private static final String USER_ID = "userId";
     private static final String CONSUMER_ID = "consumerId";
     private static final String REQUEST_PATH = "requestPath";
+    private static final String REQUEST_METHOD = "requestMethod";
 
     private static String createUUID() {
         return UUID.randomUUID().toString();
@@ -80,6 +79,13 @@ public final class MdcUtils {
         MDC.remove(REQUEST_PATH);
     }
 
+    public static void setRequestMethod(String method) {
+        MDC.put(REQUEST_METHOD, method);
+    }
+
+    public static void clearRequestMethod() {
+        MDC.remove(REQUEST_METHOD);
+    }
 
     public static Runnable wrapAsync(Runnable runnable, String user) {
         return () -> {
@@ -95,9 +101,7 @@ public final class MdcUtils {
     }
 
     private static String getCurrentSecurityContextUser() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(Authentication::isAuthenticated)
-                .map(authentication -> authentication.getDetails() instanceof UserInfo ? (UserInfo) authentication.getDetails() : null)
+        return SecurityUtils.getCurrentUser()
                 .map(userInfo -> StringUtils.isBlank(userInfo.getName()) ? userInfo.getAppName() : userInfo.getIdentName())
                 .orElse("no-auth");
     }
@@ -108,5 +112,6 @@ public final class MdcUtils {
         clearUser();
         clearConsumer();
         clearRequestPath();
+        clearRequestMethod();
     }
 }

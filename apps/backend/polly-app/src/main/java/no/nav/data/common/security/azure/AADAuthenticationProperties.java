@@ -15,5 +15,7 @@ public class AADAuthenticationProperties {
     private String clientSecret;
     private String wellKnown;
     private String allowedAppIdMappings = "";
+    private String mailUser;
+    private String mailPassword;
 
 }

@@ -93,6 +93,14 @@ public class AlertController {
         return ResponseEntity.ok(new RestResponsePage<>(events));
     }
 
+    @ApiOperation(value = "mail test")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "mail", response = String.class)})
+    @GetMapping(value = "/mail", produces = "text/html")
+    public ResponseEntity<String> mail() {
+        alertService.testMail();
+        return ResponseEntity.ok("ok");
+    }
+
     @SuppressWarnings("ConstantConditions")
     private AlertEventResponse convertEventResponse(AlertEvent event) {
         AlertEventResponseBuilder builder = AlertEventResponse.builder()

@@ -2,6 +2,8 @@ package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
+import no.nav.data.common.security.SecurityUtils;
+import no.nav.data.common.security.azure.AzureAdService;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.alert.domain.AlertEvent;
@@ -49,14 +51,20 @@ public class AlertService {
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final DisclosureRepository disclosureRepository;
+    private final AzureAdService azureAdService;
 
     public AlertService(AlertRepository alertRepository, ProcessRepository processRepository, PolicyRepository policyRepository,
-            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository) {
+            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, AzureAdService azureAdService) {
         this.alertRepository = alertRepository;
         this.processRepository = processRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
+        this.azureAdService = azureAdService;
+    }
+
+    public void testMail() {
+        azureAdService.sendMail(SecurityUtils.getCurrentUser().orElseThrow().getEmail(), "test", "testbody");
     }
 
     // CALCULATE AND SAVE EVENTS

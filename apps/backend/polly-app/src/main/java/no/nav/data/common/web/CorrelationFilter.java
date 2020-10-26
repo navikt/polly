@@ -30,6 +30,7 @@ public class CorrelationFilter extends OncePerRequestFilter {
         Optional.ofNullable(request.getHeader(HEADER_CONSUMER_ID)).ifPresent(MdcUtils::setConsumerId);
 
         MdcUtils.setRequestPath(UrlUtils.buildFullRequestUrl(request));
+        MdcUtils.setRequestMethod(request.getMethod());
         MdcUtils.createCorrelationId();
         try {
             filterChain.doFilter(request, response);

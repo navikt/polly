@@ -28,6 +28,7 @@ import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessStatusFilter;
 import no.nav.data.polly.teams.TeamService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -143,7 +144,12 @@ public class DashboardController {
 
         var pd = Optional.of(process.getData());
 
-        dashes.stream().map(ProcessDashCount::getDpia).forEach(d -> count(d, pd.map(ProcessData::getDpia).map(Dpia::getNeedForDpia).orElse(null)));
+        Optional<Dpia> dpia = pd.map(ProcessData::getDpia);
+        dashes.stream().map(ProcessDashCount::getDpia).forEach(d -> count(d, dpia.map(Dpia::getNeedForDpia).orElse(null)));
+        if (dpia.map(Dpia::getNeedForDpia).orElse(false) && StringUtils.isBlank(dpia.map(Dpia::getRefToDpia).orElse(null))) {
+            dashes.forEach(ProcessDashCount::dpiaReferenceMissing);
+        }
+
         dashes.stream().map(ProcessDashCount::getProfiling).forEach(d -> count(d, pd.map(ProcessData::getProfiling).orElse(null)));
         dashes.stream().map(ProcessDashCount::getAutomation).forEach(d -> count(d, pd.map(ProcessData::getAutomaticProcessing).orElse(null)));
         var ret = pd.map(ProcessData::getRetention);
