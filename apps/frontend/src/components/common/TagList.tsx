@@ -1,6 +1,6 @@
-import { FieldArrayRenderProps } from "formik"
+import {FieldArrayRenderProps} from "formik"
 import * as React from "react"
-import { Tag, VARIANT } from "baseui/tag"
+import {Tag, VARIANT} from "baseui/tag"
 
 export function renderTagList(
   list: string[],
@@ -18,6 +18,13 @@ export function renderTagList(
                 onActionClick={() =>
                   arrayHelpers.remove(index)
                 }
+                overrides={{
+                  Text:{
+                    style:{
+                      maxWidth:'100%'
+                    }
+                  }
+                }}
               >
                 {item}
               </Tag>

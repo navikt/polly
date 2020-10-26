@@ -17,7 +17,7 @@ import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import RouteLink from "../../common/RouteLink";
 import DataText from "../../common/DataText";
-import {shortenLinksInText} from "../../../util/helper-functions";
+import {getNoDpiaLabel, shortenLinksInText} from "../../../util/helper-functions";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -30,10 +30,13 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
       return intl.yes
     }
   } else if (dpia?.needForDpia === false) {
-    if (dpia.grounds) {
-      return `${intl.no}. ${intl.ground}${dpia.grounds}`
-    } else {
-      return intl.no
+    if (dpia) {
+      return <>
+        {dpia.grounds ?
+          dpia.noDpiaReasons.filter(r => r === 'OTHER').length > 0 && `${intl.no}. ${intl.ground}${dpia.grounds}`
+            : intl.no}
+        <DotTags items={dpia.noDpiaReasons.map(r => getNoDpiaLabel(r))}/>
+      </>
     }
   } else {
     return intl.unclarified
@@ -97,7 +100,8 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && !process.usesAllInformationTypes ? intl.notFilled : ""}>
-        {process.usesAllInformationTypes?intl.potentialPersonalCategoryUsage:!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
+        {process.usesAllInformationTypes ? intl.potentialPersonalCategoryUsage : !!subjectCategoriesSummarised.length &&
+          <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
       <DataText label={intl.organizing} text={""}>
@@ -106,11 +110,11 @@ const ProcessData = (props: { process: Process }) => {
           <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
         </Block> : <span>{intl.department}: {intl.notFilled}</span>}
         {!!process.affiliation.subDepartments.length && <Block>
-            <Block display="flex">
-              <span>{intl.subDepartment}: </span>
-              <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
-            </Block>
+          <Block display="flex">
+            <span>{intl.subDepartment}: </span>
+            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
           </Block>
+        </Block>
         }
 
         <Block display="flex">

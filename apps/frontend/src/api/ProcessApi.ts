@@ -113,7 +113,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       processImplemented: dpia?.processImplemented || false,
       refToDpia: dpia?.refToDpia || '',
       riskOwner: dpia?.riskOwner || '',
-      riskOwnerFunction: dpia?.riskOwnerFunction || ''
+      riskOwnerFunction: dpia?.riskOwnerFunction || '',
+      noDpiaReasons: dpia?.noDpiaReasons || []
     }
   }
 }
@@ -145,7 +146,8 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
       refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : '',
       processImplemented: values.dpia?.processImplemented,
       riskOwner: values.dpia?.riskOwner,
-      riskOwnerFunction: values.dpia?.riskOwnerFunction
+      riskOwnerFunction: values.dpia?.riskOwnerFunction,
+      noDpiaReasons: values.dpia.noDpiaReasons || [],
     }
   }
 }

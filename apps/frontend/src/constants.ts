@@ -162,6 +162,7 @@ export interface Dpia {
   refToDpia: string;
   riskOwner?: string;
   riskOwnerFunction?: string;
+  noDpiaReasons: string[]
 }
 
 export interface DataProcessingFormValues {

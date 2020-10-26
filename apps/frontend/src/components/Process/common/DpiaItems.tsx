@@ -6,6 +6,7 @@ import {ModalLabel} from "../../common/ModalSchema";
 import FieldInput from "./FieldInput";
 import BoolField from "./BoolField";
 import {intl} from "../../../util";
+import FieldNoDpiaReason from "../../common/FieldNoDpiaReason";
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -15,7 +16,6 @@ const rowBlockProps: BlockProps = {
 
 const DpiaItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   const {formikBag} = props
-
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
@@ -33,9 +33,16 @@ const DpiaItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
         <>
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.grounds}/>
+            <FieldNoDpiaReason formikBag={formikBag}/>
+          </Block>
+
+          {formikBag.values.dpia.noDpiaReasons.filter(reason => reason === "OTHER").length > 0 &&
+          (<Block {...rowBlockProps}>
+            <ModalLabel label={intl.specifyOther}/>
             <FieldInput fieldName='dpia.grounds'
                         fieldValue={formikBag.values.dpia?.grounds}/>
-          </Block>
+          </Block>)
+          }
         </>}
     </>
   )
