@@ -27,6 +27,7 @@ public class ProcessStateRequest implements Validated {
         DATA_PROCESSOR, DATA_PROCESSOR_OUTSIDE_EU,
 
         // Not real true/false/null field, see repository
+        DPIA_REFERENCE_MISSING,
         DATA_PROCESSOR_AGREEMENT_EMPTY,
         COMMON_EXTERNAL_PROCESSOR,
 
