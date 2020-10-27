@@ -232,6 +232,7 @@ const Completeness = (props: { process: Process }) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),
+    dpiaReference: !process.dpia?.needForDpia || !isNil(process.dpia?.refToDpia),
     profiling: !isNil(process.profiling),
     automation: !isNil(process.automaticProcessing),
     retention: !isNil(process.retention?.retentionPlan),
@@ -258,6 +259,7 @@ const Completeness = (props: { process: Process }) => {
       <CustomizedStatefulTooltip content={<Block>
         <p>{completed === completables ? intl.completed : `${intl.notFilled}:`}</p>
         <p>{!completeness.dpia && intl.dpiaNeeded}</p>
+        <p>{!completeness.dpiaReference && intl.dpiaReference}</p>
         <p>{!completeness.profiling && intl.profiling}</p>
         <p>{!completeness.automation && intl.automation}</p>
         <p>{!completeness.retention && intl.retention}</p>
