@@ -431,6 +431,17 @@ export interface IStrings {
   goToSite: string;
   categoryNotInUse: string;
 
+  no_dpia_no_special_category_pi: string;
+  no_dpia_small_scale: string;
+  no_dpia_no_dataset_consolidation: string;
+  no_dpia_no_new_tech: string;
+  no_dpia_no_profiling_or_automation: string;
+  no_dpia_other: string;
+
+  specifyOther: string;
+  chooseGrounds: string;
+
+
   //dp-process HelpText
   nameDpProcessHelpText: string;
   externalProcessResponsibleDpProcessHelpText: string;

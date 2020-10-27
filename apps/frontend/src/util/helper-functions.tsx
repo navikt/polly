@@ -24,8 +24,26 @@ export const shortenLinksInText = (text: string) => {
         </span>
       )
     } else {
-      return <span>{word} </span>
+      return <span key={index}>{word} </span>
     }
   })
 }
+
 export const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
+
+export const getNoDpiaLabel = (id: string) => {
+  if (id === 'NO_SPECIAL_CATEGORY_PI') {
+    return intl.no_dpia_no_special_category_pi
+  } else if (id === 'SMALL_SCALE') {
+    return intl.no_dpia_small_scale
+  } else if (id === 'NO_DATASET_CONSOLIDATION') {
+    return intl.no_dpia_no_dataset_consolidation
+  } else if (id === 'NO_NEW_TECH') {
+    return intl.no_dpia_no_new_tech
+  } else if (id === 'NO_PROFILING_OR_AUTOMATION') {
+    return intl.no_dpia_no_profiling_or_automation
+  } else if (id === 'OTHER') {
+    return intl.no_dpia_other
+  }
+  return ''
+}

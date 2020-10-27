@@ -434,7 +434,17 @@ export const no: IStrings = {
   categoryNotInUse: "Kategori {0} er ikke i bruk",
   excessInfoHelpText: "Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.",
   goToSite: "Gå til side",
-  navResponsible: 'Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part'
+  navResponsible: 'Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part',
+
+  no_dpia_no_special_category_pi: 'Ingen særlige kategorier personopplysninger behandles',
+  no_dpia_small_scale: 'Behandlingen skjer ikke i stor skala (få personopplysninger eller registrerte)',
+  no_dpia_no_dataset_consolidation: 'Ingen sammenstilling av datasett på tvers av formål',
+  no_dpia_no_new_tech: 'Ingen bruk av teknologi på nye måter eller ny teknologi',
+  no_dpia_no_profiling_or_automation: 'Ingen bruk av profilering eller automatisering',
+  no_dpia_other: 'Annet',
+
+  chooseGrounds: "Velg en eller flere begrunnelse(r)",
+  specifyOther: "Spesifiser ved annet"
 };
 
 export const en: IStrings = {
@@ -870,6 +880,16 @@ export const en: IStrings = {
 
   goToSite: "Go to site",
   categoryNotInUse: "Category {0} is not in use",
+
+  no_dpia_no_special_category_pi: 'No special categories of personal data are processed',
+  no_dpia_small_scale: 'The processing does not take place on a large scale (get personal information or registered)',
+  no_dpia_no_dataset_consolidation: 'No cross-purpose data set compilation',
+  no_dpia_no_new_tech: 'No use of technology in new ways or new technology',
+  no_dpia_no_profiling_or_automation: 'No use of profiling or automation',
+  no_dpia_other: 'Other',
+
+  chooseGrounds: "Choose a reason",
+  specifyOther: "Specify by other"
 };
 
 export const ta = {

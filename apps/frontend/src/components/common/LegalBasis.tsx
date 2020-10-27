@@ -14,7 +14,7 @@ import {env} from '../../util/env'
 import {Paragraph2} from 'baseui/typography'
 import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
-export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues }) => {
+export const LegalBasisView = (props: {legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues}) => {
   const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
   if (!input) return null
   const {description} = input
@@ -35,29 +35,36 @@ export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?
 
 const lovdataBase = (nationalLaw: string) => (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) + codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
 
-const legalBasisLinkProcessor = (law: string, text?: string) => processString([
-  {
-    // Replace '§§ 10 og 4' > '§§ 10 og §§§ 4', so that our rewriter picks up the 2nd part
-    regex: /§§\s*(\d+(-\d+)?)\s*og\s*(\d+(-\d+)?)/gi,
-    fn: (key: string, result: string[]) => `§§ ${result[1]} og §§§ ${result[3]}`
-  }, {
-    // tripe '§§§' is hidden, used as a trick in combination with rule 1 above
-    regex: /§(§§)?(§)?\s*(\d+(-\d+)?)/g,
-    fn: (key: string, result: string[]) =>
-      <StyledLink key={key} href={`${lovdataBase(law)}/§${result[3]}`} target="_blank" rel="noopener noreferrer">
-        {(!result[1] && !result[2]) && '§'} {result[2] && '§§'} {result[3]}
-      </StyledLink>
-  }, {
-    regex: /kap(ittel)?\s*(\d+)/gi,
-    fn: (key: string, result: string[]) =>
-      <StyledLink key={key} href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`} target="_blank"
-                  rel="noopener noreferrer">
-        Kapittel {result[2]}
-      </StyledLink>
+const legalBasisLinkProcessor = (law: string, text?: string) => {
+  const lawCode = codelist.getDescription(ListName.NATIONAL_LAW, law)
+  if (!lawCode.match(/^\d+.*/)) {
+    return text
   }
-])(text)
 
-export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
+  return processString([
+    {
+      // Replace '§§ 10 og 4' > '§§ 10 og §§§ 4', so that our rewriter picks up the 2nd part
+      regex: /§§\s*(\d+(-\d+)?)\s*og\s*(\d+(-\d+)?)/gi,
+      fn: (key: string, result: string[]) => `§§ ${result[1]} og §§§ ${result[3]}`
+    }, {
+      // tripe '§§§' is hidden, used as a trick in combination with rule 1 above
+      regex: /§(§§)?(§)?\s*(\d+(-\d+)?)/g,
+      fn: (key: string, result: string[]) =>
+        <StyledLink key={key} href={`${lovdataBase(law)}/§${result[3]}`} target="_blank" rel="noopener noreferrer">
+          {(!result[1] && !result[2]) && '§'} {result[2] && '§§'} {result[3]}
+        </StyledLink>
+    }, {
+      regex: /kap(ittel)?\s*(\d+)/gi,
+      fn: (key: string, result: string[]) =>
+        <StyledLink key={key} href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`} target="_blank"
+                    rel="noopener noreferrer">
+          Kapittel {result[2]}
+        </StyledLink>
+    }
+  ])(text)
+}
+
+export const LegalBasesNotClarified = (props: {alert?: PolicyAlert}) => {
   const color = theme.colors.warning500
   const warningIcon = <span><FontAwesomeIcon icon={faExclamation} color={color}/>&nbsp;</span>
   return (
@@ -99,58 +106,58 @@ export const ListLegalBases = (
   return (
     <React.Fragment>
       {legalBases
-        .filter(l => isLegalBasisFilteredBySensitivity(l, sensitivityLevel))
-        .map((legalBasis: LegalBasisFormValues, i: number) => (
-          <ListItem
-            artworkSize={ARTWORK_SIZES.SMALL}
-            overrides={{
-              Content: {
-                style: {
-                  height: 'auto'
-                }
-              },
-              EndEnhancerContainer: {},
-              Root: {},
-              ArtworkContainer: {}
-            }}
-            endEnhancer={
-              () =>
-                <Block minWidth="100px">
-                  <Button
-                    type="button"
-                    kind="minimal"
-                    size="compact"
-                    onClick={() => {
-                      onEdit(legalBases?.findIndex(l => l.key === legalBasis.key))
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faEdit}/>
-                  </Button>
-                  <Button
-                    type="button"
-                    kind="minimal"
-                    size="compact"
-                    onClick={() => {
-                      onRemove(legalBases?.findIndex(l => l.key === legalBasis.key))
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faTrash}/>
-                  </Button>
-                </Block>
-            }
-            sublist
-            key={i}
-          >
-            <Paragraph2 $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
-              <LegalBasisView legalBasisForm={legalBasis}/>
-            </Paragraph2>
-          </ListItem>
-        ))}
+      .filter(l => isLegalBasisFilteredBySensitivity(l, sensitivityLevel))
+      .map((legalBasis: LegalBasisFormValues, i: number) => (
+        <ListItem
+          artworkSize={ARTWORK_SIZES.SMALL}
+          overrides={{
+            Content: {
+              style: {
+                height: 'auto'
+              }
+            },
+            EndEnhancerContainer: {},
+            Root: {},
+            ArtworkContainer: {}
+          }}
+          endEnhancer={
+            () =>
+              <Block minWidth="100px">
+                <Button
+                  type="button"
+                  kind="minimal"
+                  size="compact"
+                  onClick={() => {
+                    onEdit(legalBases?.findIndex(l => l.key === legalBasis.key))
+                  }}
+                >
+                  <FontAwesomeIcon icon={faEdit}/>
+                </Button>
+                <Button
+                  type="button"
+                  kind="minimal"
+                  size="compact"
+                  onClick={() => {
+                    onRemove(legalBases?.findIndex(l => l.key === legalBasis.key))
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash}/>
+                </Button>
+              </Block>
+          }
+          sublist
+          key={i}
+        >
+          <Paragraph2 $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
+            <LegalBasisView legalBasisForm={legalBasis}/>
+          </Paragraph2>
+        </ListItem>
+      ))}
     </React.Fragment>
   )
 }
 
-export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
+export const ListLegalBasesInTable = (props: {legalBases: LegalBasis[]}) => {
   const {legalBases} = props
   return (
     <Block>

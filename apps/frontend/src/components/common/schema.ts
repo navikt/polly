@@ -130,6 +130,7 @@ export const processSchema = () =>
       refToDpia: yup.string(),
       riskOwner: yup.string(),
       riskOwnerFunction: yup.string(),
+      noDpiaReasons: yup.array().of(yup.string())
     }),
   });
 
