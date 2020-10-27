@@ -436,7 +436,9 @@ export const no: IStrings = {
   no_dpia_other: 'Annet',
 
   chooseGrounds: "Velg en eller flere begrunnelse(r)",
-  specifyOther: "Spesifiser ved annet"
+  specifyOther: "Spesifiser ved annet",
+
+  missingPVK: "Behandlinger som har behov for PVK (Ref. til PVK ikke angitt)"
 };
 
 export const en: IStrings = {
@@ -872,7 +874,9 @@ export const en: IStrings = {
   no_dpia_other: 'Other',
 
   chooseGrounds: "Choose a reason",
-  specifyOther: "Specify by other"
+  specifyOther: "Specify by other",
+
+  missingPVK: "Processes that require PVK (Ref. To PVK not specified)"
 };
 
 export const ta = {

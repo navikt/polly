@@ -55,6 +55,10 @@ const Charts = (props: ChartsProps) => {
                   processField={ProcessField.DPIA}
                   onClickPieChartSlice={handleClickPieChartSlice}
         />
+        <Paragraph2>
+          {intl.missingPVK}: <RouteLink
+          href={link(ProcessField.DPIA_REFERENCE_MISSING, ProcessState.YES)}>{chartData.dpiaReferenceMissing}</RouteLink>
+        </Paragraph2>
       </Block>
 
       <Block {...chartCardProps}>

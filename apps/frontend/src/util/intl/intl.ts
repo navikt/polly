@@ -441,6 +441,8 @@ export interface IStrings {
   specifyOther: string;
   chooseGrounds: string;
 
+  missingPVK: string;
+
 }
 
 // Remember import moment locales up top
