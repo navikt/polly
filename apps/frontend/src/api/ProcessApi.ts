@@ -27,7 +27,7 @@ export const searchProcess = async (text: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${text}`)).data
 }
 
-export const getProcessesFor = async (params: {productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string}) => {
+export const getProcessesFor = async (params: { productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string }) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, {skipNull: true})}&pageSize=250`)).data
 }
 
@@ -141,7 +141,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     retention: values.retention,
     status: values.status,
     dpia: {
-      grounds: values.dpia?.needForDpia ? '' : values.dpia?.grounds,
+      grounds: values.dpia?.needForDpia ? '' : (values.dpia.noDpiaReasons || []).filter(r => r === "OTHER").length > 0 ? values.dpia?.grounds : '',
       needForDpia: values.dpia.needForDpia,
       refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : '',
       processImplemented: values.dpia?.processImplemented,
