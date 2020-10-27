@@ -240,6 +240,14 @@ export const no: IStrings = {
   dpProcessDuplicatedError: "Databehandlingen eksisterer allerede.",
   externalProcessResponsible: 'Behandlingsansvarlig',
 
+  nameDpProcessHelpText: "Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring.",
+  externalProcessResponsibleDpProcessHelpText: "Oppgi navn på den behandlingsansvarlige virksomheten.",
+  descriptionDpProcessHelpText: "Beskriv behandlingen NAV gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger.",
+  purposeDpProcessHelpText: "Beskriv formålet med å bruke personopplysninger i denne behandlingen.",
+  article9DpProcessHelpText: "Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning.",
+  isSubDataProcessorUsedDpProcessHelpText: "En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler.",
+  retentionMonthsDpProcessHelpText: "Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige.",
+
   READ: "Les",
   WRITE: "Skriv",
   SUPER: "Super",
@@ -693,6 +701,15 @@ export const en: IStrings = {
   createDpProcess: "Create new data process",
   dpProcessDuplicatedError: "Data process has already exist.",
   externalProcessResponsible: 'Process responsible',
+
+  nameDpProcessHelpText: "A short name that states what the process is about. Examples: case management or access control",
+  externalProcessResponsibleDpProcessHelpText: "State the name of the party responsible for this process",
+  descriptionDpProcessHelpText: "Describe the processes NAV does on behalf of the process responsible party, i.e. collecting and storing personal information",
+  purposeDpProcessHelpText: "Describe the purpose of using personal information in this process",
+  article9DpProcessHelpText: "With special categories of personal information means information about health, ethnic origin, politics, religion and philosophical beliefs, trade union membership, genetics and biometrics, sexual relations and orientation.",
+  isSubDataProcessorUsedDpProcessHelpText: "A sub data processor is a party that processes personal data on NAV's behalf when NAV itself acts as the data processor",
+  retentionMonthsDpProcessHelpText: "Specify the retention time NAV is obliged to comply. The retention time must be specified in the data processor agreement",
+
   READ: "Read",
   WRITE: "Write",
   SUPER: "Super",
