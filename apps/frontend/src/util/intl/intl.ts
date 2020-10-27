@@ -430,6 +430,15 @@ export interface IStrings {
   defaultProcessDocument: string;
   goToSite: string;
   categoryNotInUse: string;
+
+  //dp-process HelpText
+  nameDpProcessHelpText: string;
+  externalProcessResponsibleDpProcessHelpText: string;
+  descriptionDpProcessHelpText: string;
+  purposeDpProcessHelpText: string;
+  article9DpProcessHelpText: string;
+  isSubDataProcessorUsedDpProcessHelpText: string;
+  retentionMonthsDpProcessHelpText: string;
 }
 
 // Remember import moment locales up top

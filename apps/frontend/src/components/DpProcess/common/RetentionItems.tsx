@@ -42,7 +42,7 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
     <>
       <>
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.retentionMonths}/>
+          <ModalLabel label={intl.retentionMonths} tooltip={intl.retentionMonthsDpProcessHelpText}/>
           <Field
             name='retention.retentionMonths'
             render={({field, form}: FieldProps<string, ProcessFormValues>) => (
