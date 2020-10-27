@@ -19,7 +19,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "recipient", "recipientPurpose", "start", "end", "active", "documentId", "document", "legalBases"})
+@JsonPropertyOrder({"id", "name", "description", "recipient", "recipientPurpose", "start", "end", "active", "documentId", "informationTypeIds", "processIds", "document",
+        "legalBases"})
 public class DisclosureResponse {
 
     private UUID id;
@@ -30,6 +31,8 @@ public class DisclosureResponse {
     private LocalDate start;
     private LocalDate end;
     private UUID documentId;
+    private List<UUID> informationTypeIds;
+    private List<UUID> processIds;
     private DocumentResponse document;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;

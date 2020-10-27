@@ -14,6 +14,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
@@ -25,6 +26,8 @@ import javax.persistence.MappedSuperclass;
 @JsonFilter("relationFilter")
 @EntityListeners({AuditingEntityListener.class, AuditVersionListener.class})
 public abstract class Auditable {
+
+    public abstract UUID getId();
 
     @CreatedBy
     @Column(name = "CREATED_BY")

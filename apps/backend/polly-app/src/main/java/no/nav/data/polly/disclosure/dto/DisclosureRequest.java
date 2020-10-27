@@ -22,7 +22,9 @@ import java.util.List;
 import static no.nav.data.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.common.utils.DateUtil.ORIG_START;
+import static no.nav.data.common.utils.StringUtils.formatList;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Slf4j
 @With
@@ -46,6 +48,8 @@ public class DisclosureRequest implements RequestElement {
     @Singular("legalBasis")
     private List<LegalBasisRequest> legalBases = new ArrayList<>();
     private String documentId;
+    private List<String> processIds;
+    private List<String> informationTypeIds;
 
     private boolean update;
     private int requestIndex;
@@ -58,7 +62,12 @@ public class DisclosureRequest implements RequestElement {
     @Override
     public void format() {
         setRecipient(toUpperCaseAndTrim(getRecipient()));
+        setName(trimToNull(getName()));
+        setDescription(trimToNull(getDescription()));
+        setRecipientPurpose(trimToNull(getRecipientPurpose()));
         setDocumentId(StringUtils.trim(documentId));
+        setProcessIds(formatList(getProcessIds()));
+        setInformationTypeIds(formatList(getInformationTypeIds()));
     }
 
     @Override
@@ -72,5 +81,7 @@ public class DisclosureRequest implements RequestElement {
         validator.checkDate(ProcessRequest.Fields.end, end);
         validator.validateType(ProcessRequest.Fields.legalBases, legalBases);
         validator.checkUUID(Fields.documentId, documentId);
+        getProcessIds().forEach(it -> validator.checkUUID(Fields.processIds, it));
+        getInformationTypeIds().forEach(it -> validator.checkUUID(Fields.informationTypeIds, it));
     }
 }

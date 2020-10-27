@@ -59,13 +59,16 @@ public class DisclosureController {
     @GetMapping
     public ResponseEntity<RestResponsePage<DisclosureResponse>> getAll(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
+            @RequestParam(required = false) UUID processId,
             @RequestParam(required = false) String recipient,
             @RequestParam(required = false) UUID documentId
     ) {
-        log.info("Received request for all Disclosures. informationType={} recipient={}, documentId={}", informationTypeId, recipient, documentId);
+        log.info("Received request for all Disclosures. informationType={} process={} recipient={}, documentId={}", informationTypeId, processId, recipient, documentId);
         List<Disclosure> filtered = null;
         if (informationTypeId != null) {
             filtered = repository.findByInformationTypeId(informationTypeId);
+        } else if (processId != null) {
+            filtered = repository.findByProcessId(processId);
         } else if (StringUtils.isNotBlank(recipient)) {
             filtered = repository.findByRecipient(recipient);
         } else if (documentId != null) {

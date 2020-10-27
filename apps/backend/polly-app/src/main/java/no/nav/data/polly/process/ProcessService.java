@@ -1,5 +1,6 @@
 package no.nav.data.polly.process;
 
+import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
@@ -8,6 +9,8 @@ import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
+import no.nav.data.polly.disclosure.domain.Disclosure;
+import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
@@ -34,6 +37,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class ProcessService extends RequestValidator<ProcessRequest> {
 
     private final ProcessRepository processRepository;
+    private final DisclosureRepository disclosureRepository;
     private final TeamService teamService;
     private final ResourceService resourceService;
     private final AlertService alertService;
@@ -41,10 +45,11 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
 
     public ProcessService(
             ProcessRepository processRepository,
-            TeamService teamService,
+            DisclosureRepository disclosureRepository, TeamService teamService,
             ResourceService resourceService,
             AlertService alertService, CodeUsageService codeUsageService) {
         this.processRepository = processRepository;
+        this.disclosureRepository = disclosureRepository;
         this.teamService = teamService;
         this.resourceService = resourceService;
         this.alertService = alertService;
@@ -71,6 +76,11 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
 
     @Transactional
     public void deleteById(UUID id) {
+        List<Disclosure> disclosures = disclosureRepository.findByProcessId(id);
+        if (!disclosures.isEmpty()) {
+            throw new ValidationException(String.format("Process %s is used by %d disclosure(s)", id, disclosures.size()));
+        }
+
         processRepository.deleteById(id);
         alertService.deleteEventsForProcess(id);
     }

@@ -37,17 +37,30 @@ public class DisclosureRepositoryImpl implements DisclosureRepositoryCustom {
 
     @Override
     public List<Disclosure> findByRecipient(String recipient) {
-        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{recipient}' ?? :recipient ",
+        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>>'{recipient}' = :recipient ",
                 new MapSqlParameterSource().addValue("recipient", recipient));
         return getDisclosures(resp);
     }
 
     @Override
+    public List<Disclosure> findByProcessId(UUID id) {
+        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{processIds}' ?? :processId ",
+                new MapSqlParameterSource().addValue("processId", id.toString()));
+        return getDisclosures(resp);
+    }
+
+    @Override
     public List<Disclosure> findByInformationTypeId(UUID informationTypeId) {
-        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure di where exists(select 1 from document d"
-                        + "             where di.data ->> 'documentId' = d.document_id::text"
-                        + "               and  data #>'{informationTypes}' @> :informationTypeId::jsonb)",
-                new MapSqlParameterSource().addValue("informationTypeId", String.format("[{\"informationTypeId\": \"%s\"}]", informationTypeId)));
+        var resp = jdbcTemplate.queryForList("""
+                        select disclosure_id from disclosure di 
+                          where 
+                            exists(select 1 from document d
+                                where di.data ->> 'documentId' = d.document_id::text and  data #>'{informationTypes}' @> :informationTypeIdJson::jsonb)
+                            or data #> '{informationTypeIds}' ?? :informationTypeId
+                                       """,
+                new MapSqlParameterSource()
+                        .addValue("informationTypeIdJson", String.format("[{\"informationTypeId\": \"%s\"}]", informationTypeId))
+                        .addValue("informationTypeId", informationTypeId.toString()));
         return getDisclosures(resp);
     }
 

@@ -1,8 +1,10 @@
 package no.nav.data.common.validator;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.common.exceptions.CodelistNotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.utils.StreamUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -12,9 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 public abstract class RequestValidator<T extends RequestElement> {
@@ -120,5 +127,25 @@ public abstract class RequestValidator<T extends RequestElement> {
             req.setUpdate(update);
             req.setRequestIndex(requestIndex.getAndIncrement());
         });
+    }
+
+    protected List<ValidationError> validateObject(String id, Function<UUID, Optional<? extends Auditable>> fetcher, String reference, String type) {
+        if (id == null) {
+            return List.of();
+        }
+        return validateObjects(List.of(id), uuids -> fetcher.apply(uuids.get(0)).map(List::of).orElse(List.of()), reference, type);
+    }
+
+    protected List<ValidationError> validateObjects(List<String> ids, Function<List<UUID>, List<? extends Auditable>> fetcher, String reference, String type) {
+        var errors = new ArrayList<ValidationError>();
+        if (!ids.isEmpty()) {
+            List<UUID> requestIds = convert(ids, UUID::fromString);
+            var objects = fetcher.apply(requestIds);
+            if (objects.size() != ids.size()) {
+                var missing = StreamUtils.difference(requestIds, convert(objects, Auditable::getId)).getRemoved();
+                missing.forEach(m -> errors.add(new ValidationError(reference, type + "DoesNotExist", String.format("The %s %s does not exist", type, m))));
+            }
+        }
+        return errors;
     }
 }
