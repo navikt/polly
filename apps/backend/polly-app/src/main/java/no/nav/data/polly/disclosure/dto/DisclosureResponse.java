@@ -9,7 +9,9 @@ import lombok.Singular;
 import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.document.dto.DocumentResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
+import no.nav.data.polly.process.dto.ProcessShortResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,8 +21,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "recipient", "recipientPurpose", "start", "end", "active", "documentId", "informationTypeIds", "processIds", "document",
-        "legalBases"})
+@JsonPropertyOrder({"id", "name", "description", "recipient", "recipientPurpose", "start", "end", "active",
+        "documentId", "informationTypeIds", "processIds",
+        "document", "informationtypes", "processes", "legalBases"})
 public class DisclosureResponse {
 
     private UUID id;
@@ -34,6 +37,8 @@ public class DisclosureResponse {
     private List<UUID> informationTypeIds;
     private List<UUID> processIds;
     private DocumentResponse document;
+    private List<ProcessShortResponse> processes;
+    private List<InformationTypeShortResponse> informationTypes;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
 

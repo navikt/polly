@@ -13,6 +13,10 @@ import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.document.DocumentService;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +48,18 @@ public class DisclosureController {
 
     private final DisclosureRepository repository;
     private final DisclosureService service;
-    private final DocumentService documentService;
 
-    public DisclosureController(DisclosureRepository repository, DisclosureService service, DocumentService documentService) {
+    private final DocumentService documentService;
+    private final InformationTypeRepository informationTypeRepository;
+    private final ProcessRepository processRepository;
+
+    public DisclosureController(DisclosureRepository repository, DisclosureService service, DocumentService documentService,
+            InformationTypeRepository informationTypeRepository, ProcessRepository processRepository) {
         this.repository = repository;
         this.service = service;
         this.documentService = documentService;
+        this.informationTypeRepository = informationTypeRepository;
+        this.processRepository = processRepository;
     }
 
     @ApiOperation(value = "Get All Disclosures")
@@ -75,7 +85,7 @@ public class DisclosureController {
             filtered = repository.findByDocumentId(documentId.toString());
         }
         if (filtered != null) {
-            return returnResults(new RestResponsePage<>(convert(filtered, this::convertAndAddDocument)));
+            return returnResults(new RestResponsePage<>(convert(filtered, Disclosure::convertToResponse)));
         }
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
     }
@@ -93,7 +103,7 @@ public class DisclosureController {
     @GetMapping("/{id}")
     public ResponseEntity<DisclosureResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Disclosure with the id={}", id);
-        Optional<DisclosureResponse> disclosureResponse = repository.findById(id).map(this::convertAndAddDocument);
+        Optional<DisclosureResponse> disclosureResponse = repository.findById(id).map(this::convertAndAddObjects);
         if (disclosureResponse.isEmpty()) {
             log.info("Cannot find the Disclosure with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -111,7 +121,7 @@ public class DisclosureController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DisclosureResponse> createPolicy(@Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to create Disclosure");
-        return new ResponseEntity<>(convertAndAddDocument(service.save(request)), HttpStatus.CREATED);
+        return new ResponseEntity<>(convertAndAddObjects(service.save(request)), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update Disclosure")
@@ -123,7 +133,7 @@ public class DisclosureController {
     public ResponseEntity<DisclosureResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to update Disclosure");
         Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
-        return ResponseEntity.ok(convertAndAddDocument(service.update(request)));
+        return ResponseEntity.ok(convertAndAddObjects(service.update(request)));
     }
 
     @ApiOperation(value = "Delete Disclosure")
@@ -142,13 +152,21 @@ public class DisclosureController {
         }
         service.deleteById(id);
         log.info("Disclosure with id={} deleted", id);
-        return new ResponseEntity<>(convertAndAddDocument(fromRepository.get()), HttpStatus.OK);
+        return new ResponseEntity<>(convertAndAddObjects(fromRepository.get()), HttpStatus.OK);
     }
 
-    private DisclosureResponse convertAndAddDocument(Disclosure disclosure) {
+    private DisclosureResponse convertAndAddObjects(Disclosure disclosure) {
         var response = disclosure.convertToResponse();
-        if (disclosure.getData().getDocumentId() != null) {
+        if (response.getDocumentId() != null) {
             response.setDocument(documentService.getDocumentAsResponse(disclosure.getData().getDocumentId()));
+        }
+        if (!response.getInformationTypeIds().isEmpty()) {
+            var its = informationTypeRepository.findAllById(response.getInformationTypeIds());
+            response.setInformationTypes(convert(its, InformationType::convertToShortResponse));
+        }
+        if (!response.getProcessIds().isEmpty()) {
+            var processes = processRepository.findAllById(response.getProcessIds());
+            response.setProcesses(convert(processes, Process::convertToShortResponse));
         }
         return response;
     }
