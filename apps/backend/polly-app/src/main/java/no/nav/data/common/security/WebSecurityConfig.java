@@ -37,8 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/oauth2/callback",
                 "/userinfo",
                 "/internal/**",
-                "/swagger*/**",
-                "/webjars/springfox-swagger-ui/**"
+                "/swagger*/**"
         );
 
         allowGetAndOptions(http,

@@ -1,9 +1,9 @@
 package no.nav.data.polly.informationtype;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -42,7 +42,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @RequestMapping("/informationtype")
-@Api(value = "InformationType", description = "REST API for InformationType", tags = {"InformationType"})
+@Tag(name = "InformationType", description = "REST API for InformationType")
 public class InformationTypeController {
 
     private final InformationTypeRepository repository;
@@ -56,11 +56,8 @@ public class InformationTypeController {
         this.teamService = teamService;
     }
 
-    @ApiOperation(value = "Get InformationType")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationType fetched", response = InformationTypeResponse.class),
-            @ApiResponse(code = 404, message = "InformationType not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get InformationType")
+    @ApiResponse(description = "InformationType fetched")
     @GetMapping("/{id}")
     public ResponseEntity<InformationTypeResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for InformationType with the id={}", id);
@@ -73,10 +70,8 @@ public class InformationTypeController {
         return new ResponseEntity<>(informationTypeResponse.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Search InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search InformationTypes")
+    @ApiResponse(description = "InformationTypes fetched")
     @GetMapping("/search/{name}")
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> searchInformationTypeByName(@PathVariable String name) {
         log.info("Received request for InformationTypes with the name like {}", name);
@@ -89,10 +84,8 @@ public class InformationTypeController {
         return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get All InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get All InformationTypes")
+    @ApiResponse(description = "InformationTypes fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> findAll(PageParameters page,
             @RequestParam(required = false) String source,
@@ -125,21 +118,16 @@ public class InformationTypeController {
         return ResponseEntity.ok(new RestResponsePage<>(informationTypes));
     }
 
-    @ApiOperation(value = "Count all InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Count of InformationTypes fetched", response = Long.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Count all InformationTypes")
+    @ApiResponse(description = "Count of InformationTypes fetched")
     @GetMapping("/count")
     public Long countAllInformationTypes() {
         log.info("Received request for count all InformationTypes");
         return repository.count();
     }
 
-    @ApiOperation(value = "Create InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "InformationTypes to be created successfully accepted", response = InformationTypePage.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create InformationTypes")
+    @ApiResponse(responseCode = "201", description = "InformationTypes to be created successfully accepted")
     @PostMapping
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> createInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to create InformationTypes");
@@ -150,11 +138,8 @@ public class InformationTypeController {
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Update InformationType")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationType to be updated successfully accepted", response = InformationTypePage.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update InformationType")
+    @ApiResponse(description = "InformationType to be updated successfully accepted")
     @PutMapping
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> updateInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to update InformationTypes");
@@ -165,12 +150,8 @@ public class InformationTypeController {
         return ResponseEntity.ok(new RestResponsePage<>(responses));
     }
 
-    @ApiOperation(value = "Update InformationType")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Accepted one InformationType to be updated", response = InformationTypeResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 404, message = "InformationType not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update InformationType")
+    @ApiResponse(description = "Accepted one InformationType to be updated")
     @PutMapping("/{id}")
     public ResponseEntity<InformationTypeResponse> updateOneInformationTypeById(@PathVariable UUID id, @Valid @RequestBody InformationTypeRequest request) {
         log.info("Received a request to update InformationType with id={}", id);
@@ -190,11 +171,8 @@ public class InformationTypeController {
         return new ResponseEntity<>(informationType.convertToResponse(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete InformationType")
-    @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "InformationType deleted", response = InformationTypeResponse.class),
-            @ApiResponse(code = 404, message = "InformationType not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete InformationType")
+    @ApiResponse(description = "InformationType deleted")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<InformationTypeResponse> deleteInformationTypeById(@PathVariable UUID id) {
@@ -203,7 +181,7 @@ public class InformationTypeController {
             log.info("id missing");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(service.delete(id).convertToResponse(), HttpStatus.ACCEPTED);
+        return ResponseEntity.ok(service.delete(id).convertToResponse());
     }
 
     static final class InformationTypePage extends RestResponsePage<InformationTypeResponse> {

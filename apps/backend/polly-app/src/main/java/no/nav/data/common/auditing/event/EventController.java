@@ -1,9 +1,9 @@
 package no.nav.data.common.auditing.event;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.domain.Action;
 import no.nav.data.common.auditing.domain.AuditVersion;
@@ -34,7 +34,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @RequestMapping("/event")
-@Api(value = "Domain object events", tags = {"Event"})
+@Tag(name = "Event", description = "Domain object events")
 public class EventController {
 
     private final AuditVersionRepository repository;
@@ -46,10 +46,8 @@ public class EventController {
         this.repository = repository;
     }
 
-    @ApiOperation(value = "Get events")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Events fetched", response = EventPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get events")
+    @ApiResponse(description = "Events fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<EventResponse>> getAll(PageParameters paging,
             @RequestParam String table,

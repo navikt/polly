@@ -1,10 +1,9 @@
 package no.nav.data.polly.disclosure;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
@@ -43,7 +42,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @RequestMapping("/disclosure")
-@Api(value = "Disclosure", tags = {"Disclosure"})
+@Tag(name = "Disclosure")
 public class DisclosureController {
 
     private final DisclosureRepository repository;
@@ -62,10 +61,8 @@ public class DisclosureController {
         this.processRepository = processRepository;
     }
 
-    @ApiOperation(value = "Get All Disclosures")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Disclosures fetched", response = DisclosurePage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get All Disclosures")
+    @ApiResponse(description = "All Disclosures fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<DisclosureResponse>> getAll(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
@@ -95,11 +92,8 @@ public class DisclosureController {
         return ResponseEntity.ok(page);
     }
 
-    @ApiOperation(value = "Get Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Disclosure fetched", response = DisclosureResponse.class),
-            @ApiResponse(code = 404, message = "Disclosure not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Disclosure")
+    @ApiResponse(description = "Disclosure fetched")
     @GetMapping("/{id}")
     public ResponseEntity<DisclosureResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Disclosure with the id={}", id);
@@ -112,11 +106,9 @@ public class DisclosureController {
         return new ResponseEntity<>(disclosureResponse.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Create Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Disclosure successfully created", response = DisclosureResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create Disclosure")
+    @ApiResponse(responseCode = "201", description = "Disclosure successfully created")
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DisclosureResponse> createPolicy(@Valid @RequestBody DisclosureRequest request) {
@@ -124,11 +116,9 @@ public class DisclosureController {
         return new ResponseEntity<>(convertAndAddObjects(service.save(request)), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Update Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Disclosure successfully updated", response = DisclosureResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update Disclosure")
+    @ApiResponse(description = "Disclosure successfully updated")
+
     @PutMapping("/{id}")
     public ResponseEntity<DisclosureResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to update Disclosure");
@@ -136,11 +126,8 @@ public class DisclosureController {
         return ResponseEntity.ok(convertAndAddObjects(service.update(request)));
     }
 
-    @ApiOperation(value = "Delete Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Disclosure deleted"),
-            @ApiResponse(code = 404, message = "Disclosure not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete Disclosure")
+    @ApiResponse(description = "Disclosure deleted")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DisclosureResponse> deleteDisclosureById(@PathVariable UUID id) {

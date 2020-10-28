@@ -1,9 +1,9 @@
 package no.nav.data.polly.term;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.RestResponsePage;
@@ -32,7 +32,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @RequestMapping("/term")
-@Api(value = "Term", description = "REST API for Term", tags = {"Term"})
+@Tag(name = "Term", description = "REST API for Term")
 public class TermController {
 
     private final InformationTypeRepository informationTypeRepository;
@@ -43,11 +43,8 @@ public class TermController {
         this.termService = termService;
     }
 
-    @ApiOperation(value = "Get Term")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Term fetched", response = TermResponse.class),
-            @ApiResponse(code = 404, message = "Term not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Term")
+    @ApiResponse(description = "Term fetched")
     @GetMapping("/{id}")
     public ResponseEntity<TermResponse> findForId(@PathVariable String id) {
         log.info("Received request for Term with the id={}", id);
@@ -60,10 +57,8 @@ public class TermController {
         return new ResponseEntity<>(termResponse.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Search Terms")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Terms fetched", response = TermPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search Terms")
+    @ApiResponse(description = "Terms fetched")
     @GetMapping("/search/{searchString}")
     public ResponseEntity<RestResponsePage<TermResponse>> searchTermByName(@PathVariable String searchString) {
         log.info("Received request for Term with name/description like {}", searchString);
@@ -76,10 +71,8 @@ public class TermController {
         return new ResponseEntity<>(new RestResponsePage<>(convert(terms, PollyTerm::convertToResponse)), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Count by InformationType")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Terms fetched", response = TermCountResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Count by InformationType")
+    @ApiResponse(description = "Terms fetched")
     @GetMapping("/count/informationtype")
     public ResponseEntity<TermCountResponse> getInformationTypeCount() {
         log.info("Get term count by InformationType");

@@ -1,6 +1,7 @@
 package no.nav.data.polly.process.dto.sub;
 
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class DataProcessingRequest implements Validated {
     @Singular
     private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;
-    @ApiModelProperty(value = "Codelist TRANSFER_GROUNDS_OUTSIDE_EU")
+    @Schema(description = "Codelist TRANSFER_GROUNDS_OUTSIDE_EU")
     private String transferGroundsOutsideEU;
     private String transferGroundsOutsideEUOther;
     @Singular

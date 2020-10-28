@@ -1,11 +1,10 @@
 package no.nav.data.polly.process;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.AuditService;
 import no.nav.data.common.auditing.dto.AuditMetadata;
@@ -47,7 +46,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog Process", tags = {"Process"})
+@Tag(name = "Process", description = "Data Catalog Process")
 @RequestMapping("/process")
 public class ProcessReadController {
 
@@ -63,11 +62,8 @@ public class ProcessReadController {
         this.auditService = auditService;
     }
 
-    @ApiOperation(value = "Get Process with InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process fetched", response = ProcessResponse.class),
-            @ApiResponse(code = 404, message = "Process not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Process with InformationTypes")
+    @ApiResponse(description = "Process fetched")
     @GetMapping("/{id}")
     @Transactional
     public ResponseEntity<ProcessResponse> findForId(@PathVariable UUID id) {
@@ -80,17 +76,15 @@ public class ProcessReadController {
         return ResponseEntity.ok(process.get());
     }
 
-    @ApiOperation(value = "Get All Processes, parameters filters are not combined unless stated otherwise")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Processes fetched", response = ProcessPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get All Processes, parameters filters are not combined unless stated otherwise")
+    @ApiResponse(description = "All Processes fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters,
             @RequestParam(required = false) String productTeam,
             @RequestParam(required = false) String productArea,
             @RequestParam(required = false) String documentId,
-            @ApiParam("Can be combined with nationalLaw") @RequestParam(required = false) String gdprArticle,
-            @ApiParam("Can be combined with gdprArticle") @RequestParam(required = false) String nationalLaw
+            @Parameter(description = "Can be combined with nationalLaw") @RequestParam(required = false) String gdprArticle,
+            @Parameter(description = "Can be combined with gdprArticle") @RequestParam(required = false) String nationalLaw
     ) {
         if (productTeam != null) {
             log.info("Received request for Processeses for productTeam {}", productTeam);
@@ -118,10 +112,8 @@ public class ProcessReadController {
         return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 
-    @ApiOperation(value = "Get last edited processes by logged in user")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Processes fetched", response = LastEditedPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get last edited processes by logged in user")
+    @ApiResponse(description = "All Processes fetched")
     @GetMapping("/myedits")
     public ResponseEntity<RestResponsePage<LastEditedResponse>> getMyRecentlyEditedProcesses() {
         Optional<UserInfo> user = SecurityUtils.getCurrentUser();
@@ -134,10 +126,8 @@ public class ProcessReadController {
         return ResponseEntity.ok(new RestResponsePage<>(convert(audits, a -> new LastEditedResponse(a.getTime(), processes.get(a.getTableId()).convertToShortResponse()))));
     }
 
-    @ApiOperation(value = "Search processes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Processes fetched", response = ProcessPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search processes")
+    @ApiResponse(description = "Processes fetched")
     @GetMapping("/search/{search}")
     public ResponseEntity<RestResponsePage<ProcessResponse>> searchProcesses(@PathVariable String search) {
         log.info("Received request for Processes search={}", search);
@@ -148,10 +138,8 @@ public class ProcessReadController {
         return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
     }
 
-    @ApiOperation(value = "Get count by property")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Counts fetched", response = ProcessCountResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get count by property")
+    @ApiResponse(description = "Counts fetched")
     @GetMapping("/count")
     public ResponseEntity<ProcessCountResponse> count(
             @RequestParam(value = "purpose", required = false) Boolean purpose,

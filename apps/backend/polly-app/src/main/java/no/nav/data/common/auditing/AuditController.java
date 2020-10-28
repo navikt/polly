@@ -1,9 +1,9 @@
 package no.nav.data.common.auditing;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.domain.AuditVersion;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
@@ -29,7 +29,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @RequestMapping("/audit")
-@Api(value = "Audit", tags = {"Audit"})
+@Tag(name = "Audit")
 public class AuditController {
 
     private final AuditVersionRepository repository;
@@ -38,10 +38,8 @@ public class AuditController {
         this.repository = repository;
     }
 
-    @ApiOperation(value = "Get Audit log")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Audit log fetched", response = AuditLogPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Audit log")
+    @ApiResponse(description = "Audit log fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<AuditResponse>> getAll(PageParameters paging, @RequestParam(required = false) String table) {
         log.info("Received request for Audit {} table {}", paging, table);
@@ -55,10 +53,9 @@ public class AuditController {
         return new ResponseEntity<>(new RestResponsePage<>(page), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get Audit log for object")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Audit log fetched", response = AuditLogResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Audit log for object")
+    @ApiResponse(description = "Audit log fetched")
+
     @GetMapping("/log/{id}")
     public ResponseEntity<AuditLogResponse> findForId(@PathVariable String id) {
         log.info("Received request for Audit with the id={}", id);

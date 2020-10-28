@@ -1,6 +1,7 @@
 package no.nav.data.polly.disclosure.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,12 +39,12 @@ public class DisclosureRequest implements RequestElement {
     private String id;
     private String name;
     private String description;
-    @ApiModelProperty(value = "Codelist THIRD_PARTY")
+    @Schema(description = "Codelist THIRD_PARTY")
     private String recipient;
     private String recipientPurpose;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = ORIG_START)
+    @Schema(type = LOCAL_DATE, example = ORIG_START)
     private String start;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
+    @Schema(type = LOCAL_DATE, example = DEFAULT_END)
     private String end;
     @Singular("legalBasis")
     private List<LegalBasisRequest> legalBases = new ArrayList<>();

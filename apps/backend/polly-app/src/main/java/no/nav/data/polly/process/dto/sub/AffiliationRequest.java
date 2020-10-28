@@ -1,6 +1,7 @@
 package no.nav.data.polly.process.dto.sub;
 
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,15 +25,15 @@ import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 @FieldNameConstants
 public class AffiliationRequest implements Validated {
 
-    @ApiModelProperty(value = "Codelist DEPARTMENT")
+    @Schema(description = "Codelist DEPARTMENT")
     private String department;
     @Singular
-    @ApiModelProperty(value = "Codelist SUB_DEPARTMENT")
+    @Schema(description = "Codelist SUB_DEPARTMENT")
     private List<String> subDepartments;
     @Singular
     private List<String> productTeams;
     @Singular
-    @ApiModelProperty(value = "Codelist SYSTEM")
+    @Schema(description = "Codelist SYSTEM")
     private List<String> products;
 
     @Override

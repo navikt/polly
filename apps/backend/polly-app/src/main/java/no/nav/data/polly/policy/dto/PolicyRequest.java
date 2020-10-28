@@ -1,7 +1,7 @@
 package no.nav.data.polly.policy.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,10 +36,10 @@ public class PolicyRequest implements RequestElement {
     private String id;
     private String processId;
     @Singular
-    @ApiModelProperty(value = "Codelist PURPOSE")
+    @Schema(description = "Codelist PURPOSE")
     private List<String> purposes;
     @Singular
-    @ApiModelProperty(value = "Codelist SUBJECT_CATEGORY")
+    @Schema(description = "Codelist SUBJECT_CATEGORY")
     private List<String> subjectCategories;
     private String informationTypeId;
     private boolean legalBasesInherited;

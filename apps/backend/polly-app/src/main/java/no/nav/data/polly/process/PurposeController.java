@@ -1,16 +1,14 @@
 package no.nav.data.polly.process;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.process.ProcessReadController.ProcessPolicyPage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessResponse;
@@ -25,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog Purpose", description = "REST API for Purpose", tags = {"Purpose", "Process"})
+@Tag(name = "Purpose", description = "REST API for Purpose")
 @RequestMapping("/process")
 public class PurposeController {
 
@@ -35,11 +33,8 @@ public class PurposeController {
         this.processRepository = processRepository;
     }
 
-    @ApiOperation(value = "Get InformationTypes for Purpose")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Processes fetched", response = ProcessPolicyPage.class),
-            @ApiResponse(code = 404, message = "Purpose not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get InformationTypes for Purpose")
+    @ApiResponse(description = "Processes fetched")
     @GetMapping("/purpose/{purpose}")
     @Transactional
     public ResponseEntity<RestResponsePage<ProcessResponse>> getPurpose(@PathVariable String purpose) {
