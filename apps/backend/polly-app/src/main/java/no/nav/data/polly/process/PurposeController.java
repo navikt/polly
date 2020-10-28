@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
-@Tag(name = "Purpose", description = "REST API for Purpose")
+@Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
 public class PurposeController {
 
@@ -33,7 +33,7 @@ public class PurposeController {
         this.processRepository = processRepository;
     }
 
-    @Operation(summary = "Get InformationTypes for Purpose")
+    @Operation(summary = "Get Processes for Purpose")
     @ApiResponse(description = "Processes fetched")
     @GetMapping("/purpose/{purpose}")
     @Transactional
