@@ -12,6 +12,7 @@ import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 type fieldLegalBasisProps = {
   formikBag: FormikProps<ProcessFormValues> | FormikProps<PolicyFormValues> | FormikProps<DisclosureFormValues>
+  openArt6OnEmpty?: boolean
 }
 
 const FieldLegalBasis = (props: fieldLegalBasisProps) => {
@@ -23,7 +24,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
 
   // Open legalBases if this field is rendered and no legalBases exist.
   useEffect(() => {
-    if (formikBag.values.legalBases.length == 0) {
+    if (formikBag.values.legalBases.length == 0 && props.openArt6OnEmpty) {
       formikBag.setFieldValue('legalBasesOpen', true)
     }
   }, [])

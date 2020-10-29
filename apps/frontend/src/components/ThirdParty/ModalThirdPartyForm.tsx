@@ -194,7 +194,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     overrides={{...panelOverrides}}
                   >
                     <Block marginTop={"1rem"}>
-                      <FieldLegalBasis formikBag={formikBag}/>
+                      <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty/>
                     </Block>
                     <Error fieldName="legalBasesOpen" fullWidth={true}/>
                   </Panel>
