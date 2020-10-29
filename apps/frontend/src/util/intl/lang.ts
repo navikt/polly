@@ -236,7 +236,7 @@ export const no: IStrings = {
   thirdPartyDpProcessTableTitle: "NAV er databehandler for {0} i følgende behandlinger",
   article9: "Behandles det særlige kategorier av personopplysninger?",
   article10: "Behandles det personopplysninger om straffedommer og lovovertredelser?",
-  createDpProcess: "Opprett ny databehandling",
+  createDpProcess: "Opprett ny behandling",
   dpProcessDuplicatedError: "Databehandlingen eksisterer allerede.",
   externalProcessResponsible: 'Behandlingsansvarlig',
 
@@ -696,7 +696,7 @@ export const en: IStrings = {
   thirdPartyDpProcessTableTitle: "Nav is data processor fot {0} in following processors",
   article9: "Are special categories of personal data processed?",
   article10: "Is personal data about criminal convictions and offenses processed?",
-  createDpProcess: "Create new data process",
+  createDpProcess: "Create new process",
   dpProcessDuplicatedError: "Data process has already exist.",
   externalProcessResponsible: 'Process responsible',
 
