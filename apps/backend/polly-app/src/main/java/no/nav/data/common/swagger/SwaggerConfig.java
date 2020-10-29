@@ -17,7 +17,7 @@ public class SwaggerConfig {
     public static final String LOCAL_DATE = "java.sql.Date";
 
     @Bean
-    public OpenAPI springShopOpenAPI() {
+    public OpenAPI openAPI() {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearer-key",
                         new SecurityScheme().type(Type.HTTP).scheme("bearer").bearerFormat("token")))
