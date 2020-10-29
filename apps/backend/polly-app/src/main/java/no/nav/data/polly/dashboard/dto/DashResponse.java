@@ -69,6 +69,7 @@ public class DashResponse {
 
         private long processesCompleted;
         private long processesInProgress;
+        private long processesNeedsRevision;
 
         private long processesMissingLegalBases;
         private long processesMissingArt6;
@@ -101,6 +102,10 @@ public class DashResponse {
 
         public void processesInProgress() {
             processesInProgress++;
+        }
+
+        public void processesNeedsRevision() {
+            processesNeedsRevision++;
         }
 
         public void processesMissingLegalBases() {

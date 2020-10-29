@@ -15,7 +15,6 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
@@ -183,7 +182,7 @@ public class ProcessToDocx {
             addTexts(data.getLegalBases().stream().map(this::mapLegalBasis).collect(toList()));
 
             addHeading4("Status");
-            addText(data.getStatus() == ProcessStatus.COMPLETED ? "Godkjent" : "Under arbeid");
+            addText(processStatusText(data));
 
             addHeading4("Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
@@ -597,6 +596,14 @@ public class ProcessToDocx {
 
     private static String shortName(ListName listName, String code) {
         return code == null ? "" : CodelistService.getCodelist(listName, code).getShortName();
+    }
+
+    private static String processStatusText(ProcessData data) {
+        return switch (data.getStatus()) {
+            case COMPLETED -> "Godkjent";
+            case IN_PROGRESS -> "Under arbeid";
+            case NEEDS_REVISION -> "Trenger revidering";
+        };
     }
 
 }

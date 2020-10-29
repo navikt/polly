@@ -82,7 +82,7 @@ public class ProcessRequest implements RequestElement {
         setRetention(getRetention() != null ? getRetention() : new RetentionRequest());
         setDpia(getDpia() != null ? getDpia() : new DpiaRequest());
 
-        if (status == null) {
+        if (status == null || status == ProcessStatus.NEEDS_REVISION) {
             setStatus(ProcessStatus.IN_PROGRESS);
         }
     }

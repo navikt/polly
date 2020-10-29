@@ -10,6 +10,7 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.process.dto.ProcessRevisionRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +85,16 @@ public class ProcessWriteController {
         service.deleteById(id);
         log.info("Process with id={} deleted", id);
         return new ResponseEntity<>(fromRepository.get().convertToResponse(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Set revision for processe(s)")
+    @PostMapping("/revision")
+    @Transactional
+    public void requireRevision(@RequestBody ProcessRevisionRequest request) {
+        log.info("Request for revision {}", request);
+        request.validateFieldsAndThrow();
+
+        // TODO on affected processes, set revision needed status, revision text. Send mail to last edited by.
     }
 
 }
