@@ -3,6 +3,7 @@ import {IStrings} from "./intl";
 export const no: IStrings = {
   informationType: "Opplysningstype",
   informationTypes: "Opplysningstyper",
+  noInformationTypesAvailable: "Ingen opplysningstyper",
   informationTypeSearch: "Søk opplysningstyper",
   search: "Søk",
   term: "Begrepsdefinisjon",
@@ -452,6 +453,7 @@ export const no: IStrings = {
 export const en: IStrings = {
   informationType: "Information type",
   informationTypes: "Information types",
+  noInformationTypesAvailable: "No information types",
   informationTypeSearch: "Information type search",
   search: "Search",
   term: "Term definition",

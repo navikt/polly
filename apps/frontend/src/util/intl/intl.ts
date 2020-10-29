@@ -16,6 +16,7 @@ import taLocale from "date-fns/locale/ta";
 export interface IStrings {
   informationType: string;
   informationTypes: string;
+  noInformationTypesAvailable: string;
   informationTypeSearch: string;
   search: string;
   term: string;
