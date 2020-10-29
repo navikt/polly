@@ -7,8 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.Serializable;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -49,6 +51,11 @@ public class Codelist extends Auditable {
                 .shortName(shortName)
                 .description(description)
                 .build();
+    }
+
+    @Override
+    public UUID getId() {
+        throw new NotImplementedException("does not apply");
     }
 
     @Data

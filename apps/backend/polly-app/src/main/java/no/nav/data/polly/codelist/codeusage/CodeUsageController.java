@@ -1,9 +1,9 @@
 package no.nav.data.polly.codelist.codeusage;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog CodeUsage", description = "REST API for usage of codes in the Data Catalog", tags = {"Codelist"})
+@Tag(name = "CodeUsage", description = "REST API for usage of codes in the Data Catalog")
 @RequestMapping("/codelist/usage")
 public class CodeUsageController {
 
@@ -31,11 +31,8 @@ public class CodeUsageController {
         this.service = service;
     }
 
-    @ApiOperation(value = "Get all usage of the provided listName")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Fetch all usage of the provided listName", response = CodelistUsageResponse.class, responseContainer = "List"),
-            @ApiResponse(code = 404, message = "Code or listName not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get all usage of the provided listName")
+    @ApiResponse(description = "Fetch all usage of the provided listName")
     @GetMapping("/find/{list}")
     public ResponseEntity<CodelistUsageResponse> findAllCodeUsageOfListname(@PathVariable String list) {
         log.info("Received request to fetch all usage of the list {}", list);
@@ -46,11 +43,8 @@ public class CodeUsageController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value = "Get all information about where the provided code is used")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Fetch all data related to one codelist", response = CodeUsageResponse.class),
-            @ApiResponse(code = 404, message = "Code or listName not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get all information about where the provided code is used")
+    @ApiResponse(description = "Fetch all data related to one codelist")
     @GetMapping("/find/{list}/{code}")
     public ResponseEntity<CodeUsageResponse> findCodeUsageByListNameAndCode(@PathVariable String list, @PathVariable String code) {
         log.info("Received request to fetch all usage of code {} in list {}", code, list);
@@ -60,11 +54,8 @@ public class CodeUsageController {
         return ResponseEntity.ok(codeUsage);
     }
 
-    @ApiOperation(value = "Batch replace codelist value")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All usages replaced", response = CodeUsageResponse.class),
-            @ApiResponse(code = 404, message = "Code or listName not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Batch replace codelist value")
+    @ApiResponse(description = "All usages replaced")
     @PostMapping("/replace")
     public ResponseEntity<CodeUsageResponse> replaceAllCodelistUsage(@RequestBody ReplaceCodelistRequest request) {
         log.info("Received request to replace all usage of code {} with code {} in list {}", request.getOldCode(), request.getNewCode(), request.getList());

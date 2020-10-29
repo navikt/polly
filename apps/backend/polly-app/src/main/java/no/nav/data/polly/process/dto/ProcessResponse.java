@@ -1,7 +1,7 @@
 package no.nav.data.polly.process.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,7 +55,7 @@ public class ProcessResponse {
 
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
-    @ApiModelProperty("Only set when get/create/update one process")
+    @Schema(description = "Only set when get/create/update one process")
     @Singular
     private List<PolicyResponse> policies;
 

@@ -228,7 +228,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange("/informationtype/" + id, DELETE, EMPTY, InformationTypeResponse.class);
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")).isPresent();
         assertThat(informationTypeRepository.findByName("InformationType_nr2")).isEmpty();
@@ -253,7 +253,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         documentRepository.delete(doc);
 
-        assertThat(restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId()).getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId()).getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     private List<InformationType> createInformationTypeTestData(int nrOfRows) {

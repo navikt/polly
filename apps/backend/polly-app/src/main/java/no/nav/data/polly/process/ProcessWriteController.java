@@ -1,10 +1,9 @@
 package no.nav.data.polly.process;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.polly.process.domain.Process;
@@ -30,7 +29,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @Transactional
-@Api(value = "Data Catalog Process", description = "REST API for Process", tags = {"Process"})
+@Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
 public class ProcessWriteController {
 
@@ -42,11 +41,8 @@ public class ProcessWriteController {
         this.repository = repository;
     }
 
-    @ApiOperation(value = "Create Processes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Processes to be created successfully accepted", response = ProcessResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create Processes")
+    @ApiResponse(responseCode = "201", description = "Processes to be created successfully accepted")
     @PostMapping
     public ResponseEntity<ProcessResponse> createProcesses(@RequestBody ProcessRequest request) {
         log.info("Received requests to create Process");
@@ -57,11 +53,8 @@ public class ProcessWriteController {
         return new ResponseEntity<>(process.convertToResponseWithPolicies(), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Update Process")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process updated", response = ProcessResponse.class),
-            @ApiResponse(code = 404, message = "Process not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update Process")
+    @ApiResponse(description = "Process updated")
     @PutMapping("/{id}")
     public ResponseEntity<ProcessResponse> updateProcess(@PathVariable UUID id, @Valid @RequestBody ProcessRequest request) {
         log.debug("Received request to update Process with id={}", id);
@@ -77,11 +70,8 @@ public class ProcessWriteController {
         return ResponseEntity.ok(service.update(request).convertToResponseWithPolicies());
     }
 
-    @ApiOperation(value = "Delete Process")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process deleted", response = ProcessResponse.class),
-            @ApiResponse(code = 404, message = "Process not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete Process")
+    @ApiResponse(description = "Process deleted")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<ProcessResponse> deleteProcessById(@PathVariable UUID id) {

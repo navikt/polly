@@ -1,60 +1,33 @@
 package no.nav.data.common.swagger;
 
-import io.swagger.models.auth.In;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import springfox.documentation.builders.AuthorizationScopeBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
-
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
-@EnableSwagger2WebMvc
 public class SwaggerConfig {
 
-    public static final String JSON = "java.lang.String";
     public static final String LOCAL_DATE = "java.sql.Date";
-    public static final String BOOLEAN = "java.lang.Boolean";
 
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build()
-                .securitySchemes(Collections.singletonList(new ApiKey("Token Access", HttpHeaders.AUTHORIZATION, In.HEADER.name())))
-                .securityContexts(List.of(SecurityContext.builder().securityReferences(tokenAccess()).forPaths(PathSelectors.any()).build()))
-                .apiInfo(apiInfo());
-    }
-
-    private List<SecurityReference> tokenAccess() {
-        return List.of(SecurityReference.builder()
-                .reference("Token Access")
-                .scopes(new AuthorizationScope[]{
-                        new AuthorizationScopeBuilder().scope("global").build()
-                }).build());
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Polly",
-                "Rest API for getting and posting information on Polly",
-                "1.0",
-                "Terms of service",
-                new Contact("NAV", "www.nav.no", "post@nav.no"),
-                "License of API", "API license URL", Collections.emptyList());
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .components(new Components().addSecuritySchemes("bearer-key",
+                        new SecurityScheme().type(Type.HTTP).scheme("bearer").bearerFormat("token")))
+                .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
+                .info(new Info().title("Polly")
+                        .description("Rest API for getting and posting information on Polly")
+                        .version("v1.0")
+                        .license(new License().name("MIT License")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("Behandlingskatalog på NADA")
+                        .url("https://dataplattform.gitbook.io/nada/kataloger/behandlingskatalog"));
     }
 }

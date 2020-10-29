@@ -1,7 +1,7 @@
 package no.nav.data.polly.process.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,15 +39,15 @@ public class ProcessRequest implements RequestElement {
     private String description;
     private String additionalDescription;
     @Singular
-    @ApiModelProperty(value = "Codelist PURPOSE")
+    @Schema(description = "Codelist PURPOSE")
     private List<String> purposes;
-    @ApiModelProperty(value = "Codelist THIRD_PARTY")
+    @Schema(description = "Codelist THIRD_PARTY")
     private String commonExternalProcessResponsible;
     private AffiliationRequest affiliation;
 
-    @ApiModelProperty(dataType = LOCAL_DATE, example = ORIG_START)
+    @Schema(type = LOCAL_DATE, example = ORIG_START)
     private String start;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
+    @Schema(type = LOCAL_DATE, example = DEFAULT_END)
     private String end;
     private List<LegalBasisRequest> legalBases;
 

@@ -42,6 +42,7 @@ export enum ObjectType {
 
 export enum ProcessField {
   DPIA = 'DPIA',
+  DPIA_REFERENCE_MISSING = 'DPIA_REFERENCE_MISSING',
   PROFILING = 'PROFILING',
   AUTOMATION = 'AUTOMATION',
   RETENTION = 'RETENTION',
@@ -604,6 +605,7 @@ export interface ProcessesDashCount {
   dataProcessorAgreementMissing: number
   dataProcessorOutsideEU: Counter
   commonExternalProcessResponsible: number
+  dpiaReferenceMissing: number
 }
 
 export interface DepartmentProcessDashCount extends ProcessesDashCount {

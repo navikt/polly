@@ -450,6 +450,8 @@ export interface IStrings {
   article9DpProcessHelpText: string;
   isSubDataProcessorUsedDpProcessHelpText: string;
   retentionMonthsDpProcessHelpText: string;
+  missingPVK: string;
+
 }
 
 // Remember import moment locales up top

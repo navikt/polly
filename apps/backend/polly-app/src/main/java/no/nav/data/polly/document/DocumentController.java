@@ -1,10 +1,9 @@
 package no.nav.data.polly.document;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -41,7 +40,7 @@ import static no.nav.data.common.utils.StartsWithComparator.startsWith;
 @Slf4j
 @RestController
 @RequestMapping("/document")
-@Api(value = "Document", description = "REST API for Document", tags = {"Document"})
+@Tag(name = "Document", description = "REST API for Document")
 public class DocumentController {
 
     private final DocumentRepository repository;
@@ -52,10 +51,8 @@ public class DocumentController {
         this.service = service;
     }
 
-    @ApiOperation(value = "Get All Documents")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Documents fetched", response = DocumentPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get All Documents")
+    @ApiResponse(description = "All Documents fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<DocumentResponse>> getAll(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId
@@ -68,10 +65,8 @@ public class DocumentController {
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Document::convertToResponse)));
     }
 
-    @ApiOperation(value = "Search Documents")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Found documents fetched", response = DocumentPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search Documents")
+    @ApiResponse(description = "Found documents fetched")
     @GetMapping("/search/{name}")
     public ResponseEntity<RestResponsePage<DocumentResponse>> search(@PathVariable String name) {
         log.info("Received request for Documents name={}", name);
@@ -88,11 +83,8 @@ public class DocumentController {
         return ResponseEntity.ok(page);
     }
 
-    @ApiOperation(value = "Get Document")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Document fetched", response = DocumentResponse.class),
-            @ApiResponse(code = 404, message = "Document not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Document")
+    @ApiResponse(description = "Document fetched")
     @GetMapping("/{id}")
     public ResponseEntity<DocumentResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Document with the id={}", id);
@@ -105,11 +97,8 @@ public class DocumentController {
         return new ResponseEntity<>(documentResponse.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Create Document")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Document successfully created", response = DocumentResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create Document")
+    @ApiResponse(responseCode = "201", description = "Document successfully created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DocumentResponse> createPolicy(@Valid @RequestBody DocumentRequest request) {
@@ -117,11 +106,8 @@ public class DocumentController {
         return new ResponseEntity<>(convertToResponseWithInfoTypes(service.save(request)), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Update Document")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Document successfully updated", response = DocumentResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update Document")
+    @ApiResponse(description = "Document successfully updated")
     @PutMapping("/{id}")
     public ResponseEntity<DocumentResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to update Document");
@@ -129,11 +115,8 @@ public class DocumentController {
         return ResponseEntity.ok(convertToResponseWithInfoTypes(service.update(request)));
     }
 
-    @ApiOperation(value = "Delete Document")
-    @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Document deleted"),
-            @ApiResponse(code = 404, message = "Document not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete Document")
+    @ApiResponse(description = "Document deleted")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DocumentResponse> deleteDocumentById(@PathVariable UUID id) {

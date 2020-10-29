@@ -8,6 +8,8 @@ import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.alert.AlertService;
+import no.nav.data.polly.disclosure.domain.Disclosure;
+import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -37,15 +39,18 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     private final InformationTypeRepository repository;
     private final PolicyRepository policyRepository;
     private final DocumentRepository documentRepository;
+    private final DisclosureRepository disclosureRepository;
     private final TermService termService;
     private final AlertService alertService;
     private final TeamService teamService;
 
     public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository,
-            DocumentRepository documentRepository, TermService termService, AlertService alertService, TeamService teamService) {
+            DocumentRepository documentRepository, DisclosureRepository disclosureRepository, TermService termService,
+            AlertService alertService, TeamService teamService) {
         this.repository = repository;
         this.policyRepository = policyRepository;
         this.documentRepository = documentRepository;
+        this.disclosureRepository = disclosureRepository;
         this.termService = termService;
         this.alertService = alertService;
         this.teamService = teamService;
@@ -84,6 +89,10 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         List<Document> documents = documentRepository.findByInformationTypeId(id);
         if (!documents.isEmpty()) {
             throw new ValidationException(String.format("InformationType %s is used by %d document(s)", id, documents.size()));
+        }
+        List<Disclosure> disclosures = disclosureRepository.findByInformationTypeId(id);
+        if (!disclosures.isEmpty()) {
+            throw new ValidationException(String.format("InformationType %s is used by %d disclosure(s)", id, disclosures.size()));
         }
 
         log.info("InformationType with id={} deleted", id);

@@ -1,6 +1,7 @@
 package no.nav.data.polly.disclosure.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,9 @@ import java.util.List;
 import static no.nav.data.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.common.utils.DateUtil.ORIG_START;
+import static no.nav.data.common.utils.StringUtils.formatList;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Slf4j
 @With
@@ -36,16 +39,18 @@ public class DisclosureRequest implements RequestElement {
     private String id;
     private String name;
     private String description;
-    @ApiModelProperty(value = "Codelist THIRD_PARTY")
+    @Schema(description = "Codelist THIRD_PARTY")
     private String recipient;
     private String recipientPurpose;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = ORIG_START)
+    @Schema(type = LOCAL_DATE, example = ORIG_START)
     private String start;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
+    @Schema(type = LOCAL_DATE, example = DEFAULT_END)
     private String end;
     @Singular("legalBasis")
     private List<LegalBasisRequest> legalBases = new ArrayList<>();
     private String documentId;
+    private List<String> processIds;
+    private List<String> informationTypeIds;
 
     private boolean update;
     private int requestIndex;
@@ -58,7 +63,12 @@ public class DisclosureRequest implements RequestElement {
     @Override
     public void format() {
         setRecipient(toUpperCaseAndTrim(getRecipient()));
+        setName(trimToNull(getName()));
+        setDescription(trimToNull(getDescription()));
+        setRecipientPurpose(trimToNull(getRecipientPurpose()));
         setDocumentId(StringUtils.trim(documentId));
+        setProcessIds(formatList(getProcessIds()));
+        setInformationTypeIds(formatList(getInformationTypeIds()));
     }
 
     @Override
@@ -72,5 +82,7 @@ public class DisclosureRequest implements RequestElement {
         validator.checkDate(ProcessRequest.Fields.end, end);
         validator.validateType(ProcessRequest.Fields.legalBases, legalBases);
         validator.checkUUID(Fields.documentId, documentId);
+        getProcessIds().forEach(it -> validator.checkUUID(Fields.processIds, it));
+        getInformationTypeIds().forEach(it -> validator.checkUUID(Fields.informationTypeIds, it));
     }
 }
