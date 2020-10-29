@@ -415,8 +415,8 @@ export const no: IStrings = {
   systemHelpText: "Angi hvilke systemer som er primært i bruk i denne behandlingen.",
   usesAllInformationTypesHelpText:
     "Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet.",
-  processAutomationHelpText: "Med helautomatisert behandling menes behandling av personopplysninger som skjer uten menneskelig innvirkning",
-  profilingHelpText: "Med profilering menes analysering av personopplysninger for å avdekke adferd, preferanser, evner eller behov.",
+  processAutomationHelpText: "Med helautomatisert behandling menes behandling som fører til en individuell avgjørelser eller vedtak uten menneskelig involvering",
+  profilingHelpText: "Med profilering menes det å utlede nye egenskaper, tilbøyeligheter eller behov hos en bruker etter sammenligning med andre brukere i liknende omstendigheter",
   dataProcessorHelpText: "En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne.",
   dataProcessorAgreementHelpText: "Oppgi referanse (typisk saksnummer) til avtalens lagringssted, for eksempel i Websak.",
   dataProcessorOutsideEUExtraHelpText: "Oppgi om personopplysningene behandles utenfor EU/EØS-området av databehandleren eller eventuelle underdatabehandlere.",
@@ -863,8 +863,8 @@ export const en: IStrings = {
   systemHelpText: "Indicate which IT systems are primarily used in this process",
   usesAllInformationTypesHelpText:
     "Used to indicate that this process uses all information type. Therefore, it is only used exceptionally for some special processes such as. access to Personal Data Act.",
-  processAutomationHelpText: "Fully automated process means, process of personal data occurs without human interventions",
-  profilingHelpText: "By profiling is meant the analysis of personal data to reveal behavior, preferences, abilities or needs.",
+  processAutomationHelpText: "Fully automated process means process leads to an individual decision or decision without human involvement",
+  profilingHelpText: "By profiling is meant to derive new characteristics, inclinations or needs of a user after comparison with other users in similar circumstances",
   dataProcessorHelpText: "A data processor is a business that processes personal data on NAV's behalf.",
   dataProcessorAgreementHelpText: "Provide reference (i.e. case number) to the contract's storage location.",
   dataProcessorOutsideEUExtraHelpText: "Specify whether personal data is processed outside the EU / EEA area by the data processor or any sub-processors.",
