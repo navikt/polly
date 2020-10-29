@@ -267,7 +267,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                            title={<PanelTitle title={intl.legalBasis} expanded={expanded.indexOf('legalBasis') >= 0}/>}
                            overrides={{...panelOverrides}}
                     >
-                      <FieldLegalBasis formikBag={formikBag}/>
+                      <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty/>
                       <Error fieldName='legalBasesOpen' fullWidth={true}/>
                     </Panel>
 
