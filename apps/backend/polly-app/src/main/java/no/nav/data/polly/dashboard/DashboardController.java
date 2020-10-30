@@ -17,7 +17,6 @@ import no.nav.data.polly.dashboard.dto.DashResponse.Counter;
 import no.nav.data.polly.dashboard.dto.DashResponse.ProcessDashCount;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
@@ -119,12 +118,12 @@ public class DashboardController {
         ArrayList<ProcessDashCount> dashes = getDashes(dash, process.getData().getAffiliation());
 
         dashes.forEach(ProcessDashCount::processes);
-        if (process.getData().getStatus() == ProcessStatus.COMPLETED) {
-            dashes.forEach(ProcessDashCount::processesCompleted);
+        switch (process.getData().getStatus()) {
+            case COMPLETED -> dashes.forEach(ProcessDashCount::processesCompleted);
+            case IN_PROGRESS -> dashes.forEach(ProcessDashCount::processesInProgress);
+            case NEEDS_REVISION -> dashes.forEach(ProcessDashCount::processesNeedsRevision);
         }
-        if (process.getData().getStatus() == ProcessStatus.IN_PROGRESS) {
-            dashes.forEach(ProcessDashCount::processesInProgress);
-        }
+
         if (process.getData().isUsesAllInformationTypes()) {
             dashes.forEach(ProcessDashCount::processesUsingAllInfoTypes);
         }

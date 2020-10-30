@@ -63,6 +63,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/settings/**"
         );
 
+        adminOrSuperOnly(http,
+                "/process/revision/**"
+        );
+
         http.authorizeRequests().antMatchers("/logout").authenticated();
         http.authorizeRequests().anyRequest().hasRole(AppRole.WRITE.name());
     }
@@ -70,6 +74,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void adminOnly(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
             http.authorizeRequests().antMatchers(path).hasRole(AppRole.ADMIN.name());
+        }
+    }
+
+    private void adminOrSuperOnly(HttpSecurity http, String... paths) throws Exception {
+        for (String path : paths) {
+            http.authorizeRequests().antMatchers(path).hasAnyRole(AppRole.ADMIN.name(), AppRole.SUPER.name());
         }
     }
 

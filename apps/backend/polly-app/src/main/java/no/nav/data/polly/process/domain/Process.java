@@ -100,6 +100,7 @@ public class Process extends Auditable {
                 // If we dont include policies avoid loading them all from DB
                 .changeStamp(super.convertChangeStampResponse())
                 .status(data.getStatus())
+                .revisionText(data.getRevisionText())
                 .build();
     }
 
@@ -132,6 +133,7 @@ public class Process extends Auditable {
         data.setRetention(convertRetention(request.getRetention()));
         data.setDpia(convertDpia(request.getDpia()));
         data.setStatus(request.getStatus());
+        data.setRevisionText(null);
         return this;
     }
 

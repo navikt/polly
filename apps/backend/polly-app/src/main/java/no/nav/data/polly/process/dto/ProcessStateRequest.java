@@ -55,6 +55,7 @@ public class ProcessStateRequest implements Validated {
     public enum ProcessStatusFilter {
         COMPLETED(ProcessStatus.COMPLETED),
         IN_PROGRESS(ProcessStatus.IN_PROGRESS),
+        NEEDS_REVISION(ProcessStatus.NEEDS_REVISION),
         ALL;
 
         public final ProcessStatus processStatus;

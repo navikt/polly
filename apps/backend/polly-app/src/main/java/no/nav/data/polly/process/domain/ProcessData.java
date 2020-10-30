@@ -58,6 +58,7 @@ public class ProcessData {
     private Dpia dpia = new Dpia();
     @Default
     private ProcessStatus status = ProcessStatus.IN_PROGRESS;
+    private String revisionText;
 
     public Period toPeriod() {
         return new Period(start, end);

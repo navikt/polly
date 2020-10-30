@@ -21,14 +21,14 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 @Slf4j
 public class FieldValidator {
 
-    private static final String ERROR_TYPE = "fieldIsNullOrMissing";
+    private static final String ERROR_TYPE_MISSING = "fieldIsNullOrMissing";
     private static final String ERROR_TYPE_PATTERN = "fieldWrongFormat";
     private static final String ERROR_TYPE_ENUM = "fieldIsInvalidEnum";
     private static final String ERROR_TYPE_CODELIST = "fieldIsInvalidCodelist";
     private static final String ERROR_TYPE_CODELIST_CODE = "fieldIsInvalidCodelistCode";
     private static final String ERROR_TYPE_DATE = "fieldIsInvalidDate";
     private static final String ERROR_TYPE_UUID = "fieldIsInvalidUUID";
-    private static final String ERROR_MESSAGE = "%s was null or missing";
+    private static final String ERROR_MESSAGE_MISSING = "%s was null or missing";
     private static final String ERROR_MESSAGE_PATTERN = "%s is not valid for pattern '%s'";
     private static final String ERROR_MESSAGE_ENUM = "%s: %s was invalid for type %s";
     private static final String ERROR_MESSAGE_CODELIST = "%s: %s code not found in codelist %s";
@@ -57,10 +57,16 @@ public class FieldValidator {
 
     public boolean checkBlank(String fieldName, String fieldValue) {
         if (StringUtils.isBlank(fieldValue)) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, getFieldName(fieldName))));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_MISSING, String.format(ERROR_MESSAGE_MISSING, getFieldName(fieldName))));
             return true;
         }
         return false;
+    }
+
+    public void checkNull(String fieldName, Object fieldValue) {
+        if (fieldValue == null) {
+            validationErrors.add(new ValidationError(getFieldName(fieldName), ERROR_TYPE_MISSING, ERROR_MESSAGE_MISSING));
+        }
     }
 
     public void checkCodelistCode(String fieldName, String fieldValue) {
@@ -74,7 +80,7 @@ public class FieldValidator {
 
     public <T extends Enum<T>> void checkRequiredEnum(String fieldName, Enum<T> fieldValue) {
         if (fieldValue == null) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, getFieldName(fieldName))));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_MISSING, String.format(ERROR_MESSAGE_MISSING, getFieldName(fieldName))));
         }
     }
 
@@ -93,7 +99,7 @@ public class FieldValidator {
         }
     }
 
-    public  <T extends Enum<T>> void addError(String fieldName, String fieldValue, String errorType, String message) {
+    public <T extends Enum<T>> void addError(String fieldName, String fieldValue, String errorType, String message) {
         validationErrors.add(new ValidationError(reference, errorType, "%s: %s %s".formatted(getFieldName(fieldName), fieldValue, message)));
     }
 
@@ -146,7 +152,7 @@ public class FieldValidator {
     public void checkRequiredCodelists(String fieldName, Collection<String> values, ListName listName) {
         checkCodelists(fieldName, values, listName);
         if (CollectionUtils.isEmpty(values)) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, getFieldName(fieldName))));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_MISSING, String.format(ERROR_MESSAGE_MISSING, getFieldName(fieldName))));
         }
     }
 
