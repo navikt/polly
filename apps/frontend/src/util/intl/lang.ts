@@ -446,7 +446,7 @@ export const no: IStrings = {
   chooseGrounds: "Velg en eller flere begrunnelse(r)",
   specifyOther: "Spesifiser ved annet",
 
-  missingPVK: "Behandlinger som har behov for PVK (Ref. til PVK ikke angitt)",
+  missingPVK: "Ref. til PVK ikke angitt",
 
   noInformationTypesAvailableInTable: "Ingen opplysningstyper",
   noCodesAvailableInTable: 'Ingen koder',
@@ -904,7 +904,7 @@ export const en: IStrings = {
   chooseGrounds: "Choose a reason",
   specifyOther: "Specify by other",
 
-  missingPVK: "Processes that require PVK (Ref. To PVK not specified)",
+  missingPVK: "Ref. To PVK not specified",
 
   noInformationTypesAvailableInTable: "No information types",
   noCodesAvailableInTable: 'No codes',
