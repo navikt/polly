@@ -16,7 +16,6 @@ import taLocale from "date-fns/locale/ta";
 export interface IStrings {
   informationType: string;
   informationTypes: string;
-  noInformationTypesAvailable: string;
   informationTypeSearch: string;
   search: string;
   term: string;
@@ -452,6 +451,17 @@ export interface IStrings {
   isSubDataProcessorUsedDpProcessHelpText: string;
   retentionMonthsDpProcessHelpText: string;
   missingPVK: string;
+
+  noInformationTypesAvailableInTable: string;
+  noCodesAvailableInTable: string;
+  noProcessesAvailableInTable: string;
+  noUsageAvailableInTable: string;
+  noDocumentsAvailableInTable: string;
+  noPotentialPersonalCategoryUsageInTable: string;
+  noAuditsAvailableInTable: string;
+  noDisclosuresToThirdPartyAvailableInTable:string;
+  noRetrievedFromThirdPartyAvailableInTable:string;
+  noAlertsAvailableInTable: string;
 
 }
 

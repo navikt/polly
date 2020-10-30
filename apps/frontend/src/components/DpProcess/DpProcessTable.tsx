@@ -22,7 +22,7 @@ const DpProcessTable = (props: DpProcessTableProps) => {
   return (
     <>
       <Table
-        emptyText={intl.processes}
+        emptyText={intl.noProcessesAvailableInTable}
         headers={
           <>
             <HeadCell

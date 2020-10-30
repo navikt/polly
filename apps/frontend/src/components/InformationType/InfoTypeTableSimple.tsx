@@ -43,7 +43,7 @@ export const InfoTypeTable = ({informationTypes, getInfoTypes, title}: TableProp
       <HeadingSmall>{title}</HeadingSmall>
 
       <Table
-        emptyText={intl.informationTypes}
+        emptyText={intl.noInformationTypesAvailableInTable}
         headers={
           <>
             <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>

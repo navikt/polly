@@ -145,7 +145,7 @@ export const AlertEventPage = () => {
 
       </Block>
       <Table
-        emptyText={intl.alerts.toLowerCase()}
+        emptyText={intl.noAlertsAvailableInTable}
         headers={
           <>
             <HeadCell title={intl.process}/>

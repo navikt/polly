@@ -26,7 +26,7 @@ export const SimpleProcessTable = (props: {processes: ProcessShort[], showCommon
   )
 
   return (
-    <Table emptyText={intl.processes} headers={
+    <Table emptyText={intl.noProcessesAvailableInTable} headers={
       <>
         <HeadCell title={intl.process} column='name' tableState={[table, sortColumn]} $style={cellStyle}/>
         <HeadCell title={intl.department} column='affiliation' tableState={[table, sortColumn]} $style={cellStyle}/>

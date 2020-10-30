@@ -41,7 +41,7 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
 
   return (
     <Table
-      emptyText={intl.processes}
+      emptyText={intl.noProcessesAvailableInTable}
       headers={
         <>
           <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]}/>

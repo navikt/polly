@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { useTable } from '../../util/hooks'
-import { DocumentInfoTypeUse, documentSort } from '../../constants'
-import { intl } from '../../util'
+import {useTable} from '../../util/hooks'
+import {DocumentInfoTypeUse, documentSort} from '../../constants'
+import {intl} from '../../util'
 import RouteLink from '../common/RouteLink'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
+import {Cell, HeadCell, Row, Table} from '../common/Table'
 
 type DocumentInfoTypeTableProps = {
   list: DocumentInfoTypeUse[]
@@ -15,7 +15,7 @@ const DocumentInfoTypeTable = (props: DocumentInfoTypeTableProps) => {
 
   return (
     <Table
-      emptyText={intl.informationTypes}
+      emptyText={intl.noInformationTypesAvailableInTable}
       headers={
         <>
           <HeadCell

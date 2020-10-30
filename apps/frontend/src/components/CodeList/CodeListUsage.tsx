@@ -23,7 +23,7 @@ const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
   const documents = !!usage.documents.length
   return (
     <Table
-      emptyText={intl.usage}
+      emptyText={intl.noUsageAvailableInTable}
       hoverColor={theme.colors.primary100}
       headers={
         <>

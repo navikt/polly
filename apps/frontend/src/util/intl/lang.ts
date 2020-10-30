@@ -3,7 +3,6 @@ import {IStrings} from "./intl";
 export const no: IStrings = {
   informationType: "Opplysningstype",
   informationTypes: "Opplysningstyper",
-  noInformationTypesAvailable: "Ingen opplysningstyper",
   informationTypeSearch: "Søk opplysningstyper",
   search: "Søk",
   term: "Begrepsdefinisjon",
@@ -447,13 +446,23 @@ export const no: IStrings = {
   chooseGrounds: "Velg en eller flere begrunnelse(r)",
   specifyOther: "Spesifiser ved annet",
 
-  missingPVK: "Behandlinger som har behov for PVK (Ref. til PVK ikke angitt)"
+  missingPVK: "Behandlinger som har behov for PVK (Ref. til PVK ikke angitt)",
+
+  noInformationTypesAvailableInTable: "Ingen opplysningstyper",
+  noCodesAvailableInTable: 'Ingen koder',
+  noProcessesAvailableInTable: 'Ingen behandlinger',
+  noUsageAvailableInTable: 'Ingen bruk',
+  noDocumentsAvailableInTable: 'Ingen dokumenter',
+  noPotentialPersonalCategoryUsageInTable: 'Bruker potensielt alle personkategorier',
+  noAuditsAvailableInTable: 'Ingen versjoneringer',
+  noDisclosuresToThirdPartyAvailableInTable:'Ingen utlevering',
+  noRetrievedFromThirdPartyAvailableInTable:'Ingen innhentinger fra ekstern part',
+  noAlertsAvailableInTable: 'Ingen varsler',
 };
 
 export const en: IStrings = {
   informationType: "Information type",
   informationTypes: "Information types",
-  noInformationTypesAvailable: "No information types",
   informationTypeSearch: "Information type search",
   search: "Search",
   term: "Term definition",
@@ -895,7 +904,18 @@ export const en: IStrings = {
   chooseGrounds: "Choose a reason",
   specifyOther: "Specify by other",
 
-  missingPVK: "Processes that require PVK (Ref. To PVK not specified)"
+  missingPVK: "Processes that require PVK (Ref. To PVK not specified)",
+
+  noInformationTypesAvailableInTable: "No information types",
+  noCodesAvailableInTable: 'No codes',
+  noProcessesAvailableInTable: 'No processes',
+  noUsageAvailableInTable: 'No usage',
+  noDocumentsAvailableInTable: 'No documents',
+  noPotentialPersonalCategoryUsageInTable: 'Potentially uses all personal categories',
+  noAuditsAvailableInTable: 'No audit',
+  noDisclosuresToThirdPartyAvailableInTable:'No disclosure to third parties',
+  noRetrievedFromThirdPartyAvailableInTable:'No retrieved from thirdParty',
+  noAlertsAvailableInTable: 'No alerts',
 };
 
 export const ta = {
