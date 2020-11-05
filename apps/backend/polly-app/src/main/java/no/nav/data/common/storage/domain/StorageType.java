@@ -1,6 +1,7 @@
 package no.nav.data.common.storage.domain;
 
 import lombok.Getter;
+import no.nav.data.common.mail.MailTask;
 import no.nav.data.common.security.azure.support.MailLog;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.settings.dto.Settings;
@@ -14,14 +15,15 @@ public enum StorageType {
     SETTINGS(Settings.class),
     APP_STATE(AppState.class, false),
     ALERT_EVENT(AlertEvent.class, false),
-    MAIL_LOG(MailLog.class, false);
+    MAIL_LOG(MailLog.class, false),
+    MAIL_TASK(MailTask.class, false);
 
-    private static Map<Class<?>, StorageType> map = new HashMap<>();
+    private static final Map<Class<? extends GenericStorageData>, StorageType> map = new HashMap<>();
 
     @Getter
     private final Class<? extends GenericStorageData> type;
     @Getter
-    private boolean audit;
+    private final boolean audit;
 
     static {
         EnumSet.allOf(StorageType.class).forEach(e -> map.put(e.getType(), e));

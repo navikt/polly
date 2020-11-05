@@ -29,7 +29,7 @@ public class TeamcatMocks {
     }
 
     private static RestResponsePage<TeamKatTeam> teamMockResponse() {
-        List<TeamKatTeam> teamKatTeams = List.of(defaultNoraTeam(), TeamKatTeam.builder().name("X Team").id("xteamR").build());
+        List<TeamKatTeam> teamKatTeams = List.of(defaultNoraTeam(), TeamKatTeam.builder().name("X Team").id("xteamR").productAreaId("productarea1").build());
         return new RestResponsePage<>(teamKatTeams);
     }
 

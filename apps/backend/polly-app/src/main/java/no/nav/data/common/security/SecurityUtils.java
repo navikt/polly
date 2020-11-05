@@ -8,9 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @UtilityClass
 public class SecurityUtils {
+
+    private static final Pattern changeStampPattern = Pattern.compile("([A-Z][0-9]{6}) - .*");
 
     public static Optional<UserInfo> getCurrentUser() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
@@ -40,4 +43,11 @@ public class SecurityUtils {
         }
     }
 
+    public static Optional<String> changeStampToIdent(String changeStamp) {
+        var matcher = changeStampPattern.matcher(changeStamp);
+        if (matcher.matches()) {
+            return Optional.of(matcher.group(1));
+        }
+        return Optional.empty();
+    }
 }

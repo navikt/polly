@@ -1,5 +1,6 @@
 package no.nav.data.polly.process.domain.repo;
 
+import no.nav.data.common.storage.domain.LastModified;
 import no.nav.data.polly.process.domain.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     @Query(value = "select * from process where data #>> '{affiliation,department}' = ?1", nativeQuery = true)
     List<Process> findByDepartment(String department);
+
+    @Query(value = "select cast(process_id as text) from process where data #>> '{affiliation,department}' = ?1", nativeQuery = true)
+    List<UUID> findIdByDepartment(String department);
 
     @Query(value = "select * from process where data #>> '{dataProcessing,transferGroundsOutsideEU}' = ?1", nativeQuery = true)
     List<Process> findByTransferGroundsOutsideEU(String transferGrounds);
@@ -40,4 +44,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select nextval('process_number')", nativeQuery = true)
     int nextProcessNumber();
 
+    @Query("select id from Process")
+    List<UUID> findAllIds();
+
+    @Query(value = "select cast(process_id as text) as id, last_modified_by as lastModifiedBy from process where process_id in ?1", nativeQuery = true)
+    List<LastModified> getLastModifiedBy(List<UUID> ids);
 }

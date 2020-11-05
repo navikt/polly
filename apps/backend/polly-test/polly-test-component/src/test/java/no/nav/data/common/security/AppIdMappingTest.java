@@ -11,7 +11,7 @@ class AppIdMappingTest {
     @Test
     void getAppNameForAppId() {
         String teamCatAppId = "79047220-e01b-490d-a09d-499cadbd1248";
-        AppIdMapping appIdMapping = new AppIdMapping("[{\"clientId\":\"appId\",\"name\":\"thisapp\"},{\"clientId\":\"appId2\",\"name\":\"otherapp\"}]",
+        AppIdMapping appIdMapping = new AppIdMapping("[{\"clientId\":\"appId1\",\"name\":\"thisapp\"},{\"clientId\":\"appId2\",\"name\":\"otherapp\"}]",
                 teamCatAppId);
         assertThat(AppIdMapping.getAppNameForAppId("appId1")).isEqualTo("thisapp");
         assertThat(AppIdMapping.getAppNameForAppId("appId2")).isEqualTo("otherapp");
