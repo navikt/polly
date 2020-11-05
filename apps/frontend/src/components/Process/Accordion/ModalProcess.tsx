@@ -162,7 +162,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <Error fieldName='additionalDescription'/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.isProcessImplemented} tooltip={intl.dpiaHelpText}/>
+                    <ModalLabel label={intl.isProcessImplemented}/>
                     <Block>
                       <BoolField value={formikBag.values.dpia?.processImplemented} fieldName='dpia.processImplemented' omitUndefined/>
                     </Block>
