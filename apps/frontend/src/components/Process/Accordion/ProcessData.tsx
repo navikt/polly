@@ -32,9 +32,7 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   } else if (dpia?.needForDpia === false) {
     if (dpia) {
       return <>
-        {dpia.grounds ?
-          dpia.noDpiaReasons.filter(r => r === 'OTHER').length > 0 || `${intl.no}. ${intl.ground}`
-          : `${intl.no}. ${intl.ground}`}
+        {`${intl.no}. ${intl.ground}`}
         <DotTags items={dpia.noDpiaReasons.map(r => {
             return r === 'OTHER' && dpia?.grounds ? `${getNoDpiaLabel(r)} (${dpia.grounds})` : getNoDpiaLabel(r)
           }
