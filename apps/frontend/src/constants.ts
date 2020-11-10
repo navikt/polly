@@ -58,6 +58,21 @@ export enum ProcessField {
   COMMON_EXTERNAL_PROCESSOR = 'COMMON_EXTERNAL_PROCESSOR'
 }
 
+export type SearchType =
+  'all'
+  | 'purpose'
+  | 'process'
+  | 'team'
+  | 'productarea'
+  | 'department'
+  | 'subDepartment'
+  | 'nationalLaw'
+  | 'gdprArticle'
+  | 'informationType'
+  | 'thirdParty'
+  | 'system'
+  | 'document'
+
 export enum ProcessState {
   YES = 'YES',
   NO = 'NO',

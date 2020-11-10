@@ -15,7 +15,7 @@ import {Lang, langs, langsArray} from '../util/intl/intl'
 import {TriangleDown} from 'baseui/icon'
 import {FlagIcon} from './common/Flag'
 import {paddingAll} from './common/Style'
-import MainSearch from './MainSearch'
+import MainSearch from './search/MainSearch'
 
 
 function useCurrentUrl() {
