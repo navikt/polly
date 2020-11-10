@@ -2,7 +2,8 @@ package no.nav.data.common.security.azure;
 
 import com.microsoft.graph.models.extensions.IGraphServiceClient;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.security.azure.support.MailLog;
+import no.nav.data.common.mail.EmailProvider;
+import no.nav.data.common.mail.MailTask;
 import no.nav.data.common.storage.StorageService;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import static no.nav.data.common.security.azure.support.MailMessage.compose;
 
 @Slf4j
 @Service
-public class AzureAdService {
+public class AzureAdService implements EmailProvider {
 
     private final AzureTokenProvider azureTokenProvider;
     private final StorageService storage;
@@ -20,13 +21,14 @@ public class AzureAdService {
         this.storage = storage;
     }
 
-    public void sendMail(String to, String subject, String messageBody) {
+    @Override
+    public void sendMail(MailTask mailTask) {
         getMailGraphClient().me()
-                .sendMail(compose(to, subject, messageBody), false)
+                .sendMail(compose(mailTask.getTo(), mailTask.getSubject(), mailTask.getSubject()), false)
                 .buildRequest()
                 .post();
 
-        storage.save(MailLog.builder().to(to).subject(subject).body(messageBody).build());
+        storage.save(mailTask.toMailLog());
     }
 
     private IGraphServiceClient getMailGraphClient() {

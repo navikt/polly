@@ -148,7 +148,7 @@ public class Process extends Auditable {
                 .build();
     }
 
-    private List<CodelistResponse> getPurposeCodeResponses() {
+    public List<CodelistResponse> getPurposeCodeResponses() {
         return CodelistService.getCodelistResponseList(ListName.PURPOSE, data.getPurposes());
     }
 

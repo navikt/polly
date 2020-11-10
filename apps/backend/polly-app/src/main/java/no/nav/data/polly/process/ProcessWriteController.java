@@ -1,16 +1,18 @@
 package no.nav.data.polly.process;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.storage.domain.LastModified;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessRevisionRequest;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +24,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
+
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
@@ -36,10 +42,12 @@ public class ProcessWriteController {
 
     private final ProcessService service;
     private final ProcessRepository repository;
+    private final TeamService teamService;
 
-    public ProcessWriteController(ProcessService service, ProcessRepository repository) {
+    public ProcessWriteController(ProcessService service, ProcessRepository repository, TeamService teamService) {
         this.service = service;
         this.repository = repository;
+        this.teamService = teamService;
     }
 
     @Operation(summary = "Create Processes")
@@ -89,12 +97,26 @@ public class ProcessWriteController {
 
     @Operation(summary = "Set revision for processe(s)")
     @PostMapping("/revision")
-    @Transactional
     public void requireRevision(@RequestBody ProcessRevisionRequest request) {
         log.info("Request for revision {}", request);
         request.validateFieldsAndThrow();
 
-        // TODO on affected processes, set revision needed status, revision text. Send mail to last edited by.
+        var ids = switch (request.getProcessSelection()) {
+            case ONE -> List.of(request.getProcessId());
+            case PRODUCT_AREA -> {
+                var teams = teamService.getTeamsForProductArea(request.getProductAreaId());
+                yield convert(repository.findByProductTeams(convert(teams, Team::getId)), Process::getId);
+            }
+            case DEPARTMENT -> repository.findIdByDepartment(request.getDepartment());
+            case ALL -> repository.findAllIds();
+        };
+
+        var lastModifiedByList = repository.getLastModifiedBy(ids);
+        var lastModifiedBy = lastModifiedByList.stream().collect(Collectors.groupingBy(LastModified::getLastModifiedBy));
+
+        lastModifiedBy.values()
+                .stream().map(it -> convert(it, LastModified::getId))
+                .forEach(processIds -> service.requireRevision(processIds, request.getRevisionText(), request.isCompletedOnly()));
     }
 
 }

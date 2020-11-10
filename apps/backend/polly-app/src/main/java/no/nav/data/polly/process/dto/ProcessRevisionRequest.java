@@ -23,8 +23,8 @@ import static org.apache.commons.lang3.StringUtils.trim;
 public class ProcessRevisionRequest implements Validated {
 
     public enum ProcessSelection {
-        ONE,
         ALL,
+        ONE,
         DEPARTMENT,
         PRODUCT_AREA,
     }
@@ -35,6 +35,7 @@ public class ProcessRevisionRequest implements Validated {
     private String department;
     private String productAreaId;
     private String revisionText;
+    private boolean completedOnly;
 
     @Override
     public void format() {
@@ -46,6 +47,7 @@ public class ProcessRevisionRequest implements Validated {
     @Override
     public void validate(FieldValidator validator) {
         validator.checkNull(Fields.processSelection, processSelection);
+        validator.checkBlank(Fields.revisionText, revisionText);
         switch (processSelection) {
             case ONE -> validator.checkNull(Fields.processId, processId);
             case DEPARTMENT -> validator.checkRequiredCodelist(Fields.department, department, ListName.DEPARTMENT);

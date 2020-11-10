@@ -78,7 +78,7 @@ class PolicyServiceTest {
             assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
             assertThat(e.getMessage()).contains("informationTypeId was null or missing");
             assertThat(e.getMessage()).contains("processId was null or missing");
-            assertThat(e.getMessage()).contains("purpose was null or missing");
+            assertThat(e.getMessage()).contains("purposes was null or missing");
             assertThat(e.getMessage()).contains("subjectCategories was null or missing");
         }
     }
@@ -98,7 +98,7 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertThat(e.getMessage()).contains("purpose: WRONG code not found in codelist PURPOSE");
+            assertThat(e.getMessage()).contains("purposes[0]: WRONG code not found in codelist PURPOSE");
             assertThat(e.getMessage()).contains("An InformationType with id " + INFTYPE_ID_1 + " does not exist");
         }
     }
@@ -113,7 +113,7 @@ class PolicyServiceTest {
             assertAll(
                     () -> assertThat(e.getMessage()).contains("Id is missing for update"),
                     () -> assertThat(e.getMessage()).contains("informationTypeId was null or missing"),
-                    () -> assertThat(e.getMessage()).contains("purpose was null or missing"),
+                    () -> assertThat(e.getMessage()).contains("purposes was null or missing"),
                     () -> assertThat(e.getMessage()).contains("processId was null or missing")
             );
         }
@@ -137,7 +137,7 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(3, e.get().size(), JsonUtils.toJson(e.get()));
-            assertThat(e.getMessage()).contains("purpose: WRONG code not found in codelist PURPOSE");
+            assertThat(e.getMessage()).contains("purposes[0]: WRONG code not found in codelist PURPOSE");
             assertThat(e.getMessage()).contains("An InformationType with id " + INFTYPE_ID_1 + " does not exist");
             assertThat(e.getMessage()).contains("A Process with id " + PROCESS_ID_1 + " does not exist");
         }
@@ -162,7 +162,7 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertThat(e.getMessage()).contains("Cannot change purpose from OTHERPURPOSE to KONTROLL for policy 1-1-1-1-1");
+            assertThat(e.getMessage()).contains("Cannot change purpose from [OTHERPURPOSE] to [KONTROLL] for policy 1-1-1-1-1");
         }
     }
 
