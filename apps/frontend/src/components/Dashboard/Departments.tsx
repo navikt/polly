@@ -8,9 +8,9 @@ import {theme, useAwait} from '../../util'
 import {DashboardData, DepartmentProcessDashCount as DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
 import RouteLink from '../common/RouteLink'
-import {Spinner} from 'baseui/spinner'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
+import {Spinner} from '../common/Spinner'
 
 const TextWithNumber = (props: { label: string; number: number }) => (
   <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
