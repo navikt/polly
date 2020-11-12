@@ -332,6 +332,7 @@ export interface Process extends IDurationed {
   profiling?: boolean;
   dataProcessing: DataProcessing;
   retention: Retention;
+  revisionText?: string
 }
 
 export interface DpProcess extends IDurationed {

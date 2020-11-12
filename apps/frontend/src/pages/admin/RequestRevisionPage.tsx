@@ -69,7 +69,7 @@ const rowBlockProps: BlockProps = {
 
 const formatProcessName = (process: Process) => process.purposes.map(p => p.shortName).join(", ") + ': ' + process.name
 
-export const RequestRevisionPage = () => {
+export const RequestRevisionPage = (props: {close?: () => void, processId?: string}) => {
   const history = useHistory()
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
@@ -80,7 +80,8 @@ export const RequestRevisionPage = () => {
 
   const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
 
-  const abort = () => history.goBack()
+  const modalView = !!props.processId
+  const abort = props.close || history.goBack
   const save = async (request: ProcessRevisionRequest) => {
     setLoading(true)
     try {
@@ -106,15 +107,19 @@ export const RequestRevisionPage = () => {
       {done ?
         <Block>
           <Notification kind={'positive'}>{intl.revisionCreated}</Notification>
-          <Button type="button" kind="secondary" onClick={abort} marginRight>{intl.back}</Button>
-          <Button type='button' onClick={reset}>{intl.newRevision}</Button>
+          <Button type="button" kind="secondary" onClick={abort} marginRight>{modalView ? intl.close : intl.back}</Button>
+          {!props.close && <Button type='button' onClick={reset}>{intl.newRevision}</Button>}
         </Block>
         :
         <Formik
-          initialValues={initialValues} validationSchema={schema()}
+          initialValues={{
+            ...initialValues,
+            processId: props.processId || ''
+          }} validationSchema={schema()}
           onSubmit={save}>
           {({values, setFieldValue}: FormikProps<ProcessRevisionRequest>) =>
             <Form>
+              {!modalView &&
               <Block {...rowBlockProps}>
                 <ModalLabel label={intl.processes}/>
                 <Field name='processSelection'>{() => {
@@ -132,10 +137,10 @@ export const RequestRevisionPage = () => {
                   </Block>
                 }
                 }</Field>
-              </Block>
+              </Block>}
               <Error fieldName='processSelection' fullWidth/>
 
-              {values.processSelection === ProcessSelection.ONE &&
+              {values.processSelection === ProcessSelection.ONE && !modalView &&
               <Block {...rowBlockProps}>
                 <ModalLabel label={intl.process}/>
                 <Select
@@ -185,12 +190,13 @@ export const RequestRevisionPage = () => {
               </Block>
               <Error fieldName='revisionText' fullWidth/>
 
+              {!modalView &&
               <Block {...rowBlockProps}>
                 <ModalLabel label={intl.completedOnly}/>
                 <Field name='completedOnly'>{() =>
                   <RadioBoolButton setValue={b => setFieldValue('completedOnly', b)} value={values.completedOnly} omitUndefined/>
                 }</Field>
-              </Block>
+              </Block>}
               <Error fieldName='completedOnly' fullWidth/>
 
               <Block>

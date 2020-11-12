@@ -235,6 +235,7 @@ const ProcessData = (props: {process: Process}) => {
 
       <DataText label={intl.status} text={""}>
         {processStatusText(process.status)}
+        {process.revisionText && `: ${process.revisionText}`}
       </DataText>
 
     </Block>
