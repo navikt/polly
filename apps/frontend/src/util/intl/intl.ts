@@ -403,6 +403,7 @@ export interface IStrings {
   aboutUs: string;
   fomDateHelpText: string;
   tomDateHelpText: string;
+  mailLog: string;
 
   code: string;
   codes: string;

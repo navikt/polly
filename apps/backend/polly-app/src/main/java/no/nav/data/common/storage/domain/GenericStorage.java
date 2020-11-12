@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
+import no.nav.data.common.security.azure.support.MailLog;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import org.hibernate.annotations.Type;
@@ -76,5 +77,9 @@ public class GenericStorage extends Auditable {
 
     public AlertEvent toAlertEvent() {
         return getDataObject(AlertEvent.class);
+    }
+
+    public MailLog toMailLog() {
+        return getDataObject(MailLog.class);
     }
 }

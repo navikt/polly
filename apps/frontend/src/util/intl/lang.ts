@@ -347,6 +347,7 @@ export const no: IStrings = {
   lastModified: "Sist endret av {0}, {1}",
   fomDateHelpText: "Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.",
   tomDateHelpText: "Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato.",
+  mailLog: "Mail log",
 
   prevButton: "Forrige",
   nextButton: "Neste",
@@ -819,6 +820,7 @@ export const en: IStrings = {
   completed: "Completed",
   fomDateHelpText: "The start date is pre-filled with the date NAV was created. For treatments with a later date, this must be changed. The date can also be set ahead of time.",
   tomDateHelpText: "This should only be stated if treatment is temporary and has an end date.",
+  mailLog: "Mail log",
 
   prevButton: "Prev",
   nextButton: "Next",
