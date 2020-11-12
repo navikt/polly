@@ -95,7 +95,8 @@ export type NavigableItem =
 export enum ProcessStatus {
   All = 'ALL',
   COMPLETED = 'COMPLETED',
-  IN_PROGRESS = 'IN_PROGRESS'
+  IN_PROGRESS = 'IN_PROGRESS',
+  NEEDS_REVISION = 'NEEDS_REVISION'
 }
 
 export enum NoDpiaReason {
@@ -607,6 +608,7 @@ export interface ProcessesDashCount {
   dpProcesses: number
   processesCompleted: number
   processesInProgress: number
+  processesNeedsRevision: number
   processesMissingLegalBases: number
   processesUsingAllInfoTypes: number
   processesMissingArt6: number

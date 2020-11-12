@@ -263,8 +263,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             escapeClearsValue={false}
             options={[
               {label: intl.allProcesses, id: undefined},
-              {label: intl.inProgressProcesses, id: 'IN_PROGRESS'},
-              {label: intl.showCompletedProcesses, id: 'COMPLETED'},
+              {label: intl.inProgressProcesses, id: ProcessStatus.IN_PROGRESS},
+              {label: intl.needsRevision, id: ProcessStatus.NEEDS_REVISION},
+              {label: intl.showCompletedProcesses, id: ProcessStatus.COMPLETED},
             ]}
             initialState={{value: [{id: filter}]}}
             filterOutSelected={false}
