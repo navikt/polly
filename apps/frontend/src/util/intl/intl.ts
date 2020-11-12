@@ -428,6 +428,7 @@ export interface IStrings {
   user: string;
   lastChanges: string;
   settings: string;
+  revision: string;
   needsRevision: string;
   revisionCreated: string;
   newRevision: string;

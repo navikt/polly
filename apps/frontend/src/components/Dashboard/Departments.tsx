@@ -56,7 +56,7 @@ const DepartmentCard = (props: DepartmentCardProps) => {
               <TextWithNumber label={intl.inProgress} number={department.processesInProgress}/>
             </RouteLink>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.NEEDS_REVISION)} style={{textDecoration: 'none'}}>
-              <TextWithNumber label={intl.needsRevision} number={department.processesNeedsRevision}/>
+              <TextWithNumber label={intl.revision} number={department.processesNeedsRevision}/>
             </RouteLink>
           </Block>
         </Card>
