@@ -29,7 +29,7 @@ export const searchProcess = async (text: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${text}`)).data
 }
 
-export const getProcessesFor = async (params: { productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string }) => {
+export const getProcessesFor = async (params: {productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string}) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, {skipNull: true})}&pageSize=250`)).data
 }
 
@@ -108,7 +108,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
     },
-    status: status === ProcessStatus.COMPLETED ? ProcessStatus.COMPLETED : ProcessStatus.IN_PROGRESS,
+    status: status || ProcessStatus.IN_PROGRESS,
     dpia: {
       grounds: dpia?.grounds || '',
       needForDpia: mapBool(dpia?.needForDpia),
