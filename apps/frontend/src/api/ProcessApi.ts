@@ -4,6 +4,8 @@ import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import * as queryString from 'query-string'
 import {mapBool} from "../util/helper-functions";
+import {useDebouncedState} from '../util/hooks'
+import {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -150,4 +152,24 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
       noDpiaReasons: values.dpia.noDpiaReasons || [],
     }
   }
+}
+
+export const useProcessSearch = () => {
+  const [processSearch, setProcessSearch] = useDebouncedState<string>('', 200);
+  const [processSearchResult, setProcessSearchResult] = useState<Process[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      if (processSearch && processSearch.length > 2) {
+        setLoading(true)
+        setProcessSearchResult((await searchProcess(processSearch)).content)
+        setLoading(false)
+      } else {
+        setProcessSearchResult([])
+      }
+    })()
+  }, [processSearch])
+
+  return [processSearchResult, setProcessSearch, loading] as [Process[], Dispatch<SetStateAction<string>>, boolean]
 }

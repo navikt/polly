@@ -427,6 +427,13 @@ export interface IStrings {
   user: string;
   lastChanges: string;
   settings: string;
+  needsRevision: string;
+  revisionCreated: string;
+  newRevision: string;
+  revisionText: string;
+  completedOnly: string;
+  back: string;
+  one: string;
   defaultProcessDocument: string;
   goToSite: string;
   categoryNotInUse: string;
