@@ -102,6 +102,11 @@ const AccordionProcess = (props: AccordionProcessProps) => {
     }, 200)
   }, [isLoading])
 
+  const closeRevision = () => {
+    setShowRevisionModal(false)
+    onChangeProcess(currentProcess?.id)
+  }
+
   return (
     <Block>
       <StatelessAccordion
@@ -265,13 +270,13 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           size={SIZE.auto}
           unstable_ModalBackdropScroll={true}
           // role='dialog'
-          onClose={() => setShowRevisionModal(false)}
+          onClose={closeRevision}
         >
           <ModalBody>
             <Block width='600px'>
               <RequestRevisionPage
                 processId={currentProcess.id}
-                close={() => setShowRevisionModal(false)}
+                close={closeRevision}
               />
             </Block>
           </ModalBody>
