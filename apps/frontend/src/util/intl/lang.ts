@@ -402,7 +402,7 @@ export const no: IStrings = {
   needsRevision: "Trenger revidering",
   revisionCreated: "Revidering etterspurt",
   newRevision: "Ny revidering",
-  revisionText: "Reviderignstekst",
+  revisionText: "Revideringstekst",
   completedOnly: "Bare fullførte",
   back: "Tilbake",
   one: "Èn",

@@ -14,12 +14,12 @@ import {Error, ModalLabel} from '../../components/common/ModalSchema'
 import {ButtonGroup} from 'baseui/button-group'
 import {Button as BButton} from 'baseui/button'
 import Button from '../../components/common/Button'
-import FieldInput from '../../components/Process/common/FieldInput'
 import {RadioBoolButton} from '../../components/common/Radio'
 import {Select, TYPE} from 'baseui/select'
 import {Process} from '../../constants'
 import {Combobox} from 'baseui/combobox'
 import {Notification} from 'baseui/notification'
+import {FieldTextarea} from '../../components/Process/common/FieldTextArea'
 
 enum ProcessSelection {
   ONE = 'ONE',
@@ -181,7 +181,7 @@ export const RequestRevisionPage = () => {
 
               <Block {...rowBlockProps}>
                 <ModalLabel label={intl.revisionText}/>
-                <FieldInput fieldName='revisionText' placeHolder={intl.revisionText}/>
+                <FieldTextarea fieldName='revisionText' placeHolder={intl.revisionText} rows={6}/>
               </Block>
               <Error fieldName='revisionText' fullWidth/>
 
