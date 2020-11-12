@@ -24,7 +24,7 @@ public class AzureAdService implements EmailProvider {
     @Override
     public void sendMail(MailTask mailTask) {
         getMailGraphClient().me()
-                .sendMail(compose(mailTask.getTo(), mailTask.getSubject(), mailTask.getSubject()), false)
+                .sendMail(compose(mailTask.getTo(), mailTask.getSubject(), mailTask.getBody()), false)
                 .buildRequest()
                 .post();
 
