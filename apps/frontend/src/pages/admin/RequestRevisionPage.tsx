@@ -140,6 +140,15 @@ export const RequestRevisionPage = (props: {close?: () => void, processId?: stri
               </Block>}
               <Error fieldName='processSelection' fullWidth/>
 
+              {!modalView &&
+              <Block {...rowBlockProps}>
+                <ModalLabel label={intl.completedOnly}/>
+                <Field name='completedOnly'>{() =>
+                  <RadioBoolButton setValue={b => setFieldValue('completedOnly', b)} value={values.completedOnly} omitUndefined/>
+                }</Field>
+              </Block>}
+              <Error fieldName='completedOnly' fullWidth/>
+
               {values.processSelection === ProcessSelection.ONE && !modalView &&
               <Block {...rowBlockProps}>
                 <ModalLabel label={intl.process}/>
@@ -189,15 +198,6 @@ export const RequestRevisionPage = (props: {close?: () => void, processId?: stri
                 <FieldTextarea fieldName='revisionText' placeHolder={intl.revisionText} rows={6}/>
               </Block>
               <Error fieldName='revisionText' fullWidth/>
-
-              {!modalView &&
-              <Block {...rowBlockProps}>
-                <ModalLabel label={intl.completedOnly}/>
-                <Field name='completedOnly'>{() =>
-                  <RadioBoolButton setValue={b => setFieldValue('completedOnly', b)} value={values.completedOnly} omitUndefined/>
-                }</Field>
-              </Block>}
-              <Error fieldName='completedOnly' fullWidth/>
 
               <Block>
                 <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
