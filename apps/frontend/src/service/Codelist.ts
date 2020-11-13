@@ -121,6 +121,10 @@ class CodelistService {
     })
   }
 
+  getParsedOptionsForList(listName: ListName, selected: string[]): {id: string, label: string}[] {
+    return selected.map(code => ({id: code, label: this.getShortname(listName, code)}))
+  }
+
   getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): {id: string, label: string}[] {
     let parsedOptions = this.getParsedOptions(listName)
     return !currentSelected ? parsedOptions : parsedOptions.filter(option =>
