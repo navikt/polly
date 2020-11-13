@@ -79,15 +79,13 @@ public class Process extends Auditable {
     }
 
     public ProcessResponse convertToResponse() {
-        List<CodelistResponse> purposes = getPurposeCodeResponses();
         return ProcessResponse.builder()
                 .id(id)
                 .number(data.getNumber())
                 .name(data.getName())
                 .description(data.getDescription())
                 .additionalDescription(data.getAdditionalDescription())
-                .purpose(purposes.isEmpty() ? null : purposes.get(0))
-                .purposes(purposes)
+                .purposes(getPurposeCodeResponses())
                 .affiliation(data.getAffiliation().convertToResponse())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .start(data.getStart())
