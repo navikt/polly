@@ -19,6 +19,7 @@ import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "number", "name", "description", "additionalDescription", "purposes", "affiliation",
+@JsonPropertyOrder({"id", "number", "name", "description", "additionalDescription", "purpose", "purposes", "affiliation",
         "commonExternalProcessResponsible", "start", "end", "active",
         "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status", "revisionText", "changeStamp",
         "legalBases", "policies"})
@@ -38,6 +39,8 @@ public class ProcessResponse {
     private String description;
     private String additionalDescription;
     private List<CodelistResponse> purposes;
+    @Schema(deprecated = true, description = "Deprecated, returns first purpose, use 'purposes' instead")
+    private CodelistResponse purpose;
     private AffiliationResponse affiliation;
 
     private CodelistResponse commonExternalProcessResponsible;
@@ -64,4 +67,14 @@ public class ProcessResponse {
         return DateUtil.isNow(start, end);
     }
 
+    public static class ProcessResponseBuilder {
+
+        private List<CodelistResponse> purposes = new ArrayList<>();
+
+        public ProcessResponseBuilder purposes(List<CodelistResponse> purposes) {
+            this.purposes = new ArrayList<>(purposes);
+            purpose = purposes.isEmpty() ? null : purposes.get(0);
+            return this;
+        }
+    }
 }

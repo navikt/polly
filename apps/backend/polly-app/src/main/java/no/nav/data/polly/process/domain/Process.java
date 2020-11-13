@@ -85,6 +85,7 @@ public class Process extends Auditable {
                 .name(data.getName())
                 .description(data.getDescription())
                 .additionalDescription(data.getAdditionalDescription())
+                .purpose(getPurposeCodeResponses().get(0))
                 .purposes(getPurposeCodeResponses())
                 .affiliation(data.getAffiliation().convertToResponse())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
