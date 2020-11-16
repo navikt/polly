@@ -7,7 +7,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.12",
     "amplitude-js": "^7.3.2",
-    "axios": "^0.20.0",
+    "axios": "^0.21.0",
     "baseui": "^9.104.0",
     "core-js": "^3.7.0",
     "flag-icon-css": "^3.5.0",
