@@ -11,7 +11,7 @@ export const Markdown = (props: {source?: string, escapeHtml?: boolean, singleWo
     paragraph: (parProps: any) => props.singleWord ? <React.Fragment {...parProps}/> :
       props.verbatim ? <p {...parProps}/> : <Paragraph2 {...parProps}/>
   }
-  return <ReactMarkdown source={props.source}
+  return <ReactMarkdown source={props.source || ''}
                         escapeHtml={props.escapeHtml}
                         linkTarget='_blank'
                         renderers={renderers}
