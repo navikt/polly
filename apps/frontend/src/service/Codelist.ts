@@ -1,5 +1,5 @@
 import {AxiosResponse} from 'axios'
-import {getAllCodelists, getCountriesOutsideEUEEA} from '../api'
+import {getAllCodelists, getAllCountries, getCountriesOutsideEUEEA} from '../api'
 
 export enum ListName {
   PURPOSE = 'PURPOSE',
@@ -37,6 +37,7 @@ class CodelistService {
   error?: string;
   promise: Promise<any>;
   countries?: CountryCode[];
+  countriesOutsideEUEEA?: CountryCode[];
 
   constructor() {
     this.promise = this.fetchData()
@@ -46,10 +47,13 @@ class CodelistService {
     const codeListPromise = getAllCodelists(refresh)
     .then(this.handleGetCodelistResponse)
     .catch(err => (this.error = err.message))
-    const countriesPromise = getCountriesOutsideEUEEA()
+    const allCountriesPromise = getAllCountries()
     .then(codes => this.countries = codes)
     .catch(err => (this.error = err.message))
-    return Promise.all([codeListPromise, countriesPromise])
+    const countriesPromise = getCountriesOutsideEUEEA()
+    .then(codes => this.countriesOutsideEUEEA = codes)
+    .catch(err => (this.error = err.message))
+    return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
   }
 
   handleGetCodelistResponse = (response: AxiosResponse<AllCodelists>) => {
@@ -73,12 +77,16 @@ class CodelistService {
     return this.lists || this.error
   }
 
-  getCountryCodesOutsideEu() {
+  getAllCountryCodes() {
     return this.countries || []
   }
 
+  getCountryCodesOutsideEu() {
+    return this.countriesOutsideEUEEA || []
+  }
+
   countryName(code: string): string {
-    return this.getCountryCodesOutsideEu().find(c => c.code === code)?.description || code
+    return this.getAllCountryCodes().find(c => c.code === code)?.description || code
   }
 
   getCodes(list: ListName): Code[] {

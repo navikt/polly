@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface CommonCodeService {
 
+    List<CommonCodeResponse> getAllCountries();
+
     List<CommonCodeResponse> getThirdPartyCountriesOutsideEEA();
 
 }

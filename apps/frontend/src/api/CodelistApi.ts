@@ -30,4 +30,5 @@ export const deleteCodelist = async (list: string, code: string) => {
   return axios.delete(`${env.pollyBaseUrl}/codelist/${list}/${code}`)
 }
 
+export const getAllCountries = async () => (await axios.get<CountryCode[]>(`${env.pollyBaseUrl}/codelist/countries`)).data
 export const getCountriesOutsideEUEEA = async () => (await axios.get<CountryCode[]>(`${env.pollyBaseUrl}/codelist/countriesoutsideeea`)).data

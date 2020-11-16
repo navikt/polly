@@ -94,6 +94,25 @@ class CodelistControllerIT extends IntegrationTestBase {
         }
 
         @Test
+        void getAllCountries() {
+            var res = restTemplate.exchange("/codelist/countries", HttpMethod.GET, HttpEntity.EMPTY, COMMON_CODE_LIST_RESP);
+
+            assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(res.getBody()).isNotNull();
+            assertThat(res.getBody()).containsExactly(CommonCodeResponse.builder()
+                    .code("DNK")
+                    .description("DANMARK")
+                    .validFrom(LocalDate.of(1900, 1, 1))
+                    .validTo(LocalDate.of(9999, 12, 31))
+                    .build(), CommonCodeResponse.builder()
+                    .code("FJI")
+                    .description("FIJI")
+                    .validFrom(LocalDate.of(1900, 1, 1))
+                    .validTo(LocalDate.of(9999, 12, 31))
+                    .build());
+        }
+
+        @Test
         void getCountriesOutsideEEA() {
             var res = restTemplate.exchange("/codelist/countriesoutsideeea", HttpMethod.GET, HttpEntity.EMPTY, COMMON_CODE_LIST_RESP);
 
