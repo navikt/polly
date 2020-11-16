@@ -23,7 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "description", "recipient", "recipientPurpose", "start", "end", "active",
         "documentId", "informationTypeIds", "processIds",
-        "document", "informationtypes", "processes", "legalBases"})
+        "document", "informationTypes", "processes", "legalBases", "abroad"})
 public class DisclosureResponse {
 
     private UUID id;
@@ -41,6 +41,7 @@ public class DisclosureResponse {
     private List<InformationTypeShortResponse> informationTypes;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
+    private DisclosureAbroadResponse abroad;
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);

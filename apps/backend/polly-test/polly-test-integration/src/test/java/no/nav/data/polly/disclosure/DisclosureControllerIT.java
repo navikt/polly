@@ -6,6 +6,8 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureData;
+import no.nav.data.polly.disclosure.dto.DisclosureAbroadRequest;
+import no.nav.data.polly.disclosure.dto.DisclosureAbroadResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.document.domain.Document;
@@ -95,6 +97,12 @@ class DisclosureControllerIT extends IntegrationTestBase {
                         .build())
                 .informationTypeIds(List.of())
                 .processIds(List.of())
+                .abroad(DisclosureAbroadResponse.builder()
+                        .abroad(true)
+                        .country("DNK")
+                        .refToAgreement("abroadref")
+                        .businessArea("Pesys")
+                        .build())
                 .build());
     }
 
@@ -227,9 +235,18 @@ class DisclosureControllerIT extends IntegrationTestBase {
     private DisclosureRequest buildDisclosure(String recipient) {
         return DisclosureRequest.builder()
                 .name("disc name")
-                .description("disc desc").recipient(recipient).recipientPurpose("recipient purpose")
-                .start(LocalDate.now().toString()).end(LocalDate.now().toString())
+                .description("disc desc")
+                .recipient(recipient)
+                .recipientPurpose("recipient purpose")
+                .start(LocalDate.now().toString())
+                .end(LocalDate.now().toString())
                 .legalBasis(createLegalBasisRequest())
+                .abroad(DisclosureAbroadRequest.builder()
+                        .abroad(true)
+                        .country("DNK")
+                        .businessArea("Pesys")
+                        .refToAgreement("abroadref")
+                        .build())
                 .build();
     }
 

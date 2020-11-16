@@ -64,6 +64,7 @@ public class Disclosure extends Auditable {
         data.setDocumentId(request.getDocumentId() != null ? UUID.fromString(request.getDocumentId()) : null);
         data.setInformationTypeIds(convert(request.getInformationTypeIds(), UUID::fromString));
         data.setProcessIds(convert(request.getProcessIds(), UUID::fromString));
+        data.setAbroad(DisclosureAbroad.convertAbroad(request.getAbroad()));
         return this;
     }
 
@@ -80,6 +81,7 @@ public class Disclosure extends Auditable {
                 .documentId(data.getDocumentId())
                 .informationTypeIds(copyOf(data.getInformationTypeIds()))
                 .processIds(copyOf(data.getProcessIds()))
+                .abroad(data.getAbroad().convertToResponse())
                 .build();
     }
 
