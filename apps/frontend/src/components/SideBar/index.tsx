@@ -40,6 +40,7 @@ const SideBar = () => {
       <Brand/>
       <Block {...items} position={'fixed'} top={'150px'}>
         <NavItem to="/process" text={intl.processes} tooltip={intl.processSideMenuHelpText}/>
+        <NavItem to="/dpprocess" text={intl.dpProcess} />
         <NavItem to="/informationtype" text={intl.informationTypes} tooltip={intl.informationTypeSideMenuHelpText}/>
         <NavItem to="/document" text={intl.documents} tooltip={intl.documentSideMenuHelpText}/>
         <NavItem to="/thirdparty" text={intl.thirdParties} tooltip={intl.externalPartsSideMenuHelpText}/>

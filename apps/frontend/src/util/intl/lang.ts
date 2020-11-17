@@ -15,7 +15,7 @@ export const no: IStrings = {
   sensitivity: "Type personopplysning",
   processingActivities: "Behandlingsaktiviteter",
   process: "Behandling",
-  dpProcess: "Databehandling",
+  dpProcess: "Nav som databehandler",
   dpProcesses: "Databehandlinger",
   processes: "Behandlinger",
   legalBasis: "Behandlingsgrunnlag for hele behandlingen",
