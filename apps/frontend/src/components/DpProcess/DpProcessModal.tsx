@@ -21,7 +21,6 @@ import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
 import {Button, KIND} from "baseui/button";
 import FieldProduct from "../common/FieldProduct";
 import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
-import {RadioBoolButton} from "../common/Radio";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -103,7 +102,6 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     <ModalLabel label={intl.name} tooltip={intl.nameDpProcessHelpText}/>
                     <Field
                       name='name'
-
                       render={({field, form}: FieldProps<string, DpProcessFormValues>) => (
                         <Input {...field} type='input' size={InputSIZE.default} autoFocus
                                error={!!form.errors.name && form.touched.name}/>
@@ -116,14 +114,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.externalProcessResponsible} tooltip={intl.externalProcessResponsibleDpProcessHelpText}/>
                     <Block width={'100%'}>
-                      {showResponsibleSelect &&
-                      <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible}
-                                                                hideSelect={() => setShowResponsibleSelect(false)}/>}
-                      {!showResponsibleSelect && <RadioBoolButton
-                        value={showResponsibleSelect}
-                        setValue={(b) => setShowResponsibleSelect(b!)}
-                        omitUndefined
-                      />}
+                      <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible} />
                     </Block>
                   </CustomizedModalBlock>
 
