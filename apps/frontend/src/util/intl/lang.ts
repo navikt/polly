@@ -230,6 +230,8 @@ export const no: IStrings = {
   editDocument: "Rediger dokument",
   completeness: "Kompletthet",
   overview: "Oversikt",
+  searchProcess: "Søk etter behandlinger",
+  relatedProcesses: "Relaterte behandlinger",
 
   dpProcessTitle: "Databehandlingen",
   dpProcessPageTitle: "Behandlinger hvor NAV er databehandler",
@@ -678,6 +680,7 @@ export const en: IStrings = {
   chooseDocument: "Select document a document to start",
   addDocument: "Add information types from dokument",
   searchDocuments: "Search documents",
+  searchProcess: "Search processes",
   addOneInformationType: "Add one information type",
   addCollectionOfInformationTypes: "Add a collection of information types",
   emptyTable: "No",
@@ -712,6 +715,7 @@ export const en: IStrings = {
   createDpProcess: "Create new process",
   dpProcessDuplicatedError: "Data process has already exist.",
   externalProcessResponsible: 'Process responsible',
+  relatedProcesses: "Related processes",
 
   nameDpProcessHelpText: "A short name that states what the process is about. Examples: case management or access control",
   externalProcessResponsibleDpProcessHelpText: "State the name of the party responsible for this process",

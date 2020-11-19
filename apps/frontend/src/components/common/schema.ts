@@ -19,6 +19,7 @@ import {
   PolicyFormValues,
   Process,
   ProcessFormValues,
+  ProcessShort,
   ProcessStatus,
   Retention,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
@@ -300,6 +301,7 @@ export const disclosureSchema = () =>
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+    processes: yup.array().of(yup.object<ProcessShort>())
   });
 
 export const addDocumentToProcessSchema = () =>

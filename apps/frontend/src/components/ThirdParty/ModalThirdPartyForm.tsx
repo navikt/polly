@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {DisclosureFormValues, Document} from '../../constants';
+import {DisclosureFormValues, Document, Process} from '../../constants';
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
-import {Field, FieldProps, Form, Formik, FormikProps} from 'formik';
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps} from 'formik';
 import {Block, BlockProps} from 'baseui/block';
 import {Error, ModalLabel} from '../common/ModalSchema';
 import {intl, theme} from '../../util';
@@ -15,6 +15,7 @@ import SelectDocument from '../common/SelectDocument';
 import FieldLegalBasis from "../Process/common/FieldLegalBasis";
 import {Accordion, Panel} from "baseui/accordion";
 import PanelTitle from "../Process/common/PanelTitle";
+import SelectProcess from '../common/SelectProcess';
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -116,6 +117,8 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
   const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
   const {submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title} = props
 
+  console.log(initialValues, "INTISLK")
+
   return (
     <Modal
       onClose={onClose}
@@ -132,7 +135,6 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
           onSubmit={(values) => submit(values)}
           validationSchema={disclosureSchema()}
           render={(formikBag: FormikProps<DisclosureFormValues>) => (
-
 
             <Form>
               <ModalHeader>
@@ -178,6 +180,14 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                       />
                     )}
                   />
+                </Block>
+                <Error fieldName="document"/>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.relatedProcesses}/>
+                  <Block width="100%">
+                    <SelectProcess formikBag={formikBag} />
+                  </Block>
                 </Block>
                 <Error fieldName="document"/>
 

@@ -11,6 +11,10 @@ export const getProcess = async (processId: string) => {
   return data
 }
 
+export const getProcessNameById = async (processId: string) => {
+ return (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
+}
+
 export const getProcessByStateAndStatus = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus = ProcessStatus.All) => {
   return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}`)).data.content
 }

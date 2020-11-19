@@ -41,6 +41,8 @@ const ThirdPartyPage = () => {
 
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
+    console.log("Create",disclosure);
+    
     try {
       let createdDisclosure = await createDisclosure(disclosure)
 
@@ -90,7 +92,8 @@ const ThirdPartyPage = () => {
     legalBases: [],
     legalBasesOpen: false,
     start: undefined,
-    end: undefined
+    end: undefined,
+    processes: []
   }
 
   useEffect(() => {

@@ -45,19 +45,26 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     documentId: values.document?.id,
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
-    end: values.end
+    end: values.end,
+    processIds: values.processes.map(p => p.id) || []
   };
 };
 
-export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => ({
-  id: disclosure.id,
-  recipient: disclosure.recipient.code || '',
-  name: disclosure.name || '',
-  recipientPurpose: disclosure ? disclosure.recipientPurpose : '',
-  description: disclosure ? disclosure.description : '',
-  document: disclosure.document,
-  legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),
-  legalBasesOpen: false,
-  start: disclosure.start || undefined,
-  end: disclosure.end || undefined
-})
+export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => {
+  console.log(disclosure, "TOFRO")
+
+  return {
+    id: disclosure.id,
+    recipient: disclosure.recipient.code || '',
+    name: disclosure.name || '',
+    recipientPurpose: disclosure ? disclosure.recipientPurpose : '',
+    description: disclosure ? disclosure.description : '',
+    document: disclosure.document,
+    legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),
+    legalBasesOpen: false,
+    start: disclosure.start || undefined,
+    end: disclosure.end || undefined,
+    processes: disclosure.processes || []
+  }
+}
+

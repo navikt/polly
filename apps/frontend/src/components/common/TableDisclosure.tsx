@@ -49,6 +49,10 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
     })()
   }, [list])
 
+  useEffect(() => {
+    console.log(selectedDisclosure, "SELECTEDDISCL")
+  }, [selectedDisclosure])
+
   return (
     <React.Fragment>
 
