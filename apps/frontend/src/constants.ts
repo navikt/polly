@@ -457,6 +457,7 @@ export interface DisclosureFormValues {
   end?: string;
   start?: string;
   processes: ProcessShort[];
+  informationTypes?: InformationTypeShort[]
 }
 
 export interface Disclosure extends IDurationed {
@@ -470,6 +471,8 @@ export interface Disclosure extends IDurationed {
   legalBases: LegalBasis[]
   processes: ProcessShort[]
   processIds: string[]
+  informationTypes?: InformationTypeShort[]
+  informationTypeIds?: string[]
 }
 
 export interface DocumentFormValues {

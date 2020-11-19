@@ -16,6 +16,7 @@ import FieldLegalBasis from "../Process/common/FieldLegalBasis";
 import {Accordion, Panel} from "baseui/accordion";
 import PanelTitle from "../Process/common/PanelTitle";
 import SelectProcess from '../common/SelectProcess';
+import SelectInformationTypes from '../common/SelectInformationTypes';
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -168,6 +169,20 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Error fieldName="description"/>
 
                 <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.relatedProcesses}/>
+                  <Block width="100%">
+                    <SelectProcess formikBag={formikBag} />
+                  </Block>
+                </Block>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.informationTypes}/>
+                  <Block width="100%">
+                    <SelectInformationTypes formikBag={formikBag} />
+                  </Block>
+                </Block>
+
+                <Block {...rowBlockProps}>
                   <ModalLabel label={intl.document}/>
                   <Field
                     name="document"
@@ -183,13 +198,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 </Block>
                 <Error fieldName="document"/>
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.relatedProcesses}/>
-                  <Block width="100%">
-                    <SelectProcess formikBag={formikBag} />
-                  </Block>
-                </Block>
-                <Error fieldName="document"/>
+                
 
                 <Accordion overrides={{
                   Root: {

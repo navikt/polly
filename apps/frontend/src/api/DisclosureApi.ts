@@ -46,7 +46,8 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
     end: values.end,
-    processIds: values.processes.map(p => p.id) || []
+    processIds: values.processes.map(p => p.id) || [],
+    informationTypeIds: values.informationTypes ? values.informationTypes.map(i => i.id) : []
   };
 };
 
@@ -64,7 +65,8 @@ export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFo
     legalBasesOpen: false,
     start: disclosure.start || undefined,
     end: disclosure.end || undefined,
-    processes: disclosure.processes || []
+    processes: disclosure.processes || [],
+    informationTypes: disclosure.informationTypes || [],
   }
 }
 
