@@ -18,6 +18,7 @@ import ProcessList from '../components/Process'
 import {Section} from './ProcessPage'
 import {getAllDpProcesses} from "../api/DpProcessApi";
 import ThirdPartiesDpProcessTable from "../components/common/ThirdPartiesDpProcessTable";
+import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 
 export type PathParams = { thirdPartyCode: string }
 
@@ -148,7 +149,7 @@ const ThirdPartyPage = () => {
             }
           </Block>
           <Block marginBottom="3rem">
-            <TableDisclosure
+            {/* <TableDisclosure
               list={disclosureList}
               showRecipient={false}
               errorModal={error}
@@ -156,7 +157,17 @@ const ThirdPartyPage = () => {
               submitDeleteDisclosure={handleDeleteDisclosure}
               submitEditDisclosure={handleEditDisclosure}
               onCloseModal={() => setError(undefined)}
+            /> */}
+            <AccordionDisclosure 
+              disclosureList={disclosureList}
+              showRecipient={false}
+              errorModal={error}
+              editable
+              submitDeleteDisclosure={handleDeleteDisclosure}
+              submitEditDisclosure={handleEditDisclosure}
+              onCloseModal={() => setError(undefined)}
             />
+
           </Block>
 
           <Block>
