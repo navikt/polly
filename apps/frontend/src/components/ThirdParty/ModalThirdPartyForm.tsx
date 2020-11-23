@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {DisclosureFormValues, Document, Process} from '../../constants';
+import {DisclosureFormValues, Document} from '../../constants';
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
-import {Field, FieldArray, FieldProps, Form, Formik, FormikProps} from 'formik';
+import {Field, FieldProps, Form, Formik, FormikProps} from 'formik';
 import {Block, BlockProps} from 'baseui/block';
 import {Error, ModalLabel} from '../common/ModalSchema';
 import {intl, theme} from '../../util';
@@ -133,7 +133,10 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
       <Block {...modalBlockProps}>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => submit(values)}
+          onSubmit={(values) => {
+            console.log(values)
+            submit(values)
+          }}
           validationSchema={disclosureSchema()}
           render={(formikBag: FormikProps<DisclosureFormValues>) => (
 
@@ -198,7 +201,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 </Block>
                 <Error fieldName="document"/>
 
-                
+
 
                 <Accordion overrides={{
                   Root: {

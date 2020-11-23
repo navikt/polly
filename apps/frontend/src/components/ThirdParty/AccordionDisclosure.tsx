@@ -55,22 +55,23 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   }, [disclosureList])
 
   useEffect(() => {
-    if(selectedDisclosure){
+    if (selectedDisclosure) {
       setHasAlert(alerts[selectedDisclosure.id].missingArt6)
     }
   }, [selectedDisclosure])
+
+  const renewDisclosureDetails = async (disclosureId: string) => {
+    setLoading(true)
+    setSelectedDisclosure(await getDisclosure(disclosureId))
+    setLoading((false))
+  }
 
   return (
     <React.Fragment>
       <Accordion
         onChange={({expanded}) => {
           if (expanded.length > 0) {
-            (async () => {
-              setLoading(true)
-              const disclosureId = expanded[0].toString()
-              setSelectedDisclosure(await getDisclosure(disclosureId))
-              setLoading((false))
-            })()
+            renewDisclosureDetails(expanded[0].toString())
           }
         }}
       >
@@ -110,6 +111,13 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                     <Block width='100%'>
                       {editable &&
                       <Block width="100%" display="flex" justifyContent="flex-end">
+                        {selectedDisclosure && hasAlert && canViewAlerts() &&
+                          <Button type='button' kind='tertiary' size='compact'
+                                  icon={faExclamationCircle} tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                                  $style={{color: hasAlert ? theme.colors.warning500 : undefined}}
+                                  onClick={() => history.push(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                          />
+                        }
                         <Button
                           tooltip={intl.edit}
                           size={SIZE.compact}
@@ -161,7 +169,14 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           title={intl.editDisclosure}
           isOpen={showEditModal}
           initialValues={mapDisclosureToFormValues(selectedDisclosure)}
-          submit={async (values) => submitEditDisclosure && await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
+          submit={async (values) => {
+            if (submitEditDisclosure && await submitEditDisclosure(values)) {
+              renewDisclosureDetails(selectedDisclosure?.id)
+              setShowEditModal(false)
+            } else {
+              setShowEditModal(true)
+            }
+          }}
           onClose={() => {
             onCloseModal && onCloseModal()
             setShowEditModal(false)
