@@ -2,11 +2,15 @@ import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {Disclosure, DisclosureAlert, DisclosureFormValues} from "../../constants";
 import {getAlertForDisclosure} from "../../api/AlertApi";
-import {theme} from "../../util";
+import {intl, theme} from "../../util";
 import {Block} from "baseui/block";
 import {Accordion, Panel} from "baseui/accordion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import {getDisclosure} from "../../api";
+import {StyledSpinnerNext} from "baseui/spinner";
+import DataText from "../common/DataText";
+import {DotTags} from "../common/DotTag";
 
 
 type AccordionDisclosureProps = {
@@ -26,9 +30,9 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false)
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
   const [alerts, setAlerts] = useState<Alerts>({})
+  const [isLoading, setLoading] = useState<boolean>(false)
 
-  const { disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal } = props
-
+  const {disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal} = props
 
   useEffect(() => {
     (async () => {
@@ -44,7 +48,16 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   return (
     <React.Fragment>
       <Accordion
-        onChange={({ expanded }) => console.log("Changed", expanded)}
+        onChange={({expanded}) => {
+          if (expanded.length > 0) {
+            (async () => {
+              setLoading(true)
+              const disclosureId = expanded[0].toString()
+              setSelectedDisclosure(await getDisclosure(disclosureId))
+              setLoading((false))
+            })()
+          }
+        }}
       >
         {disclosureList && disclosureList.sort((a, b) => a.name.localeCompare(b.name)).map((d: Disclosure) => {
 
@@ -74,36 +87,21 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                 }
               }}
             >
-              {/*{isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}*/}
-
-              {//!isLoading && currentProcess &&
-              (
+              {isLoading ? <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block> :
                 <Block $style={{
                   outline: `4px ${theme.colors.primary200} solid`
                 }}>
-
-                  <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
-                    {/*<ProcessData process={currentProcess}/>*/}
-
-                    <Block display='flex' justifyContent='flex-end'>
-                      {/*<span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>*/}
-                    </Block>
-                    <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='flex-end'>
-                      {/*{canViewAlerts() && <Block marginRight='auto'>*/}
-                      {/*  <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}*/}
-                      {/*          onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>*/}
-                      {/*</Block>}*/}
-                      {/*{hasAccess() &&*/}
-                      {/*<Block>*/}
-                      {/*  <div ref={InformationTypeRef}></div>*/}
-                      {/*  {renderAddDocumentButton()}*/}
-                      {/*  {renderCreatePolicyButton()}*/}
-                      {/*</Block>*/}
-                      {/*}*/}
+                  <Block padding={theme.sizing.scale800}>
+                    <Block width='100%'>
+                      <DataText label={intl.name} text={selectedDisclosure?.name}/>
+                      <DataText label={intl.document} text={selectedDisclosure?.document?.name}/>
+                      <DataText label={intl.description} text={selectedDisclosure?.description}/>
+                      <DataText label={intl.informationTypes} children={<DotTags items={selectedDisclosure?.informationTypes?.map(i=>i.name)}/>}/>
+                      <DataText label={intl.processes} children={<DotTags items={selectedDisclosure?.processes?.map(p=>p.name)}/>}/>
                     </Block>
                   </Block>
                 </Block>
-              )}
+              }
             </Panel>
           )
         })}
