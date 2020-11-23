@@ -6,11 +6,14 @@ import {intl, theme} from "../../util";
 import {Block} from "baseui/block";
 import {Accordion, Panel} from "baseui/accordion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import {faChevronRight, faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import {getDisclosure} from "../../api";
 import {StyledSpinnerNext} from "baseui/spinner";
 import DataText from "../common/DataText";
 import {DotTags} from "../common/DotTag";
+import {canViewAlerts} from "../../pages/AlertEventPage";
+import Button from "../common/Button";
+import {useHistory} from 'react-router-dom'
 
 
 type AccordionDisclosureProps = {
@@ -31,6 +34,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
   const [alerts, setAlerts] = useState<Alerts>({})
   const [isLoading, setLoading] = useState<boolean>(false)
+  const history = useHistory()
 
   const {disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal} = props
 
@@ -98,6 +102,15 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                       <DataText label={intl.description} text={selectedDisclosure?.description}/>
                       <DataText label={intl.informationTypes} children={<DotTags items={selectedDisclosure?.informationTypes?.map(i=>i.name)}/>}/>
                       <DataText label={intl.processes} children={<DotTags items={selectedDisclosure?.processes?.map(p=>p.name)}/>}/>
+                      {selectedDisclosure && alerts[selectedDisclosure.id].missingArt6 && canViewAlerts() &&
+                      <DataText label={intl.alerts} children={
+                        <Button type='button' kind='tertiary' size='compact'
+                                icon={faExclamationCircle} tooltip={alerts[selectedDisclosure.id].missingArt6 ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                                $style={{color: alerts[selectedDisclosure.id].missingArt6 ? theme.colors.warning500 : undefined}}
+                                onClick={() => history.push(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                        />
+                      }/>
+                      }
                     </Block>
                   </Block>
                 </Block>
