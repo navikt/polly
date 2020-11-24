@@ -467,6 +467,7 @@ export interface IStrings {
   noUsageAvailableInTable: string;
   noDocumentsAvailableInTable: string;
   noPotentialPersonalCategoryUsageInTable: string;
+  usesAllInformationTypes: string;
   noAuditsAvailableInTable: string;
   noDisclosuresToThirdPartyAvailableInTable:string;
   noRetrievedFromThirdPartyAvailableInTable:string;

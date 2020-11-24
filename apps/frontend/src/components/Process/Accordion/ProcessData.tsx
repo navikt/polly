@@ -150,8 +150,6 @@ const ProcessData = (props: {process: Process}) => {
         <DotTags list={ListName.SYSTEM} codes={process.affiliation.products} linkCodelist/>
       </DataText>
 
-      {process.usesAllInformationTypes ? <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.yes}/> : <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.no}/>}
-
       <DataText label={intl.automation} text={""}>
         <Block>
           <span>{intl.automaticProcessing}: </span>
