@@ -9,6 +9,7 @@ import no.nav.data.common.storage.domain.StorageType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @Service
@@ -22,6 +23,10 @@ public class StorageService {
 
     public <T extends GenericStorageData> T getSingleton(Class<T> type) {
         return getSingletonAsStorage(type).getDataObject(type);
+    }
+
+    public <T extends GenericStorageData> T get(Class<T> type, UUID id) {
+        return repository.findById(id).orElseThrow().getDataObject(type);
     }
 
     public <T extends GenericStorageData> GenericStorage getSingletonAsStorage(Class<T> type) {
@@ -38,6 +43,12 @@ public class StorageService {
 
     public GenericStorage save(GenericStorage storage) {
         return repository.save(storage);
+    }
+
+    public void save(GenericStorageData data) {
+        var storage = GenericStorage.builder().generateId().build();
+        storage.setDataObject(data);
+        repository.save(storage);
     }
 
     @Transactional

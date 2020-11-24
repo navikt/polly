@@ -1,9 +1,9 @@
 package no.nav.data.polly.policy.rest;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
@@ -39,7 +39,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog Policies", tags = {"Policies"})
+@Tag(name = "Policy", description = "Data Catalog Policies")
 @RequestMapping("/policy")
 @Transactional
 public class PolicyRestController {
@@ -52,10 +52,8 @@ public class PolicyRestController {
         this.policyRepository = policyRepository;
     }
 
-    @ApiOperation(value = "Get all Policies, filtered  request will always return all policies")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All policies fetched", response = PolicyPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get all Policies, filtered  request will always return all policies")
+    @ApiResponse(description = "All policies fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<PolicyResponse>> getPolicies(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
@@ -81,31 +79,25 @@ public class PolicyRestController {
         }
     }
 
-    @ApiOperation(value = "Count all Policies")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Count policies fetched", response = Long.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Count all Policies")
+    @ApiResponse(description = "Count policies fetched")
+
     @GetMapping("/count")
     public ResponseEntity<Long> countPolicies() {
         log.debug("Received request for number of Policies");
         return ResponseEntity.ok(policyRepository.count());
     }
 
-    @ApiOperation(value = "Count Policies by InformationType")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Count fetched", response = Long.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Count Policies by InformationType")
+    @ApiResponse(description = "Count fetched")
     @GetMapping(path = "/count", params = {"informationTypeId"})
     public ResponseEntity<Long> countPoliciesByInformationType(@RequestParam UUID informationTypeId) {
         log.debug("Received request for number of policies related to InformationTypes with id={}", informationTypeId);
         return ResponseEntity.ok(policyRepository.countByInformationTypeId(informationTypeId));
     }
 
-    @ApiOperation(value = "Create Policy")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Policy successfully created", response = PolicyPage.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create Policy")
+    @ApiResponse(responseCode = "201", description = "Policy successfully created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<RestResponsePage<PolicyResponse>> createPolicy(@Valid @RequestBody List<PolicyRequest> policyRequests) {
@@ -116,11 +108,8 @@ public class PolicyRestController {
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Get Policy")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Fetched policy", response = PolicyResponse.class),
-            @ApiResponse(code = 404, message = "Policy not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Policy")
+    @ApiResponse(description = "Fetched policy")
     @GetMapping("/{id}")
     public ResponseEntity<PolicyResponse> getPolicy(@PathVariable UUID id) {
         log.debug("Received request for Policy with id={}", id);
@@ -131,11 +120,8 @@ public class PolicyRestController {
         return ResponseEntity.ok(optionalPolicy.get().convertToResponse(true));
     }
 
-    @ApiOperation(value = "Delete Policy")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Policy deleted", response = PolicyResponse.class),
-            @ApiResponse(code = 404, message = "Policy not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete Policy")
+    @ApiResponse(description = "Policy deleted")
     @DeleteMapping("/{id}")
     public ResponseEntity<PolicyResponse> deletePolicy(@PathVariable UUID id) {
         log.debug("Received request to delete Policy with id={}", id);
@@ -148,11 +134,8 @@ public class PolicyRestController {
         return ResponseEntity.ok(policy.convertToResponse(true));
     }
 
-    @ApiOperation(value = "Update Policy")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Policy updated", response = PolicyResponse.class),
-            @ApiResponse(code = 404, message = "Policy not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update Policy")
+    @ApiResponse(description = "Policy updated")
     @PutMapping("/{id}")
     public ResponseEntity<PolicyResponse> updatePolicy(@PathVariable String id, @Valid @RequestBody PolicyRequest policyRequest) {
         log.debug("Received request to update Policy with id={}", id);
@@ -173,11 +156,8 @@ public class PolicyRestController {
         return ResponseEntity.ok(service.saveAll(List.of(policy)).get(0).convertToResponse(true));
     }
 
-    @ApiOperation(value = "Update Policies")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Polices updated", response = PolicyPage.class),
-            @ApiResponse(code = 404, message = "Policy not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update Policies")
+    @ApiResponse(description = "Polices updated")
     @PutMapping
     public ResponseEntity<RestResponsePage<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received requests to update Policies");

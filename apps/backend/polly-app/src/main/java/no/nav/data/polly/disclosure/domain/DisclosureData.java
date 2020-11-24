@@ -29,9 +29,16 @@ public class DisclosureData {
     @NotNull
     private LocalDate end;
     private UUID documentId;
+    private List<UUID> processIds;
+    private List<UUID> informationTypeIds;
 
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
+    private DisclosureAbroad abroad;
+
+    public DisclosureAbroad getAbroad() {
+        return abroad == null ? new DisclosureAbroad() : abroad;
+    }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class DisclosureDataBuilder {

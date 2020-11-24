@@ -12,4 +12,6 @@ public interface DisclosureRepositoryCustom {
     List<Disclosure> findByRecipient(String source);
 
     List<Disclosure> findByInformationTypeId(UUID informationTypeId);
+
+    List<Disclosure> findByProcessId(UUID processId);
 }

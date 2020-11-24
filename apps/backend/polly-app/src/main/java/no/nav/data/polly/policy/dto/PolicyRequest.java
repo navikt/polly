@@ -1,7 +1,7 @@
 package no.nav.data.polly.policy.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
+import static no.nav.data.common.utils.StringUtils.formatListToUppercase;
 
 @Data
 @Builder
@@ -35,10 +35,11 @@ public class PolicyRequest implements RequestElement {
 
     private String id;
     private String processId;
-    @ApiModelProperty(value = "Codelist PURPOSE")
-    private String purposeCode;
     @Singular
-    @ApiModelProperty(value = "Codelist SUBJECT_CATEGORY")
+    @Schema(description = "Codelist PURPOSE")
+    private List<String> purposes;
+    @Singular
+    @Schema(description = "Codelist SUBJECT_CATEGORY")
     private List<String> subjectCategories;
     private String informationTypeId;
     private boolean legalBasesInherited;
@@ -58,18 +59,18 @@ public class PolicyRequest implements RequestElement {
 
     @Override
     public String getIdentifyingFields() {
-        return processId + "-" + purposeCode + "-" + subjectCategories + "-" + informationTypeId;
+        return processId + "-" + purposes + "-" + subjectCategories + "-" + informationTypeId;
     }
 
     @JsonIgnore
     @Override
     public String getReference() {
-        return getInformationTypeId() + "/" + getPurposeCode();
+        return getInformationTypeId() + "/" + getPurposes();
     }
 
     @Override
     public void format() {
-        setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
+        setPurposes(formatListToUppercase(getPurposes()));
         setSubjectCategories(convert(getSubjectCategories(), StringUtils::toUpperCaseAndTrim));
         setDocumentIds(nullToEmptyList(documentIds));
         if (legalBasesUse == null) {
@@ -84,7 +85,7 @@ public class PolicyRequest implements RequestElement {
     @Override
     public void validate(FieldValidator validator) {
         validator.checkUUID(Fields.id, id);
-        validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
+        validator.checkRequiredCodelists(Fields.purposes, purposes, ListName.PURPOSE);
         validator.checkBlank(Fields.informationTypeId, informationTypeId);
         validator.checkUUID(Fields.informationTypeId, informationTypeId);
         validator.checkBlank(Fields.processId, processId);

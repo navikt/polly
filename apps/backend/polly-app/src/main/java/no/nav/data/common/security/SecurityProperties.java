@@ -21,6 +21,7 @@ public class SecurityProperties {
     private List<String> superGroups;
     private List<String> adminGroups;
     private List<String> redirectUris;
+    private String env;
 
     public boolean isValidRedirectUri(String uri) {
         return uri == null || safeStream(redirectUris).anyMatch(origin -> StringUtils.startsWithIgnoreCase(uri, origin));
@@ -28,6 +29,10 @@ public class SecurityProperties {
 
     public String findBaseUrl() {
         return tryFind(getRedirectUris(), uri -> uri.contains("adeo.no")).orElse(getRedirectUris().get(0));
+    }
+
+    public boolean isDev() {
+        return env.equals("dev-fss");
     }
 
 }

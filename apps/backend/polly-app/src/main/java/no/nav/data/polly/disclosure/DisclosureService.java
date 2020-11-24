@@ -3,30 +3,34 @@ package no.nav.data.polly.disclosure;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
-import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.document.domain.DocumentRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 @Service
 public class DisclosureService extends RequestValidator<DisclosureRequest> {
 
     private final DisclosureRepository repository;
     private final DocumentRepository documentRepository;
+    private final InformationTypeRepository informationTypeRepository;
+    private final ProcessRepository processRepository;
     private final AlertService alertService;
 
-    public DisclosureService(DisclosureRepository repository, DocumentRepository documentRepository, AlertService alertService) {
+    public DisclosureService(DisclosureRepository repository, DocumentRepository documentRepository,
+            InformationTypeRepository informationTypeRepository, ProcessRepository processRepository, AlertService alertService) {
         this.repository = repository;
         this.documentRepository = documentRepository;
+        this.informationTypeRepository = informationTypeRepository;
+        this.processRepository = processRepository;
         this.alertService = alertService;
     }
 
@@ -58,14 +62,11 @@ public class DisclosureService extends RequestValidator<DisclosureRequest> {
         var validationErrors = StreamUtils.applyAll(request,
                 RequestElement::validateFields,
                 r -> validateRepositoryValues(r, r.getIdAsUUID() != null && repository.findById(r.getIdAsUUID()).isPresent()),
-                this::validateDocument
+                r -> validateObject(r.getDocumentId(), documentRepository::findById, r.getReference(), "document"),
+                r -> validateObjects(r.getProcessIds(), processRepository::findAllById, r.getReference(), "process"),
+                r -> validateObjects(r.getInformationTypeIds(), informationTypeRepository::findAllById, r.getReference(), "informationType")
         );
 
         ifErrorsThrowValidationException(validationErrors);
-    }
-
-    private List<ValidationError> validateDocument(DisclosureRequest request) {
-        return isBlank(request.getDocumentId()) || documentRepository.findById(UUID.fromString(request.getDocumentId())).isPresent() ? List.of()
-                : List.of(new ValidationError(request.getReference(), "documentDoesNotExist", String.format("The Document %s doesnt exist", request.getDocumentId())));
     }
 }

@@ -72,11 +72,11 @@ class PolicyRepositoryIT extends IntegrationTestBase {
         assertThat(policyRepository.countByInformationTypeId(INFORMATION_TYPE_ID_1)).isEqualTo(2L);
     }
 
-    private Policy createTestdata(String purposeCode, UUID datasetId) {
+    private Policy createTestdata(String purpose, UUID datasetId) {
         Policy policy = new Policy.PolicyBuilder()
                 .id(datasetId)
-                .purposeCode(purposeCode)
                 .data(PolicyData.builder()
+                        .purpose(purpose)
                         .subjectCategories(List.of("BRUKER"))
                         .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                         .legalBasis(createLegalBasis())
@@ -84,7 +84,7 @@ class PolicyRepositoryIT extends IntegrationTestBase {
                 .informationType(createAndSaveInformationType())
                 .informationTypeId(INFORMATION_TYPE_ID_1)
                 .informationTypeName(INFORMATION_TYPE_NAME)
-                .process(createAndSaveProcess(purposeCode))
+                .process(createAndSaveProcess(purpose))
                 .build();
         return policyRepository.save(policy);
     }

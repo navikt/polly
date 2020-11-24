@@ -69,6 +69,7 @@ public class DashResponse {
 
         private long processesCompleted;
         private long processesInProgress;
+        private long processesNeedsRevision;
 
         private long processesMissingLegalBases;
         private long processesMissingArt6;
@@ -77,6 +78,7 @@ public class DashResponse {
         private long processesUsingAllInfoTypes;
 
         private Counter dpia = new Counter();
+        private long dpiaReferenceMissing;
         private Counter profiling = new Counter();
         private Counter automation = new Counter();
         private Counter retention = new Counter();
@@ -102,6 +104,10 @@ public class DashResponse {
             processesInProgress++;
         }
 
+        public void processesNeedsRevision() {
+            processesNeedsRevision++;
+        }
+
         public void processesMissingLegalBases() {
             processesMissingLegalBases++;
         }
@@ -116,6 +122,10 @@ public class DashResponse {
 
         public void processesUsingAllInfoTypes() {
             processesUsingAllInfoTypes++;
+        }
+
+        public void dpiaReferenceMissing() {
+            dpiaReferenceMissing++;
         }
 
         public void retentionDataIncomplete() {

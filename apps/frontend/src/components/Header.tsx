@@ -15,7 +15,7 @@ import {Lang, langs, langsArray} from '../util/intl/intl'
 import {TriangleDown} from 'baseui/icon'
 import {FlagIcon} from './common/Flag'
 import {paddingAll} from './common/Style'
-import MainSearch from './MainSearch'
+import MainSearch from './search/MainSearch'
 
 
 function useCurrentUrl() {
@@ -123,7 +123,9 @@ const AdminOptions = () => {
   const pages = [
     {label: intl.manageCodeListTitle, href: '/admin/codelist'},
     {label: intl.audit, href: '/admin/audit'},
-    {label: intl.settings, href: '/admin/settings'}
+    {label: intl.settings, href: '/admin/settings'},
+    {label: intl.mailLog, href: '/admin/maillog'},
+    {label: intl.needsRevision, href: '/admin/request-revision'}
   ]
   return (
     <StatefulPopover

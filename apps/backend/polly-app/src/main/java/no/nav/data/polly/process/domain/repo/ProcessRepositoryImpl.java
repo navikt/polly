@@ -1,10 +1,12 @@
 package no.nav.data.polly.process.domain.repo;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import no.nav.data.polly.process.dto.StateDbRequest;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,9 +14,11 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Repository
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
@@ -24,6 +28,29 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     public ProcessRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, @Lazy ProcessRepository processRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.processRepository = processRepository;
+    }
+
+    @Override
+    public Optional<Process> findByNameAndPurposes(String name, List<String> purposes) {
+        try {
+            UUID resp = jdbcTemplate.queryForObject(
+                    "select process_id from process where data #>'{purposes}' ??& array [ :purposes ] and jsonb_array_length(data #>'{purposes}') = :purposesLength and data ->> 'name' = :name",
+                    new MapSqlParameterSource()
+                            .addValue("purposes", purposes)
+                            .addValue("purposesLength", purposes.size())
+                            .addValue("name", name), UUID.class);
+            return processRepository.findById(resp);
+        } catch (DataAccessException e) {
+            log.trace("no process for name and purpose", e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<Process> findByPurpose(String purpose) {
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{purposes}' ?? :purpose",
+                new MapSqlParameterSource().addValue("purpose", purpose));
+        return getProcesses(resp);
     }
 
     @Override
@@ -134,6 +161,10 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case DATA_PROCESSOR_OUTSIDE_EU -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorOutsideEU}' %s ";
 
             // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
+            case DPIA_REFERENCE_MISSING -> {
+                processState = ProcessState.UNKNOWN;
+                yield " data #> '{dpia,needForDpia}' = 'true'::jsonb and data #> '{dpia,refToDpia}' %s ";
+            }
             case DATA_PROCESSOR_AGREEMENT_EMPTY -> {
                 processState = ProcessState.UNKNOWN;
                 yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";

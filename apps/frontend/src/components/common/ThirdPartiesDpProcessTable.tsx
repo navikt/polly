@@ -39,7 +39,7 @@ const ThirdPartiesDpProcessTable = ({dpProcesses,tableTitle}: TableDpProcessType
     <React.Fragment>
       <HeadingSmall>{intl.formatString(intl.thirdPartyDpProcessTableTitle,tableTitle)}</HeadingSmall>
       <Table
-        emptyText={intl.retrievedFromThirdParty.toLowerCase()}
+        emptyText={intl.noRetrievedFromThirdPartyAvailableInTable}
         headers={
           <>
             <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>

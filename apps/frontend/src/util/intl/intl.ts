@@ -344,6 +344,7 @@ export interface IStrings {
   additionalDescriptionHelpText: string;
   document: string;
   edit: string;
+  editInformationTypes: string;
   update: string;
   export: string;
   sources: string;
@@ -402,6 +403,7 @@ export interface IStrings {
   aboutUs: string;
   fomDateHelpText: string;
   tomDateHelpText: string;
+  mailLog: string;
 
   code: string;
   codes: string;
@@ -426,9 +428,51 @@ export interface IStrings {
   user: string;
   lastChanges: string;
   settings: string;
+  revision: string;
+  needsRevision: string;
+  revisionCreated: string;
+  newRevision: string;
+  revisionText: string;
+  completedOnly: string;
+  back: string;
+  one: string;
   defaultProcessDocument: string;
   goToSite: string;
   categoryNotInUse: string;
+
+  no_dpia_no_special_category_pi: string;
+  no_dpia_small_scale: string;
+  no_dpia_no_dataset_consolidation: string;
+  no_dpia_no_new_tech: string;
+  no_dpia_no_profiling_or_automation: string;
+  no_dpia_other: string;
+
+  specifyOther: string;
+  chooseGrounds: string;
+
+
+  //dp-process HelpText
+  nameDpProcessHelpText: string;
+  externalProcessResponsibleDpProcessHelpText: string;
+  descriptionDpProcessHelpText: string;
+  purposeDpProcessHelpText: string;
+  article9DpProcessHelpText: string;
+  isSubDataProcessorUsedDpProcessHelpText: string;
+  retentionMonthsDpProcessHelpText: string;
+  missingPVK: string;
+
+  noInformationTypesAvailableInTable: string;
+  noCodesAvailableInTable: string;
+  noProcessesAvailableInTable: string;
+  noUsageAvailableInTable: string;
+  noDocumentsAvailableInTable: string;
+  noPotentialPersonalCategoryUsageInTable: string;
+  usesAllInformationTypes: string;
+  noAuditsAvailableInTable: string;
+  noDisclosuresToThirdPartyAvailableInTable:string;
+  noRetrievedFromThirdPartyAvailableInTable:string;
+  noAlertsAvailableInTable: string;
+
 }
 
 // Remember import moment locales up top

@@ -5,7 +5,7 @@ import {Field, FieldProps} from 'formik'
 import {DpProcessFormValues} from '../../../constants'
 import {Block} from 'baseui/block'
 
-const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string, hideSelect: () => void }) => {
+const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string}) => {
   const {thirdParty} = props
   const [value, setValue] = React.useState<Value>(thirdParty ? [{
     id: thirdParty,
@@ -20,11 +20,11 @@ const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string, 
           <Select
             options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
             onChange={({value}) => {
-              if (!value.length) props.hideSelect()
               setValue(value)
               form.setFieldValue('externalProcessResponsible', value.length > 0 ? value[0].id : '')
             }}
             value={value}
+            placeholder=""
           />
         </Block>
       )}

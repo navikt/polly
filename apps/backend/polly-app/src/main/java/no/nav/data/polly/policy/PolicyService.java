@@ -12,7 +12,6 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,9 +117,9 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         Policy policy = Optional.ofNullable(request.getIdAsUUID()).flatMap(policyRepository::findById).orElse(null);
         if (policy == null) {
             validations.add(new ValidationError(request.getReference(), "notFound", String.format("A policy with id: %s was not found", request.getId())));
-        } else if (!StringUtils.equals(policy.getPurposeCode(), request.getPurposeCode())) {
+        } else if (!policy.getData().getPurposes().equals(request.getPurposes())) {
             validations.add(new ValidationError(request.getReference(), "cannotChangePurpose",
-                    String.format("Cannot change purpose from %s to %s for policy %s", policy.getPurposeCode(), request.getPurposeCode(), request.getId())));
+                    String.format("Cannot change purpose from %s to %s for policy %s", policy.getData().getPurposes(), request.getPurposes(), request.getId())));
         } else {
             request.setExistingPolicy(policy);
         }

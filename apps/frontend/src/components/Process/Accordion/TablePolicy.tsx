@@ -66,7 +66,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
   return (
     <React.Fragment>
       <Table
-        emptyText={process.usesAllInformationTypes ? intl.potentialPersonalCategoryUsage : intl.informationTypes}
+        emptyText={process.usesAllInformationTypes ? intl.usesAllInformationTypes : intl.noInformationTypesAvailableInTable}
         backgroundColor={theme.colors.primary100}
         headers={
           <>

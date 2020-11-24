@@ -1,9 +1,10 @@
 package no.nav.data.polly.alert;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
@@ -32,7 +33,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/alert")
-@Api(value = "Alerts", tags = {"Alert"})
+@Tag(name = "Alerts")
 public class AlertController {
 
     private final AlertService alertService;
@@ -43,40 +44,32 @@ public class AlertController {
         this.domainCache = domainCache;
     }
 
-    @ApiOperation(value = "Get Alerts for process")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Alerts fetched", response = ProcessAlert.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Alerts for process")
+    @ApiResponse(description = "Alerts fetched")
     @GetMapping("/process/{processId}")
     public ResponseEntity<ProcessAlert> alertsForProcess(@PathVariable UUID processId) {
         var alerts = alertService.checkAlertsForProcess(processId);
         return ResponseEntity.ok(alerts);
     }
 
-    @ApiOperation(value = "Get Alerts for information type")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Alerts fetched", response = InformationTypeAlert.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Alerts for information type")
+    @ApiResponse(description = "Alerts fetched")
     @GetMapping("/informationtype/{informationTypeId}")
     public ResponseEntity<InformationTypeAlert> alertsForInformationType(@PathVariable UUID informationTypeId) {
         var alerts = alertService.checkAlertsForInformationType(informationTypeId);
         return ResponseEntity.ok(alerts);
     }
 
-    @ApiOperation(value = "Get Alerts for disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Alerts fetched", response = DisclosureAlert.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Alerts for disclosure")
+    @ApiResponse(description = "Alerts fetched")
     @GetMapping("/disclosure/{disclosureId}")
     public ResponseEntity<DisclosureAlert> alertsForDisclosure(@PathVariable UUID disclosureId) {
         var alerts = alertService.checkAlertsForDisclosure(disclosureId);
         return ResponseEntity.ok(alerts);
     }
 
-    @ApiOperation(value = "Get Alerts events")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Alert events fetched", response = EventPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Alerts events")
+    @ApiResponse(description = "Alert events fetched")
     @GetMapping("/events")
     public ResponseEntity<RestResponsePage<AlertEventResponse>> alertsEvents(PageParameters parameters,
             @RequestParam(value = "processId", required = false) UUID processId,
@@ -91,6 +84,14 @@ public class AlertController {
         var request = new AlertEventRequest(processId, informationTypeId, disclosureId, type, level, parameters.getPageNumber(), parameters.getPageSize(), sort, dir);
         var events = alertService.getEvents(request).map(this::convertEventResponse);
         return ResponseEntity.ok(new RestResponsePage<>(events));
+    }
+
+    @Operation(summary = "mail test")
+    @ApiResponses(value = {@ApiResponse(description = "mail")})
+    @GetMapping(value = "/mail", produces = "text/html")
+    public ResponseEntity<String> mail() {
+        alertService.testMail();
+        return ResponseEntity.ok("ok");
     }
 
     @SuppressWarnings("ConstantConditions")

@@ -17,7 +17,7 @@ import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import RouteLink from "../../common/RouteLink";
 import DataText from "../../common/DataText";
-import {shortenLinksInText} from "../../../util/helper-functions";
+import {getNoDpiaLabel, shortenLinksInText} from "../../../util/helper-functions";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -30,17 +30,33 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
       return intl.yes
     }
   } else if (dpia?.needForDpia === false) {
-    if (dpia.grounds) {
-      return `${intl.no}. ${intl.ground}${dpia.grounds}`
-    } else {
-      return intl.no
+    if (dpia) {
+      return <>
+        {`${intl.no}. ${intl.ground}`}
+        <DotTags items={dpia.noDpiaReasons.map(r => {
+            return r === 'OTHER' && dpia?.grounds ? `${getNoDpiaLabel(r)} (${dpia.grounds})` : getNoDpiaLabel(r)
+          }
+        )}/>
+      </>
     }
   } else {
     return intl.unclarified
   }
 }
 
-const ProcessData = (props: { process: Process }) => {
+export const processStatusText = (status: ProcessStatus | undefined) => {
+  switch (status) {
+    case ProcessStatus.COMPLETED:
+      return intl.completedProcesses
+    case ProcessStatus.NEEDS_REVISION:
+      return intl.needsRevision
+    case ProcessStatus.IN_PROGRESS:
+    default:
+      return intl.inProgress
+  }
+}
+
+const ProcessData = (props: {process: Process}) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -69,11 +85,11 @@ const ProcessData = (props: { process: Process }) => {
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
           {process
-            .legalBases
-            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-            .map((legalBasis, index) =>
-              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-            )}
+          .legalBases
+          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+          .map((legalBasis, index) =>
+            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+          )}
         </DataText> :
         <>
           <DataText label={intl.legalBasis}/>
@@ -97,7 +113,8 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && !process.usesAllInformationTypes ? intl.notFilled : ""}>
-        {process.usesAllInformationTypes?intl.potentialPersonalCategoryUsage:!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
+        {process.usesAllInformationTypes ? intl.potentialPersonalCategoryUsage : !!subjectCategoriesSummarised.length &&
+          <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
       <DataText label={intl.organizing} text={""}>
@@ -106,11 +123,11 @@ const ProcessData = (props: { process: Process }) => {
           <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
         </Block> : <span>{intl.department}: {intl.notFilled}</span>}
         {!!process.affiliation.subDepartments.length && <Block>
-            <Block display="flex">
-              <span>{intl.subDepartment}: </span>
-              <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
-            </Block>
+          <Block display="flex">
+            <span>{intl.subDepartment}: </span>
+            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
           </Block>
+        </Block>
         }
 
         <Block display="flex">
@@ -132,8 +149,6 @@ const ProcessData = (props: { process: Process }) => {
       <DataText label={intl.system} text={""}>
         <DotTags list={ListName.SYSTEM} codes={process.affiliation.products} linkCodelist/>
       </DataText>
-
-      {process.usesAllInformationTypes ? <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.yes}/> : <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.no}/>}
 
       <DataText label={intl.automation} text={""}>
         <Block>
@@ -217,17 +232,19 @@ const ProcessData = (props: { process: Process }) => {
       <Completeness process={process}/>
 
       <DataText label={intl.status} text={""}>
-        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
+        {processStatusText(process.status)}
+        {process.revisionText && `: ${process.revisionText}`}
       </DataText>
 
     </Block>
   )
 }
 
-const Completeness = (props: { process: Process }) => {
+const Completeness = (props: {process: Process}) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),
+    dpiaReference: !process.dpia?.needForDpia || !isNil(process.dpia?.refToDpia),
     profiling: !isNil(process.profiling),
     automation: !isNil(process.automaticProcessing),
     retention: !isNil(process.retention?.retentionPlan),
@@ -254,6 +271,7 @@ const Completeness = (props: { process: Process }) => {
       <CustomizedStatefulTooltip content={<Block>
         <p>{completed === completables ? intl.completed : `${intl.notFilled}:`}</p>
         <p>{!completeness.dpia && intl.dpiaNeeded}</p>
+        <p>{!completeness.dpiaReference && intl.dpiaReference}</p>
         <p>{!completeness.profiling && intl.profiling}</p>
         <p>{!completeness.automation && intl.automation}</p>
         <p>{!completeness.retention && intl.retention}</p>

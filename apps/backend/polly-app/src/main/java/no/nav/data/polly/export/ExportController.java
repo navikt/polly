@@ -1,9 +1,11 @@
 package no.nav.data.polly.export;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
@@ -27,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RestController
 @RequestMapping("/export")
-@Api(value = "Export", description = "REST API for exports", tags = {"Export"})
+@Tag(name = "Export", description = "REST API for exports")
 public class ExportController {
 
     private static final String WORDPROCESSINGML_DOCUMENT = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -42,10 +44,8 @@ public class ExportController {
         this.processToDocx = processToDocx;
     }
 
-    @ApiOperation(value = "Get export for process")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Doc fetched", response = byte[].class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get export for process")
+    @ApiResponse(description = "Doc fetched", content = @Content(schema = @Schema(implementation = byte[].class)))
     @Transactional(readOnly = true)
     @SneakyThrows
     @GetMapping(value = "/process", produces = WORDPROCESSINGML_DOCUMENT)
@@ -66,7 +66,7 @@ public class ExportController {
             }
             Process p = process.get();
             doc = processToDocx.generateDocForProcess(p);
-            filename = "behandling_" + p.getPurposeCode() + "-" + p.getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
+            filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
         } else {
             ListName list;
             String code;

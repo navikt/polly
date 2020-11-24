@@ -1,9 +1,9 @@
 package no.nav.data.polly.process;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.process.domain.Process;
@@ -24,7 +24,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Api(value = "Process State", tags = {"Process"})
+@Tag(name = "Process", description = "Process State")
 @RequestMapping("/process/state")
 public class ProcessStateController {
 
@@ -36,8 +36,8 @@ public class ProcessStateController {
         this.teamService = teamService;
     }
 
-    @ApiOperation(value = "Get Process for state")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Process fetched", response = ProcessShortPage.class)})
+    @Operation(summary = "Get Process for state")
+    @ApiResponse(description = "Process fetched")
     @GetMapping
     public RestResponsePage<ProcessShortResponse> getProcesses(ProcessStateRequest request) {
         request.validateFieldsAndThrow();

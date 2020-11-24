@@ -37,8 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/oauth2/callback",
                 "/userinfo",
                 "/internal/**",
-                "/swagger*/**",
-                "/webjars/springfox-swagger-ui/**"
+                "/swagger*/**"
         );
 
         allowGetAndOptions(http,
@@ -64,6 +63,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/settings/**"
         );
 
+        adminOrSuperOnly(http,
+                "/process/revision/**"
+        );
+
         http.authorizeRequests().antMatchers("/logout").authenticated();
         http.authorizeRequests().anyRequest().hasRole(AppRole.WRITE.name());
     }
@@ -71,6 +74,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void adminOnly(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
             http.authorizeRequests().antMatchers(path).hasRole(AppRole.ADMIN.name());
+        }
+    }
+
+    private void adminOrSuperOnly(HttpSecurity http, String... paths) throws Exception {
+        for (String path : paths) {
+            http.authorizeRequests().antMatchers(path).hasAnyRole(AppRole.ADMIN.name(), AppRole.SUPER.name());
         }
     }
 
@@ -91,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // In lightweight mvc tests where authfilter isnt initialized
         if (aadAuthFilter != null) {
             http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);
-            http.addFilterAfter(userFilter, AADStatelessAuthenticationFilter.class);
+            http.addFilterAfter(userFilter, aadAuthFilter.getClass());
         } else {
             http.addFilterAfter(userFilter, UsernamePasswordAuthenticationFilter.class);
         }

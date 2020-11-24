@@ -53,7 +53,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
     <React.Fragment>
 
       <Table
-        emptyText={intl.disclosuresToThirdParty.toLowerCase()}
+        emptyText={intl.noDisclosuresToThirdPartyAvailableInTable}
         headers={
           <>
             {showRecipient && (

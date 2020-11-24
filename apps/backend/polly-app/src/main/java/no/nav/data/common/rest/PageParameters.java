@@ -1,10 +1,11 @@
 package no.nav.data.common.rest;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,11 +14,12 @@ import org.springframework.data.domain.Sort;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ParameterObject
 public class PageParameters {
 
-    @ApiParam(defaultValue = "0", allowableValues = "range[0, infinity]")
+    @Schema(defaultValue = "0", minimum = "0")
     private int pageNumber = 0;
-    @ApiParam(defaultValue = "20", allowableValues = "range[1, 250]")
+    @Schema(defaultValue = "20", minimum = "1", maximum = "250")
     private int pageSize = 20;
 
     public Pageable createIdSortedPage() {

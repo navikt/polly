@@ -1,10 +1,9 @@
 package no.nav.data.polly.settings;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.settings.dto.Settings;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Api(value = "Polly Settings", tags = {"Settings"})
+@Tag(name = "Settings", description = "Polly Settings")
 @RequestMapping("/settings")
 public class SettingsController {
 
@@ -26,16 +25,16 @@ public class SettingsController {
         this.service = service;
     }
 
-    @ApiOperation(value = "Get Settings")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Settings fetched", response = Settings.class)})
+    @Operation(summary = "Get Settings")
+    @ApiResponse(description = "Settings fetched")
     @GetMapping
     public ResponseEntity<Settings> get() {
         log.info("Received request for Settings");
         return ResponseEntity.ok(service.getSettings());
     }
 
-    @ApiOperation(value = "Write Settings")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Settings written", response = Settings.class)})
+    @Operation(summary = "Write Settings")
+    @ApiResponse(description = "Settings written")
     @PostMapping
     public ResponseEntity<Settings> write(@RequestBody Settings settings) {
         log.info("Received request to write Settings");

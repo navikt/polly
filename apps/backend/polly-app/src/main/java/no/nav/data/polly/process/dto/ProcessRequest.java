@@ -1,11 +1,12 @@
 package no.nav.data.polly.process.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
@@ -16,13 +17,13 @@ import no.nav.data.polly.process.dto.sub.AffiliationRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DpiaRequest;
 import no.nav.data.polly.process.dto.sub.RetentionRequest;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
 import static no.nav.data.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.common.utils.DateUtil.ORIG_START;
+import static no.nav.data.common.utils.StringUtils.formatListToUppercase;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
@@ -37,15 +38,16 @@ public class ProcessRequest implements RequestElement {
     private String name;
     private String description;
     private String additionalDescription;
-    @ApiModelProperty(value = "Codelist PURPOSE")
-    private String purposeCode;
-    @ApiModelProperty(value = "Codelist THIRD_PARTY")
+    @Singular
+    @Schema(description = "Codelist PURPOSE")
+    private List<String> purposes;
+    @Schema(description = "Codelist THIRD_PARTY")
     private String commonExternalProcessResponsible;
     private AffiliationRequest affiliation;
 
-    @ApiModelProperty(dataType = LOCAL_DATE, example = ORIG_START)
+    @Schema(type = LOCAL_DATE, example = ORIG_START)
     private String start;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
+    @Schema(type = LOCAL_DATE, example = DEFAULT_END)
     private String end;
     private List<LegalBasisRequest> legalBases;
 
@@ -55,8 +57,7 @@ public class ProcessRequest implements RequestElement {
     private DataProcessingRequest dataProcessing;
     private RetentionRequest retention;
     private DpiaRequest dpia;
-    @ApiModelProperty(allowableValues = "IN_PROGRESS, COMPLETED")
-    private String status;
+    private ProcessStatus status;
 
     private boolean update;
     private int requestIndex;
@@ -71,7 +72,7 @@ public class ProcessRequest implements RequestElement {
 
     @Override
     public void format() {
-        setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
+        setPurposes(formatListToUppercase(getPurposes()));
         setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
         setAdditionalDescription(trimToNull(getAdditionalDescription()));
@@ -81,8 +82,8 @@ public class ProcessRequest implements RequestElement {
         setRetention(getRetention() != null ? getRetention() : new RetentionRequest());
         setDpia(getDpia() != null ? getDpia() : new DpiaRequest());
 
-        if (StringUtils.isBlank(status)) {
-            setStatus(ProcessStatus.IN_PROGRESS.name());
+        if (status == null) {
+            setStatus(ProcessStatus.IN_PROGRESS);
         }
     }
 
@@ -91,12 +92,11 @@ public class ProcessRequest implements RequestElement {
         validator.checkUUID(Fields.id, id);
         validator.checkId(this);
         validator.checkBlank(Fields.name, name);
-        validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
+        validator.checkRequiredCodelists(Fields.purposes, purposes, ListName.PURPOSE);
         validator.checkCodelist(Fields.commonExternalProcessResponsible, commonExternalProcessResponsible, ListName.THIRD_PARTY);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);
-        validator.checkRequiredEnum(Fields.status, status, ProcessStatus.class);
 
         validator.validateType(Fields.affiliation, affiliation);
         validator.validateType(Fields.dataProcessing, dataProcessing);

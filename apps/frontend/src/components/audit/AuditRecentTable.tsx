@@ -72,7 +72,7 @@ export const AuditRecentTable = (props: { show: boolean }) => {
       </Block>
 
       <Table
-        emptyText={intl.audits}
+        emptyText={intl.noAuditsAvailableInTable}
         headers={
           <>
             <HeadCell $style={{maxWidth: '13%'}} title={intl.time}/>

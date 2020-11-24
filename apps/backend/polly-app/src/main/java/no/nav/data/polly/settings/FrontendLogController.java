@@ -1,10 +1,10 @@
 package no.nav.data.polly.settings;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Api(value = "Polly frontend logging", tags = {"Logging"})
+@Tag(name = "Frontend", description = "Polly frontend logging")
 @RequestMapping("/frontendlog")
 public class FrontendLogController {
 
-    @ApiOperation(value = "Write log")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Log written")})
+    @Operation(summary = "Write log")
+    @ApiResponses(value = {@ApiResponse(description = "Log written")})
     @PostMapping
     public void write(@RequestBody LogRequest request) {
         var string = JsonUtils.toJson(request);

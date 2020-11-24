@@ -4,6 +4,8 @@ import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import * as queryString from 'query-string'
 import {mapBool} from "../util/helper-functions";
+import {useDebouncedState} from '../util/hooks'
+import {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -54,7 +56,7 @@ export const updateProcess = async (process: ProcessFormValues) => {
 export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = process => {
   const {
     id,
-    purpose,
+    purposes,
     name,
     description,
     additionalDescription,
@@ -78,7 +80,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     name: name || '',
     description: description || '',
     additionalDescription: additionalDescription || '',
-    purposeCode: purpose?.code || '',
+    purposes: purposes?.map(p => p.code) || [],
     affiliation: {
       department: affiliation?.department?.code || '',
       subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
@@ -106,14 +108,15 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
     },
-    status: status === ProcessStatus.COMPLETED ? ProcessStatus.COMPLETED : ProcessStatus.IN_PROGRESS,
+    status: status || ProcessStatus.IN_PROGRESS,
     dpia: {
       grounds: dpia?.grounds || '',
       needForDpia: mapBool(dpia?.needForDpia),
       processImplemented: dpia?.processImplemented || false,
       refToDpia: dpia?.refToDpia || '',
       riskOwner: dpia?.riskOwner || '',
-      riskOwnerFunction: dpia?.riskOwnerFunction || ''
+      riskOwnerFunction: dpia?.riskOwnerFunction || '',
+      noDpiaReasons: dpia?.noDpiaReasons || []
     }
   }
 }
@@ -124,7 +127,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     name: values.name,
     description: values.description,
     additionalDescription: values.additionalDescription,
-    purposeCode: values.purposeCode,
+    purposes: values.purposes,
     affiliation: values.affiliation,
     commonExternalProcessResponsible: values.commonExternalProcessResponsible ? values.commonExternalProcessResponsible : undefined,
     legalBases: values.legalBases ? values.legalBases : [],
@@ -140,12 +143,33 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     retention: values.retention,
     status: values.status,
     dpia: {
-      grounds: values.dpia?.needForDpia ? '' : values.dpia?.grounds,
+      grounds: values.dpia?.needForDpia ? '' : (values.dpia.noDpiaReasons || []).filter(r => r === "OTHER").length > 0 ? values.dpia?.grounds : '',
       needForDpia: values.dpia.needForDpia,
       refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : '',
       processImplemented: values.dpia?.processImplemented,
       riskOwner: values.dpia?.riskOwner,
-      riskOwnerFunction: values.dpia?.riskOwnerFunction
+      riskOwnerFunction: values.dpia?.riskOwnerFunction,
+      noDpiaReasons: values.dpia.noDpiaReasons || [],
     }
   }
+}
+
+export const useProcessSearch = () => {
+  const [processSearch, setProcessSearch] = useDebouncedState<string>('', 200);
+  const [processSearchResult, setProcessSearchResult] = useState<Process[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      if (processSearch && processSearch.length > 2) {
+        setLoading(true)
+        setProcessSearchResult((await searchProcess(processSearch)).content)
+        setLoading(false)
+      } else {
+        setProcessSearchResult([])
+      }
+    })()
+  }, [processSearch])
+
+  return [processSearchResult, setProcessSearch, loading] as [Process[], Dispatch<SetStateAction<string>>, boolean]
 }

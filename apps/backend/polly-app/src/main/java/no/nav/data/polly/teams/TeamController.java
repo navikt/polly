@@ -1,9 +1,9 @@
 package no.nav.data.polly.teams;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 @Slf4j
 @RestController
 @RequestMapping("/team")
-@Api(value = "Team", description = "REST API for teams", tags = {"Team"})
+@Tag(name = "Team", description = "REST API for teams")
 public class TeamController {
 
     private final TeamService teamsService;
@@ -46,20 +46,16 @@ public class TeamController {
 
     // Teams
 
-    @ApiOperation(value = "Get all teams")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Teams fetched", response = TeamPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get all teams")
+    @ApiResponse(description = "Teams fetched")
     @GetMapping
     public RestResponsePage<TeamResponse> findAllTeams() {
         log.info("Received a request for all teams");
         return new RestResponsePage<>(convert(teamsService.getAllTeams(), Team::convertToResponse));
     }
 
-    @ApiOperation(value = "Get team")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Teams fetched", response = TeamResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get team")
+    @ApiResponse(description = "Teams fetched")
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamResponse> getTeamByName(@PathVariable String teamId) {
         log.info("Received request for Team with id {}", teamId);
@@ -70,10 +66,8 @@ public class TeamController {
         return new ResponseEntity<>(team.get().convertToResponseWithMembers(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Search teams")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Teams fetched", response = TeamPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search teams")
+    @ApiResponse(description = "Teams fetched")
     @GetMapping("/search/{name}")
     public ResponseEntity<RestResponsePage<TeamResponse>> searchTeamByName(@PathVariable String name) {
         log.info("Received request for Team with the name like {}", name);
@@ -88,20 +82,16 @@ public class TeamController {
 
     // Product Areas
 
-    @ApiOperation(value = "Get all product areas")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Product areas fetched", response = ProductAreaPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get all product areas")
+    @ApiResponse(description = "Product areas fetched")
     @GetMapping("/productarea")
     public RestResponsePage<ProductAreaResponse> findAllProductAreas() {
         log.info("Received a request for all product areas");
         return new RestResponsePage<>(convert(teamsService.getAllProductAreas(), ProductArea::convertToResponse));
     }
 
-    @ApiOperation(value = "Get product area")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Product area fetched", response = ProductAreaResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get product area")
+    @ApiResponse(description = "Product area fetched")
     @GetMapping("/productarea/{paId}")
     public ResponseEntity<ProductAreaResponse> getProductAreaById(@PathVariable String paId) {
         log.info("Received request for Product area with id {}", paId);
@@ -112,10 +102,8 @@ public class TeamController {
         return new ResponseEntity<>(pa.get().convertToResponseWithMembers(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Search product areas")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Product areas fetched", response = ProductAreaPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search product areas")
+    @ApiResponse(description = "Product areas fetched")
     @GetMapping("/productarea/search/{name}")
     public ResponseEntity<RestResponsePage<ProductAreaResponse>> searchProductAreaByName(@PathVariable String name) {
         log.info("Received request for product areas with the name like {}", name);
@@ -130,10 +118,8 @@ public class TeamController {
 
     // Resources
 
-    @ApiOperation(value = "Search resources")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Resources fetched", response = ResourcePage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search resources")
+    @ApiResponse(description = "Resources fetched")
     @GetMapping("/resource/search/{name}")
     public ResponseEntity<RestResponsePage<Resource>> searchResourceName(@PathVariable String name) {
         log.info("Resource search '{}'", name);
@@ -145,11 +131,8 @@ public class TeamController {
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
 
-    @ApiOperation("Get Resource")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "ok", response = Resource.class),
-            @ApiResponse(code = 404, message = "not found")
-    })
+    @Operation(summary = "Get Resource")
+    @ApiResponse(description = "ok")
     @GetMapping("/resource/{id}")
     public ResponseEntity<Resource> getById(@PathVariable String id) {
         log.info("Resource get id={}", id);

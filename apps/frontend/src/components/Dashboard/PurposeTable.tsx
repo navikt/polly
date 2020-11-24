@@ -3,11 +3,11 @@ import {getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, get
 import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
 import {useParams} from 'react-router-dom'
 import {HeadingLarge} from 'baseui/typography'
-import {Spinner} from 'baseui/spinner'
 import {intl} from '../../util'
 import {lowerFirst} from 'lodash'
 import {SimpleProcessTable} from '../Process/SimpleProcessTable'
 import {useQueryParam} from '../../util/hooks'
+import {Spinner} from '../common/Spinner'
 
 interface PathProps {
   filterName: ProcessField,
@@ -73,6 +73,8 @@ const PurposeTable = () => {
       setTitle(`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle(intl.navResponsible)
+    } else if(filterName  === ProcessField.DPIA_REFERENCE_MISSING){
+      setTitle(intl.missingPVK)
     }
   }
 

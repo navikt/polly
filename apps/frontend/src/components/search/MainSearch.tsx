@@ -1,37 +1,22 @@
 import {default as React, ReactElement, useEffect, useState} from 'react'
-import {NavigableItem, ObjectType} from '../constants'
+import {NavigableItem, ObjectType, SearchType} from '../../constants'
 import {Block} from 'baseui/block'
-import {codelist, ListName} from '../service/Codelist'
-import {useDebouncedState} from '../util/hooks'
-import {prefixBiasedSort} from '../util/sort'
-import {intl, theme} from '../util'
-import {searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam} from '../api'
+import {codelist, ListName} from '../../service/Codelist'
+import {useDebouncedState} from '../../util/hooks'
+import {prefixBiasedSort} from '../../util/sort'
+import {intl, theme} from '../../util'
+import {searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam} from '../../api'
 import {Select, TYPE, Value} from 'baseui/select'
-import {urlForObject} from './common/RouteLink'
+import {urlForObject} from '../common/RouteLink'
 import {useHistory, useLocation} from 'react-router-dom'
-import {Radio, RadioGroup} from 'baseui/radio'
-import {paddingZero} from './common/Style'
 import {faFilter} from '@fortawesome/free-solid-svg-icons'
-import Button from './common/Button'
-import {searchResultColor} from "../util/theme";
+import Button from '../common/Button'
+import {searchResultColor} from "../../util/theme";
+import {SearchLabel} from "./components/SearchLabel";
+import {SelectType} from "./components/SelectType";
 
-type SearchItem = {id: string, sortKey: string, label: ReactElement, type: NavigableItem}
-type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'nationalLaw' | 'gdprArticle' | 'informationType' | 'thirdParty' | 'system' | 'document'
+type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
 
-const SearchLabel = (props: {
-  name: string,
-  type: string,
-  backgroundColor?: string,
-  foregroundColor?: string
-}) =>
-  <Block
-    display="flex"
-    justifyContent="space-between"
-    width="100%"
-  >
-    <span style={{padding: '5px'}}>{props.name}</span>
-    <Block $style={{backgroundColor: props.backgroundColor, padding: '5px', margin: '5px', borderRadius: '5px'}}>{props.type}</Block>
-  </Block>
 
 const searchCodelist = (search: string,
                         list: ListName & NavigableItem,
@@ -59,7 +44,6 @@ const getCodelistByListnameAndType = (search: string, list: ListName, typeName: 
       type: list
     } as SearchItem))
 }
-
 
 const useMainSearch = () => {
   const [search, setSearch] = useDebouncedState<string>('', 500)
@@ -124,12 +108,12 @@ const useMainSearch = () => {
             searches.push((async () => {
               const resProcess = await searchProcess(search)
               add(resProcess.content.map(it => {
-                const purpose = codelist.getShortnameForCode(it.purpose)
+                const purposes = it.purposes.map(p => codelist.getShortnameForCode(p)).join(", ")
                 return ({
                   id: it.id,
-                  sortKey: `${it.name} ${purpose}`,
+                  sortKey: `${it.name} ${purposes}`,
                   label: <SearchLabel
-                    name={`${purpose}: ${it.name}`}
+                    name={`${purposes}: ${it.name}`}
                     type={intl.process}
                     backgroundColor={searchResultColor.processBackground}
                   />,
@@ -198,85 +182,6 @@ const useMainSearch = () => {
   return [setSearch, searchResult, loading, type, setType] as [(text: string) => void, SearchItem[], boolean, SearchType, (type: SearchType) => void]
 }
 
-type RadioProps = {
-  $isHovered: boolean
-  $checked: boolean
-}
-
-const smallRadio = (value: SearchType, text: string) => {
-  return (
-    <Radio value={value}
-           overrides={{
-             Root: {
-               style: {
-                 marginBottom: 0
-               }
-             },
-             Label: {
-               style: (a: RadioProps) => ({
-                 ...paddingZero,
-                 ...(a.$isHovered ? {color: theme.colors.positive400} : {}),
-               })
-             },
-             RadioMarkOuter: {
-               style: (a: RadioProps) => ({
-                 width: theme.sizing.scale500,
-                 height: theme.sizing.scale500,
-                 ...(a.$isHovered ? {backgroundColor: theme.colors.positive400} : {})
-               })
-             },
-             RadioMarkInner: {
-               style: (a: RadioProps) => ({
-                 width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
-                 height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
-               })
-             }
-           }}
-    >
-      <Block font='ParagraphXSmall'>{text}</Block>
-    </Radio>
-  )
-}
-
-const SelectType = (props: { type: SearchType, setType: (type: SearchType) => void }) =>
-  <Block
-    font='ParagraphSmall'
-    position='absolute'
-    marginTop='-4px'
-    backgroundColor={theme.colors.primary50}
-    width='40vw'
-    $style={{
-      borderBottomLeftRadius: '8px',
-      borderBottomRightRadius: '8px',
-    }}>
-    <Block
-      marginLeft='3px'
-      marginRight='3px'
-      marginBottom='3px'
-    >
-      <RadioGroup
-        onChange={e => props.setType(e.target.value as SearchType)}
-        align='horizontal'
-        value={props.type}
-
-      >
-        {smallRadio('all', intl.all)}
-        {smallRadio('informationType', intl.informationType)}
-        {smallRadio('purpose', intl.purpose)}
-        {smallRadio('process', intl.processes)}
-        {smallRadio('team', intl.team)}
-        {smallRadio('productarea', intl.productArea)}
-        {smallRadio('department', intl.department)}
-        {smallRadio('subDepartment', intl.subDepartmentShort)}
-        {smallRadio('thirdParty', intl.thirdParty)}
-        {smallRadio('system', intl.system)}
-        {smallRadio('document', intl.document)}
-        {smallRadio('nationalLaw', intl.nationalLaw)}
-        {smallRadio('gdprArticle', intl.gdprArticle)}
-      </RadioGroup>
-    </Block>
-  </Block>
-
 export const MainSearch = () => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
   const [filter, setFilter] = useState(false)
@@ -335,7 +240,10 @@ export const MainSearch = () => {
             },
             DropdownListItem: {
               style: {
-                padding: '0 5px 0 5px'
+                paddingTop: '0',
+                paddingRight: '5px',
+                paddingBottom: '0',
+                paddingLeft: '5px'
               }
             }
           }

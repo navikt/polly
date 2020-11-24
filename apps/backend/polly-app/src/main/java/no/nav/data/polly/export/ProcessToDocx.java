@@ -15,7 +15,6 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
@@ -61,6 +60,7 @@ import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -95,7 +95,7 @@ public class ProcessToDocx {
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
         var doc = new DocumentBuilder();
-        doc.addTitle("Behandling: " + process.getName());
+        doc.addTitle("Behandling: " + process.getData().getName());
         doc.generate(process);
         return doc.build();
     }
@@ -111,7 +111,7 @@ public class ProcessToDocx {
             processes = processRepository.findBySubDepartment(code);
         } else if (list == ListName.PURPOSE) {
             title = "Formål";
-            processes = processRepository.findByPurposeCode(code);
+            processes = processRepository.findByPurpose(code);
         } else if (list == ListName.SYSTEM) {
             title = "System";
             processes = processRepository.findByProduct(code);
@@ -119,7 +119,9 @@ public class ProcessToDocx {
             throw new ValidationException("no list given");
         }
         processes = new ArrayList<>(processes);
-        processes.sort(comparing(Process::getPurposeCode).thenComparing(Process::getName));
+        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
+                .thenComparing(p -> p.getData().getName());
+        processes.sort(comparator);
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
@@ -160,14 +162,16 @@ public class ProcessToDocx {
 
         public void generate(Process process) {
             ProcessData data = process.getData();
-            String purposeName = shortName(ListName.PURPOSE, process.getPurposeCode());
+            String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
-            var header = addHeading1(purposeName + ": " + process.getName());
+            var header = addHeading1(purposeNames + ": " + process.getData().getName());
             addBookmark(header, process.getId().toString());
             addText(periodText(process.getData().toPeriod()));
 
-            addHeading4("Overordnet formål: " + purposeName);
-            addText(CodelistService.getCodelist(ListName.PURPOSE, process.getPurposeCode()).getDescription());
+            data.getPurposes().forEach(purpose -> {
+                addHeading4("Overordnet formål: " + shortName(ListName.PURPOSE, purpose));
+                addText(CodelistService.getCodelist(ListName.PURPOSE, purpose).getDescription());
+            });
 
             addHeading4("Formål med behandlingen");
             addText(data.getDescription());
@@ -178,7 +182,7 @@ public class ProcessToDocx {
             addTexts(data.getLegalBases().stream().map(this::mapLegalBasis).collect(toList()));
 
             addHeading4("Status");
-            addText(data.getStatus() == ProcessStatus.COMPLETED ? "Godkjent" : "Under arbeid");
+            addText(processStatusText(data));
 
             addHeading4("Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
@@ -317,7 +321,7 @@ public class ProcessToDocx {
 
             List<Object> cells = row.getContent();
             Text infoTypeName = text(pol.getInformationTypeName());
-            Text subjCats = text(pol.getData().getSubjectCategories().stream().map(c -> shortName(ListName.SUBJECT_CATEGORY, c)).collect(Collectors.joining(", ")));
+            Text subjCats = text(shortNames(ListName.SUBJECT_CATEGORY, pol.getData().getSubjectCategories()));
             ((Tc) cells.get(0)).getContent().add(paragraph(infoTypeName));
             ((Tc) cells.get(1)).getContent().add(paragraph(subjCats));
             List<Object> legalBasisCell = ((Tc) cells.get(2)).getContent();
@@ -467,7 +471,7 @@ public class ProcessToDocx {
             long currListId = listId++;
 
             for (Process process : processes) {
-                var name = shortName(ListName.PURPOSE, process.getPurposeCode()) + ": " + process.getName();
+                var name = shortNames(ListName.PURPOSE, process.getData().getPurposes()) + ": " + process.getData().getName();
                 var bookmark = process.getId().toString();
 
                 addListItem(name, currListId, bookmark);
@@ -586,8 +590,20 @@ public class ProcessToDocx {
         return BooleanUtils.toString(aBoolean, "Ja", "Nei", "Uavklart");
     }
 
+    private static String shortNames(ListName listName, List<String> codes) {
+        return codes.stream().map(code -> shortName(listName, code)).collect(Collectors.joining(", "));
+    }
+
     private static String shortName(ListName listName, String code) {
         return code == null ? "" : CodelistService.getCodelist(listName, code).getShortName();
+    }
+
+    private static String processStatusText(ProcessData data) {
+        return switch (data.getStatus()) {
+            case COMPLETED -> "Godkjent";
+            case IN_PROGRESS -> "Under arbeid";
+            case NEEDS_REVISION -> "Trenger revidering";
+        };
     }
 
 }

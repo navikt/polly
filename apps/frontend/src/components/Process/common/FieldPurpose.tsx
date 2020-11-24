@@ -1,35 +1,32 @@
 import * as React from "react";
-import {Select, Value} from "baseui/select";
+import {Select} from "baseui/select";
 import {codelist, ListName} from "../../../service/Codelist";
-import {Field, FieldProps} from "formik";
+import {FieldArray, FormikProps} from "formik";
 import {ProcessFormValues} from "../../../constants";
 import {Block} from "baseui/block";
 
-const FieldPurpose = (props: { purposeCode?: string }) => {
-  const {purposeCode} = props
-  const [value, setValue] = React.useState<Value>(purposeCode ? [{
-    id: purposeCode,
-    label: codelist.getShortname(ListName.PURPOSE, purposeCode)
-  }] : [])
+const FieldPurpose = (props: {formikBag: FormikProps<ProcessFormValues>}) => {
+  const {formikBag} = props
 
   return (
-    <Field
-      name='purposeCode'
-      render={({form}: FieldProps<ProcessFormValues>) => (
-        <Block width={'100%'}>
-          <Select
-            options={codelist.getParsedOptions(ListName.PURPOSE)}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('purposeCode', value.length > 0 ? value[0].id : '')
-            }}
-            value={value}
-            error={!!(form.errors.purposeCode && form.touched.purposeCode)}
-          />
+    <FieldArray
+      name='purposes'
+      render={arrayHelpers => (
+        <Block width='100%'>
+          <Block width='100%'>
+            <Select
+              value={codelist.getParsedOptionsForList(ListName.PURPOSE, formikBag.values.purposes)}
+              options={codelist.getParsedOptions(ListName.PURPOSE).filter(o => !formikBag.values.purposes.includes(o.id))}
+              onChange={({value}) => {
+                arrayHelpers.form.setFieldValue('purposes', value.map(v => v.id))
+              }}
+            />
+          </Block>
         </Block>
       )}
     />
   )
+
 }
 
 export default FieldPurpose

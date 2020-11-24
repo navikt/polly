@@ -68,7 +68,7 @@ const CodeListTable = ({tableData, refresh}: TableCodelistProps) => {
 
   return (
     <>
-      <Table emptyText={intl.codes} headers={
+      <Table emptyText={intl.noCodesAvailableInTable} headers={
         <>
           <HeadCell
             small

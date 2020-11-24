@@ -20,6 +20,9 @@ type AccordionTitleProps = {
   deleteProcess: () => void
   forwardRef?: React.Ref<any>
 }
+
+export const InformationTypeRef = React.createRef<HTMLDivElement>();
+
 const AccordionTitle = (props: AccordionTitleProps) => {
   const {process, expanded, hasAccess} = props
   return <>
@@ -28,7 +31,7 @@ const AccordionTitle = (props: AccordionTitleProps) => {
         {expanded ?
           <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
         <span> </span>
-        <span>{codelist.getShortname(ListName.PURPOSE, process.purpose.code)}: </span>
+        <span>{process.purposes.map(p => codelist.getShortname(ListName.PURPOSE, p.code)).join(", ")}: </span>
         <span>{process.name}</span>
       </Label1>
     </Block>
@@ -65,6 +68,18 @@ const AccordionTitle = (props: AccordionTitleProps) => {
           >
             {intl.edit}
           </Button>
+
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faEdit}
+            tooltip={intl.editInformationTypes}
+            onClick={() => {if (InformationTypeRef && InformationTypeRef.current) {InformationTypeRef.current.scrollIntoView()}}}
+            marginRight
+          >
+            {intl.editInformationTypes}
+          </Button>
+
           <Button
             kind={'outline'}
             size={ButtonSize.compact}

@@ -1,10 +1,9 @@
 package no.nav.data.polly.disclosure;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
@@ -13,6 +12,10 @@ import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.document.DocumentService;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,40 +42,47 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @RequestMapping("/disclosure")
-@Api(value = "Disclosure", tags = {"Disclosure"})
+@Tag(name = "Disclosure")
 public class DisclosureController {
 
     private final DisclosureRepository repository;
     private final DisclosureService service;
-    private final DocumentService documentService;
 
-    public DisclosureController(DisclosureRepository repository, DisclosureService service, DocumentService documentService) {
+    private final DocumentService documentService;
+    private final InformationTypeRepository informationTypeRepository;
+    private final ProcessRepository processRepository;
+
+    public DisclosureController(DisclosureRepository repository, DisclosureService service, DocumentService documentService,
+            InformationTypeRepository informationTypeRepository, ProcessRepository processRepository) {
         this.repository = repository;
         this.service = service;
         this.documentService = documentService;
+        this.informationTypeRepository = informationTypeRepository;
+        this.processRepository = processRepository;
     }
 
-    @ApiOperation(value = "Get All Disclosures")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Disclosures fetched", response = DisclosurePage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get All Disclosures")
+    @ApiResponse(description = "All Disclosures fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<DisclosureResponse>> getAll(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
+            @RequestParam(required = false) UUID processId,
             @RequestParam(required = false) String recipient,
             @RequestParam(required = false) UUID documentId
     ) {
-        log.info("Received request for all Disclosures. informationType={} recipient={}, documentId={}", informationTypeId, recipient, documentId);
+        log.info("Received request for all Disclosures. informationType={} process={} recipient={}, documentId={}", informationTypeId, processId, recipient, documentId);
         List<Disclosure> filtered = null;
         if (informationTypeId != null) {
             filtered = repository.findByInformationTypeId(informationTypeId);
+        } else if (processId != null) {
+            filtered = repository.findByProcessId(processId);
         } else if (StringUtils.isNotBlank(recipient)) {
             filtered = repository.findByRecipient(recipient);
         } else if (documentId != null) {
             filtered = repository.findByDocumentId(documentId.toString());
         }
         if (filtered != null) {
-            return returnResults(new RestResponsePage<>(convert(filtered, this::convertAndAddDocument)));
+            return returnResults(new RestResponsePage<>(convert(filtered, Disclosure::convertToResponse)));
         }
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
     }
@@ -82,15 +92,12 @@ public class DisclosureController {
         return ResponseEntity.ok(page);
     }
 
-    @ApiOperation(value = "Get Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Disclosure fetched", response = DisclosureResponse.class),
-            @ApiResponse(code = 404, message = "Disclosure not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Disclosure")
+    @ApiResponse(description = "Disclosure fetched")
     @GetMapping("/{id}")
     public ResponseEntity<DisclosureResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Disclosure with the id={}", id);
-        Optional<DisclosureResponse> disclosureResponse = repository.findById(id).map(this::convertAndAddDocument);
+        Optional<DisclosureResponse> disclosureResponse = repository.findById(id).map(this::convertAndAddObjects);
         if (disclosureResponse.isEmpty()) {
             log.info("Cannot find the Disclosure with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -99,35 +106,28 @@ public class DisclosureController {
         return new ResponseEntity<>(disclosureResponse.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Create Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Disclosure successfully created", response = DisclosureResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create Disclosure")
+    @ApiResponse(responseCode = "201", description = "Disclosure successfully created")
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DisclosureResponse> createPolicy(@Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to create Disclosure");
-        return new ResponseEntity<>(convertAndAddDocument(service.save(request)), HttpStatus.CREATED);
+        return new ResponseEntity<>(convertAndAddObjects(service.save(request)), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Update Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Disclosure successfully updated", response = DisclosureResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update Disclosure")
+    @ApiResponse(description = "Disclosure successfully updated")
+
     @PutMapping("/{id}")
     public ResponseEntity<DisclosureResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to update Disclosure");
         Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
-        return ResponseEntity.ok(convertAndAddDocument(service.update(request)));
+        return ResponseEntity.ok(convertAndAddObjects(service.update(request)));
     }
 
-    @ApiOperation(value = "Delete Disclosure")
-    @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Disclosure deleted"),
-            @ApiResponse(code = 404, message = "Disclosure not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete Disclosure")
+    @ApiResponse(description = "Disclosure deleted")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<DisclosureResponse> deleteDisclosureById(@PathVariable UUID id) {
@@ -139,13 +139,21 @@ public class DisclosureController {
         }
         service.deleteById(id);
         log.info("Disclosure with id={} deleted", id);
-        return new ResponseEntity<>(convertAndAddDocument(fromRepository.get()), HttpStatus.OK);
+        return new ResponseEntity<>(convertAndAddObjects(fromRepository.get()), HttpStatus.OK);
     }
 
-    private DisclosureResponse convertAndAddDocument(Disclosure disclosure) {
+    private DisclosureResponse convertAndAddObjects(Disclosure disclosure) {
         var response = disclosure.convertToResponse();
-        if (disclosure.getData().getDocumentId() != null) {
+        if (response.getDocumentId() != null) {
             response.setDocument(documentService.getDocumentAsResponse(disclosure.getData().getDocumentId()));
+        }
+        if (!response.getInformationTypeIds().isEmpty()) {
+            var its = informationTypeRepository.findAllById(response.getInformationTypeIds());
+            response.setInformationTypes(convert(its, InformationType::convertToShortResponse));
+        }
+        if (!response.getProcessIds().isEmpty()) {
+            var processes = processRepository.findAllById(response.getProcessIds());
+            response.setProcesses(convert(processes, Process::convertToShortResponse));
         }
         return response;
     }

@@ -20,7 +20,7 @@ const ThirdPartiesTable = ({informationTypes, sortName}: TableInformationTypes) 
       <HeadingSmall>{intl.retrievedFromThirdParty}</HeadingSmall>
 
       <Table
-        emptyText={intl.retrievedFromThirdParty.toLowerCase()}
+        emptyText={intl.noRetrievedFromThirdPartyAvailableInTable}
         headers={
           <>
             <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>

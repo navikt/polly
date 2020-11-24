@@ -135,7 +135,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </ModalHeader>
 
                 <ModalBody>
-                  <CustomizedModalBlock>
+                  <CustomizedModalBlock first>
                     <ModalLabel label={intl.name} tooltip={intl.processNameHelpText}/>
                     <FieldName/>
                   </CustomizedModalBlock>
@@ -143,21 +143,19 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.overallPurposeActivity} tooltip={intl.overallPurposeHelpText}/>
-                    <FieldPurpose
-                      purposeCode={initialValues.purposeCode}
-                    />
+                    <FieldPurpose formikBag={formikBag}/>
                   </CustomizedModalBlock>
-                  <Error fieldName='purposeCode'/>
+                  <Error fieldName='purposes'/>
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.purposeOfTheProcess} tooltip={intl.processPurposeHelpText}/>
-                    <FieldDescription />
+                    <FieldDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='description'/>
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.additionalDescription} tooltip={intl.additionalDescriptionHelpText}/>
-                    <FieldAdditionalDescription />
+                    <FieldAdditionalDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='additionalDescription'/>
 
@@ -209,6 +207,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                           >
                             <Radio value={ProcessStatus.COMPLETED}>{intl.completedProcesses}</Radio>
                             <Radio value={ProcessStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
+                            {initialValues.status === ProcessStatus.NEEDS_REVISION && <Radio value={ProcessStatus.NEEDS_REVISION}>{intl.needsRevision}</Radio>}
                           </RadioGroup>
                         }
                       />
@@ -228,16 +227,16 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     >
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'><ModalLabel label={intl.department} tooltip={intl.departmentHelpText}/></Block>
-                          <Block width='48%'><ModalLabel label={intl.subDepartment} tooltip={intl.subDepartmentHelpText}/></Block>
+                        <Block width='48%'><ModalLabel label={intl.subDepartment} tooltip={intl.subDepartmentHelpText}/></Block>
                       </Block>
 
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'>
                           <FieldDepartment department={formikBag.values.affiliation.department}/>
                         </Block>
-                          <Block width='48%'>
-                            <FieldSubDepartments formikBag={formikBag}/>
-                          </Block>
+                        <Block width='48%'>
+                          <FieldSubDepartments formikBag={formikBag}/>
+                        </Block>
                       </Block>
 
                       <Block display='flex' width='100%' justifyContent='space-between' marginTop={theme.sizing.scale400}>

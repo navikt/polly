@@ -1,16 +1,18 @@
 package no.nav.data.polly.process;
 
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.storage.domain.LastModified;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.process.dto.ProcessRevisionRequest;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,31 +24,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
+
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
 @Transactional
-@Api(value = "Data Catalog Process", description = "REST API for Process", tags = {"Process"})
+@Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
 public class ProcessWriteController {
 
     private final ProcessService service;
     private final ProcessRepository repository;
+    private final TeamService teamService;
 
-    public ProcessWriteController(ProcessService service, ProcessRepository repository) {
+    public ProcessWriteController(ProcessService service, ProcessRepository repository, TeamService teamService) {
         this.service = service;
         this.repository = repository;
+        this.teamService = teamService;
     }
 
-    @ApiOperation(value = "Create Processes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Processes to be created successfully accepted", response = ProcessResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create Processes")
+    @ApiResponse(responseCode = "201", description = "Processes to be created successfully accepted")
     @PostMapping
     public ResponseEntity<ProcessResponse> createProcesses(@RequestBody ProcessRequest request) {
         log.info("Received requests to create Process");
@@ -57,11 +62,8 @@ public class ProcessWriteController {
         return new ResponseEntity<>(process.convertToResponseWithPolicies(), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Update Process")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process updated", response = ProcessResponse.class),
-            @ApiResponse(code = 404, message = "Process not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update Process")
+    @ApiResponse(description = "Process updated")
     @PutMapping("/{id}")
     public ResponseEntity<ProcessResponse> updateProcess(@PathVariable UUID id, @Valid @RequestBody ProcessRequest request) {
         log.debug("Received request to update Process with id={}", id);
@@ -77,11 +79,8 @@ public class ProcessWriteController {
         return ResponseEntity.ok(service.update(request).convertToResponseWithPolicies());
     }
 
-    @ApiOperation(value = "Delete Process")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process deleted", response = ProcessResponse.class),
-            @ApiResponse(code = 404, message = "Process not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete Process")
+    @ApiResponse(description = "Process deleted")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<ProcessResponse> deleteProcessById(@PathVariable UUID id) {
@@ -94,6 +93,30 @@ public class ProcessWriteController {
         service.deleteById(id);
         log.info("Process with id={} deleted", id);
         return new ResponseEntity<>(fromRepository.get().convertToResponse(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Set revision for processe(s)")
+    @PostMapping("/revision")
+    public void requireRevision(@RequestBody ProcessRevisionRequest request) {
+        log.info("Request for revision {}", request);
+        request.validateFieldsAndThrow();
+
+        var ids = switch (request.getProcessSelection()) {
+            case ONE -> List.of(request.getProcessId());
+            case PRODUCT_AREA -> {
+                var teams = teamService.getTeamsForProductArea(request.getProductAreaId());
+                yield convert(repository.findByProductTeams(convert(teams, Team::getId)), Process::getId);
+            }
+            case DEPARTMENT -> repository.findIdByDepartment(request.getDepartment());
+            case ALL -> repository.findAllIds();
+        };
+
+        var lastModifiedByList = repository.getLastModifiedBy(ids);
+        var lastModifiedBy = lastModifiedByList.stream().collect(Collectors.groupingBy(LastModified::getLastModifiedBy));
+
+        lastModifiedBy.values()
+                .stream().map(it -> convert(it, LastModified::getId))
+                .forEach(processIds -> service.requireRevision(processIds, request.getRevisionText(), request.isCompletedOnly()));
     }
 
 }

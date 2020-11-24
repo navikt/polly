@@ -1,5 +1,8 @@
 package no.nav.data.polly.process;
 
+import com.nimbusds.jwt.JWTClaimsSet.Builder;
+import no.nav.data.common.security.azure.AzureUserInfo;
+import no.nav.data.common.utils.MdcUtils;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -10,6 +13,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.rest.PolicyRestController.PolicyPage;
+import no.nav.data.polly.process.ProcessReadController.LastEditedPage;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.ProcessStateController.ProcessShortPage;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
@@ -18,6 +22,7 @@ import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
+import no.nav.data.polly.test.TestConfig.MockFilter;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,9 +33,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,7 +67,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
                         .processId(policy.getProcess().getId())
-                        .purposeCode(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
+                        .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                         .informationTypeId(createAndSaveInformationType().getId())
                         .informationType(
                                 new InformationTypeShortResponse(createAndSaveInformationType().getId(), INFORMATION_TYPE_NAME,
@@ -74,9 +81,34 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void getLastEdits() {
+        createAndSaveProcess(PURPOSE_CODE1);
+
+        AzureUserInfo userInfo = new AzureUserInfo(new Builder().claim(StandardClaimNames.NAME, "Name Nameson").build(), Set.of(), "S123456");
+
+        MdcUtils.setUser(userInfo.getIdentName());
+        createAndSaveProcess(PURPOSE_CODE2);
+        var deleted = createAndSaveProcess("deleted");
+        var deleted2 = createAndSaveProcess("deleted2");
+        processService.deleteById(deleted.getId());
+        MdcUtils.clearUser();
+        processService.deleteById(deleted2.getId());
+
+        MockFilter.setUser(userInfo);
+        ResponseEntity<LastEditedPage> resp = restTemplate.getForEntity("/process/myedits", LastEditedPage.class);
+        MockFilter.clearUser();
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+        assertThat(resp.getBody().getContent().get(0).getTime()).isNotNull();
+        assertThat(resp.getBody().getContent().get(0).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2);
+    }
+
+    @Test
     void searchProcess() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process/search/{name}", ProcessPage.class, policy.getProcess().getName().toLowerCase());
+        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process/search/{name}", ProcessPage.class, policy.getProcess().getData().getName().toLowerCase());
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
@@ -112,6 +144,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                     field != ProcessField.MISSING_LEGAL_BASIS &&
                     field != ProcessField.EXCESS_INFO &&
                     field != ProcessField.RETENTION_DATA &&
+                    field != ProcessField.DPIA_REFERENCE_MISSING &&
                     field != ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY;
         }
 
@@ -166,13 +199,11 @@ class ProcessControllerIT extends IntegrationTestBase {
             assertThat(processPage.getContent()).contains(
                     processResponseBuilder(policy.getProcess().getId())
                             .name("Auto_" + PURPOSE_CODE1)
-                            .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
-                            .purposeCode(PURPOSE_CODE1)
+                            .purposes(List.of(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1)))
                             .build(),
                     processResponseBuilder(policy2.getProcess().getId())
                             .name("Auto_" + PURPOSE_CODE1 + 2)
-                            .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2))
-                            .purposeCode(PURPOSE_CODE1 + 2)
+                            .purposes(List.of(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2)))
                             .build()
             );
         }
@@ -228,7 +259,7 @@ class ProcessControllerIT extends IntegrationTestBase {
     @Test
     void createProcess() {
         ResponseEntity<ProcessResponse> resp = restTemplate
-                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purposeCode("AAP").build(), ProcessResponse.class);
+                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP").build(), ProcessResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
         assertThat(resp.getBody().getName()).isEqualTo("newprocess");
@@ -238,7 +269,7 @@ class ProcessControllerIT extends IntegrationTestBase {
     @Test
     void createProcessValidationError() {
         ResponseEntity<String> resp = restTemplate
-                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purposeCode("AAP")
+                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP")
                         .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build()))
                         .build(), String.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -247,7 +278,7 @@ class ProcessControllerIT extends IntegrationTestBase {
 
     @Test
     void createProcessDuplicate() {
-        var request = ProcessRequest.builder().name("newprocess").purposeCode("AAP").build();
+        var request = ProcessRequest.builder().name("newprocess").purpose("AAP").build();
         ResponseEntity<ProcessResponse> resp = restTemplate.postForEntity("/process", request, ProcessResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -259,12 +290,12 @@ class ProcessControllerIT extends IntegrationTestBase {
     @Test
     void updateProcess() {
         ResponseEntity<ProcessResponse> resp = restTemplate
-                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purposeCode("AAP").build(), ProcessResponse.class);
+                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP").build(), ProcessResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
 
         String id = resp.getBody().getId().toString();
-        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("AAP")
+        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purpose("AAP")
                 .affiliation(AffiliationRequest.builder().department("dep").build())
                 .build();
         resp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), ProcessResponse.class, id);
@@ -276,11 +307,11 @@ class ProcessControllerIT extends IntegrationTestBase {
     @Test
     void updateProcessChangePurpose() {
         ResponseEntity<ProcessResponse> resp = restTemplate
-                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purposeCode("AAP").build(), ProcessResponse.class);
+                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP").build(), ProcessResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
         ResponseEntity<PolicyPage> polResp = restTemplate
-                .postForEntity("/policy", List.of(PolicyRequest.builder().processId(resp.getBody().getId().toString()).purposeCode("AAP")
+                .postForEntity("/policy", List.of(PolicyRequest.builder().processId(resp.getBody().getId().toString()).purpose("AAP")
                         .informationTypeId(createAndSaveInformationType().getId().toString())
                         .subjectCategory("BRUKER")
                         .build()), PolicyPage.class);
@@ -289,13 +320,13 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(polResp.getBody().getNumberOfElements()).isEqualTo(1);
 
         String id = resp.getBody().getId().toString();
-        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("KONTROLL")
+        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purpose("KONTROLL")
                 .affiliation(AffiliationRequest.builder().department("dep").build())
                 .build();
         var errorResp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), String.class, id);
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(errorResp.getBody()).isNotNull();
-        assertThat(policyRepository.findById(polResp.getBody().getContent().get(0).getId()).orElseThrow().getPurposeCode()).isEqualTo("KONTROLL");
+        assertThat(policyRepository.findById(polResp.getBody().getContent().get(0).getId()).orElseThrow().getData().getPurposes()).isEqualTo(List.of("KONTROLL"));
     }
 
     @Test
@@ -306,9 +337,8 @@ class ProcessControllerIT extends IntegrationTestBase {
         ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?purpose", ProcessCountResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull();
-
-        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L, PURPOSE_CODE2, 0L)));
+        assertThat(purposeResponse).isNotNull()
+                .isEqualTo(new ProcessCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L, PURPOSE_CODE2, 0L)));
     }
 
     @Test
@@ -318,9 +348,8 @@ class ProcessControllerIT extends IntegrationTestBase {
         ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?department", ProcessCountResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull();
-
-        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("AOT", 0L, "DEP", 1L)));
+        assertThat(purposeResponse).isNotNull()
+                .isEqualTo(new ProcessCountResponse(Map.of("AOT", 0L, "DEP", 1L)));
     }
 
     @Test
@@ -330,9 +359,8 @@ class ProcessControllerIT extends IntegrationTestBase {
         ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?subDepartment", ProcessCountResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull();
-
-        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("PEN", 0L, "SUBDEP", 1L)));
+        assertThat(purposeResponse).isNotNull()
+                .isEqualTo(new ProcessCountResponse(Map.of("PEN", 0L, "SUBDEP", 1L)));
     }
 
     @Test
@@ -342,9 +370,8 @@ class ProcessControllerIT extends IntegrationTestBase {
         ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?team", ProcessCountResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull();
-
-        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("teamid1", 1L)));
+        assertThat(purposeResponse).isNotNull()
+                .isEqualTo(new ProcessCountResponse(Map.of("teamid1", 1L)));
     }
 
 }

@@ -1,9 +1,9 @@
 package no.nav.data.polly.process.dpprocess;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -32,7 +32,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog DpProcess", tags = {"DpProcess"})
+@Tag(name = "DpProcess", description = "Data Catalog DpProcess")
 @RequestMapping("/dpprocess")
 public class DpProcessController {
 
@@ -44,11 +44,8 @@ public class DpProcessController {
         this.service = service;
     }
 
-    @ApiOperation(value = "Get DpProcessTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "DpProcess fetched", response = DpProcessResponse.class),
-            @ApiResponse(code = 404, message = "DpProcess not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get DpProcessTypes")
+    @ApiResponse(description = "DpProcess fetched")
     @GetMapping("/{id}")
     public ResponseEntity<DpProcessResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for DpProcess with id={}", id);
@@ -60,10 +57,8 @@ public class DpProcessController {
         return ResponseEntity.ok(process.get());
     }
 
-    @ApiOperation(value = "Get All DpProcesses")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Processes fetched", response = DpProcessPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get All DpProcesses")
+    @ApiResponse(description = "All Processes fetched")
     @GetMapping
     public ResponseEntity<RestResponsePage<DpProcessResponse>> getAll(PageParameters pageParameters) {
         log.info("Received request for all DpProcesses");
@@ -71,10 +66,8 @@ public class DpProcessController {
         return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 
-    @ApiOperation(value = "Search DpProcesses")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "DpProcesses fetched", response = DpProcessPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Search DpProcesses")
+    @ApiResponse(description = "DpProcesses fetched")
     @GetMapping("/search/{search}")
     public ResponseEntity<RestResponsePage<DpProcessResponse>> search(@PathVariable String search) {
         log.info("Received request for DpProcesses search={}", search);
@@ -85,11 +78,8 @@ public class DpProcessController {
         return ResponseEntity.ok(new RestResponsePage<>(convert(processes, DpProcess::convertToResponse)));
     }
 
-    @ApiOperation(value = "Create DpProcesses")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "DpProcesses to be created successfully accepted", response = DpProcessResponse.class),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Create DpProcesses")
+    @ApiResponse(responseCode = "201", description = "DpProcesses to be created successfully accepted")
     @PostMapping
     public ResponseEntity<DpProcessResponse> create(@RequestBody DpProcessRequest request) {
         log.info("Received requests to create DpProcess");
@@ -99,11 +89,8 @@ public class DpProcessController {
         return new ResponseEntity<>(process.convertToResponse(), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Update DpProcess")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "DpProcess updated", response = DpProcessResponse.class),
-            @ApiResponse(code = 404, message = "DpProcess not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Update DpProcess")
+    @ApiResponse(description = "DpProcess updated")
     @PutMapping("/{id}")
     public ResponseEntity<DpProcessResponse> update(@PathVariable UUID id, @Valid @RequestBody DpProcessRequest request) {
         log.debug("Received request to update DpProcess with id={}", id);
@@ -119,11 +106,8 @@ public class DpProcessController {
         return ResponseEntity.ok(service.update(request).convertToResponse());
     }
 
-    @ApiOperation(value = "Delete DpProcess")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "DpProcess deleted", response = DpProcessResponse.class),
-            @ApiResponse(code = 404, message = "DpProcess not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Delete DpProcess")
+    @ApiResponse(description = "DpProcess deleted")
     @DeleteMapping("/{id}")
     public ResponseEntity<DpProcessResponse> delete(@PathVariable UUID id) {
         log.info("Received a request to delete DpProcess with id={}", id);

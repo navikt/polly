@@ -13,7 +13,7 @@ import {replaceCodelistUsage} from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {Cell, HeadCell, Row, Table} from '../common/Table'
 
-const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
+const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
   const {usage, rows} = props
   const informationTypes = !!usage.informationTypes.length
   const processes = !!usage.processes.length
@@ -23,7 +23,7 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
   const documents = !!usage.documents.length
   return (
     <Table
-      emptyText={intl.usage}
+      emptyText={intl.noUsageAvailableInTable}
       hoverColor={theme.colors.primary100}
       headers={
         <>
@@ -49,13 +49,15 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
               {it && <ObjectLink id={it.id} type={ObjectType.INFORMATION_TYPE} withHistory={true}>{it.name}</ObjectLink>}
             </Cell>}
             {processes && <Cell>
-              {pr && <ObjectLink id={pr.id} type={ObjectType.PROCESS} withHistory={true}>{codelist.getShortname(ListName.PURPOSE, pr.purpose.code)} {pr.name}</ObjectLink>}
+              {pr && <ObjectLink id={pr.id} type={ObjectType.PROCESS}
+                                 withHistory={true}>{codelist.getShortnames(ListName.PURPOSE, pr.purposes.map(p => p.code)).join(", ")} {pr.name}</ObjectLink>}
             </Cell>}
             {dpProcesses && <Cell>
               {dpr && <ObjectLink id={dpr.id} type={ObjectType.DP_PROCESS} withHistory={true}>{dpr.name}</ObjectLink>}
             </Cell>}
             {policies && <Cell>
-              {po && <ObjectLink id={po.id} type={ObjectType.POLICY} withHistory={true}>{codelist.getShortname(ListName.PURPOSE, po.purposeCode)} {po.name}</ObjectLink>}
+              {po && <ObjectLink id={po.id} type={ObjectType.POLICY}
+                                 withHistory={true}>{codelist.getShortnames(ListName.PURPOSE, po.purposes).join(", ")} {po.name}</ObjectLink>}
             </Cell>}
             {disclosures && <Cell>
               {di && <ObjectLink id={di.id} type={ObjectType.DISCLOSURE} withHistory={true}>{di.name}</ObjectLink>}
@@ -70,7 +72,7 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
   )
 }
 
-export const Usage = (props: { usage?: CodeUsage, refresh: () => void }) => {
+export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
   const [showReplace, setShowReplace] = useState(false)
   const [newValue, setNewValue] = useState<Value>([])
   const ref = useRef<HTMLElement>()

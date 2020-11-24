@@ -49,3 +49,4 @@ spec:
   envFrom:
     - configmap: pollycfg
     - secret: polly-enckey
+    - secret: polly-mail-pwd

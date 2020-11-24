@@ -1,6 +1,7 @@
 package no.nav.data.polly.informationtype.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,15 +35,15 @@ public class InformationTypeRequest implements RequestElement {
     private String name;
     private String description;
     private String term;
-    @ApiModelProperty(value = "Codelist SENSITIVITY")
+    @Schema(description = "Codelist SENSITIVITY")
     private String sensitivity;
-    @ApiModelProperty(value = "Codelist SYSTEM")
+    @Schema(description = "Codelist SYSTEM")
     private String orgMaster;
     @Singular
     private List<String> productTeams;
-    @ApiModelProperty(value = "Codelist CATEGORY", example = "[\"CODELIST\"]")
+    @Schema(description = "Codelist CATEGORY", example = "[\"CODELIST\"]")
     private List<String> categories;
-    @ApiModelProperty(value = "Codelist THIRD_PARTY", example = "[\"CODELIST\"]")
+    @Schema(description = "Codelist THIRD_PARTY", example = "[\"CODELIST\"]")
     private List<String> sources;
     private List<String> keywords;
 

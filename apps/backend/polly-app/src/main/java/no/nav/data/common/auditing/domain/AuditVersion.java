@@ -17,8 +17,13 @@ import no.nav.data.polly.process.domain.Process;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -88,10 +93,11 @@ public class AuditVersion {
     private String findName() {
         JsonNode json = JsonUtils.toJsonNode(data);
         if (table.equals(AuditVersion.tableName(Policy.class))) {
-            String purposeCodeText = getPurpose(json);
-            return purposeCodeText + " " + json.get("informationTypeName").textValue();
+            List<String> purposes = getPurposes(json);
+            return String.join(", ", purposes) + " - " + json.get("informationTypeName").textValue();
         } else if (table.equals(tableName(Process.class))) {
-            return getPurpose(json) + " " + findName(json);
+            List<String> purposes = getPurposes(json);
+            return String.join(", ", purposes) + " - " + findName(json);
         }
         return findName(json);
     }
@@ -105,10 +111,20 @@ public class AuditVersion {
                         .orElse("");
     }
 
-    private String getPurpose(JsonNode json) {
-        String purposeCode = json.get("purposeCode").textValue();
-        Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purposeCode);
-        return Optional.ofNullable(codelist).map(Codelist::getShortName).orElse(purposeCode);
+    private List<String> getPurposes(JsonNode json) {
+        var purposesNewFormat = Optional.ofNullable(json.get("data").get("purposes"))
+                .map(JsonNode::elements).stream()
+                .flatMap(e -> StreamSupport.stream(Spliterators.spliteratorUnknownSize(e, Spliterator.ORDERED), false))
+                .map(JsonNode::textValue)
+                .collect(Collectors.toList());
+        // object.purposeCode old format
+        var purposes = purposesNewFormat.isEmpty() ? Optional.ofNullable(json.get("purposeCode")).map(JsonNode::textValue).map(List::of).orElse(List.of()) : purposesNewFormat;
+        return purposes.stream()
+                .map(purpose -> {
+                    Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
+                    return codelist == null ? purpose : codelist.getShortName();
+                })
+                .collect(Collectors.toList());
     }
 
     public static String tableName(@SuppressWarnings("rawtypes") Class<? extends Auditable> aClass) {

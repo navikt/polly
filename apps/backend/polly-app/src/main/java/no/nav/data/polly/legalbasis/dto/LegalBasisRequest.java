@@ -1,6 +1,7 @@
 package no.nav.data.polly.legalbasis.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,9 +21,9 @@ import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 @AllArgsConstructor
 public class LegalBasisRequest implements Validated {
 
-    @ApiModelProperty(value = "Codelist GDPR")
+    @Schema(description = "Codelist GDPR")
     private String gdpr;
-    @ApiModelProperty(value = "Codelist NATIONAL_LAW")
+    @Schema(description = "Codelist NATIONAL_LAW")
     private String nationalLaw;
     private String description;
 

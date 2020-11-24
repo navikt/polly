@@ -31,6 +31,8 @@ import {ProductAreaPage} from './pages/ProductAreaPage'
 import {LegalPage} from './pages/LegalPage'
 import DpProcessPage from "./pages/DpProcessPage";
 import DpProcessView from "./components/DpProcess/DpProcessView";
+import {RequestRevisionPage} from './pages/admin/RequestRevisionPage'
+import {MailLogPage} from './pages/admin/MailLogPage'
 
 export const processPath = '/process/:section/:code/:processId?'
 
@@ -63,6 +65,8 @@ const Routes = (): JSX.Element => (
       <Route exact path="/admin/codelist/:listname?" component={CodelistPage} />
       <Route exact path="/admin/audit/:id?/:auditId?" component={AuditPage} />
       <Route exact path="/admin/settings" component={SettingsPage} />
+      <Route exact path="/admin/request-revision" component={RequestRevisionPage} />
+      <Route exact path="/admin/maillog" component={MailLogPage}/>
 
       <Route exact path="/document/create" component={DocumentCreatePage} />
       <Route exact path="/document/:id?" component={DocumentPage} />
@@ -85,12 +89,14 @@ const NotFound = () => (
 
 const processUrl = async (id: string) => {
   const process = await getProcess(id)
-  return `/process/purpose/${process.purpose.code}/${process.id}`
+  // todo multipurpose url
+  return `/process/purpose/${process.purposes[0].code}/${process.id}`
 }
 
 const policyUrl = async (id: string) => {
   const policy = await getPolicy(id)
-  return `/process/purpose/${policy.purposeCode.code}/${policy.process.id}`
+  // todo multipurpose url
+  return `/process/purpose/${policy.purposes[0].code}/${policy.process.id}`
 }
 
 const disclosureUrl = async (id: string) => {

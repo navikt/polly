@@ -10,15 +10,18 @@ import com.microsoft.aad.msal4j.ConfidentialClientApplication;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 import com.microsoft.aad.msal4j.IConfidentialClientApplication;
 import com.microsoft.aad.msal4j.OnBehalfOfParameters;
+import com.microsoft.aad.msal4j.PublicClientApplication;
 import com.microsoft.aad.msal4j.RefreshTokenParameters;
 import com.microsoft.aad.msal4j.ResponseMode;
 import com.microsoft.aad.msal4j.UserAssertion;
+import com.microsoft.aad.msal4j.UserNamePasswordParameters;
 import com.microsoft.graph.concurrency.DefaultExecutors;
 import com.microsoft.graph.logger.DefaultLogger;
 import com.microsoft.graph.models.extensions.IGraphServiceClient;
 import com.microsoft.graph.models.extensions.User;
 import com.microsoft.graph.options.QueryOption;
 import com.microsoft.graph.requests.extensions.GraphServiceClient;
+import io.prometheus.client.Summary;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.TechnicalException;
@@ -33,6 +36,7 @@ import no.nav.data.common.security.dto.AppRole;
 import no.nav.data.common.security.dto.Credential;
 import no.nav.data.common.security.dto.GraphData;
 import no.nav.data.common.security.dto.OAuthState;
+import no.nav.data.common.utils.Constants;
 import no.nav.data.common.utils.MetricUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -68,6 +72,7 @@ public class AzureTokenProvider implements TokenProvider {
     private final LoadingCache<String, GraphData> graphDataCache;
 
     private final IConfidentialClientApplication msalClient;
+    private final PublicClientApplication msalPublicClient;
     private final AuthService authService;
     private final MdcMsalExecutor msalExecutor;
     private final ConfidentialClientApplication confidentialClientApplication;
@@ -76,17 +81,30 @@ public class AzureTokenProvider implements TokenProvider {
     private final SecurityProperties securityProperties;
     private final Encryptor encryptor;
 
+    private final Summary tokenMetrics;
+
     public AzureTokenProvider(AADAuthenticationProperties aadAuthProps,
-            IConfidentialClientApplication msalClient, AuthService authService,
+            IConfidentialClientApplication msalClient, PublicClientApplication msalPublicClient,
+            AuthService authService,
             SecurityProperties securityProperties, ThreadPoolExecutor msalThreadPool,
             ConfidentialClientApplication confidentialClientApplication, Encryptor encryptor) {
         this.aadAuthProps = aadAuthProps;
         this.msalClient = msalClient;
+        this.msalPublicClient = msalPublicClient;
         this.authService = authService;
         this.securityProperties = securityProperties;
         this.msalExecutor = new MdcMsalExecutor(msalThreadPool);
         this.confidentialClientApplication = confidentialClientApplication;
         this.encryptor = encryptor;
+        this.tokenMetrics = MetricUtils.summary()
+                .labels("accessToken").labels("graphToken").labels("identLookup").labels("lookupGrantedAuthorities")
+                .labelNames("action")
+                .name(Constants.APP_ID + "_token_summary")
+                .help("Time taken for azure token lookups")
+                .quantile(.5, .01).quantile(.9, .01).quantile(.99, .001)
+                .maxAgeSeconds(Duration.ofHours(24).getSeconds())
+                .ageBuckets(8)
+                .register();
 
         this.accessTokenCache = Caffeine.newBuilder().recordStats()
                 .expireAfter(new AuthResultExpiry())
@@ -228,8 +246,14 @@ public class AzureTokenProvider implements TokenProvider {
         return requireNonNull(accessTokenCache.get("refresh" + refreshToken + resource, cacheKey -> acquireTokenByRefreshToken(refreshToken, resource))).accessToken();
     }
 
+    public String getMailAccessToken() {
+        log.trace("Getting access token for mail");
+        return requireNonNull(accessTokenCache.get("mail", cacheKey -> acquireTokenForUser(Set.of("Mail.Send"), aadAuthProps.getMailUser(), aadAuthProps.getMailPassword())))
+                .accessToken();
+    }
+
     private IAuthenticationResult acquireTokenByRefreshToken(String refreshToken, String resource) {
-        try {
+        try (var ignored = tokenMetrics.labels("accessToken").startTimer()) {
             log.debug("Looking up access token for resource {}", resource);
             return msalClient.acquireToken(RefreshTokenParameters.builder(Set.of(resource), refreshToken).build()).get();
         } catch (Exception e) {
@@ -237,23 +261,38 @@ public class AzureTokenProvider implements TokenProvider {
         }
     }
 
-    private IAuthenticationResult acquireTokenByCredential(String resource) {
-        try {
-            log.debug("Looking up application token for resource {}", resource);
-            return msalClient.acquireToken(ClientCredentialParameters.builder(Set.of(resource)).build()).get();
-        } catch (Exception e) {
-            throw new TechnicalException("Failed to get access token for credential", e);
-        }
-    }
-
     private IAuthenticationResult acquireGraphTokenForAccessToken(String accessToken) {
-        try {
+        try (var ignored = tokenMetrics.labels("graphToken").startTimer()) {
             log.debug("Looking up graph token");
             return msalClient.acquireToken(OnBehalfOfParameters
                     .builder(MICROSOFT_GRAPH_SCOPES, new UserAssertion(accessToken))
                     .build()).get();
         } catch (Exception e) {
             throw new TechnicalException("Failed to get graph token", e);
+        }
+    }
+
+    /**
+     * used for email user
+     */
+    private IAuthenticationResult acquireTokenForUser(Set<String> scopes, String username, String password) {
+        try {
+            log.debug("Looking up access token for user {}", username);
+            return msalPublicClient.acquireToken(UserNamePasswordParameters.builder(scopes, username, password.toCharArray()).build()).get();
+        } catch (Exception e) {
+            throw new TechnicalException("Failed to get access token for username " + username, e);
+        }
+    }
+
+    /**
+     * access token for app user
+     */
+    private IAuthenticationResult acquireTokenByCredential(String resource) {
+        try {
+            log.debug("Looking up application token for resource {}", resource);
+            return msalClient.acquireToken(ClientCredentialParameters.builder(Set.of(resource)).build()).get();
+        } catch (Exception e) {
+            throw new TechnicalException("Failed to get access token for credential", e);
         }
     }
 

@@ -23,7 +23,7 @@ import {
   updateProcess
 } from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
-import {codelist, ListName} from '../../service/Codelist'
+import {Code, codelist, ListName} from '../../service/Codelist'
 import {useLocation} from 'react-router'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
@@ -74,7 +74,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   }, [code, filter])
 
   const handleChangePanel = (process?: Partial<Process>) => {
-    history.push(genProcessPath(section, code, process, filter))
+    if (process?.id !== currentProcess?.id) history.push(genProcessPath(section, code, process, filter))
+    // reuse method to reload a process
+    else if (process?.id) getProcessById(process.id).catch(setErrorProcessModal)
   }
 
   const hasAccess = () => user.canWrite()
@@ -124,7 +126,8 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
-      history.push(genProcessPath(Section.purpose, newProcess.purpose.code, newProcess, undefined, true))
+      // todo uh multipurpose url....
+      history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
@@ -209,7 +212,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         subjectCategories: infoType.subjectCategories.map(c => c.code),
         informationType: infoType.informationType,
         process: {...formValues.process, legalBases: []},
-        purposeCode: formValues.process.purpose.code,
+        purposes: formValues.process.purposes.map(p => p.code),
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
@@ -262,8 +265,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             escapeClearsValue={false}
             options={[
               {label: intl.allProcesses, id: undefined},
-              {label: intl.inProgressProcesses, id: 'IN_PROGRESS'},
-              {label: intl.showCompletedProcesses, id: 'COMPLETED'},
+              {label: intl.inProgressProcesses, id: ProcessStatus.IN_PROGRESS},
+              {label: intl.needsRevision, id: ProcessStatus.NEEDS_REVISION},
+              {label: intl.showCompletedProcesses, id: ProcessStatus.COMPLETED},
             ]}
             initialState={{value: [{id: filter}]}}
             filterOutSelected={false}
@@ -277,7 +281,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         </Block>
         <Block marginRight='auto'>
           <HeadingSmall>
-            {titleOverride ||intl.processes} ({processList.length})
+            {titleOverride || intl.processes} ({processList.length})
           </HeadingSmall>
         </Block>
       </Block>
@@ -311,7 +315,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         errorOnCreate={errorProcessModal}
         isEdit={false}
         initialValues={convertProcessToFormValues({
-          purpose: section === Section.purpose ? codelist.getCode(ListName.PURPOSE, code) : undefined,
+          purposes: section === Section.purpose ? [codelist.getCode(ListName.PURPOSE, code) as Code] : undefined,
           affiliation: {
             department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
             subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],

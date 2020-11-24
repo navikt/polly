@@ -2,10 +2,9 @@ package no.nav.data.polly.dashboard;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.utils.StreamUtils;
@@ -18,7 +17,6 @@ import no.nav.data.polly.dashboard.dto.DashResponse.Counter;
 import no.nav.data.polly.dashboard.dto.DashResponse.ProcessDashCount;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
@@ -28,6 +26,7 @@ import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessStatusFilter;
 import no.nav.data.polly.teams.TeamService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -55,7 +54,7 @@ import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
 @Slf4j
 @RestController
 @RequestMapping("/dash")
-@Api(value = "Dashboard", tags = {"Dashboard"})
+@Tag(name = "Dashboard")
 public class DashboardController {
 
     private final ProcessRepository processRepository;
@@ -75,10 +74,8 @@ public class DashboardController {
                 .maximumSize(3).build(this::calcDash);
     }
 
-    @ApiOperation(value = "Get Dashboard data")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Data fetched", response = DashResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
+    @Operation(summary = "Get Dashboard data")
+    @ApiResponse(description = "Data fetched")
     @GetMapping
     public ResponseEntity<DashResponse> getDashboardData(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
         return ResponseEntity.ok(requireNonNull(dashDataCache.get(filter)));
@@ -121,12 +118,12 @@ public class DashboardController {
         ArrayList<ProcessDashCount> dashes = getDashes(dash, process.getData().getAffiliation());
 
         dashes.forEach(ProcessDashCount::processes);
-        if (process.getData().getStatus() == ProcessStatus.COMPLETED) {
-            dashes.forEach(ProcessDashCount::processesCompleted);
+        switch (process.getData().getStatus()) {
+            case COMPLETED -> dashes.forEach(ProcessDashCount::processesCompleted);
+            case IN_PROGRESS -> dashes.forEach(ProcessDashCount::processesInProgress);
+            case NEEDS_REVISION -> dashes.forEach(ProcessDashCount::processesNeedsRevision);
         }
-        if (process.getData().getStatus() == ProcessStatus.IN_PROGRESS) {
-            dashes.forEach(ProcessDashCount::processesInProgress);
-        }
+
         if (process.getData().isUsesAllInformationTypes()) {
             dashes.forEach(ProcessDashCount::processesUsingAllInfoTypes);
         }
@@ -143,7 +140,12 @@ public class DashboardController {
 
         var pd = Optional.of(process.getData());
 
-        dashes.stream().map(ProcessDashCount::getDpia).forEach(d -> count(d, pd.map(ProcessData::getDpia).map(Dpia::getNeedForDpia).orElse(null)));
+        Optional<Dpia> dpia = pd.map(ProcessData::getDpia);
+        dashes.stream().map(ProcessDashCount::getDpia).forEach(d -> count(d, dpia.map(Dpia::getNeedForDpia).orElse(null)));
+        if (dpia.map(Dpia::getNeedForDpia).orElse(false) && StringUtils.isBlank(dpia.map(Dpia::getRefToDpia).orElse(null))) {
+            dashes.forEach(ProcessDashCount::dpiaReferenceMissing);
+        }
+
         dashes.stream().map(ProcessDashCount::getProfiling).forEach(d -> count(d, pd.map(ProcessData::getProfiling).orElse(null)));
         dashes.stream().map(ProcessDashCount::getAutomation).forEach(d -> count(d, pd.map(ProcessData::getAutomaticProcessing).orElse(null)));
         var ret = pd.map(ProcessData::getRetention);

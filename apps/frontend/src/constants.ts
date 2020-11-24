@@ -42,6 +42,7 @@ export enum ObjectType {
 
 export enum ProcessField {
   DPIA = 'DPIA',
+  DPIA_REFERENCE_MISSING = 'DPIA_REFERENCE_MISSING',
   PROFILING = 'PROFILING',
   AUTOMATION = 'AUTOMATION',
   RETENTION = 'RETENTION',
@@ -56,6 +57,21 @@ export enum ProcessField {
   MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
   COMMON_EXTERNAL_PROCESSOR = 'COMMON_EXTERNAL_PROCESSOR'
 }
+
+export type SearchType =
+  'all'
+  | 'purpose'
+  | 'process'
+  | 'team'
+  | 'productarea'
+  | 'department'
+  | 'subDepartment'
+  | 'nationalLaw'
+  | 'gdprArticle'
+  | 'informationType'
+  | 'thirdParty'
+  | 'system'
+  | 'document'
 
 export enum ProcessState {
   YES = 'YES',
@@ -79,9 +95,18 @@ export type NavigableItem =
 export enum ProcessStatus {
   All = 'ALL',
   COMPLETED = 'COMPLETED',
-  IN_PROGRESS = 'IN_PROGRESS'
+  IN_PROGRESS = 'IN_PROGRESS',
+  NEEDS_REVISION = 'NEEDS_REVISION'
 }
 
+export enum NoDpiaReason {
+  NO_SPECIAL_CATEGORY_PI = "NO_SPECIAL_CATEGORY_PI",
+  SMALL_SCALE = "SMALL_SCALE",
+  NO_DATASET_CONSOLIDATION = "NO_DATASET_CONSOLIDATION",
+  NO_NEW_TECH = "NO_NEW_TECH",
+  NO_PROFILING_OR_AUTOMATION = "NO_PROFILING_OR_AUTOMATION",
+  OTHER = "OTHER",
+}
 
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
@@ -100,7 +125,7 @@ export interface InformationtypeFormValues {
 
 export interface PolicyFormValues {
   id?: string;
-  purposeCode: string;
+  purposes: string[];
   informationType?: InformationTypeShort;
   process: {id: string; name: string; legalBases: LegalBasis[]};
   subjectCategories: string[];
@@ -113,7 +138,7 @@ export interface PolicyFormValues {
 
 export interface ProcessFormValues {
   id?: string;
-  purposeCode?: string;
+  purposes: string[];
   name?: string;
   description?: string;
   additionalDescription?: string;
@@ -154,6 +179,7 @@ export interface Dpia {
   refToDpia: string;
   riskOwner?: string;
   riskOwnerFunction?: string;
+  noDpiaReasons: string[]
 }
 
 export interface DataProcessingFormValues {
@@ -223,7 +249,7 @@ export interface Policy {
   id: string;
   informationType: InformationTypeShort;
   process: Process;
-  purposeCode: Code;
+  purposes: Code[];
   subjectCategories: Code[];
   legalBasesUse: LegalBasesUse;
   legalBases: LegalBasis[];
@@ -231,7 +257,7 @@ export interface Policy {
 }
 
 export const policySort: ColumnCompares<Policy> = {
-  purposeCode: (a, b) => codelist.getShortnameForCode(a.purposeCode).localeCompare(codelist.getShortnameForCode(b.purposeCode), intl.getLanguage()),
+  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), intl.getLanguage()),
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
   subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
@@ -275,7 +301,7 @@ export interface InformationTypeShort {
 export interface ProcessShort {
   id: string;
   name: string;
-  purpose: Code;
+  purposes: Code[];
   affiliation: Affiliation;
   status?: ProcessStatus;
   commonExternalProcessResponsible?: Code;
@@ -297,7 +323,7 @@ export interface Process extends IDurationed {
   affiliation: Affiliation;
   commonExternalProcessResponsible: Code;
   policies: Policy[];
-  purpose: Code;
+  purposes: Code[];
   changeStamp: ChangeStamp;
   dpia: Dpia;
   status?: ProcessStatus;
@@ -306,6 +332,7 @@ export interface Process extends IDurationed {
   profiling?: boolean;
   dataProcessing: DataProcessing;
   retention: Retention;
+  revisionText?: string
 }
 
 export interface DpProcess extends IDurationed {
@@ -468,7 +495,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document
   informationTypes: DocumentInfoTypeUse[]
   linkDocumentToPolicies: boolean
-  process: {id: string; name: string; purpose: Code}
+  process: {id: string; name: string; purposes: Code[]}
 }
 
 export interface CreateDocumentFormValues {
@@ -521,7 +548,7 @@ export interface UseWithPurpose {
   id: string;
   processId: string;
   name: string;
-  purposeCode: string;
+  purposes: string[];
 }
 
 export interface CategoryUsage {
@@ -582,6 +609,7 @@ export interface ProcessesDashCount {
   dpProcesses: number
   processesCompleted: number
   processesInProgress: number
+  processesNeedsRevision: number
   processesMissingLegalBases: number
   processesUsingAllInfoTypes: number
   processesMissingArt6: number
@@ -595,6 +623,7 @@ export interface ProcessesDashCount {
   dataProcessorAgreementMissing: number
   dataProcessorOutsideEU: Counter
   commonExternalProcessResponsible: number
+  dpiaReferenceMissing: number
 }
 
 export interface DepartmentProcessDashCount extends ProcessesDashCount {

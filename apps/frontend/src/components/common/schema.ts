@@ -93,12 +93,12 @@ const transferGroundsOutsideEUOtherMissing = (values: DataProcessingFormValues) 
 export const processSchema = () =>
   yup.object<ProcessFormValues>({
     name: yup.string().max(max, maxError()).required(intl.required),
-    purposeCode: yup
+    purposes: yup.array().of(yup
     .string()
     .oneOf(
       codelist.getCodes(ListName.PURPOSE).map((p) => p.code),
       intl.required
-    )
+    ))
     .required(intl.required),
     description: yup.string(),
     additionalDescription: yup.string(),
@@ -130,6 +130,7 @@ export const processSchema = () =>
       refToDpia: yup.string(),
       riskOwner: yup.string(),
       riskOwnerFunction: yup.string(),
+      noDpiaReasons: yup.array().of(yup.string())
     }),
   });
 
@@ -258,7 +259,7 @@ export const policySchema = () =>
     legalBases: yup.array().of(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     process: yup.object(),
-    purposeCode: yup.string(),
+    purposes: yup.array().of(yup.string()),
     id: yup.string(),
     documentIds: yup.array().of(yup.string()),
     otherPolicies: yup.array() // only used for validations

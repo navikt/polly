@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.copyOf;
 
 @Slf4j
 @Data
@@ -60,7 +61,10 @@ public class Disclosure extends Auditable {
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToDomain));
-        data.setDocumentId(request.getDocumentId() != null ? UUID.fromString(request.getDocumentId()): null);
+        data.setDocumentId(request.getDocumentId() != null ? UUID.fromString(request.getDocumentId()) : null);
+        data.setInformationTypeIds(convert(request.getInformationTypeIds(), UUID::fromString));
+        data.setProcessIds(convert(request.getProcessIds(), UUID::fromString));
+        data.setAbroad(DisclosureAbroad.convertAbroad(request.getAbroad()));
         return this;
     }
 
@@ -75,6 +79,9 @@ public class Disclosure extends Auditable {
                 .start(data.getStart())
                 .end(data.getEnd())
                 .documentId(data.getDocumentId())
+                .informationTypeIds(copyOf(data.getInformationTypeIds()))
+                .processIds(copyOf(data.getProcessIds()))
+                .abroad(data.getAbroad().convertToResponse())
                 .build();
     }
 

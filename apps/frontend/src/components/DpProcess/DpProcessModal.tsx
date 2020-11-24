@@ -21,7 +21,6 @@ import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
 import {Button, KIND} from "baseui/button";
 import FieldProduct from "../common/FieldProduct";
 import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
-import {RadioBoolButton} from "../common/Radio";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -99,8 +98,8 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   </Block>
                 </ModalHeader>
                 <ModalBody>
-                  <CustomizedModalBlock>
-                    <ModalLabel label={intl.name}/>
+                  <CustomizedModalBlock first>
+                    <ModalLabel label={intl.name} tooltip={intl.nameDpProcessHelpText}/>
                     <Field
                       name='name'
                       render={({field, form}: FieldProps<string, DpProcessFormValues>) => (
@@ -113,28 +112,21 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
 
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.externalProcessResponsible}/>
+                    <ModalLabel label={intl.externalProcessResponsible} tooltip={intl.externalProcessResponsibleDpProcessHelpText}/>
                     <Block width={'100%'}>
-                      {showResponsibleSelect &&
-                      <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible}
-                                                                hideSelect={() => setShowResponsibleSelect(false)}/>}
-                      {!showResponsibleSelect && <RadioBoolButton
-                        value={showResponsibleSelect}
-                        setValue={(b) => setShowResponsibleSelect(b!)}
-                        omitUndefined
-                      />}
+                      <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible} />
                     </Block>
                   </CustomizedModalBlock>
 
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.description}/>
+                    <ModalLabel label={intl.description} tooltip={intl.descriptionDpProcessHelpText}/>
                     <FieldDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='description'/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.purpose}/>
+                    <ModalLabel label={intl.purpose} tooltip={intl.purposeDpProcessHelpText}/>
                     <FieldPurposeDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='purposeDescription'/>
@@ -145,7 +137,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   </CustomizedModalBlock>
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.article9}/>
+                    <ModalLabel label={intl.article9} tooltip={intl.article9DpProcessHelpText}/>
                     <BoolField fieldName='art9' value={formikBag.values.art9}/>
                   </Block>
 

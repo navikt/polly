@@ -4,6 +4,10 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
+import no.nav.data.polly.disclosure.domain.Disclosure;
+import no.nav.data.polly.disclosure.domain.DisclosureData;
+import no.nav.data.polly.disclosure.dto.DisclosureAbroadRequest;
+import no.nav.data.polly.disclosure.dto.DisclosureAbroadResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.document.domain.Document;
@@ -14,6 +18,8 @@ import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -33,6 +39,14 @@ class DisclosureControllerIT extends IntegrationTestBase {
     @Autowired
     private TestRestTemplate restTemplate;
     private Document document;
+
+    @BeforeEach
+    void setUp() {
+        disclosureRepository.saveAll(List.of(
+                Disclosure.builder().generateId().data(DisclosureData.builder().recipient("recip").start(LocalDate.now()).end(LocalDate.now()).build()).build(),
+                Disclosure.builder().generateId().data(DisclosureData.builder().recipient("recip").start(LocalDate.now()).end(LocalDate.now()).build()).build()
+        ));
+    }
 
     @Test
     void createAndGetDisclosure() {
@@ -81,6 +95,14 @@ class DisclosureControllerIT extends IntegrationTestBase {
                                 .informationType(infoTypeRes)
                                 .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, "BRUKER")).build()))
                         .build())
+                .informationTypeIds(List.of())
+                .processIds(List.of())
+                .abroad(DisclosureAbroadResponse.builder()
+                        .abroad(true)
+                        .country("DNK")
+                        .refToAgreement("abroadref")
+                        .businessArea("Pesys")
+                        .build())
                 .build());
     }
 
@@ -90,35 +112,61 @@ class DisclosureControllerIT extends IntegrationTestBase {
         restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure", DisclosurePage.class);
 
-        assertDisclosures(resp, 2);
+        assertDisclosures(resp, 4);
     }
 
-    @Test
-    void getDisclosureByInfoTypeId() {
-        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        createDisclosureArbeidsgiverWithInformationType();
-        UUID informationTypeId = document.getData().getInformationTypes().get(0).getInformationTypeId();
-        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, informationTypeId);
+    @Nested
+    class GetByField {
 
-        assertDisclosures(resp, 1);
-    }
+        @Test
+        void getDisclosureByInfoTypeIdViaDocument() {
+            restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+            createDisclosureArbeidsgiverWithInformationType();
+            UUID informationTypeId = document.getData().getInformationTypes().get(0).getInformationTypeId();
+            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, informationTypeId);
 
-    @Test
-    void getDisclosureByDocumentId() {
-        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        createDisclosureArbeidsgiverWithInformationType();
-        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?documentId={docId}", DisclosurePage.class, document.getId());
+            assertDisclosures(resp, 1);
+        }
 
-        assertDisclosures(resp, 1);
-    }
+        @Test
+        void getDisclosureByInfoTypeId() {
+            InformationType infoType = createAndSaveInformationType();
+            DisclosureRequest request = buildDisclosure();
+            request.setInformationTypeIds(List.of(infoType.getId().toString()));
+            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
 
-    @Test
-    void getDisclosureByRecipient() {
-        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        var disc = createDisclosureArbeidsgiverWithInformationType();
-        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?recipient={recipient}", DisclosurePage.class, disc.getRecipient().getCode());
+            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, infoType.getId());
 
-        assertDisclosures(resp, 1);
+            assertDisclosures(resp, 1);
+        }
+
+        @Test
+        void getDisclosureByRecipient() {
+            restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+            var disc = createDisclosureArbeidsgiverWithInformationType();
+            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?recipient={recipient}", DisclosurePage.class, disc.getRecipient().getCode());
+
+            assertDisclosures(resp, 1);
+        }
+
+        @Test
+        void getDisclosureByDocumentId() {
+            createDisclosureArbeidsgiverWithInformationType();
+            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?documentId={docId}", DisclosurePage.class, document.getId());
+
+            assertDisclosures(resp, 1);
+        }
+
+        @Test
+        void getDisclosureByProcessId() {
+            var process = createAndSaveProcess(PURPOSE_CODE1);
+            DisclosureRequest request = buildDisclosure();
+            request.setProcessIds(List.of(process.getId().toString()));
+            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
+            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?processId={processId}", DisclosurePage.class, process.getId());
+
+            assertDisclosures(resp, 1);
+        }
     }
 
     @Test
@@ -187,9 +235,18 @@ class DisclosureControllerIT extends IntegrationTestBase {
     private DisclosureRequest buildDisclosure(String recipient) {
         return DisclosureRequest.builder()
                 .name("disc name")
-                .description("disc desc").recipient(recipient).recipientPurpose("recipient purpose")
-                .start(LocalDate.now().toString()).end(LocalDate.now().toString())
+                .description("disc desc")
+                .recipient(recipient)
+                .recipientPurpose("recipient purpose")
+                .start(LocalDate.now().toString())
+                .end(LocalDate.now().toString())
                 .legalBasis(createLegalBasisRequest())
+                .abroad(DisclosureAbroadRequest.builder()
+                        .abroad(true)
+                        .country("DNK")
+                        .businessArea("Pesys")
+                        .refToAgreement("abroadref")
+                        .build())
                 .build();
     }
 
