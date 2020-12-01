@@ -32,7 +32,7 @@ export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactE
                     <Label2 font="font300" display="flex" width="100%" justifyContent='flex-start'>
                         <Block display='flex'>
                             <Block>{props.label}</Block>
-                            <Block>
+                            <Block alignSelf={'center'}>
                                 <FontAwesomeIcon style={{marginLeft: '.5rem', alignSelf: 'center'}}
                                                  icon={faExclamationCircle} color={theme.colors.primary300}
                                                  size="sm"/>
