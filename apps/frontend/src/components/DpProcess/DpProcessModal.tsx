@@ -133,7 +133,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.validityOfProcess}/>
-                    <FieldDpProcessDates showDates={true} showLabels={true} rowBlockProps={rowBlockProps}/>
+                    <FieldDpProcessDates showDates={true} showLabels={false} rowBlockProps={rowBlockProps}/>
                   </CustomizedModalBlock>
 
                   <Block {...rowBlockProps}>
