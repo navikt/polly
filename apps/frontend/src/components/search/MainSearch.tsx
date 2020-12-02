@@ -15,7 +15,7 @@ import {searchResultColor} from "../../util/theme";
 import {SearchLabel} from "./components/SearchLabel";
 import {SelectType} from "./components/SelectType";
 
-type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
+type SearchItem = {id: string, sortKey: string, label: ReactElement, type: NavigableItem, number?: number}
 
 
 const searchCodelist = (search: string,
@@ -24,25 +24,25 @@ const searchCodelist = (search: string,
                         backgroundColor: string,
 ) =>
   codelist
-    .getCodes(list)
-    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-    .map(c => ({
-      id: c.code,
-      sortKey: c.shortName,
-      label: <SearchLabel name={c.shortName} type={typeName} backgroundColor={backgroundColor}/>,
-      type: list
-    }))
+  .getCodes(list)
+  .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+  .map(c => ({
+    id: c.code,
+    sortKey: c.shortName,
+    label: <SearchLabel name={c.shortName} type={typeName} backgroundColor={backgroundColor}/>,
+    type: list
+  }))
 
 const getCodelistByListnameAndType = (search: string, list: ListName, typeName: string) => {
   return codelist
-    .getCodes(list)
-    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-    .map(c => ({
-      id: c.code,
-      sortKey: c.shortName,
-      label: <SearchLabel name={c.shortName} type={typeName}/>,
-      type: list
-    } as SearchItem))
+  .getCodes(list)
+  .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+  .map(c => ({
+    id: c.code,
+    sortKey: c.shortName,
+    label: <SearchLabel name={c.shortName} type={typeName}/>,
+    type: list
+  } as SearchItem))
 }
 
 const useMainSearch = () => {
@@ -72,7 +72,11 @@ const useMainSearch = () => {
         if (search && search.replace(/ /g, '').length > 2) {
           let results: SearchItem[] = []
           let searches: Promise<any>[] = []
-          const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.sortKey, b.sortKey)
+          const compareFn = (a: SearchItem, b: SearchItem) => {
+            if (a.type === ObjectType.PROCESS && a.number === parseInt(search)) return -1
+            else if (b.type === ObjectType.PROCESS && b.number === parseInt(search)) return 1
+            return prefixBiasedSort(search, a.sortKey, b.sortKey)
+          }
           const add = (items: SearchItem[]) => {
             results = [...results, ...items].sort(compareFn)
             setSearchResult(results)
@@ -117,7 +121,8 @@ const useMainSearch = () => {
                     type={intl.process}
                     backgroundColor={searchResultColor.processBackground}
                   />,
-                  type: ObjectType.PROCESS
+                  type: ObjectType.PROCESS,
+                  number: it.number
                 })
               }))
             })())
