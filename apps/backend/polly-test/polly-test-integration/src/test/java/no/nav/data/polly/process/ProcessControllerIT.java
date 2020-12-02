@@ -81,6 +81,18 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void getProcessByNumber() {
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+        ResponseEntity<ProcessResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessResponse.class, policy.getProcess().getData().getNumber());
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessResponse processResponse = resp.getBody();
+        assertThat(processResponse).isNotNull();
+        assertThat(processResponse.getId()).isEqualTo(policy.getProcess().getId());
+    }
+
+    @Test
     void getLastEdits() {
         createAndSaveProcess(PURPOSE_CODE1);
 

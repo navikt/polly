@@ -24,6 +24,7 @@ import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,18 +64,23 @@ public class ProcessReadController {
         this.auditService = auditService;
     }
 
-    @Operation(summary = "Get Process with InformationTypes")
+    @Operation(summary = "Get Process with InformationTypes for Id or process number")
     @ApiResponse(description = "Process fetched")
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<ProcessResponse> findForId(@PathVariable UUID id) {
-        log.info("Received request for Process with id={}", id);
-        Optional<ProcessResponse> process = repository.findById(id).map(Process::convertToResponseWithPolicies);
+    public ResponseEntity<ProcessResponse> findForId(@PathVariable @Parameter(description = "Treated as process number if numeric") String id) {
+        log.info("Received request for Process with id/number={}", id);
+        Optional<Process> process;
+        if (StringUtils.isNumeric(id)) {
+            process = repository.findByProcessNumber(Integer.parseInt(id));
+        } else {
+            process = repository.findById(UUID.fromString(id));
+        }
         if (process.isEmpty()) {
             log.info("Cannot find the Process with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(process.get());
+        return ResponseEntity.ok(process.get().convertToResponseWithPolicies());
     }
 
     @Operation(summary = "Get All Processes, parameters filters are not combined unless stated otherwise")
@@ -134,7 +141,10 @@ public class ProcessReadController {
         if (search.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
         }
-        List<Process> processes = repository.findByNameContaining(search);
+        List<Process> processes = new ArrayList<>(repository.findByNameContaining(search));
+        if (StringUtils.isNumeric(search)) {
+            repository.findByProcessNumber(Integer.parseInt(search)).ifPresent(processes::add);
+        }
         return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
     }
 
