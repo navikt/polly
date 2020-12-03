@@ -118,8 +118,6 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
   const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
   const {submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title} = props
 
-  console.log(initialValues, "INTISLK")
-
   return (
     <Modal
       onClose={onClose}
