@@ -10,20 +10,22 @@
 
 <h1>Behandlinger trenger revidering</h1>
 
-<p>Hei</p>
-<p>Behandlinger har blitt markert av <i>${revisionRequestedBy}</i> for revidering</p>
-<p>Som siste person til å redigere disse behandlingene mottar du derfor et varsel om å sjekke disse behandlingene.</p>
-<br/>
-
-<h5>Dette gjelder behandlingene:</h5>
+<p>Hei,</p>
+<p>Du er oppført som siste person som redigerte følgende behandling(er) i behandlingskatalogen:</p>
 <ul>
     <#list processes as process>
       <li><a href="${process.processUrl}?source=revisionmail">${process.purposeNames}: ${process.name}</a></li>
     </#list>
 </ul>
 
-<h4>Grunnlag</h4>
+<p>Behandlingen(e) er markert av <i>${revisionRequestedBy}</i> med behov for revidering.</p>
+
+<p><b>Grunnlag</b></p>
 <p>${revisionText}</p>
+
+<br/>
+<p>Hva skjer videre? Ta stilling til revideringsgrunnlaget og vurder om behandlingen må endres. Dersom det er andre enn deg som bør oppdatere behandlingen, må du ta kontakt med
+  riktig person. Har du behov for bistand kan du kontakte oss på #behandlingskatalogen på Slack.</p>
 
 <div style="margin-top: 50px;">
   <hr/>
