@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Disclosure, DisclosureFormValues, PageResponse } from "../constants";
-import { env } from "../util/env"
-import { convertLegalBasesToFormValues } from "./PolicyApi"
+import {Disclosure, DisclosureFormValues, PageResponse} from "../constants";
+import {env} from "../util/env"
+import {convertLegalBasesToFormValues} from "./PolicyApi"
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content;
@@ -52,8 +52,6 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
 };
 
 export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => {
-  console.log(disclosure, "TOFRO")
-
   return {
     id: disclosure.id,
     recipient: disclosure.recipient.code || '',
