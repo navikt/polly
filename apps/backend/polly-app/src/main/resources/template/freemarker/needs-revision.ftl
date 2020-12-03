@@ -3,12 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>Behandlinger trenger revidering</title>
+  <title>Behandlinger med behov for revidering</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body>
 
-<h1>Behandlinger trenger revidering</h1>
+<h1>Behandlinger med behov for revidering</h1>
 
 <p>Hei,</p>
 <p>Du er oppført som siste person som redigerte følgende behandling(er) i behandlingskatalogen:</p>
