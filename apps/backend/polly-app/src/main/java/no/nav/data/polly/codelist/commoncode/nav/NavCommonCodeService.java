@@ -29,8 +29,13 @@ public class NavCommonCodeService implements CommonCodeService {
     }
 
     @Override
+    public List<CommonCodeResponse> getAllCountries() {
+        return client.getCodesWithDescription(props.getCountriesCode());
+    }
+
+    @Override
     public List<CommonCodeResponse> getThirdPartyCountriesOutsideEEA() {
-        var allCountries = client.getCodesWithDescription(props.getCountriesCode());
+        var allCountries = getAllCountries();
         var eeaCountries = convert(client.getCodesWithDescription(props.getEeaCountriesCode()), CommonCodeResponse::getCode);
         return filter(allCountries, c -> !eeaCountries.contains(c.getCode()) && !ignore.contains(c.getCode()) && VALID_PATTERN.matcher(c.getCode()).matches());
     }

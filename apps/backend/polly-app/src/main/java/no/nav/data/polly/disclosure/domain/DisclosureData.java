@@ -34,6 +34,11 @@ public class DisclosureData {
 
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
+    private DisclosureAbroad abroad;
+
+    public DisclosureAbroad getAbroad() {
+        return abroad == null ? new DisclosureAbroad() : abroad;
+    }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class DisclosureDataBuilder {

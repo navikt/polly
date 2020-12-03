@@ -1,10 +1,11 @@
 import {Cell, HeadCell, Row, Table} from '../common/Table'
 import {intl} from '../../util'
 import RouteLink from '../common/RouteLink'
-import {ProcessShort, ProcessStatus} from '../../constants'
+import {ProcessShort} from '../../constants'
 import React from 'react'
 import {useTable} from '../../util/hooks'
 import {StyleObject} from 'styletron-standard'
+import {processStatusText} from './Accordion/ProcessData'
 
 const cellStyle: StyleObject = {
   wordBreak: 'break-word'
@@ -50,7 +51,7 @@ export const SimpleProcessTable = (props: {processes: ProcessShort[], showCommon
             <Cell $style={cellStyle}>{(process.commonExternalProcessResponsible) === null ? '' :
               <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible?.code}`}>{process.commonExternalProcessResponsible?.shortName}</RouteLink>}</Cell>
           )}
-          <Cell $style={cellStyle}>{(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}</Cell>
+          <Cell $style={cellStyle}>{processStatusText(process.status)}</Cell>
         </Row>)}
     </Table>
   )

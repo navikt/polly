@@ -3,11 +3,11 @@ import {getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, get
 import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
 import {useParams} from 'react-router-dom'
 import {HeadingLarge} from 'baseui/typography'
-import {Spinner} from 'baseui/spinner'
 import {intl} from '../../util'
 import {lowerFirst} from 'lodash'
 import {SimpleProcessTable} from '../Process/SimpleProcessTable'
 import {useQueryParam} from '../../util/hooks'
+import {Spinner} from '../common/Spinner'
 
 interface PathProps {
   filterName: ProcessField,

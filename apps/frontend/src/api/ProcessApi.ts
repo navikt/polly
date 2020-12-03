@@ -4,6 +4,8 @@ import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import * as queryString from 'query-string'
 import {mapBool} from "../util/helper-functions";
+import {useDebouncedState} from '../util/hooks'
+import {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -31,7 +33,7 @@ export const searchProcess = async (text: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${text}`)).data
 }
 
-export const getProcessesFor = async (params: { productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string }) => {
+export const getProcessesFor = async (params: {productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string}) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, {skipNull: true})}&pageSize=250`)).data
 }
 
@@ -110,7 +112,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
     },
-    status: status === ProcessStatus.COMPLETED ? ProcessStatus.COMPLETED : ProcessStatus.IN_PROGRESS,
+    status: status || ProcessStatus.IN_PROGRESS,
     dpia: {
       grounds: dpia?.grounds || '',
       needForDpia: mapBool(dpia?.needForDpia),
@@ -154,4 +156,24 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
       noDpiaReasons: values.dpia.noDpiaReasons || [],
     }
   }
+}
+
+export const useProcessSearch = () => {
+  const [processSearch, setProcessSearch] = useDebouncedState<string>('', 200);
+  const [processSearchResult, setProcessSearchResult] = useState<Process[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      if (processSearch && processSearch.length > 2) {
+        setLoading(true)
+        setProcessSearchResult((await searchProcess(processSearch)).content)
+        setLoading(false)
+      } else {
+        setProcessSearchResult([])
+      }
+    })()
+  }, [processSearch])
+
+  return [processSearchResult, setProcessSearch, loading] as [Process[], Dispatch<SetStateAction<string>>, boolean]
 }

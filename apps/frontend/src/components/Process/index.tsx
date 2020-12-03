@@ -74,7 +74,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   }, [code, filter])
 
   const handleChangePanel = (process?: Partial<Process>) => {
-    history.push(genProcessPath(section, code, process, filter))
+    if (process?.id !== currentProcess?.id) history.push(genProcessPath(section, code, process, filter))
+    // reuse method to reload a process
+    else if (process?.id) getProcessById(process.id).catch(setErrorProcessModal)
   }
 
   const hasAccess = () => user.canWrite()
@@ -263,8 +265,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             escapeClearsValue={false}
             options={[
               {label: intl.allProcesses, id: undefined},
-              {label: intl.inProgressProcesses, id: 'IN_PROGRESS'},
-              {label: intl.showCompletedProcesses, id: 'COMPLETED'},
+              {label: intl.inProgressProcesses, id: ProcessStatus.IN_PROGRESS},
+              {label: intl.needsRevision, id: ProcessStatus.NEEDS_REVISION},
+              {label: intl.showCompletedProcesses, id: ProcessStatus.COMPLETED},
             ]}
             initialState={{value: [{id: filter}]}}
             filterOutSelected={false}

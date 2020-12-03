@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,6 +24,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     @Query(value = "select * from process where data ->> 'commonExternalProcessResponsible' = ?1", nativeQuery = true)
     List<Process> findByCommonExternalProcessResponsible(String thirdParty);
+
+    @Query(value = "select * from process where data -> 'number' = to_jsonb(?1)", nativeQuery = true)
+    Optional<Process> findByProcessNumber(Integer number);
 
     @Query(value = "select * from process where data ->> 'name' ilike %?1%", nativeQuery = true)
     List<Process> findByNameContaining(String name);

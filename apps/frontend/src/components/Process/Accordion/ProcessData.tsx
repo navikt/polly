@@ -44,7 +44,19 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-const ProcessData = (props: { process: Process }) => {
+export const processStatusText = (status: ProcessStatus | undefined) => {
+  switch (status) {
+    case ProcessStatus.COMPLETED:
+      return intl.completedProcesses
+    case ProcessStatus.NEEDS_REVISION:
+      return intl.needsRevision
+    case ProcessStatus.IN_PROGRESS:
+    default:
+      return intl.inProgress
+  }
+}
+
+const ProcessData = (props: {process: Process}) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -73,11 +85,11 @@ const ProcessData = (props: { process: Process }) => {
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
           {process
-            .legalBases
-            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-            .map((legalBasis, index) =>
-              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-            )}
+          .legalBases
+          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+          .map((legalBasis, index) =>
+            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+          )}
         </DataText> :
         <>
           <DataText label={intl.legalBasis}/>
@@ -137,8 +149,6 @@ const ProcessData = (props: { process: Process }) => {
       <DataText label={intl.system} text={""}>
         <DotTags list={ListName.SYSTEM} codes={process.affiliation.products} linkCodelist/>
       </DataText>
-
-      {process.usesAllInformationTypes ? <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.yes}/> : <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.no}/>}
 
       <DataText label={intl.automation} text={""}>
         <Block>
@@ -222,14 +232,15 @@ const ProcessData = (props: { process: Process }) => {
       <Completeness process={process}/>
 
       <DataText label={intl.status} text={""}>
-        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
+        {processStatusText(process.status)}
+        {process.revisionText && `: ${process.revisionText}`}
       </DataText>
 
     </Block>
   )
 }
 
-const Completeness = (props: { process: Process }) => {
+const Completeness = (props: {process: Process}) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),

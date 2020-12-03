@@ -207,6 +207,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                           >
                             <Radio value={ProcessStatus.COMPLETED}>{intl.completedProcesses}</Radio>
                             <Radio value={ProcessStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
+                            {initialValues.status === ProcessStatus.NEEDS_REVISION && <Radio value={ProcessStatus.NEEDS_REVISION}>{intl.needsRevision}</Radio>}
                           </RadioGroup>
                         }
                       />

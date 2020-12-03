@@ -406,6 +406,7 @@ export interface IStrings {
   aboutUs: string;
   fomDateHelpText: string;
   tomDateHelpText: string;
+  mailLog: string;
 
   code: string;
   codes: string;
@@ -430,6 +431,14 @@ export interface IStrings {
   user: string;
   lastChanges: string;
   settings: string;
+  revision: string;
+  needsRevision: string;
+  revisionCreated: string;
+  newRevision: string;
+  revisionText: string;
+  completedOnly: string;
+  back: string;
+  one: string;
   defaultProcessDocument: string;
   goToSite: string;
   categoryNotInUse: string;
@@ -461,6 +470,7 @@ export interface IStrings {
   noUsageAvailableInTable: string;
   noDocumentsAvailableInTable: string;
   noPotentialPersonalCategoryUsageInTable: string;
+  usesAllInformationTypes: string;
   noAuditsAvailableInTable: string;
   noDisclosuresToThirdPartyAvailableInTable:string;
   noRetrievedFromThirdPartyAvailableInTable:string;

@@ -26,6 +26,7 @@ import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -66,6 +67,8 @@ public class CodeUsageService {
                 .name("polly_codeusage_find_summary")
                 .help("Time taken for listname usage lookup times")
                 .quantile(.9, .01).quantile(.99, .001)
+                .maxAgeSeconds(Duration.ofHours(6).getSeconds())
+                .ageBuckets(6)
                 .register();
     }
 

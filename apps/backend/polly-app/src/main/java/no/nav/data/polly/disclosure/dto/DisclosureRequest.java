@@ -15,7 +15,6 @@ import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.dto.ProcessRequest;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,7 @@ public class DisclosureRequest implements RequestElement {
     private String documentId;
     private List<String> processIds;
     private List<String> informationTypeIds;
+    private DisclosureAbroadRequest abroad;
 
     private boolean update;
     private int requestIndex;
@@ -66,7 +66,7 @@ public class DisclosureRequest implements RequestElement {
         setName(trimToNull(getName()));
         setDescription(trimToNull(getDescription()));
         setRecipientPurpose(trimToNull(getRecipientPurpose()));
-        setDocumentId(StringUtils.trim(documentId));
+        setDocumentId(trimToNull(getDocumentId()));
         setProcessIds(formatList(getProcessIds()));
         setInformationTypeIds(formatList(getInformationTypeIds()));
     }

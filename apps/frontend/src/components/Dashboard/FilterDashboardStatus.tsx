@@ -20,6 +20,7 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
           options={[
             {label: intl.all, id: ProcessStatus.All},
             {label: intl.inProgress, id: ProcessStatus.IN_PROGRESS},
+            {label: intl.needsRevision, id: ProcessStatus.NEEDS_REVISION},
             {label: intl.done, id: ProcessStatus.COMPLETED},
           ]}
           initialState={{value: [{id: processStatus ? processStatus as ProcessStatus : ProcessStatus.All}]}}

@@ -93,10 +93,11 @@ public class AuditVersion {
     private String findName() {
         JsonNode json = JsonUtils.toJsonNode(data);
         if (table.equals(AuditVersion.tableName(Policy.class))) {
-            List<String> purposesText = getPurpose(json);
-            return String.join(", ", purposesText) + " - " + json.get("informationTypeName").textValue();
+            List<String> purposes = getPurposes(json);
+            return String.join(", ", purposes) + " - " + json.get("informationTypeName").textValue();
         } else if (table.equals(tableName(Process.class))) {
-            return getPurpose(json) + " " + findName(json);
+            List<String> purposes = getPurposes(json);
+            return String.join(", ", purposes) + " - " + findName(json);
         }
         return findName(json);
     }
@@ -110,7 +111,7 @@ public class AuditVersion {
                         .orElse("");
     }
 
-    private List<String> getPurpose(JsonNode json) {
+    private List<String> getPurposes(JsonNode json) {
         var purposesNewFormat = Optional.ofNullable(json.get("data").get("purposes"))
                 .map(JsonNode::elements).stream()
                 .flatMap(e -> StreamSupport.stream(Spliterators.spliteratorUnknownSize(e, Spliterator.ORDERED), false))

@@ -132,4 +132,12 @@ public class CodelistController {
         return commonCodeService.getThirdPartyCountriesOutsideEEA();
     }
 
+    @Operation(summary = "Get All Countries")
+    @ApiResponse(description = "Codes fetched", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CommonCodeResponse.class))))
+    @GetMapping("/countries")
+    public List<CommonCodeResponse> getAllCountries() {
+        log.info("Received a request for and returned All Countries");
+        return commonCodeService.getAllCountries();
+    }
+
 }

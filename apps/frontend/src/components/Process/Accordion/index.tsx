@@ -19,12 +19,14 @@ import Button from '../../common/Button'
 import AccordionTitle, {InformationTypeRef} from './AccordionTitle'
 import ProcessData from './ProcessData'
 import {lastModifiedDate} from '../../../util/date-formatter'
-import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
+import {faExclamationCircle, faGavel} from '@fortawesome/free-solid-svg-icons'
 import {canViewAlerts} from '../../../pages/AlertEventPage'
 import {DeleteProcessModal} from './DeleteProcessModal'
 import {ProcessCreatedModal} from './ProcessCreatedModal'
 import {useHistory, useParams} from 'react-router-dom'
 import {AddBatchInformationTypesModal} from './AddBatchInformationTypesModal'
+import {Modal, ModalBody, SIZE} from 'baseui/modal'
+import {RequestRevisionPage} from '../../../pages/admin/RequestRevisionPage'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -63,6 +65,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   const [addDefaultDocument, setAddDefaultDocument] = React.useState(false)
   const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
+  const [showRevisionModal, setShowRevisionModal] = React.useState(false)
   const purposeRef = React.useRef<HTMLInputElement>(null)
   const params = useParams<PathParams>()
   const history = useHistory()
@@ -98,6 +101,11 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop - 40})
     }, 200)
   }, [isLoading])
+
+  const closeRevision = () => {
+    setShowRevisionModal(false)
+    onChangeProcess(currentProcess?.id)
+  }
 
   return (
     <Block>
@@ -150,14 +158,20 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                     <Block display='flex' justifyContent='flex-end'>
                       <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
                     </Block>
-                    <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='flex-end'>
-                      {canViewAlerts() && <Block marginRight='auto'>
-                        <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                                onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
-                      </Block>}
+                    <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='space-between'>
+                      <Block display='flex'>
+                        {canViewAlerts() && <Block marginRight='auto'>
+                          <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
+                                  onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
+                        </Block>}
+                        {user.isAdmin() && <Block marginRight='auto'>
+                          <Button type='button' kind='tertiary' size='compact' icon={faGavel}
+                                  onClick={() => setShowRevisionModal(true)}>{intl.newRevision}</Button>
+                        </Block>}
+                      </Block>
                       {hasAccess() &&
                       <Block>
-                        <div ref={InformationTypeRef}></div>
+                        <div ref={InformationTypeRef}/>
                         {renderAddDocumentButton()}
                         {renderCreatePolicyButton()}
                       </Block>
@@ -250,6 +264,23 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                                setAddDefaultDocument(true)
                                setShowAddDocumentModal(true)
                              }}/>
+
+        <Modal
+          isOpen={showRevisionModal}
+          size={SIZE.auto}
+          unstable_ModalBackdropScroll={true}
+          // role='dialog'
+          onClose={closeRevision}
+        >
+          <ModalBody>
+            <Block width='600px'>
+              <RequestRevisionPage
+                processId={currentProcess.id}
+                close={closeRevision}
+              />
+            </Block>
+          </ModalBody>
+        </Modal>
       </>}
     </Block>
 

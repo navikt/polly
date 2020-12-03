@@ -1,6 +1,6 @@
 import axios from "axios"
 import {PageResponse, ProductArea, Team, TeamResource} from "../constants"
-import {default as React, Dispatch, SetStateAction, useEffect} from "react"
+import {default as React, Dispatch, SetStateAction, useEffect, useState} from "react"
 import {useDebouncedState} from "../util"
 import {Option} from "baseui/select"
 import {env} from "../util/env"
@@ -19,6 +19,11 @@ export const getTeam = async (teamId: string) => {
 export const searchTeam = async (teamSearch: string) => {
   return (await axios.get<PageResponse<Team>>(`${env.pollyBaseUrl}/team/search/${teamSearch}`)).data
 }
+
+export const getAllProductAreas = async () => {
+  return (await axios.get<PageResponse<ProductArea>>(`${env.pollyBaseUrl}/team/productarea/`)).data.content
+}
+
 export const getProductArea = async (paId: string) => {
   const data = (await axios.get<ProductArea>(`${env.pollyBaseUrl}/team/productarea/${paId}`)).data
   data.members = data.members.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
@@ -81,4 +86,14 @@ export const useTeamResourceSearch = () => {
   }, [teamResourceSearch])
 
   return [searchResult, setTeamResourceSearch, loading] as [Option[], Dispatch<SetStateAction<string>>, boolean]
+}
+
+export const useAllAreas = () => {
+  const [areas, setAreas] = useState<ProductArea[]>([])
+
+  useEffect(() => {
+    (async () => getAllProductAreas().then(setAreas))()
+  }, [])
+
+  return areas
 }

@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 import no.nav.data.common.security.azure.support.MailLog;
 import no.nav.data.common.storage.domain.ChangeStamp;
 import no.nav.data.common.storage.domain.GenericStorageData;
 
 @Data
 @Builder
+@With
 @AllArgsConstructor
 @NoArgsConstructor
 public class MailTask implements GenericStorageData {

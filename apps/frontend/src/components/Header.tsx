@@ -123,7 +123,9 @@ const AdminOptions = () => {
   const pages = [
     {label: intl.manageCodeListTitle, href: '/admin/codelist'},
     {label: intl.audit, href: '/admin/audit'},
-    {label: intl.settings, href: '/admin/settings'}
+    {label: intl.settings, href: '/admin/settings'},
+    {label: intl.mailLog, href: '/admin/maillog'},
+    {label: intl.needsRevision, href: '/admin/request-revision'}
   ]
   return (
     <StatefulPopover

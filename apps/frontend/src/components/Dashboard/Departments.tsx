@@ -4,13 +4,13 @@ import {Card} from 'baseui/card'
 import {cardShadow} from '../common/Style'
 import {Block} from 'baseui/block'
 import {Label1, Paragraph2} from 'baseui/typography'
-import {theme, useAwait} from '../../util'
+import {intl, theme, useAwait} from '../../util'
 import {DashboardData, DepartmentProcessDashCount as DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
 import RouteLink from '../common/RouteLink'
-import {Spinner} from 'baseui/spinner'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
+import {Spinner} from '../common/Spinner'
 
 const TextWithNumber = (props: { label: string; number: number }) => (
   <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
@@ -50,10 +50,13 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             </RouteLink>
 
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)} style={{textDecoration: 'none'}}>
-              <TextWithNumber label="Fullført" number={department.processesCompleted}/>
+              <TextWithNumber label={intl.completed} number={department.processesCompleted}/>
             </RouteLink>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.IN_PROGRESS)} style={{textDecoration: 'none'}}>
-              <TextWithNumber label="Under arbeid" number={department.processesInProgress}/>
+              <TextWithNumber label={intl.inProgress} number={department.processesInProgress}/>
+            </RouteLink>
+            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.NEEDS_REVISION)} style={{textDecoration: 'none'}}>
+              <TextWithNumber label={intl.revision} number={department.processesNeedsRevision}/>
             </RouteLink>
           </Block>
         </Card>
