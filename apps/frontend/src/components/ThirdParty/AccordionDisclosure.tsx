@@ -4,20 +4,24 @@ import {Disclosure, DisclosureAlert, DisclosureFormValues} from "../../constants
 import {getAlertForDisclosure} from "../../api/AlertApi";
 import {intl, theme} from "../../util";
 import {Block} from "baseui/block";
-import {Accordion, Panel} from "baseui/accordion";
+import {Panel, StatelessAccordion} from "baseui/accordion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight, faEdit, faExclamationCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {getDisclosure, mapDisclosureToFormValues} from "../../api";
 import {StyledSpinnerNext} from "baseui/spinner";
 import DataText from "../common/DataText";
-import {DotTags} from "../common/DotTag";
 import {canViewAlerts} from "../../pages/AlertEventPage";
 import Button from "../common/Button";
 import {useHistory} from 'react-router-dom'
-import {KIND, SIZE} from "baseui/button";
+import {SIZE as ButtonSize} from "baseui/button";
 import ModalThirdParty from "./ModalThirdPartyForm";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {Paragraph2} from "baseui/typography";
+import {StyledLink} from "baseui/link";
+import LinkListProcessShort from "./components/LinkListProcessShort";
+import LinkListInformationShort from "./components/LinkListInformationShort";
+import {codelist, ListName} from "../../service/Codelist";
+import {LegalBasisView} from "../common/LegalBasis";
 
 
 type AccordionDisclosureProps = {
@@ -40,6 +44,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [isLoading, setLoading] = useState<boolean>(false)
   const history = useHistory()
   const [hasAlert, setHasAlert] = useState<boolean>(false)
+  const [expanded, setExpanded] = useState<React.Key[]>([])
 
   const {disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal} = props
 
@@ -68,22 +73,67 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
 
   return (
     <React.Fragment>
-      <Accordion
-        onChange={({expanded}) => {
-          if (expanded.length > 0) {
-            renewDisclosureDetails(expanded[0].toString())
+      <StatelessAccordion
+        onChange={(e) => {
+          if (e.expanded.length > 0) {
+            renewDisclosureDetails(e.expanded[0].toString())
           }
+          setExpanded(e.expanded)
         }}
+        expanded={expanded}
       >
         {disclosureList && disclosureList.sort((a, b) => a.name.localeCompare(b.name)).map((d: Disclosure) => {
 
           return (
             <Panel
               title={
-                <Block>
-                  <FontAwesomeIcon icon={faChevronRight}/>
-                  <span> </span>
-                  <span>{d.name}</span>
+                <Block display={"flex"} width={"100%"}>
+                  <Block><FontAwesomeIcon icon={faChevronRight}/></Block>
+                  <Block marginLeft={"5px"}>{d.name}</Block>
+                  <Block marginLeft={"auto"}>
+                    <div onClick={(e) => {
+                      e.stopPropagation()
+                    }}>
+                      <>{d.id === expanded[0] ? editable &&
+                        <>
+                          {selectedDisclosure && hasAlert && canViewAlerts() &&
+                          <Button
+                            kind={'outline'}
+                            size={ButtonSize.compact}
+                            icon={faExclamationCircle}
+                            marginRight
+                            tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                            onClick={() => history.push(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                          >
+                            {intl.alerts}
+                          </Button>
+                          }
+
+
+                          <Button
+                            kind={'outline'}
+                            size={ButtonSize.compact}
+                            icon={faEdit}
+                            tooltip={intl.edit}
+                            onClick={() => setShowEditModal(true)}
+                            marginRight
+                          >
+                            {intl.edit}
+                          </Button>
+
+                          <Button
+                            kind={'outline'}
+                            size={ButtonSize.compact}
+                            icon={faTrash}
+                            tooltip={intl.delete}
+                            onClick={() => setShowDeleteModal(true)}
+                          >
+                            {intl.delete}
+                          </Button>
+
+                        </> : ""}</>
+                    </div>
+                  </Block>
                 </Block>
               }
               key={d.id}
@@ -109,52 +159,47 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                 }}>
                   <Block padding={theme.sizing.scale800}>
                     <Block width='100%'>
-                      {editable &&
-                      <Block width="100%" display="flex" justifyContent="flex-end">
-                        {selectedDisclosure && hasAlert && canViewAlerts() &&
-                          <Button type='button' kind='tertiary' size='compact'
-                                  icon={faExclamationCircle} tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
-                                  $style={{color: hasAlert ? theme.colors.warning500 : undefined}}
-                                  onClick={() => history.push(`/alert/events/disclosure/${selectedDisclosure.id}`)}
-                          />
-                        }
-                        <Button
-                          tooltip={intl.edit}
-                          size={SIZE.compact}
-                          kind={KIND.tertiary}
-                          onClick={() => {
-                            // setSelectedDisclosure(disclosure)
-                            setShowEditModal(true)
-                            console.log("edit")
-                          }}
-                          icon={faEdit}
-                        />
+                      <DataText label={intl.disclosureName} text={selectedDisclosure?.name}/>
+                      <DataText label={intl.disclosurePurpose} text={selectedDisclosure?.recipientPurpose}/>
+                      <DataText label={intl.additionalDescription} text={selectedDisclosure?.description}/>
 
-                        <Button
-                          tooltip={intl.delete}
-                          size={SIZE.compact}
-                          kind={KIND.tertiary}
-                          onClick={() => {
-                            // setSelectedDisclosure(disclosure)
-                            setShowDeleteModal(true)
-                            console.log("delete")
-                          }}
-                          icon={faTrash}
-                        />
-                      </Block>}
-                      <DataText label={intl.name} text={selectedDisclosure?.name}/>
-                      <DataText label={intl.document} text={selectedDisclosure?.document?.name}/>
-                      <DataText label={intl.description} text={selectedDisclosure?.description}/>
-                      <DataText label={intl.informationTypes} children={<DotTags items={selectedDisclosure?.informationTypes?.map(i => i.name)}/>}/>
-                      <DataText label={intl.processes} children={<DotTags items={selectedDisclosure?.processes?.map(p => p.name)}/>}/>
-                      {selectedDisclosure && hasAlert && canViewAlerts() &&
-                      <DataText label={intl.alerts} children={
-                        <Button type='button' kind='tertiary' size='compact'
-                                icon={faExclamationCircle} tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
-                                $style={{color: hasAlert ? theme.colors.warning500 : undefined}}
-                                onClick={() => history.push(`/alert/events/disclosure/${selectedDisclosure.id}`)}
-                        />
-                      }/>
+                      <DataText
+                        label={intl.relatedProcesses}
+                        children={LinkListProcessShort(selectedDisclosure?.processes ? selectedDisclosure?.processes.map(p => p) : [], "/process/purpose")
+                        }
+                      />
+
+                      <DataText
+                        label={intl.informationTypes}
+                        children={LinkListInformationShort(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype")
+                        }
+                      />
+
+                      <DataText
+                        label={intl.document}
+                        children={
+                          selectedDisclosure?.documentId ?
+                            <StyledLink href={`/document/${selectedDisclosure?.documentId}`}
+                                        target="_blank" rel="noopener noreferrer">
+                              {selectedDisclosure?.document?.name}
+                            </StyledLink>
+                            : <>{intl.emptyMessage}</>
+                        }
+                      />
+
+                      {selectedDisclosure?.legalBases.length ?
+                        <DataText label={intl.legalBasis} text={""}>
+                          {selectedDisclosure
+                            .legalBases
+                            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code))
+                              .localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+                            .map((legalBasis, index) =>
+                              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+                            )}
+                        </DataText> :
+                        <>
+                          <DataText label={intl.legalBasis} text={intl.emptyMessage}/>
+                        </>
                       }
                     </Block>
                   </Block>
@@ -163,7 +208,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
             </Panel>
           )
         })}
-      </Accordion>
+      </StatelessAccordion>
       {editable && showEditModal && selectedDisclosure && (
         <ModalThirdParty
           title={intl.editDisclosure}
@@ -203,7 +248,9 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
               <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
               <Button
                 kind="secondary"
-                onClick={() => setShowDeleteModal(false)}
+                onClick={() => {
+                  setShowDeleteModal(false)
+                }}
                 marginLeft marginRight
               >
                 {intl.abort}
