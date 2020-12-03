@@ -8,8 +8,6 @@
 </head>
 <body>
 
-<h1>Behandlinger med behov for revidering</h1>
-
 <p>Hei,</p>
 <p>Du er oppført som siste person som redigerte følgende behandling(er) i behandlingskatalogen:</p>
 <ul>
