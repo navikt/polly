@@ -49,10 +49,6 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
     })()
   }, [list])
 
-  useEffect(() => {
-    console.log(selectedDisclosure, "SELECTEDDISCL")
-  }, [selectedDisclosure])
-
   return (
     <React.Fragment>
 
@@ -73,14 +69,14 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
         }
       >
         {table.data.map((row, index) =>
-          <DisclosureRow 
-            key={index} 
-            disclosure={row} 
-            editable={editable} 
-            showRecipient={showRecipient} 
+          <DisclosureRow
+            key={index}
+            disclosure={row}
+            editable={editable}
+            showRecipient={showRecipient}
             alert={alerts[row.id]}
-            setSelectedDisclosure={setSelectedDisclosure} 
-            showEditModal={() => setShowEditModal(true)} 
+            setSelectedDisclosure={setSelectedDisclosure}
+            showEditModal={() => setShowEditModal(true)}
             showDeleteModal={() => setShowDeleteModal(true)}/>
         )}
       </Table>

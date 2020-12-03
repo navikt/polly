@@ -6,7 +6,6 @@ import {codelist, ListName} from '../service/Codelist'
 import {Plus} from 'baseui/icon'
 import {Block} from 'baseui/block'
 import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure} from '../api'
-import TableDisclosure from '../components/common/TableDisclosure'
 import {H5, HeadingSmall, Paragraph2} from 'baseui/typography'
 import {Button, KIND} from 'baseui/button'
 import {user} from '../service/User'
@@ -42,8 +41,6 @@ const ThirdPartyPage = () => {
 
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
-    console.log("Create",disclosure);
-    
     try {
       let createdDisclosure = await createDisclosure(disclosure)
 
@@ -149,16 +146,7 @@ const ThirdPartyPage = () => {
             }
           </Block>
           <Block marginBottom="3rem">
-            {/* <TableDisclosure
-              list={disclosureList}
-              showRecipient={false}
-              errorModal={error}
-              editable
-              submitDeleteDisclosure={handleDeleteDisclosure}
-              submitEditDisclosure={handleEditDisclosure}
-              onCloseModal={() => setError(undefined)}
-            /> */}
-            <AccordionDisclosure 
+            <AccordionDisclosure
               disclosureList={disclosureList}
               showRecipient={false}
               errorModal={error}
@@ -180,12 +168,12 @@ const ThirdPartyPage = () => {
               tableTitle={codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}/>
           </Block>
 
-          <ProcessList 
+          <ProcessList
             section={Section.thirdparty}
             code={params.thirdPartyCode}
             listName={ListName.THIRD_PARTY}
             isEditable={false}
-            titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`} 
+            titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`}
           />
 
         </>

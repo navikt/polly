@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { DisclosureFormValues, Process, ProcessShort } from '../../constants';
-import { intl, useDebouncedState } from '../../util';
-import { searchProcess } from '../../api';
-import { Select, TYPE } from 'baseui/select';
-import { FieldArray, FormikProps } from 'formik';
-import { Block } from 'baseui/block';
-import { renderTagList } from './TagList';
+import {DisclosureFormValues, Process} from '../../constants';
+import {intl, useDebouncedState} from '../../util';
+import {searchProcess} from '../../api';
+import {Select, TYPE} from 'baseui/select';
+import {FieldArray, FormikProps} from 'formik';
+import {Block} from 'baseui/block';
+import {renderTagList} from './TagList';
 
 type SelectProcessProps = {
     formikBag: FormikProps<DisclosureFormValues>
@@ -22,7 +22,6 @@ const SelectProcess = (props: SelectProcessProps) => {
             if (search && search.length > 2) {
                 setLoading(true)
                 const res = await searchProcess(search)
-                console.log(res, "REEEESSSSSSSS")
                 setProcessList(res.content)
                 setLoading(false)
             }
@@ -49,7 +48,7 @@ const SelectProcess = (props: SelectProcessProps) => {
                             onChange={({ value }) => arrayHelpers.form.setFieldValue('processes', [...props.formikBag.values.processes, ...value.map(v => v)])}
                         />
                     </Block>
-                   
+
                     <Block>{renderTagList(formikBag.values.processes.map(p => p.name), arrayHelpers)}</Block>
                 </Block>
             )}
