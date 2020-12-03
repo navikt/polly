@@ -15,6 +15,8 @@ import SelectDocument from '../common/SelectDocument';
 import FieldLegalBasis from "../Process/common/FieldLegalBasis";
 import {Accordion, Panel} from "baseui/accordion";
 import PanelTitle from "../Process/common/PanelTitle";
+import SelectProcess from '../common/SelectProcess';
+import SelectInformationTypes from '../common/SelectInformationTypes';
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -129,10 +131,11 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
       <Block {...modalBlockProps}>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => submit(values)}
+          onSubmit={(values) => {
+            submit(values)
+          }}
           validationSchema={disclosureSchema()}
           render={(formikBag: FormikProps<DisclosureFormValues>) => (
-
 
             <Form>
               <ModalHeader>
@@ -164,6 +167,20 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                   <FieldTextarea fieldName="description" fieldValue={formikBag.values.description}/>
                 </Block>
                 <Error fieldName="description"/>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.relatedProcesses}/>
+                  <Block width="100%">
+                    <SelectProcess formikBag={formikBag} />
+                  </Block>
+                </Block>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.informationTypes}/>
+                  <Block width="100%">
+                    <SelectInformationTypes formikBag={formikBag} />
+                  </Block>
+                </Block>
 
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.document}/>

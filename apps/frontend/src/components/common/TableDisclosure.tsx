@@ -69,8 +69,15 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
         }
       >
         {table.data.map((row, index) =>
-          <DisclosureRow key={index} disclosure={row} editable={editable} showRecipient={showRecipient} alert={alerts[row.id]}
-                         setSelectedDisclosure={setSelectedDisclosure} showEditModal={() => setShowEditModal(true)} showDeleteModal={() => setShowDeleteModal(true)}/>
+          <DisclosureRow
+            key={index}
+            disclosure={row}
+            editable={editable}
+            showRecipient={showRecipient}
+            alert={alerts[row.id]}
+            setSelectedDisclosure={setSelectedDisclosure}
+            showEditModal={() => setShowEditModal(true)}
+            showDeleteModal={() => setShowDeleteModal(true)}/>
         )}
       </Table>
 

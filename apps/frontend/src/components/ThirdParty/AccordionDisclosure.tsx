@@ -1,0 +1,270 @@
+import * as React from 'react'
+import {useEffect, useState} from 'react'
+import {Disclosure, DisclosureAlert, DisclosureFormValues, ObjectType} from "../../constants";
+import {getAlertForDisclosure} from "../../api/AlertApi";
+import {intl, theme} from "../../util";
+import {Block} from "baseui/block";
+import {Panel, StatelessAccordion} from "baseui/accordion";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faChevronRight, faEdit, faExclamationCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {getDisclosure, mapDisclosureToFormValues} from "../../api";
+import {StyledSpinnerNext} from "baseui/spinner";
+import DataText from "../common/DataText";
+import {canViewAlerts} from "../../pages/AlertEventPage";
+import Button from "../common/Button";
+import {useHistory} from 'react-router-dom'
+import {SIZE as ButtonSize} from "baseui/button";
+import ModalThirdParty from "./ModalThirdPartyForm";
+import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
+import {Paragraph2} from "baseui/typography";
+import {StyledLink} from "baseui/link";
+import LinkList from "./components/LinkList";
+import {codelist, ListName} from "../../service/Codelist";
+import {LegalBasisView} from "../common/LegalBasis";
+
+
+type AccordionDisclosureProps = {
+  disclosureList: Array<Disclosure>;
+  showRecipient: boolean;
+  editable: boolean;
+  submitDeleteDisclosure?: (disclosure: Disclosure) => Promise<boolean>;
+  submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>;
+  errorModal?: string;
+  onCloseModal?: () => void;
+};
+
+type Alerts = { [k: string]: DisclosureAlert }
+
+const AccordionDisclosure = (props: AccordionDisclosureProps) => {
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
+  const [showEditModal, setShowEditModal] = React.useState<boolean>(false)
+  const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
+  const [alerts, setAlerts] = useState<Alerts>({})
+  const [isLoading, setLoading] = useState<boolean>(false)
+  const history = useHistory()
+  const [hasAlert, setHasAlert] = useState<boolean>(false)
+  const [expanded, setExpanded] = useState<React.Key[]>([])
+
+  const {disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal} = props
+
+  useEffect(() => {
+    (async () => {
+      const alertMap = (await Promise.all(disclosureList.map(d => getAlertForDisclosure(d.id))))
+        .reduce((acc: Alerts, alert) => {
+          acc[alert.disclosureId] = alert
+          return acc
+        }, {} as Alerts)
+      setAlerts(alertMap)
+    })()
+  }, [disclosureList])
+
+  useEffect(() => {
+    if (selectedDisclosure) {
+      setHasAlert(alerts[selectedDisclosure.id].missingArt6)
+    }
+  }, [selectedDisclosure])
+
+  const renewDisclosureDetails = async (disclosureId: string) => {
+    setLoading(true)
+    setSelectedDisclosure(await getDisclosure(disclosureId))
+    setLoading((false))
+  }
+
+  return (
+    <React.Fragment>
+      <StatelessAccordion
+        onChange={(e) => {
+          if (e.expanded.length > 0) {
+            renewDisclosureDetails(e.expanded[0].toString())
+          }
+          setExpanded(e.expanded)
+        }}
+        expanded={expanded}
+      >
+        {disclosureList && disclosureList.sort((a, b) => a.name.localeCompare(b.name)).map((d: Disclosure) => {
+
+          return (
+            <Panel
+              title={
+                <Block display={"flex"} width={"100%"}>
+                  <Block><FontAwesomeIcon icon={faChevronRight}/></Block>
+                  <Block marginLeft={"5px"}>{d.name}</Block>
+                  <Block marginLeft={"auto"}>
+                    <div onClick={(e) => {
+                      e.stopPropagation()
+                    }}>
+                      <>{d.id === expanded[0] ? editable &&
+                        <>
+                          {selectedDisclosure && hasAlert && canViewAlerts() &&
+                          <Button
+                            kind={'outline'}
+                            size={ButtonSize.compact}
+                            icon={faExclamationCircle}
+                            marginRight
+                            tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                            onClick={() => history.push(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                          >
+                            {intl.alerts}
+                          </Button>
+                          }
+
+
+                          <Button
+                            kind={'outline'}
+                            size={ButtonSize.compact}
+                            icon={faEdit}
+                            tooltip={intl.edit}
+                            onClick={() => setShowEditModal(true)}
+                            marginRight
+                          >
+                            {intl.edit}
+                          </Button>
+
+                          <Button
+                            kind={'outline'}
+                            size={ButtonSize.compact}
+                            icon={faTrash}
+                            tooltip={intl.delete}
+                            onClick={() => setShowDeleteModal(true)}
+                          >
+                            {intl.delete}
+                          </Button>
+
+                        </> : ""}</>
+                    </div>
+                  </Block>
+                </Block>
+              }
+              key={d.id}
+              overrides={{
+                ToggleIcon: {
+                  component: () => null
+                },
+                Content: {
+                  style: {
+                    backgroundColor: theme.colors.white,
+                    // Outline width
+                    paddingTop: '4px',
+                    paddingBottom: '4px',
+                    paddingLeft: '4px',
+                    paddingRight: '4px',
+                  }
+                }
+              }}
+            >
+              {isLoading ? <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block> :
+                <Block $style={{
+                  outline: `4px ${theme.colors.primary200} solid`
+                }}>
+                  <Block padding={theme.sizing.scale800}>
+                    <Block width='100%'>
+                      <DataText label={intl.disclosureName} text={selectedDisclosure?.name}/>
+                      <DataText label={intl.disclosurePurpose} text={selectedDisclosure?.recipientPurpose}/>
+                      <DataText label={intl.additionalDescription} text={selectedDisclosure?.description}/>
+
+                      <DataText
+                        label={intl.relatedProcesses}
+                        children={LinkList(selectedDisclosure?.processes ? selectedDisclosure?.processes.map(p => p) : [], "/process/purpose",ObjectType.PROCESS)
+                        }
+                      />
+
+                      <DataText
+                        label={intl.informationTypes}
+                        children={LinkList(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype",ObjectType.INFORMATION_TYPE)
+                        }
+                      />
+
+                      <DataText
+                        label={intl.document}
+                        children={
+                          selectedDisclosure?.documentId ?
+                            <StyledLink href={`/document/${selectedDisclosure?.documentId}`}
+                                        target="_blank" rel="noopener noreferrer">
+                              {selectedDisclosure?.document?.name}
+                            </StyledLink>
+                            : <>{intl.emptyMessage}</>
+                        }
+                      />
+
+                      {selectedDisclosure?.legalBases.length ?
+                        <DataText label={intl.legalBasis} text={""}>
+                          {selectedDisclosure
+                            .legalBases
+                            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code))
+                              .localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+                            .map((legalBasis, index) =>
+                              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+                            )}
+                        </DataText> :
+                        <>
+                          <DataText label={intl.legalBasis} text={intl.emptyMessage}/>
+                        </>
+                      }
+                    </Block>
+                  </Block>
+                </Block>
+              }
+            </Panel>
+          )
+        })}
+      </StatelessAccordion>
+      {editable && showEditModal && selectedDisclosure && (
+        <ModalThirdParty
+          title={intl.editDisclosure}
+          isOpen={showEditModal}
+          initialValues={mapDisclosureToFormValues(selectedDisclosure)}
+          submit={async (values) => {
+            if (submitEditDisclosure && await submitEditDisclosure(values)) {
+              renewDisclosureDetails(selectedDisclosure?.id)
+              setShowEditModal(false)
+            } else {
+              setShowEditModal(true)
+            }
+          }}
+          onClose={() => {
+            onCloseModal && onCloseModal()
+            setShowEditModal(false)
+          }}
+          errorOnCreate={errorModal}
+          disableRecipientField={true}
+        />
+      )}
+      {showDeleteModal && (
+        <Modal
+          onClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteModal}
+          animate
+          unstable_ModalBackdropScroll={true}
+          size="default"
+        >
+          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalBody>
+            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
+          </ModalBody>
+
+          <ModalFooter>
+            <Block display="flex" justifyContent="flex-end">
+              <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
+              <Button
+                kind="secondary"
+                onClick={() => {
+                  setShowDeleteModal(false)
+                }}
+                marginLeft marginRight
+              >
+                {intl.abort}
+              </Button>
+              <Button onClick={() => {
+                if (selectedDisclosure)
+                  submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+              }}
+              >{intl.delete}</Button>
+            </Block>
+          </ModalFooter>
+        </Modal>
+      )}
+    </React.Fragment>
+  )
+}
+
+export default AccordionDisclosure

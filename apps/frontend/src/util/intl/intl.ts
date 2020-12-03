@@ -268,6 +268,7 @@ export interface IStrings {
   chooseDocument: string;
   addDocument: string;
   searchDocuments: string;
+  searchProcess: string;
   addOneInformationType: string;
   addCollectionOfInformationTypes: string;
   emptyTable: string;
@@ -294,6 +295,8 @@ export interface IStrings {
   dpProcessDuplicatedError: string;
   externalProcessResponsible: string;
   subDataProcessor: string;
+  relatedProcesses: string;
+
   // groups
   READ: string;
   WRITE: string;

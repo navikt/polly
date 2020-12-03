@@ -6,7 +6,6 @@ import {codelist, ListName} from '../service/Codelist'
 import {Plus} from 'baseui/icon'
 import {Block} from 'baseui/block'
 import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure} from '../api'
-import TableDisclosure from '../components/common/TableDisclosure'
 import {H5, HeadingSmall, Paragraph2} from 'baseui/typography'
 import {Button, KIND} from 'baseui/button'
 import {user} from '../service/User'
@@ -18,6 +17,7 @@ import ProcessList from '../components/Process'
 import {Section} from './ProcessPage'
 import {getAllDpProcesses} from "../api/DpProcessApi";
 import ThirdPartiesDpProcessTable from "../components/common/ThirdPartiesDpProcessTable";
+import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 
 export type PathParams = { thirdPartyCode: string }
 
@@ -90,7 +90,8 @@ const ThirdPartyPage = () => {
     legalBases: [],
     legalBasesOpen: false,
     start: undefined,
-    end: undefined
+    end: undefined,
+    processes: []
   }
 
   useEffect(() => {
@@ -145,8 +146,8 @@ const ThirdPartyPage = () => {
             }
           </Block>
           <Block marginBottom="3rem">
-            <TableDisclosure
-              list={disclosureList}
+            <AccordionDisclosure
+              disclosureList={disclosureList}
               showRecipient={false}
               errorModal={error}
               editable
@@ -154,6 +155,7 @@ const ThirdPartyPage = () => {
               submitEditDisclosure={handleEditDisclosure}
               onCloseModal={() => setError(undefined)}
             />
+
           </Block>
 
           <Block>
@@ -166,12 +168,12 @@ const ThirdPartyPage = () => {
               tableTitle={codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}/>
           </Block>
 
-          <ProcessList 
+          <ProcessList
             section={Section.thirdparty}
             code={params.thirdPartyCode}
             listName={ListName.THIRD_PARTY}
             isEditable={false}
-            titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`} 
+            titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`}
           />
 
         </>
