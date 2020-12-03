@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {useEffect, useState} from 'react'
-import {Disclosure, DisclosureAlert, DisclosureFormValues} from "../../constants";
+import {Disclosure, DisclosureAlert, DisclosureFormValues, ObjectType} from "../../constants";
 import {getAlertForDisclosure} from "../../api/AlertApi";
 import {intl, theme} from "../../util";
 import {Block} from "baseui/block";
@@ -18,8 +18,7 @@ import ModalThirdParty from "./ModalThirdPartyForm";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {Paragraph2} from "baseui/typography";
 import {StyledLink} from "baseui/link";
-import LinkListProcessShort from "./components/LinkListProcessShort";
-import LinkListInformationShort from "./components/LinkListInformationShort";
+import LinkList from "./components/LinkList";
 import {codelist, ListName} from "../../service/Codelist";
 import {LegalBasisView} from "../common/LegalBasis";
 
@@ -165,13 +164,13 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
 
                       <DataText
                         label={intl.relatedProcesses}
-                        children={LinkListProcessShort(selectedDisclosure?.processes ? selectedDisclosure?.processes.map(p => p) : [], "/process/purpose")
+                        children={LinkList(selectedDisclosure?.processes ? selectedDisclosure?.processes.map(p => p) : [], "/process/purpose",ObjectType.PROCESS)
                         }
                       />
 
                       <DataText
                         label={intl.informationTypes}
-                        children={LinkListInformationShort(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype")
+                        children={LinkList(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype",ObjectType.INFORMATION_TYPE)
                         }
                       />
 
