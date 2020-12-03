@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.TechnicalException;
 import no.nav.data.common.security.dto.OAuthState;
@@ -43,24 +44,16 @@ import static org.springframework.security.web.util.UrlUtils.buildFullRequestUrl
 @Slf4j
 @RestController
 @RequestMapping
+@RequiredArgsConstructor
 @Tag(name = "Auth")
 public class AuthController {
 
     public static final String OAUTH_2_CALLBACK_URL = "/oauth2/callback";
+    private static final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     private final SecurityProperties securityProperties;
     private final TokenProvider tokenProvider;
     private final Encryptor encryptor;
-    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-    private final String baseUrl;
-
-    public AuthController(SecurityProperties securityProperties,
-            TokenProvider tokenProvider, Encryptor refreshTokenEncryptor) {
-        this.securityProperties = securityProperties;
-        this.tokenProvider = tokenProvider;
-        this.encryptor = refreshTokenEncryptor;
-        baseUrl = securityProperties.findBaseUrl();
-    }
 
     @Operation(summary = "Login using sso")
     @ApiResponse(description = "Redirect to sso")
@@ -72,7 +65,7 @@ public class AuthController {
         log.debug("Request to login");
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         Assert.isTrue(securityProperties.isValidRedirectUri(errorUri), "Illegal error_uri " + errorUri);
-        var usedRedirect = redirectUri != null ? redirectUri : baseUrl;
+        var usedRedirect = redirectUri != null ? redirectUri : securityProperties.findBaseUrl();
         String redirectUrl = tokenProvider.createAuthRequestRedirectUrl(usedRedirect, errorUri, callbackRedirectUri(request));
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
@@ -95,7 +88,7 @@ public class AuthController {
             throw new TechnicalException("invalid state", e);
         }
         if (StringUtils.hasText(code)) {
-            var session = tokenProvider.createSession(code, callbackRedirectUri(request));
+            var session = tokenProvider.createSession(state.getSessionId(), code, callbackRedirectUri(request));
             response.addCookie(createCookie(session, (int) SESSION_LENGTH.toSeconds(), request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
