@@ -1,6 +1,7 @@
 package no.nav.data.polly.process;
 
 import com.nimbusds.jwt.JWTClaimsSet.Builder;
+import no.nav.data.common.security.azure.AzureConstants;
 import no.nav.data.common.security.azure.AzureUserInfo;
 import no.nav.data.common.utils.MdcUtils;
 import no.nav.data.polly.IntegrationTestBase;
@@ -96,7 +97,7 @@ class ProcessControllerIT extends IntegrationTestBase {
     void getLastEdits() {
         createAndSaveProcess(PURPOSE_CODE1);
 
-        AzureUserInfo userInfo = new AzureUserInfo(new Builder().claim(StandardClaimNames.NAME, "Name Nameson").build(), Set.of(), "S123456");
+        AzureUserInfo userInfo = new AzureUserInfo(new Builder().claim(StandardClaimNames.NAME, "Name Nameson").claim(AzureConstants.IDENT_CLAIM, "S123456").build(), Set.of());
 
         MdcUtils.setUser(userInfo.getIdentName());
         createAndSaveProcess(PURPOSE_CODE2);
