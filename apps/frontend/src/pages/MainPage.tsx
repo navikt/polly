@@ -14,8 +14,6 @@ import {Markdown} from '../components/common/Markdown'
 import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStatus";
 import Charts from '../components/Charts/Charts'
 
-const chartSize = 80
-
 export const MainPage = () => {
   const { processStatus } = useParams()
   const [settings, setSettings] = useState<Settings>()
