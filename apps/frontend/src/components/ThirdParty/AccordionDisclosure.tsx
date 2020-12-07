@@ -7,7 +7,7 @@ import {Block} from "baseui/block";
 import {Panel, StatelessAccordion} from "baseui/accordion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight, faEdit, faExclamationCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {getDisclosure, mapDisclosureToFormValues} from "../../api";
+import {getDisclosure, convertDisclosureToFormValues} from "../../api";
 import {StyledSpinnerNext} from "baseui/spinner";
 import DataText from "../common/DataText";
 import {canViewAlerts} from "../../pages/AlertEventPage";
@@ -212,7 +212,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
         <ModalThirdParty
           title={intl.editDisclosure}
           isOpen={showEditModal}
-          initialValues={mapDisclosureToFormValues(selectedDisclosure)}
+          initialValues={convertDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => {
             if (submitEditDisclosure && await submitEditDisclosure(values)) {
               renewDisclosureDetails(selectedDisclosure?.id)

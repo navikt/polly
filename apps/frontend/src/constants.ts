@@ -459,7 +459,15 @@ export interface DisclosureFormValues {
   end?: string;
   start?: string;
   processes: ProcessShort[];
-  informationTypes?: InformationTypeShort[]
+  informationTypes?: InformationTypeShort[];
+  abroad: DisclosureAbroad;
+}
+
+export interface DisclosureAbroad {
+  abroad: boolean;
+  countries?: string[];
+  refToAgreement?: string;
+  businessArea?: string;
 }
 
 export interface Disclosure extends IDurationed {
@@ -475,6 +483,7 @@ export interface Disclosure extends IDurationed {
   processIds: string[]
   informationTypes?: InformationTypeShort[]
   informationTypeIds?: string[]
+  abroad: DisclosureAbroad;
 }
 
 export interface DocumentFormValues {

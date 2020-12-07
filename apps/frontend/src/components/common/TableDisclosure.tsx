@@ -12,7 +12,7 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
 import {Paragraph2} from 'baseui/typography'
 import {Block} from 'baseui/block'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
-import {mapDisclosureToFormValues} from '../../api'
+import {convertDisclosureToFormValues} from '../../api'
 import {Cell, HeadCell, Row, Table} from './Table'
 import {canViewAlerts} from '../../pages/AlertEventPage'
 import {useHistory} from 'react-router-dom'
@@ -85,7 +85,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
         <ModalThirdParty
           title={intl.editDisclosure}
           isOpen={showEditModal}
-          initialValues={mapDisclosureToFormValues(selectedDisclosure)}
+          initialValues={convertDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => submitEditDisclosure && await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
           onClose={() => {
             onCloseModal && onCloseModal()

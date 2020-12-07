@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {DisclosureFormValues, Document} from '../../constants';
+import {DisclosureFormValues, Document, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../../constants';
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
 import {Field, FieldProps, Form, Formik, FormikProps} from 'formik';
 import {Block, BlockProps} from 'baseui/block';
@@ -17,6 +17,10 @@ import {Accordion, Panel} from "baseui/accordion";
 import PanelTitle from "../Process/common/PanelTitle";
 import SelectProcess from '../common/SelectProcess';
 import SelectInformationTypes from '../common/SelectInformationTypes';
+import BoolField from "../Process/common/BoolField";
+import FieldTransferGroundsOutsideEU from "../Process/common/FieldTransferGroundsOutsideEU";
+import FieldTransferGroundsOutsideEUOther from "../Process/common/FieldTransferGroundsOutsideEUOther";
+import FieldTransferCountries from "../Process/common/FieldTransferCountries";
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -197,6 +201,79 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                   />
                 </Block>
                 <Error fieldName="document"/>
+
+{/*                <Block {...rowBlockProps}>
+                  <ModalLabel label={"Overlevering til eu?"}/>
+                  <BoolField fieldName="disclosures" value={formikBag.values.abroad.abroad}/>
+
+
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={"countries"}/>
+                    <Block width="100%">
+
+                    </Block>
+                  </Block>
+
+                </Block>
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={"ref to agreement"}/>
+                  <FieldInput fieldName={"refToAgreement"} fieldValue={formikBag.values.abroad.refToAgreement}/>
+                </Block>
+
+               <Block {...rowBlockProps}>
+                 <ModalLabel label={"businessArea"}/>
+                 <FieldInput fieldName="businessArea" fieldValue={formikBag.values.abroad.businessArea}/>
+               </Block>*/}
+
+
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
+                  <BoolField fieldName='disclosure.abroad'
+                             value={formikBag.values.abroad.abroad}/>
+                </Block>
+                {/*{formikBag.values.dataProcessing.dataProcessorOutsideEU &&*/}
+                {/*<>*/}
+                {/*  <Block {...rowBlockProps}>*/}
+                {/*    <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>*/}
+                {/*    <FieldTransferGroundsOutsideEU*/}
+                {/*      code={formikBag.values.dataProcessing.transferGroundsOutsideEU}/>*/}
+                {/*  </Block>*/}
+                {/*  <Error fieldName='dataProcessing.transferGroundsOutsideEU'/>*/}
+
+                {/*  {formikBag.values.dataProcessing.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&*/}
+                {/*  <Block {...rowBlockProps}>*/}
+                {/*    <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>*/}
+                {/*    <FieldTransferGroundsOutsideEUOther/>*/}
+                {/*  </Block>}*/}
+                {/*  <Error fieldName='dataProcessing.transferGroundsOutsideEUOther'/>*/}
+
+                {/*  <Block {...rowBlockProps}>*/}
+                {/*    <ModalLabel label={intl.countries}/>*/}
+                {/*    <FieldTransferCountries formikBag={formikBag}/>*/}
+                {/*  </Block>*/}
+                {/*  <Error fieldName='dataProcessing.transferCountries'/>*/}
+                {/*</>}*/}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 <Accordion overrides={{
                   Root: {
