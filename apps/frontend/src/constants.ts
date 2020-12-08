@@ -545,6 +545,11 @@ export interface CodeUsage {
   dpProcesses: [DpProcessShort];
 }
 
+export interface RecentEdits {
+  time: string
+  process: ProcessShort
+}
+
 export interface Use {
   id: string;
   name: string;

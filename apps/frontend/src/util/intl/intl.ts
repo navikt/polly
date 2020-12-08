@@ -430,6 +430,7 @@ export interface IStrings {
   time: string;
   user: string;
   lastChanges: string;
+  userLastChanges: string;
   settings: string;
   revision: string;
   needsRevision: string;

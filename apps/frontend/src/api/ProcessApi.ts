@@ -1,5 +1,16 @@
 import axios from 'axios'
-import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../constants'
+import {
+  PageResponse,
+  Process,
+  ProcessCount,
+  ProcessField,
+  ProcessFormValues,
+  ProcessShort,
+  ProcessState,
+  ProcessStatus,
+  RecentEdits,
+  TRANSFER_GROUNDS_OUTSIDE_EU_OTHER
+} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import * as queryString from 'query-string'
@@ -51,6 +62,10 @@ export const updateProcess = async (process: ProcessFormValues) => {
   const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
   return data
+}
+
+export const getRecentEditedProcesses = async ()=>{
+  return (await axios.get<PageResponse<RecentEdits>>(`${env.pollyBaseUrl}/process/myedits`)).data.content
 }
 
 export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = process => {

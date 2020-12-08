@@ -13,6 +13,7 @@ import {LastEvents} from '../components/audit/LastEvents'
 import {Markdown} from '../components/common/Markdown'
 import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStatus";
 import Charts from '../components/Charts/Charts'
+import {RecentEditsByUser} from "../components/audit/RecentEditsByUser";
 
 export const MainPage = () => {
   const { processStatus } = useParams()
@@ -58,8 +59,13 @@ export const MainPage = () => {
             </Block>
 
             <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
+              <RecentEditsByUser/>
+            </Block>
+
+            <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
               <LastEvents />
             </Block>
+
           </>
         )
       }
