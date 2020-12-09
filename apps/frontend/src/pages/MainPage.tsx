@@ -66,7 +66,7 @@ export const MainPage = () => {
             )}
 
 
-            <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
+            <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem" marginBottom={"200px"}>
               <LastEvents/>
             </Block>
 
