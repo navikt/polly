@@ -57,7 +57,7 @@ public class TestConfig {
         private static AzureUserInfo user;
 
         public MockFilter() throws URISyntaxException {
-            super(null, new AppIdMapping("[]", ""), new AADAuthenticationProperties(),
+            super(null, null, new AppIdMapping("[]", ""), new AADAuthenticationProperties(),
                     null, new OIDCProviderMetadata(new Issuer("issuer"), List.of(SubjectType.PUBLIC), new URI("http://localhost")));
         }
 
