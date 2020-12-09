@@ -9,7 +9,7 @@ import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInform
 import {H5, HeadingSmall, Paragraph2} from 'baseui/typography'
 import {Button, KIND} from 'baseui/button'
 import {user} from '../service/User'
-import {Disclosure, DisclosureAbroad, DisclosureFormValues, DpProcess, InformationType} from '../constants'
+import {Disclosure, DisclosureFormValues, DpProcess, InformationType} from '../constants'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
@@ -92,7 +92,7 @@ const ThirdPartyPage = () => {
     start: undefined,
     end: undefined,
     processes: [],
-    abroad: {abroad: true, countries:[], refToAgreement: undefined, businessArea:undefined}
+    abroad: {abroad: true, countries: [], refToAgreement: '', businessArea: ''}
   }
 
   useEffect(() => {

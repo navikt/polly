@@ -464,8 +464,8 @@ export interface DisclosureFormValues {
 }
 
 export interface DisclosureAbroad {
-  abroad: boolean;
-  countries?: string[];
+  abroad?: boolean;
+  countries: string[];
   refToAgreement?: string;
   businessArea?: string;
 }

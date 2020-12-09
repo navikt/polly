@@ -73,10 +73,10 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     processes: disclosure.processes || [],
     informationTypes: disclosure.informationTypes || [],
     abroad: {
-      abroad: disclosure.abroad.abroad,
-      countries: disclosure.abroad.countries,
-      refToAgreement: disclosure.abroad.refToAgreement,
-      businessArea: disclosure.abroad.businessArea
+      abroad: mapBool(disclosure.abroad.abroad),
+      countries: disclosure.abroad.countries || [],
+      refToAgreement: disclosure.abroad.refToAgreement || '',
+      businessArea: disclosure.abroad.businessArea || ''
     }
   }
 }
