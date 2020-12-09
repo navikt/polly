@@ -301,6 +301,8 @@ export interface InformationTypeShort {
 export interface ProcessShort {
   id: string;
   name: string;
+  number: number;
+  description: string;
   purposes: Code[];
   affiliation: Affiliation;
   status?: ProcessStatus;
