@@ -14,9 +14,10 @@ import {Markdown} from '../components/common/Markdown'
 import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStatus";
 import Charts from '../components/Charts/Charts'
 import {RecentEditsByUser} from "../components/audit/RecentEditsByUser";
+import {user} from "../service/User";
 
 export const MainPage = () => {
-  const { processStatus } = useParams()
+  const {processStatus} = useParams()
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<DashboardData>()
@@ -26,8 +27,8 @@ export const MainPage = () => {
     (async () => {
       setSettings(await getSettings())
       setLoading(false)
-      for (let key in localStorage){
-        if(key.indexOf("Yposition")===0){
+      for (let key in localStorage) {
+        if (key.indexOf("Yposition") === 0) {
           localStorage.removeItem(key)
         }
       }
@@ -46,24 +47,27 @@ export const MainPage = () => {
         !isLoading && dashboardData && (
           <>
 
-            <Departments data={dashboardData} />
+            <Departments data={dashboardData}/>
 
-            <FilterDashboardStatus setFilter={setDashboardStatus} />
+            <FilterDashboardStatus setFilter={setDashboardStatus}/>
 
-            <Charts chartData={dashboardData.allProcesses} processStatus={dashboardStatus} />
+            <Charts chartData={dashboardData.allProcesses} processStatus={dashboardStatus}/>
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>
-                <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim />
+                <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim/>
               </Card>
             </Block>
 
-            <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
-              <RecentEditsByUser/>
-            </Block>
+            {user.isLoggedIn() && (
+              <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
+                <RecentEditsByUser/>
+              </Block>
+            )}
+
 
             <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
-              <LastEvents />
+              <LastEvents/>
             </Block>
 
           </>
