@@ -23,6 +23,7 @@ export const RecentEditsByUser = () => {
       <HeadingMedium>{intl.userLastChanges}</HeadingMedium>
       {
         recentEdits
+          .slice(0, 10)
           .sort((a, b) => moment(b.time).valueOf() - moment(a.time).valueOf())
           .map(ps =>
             <ObjectLink id={ps.process.id} type={ObjectType.PROCESS} hideUnderline key={ps.process.id}>
