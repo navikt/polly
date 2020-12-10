@@ -202,7 +202,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Error fieldName="document"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
+                  <ModalLabel label={intl.deliverAbroad}/>
                   <BoolField fieldName='abroad.abroad'
                              value={formikBag.values.abroad.abroad}/>
                 </Block>
@@ -236,14 +236,14 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                   </Block>
 
                     <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.reference}/>
+                      <ModalLabel label={intl.socialSecurityAgreement}/>
                       <FieldInput fieldName='abroad.refToAgreement'
                                   fieldValue={formikBag.values.abroad.refToAgreement}
                                   />
                     </Block>
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={"Business"}/>
+                    <ModalLabel label={intl.socialSecurityArea}/>
                     <FieldInput fieldName='abroad.businessArea'
                                 fieldValue={formikBag.values.abroad.businessArea}
                     />

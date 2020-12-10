@@ -407,6 +407,9 @@ export interface IStrings {
   fomDateHelpText: string;
   tomDateHelpText: string;
   mailLog: string;
+  deliverAbroad:string;
+  socialSecurityAgreement:string;
+  socialSecurityArea:string;
 
   code: string;
   codes: string;

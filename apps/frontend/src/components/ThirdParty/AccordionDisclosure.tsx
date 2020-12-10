@@ -1,13 +1,13 @@
 import * as React from 'react'
 import {useEffect, useState} from 'react'
-import {Disclosure, DisclosureAlert, DisclosureFormValues, ObjectType} from "../../constants";
+import {Disclosure, DisclosureAbroad, DisclosureAlert, DisclosureFormValues, ObjectType} from "../../constants";
 import {getAlertForDisclosure} from "../../api/AlertApi";
 import {intl, theme} from "../../util";
 import {Block} from "baseui/block";
 import {Panel, StatelessAccordion} from "baseui/accordion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight, faEdit, faExclamationCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {getDisclosure, convertDisclosureToFormValues} from "../../api";
+import {convertDisclosureToFormValues, getDisclosure} from "../../api";
 import {StyledSpinnerNext} from "baseui/spinner";
 import DataText from "../common/DataText";
 import {canViewAlerts} from "../../pages/AlertEventPage";
@@ -21,6 +21,7 @@ import {StyledLink} from "baseui/link";
 import LinkList from "./components/LinkList";
 import {codelist, ListName} from "../../service/Codelist";
 import {LegalBasisView} from "../common/LegalBasis";
+import {shortenLinksInText} from "../../util/helper-functions";
 
 
 type AccordionDisclosureProps = {
@@ -34,6 +35,36 @@ type AccordionDisclosureProps = {
 };
 
 type Alerts = { [k: string]: DisclosureAlert }
+
+const showAbroad = (abroad: DisclosureAbroad) => {
+  if (abroad) {
+    if (abroad.abroad === true) {
+      if (abroad.refToAgreement) {
+        return <>
+          <DataText label={intl.deliverAbroad} children={
+            <>
+              <Block>{`${intl.yes}. ${intl.reference}`}
+                {shortenLinksInText(abroad.refToAgreement)}
+              </Block>
+            </>
+          }/>
+          {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
+        </>
+      } else {
+        return <>
+          <DataText label={intl.deliverAbroad} children={intl.yes}/>
+          {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
+        </>
+      }
+    } else if (abroad.abroad === false) {
+      return <DataText label={intl.deliverAbroad} text={intl.no}/>
+    } else {
+      return <DataText label={intl.deliverAbroad} text={intl.unclarified}/>
+    }
+  } else {
+    return <></>
+  }
+}
 
 const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
@@ -164,13 +195,13 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
 
                       <DataText
                         label={intl.relatedProcesses}
-                        children={LinkList(selectedDisclosure?.processes ? selectedDisclosure?.processes.map(p => p) : [], "/process/purpose",ObjectType.PROCESS)
+                        children={LinkList(selectedDisclosure?.processes ? selectedDisclosure?.processes.map(p => p) : [], "/process/purpose", ObjectType.PROCESS)
                         }
                       />
 
                       <DataText
                         label={intl.informationTypes}
-                        children={LinkList(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype",ObjectType.INFORMATION_TYPE)
+                        children={LinkList(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype", ObjectType.INFORMATION_TYPE)
                         }
                       />
 
@@ -201,9 +232,11 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                         </>
                       }
                     </Block>
+                    {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
                   </Block>
                 </Block>
               }
+
             </Panel>
           )
         })}
