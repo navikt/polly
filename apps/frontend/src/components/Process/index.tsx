@@ -34,19 +34,21 @@ import {genProcessPath, Section} from '../../pages/ProcessPage'
 import {useHistory} from 'react-router-dom'
 
 type ProcessListProps = {
-  section: Section;
-  filter?: ProcessStatus;
-  processId?: string;
-  titleOverride?: string;
-  code: string;
-  listName?: ListName;
-  moveScroll?: Function;
+  section: Section
+  filter?: ProcessStatus
+  processId?: string
+  titleOverride?: string
+  hideTitle?: boolean
+  code: string
+  listName?: ListName
+  moveScroll?: Function
   isEditable: boolean
+  getCount?: (i: number) => void
 }
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section, moveScroll, titleOverride, isEditable}: ProcessListProps) => {
+const ProcessList = ({code, listName, filter, processId, section, moveScroll, titleOverride, hideTitle, isEditable, getCount}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -59,6 +61,8 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const [codelistLoading, setCodelistLoading] = React.useState(true)
   const history = useHistory()
   useAwait(codelist.wait(), setCodelistLoading)
+
+  useEffect(() => getCount && getCount(processList.length), [processList.length])
 
   useEffect(() => {
     processId && getProcessById(processId)
@@ -280,9 +284,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
           </Label2>
         </Block>
         <Block marginRight='auto'>
-          <HeadingSmall>
+          {!hideTitle && <HeadingSmall>
             {titleOverride || intl.processes} ({processList.length})
-          </HeadingSmall>
+          </HeadingSmall>}
         </Block>
       </Block>
 

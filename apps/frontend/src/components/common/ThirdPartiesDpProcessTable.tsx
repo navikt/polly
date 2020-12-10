@@ -5,15 +5,14 @@ import {DpProcess, dpProcessSort, Team} from '../../constants'
 import {useTable} from '../../util/hooks'
 import {Cell, HeadCell, Row, Table} from './Table'
 import RouteLink from "./RouteLink";
-import {HeadingSmall} from "baseui/typography";
 import {getTeam} from "../../api";
+import {lowerFirst} from 'lodash'
 
 type TableDpProcessType = {
-  dpProcesses: Array<DpProcess>;
-  tableTitle: string;
+  dpProcesses: Array<DpProcess>
 };
 
-const ThirdPartiesDpProcessTable = ({dpProcesses,tableTitle}: TableDpProcessType) => {
+const ThirdPartiesDpProcessTable = ({dpProcesses}: TableDpProcessType) => {
 
   const [table, sortColumn] = useTable<DpProcess, keyof DpProcess>(dpProcesses, {sorting: dpProcessSort, initialSortColumn: 'name'})
   const [productTeams, setProductTeams] = useState<Map<string, Team>>()
@@ -36,45 +35,42 @@ const ThirdPartiesDpProcessTable = ({dpProcesses,tableTitle}: TableDpProcessType
   }, [])
 
   return (
-    <React.Fragment>
-      <HeadingSmall>{intl.formatString(intl.thirdPartyDpProcessTableTitle,tableTitle)}</HeadingSmall>
-      <Table
-        emptyText={intl.noRetrievedFromThirdPartyAvailableInTable}
-        headers={
-          <>
-            <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.productTeam} column={'affiliation'} tableState={[table, sortColumn]}/>
-          </>
-        }
-      >
-        {table.data.map((row, index) => (
-          <Row key={index}>
-            <Cell>
-              {<RouteLink href={`/dpprocess/${row.id}`}>{row.name}</RouteLink>}
-            </Cell>
-            <Cell>
-              {row.description}
-            </Cell>
-            <Cell>
-              <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>{row.affiliation.department?.shortName}</RouteLink>
-            </Cell>
-            <Cell>
-              {
-                row.affiliation.productTeams.map((pt) => {
-                    return (<React.Fragment key={pt}>
-                      <RouteLink href={`/team/${pt}`}>{productTeams?.get(pt)?.id===pt && productTeams?.get(pt)?.name}</RouteLink>
-                      &nbsp;
-                    </React.Fragment>)
-                  }
-                )
-              }
-            </Cell>
-          </Row>
-        ))}
-      </Table>
-    </React.Fragment>
+    <Table
+      emptyText={intl.emptyTable + ' ' + lowerFirst(intl.dpProcesses)}
+      headers={
+        <>
+          <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.productTeam} column={'affiliation'} tableState={[table, sortColumn]}/>
+        </>
+      }
+    >
+      {table.data.map((row, index) => (
+        <Row key={index}>
+          <Cell>
+            {<RouteLink href={`/dpprocess/${row.id}`}>{row.name}</RouteLink>}
+          </Cell>
+          <Cell>
+            {row.description}
+          </Cell>
+          <Cell>
+            <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>{row.affiliation.department?.shortName}</RouteLink>
+          </Cell>
+          <Cell>
+            {
+              row.affiliation.productTeams.map((pt) => {
+                  return (<React.Fragment key={pt}>
+                    <RouteLink href={`/team/${pt}`}>{productTeams?.get(pt)?.id === pt && productTeams?.get(pt)?.name}</RouteLink>
+                    &nbsp;
+                  </React.Fragment>)
+                }
+              )
+            }
+          </Cell>
+        </Row>
+      ))}
+    </Table>
   )
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Accordion, Panel, SharedProps} from 'baseui/accordion'
+import {Accordion, Panel} from 'baseui/accordion'
 import {Paragraph2} from 'baseui/typography'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -52,7 +52,7 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
       {Object.keys(purposeMap).map((key) => (
         <Panel title={<span><FontAwesomeIcon icon={faUsersCog}/> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}
                overrides={{
-                 ToggleIcon: {component: (iconProps: SharedProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>},
+                 ToggleIcon: {component: (iconProps: any) => iconProps.title !== 'Expand' ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>},
                  Content: {style: paddingZero}
                }}
         >

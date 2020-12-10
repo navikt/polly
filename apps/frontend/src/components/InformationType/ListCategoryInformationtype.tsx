@@ -3,7 +3,7 @@ import {CodeUsage} from '../../constants'
 import RouteLink from '../common/RouteLink'
 import {Block} from 'baseui/block'
 import {useStyletron} from 'baseui'
-import {Accordion, Panel, SharedProps} from 'baseui/accordion'
+import {Accordion, Panel} from 'baseui/accordion'
 import {ListItem, ListItemLabel} from 'baseui/list'
 import {intl, theme} from '../../util'
 import {codelist, ListName} from '../../service/Codelist'
@@ -58,7 +58,7 @@ const ListCategoryInformationtype = ({categoryUsages}: InformationTypeAccordionP
                 paddingRight: '0',
               }
             },
-            ToggleIcon: {component: (iconProps: SharedProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+            ToggleIcon: {component: (iconProps: any) => iconProps.title !== 'Expand' ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
           }}
           key={categoryUsage.code}
         >
