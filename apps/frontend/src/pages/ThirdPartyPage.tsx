@@ -92,7 +92,7 @@ const ThirdPartyPage = () => {
     start: undefined,
     end: undefined,
     processes: [],
-    abroad: {abroad: true, countries: [], refToAgreement: '', businessArea: ''}
+    abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''}
   }
 
   useEffect(() => {
