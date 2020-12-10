@@ -20,8 +20,7 @@ import ThirdPartiesDpProcessTable from "../components/common/ThirdPartiesDpProce
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import {Accordion, Panel} from 'baseui/accordion'
 import {paddingAll} from '../components/common/Style'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import {toggleOverride} from '../components/common/Accordion'
 
 export type PathParams = {thirdPartyCode: string}
 
@@ -134,11 +133,7 @@ const ThirdPartyPage = () => {
                   paddingBottom: p.$expanded ? theme.sizing.scale600 : theme.sizing.scale200
                 })
               },
-              ToggleIcon: {
-                component: (iconProps: any) => {
-                  return iconProps.title !== 'Expand' ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>
-                }
-              },
+              ToggleIcon: toggleOverride,
             }}>
             <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`}>
               <Block display="flex" justifyContent="flex-end">

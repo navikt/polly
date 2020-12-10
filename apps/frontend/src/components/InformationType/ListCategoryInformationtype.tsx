@@ -8,10 +8,11 @@ import {ListItem, ListItemLabel} from 'baseui/list'
 import {intl, theme} from '../../util'
 import {codelist, ListName} from '../../service/Codelist'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
+import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {Heading, HeadingLevel} from 'baseui/heading'
 import {useQueryParam} from '../../util/hooks'
 import {Paragraph1} from 'baseui/typography'
+import {toggleOverride} from '../common/Accordion'
 
 type InformationTypeAccordionProps = {
   categoryUsages: CodeUsage[] | undefined
@@ -58,7 +59,7 @@ const ListCategoryInformationtype = ({categoryUsages}: InformationTypeAccordionP
                 paddingRight: '0',
               }
             },
-            ToggleIcon: {component: (iconProps: any) => iconProps.title !== 'Expand' ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+            ToggleIcon: toggleOverride
           }}
           key={categoryUsage.code}
         >

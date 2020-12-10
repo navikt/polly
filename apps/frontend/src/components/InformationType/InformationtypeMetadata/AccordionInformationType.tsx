@@ -3,7 +3,7 @@ import {Accordion, Panel} from 'baseui/accordion'
 import {Paragraph2} from 'baseui/typography'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight, faUsersCog} from '@fortawesome/free-solid-svg-icons'
+import {faUsersCog} from '@fortawesome/free-solid-svg-icons'
 
 import {codelist, ListName} from '../../../service/Codelist'
 import {intl} from '../../../util'
@@ -13,6 +13,7 @@ import {paddingZero} from '../../common/Style'
 import {useQueryParam} from '../../../util/hooks'
 import {useHistory} from 'react-router-dom'
 import * as queryString from 'query-string'
+import {toggleOverride} from '../../common/Accordion'
 
 const reducePolicyList = (list: Policy[]) => {
   return list.reduce((acc: PurposeMap, curr) => {
@@ -52,7 +53,7 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
       {Object.keys(purposeMap).map((key) => (
         <Panel title={<span><FontAwesomeIcon icon={faUsersCog}/> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}
                overrides={{
-                 ToggleIcon: {component: (iconProps: any) => iconProps.title !== 'Expand' ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>},
+                 ToggleIcon: toggleOverride,
                  Content: {style: paddingZero}
                }}
         >
