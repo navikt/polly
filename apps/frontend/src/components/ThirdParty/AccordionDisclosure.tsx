@@ -37,32 +37,26 @@ type AccordionDisclosureProps = {
 type Alerts = { [k: string]: DisclosureAlert }
 
 const showAbroad = (abroad: DisclosureAbroad) => {
-  if (abroad) {
-    if (abroad.abroad === true) {
-      if (abroad.refToAgreement) {
-        return <>
-          <DataText label={intl.deliverAbroad} children={
-            <>
-              <Block>{`${intl.yes}. ${intl.reference}`}
-                {shortenLinksInText(abroad.refToAgreement)}
-              </Block>
-            </>
-          }/>
-          {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
-        </>
-      } else {
-        return <>
-          <DataText label={intl.deliverAbroad} children={intl.yes}/>
-          {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
-        </>
-      }
-    } else if (abroad.abroad === false) {
-      return <DataText label={intl.deliverAbroad} text={intl.no}/>
+  if (abroad.abroad === true) {
+    if (abroad.refToAgreement) {
+      return <>
+        <DataText label={intl.deliverAbroad}>
+          <Block>{`${intl.yes}. ${intl.reference}`}
+            {shortenLinksInText(abroad.refToAgreement)}
+          </Block>
+        </DataText>
+        {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
+      </>
     } else {
-      return <DataText label={intl.deliverAbroad} text={intl.unclarified}/>
+      return <>
+        <DataText label={intl.deliverAbroad} children={intl.yes}/>
+        {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
+      </>
     }
+  } else if (abroad.abroad === false) {
+    return <DataText label={intl.deliverAbroad} text={intl.no}/>
   } else {
-    return <></>
+    return <DataText label={intl.deliverAbroad} text={intl.unclarified}/>
   }
 }
 
