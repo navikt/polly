@@ -471,6 +471,9 @@ export const no: IStrings = {
   noDisclosuresToThirdPartyAvailableInTable:'Ingen utlevering',
   noRetrievedFromThirdPartyAvailableInTable:'Ingen innhentinger fra ekstern part',
   noAlertsAvailableInTable: 'Ingen varsler',
+  deliverAbroad:'Utleveres personopplysningene til utlandet?',
+  socialSecurityAgreement:'Oppgi referanse til trygdeavtale',
+  socialSecurityArea: 'Trygdeområde'
 };
 
 export const en: IStrings = {
@@ -942,6 +945,9 @@ export const en: IStrings = {
   noDisclosuresToThirdPartyAvailableInTable:'No disclosure to third parties',
   noRetrievedFromThirdPartyAvailableInTable:'No retrieved from thirdParty',
   noAlertsAvailableInTable: 'No alerts',
+  socialSecurityArea:'Social security area',
+  deliverAbroad:'Is the personal information disclosed abroad?',
+  socialSecurityAgreement:'Provide reference to social security agreement'
 };
 
 export const ta = {

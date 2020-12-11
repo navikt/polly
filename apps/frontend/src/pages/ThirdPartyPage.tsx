@@ -95,7 +95,8 @@ const ThirdPartyPage = () => {
     legalBasesOpen: false,
     start: undefined,
     end: undefined,
-    processes: []
+    processes: [],
+    abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''}
   }
 
   useEffect(() => {

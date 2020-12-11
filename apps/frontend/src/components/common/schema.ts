@@ -5,6 +5,7 @@ import {
   CreateDocumentFormValues,
   DataProcessingFormValues,
   DisclosureFormValues,
+  DisclosureAbroad,
   Document,
   DocumentInformationTypes,
   DocumentInfoTypeUse,
@@ -301,7 +302,13 @@ export const disclosureSchema = () =>
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
-    processes: yup.array().of(yup.object<ProcessShort>())
+    processes: yup.array().of(yup.object<ProcessShort>()),
+    abroad: yup.object<DisclosureAbroad>({
+      abroad:yup.boolean(),
+      countries:yup.array().of(yup.string()),
+      businessArea:yup.string(),
+      refToAgreement:yup.string(),
+    }),
   });
 
 export const addDocumentToProcessSchema = () =>

@@ -2,6 +2,7 @@ import axios from "axios";
 import {Disclosure, DisclosureFormValues, PageResponse} from "../constants";
 import {env} from "../util/env"
 import {convertLegalBasesToFormValues} from "./PolicyApi"
+import {mapBool} from "../util/helper-functions";
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content;
@@ -20,12 +21,12 @@ export const getDisclosuresByInformationTypeId = async (informationTypeId: strin
 }
 
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
-  let body = mapDisclosureFromForm(disclosure);
+  let body = convertFormValuesToDisclosure(disclosure);
   return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data;
 };
 
 export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
-  let body = mapDisclosureFromForm(disclosure);
+  let body = convertFormValuesToDisclosure(disclosure);
   return (
     await axios.put<Disclosure>(`${env.pollyBaseUrl}/disclosure/${body.id}`, body)
   ).data;
@@ -35,7 +36,7 @@ export const deleteDisclosure = async (disclosureId: string) => {
   return (await axios.delete<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
 }
 
-export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
+export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
   return {
     id: values.id,
     recipient: values.recipient,
@@ -47,11 +48,17 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     start: values.start,
     end: values.end,
     processIds: values.processes.map(p => p.id) || [],
-    informationTypeIds: values.informationTypes ? values.informationTypes.map(i => i.id) : []
+    informationTypeIds: values.informationTypes ? values.informationTypes.map(i => i.id) : [],
+    abroad: {
+      abroad: mapBool(values.abroad.abroad),
+      countries: values.abroad.countries,
+      refToAgreement: values.abroad.refToAgreement,
+      businessArea: values.abroad.businessArea
+    }
   };
 };
 
-export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => {
+export const convertDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => {
   return {
     id: disclosure.id,
     recipient: disclosure.recipient.code || '',
@@ -65,6 +72,12 @@ export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFo
     end: disclosure.end || undefined,
     processes: disclosure.processes || [],
     informationTypes: disclosure.informationTypes || [],
+    abroad: {
+      abroad: mapBool(disclosure.abroad.abroad),
+      countries: disclosure.abroad.countries || [],
+      refToAgreement: disclosure.abroad.refToAgreement || '',
+      businessArea: disclosure.abroad.businessArea || ''
+    }
   }
 }
 
