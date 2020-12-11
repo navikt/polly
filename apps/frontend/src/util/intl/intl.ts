@@ -213,6 +213,8 @@ export interface IStrings {
   documentSideMenuHelpText: string;
   externalPartsSideMenuHelpText: string;
   systemSideMenuHelpText: string;
+  dashboard: string;
+  dashboardSideMenuHelpText: string;
   processActivity: string;
   legalBasisNew: string;
   legalBasisAdd: string;

@@ -43,8 +43,13 @@ const SideBar = () => {
         <NavItem to="/dpprocess" text={intl.dpProcess} />
         <NavItem to="/informationtype" text={intl.informationTypes} tooltip={intl.informationTypeSideMenuHelpText}/>
         <NavItem to="/document" text={intl.documents} tooltip={intl.documentSideMenuHelpText}/>
+
+        <Block height={theme.sizing.scale600}/>
         <NavItem to="/thirdparty" text={intl.thirdParties} tooltip={intl.externalPartsSideMenuHelpText}/>
         <NavItem to="/system" text={intl.systems} tooltip={intl.systemSideMenuHelpText}/>
+
+        <Block height={theme.sizing.scale800}/>
+        <NavItem to="/dashboard" text={intl.dashboard} tooltip={intl.dashboardSideMenuHelpText}/>
         {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts}/>}
       </Block>
 

@@ -1,27 +1,24 @@
-import {theme} from '../util'
+import {intl, theme} from '../util'
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {Block} from 'baseui/block'
-import {DashboardData, ProcessStatus, Settings} from '../constants'
+import {DashboardData, Settings} from '../constants'
 import {getSettings} from '../api/SettingsApi'
 import {Card} from 'baseui/card'
-import {cardShadow} from '../components/common/Style'
+import {cardShadow, padding} from '../components/common/Style'
 import Departments from '../components/Dashboard/Departments'
 import {getDashboard} from '../api'
-import {useParams} from 'react-router-dom'
 import {LastEvents} from '../components/audit/LastEvents'
 import {Markdown} from '../components/common/Markdown'
-import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStatus";
-import Charts from '../components/Charts/Charts'
 import {RecentEditsByUser} from "../components/audit/RecentEditsByUser";
 import {user} from "../service/User";
+import RouteLink from '../components/common/RouteLink'
+import {LabelMedium} from 'baseui/typography'
 
 export const MainPage = () => {
-  const {processStatus} = useParams()
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<DashboardData>()
-  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(processStatus ? processStatus as ProcessStatus : ProcessStatus.All)
 
   useEffect(() => {
     (async () => {
@@ -36,10 +33,8 @@ export const MainPage = () => {
   }, [])
 
   useEffect(() => {
-    (async () => {
-      setDashboardData(await getDashboard(dashboardStatus))
-    })()
-  }, [dashboardStatus])
+    getDashboard().then(setDashboardData)
+  }, [])
 
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
@@ -49,9 +44,36 @@ export const MainPage = () => {
 
             <Departments data={dashboardData}/>
 
-            <FilterDashboardStatus setFilter={setDashboardStatus}/>
+            <Block marginTop='2.5rem' width='100%'>
+              <Card overrides={cardShadow}>
+                <Block $style={padding('16px', '6px')} display='flex' justifyContent='center'>
+                  <LabelMedium>Choose your path!</LabelMedium>
+                </Block>
+              </Card>
 
-            <Charts chartData={dashboardData.allProcesses} processStatus={dashboardStatus}/>
+              <Block width='100%' marginTop='1.5rem' display='flex' justifyContent='space-between'>
+                <Card overrides={cardShadow}>
+                  <Block $style={padding('16px', '6px')}>
+                    <RouteLink href='/process'>{intl.processes}</RouteLink>
+                  </Block>
+                </Card>
+                <Card overrides={cardShadow}>
+                  <Block $style={padding('16px', '6px')}>
+                    <RouteLink href='/dpprocess'>{intl.dpProcesses}</RouteLink>
+                  </Block>
+                </Card>
+                <Card overrides={cardShadow}>
+                  <Block $style={padding('16px', '6px')}>
+                    <RouteLink href='/informationtype'>{intl.informationTypes}</RouteLink>
+                  </Block>
+                </Card>
+                <Card overrides={cardShadow}>
+                  <Block $style={padding('16px', '6px')}>
+                    <RouteLink href='/document'>{intl.documents}</RouteLink>
+                  </Block>
+                </Card>
+              </Block>
+            </Block>
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>

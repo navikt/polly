@@ -442,7 +442,8 @@ export const no: IStrings = {
   documentSideMenuHelpText: "En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.",
   externalPartsSideMenuHelpText: "Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere",
   systemSideMenuHelpText: "En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg",
-
+  dashboard: "Dashboard",
+  dashboardSideMenuHelpText: "Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen",
   categoryNotInUse: "Kategori {0} er ikke i bruk",
   excessInfoHelpText: "Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.",
   goToSite: "Gå til side",
@@ -468,11 +469,11 @@ export const no: IStrings = {
   noPotentialPersonalCategoryUsageInTable: 'Bruker potensielt alle personkategorier',
   usesAllInformationTypes: 'Bruker potensielt alle opplysningstyper',
   noAuditsAvailableInTable: 'Ingen versjoneringer',
-  noDisclosuresToThirdPartyAvailableInTable:'Ingen utlevering',
-  noRetrievedFromThirdPartyAvailableInTable:'Ingen innhentinger fra ekstern part',
+  noDisclosuresToThirdPartyAvailableInTable: 'Ingen utlevering',
+  noRetrievedFromThirdPartyAvailableInTable: 'Ingen innhentinger fra ekstern part',
   noAlertsAvailableInTable: 'Ingen varsler',
-  deliverAbroad:'Utleveres personopplysningene til utlandet?',
-  socialSecurityAgreement:'Oppgi referanse til trygdeavtale',
+  deliverAbroad: 'Utleveres personopplysningene til utlandet?',
+  socialSecurityAgreement: 'Oppgi referanse til trygdeavtale',
   socialSecurityArea: 'Trygdeområde'
 };
 
@@ -917,6 +918,8 @@ export const en: IStrings = {
   documentSideMenuHelpText: "A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.",
   externalPartsSideMenuHelpText: "Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers",
   systemSideMenuHelpText: "A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg",
+  dashboard: "Dashboard",
+  dashboardSideMenuHelpText: "Overview for statistics related to processes and other collections in the process catalog",
   excessInfoHelpText: "Information that is available in the documents or the system being used, without this being needed or used in processing.",
 
   goToSite: "Go to site",
@@ -942,12 +945,12 @@ export const en: IStrings = {
   noPotentialPersonalCategoryUsageInTable: 'Potentially uses all personal categories',
   usesAllInformationTypes: 'Potensially uses all informationtypes',
   noAuditsAvailableInTable: 'No audit',
-  noDisclosuresToThirdPartyAvailableInTable:'No disclosure to third parties',
-  noRetrievedFromThirdPartyAvailableInTable:'No retrieved from thirdParty',
+  noDisclosuresToThirdPartyAvailableInTable: 'No disclosure to third parties',
+  noRetrievedFromThirdPartyAvailableInTable: 'No retrieved from thirdParty',
   noAlertsAvailableInTable: 'No alerts',
-  socialSecurityArea:'Social security area',
-  deliverAbroad:'Is the personal information disclosed abroad?',
-  socialSecurityAgreement:'Provide reference to social security agreement'
+  socialSecurityArea: 'Social security area',
+  deliverAbroad: 'Is the personal information disclosed abroad?',
+  socialSecurityAgreement: 'Provide reference to social security agreement'
 };
 
 export const ta = {
