@@ -3,15 +3,16 @@ import {CodeUsage} from '../../constants'
 import RouteLink from '../common/RouteLink'
 import {Block} from 'baseui/block'
 import {useStyletron} from 'baseui'
-import {Accordion, Panel, SharedProps} from 'baseui/accordion'
+import {Accordion, Panel} from 'baseui/accordion'
 import {ListItem, ListItemLabel} from 'baseui/list'
 import {intl, theme} from '../../util'
 import {codelist, ListName} from '../../service/Codelist'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
+import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {Heading, HeadingLevel} from 'baseui/heading'
 import {useQueryParam} from '../../util/hooks'
 import {Paragraph1} from 'baseui/typography'
+import {toggleOverride} from '../common/Accordion'
 
 type InformationTypeAccordionProps = {
   categoryUsages: CodeUsage[] | undefined
@@ -58,7 +59,7 @@ const ListCategoryInformationtype = ({categoryUsages}: InformationTypeAccordionP
                 paddingRight: '0',
               }
             },
-            ToggleIcon: {component: (iconProps: SharedProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+            ToggleIcon: toggleOverride
           }}
           key={categoryUsage.code}
         >

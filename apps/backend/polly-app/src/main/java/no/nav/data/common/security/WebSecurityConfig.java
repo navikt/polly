@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/oauth2/callback",
                 "/userinfo",
                 "/internal/**",
-                "/swagger*/**"
+                "/swagger*/**",
+                "/process/shortbyid"
         );
 
         allowGetAndOptions(http,

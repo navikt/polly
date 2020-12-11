@@ -94,6 +94,23 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void getProcessShortById() {
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        Policy policy2 = createAndSavePolicy(PURPOSE_CODE2, createAndSaveInformationType());
+
+        ResponseEntity<ProcessPage> resp = restTemplate
+                .postForEntity("/process/shortbyid",
+                        List.of(policy.getProcess().getId(), policy2.getProcess().getId()),
+                        ProcessPage.class
+                );
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessPage respBody = resp.getBody();
+        assertThat(respBody).isNotNull();
+        assertThat(respBody.getContent()).hasSize(2);
+    }
+
+    @Test
     void getLastEdits() {
         createAndSaveProcess(PURPOSE_CODE1);
 
