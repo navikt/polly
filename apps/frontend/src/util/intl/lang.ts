@@ -233,6 +233,7 @@ export const no: IStrings = {
   overview: "Oversikt",
   searchProcess: "Søk etter behandlinger",
   relatedProcesses: "Relaterte behandlinger",
+  frontPageStartMessage: "Velg en sti!",
 
   dpProcessTitle: "Databehandlingen",
   dpProcessPageTitle: "Behandlinger hvor NAV er databehandler",
@@ -732,6 +733,7 @@ export const en: IStrings = {
   dpProcessDuplicatedError: "Data process has already exist.",
   externalProcessResponsible: 'Process responsible',
   relatedProcesses: "Related processes",
+  frontPageStartMessage: "Choose your path!",
 
   nameDpProcessHelpText: "A short name that states what the process is about. Examples: case management or access control",
   externalProcessResponsibleDpProcessHelpText: "State the name of the party responsible for this process",

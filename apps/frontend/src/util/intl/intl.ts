@@ -298,6 +298,7 @@ export interface IStrings {
   externalProcessResponsible: string;
   subDataProcessor: string;
   relatedProcesses: string;
+  frontPageStartMessage: string;
 
   // groups
   READ: string;
