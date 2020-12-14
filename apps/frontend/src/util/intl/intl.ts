@@ -299,6 +299,10 @@ export interface IStrings {
   subDataProcessor: string;
   relatedProcesses: string;
   frontPageStartMessage: string;
+  disclosureNameTooltip: string;
+  disclosurePurposeTooltip: string;
+  disclosureDescriptionTooltip: string;
+  disclosureDocumentTooltip:string;
 
   // groups
   READ: string;
