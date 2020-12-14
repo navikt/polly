@@ -47,7 +47,7 @@ export const MainPage = () => {
             <Block marginTop='2.5rem' width='100%'>
               <Card overrides={cardShadow}>
                 <Block $style={padding('16px', '6px')} display='flex' justifyContent='center'>
-                  <LabelMedium>Choose your path!</LabelMedium>
+                  <LabelMedium>{intl.frontPageStartMessage}</LabelMedium>
                 </Block>
               </Card>
 
@@ -59,7 +59,7 @@ export const MainPage = () => {
                 </Card>
                 <Card overrides={cardShadow}>
                   <Block $style={padding('16px', '6px')}>
-                    <RouteLink href='/dpprocess'>{intl.dpProcesses}</RouteLink>
+                    <RouteLink href='/dpprocess'>{intl.dpProcess}</RouteLink>
                   </Block>
                 </Card>
                 <Card overrides={cardShadow}>
