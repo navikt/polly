@@ -125,13 +125,13 @@ const AdminOptions = () => {
     {label: intl.audit, href: '/admin/audit'},
     {label: intl.settings, href: '/admin/settings'},
     {label: intl.mailLog, href: '/admin/maillog'},
-    {label: intl.needsRevision, href: '/admin/request-revision'}
+    {label: intl.needsRevision, href: '/admin/request-revision', super: true}
   ]
   return (
     <StatefulPopover
       content={({close}) =>
         <StatefulMenu
-          items={pages}
+          items={pages.filter(p => p.super || user.isAdmin())}
           onItemSelect={select => {
             select.event?.preventDefault()
             close()
@@ -164,7 +164,7 @@ const Header = (props: HeaderProps) => {
           marginLeft={'auto'}
         >
           <NavigationList $align={ALIGN.right}>
-            {user.isAdmin() && (
+            {(user.isAdmin() || user.isSuper()) && (
               <NavigationItem $style={{paddingLeft: 0}}>
                 <AdminOptions/>
               </NavigationItem>
