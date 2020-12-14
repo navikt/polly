@@ -164,7 +164,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                           <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
                                   onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
                         </Block>}
-                        {user.isAdmin() && <Block marginRight='auto'>
+                        {(user.isAdmin() || user.isSuper()) && <Block marginRight='auto'>
                           <Button type='button' kind='tertiary' size='compact' icon={faGavel}
                                   onClick={() => setShowRevisionModal(true)}>{intl.newRevision}</Button>
                         </Block>}
