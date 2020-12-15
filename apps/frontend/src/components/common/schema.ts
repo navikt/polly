@@ -4,8 +4,8 @@ import {
   AffiliationFormValues,
   CreateDocumentFormValues,
   DataProcessingFormValues,
-  DisclosureFormValues,
   DisclosureAbroad,
+  DisclosureFormValues,
   Document,
   DocumentInformationTypes,
   DocumentInfoTypeUse,
@@ -38,7 +38,7 @@ export const infoTypeSchema = () =>
     name: yup.string().required(intl.required).max(max, maxError()),
     term: yup.string(),
     sensitivity: yup.string().required(intl.required),
-    categories: yup.array().of(yup.string()).required(intl.required),
+    categories: yup.array().of(yup.string()).min(1, intl.required),
     sources: yup.array().of(yup.string()),
     productTeams: yup.array().of(yup.string()),
     keywords: yup.array().of(yup.string()),
@@ -100,8 +100,7 @@ export const processSchema = () =>
     .oneOf(
       codelist.getCodes(ListName.PURPOSE).map((p) => p.code),
       intl.required
-    ))
-    .required(intl.required),
+    )).min(1, intl.required),
     description: yup.string(),
     additionalDescription: yup.string(),
     affiliation: yup.object<AffiliationFormValues>({
@@ -304,17 +303,17 @@ export const disclosureSchema = () =>
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     processes: yup.array().of(yup.object<ProcessShort>()),
     abroad: yup.object<DisclosureAbroad>({
-      abroad:yup.boolean(),
-      countries:yup.array().of(yup.string()),
-      businessArea:yup.string(),
-      refToAgreement:yup.string(),
+      abroad: yup.boolean(),
+      countries: yup.array().of(yup.string()),
+      businessArea: yup.string(),
+      refToAgreement: yup.string(),
     }),
   });
 
 export const addDocumentToProcessSchema = () =>
   yup.object<AddDocumentToProcessFormValues>({
     document: yup.object<Document>().required(intl.required),
-    informationTypes: yup.array().of(yup.object<DocumentInfoTypeUse>()).required(intl.required),
+    informationTypes: yup.array().of(yup.object<DocumentInfoTypeUse>()).min(1, intl.required),
     process: yup.object<Process>().required(intl.required),
     linkDocumentToPolicies: yup.boolean(),
   });
@@ -333,7 +332,7 @@ export const addBatchInfoTypesToProcessSchema = (otherPolicies: Policy[]) =>
           return subjectCategoryExistsBatch(path, otherPolicies, informationTypeUse);
         }
       })
-    ).required(intl.required),
+    ).min(1, intl.required),
     process: yup.object<Process>().required(intl.required),
     linkDocumentToPolicies: yup.boolean().equals([false])
   });
