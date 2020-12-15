@@ -154,19 +154,19 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosureName}/>
+                  <ModalLabel label={intl.disclosureName} tooltip={intl.disclosureNameTooltip}/>
                   <FieldInput fieldName="name" fieldValue={formikBag.values.name}/>
                 </Block>
                 <Error fieldName="name"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosurePurpose}/>
+                  <ModalLabel label={intl.disclosurePurpose} tooltip={intl.disclosurePurposeTooltip}/>
                   <FieldTextarea fieldName="recipientPurpose" fieldValue={formikBag.values.recipientPurpose}/>
                 </Block>
                 <Error fieldName="recipientPurpose"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.additionalDescription}/>
+                  <ModalLabel label={intl.additionalDescription} tooltip={intl.disclosureDescriptionTooltip}/>
                   <FieldTextarea fieldName="description" fieldValue={formikBag.values.description}/>
                 </Block>
                 <Error fieldName="description"/>
@@ -186,7 +186,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.document}/>
+                  <ModalLabel label={intl.document} tooltip={intl.disclosureDocumentTooltip}/>
                   <Field
                     name="document"
                     render={({form}: FieldProps<DisclosureFormValues>) => (

@@ -56,7 +56,7 @@ export const no: IStrings = {
   seeExternalLink: "Se ekstern lenke",
   processActivity: "Behandlingsaktivitet",
   aboutUs: "Om Behandlingskatalogen",
-  includeConservationPlan: "Omfattes av NAVs bevarings- og kassasjonsplan?",
+  includeConservationPlan: "Omfattes av NAVs bevarings- og kassasjonsvedtak?",
   unclarified: "Uavklart",
   unknown: "Uavklart",
   notFilled: "Ikke utfylt",
@@ -97,16 +97,16 @@ export const no: IStrings = {
   retained: "Lagres i",
   retention: "Lagringstid",
   processWithIncompleteRetention: "Behandlinger med ufullstendig lagringstid: ",
-  retentionPlan: "Er området omfattet av etatens bevarings- og kassasjonsplan?",
-  retentionPlanYes: "Omfattes av NAVs bevarings- og kassasjonsplan",
-  retentionPlanNo: "Omfattes ikke av NAVs bevarings- og kassasjonsplan",
-  retentionPlanUnclarified: "Uavklart om omfattes av NAVs bevarings- og kassasjonsplan",
+  retentionPlan: "Er området omfattet av etatens bevarings- og kassasjonsvedtak?",
+  retentionPlanYes: "Omfattes av NAVs bevarings- og kassasjonsvedtak",
+  retentionPlanNo: "Omfattes ikke av NAVs bevarings- og kassasjonsvedtak",
+  retentionPlanUnclarified: "Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak",
   retentionMonths: "Lagringstid",
   retentionStart: "Lagringstiden beregnes fra følgende tidspunkt eller hendelse",
   retentionDescription: "Begrunnelse",
   retentionDescriptionPlaceHolder: "(f.eks. lenke til Websak, Confluence e.l.)",
   retentionReference: "Ref. til relevant dokumentasjon",
-  retentionPieChartTitle: "Omfattes av NAVs bevarings- og kassasjonsplan",
+  retentionPieChartTitle: "Omfattes av NAVs bevarings- og kassasjonsvedtak",
   years: "år",
   months: "måneder",
   lastEvents: "Siste hendelser",
@@ -475,7 +475,13 @@ export const no: IStrings = {
   noAlertsAvailableInTable: 'Ingen varsler',
   deliverAbroad: 'Utleveres personopplysningene til utlandet?',
   socialSecurityAgreement: 'Oppgi referanse til trygdeavtale',
-  socialSecurityArea: 'Trygdeområde'
+  socialSecurityArea: 'Trygdeområde',
+
+  disclosureNameTooltip: 'Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap.',
+  disclosurePurposeTooltip: 'Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.',
+  disclosureDescriptionTooltip: 'Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.',
+  disclosureDocumentTooltip:'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.'
+
 };
 
 export const en: IStrings = {
@@ -536,7 +542,7 @@ export const en: IStrings = {
   filterPieChartsByStatus: "Filter diagrams by status",
   processActivity: "Process activity",
   aboutUs: "About process catalog",
-  includeConservationPlan: "Is NAV's conservation and disposal plan covered?",
+  includeConservationPlan: "Is NAV's conservation and disposal decision covered?",
   unclarified: "Unclarified",
   unknown: "Unknown",
   notFilled: "Not filled",
@@ -579,16 +585,16 @@ export const en: IStrings = {
   retained: "Retained",
   retention: "Retention",
   processWithIncompleteRetention: "Process with incompleted retention: ",
-  retentionPlan: "Is the area covered by the agency's disposal and conservation plan?",
-  retentionPlanYes: "Covered by the NAV's disposal and conservation plan",
-  retentionPlanNo: "Not covered by the NAV's disposal and conservation plan",
-  retentionPlanUnclarified: "Unclarified whether covered by the NAV's disposal and conservation plan",
+  retentionPlan: "Is the area covered by the agency's disposal and conservation decision?",
+  retentionPlanYes: "Covered by the NAV's disposal and conservation decision",
+  retentionPlanNo: "Not covered by the NAV's disposal and conservation decision",
+  retentionPlanUnclarified: "Unclarified whether covered by the NAV's disposal and conservation decision",
   retentionMonths: "Retention time",
   retentionStart: "Retention time is calculated from the following time or event",
   retentionDescription: "Retention grounds",
   retentionDescriptionPlaceHolder: "(i.e. link to Websak, Confluence etc.)",
   retentionReference: "Ref. to relevant documentation",
-  retentionPieChartTitle: "Includes NAV's disposal and conservation plan",
+  retentionPieChartTitle: "Includes NAV's disposal and conservation decision",
   years: "years",
   months: "months",
   lastEvents: "Last events",
@@ -952,7 +958,13 @@ export const en: IStrings = {
   noAlertsAvailableInTable: 'No alerts',
   socialSecurityArea: 'Social security area',
   deliverAbroad: 'Is the personal information disclosed abroad?',
-  socialSecurityAgreement: 'Provide reference to social security agreement'
+  socialSecurityAgreement: 'Provide reference to social security agreement',
+
+  disclosureNameTooltip: 'A short name that describe what the disclosure is about. Example: Disclosure of sickness and disability information from NAV to an insurance company',
+  disclosurePurposeTooltip: 'Describe the purpose of the disclosure to the recipient. Example: The purpose is to help insurance companies to receive information from NAV that is necessary to process an insurance case',
+  disclosureDescriptionTooltip: 'Relevant information that does not fit into other fields can be described here. For example, what type of information is provided, regularity or similar.',
+  disclosureDocumentTooltip: 'A collection of information types. Sick leave and income statement are examples of documents that contain several types of information.'
+
 };
 
 export const ta = {
