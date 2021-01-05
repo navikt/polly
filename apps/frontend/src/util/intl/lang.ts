@@ -110,7 +110,7 @@ export const no: IStrings = {
   years: "år",
   months: "måneder",
   lastEvents: "Siste hendelser",
-  userLastChanges: "Mine siste forandringer",
+  userLastChanges: "Mine siste endringer",
   exceptionalUsage: "Brukes unntaksvis",
   overallPurpose: "Overordnet formål",
   overallPurposeActivity: "Overordnet behandlingsaktivitet",
