@@ -6,9 +6,9 @@ import {Block} from 'baseui/block'
 import {useHistory, useParams} from 'react-router-dom'
 import {Label2} from "baseui/typography";
 
-export const FilterDashboardStatus = (props: { setFilter: Function }) => {
+export const FilterDashboardStatus = (props: {setFilter: Function}) => {
   const history = useHistory()
-  const {processStatus} = useParams()
+  const {processStatus} = useParams<{processStatus: ProcessStatus}>()
   return (
     <Block width='100%' display="flex" flexDirection='row-reverse' marginTop={theme.sizing.scale600}>
       <Block width={"240px"}>

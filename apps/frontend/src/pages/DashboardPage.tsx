@@ -12,7 +12,7 @@ import {HeadingMedium} from 'baseui/typography'
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData>()
-  const {processStatus} = useParams()
+  const {processStatus} = useParams<{processStatus: ProcessStatus}>()
   const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(processStatus ? processStatus as ProcessStatus : ProcessStatus.All)
 
   useEffect(() => {
