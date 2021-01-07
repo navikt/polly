@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.disclosure.domain.Disclosure;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -87,6 +89,18 @@ public class DisclosureController {
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
     }
 
+    @Operation(summary = "Search disclosures")
+    @ApiResponse(description = "Disclosures fetched")
+    @GetMapping("/search/{search}")
+    public ResponseEntity<RestResponsePage<DisclosureResponse>> search(@PathVariable String search) {
+        log.info("Received request for Disclosure search={}", search);
+        if (search.length() < 3) {
+            throw new ValidationException("Search term must be at least 3 characters");
+        }
+        var discs = new ArrayList<>(repository.findByNameContaining(search));
+        return returnResults(new RestResponsePage<>(convert(discs, Disclosure::convertToResponse)));
+    }
+
     private ResponseEntity<RestResponsePage<DisclosureResponse>> returnResults(RestResponsePage<DisclosureResponse> page) {
         log.info("Returned {} Disclosures", page.getNumberOfElements());
         return ResponseEntity.ok(page);
@@ -108,7 +122,6 @@ public class DisclosureController {
 
     @Operation(summary = "Create Disclosure")
     @ApiResponse(responseCode = "201", description = "Disclosure successfully created")
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DisclosureResponse> createPolicy(@Valid @RequestBody DisclosureRequest request) {
@@ -118,7 +131,6 @@ public class DisclosureController {
 
     @Operation(summary = "Update Disclosure")
     @ApiResponse(description = "Disclosure successfully updated")
-
     @PutMapping("/{id}")
     public ResponseEntity<DisclosureResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to update Disclosure");
