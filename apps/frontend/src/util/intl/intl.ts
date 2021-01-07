@@ -208,6 +208,7 @@ export interface IStrings {
   legalBasisHelpText: string;
   retentionHelpText: string;
   retentionDescriptionHelpText: string;
+  retentionNeedsHelpText: string;
   processSideMenuHelpText: string;
   informationTypeSideMenuHelpText: string;
   documentSideMenuHelpText: string;
