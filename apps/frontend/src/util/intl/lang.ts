@@ -28,9 +28,9 @@ export const no: IStrings = {
   gdprArticle: "GDPR artikkel",
   orgMaster: "Master i NAV",
   orgMasterInfTypeHeader: "Opplysningstyper systemet er master for",
-  productTeam: "Produktteam (IT)",
-  productTeamFromTK: "Produktteam (Oppslag i Teamkatalogen)",
-  productTeamFromTKHelpText: "Angi hvilke produktteam som har forvaltningsansvaret for IT-systemene.",
+  productTeam: "Team",
+  productTeamFromTK: "Team (Oppslag i Teamkatalogen)",
+  productTeamFromTKHelpText: "Angi hvilke team som har forvaltningsansvaret for IT-systemene.",
   product: "Produkt",
   products: "Produkter",
   team: "Team",
@@ -226,7 +226,7 @@ export const no: IStrings = {
   disclosurePurpose: "Formål med utlevering",
   departmentSelect: "Velg avdeling",
   subDepartmentSelect: "Velg linje",
-  teamSelect: "Velg produktteam (IT)",
+  teamSelect: "Velg team",
   informationtypesUsedInDocument: "Opplysningstyper i dokumentet",
   editDocument: "Rediger dokument",
   completeness: "Kompletthet",
@@ -417,13 +417,13 @@ export const no: IStrings = {
   validityOfProcessHelpText:
     "Valgfritt. Hvis aktuelt angi perioden virksomheten har utført denne behandlingen. Kan stå tomt hvis usikkert, eller for løpende behandlinger som f.eks. saksbehandling av diverse ytelser.",
   organizingHelpText:
-    "Angi hvilken avdeling som er ansvarlig for behandlingen. Der hvor behandlingen utføres i linja så angi hvor i linja behandlingen utføres. Dersom behandlingen understøttes av IT-systemer, angi hvilke produktteam (IT) som har forvaltningsansvaret for systemene.",
+    "Angi hvilken avdeling som er ansvarlig for behandlingen. Der hvor behandlingen utføres i linja så angi hvor i linja behandlingen utføres. Dersom behandlingen understøttes av IT-systemer, angi hvilke team som har forvaltningsansvaret for systemene.",
   processNameHelpText: "Et kort navn som beskriver hva behandlingen går ut på. Eksempel: Saksbehandling, håndtere brukerhenvendelser eller rekruttering.",
   processPurposeHelpText:
     "Beskriv formålet med å bruke personopplysninger i denne behandlingen. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga nedsatt syn.",
   departmentHelpText: "Angi hvilken avdeling som har hovedansvar for behandlingen.",
   productTeamHelpText:
-    "Produktteamet i IT-avdelingen som har ansvaret for IT-løsningen som understøtter denne behandlingen. Ikke aktuelt på alle behandlinger. Eksempel: Team Pensjon, Team Bidrag",
+    "Teamet i IT-avdelingen som har ansvaret for IT-løsningen som understøtter denne behandlingen. Ikke aktuelt på alle behandlinger. Eksempel: Team Pensjon, Team Bidrag",
   subDepartmentHelpText: "Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres.",
   systemHelpText: "Angi hvilke systemer som er primært i bruk i denne behandlingen.",
   usesAllInformationTypesHelpText:
@@ -512,9 +512,9 @@ export const en: IStrings = {
   subjectCategories: "Subject categories",
   summarySubjectCategories: "Summary subject categories",
   processContainsSubjectCategory: "The process already contains subject category '{0}' for information type '{1}'",
-  productTeam: "Product team (IT)",
-  productTeamFromTK: "Produktteam (lookup in in Team Catalog)",
-  productTeamFromTKHelpText: "Specify which product teams are responsible for managing IT systems.",
+  productTeam: "Team",
+  productTeamFromTK: "Team (lookup in in Team Catalog)",
+  productTeamFromTKHelpText: "Specify which teams are responsible for managing IT systems.",
   product: "Product",
   products: "Products",
   team: "Team",
@@ -715,7 +715,7 @@ export const en: IStrings = {
   disclosurePurpose: "Purpose for disclosure",
   departmentSelect: "Select department",
   subDepartmentSelect: "Select subdepartment",
-  teamSelect: "Select team (IT)",
+  teamSelect: "Select team",
   informationtypesUsedInDocument: "Information types used in document",
   editDocument: "Edit document",
   status: "Status",
@@ -900,13 +900,13 @@ export const en: IStrings = {
   validityOfProcessHelpText:
     "Optional. If applicable, specify the period in which the business performed this processing. Can be left blank if you are unsure, or for ongoing processes such as case processing of various benefits.",
   organizingHelpText:
-    "Specify which department is responsible for the process. If applicable,  indicate where in the organization the process is performed. If the process is supported by IT systems, indicate which product teams (IT) have the reponsibility for those systems.",
+    "Specify which department is responsible for the process. If applicable,  indicate where in the organization the process is performed. If the process is supported by IT systems, indicate which teams have the reponsibility for those systems.",
   defaultProcessDocument: "Document for the default information types in a process",
   processNameHelpText: "A short and descriptive name that states what the process is about. Examples: case management, handling user inquiries or recruitment.",
   processPurposeHelpText:
     "What is the purpose of using personal data in this process? Need only to be used if you need to describe a more detailed purpose than the high level purpose. Not mandatory.",
   departmentHelpText: "State which department has responsible for the process.",
-  productTeamHelpText: "The IT team responsible for the IT solutions that supports this process. Not applicable to all processes. ",
+  productTeamHelpText: "The team responsible for the IT solutions that supports this process. Not applicable to all processes. ",
   subDepartmentHelpText: "If processing is performed in-line, specify where in-line processing is performed.",
   systemHelpText: "Indicate which IT systems are primarily used in this process",
   usesAllInformationTypesHelpText:
