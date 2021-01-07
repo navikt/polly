@@ -19,10 +19,9 @@ import {getAllDpProcesses} from "../api/DpProcessApi";
 import ThirdPartiesDpProcessTable from "../components/common/ThirdPartiesDpProcessTable";
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import {Accordion, Panel} from 'baseui/accordion'
-import {paddingAll} from '../components/common/Style'
 import {toggleOverride} from '../components/common/Accordion'
 
-export type PathParams = {thirdPartyCode: string}
+export type PathParams = { thirdPartyCode: string }
 
 const ThirdPartyPage = () => {
   const params = useParams<PathParams>()
@@ -130,8 +129,6 @@ const ThirdPartyPage = () => {
               Content: {
                 style: (p) => ({
                   backgroundColor: theme.colors.white,
-                  ...paddingAll(theme.sizing.scale400),
-                  paddingBottom: p.$expanded ? theme.sizing.scale600 : theme.sizing.scale200
                 })
               },
               ToggleIcon: toggleOverride,
