@@ -22,6 +22,7 @@ import LinkList from "./components/LinkList";
 import {codelist, ListName} from "../../service/Codelist";
 import {LegalBasisView} from "../common/LegalBasis";
 import {shortenLinksInText} from "../../util/helper-functions";
+import {user} from "../../service/User";
 
 
 type AccordionDisclosureProps = {
@@ -132,29 +133,30 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                             {intl.alerts}
                           </Button>
                           }
+                          {user.isLoggedIn() && (
+                            <>
+                              <Button
+                                kind={'outline'}
+                                size={ButtonSize.compact}
+                                icon={faEdit}
+                                tooltip={intl.edit}
+                                onClick={() => setShowEditModal(true)}
+                                marginRight
+                              >
+                                {intl.edit}
+                              </Button>
 
-
-                          <Button
-                            kind={'outline'}
-                            size={ButtonSize.compact}
-                            icon={faEdit}
-                            tooltip={intl.edit}
-                            onClick={() => setShowEditModal(true)}
-                            marginRight
-                          >
-                            {intl.edit}
-                          </Button>
-
-                          <Button
-                            kind={'outline'}
-                            size={ButtonSize.compact}
-                            icon={faTrash}
-                            tooltip={intl.delete}
-                            onClick={() => setShowDeleteModal(true)}
-                          >
-                            {intl.delete}
-                          </Button>
-
+                              <Button
+                                kind={'outline'}
+                                size={ButtonSize.compact}
+                                icon={faTrash}
+                                tooltip={intl.delete}
+                                onClick={() => setShowDeleteModal(true)}
+                              >
+                                {intl.delete}
+                              </Button>
+                            </>
+                          )}
                         </> : ""}</>
                     </div>
                   </Block>
