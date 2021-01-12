@@ -134,7 +134,6 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            console.log(values)
             submit(values)
           }}
           validationSchema={disclosureSchema()}
