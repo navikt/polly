@@ -18,11 +18,12 @@ import ModalThirdParty from "./ModalThirdPartyForm";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {Paragraph2} from "baseui/typography";
 import {StyledLink} from "baseui/link";
-import LinkList from "./components/LinkList";
+import LinkListProcess from "./components/LinkListProcess";
 import {codelist, ListName} from "../../service/Codelist";
 import {LegalBasisView} from "../common/LegalBasis";
 import {shortenLinksInText} from "../../util/helper-functions";
 import {user} from "../../service/User";
+import LinkListInformationType from "./components/LinkListInformationType";
 
 
 type AccordionDisclosureProps = {
@@ -191,15 +192,15 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
 
                       <DataText
                         label={intl.relatedProcesses}
-                        children={LinkList(selectedDisclosure?.processes ? selectedDisclosure?.processes.map(p => p) : [], "/process/purpose", ObjectType.PROCESS)
-                        }
-                      />
+                      >
+                        {LinkListProcess(selectedDisclosure?.processes ? selectedDisclosure?.processes : [], "/process/purpose", ObjectType.PROCESS)}
+                      </DataText>
 
                       <DataText
                         label={intl.informationTypes}
-                        children={LinkList(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype", ObjectType.INFORMATION_TYPE)
-                        }
-                      />
+                      >
+                        {LinkListInformationType(selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map(p => p) : [], "/informationtype", ObjectType.INFORMATION_TYPE)}
+                      </DataText>
 
                       <DataText
                         label={intl.document}
@@ -236,64 +237,64 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
             </Panel>
           )
         })}
-      </StatelessAccordion>
-      {editable && showEditModal && selectedDisclosure && (
-        <ModalThirdParty
+          </StatelessAccordion>
+        {editable && showEditModal && selectedDisclosure && (
+          <ModalThirdParty
           title={intl.editDisclosure}
           isOpen={showEditModal}
           initialValues={convertDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => {
-            if (submitEditDisclosure && await submitEditDisclosure(values)) {
-              renewDisclosureDetails(selectedDisclosure?.id)
-              setShowEditModal(false)
-            } else {
-              setShowEditModal(true)
-            }
-          }}
+          if (submitEditDisclosure && await submitEditDisclosure(values)) {
+          renewDisclosureDetails(selectedDisclosure?.id)
+          setShowEditModal(false)
+        } else {
+          setShowEditModal(true)
+        }
+        }}
           onClose={() => {
-            onCloseModal && onCloseModal()
-            setShowEditModal(false)
-          }}
+          onCloseModal && onCloseModal()
+          setShowEditModal(false)
+        }}
           errorOnCreate={errorModal}
           disableRecipientField={true}
-        />
-      )}
-      {showDeleteModal && (
-        <Modal
+          />
+          )}
+        {showDeleteModal && (
+          <Modal
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
           unstable_ModalBackdropScroll={true}
           size="default"
-        >
+          >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
-            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
+          <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
           </ModalBody>
 
           <ModalFooter>
-            <Block display="flex" justifyContent="flex-end">
-              <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
-              <Button
-                kind="secondary"
-                onClick={() => {
-                  setShowDeleteModal(false)
-                }}
-                marginLeft marginRight
-              >
-                {intl.abort}
-              </Button>
-              <Button onClick={() => {
-                if (selectedDisclosure)
-                  submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
-              }}
-              >{intl.delete}</Button>
-            </Block>
+          <Block display="flex" justifyContent="flex-end">
+          <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
+          <Button
+          kind="secondary"
+          onClick={() => {
+          setShowDeleteModal(false)
+        }}
+          marginLeft marginRight
+          >
+        {intl.abort}
+          </Button>
+          <Button onClick={() => {
+          if (selectedDisclosure)
+          submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+        }}
+          >{intl.delete}</Button>
+          </Block>
           </ModalFooter>
-        </Modal>
-      )}
-    </React.Fragment>
-  )
-}
+          </Modal>
+          )}
+          </React.Fragment>
+          )
+        }
 
 export default AccordionDisclosure
