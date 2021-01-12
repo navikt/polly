@@ -31,6 +31,7 @@ export const SelectType = (props: {type: SearchType, setType: (type: SearchType)
         {SmallRadio('informationType', intl.informationType)}
         {SmallRadio('purpose', intl.purpose)}
         {SmallRadio('process', intl.processes)}
+        {SmallRadio('dpprocess', intl.dpProcess)}
         {SmallRadio('team', intl.team)}
         {SmallRadio('productarea', intl.productArea)}
         {SmallRadio('department', intl.department)}

@@ -32,6 +32,7 @@ export const searchResultColor = {
   informationTypeBackground: '#E0DAE7',
   purposeBackground: '#E0F5FB',
   processBackground: '#CCEAD8',
+  dpProcessBackground: '#FFCC40',
   teamBackground: '#FFE9CC',
   productAreaBackground: '#F5DBEB',
   departmentBackground: '#ECEFCC',

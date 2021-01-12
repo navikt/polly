@@ -62,6 +62,7 @@ export type SearchType =
   'all'
   | 'purpose'
   | 'process'
+  | 'dpprocess'
   | 'team'
   | 'productarea'
   | 'department'
@@ -338,7 +339,7 @@ export interface Process extends IDurationed {
 }
 
 export interface DpProcess extends IDurationed {
-  id?: string;
+  id: string;
   name: string;
   description?: string;
   purposeDescription?: string;
