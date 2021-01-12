@@ -14,6 +14,7 @@ import Button from '../common/Button'
 import {searchResultColor} from "../../util/theme";
 import {SearchLabel} from "./components/SearchLabel";
 import {SelectType} from "./components/SelectType";
+import {searchDpProcess} from '../../api/DpProcessApi'
 
 type SearchItem = {id: string, sortKey: string, label: ReactElement, type: NavigableItem, number?: number}
 
@@ -123,6 +124,24 @@ const useMainSearch = () => {
                   />,
                   type: ObjectType.PROCESS,
                   number: it.number
+                })
+              }))
+            })())
+          }
+
+          if (type === 'all' || type === 'dpprocess') {
+            searches.push((async () => {
+              const resProcess = await searchDpProcess(search)
+              add(resProcess.content.map(it => {
+                return ({
+                  id: it.id,
+                  sortKey: it.name,
+                  label: <SearchLabel
+                    name={it.name}
+                    type={intl.dpProcess}
+                    backgroundColor={searchResultColor.dpProcessBackground}
+                  />,
+                  type: ObjectType.DP_PROCESS
                 })
               }))
             })())
