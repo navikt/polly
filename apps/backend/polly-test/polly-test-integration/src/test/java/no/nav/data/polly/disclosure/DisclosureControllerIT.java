@@ -115,6 +115,14 @@ class DisclosureControllerIT extends IntegrationTestBase {
         assertDisclosures(resp, 4);
     }
 
+    @Test
+    void searchDisclosure() {
+        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure/search/{string}", DisclosurePage.class, "disc name");
+
+        assertDisclosures(resp, 1);
+    }
+
     @Nested
     class GetByField {
 

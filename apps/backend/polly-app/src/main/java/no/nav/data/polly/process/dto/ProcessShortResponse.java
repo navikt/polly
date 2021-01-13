@@ -17,11 +17,13 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "purposes", "affiliation", "commonExternalProcessResponsible", "status"})
+@JsonPropertyOrder({"id", "name", "number", "description", "purposes", "affiliation", "commonExternalProcessResponsible", "status"})
 public class ProcessShortResponse {
 
     private UUID id;
     private String name;
+    private int number;
+    private String description;
     private List<CodelistResponse> purposes;
     private AffiliationResponse affiliation;
     private CodelistResponse commonExternalProcessResponsible;

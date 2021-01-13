@@ -1,13 +1,12 @@
 import * as React from 'react'
 import {useEffect, useState} from 'react'
-import {intl} from '../util'
+import {intl, theme} from '../util'
 import {useParams} from 'react-router-dom'
 import {codelist, ListName} from '../service/Codelist'
 import {Plus} from 'baseui/icon'
 import {Block} from 'baseui/block'
 import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure} from '../api'
-import TableDisclosure from '../components/common/TableDisclosure'
-import {H5, HeadingSmall, Paragraph2} from 'baseui/typography'
+import {H5, Paragraph2} from 'baseui/typography'
 import {Button, KIND} from 'baseui/button'
 import {user} from '../service/User'
 import {Disclosure, DisclosureFormValues, DpProcess, InformationType} from '../constants'
@@ -18,6 +17,9 @@ import ProcessList from '../components/Process'
 import {Section} from './ProcessPage'
 import {getAllDpProcesses} from "../api/DpProcessApi";
 import ThirdPartiesDpProcessTable from "../components/common/ThirdPartiesDpProcessTable";
+import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
+import {Accordion, Panel} from 'baseui/accordion'
+import {toggleOverride} from '../components/common/Accordion'
 
 export type PathParams = { thirdPartyCode: string }
 
@@ -29,6 +31,7 @@ const ThirdPartyPage = () => {
   const [showCreateModal, setShowCreateModal] = React.useState(false)
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
   const [error, setError] = React.useState<string>()
+  const [processListCount, setProcessListCount] = React.useState<number>(0)
 
   useEffect(() => {
     (async () => {
@@ -90,7 +93,9 @@ const ThirdPartyPage = () => {
     legalBases: [],
     legalBasesOpen: false,
     start: undefined,
-    end: undefined
+    end: undefined,
+    processes: [],
+    abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''}
   }
 
   useEffect(() => {
@@ -117,61 +122,75 @@ const ThirdPartyPage = () => {
             <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</Paragraph2>
           </Block>
 
-          <Block display="flex" justifyContent="space-between">
-            <HeadingSmall>{intl.disclosuresToThirdParty}</HeadingSmall>
-            {user.canWrite() &&
-            <Block>
-              <Button
-                size="compact"
-                kind={KIND.minimal}
-                onClick={() => setShowCreateModal(true)}
-                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-              >
-                {intl.createNew}
-              </Button>
-              <ModalThirdParty
-                title={intl.createThirdPartyModalTitle}
-                isOpen={showCreateModal}
-                initialValues={initialFormValues}
-                submit={handleCreateDisclosure}
-                onClose={() => {
-                  setShowCreateModal(false)
-                  setError(undefined)
-                }}
-                errorOnCreate={error}
-                disableRecipientField={true}
+
+          <Accordion
+            renderAll
+            overrides={{
+              Content: {
+                style: (p) => ({
+                  backgroundColor: theme.colors.white,
+                })
+              },
+              ToggleIcon: toggleOverride,
+            }}>
+            <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`}>
+              <Block display="flex" justifyContent="flex-end">
+                {user.canWrite() &&
+                <Button
+                  size="compact"
+                  kind={KIND.minimal}
+                  onClick={() => setShowCreateModal(true)}
+                  startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+                >
+                  {intl.createNew}
+                </Button>
+                }
+              </Block>
+              <AccordionDisclosure
+                disclosureList={disclosureList}
+                showRecipient={false}
+                errorModal={error}
+                editable
+                submitDeleteDisclosure={handleDeleteDisclosure}
+                submitEditDisclosure={handleEditDisclosure}
+                onCloseModal={() => setError(undefined)}
               />
-            </Block>
-            }
-          </Block>
-          <Block marginBottom="3rem">
-            <TableDisclosure
-              list={disclosureList}
-              showRecipient={false}
-              errorModal={error}
-              editable
-              submitDeleteDisclosure={handleDeleteDisclosure}
-              submitEditDisclosure={handleEditDisclosure}
-              onCloseModal={() => setError(undefined)}
-            />
-          </Block>
+            </Panel>
 
-          <Block>
-            <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
-          </Block>
+            <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`}>
+              <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
+            </Panel>
 
-          <Block>
-            <ThirdPartiesDpProcessTable
-              dpProcesses={dpProcesses || []}
-              tableTitle={codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}/>
-          </Block>
+            <Panel
+              title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}>
+              <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []}/>
+            </Panel>
 
-          <ProcessList 
-            section={Section.thirdparty}
-            code={params.thirdPartyCode}
-            listName={ListName.THIRD_PARTY}
-            isEditable={false}
-            titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`} 
+            <Panel title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
+              <ProcessList
+                section={Section.thirdparty}
+                code={params.thirdPartyCode}
+                listName={ListName.THIRD_PARTY}
+                isEditable={false}
+                hideTitle
+                getCount={setProcessListCount}
+              />
+            </Panel>
+
+          </Accordion>
+
+
+          <ModalThirdParty
+            title={intl.createThirdPartyModalTitle}
+            isOpen={showCreateModal}
+            initialValues={initialFormValues}
+            submit={handleCreateDisclosure}
+            onClose={() => {
+              setShowCreateModal(false)
+              setError(undefined)
+            }}
+            errorOnCreate={error}
+            disableRecipientField={true}
           />
 
         </>

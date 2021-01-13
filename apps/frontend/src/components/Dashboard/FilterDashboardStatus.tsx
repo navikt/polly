@@ -4,11 +4,11 @@ import {StatefulSelect} from 'baseui/select'
 import {intl, theme} from '../../util'
 import {Block} from 'baseui/block'
 import {useHistory, useParams} from 'react-router-dom'
-import {Label2} from "baseui/typography/index";
+import {Label2} from "baseui/typography";
 
-export const FilterDashboardStatus = (props: { setFilter: Function }) => {
+export const FilterDashboardStatus = (props: {setFilter: Function}) => {
   const history = useHistory()
-  const {processStatus} = useParams()
+  const {processStatus} = useParams<{processStatus: ProcessStatus}>()
   return (
     <Block width='100%' display="flex" flexDirection='row-reverse' marginTop={theme.sizing.scale600}>
       <Block width={"240px"}>
@@ -27,7 +27,7 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
           filterOutSelected={false}
           searchable={false}
           onChange={(params: any) => {
-            history.push(`${params.value[0].id}`)
+            history.push(`/dashboard/${params.value[0].id}`)
             props.setFilter(params.value[0].id)
           }}
         />

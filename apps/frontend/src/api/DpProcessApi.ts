@@ -26,6 +26,10 @@ export const getDpProcess = async (id: string) => {
   return (await axios.get<DpProcess>(`${env.pollyBaseUrl}/dpprocess/${id}`)).data
 }
 
+export const searchDpProcess = async (text: string) => {
+  return (await axios.get<PageResponse<DpProcess>>(`${env.pollyBaseUrl}/dpprocess/search/${text}`)).data
+}
+
 export const createDpProcess = async (dpProcessFormValues: DpProcessFormValues) => {
   let body = fromValuesToDpProcess(dpProcessFormValues)
   return (await axios.post<DpProcess>(`${env.pollyBaseUrl}/dpprocess`, body)).data

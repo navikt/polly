@@ -62,6 +62,7 @@ export type SearchType =
   'all'
   | 'purpose'
   | 'process'
+  | 'dpprocess'
   | 'team'
   | 'productarea'
   | 'department'
@@ -301,6 +302,8 @@ export interface InformationTypeShort {
 export interface ProcessShort {
   id: string;
   name: string;
+  number: number;
+  description?: string;
   purposes: Code[];
   affiliation: Affiliation;
   status?: ProcessStatus;
@@ -332,11 +335,11 @@ export interface Process extends IDurationed {
   profiling?: boolean;
   dataProcessing: DataProcessing;
   retention: Retention;
-  revisionText?: string
+  revisionText?: string;
 }
 
 export interface DpProcess extends IDurationed {
-  id?: string;
+  id: string;
   name: string;
   description?: string;
   purposeDescription?: string;
@@ -458,6 +461,16 @@ export interface DisclosureFormValues {
   legalBasesOpen: boolean;
   end?: string;
   start?: string;
+  processes: ProcessShort[];
+  informationTypes?: InformationTypeShort[];
+  abroad: DisclosureAbroad;
+}
+
+export interface DisclosureAbroad {
+  abroad?: boolean;
+  countries: string[];
+  refToAgreement?: string;
+  businessArea?: string;
 }
 
 export interface Disclosure extends IDurationed {
@@ -466,9 +479,14 @@ export interface Disclosure extends IDurationed {
   recipient: Code;
   recipientPurpose: string;
   description: string;
-  documentId?: string;
-  document?: Document;
-  legalBases: LegalBasis[];
+  documentId?: string
+  document?: Document
+  legalBases: LegalBasis[]
+  processes: ProcessShort[]
+  processIds: string[]
+  informationTypes?: InformationTypeShort[]
+  informationTypeIds?: string[]
+  abroad: DisclosureAbroad;
 }
 
 export interface DocumentFormValues {
@@ -537,6 +555,11 @@ export interface CodeUsage {
   policies: [UseWithPurpose];
   processes: [ProcessShort];
   dpProcesses: [DpProcessShort];
+}
+
+export interface RecentEdits {
+  time: string
+  process: ProcessShort
 }
 
 export interface Use {

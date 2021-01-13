@@ -33,12 +33,14 @@ import DpProcessPage from "./pages/DpProcessPage";
 import DpProcessView from "./components/DpProcess/DpProcessView";
 import {RequestRevisionPage} from './pages/admin/RequestRevisionPage'
 import {MailLogPage} from './pages/admin/MailLogPage'
+import {DashboardPage} from './pages/DashboardPage'
 
 export const processPath = '/process/:section/:code/:processId?'
 
 const Routes = (): JSX.Element => (
   <Root>
     <Switch>
+      <Route exact path="/dashboard/:processStatus?" component={DashboardPage} />
       <Route exact path="/thirdparty" component={ThirdPartySearchPage} />
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage} />
       <Route exact path="/system" component={SystemSearchPage} />
@@ -74,7 +76,7 @@ const Routes = (): JSX.Element => (
 
       <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage} />
 
-      <Route exact path="/:processStatus?" component={MainPage} />
+      <Route exact path="/" component={MainPage} />
       <Route component={NotFound} />
     </Switch>
   </Root>

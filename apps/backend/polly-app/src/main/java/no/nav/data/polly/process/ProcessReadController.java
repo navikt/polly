@@ -21,6 +21,7 @@ import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.LastEditedResponse;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import org.apache.commons.lang3.BooleanUtils;
@@ -31,6 +32,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -133,6 +136,14 @@ public class ProcessReadController {
         return ResponseEntity.ok(new RestResponsePage<>(convert(audits, a -> new LastEditedResponse(a.getTime(), processes.get(a.getTableId()).convertToShortResponse()))));
     }
 
+    @Operation(summary = "Get short info of processes")
+    @ApiResponse(description = "Processes fetched")
+    @PostMapping("/shortbyid")
+    public ResponseEntity<RestResponsePage<ProcessShortResponse>> getProcessesShortById(@RequestBody List<UUID> ids) {
+        var processes = repository.findAllById(ids);
+        return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToShortResponse)));
+    }
+
     @Operation(summary = "Search processes")
     @ApiResponse(description = "Processes fetched")
     @GetMapping("/search/{search}")
@@ -199,7 +210,4 @@ public class ProcessReadController {
 
     }
 
-    static class ProcessPolicyPage extends RestResponsePage<ProcessResponse> {
-
-    }
 }

@@ -208,11 +208,14 @@ export interface IStrings {
   legalBasisHelpText: string;
   retentionHelpText: string;
   retentionDescriptionHelpText: string;
+  retentionNeedsHelpText: string;
   processSideMenuHelpText: string;
   informationTypeSideMenuHelpText: string;
   documentSideMenuHelpText: string;
   externalPartsSideMenuHelpText: string;
   systemSideMenuHelpText: string;
+  dashboard: string;
+  dashboardSideMenuHelpText: string;
   processActivity: string;
   legalBasisNew: string;
   legalBasisAdd: string;
@@ -268,6 +271,7 @@ export interface IStrings {
   chooseDocument: string;
   addDocument: string;
   searchDocuments: string;
+  searchProcess: string;
   addOneInformationType: string;
   addCollectionOfInformationTypes: string;
   emptyTable: string;
@@ -294,6 +298,13 @@ export interface IStrings {
   dpProcessDuplicatedError: string;
   externalProcessResponsible: string;
   subDataProcessor: string;
+  relatedProcesses: string;
+  frontPageStartMessage: string;
+  disclosureNameTooltip: string;
+  disclosurePurposeTooltip: string;
+  disclosureDescriptionTooltip: string;
+  disclosureDocumentTooltip:string;
+
   // groups
   READ: string;
   WRITE: string;
@@ -404,6 +415,9 @@ export interface IStrings {
   fomDateHelpText: string;
   tomDateHelpText: string;
   mailLog: string;
+  deliverAbroad:string;
+  socialSecurityAgreement:string;
+  socialSecurityArea:string;
 
   code: string;
   codes: string;
@@ -427,6 +441,7 @@ export interface IStrings {
   time: string;
   user: string;
   lastChanges: string;
+  userLastChanges: string;
   settings: string;
   revision: string;
   needsRevision: string;

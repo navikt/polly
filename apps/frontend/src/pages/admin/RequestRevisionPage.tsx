@@ -49,7 +49,7 @@ const initialValues: ProcessRevisionRequest = {
 const schema = () => {
   const requiredString = yup.string().required(intl.required)
   return yup.object<ProcessRevisionRequest>({
-    processSelection: yup.string(),
+    processSelection: yup.mixed().oneOf(Object.values(ProcessSelection)).required(),
     processId: yup.string().when('processSelection', {is: ProcessSelection.ONE, then: requiredString}),
     department: yup.string().when('processSelection', {is: ProcessSelection.DEPARTMENT, then: requiredString}),
     productAreaId: yup.string().when('processSelection', {is: ProcessSelection.PRODUCT_AREA, then: requiredString}),

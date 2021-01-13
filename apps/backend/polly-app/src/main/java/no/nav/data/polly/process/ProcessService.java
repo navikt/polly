@@ -201,7 +201,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 .ifPresent(email -> emailService.scheduleMail(
                         MailTask.builder()
                                 .to(email)
-                                .subject("Behandlinger trenger revidering")
+                                .subject("Behandling(er) med behov for revidering")
                                 .body(templateService.needsRevision(processes))
                                 .build()
                 ));

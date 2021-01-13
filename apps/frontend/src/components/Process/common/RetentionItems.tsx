@@ -42,13 +42,13 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.includeConservationPlan} tooltip={intl.retentionHelpText}/>
+        <ModalLabel label={intl.includeConservationPlan}/>
         <BoolField fieldName='retention.retentionPlan' value={formikBag.values.retention.retentionPlan}/>
       </Block>
 
       {<>
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.retentionMonths}/>
+          <ModalLabel label={intl.retentionMonths} tooltip={intl.retentionNeedsHelpText}/>
           <Field
             name='retention.retentionMonths'
             render={({field, form}: FieldProps<string, ProcessFormValues>) => (
@@ -75,7 +75,7 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
         <Error fieldName='retention.retentionMonths'/>
 
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.retentionStart}/>
+          <ModalLabel label={intl.retentionStart} tooltip={intl.retentionHelpText}/>
           <Block width={"100%"}>
             <FieldInput fieldName='retention.retentionStart'
                         fieldValue={formikBag.values.retention.retentionStart}/>

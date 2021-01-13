@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {DisclosureFormValues, Document} from '../../constants';
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
-import {Field, FieldProps, Form, Formik, FormikProps} from 'formik';
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps} from 'formik';
 import {Block, BlockProps} from 'baseui/block';
 import {Error, ModalLabel} from '../common/ModalSchema';
 import {intl, theme} from '../../util';
@@ -15,6 +15,10 @@ import SelectDocument from '../common/SelectDocument';
 import FieldLegalBasis from "../Process/common/FieldLegalBasis";
 import {Accordion, Panel} from "baseui/accordion";
 import PanelTitle from "../Process/common/PanelTitle";
+import SelectProcess from '../common/SelectProcess';
+import SelectInformationTypes from '../common/SelectInformationTypes';
+import BoolField from "../Process/common/BoolField";
+import {renderTagList} from "../common/TagList";
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -120,7 +124,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
     <Modal
       onClose={onClose}
       isOpen={isOpen}
-      closeable
+      closeable={false}
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
@@ -129,10 +133,11 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
       <Block {...modalBlockProps}>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => submit(values)}
+          onSubmit={(values) => {
+            submit(values)
+          }}
           validationSchema={disclosureSchema()}
           render={(formikBag: FormikProps<DisclosureFormValues>) => (
-
 
             <Form>
               <ModalHeader>
@@ -148,25 +153,39 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosureName}/>
+                  <ModalLabel label={intl.disclosureName} tooltip={intl.disclosureNameTooltip}/>
                   <FieldInput fieldName="name" fieldValue={formikBag.values.name}/>
                 </Block>
                 <Error fieldName="name"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosurePurpose}/>
+                  <ModalLabel label={intl.disclosurePurpose} tooltip={intl.disclosurePurposeTooltip}/>
                   <FieldTextarea fieldName="recipientPurpose" fieldValue={formikBag.values.recipientPurpose}/>
                 </Block>
                 <Error fieldName="recipientPurpose"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.additionalDescription}/>
+                  <ModalLabel label={intl.additionalDescription} tooltip={intl.disclosureDescriptionTooltip}/>
                   <FieldTextarea fieldName="description" fieldValue={formikBag.values.description}/>
                 </Block>
                 <Error fieldName="description"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.document}/>
+                  <ModalLabel label={intl.relatedProcesses}/>
+                  <Block width="100%">
+                    <SelectProcess formikBag={formikBag} />
+                  </Block>
+                </Block>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.informationTypes}/>
+                  <Block width="100%">
+                    <SelectInformationTypes formikBag={formikBag} />
+                  </Block>
+                </Block>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.document} tooltip={intl.disclosureDocumentTooltip}/>
                   <Field
                     name="document"
                     render={({form}: FieldProps<DisclosureFormValues>) => (
@@ -180,6 +199,55 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                   />
                 </Block>
                 <Error fieldName="document"/>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.deliverAbroad}/>
+                  <BoolField fieldName='abroad.abroad'
+                             value={formikBag.values.abroad.abroad}/>
+                </Block>
+
+                {formikBag.values.abroad.abroad &&
+                <>
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.countries}/>
+                    <FieldArray
+                      name='abroad.countries'
+                      render={arrayHelpers => (
+                        <Block width='100%'>
+                          <Block>
+                            <Select
+                              clearable
+                              options={codelist.getCountryCodesOutsideEu()
+                                .map(c => ({id: c.code, label: c.description}))
+                                .filter(o => !formikBag.values.abroad.countries.includes(o.id))}
+                              onChange={({value}) => {
+                                arrayHelpers.form.setFieldValue('abroad.countries', [...formikBag.values.abroad.countries, ...value.map(v => v.id)])
+                              }}
+                              maxDropdownHeight={'400px'}
+                            />
+                          </Block>
+                          <Block>
+                            <Block>{renderTagList(formikBag.values.abroad.countries.map(c => codelist.countryName(c)), arrayHelpers)}</Block>
+                          </Block>
+                        </Block>
+                      )}
+                    />
+                  </Block>
+
+                    <Block {...rowBlockProps}>
+                      <ModalLabel label={intl.socialSecurityAgreement}/>
+                      <FieldInput fieldName='abroad.refToAgreement'
+                                  fieldValue={formikBag.values.abroad.refToAgreement}
+                                  />
+                    </Block>
+
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.socialSecurityArea}/>
+                    <FieldInput fieldName='abroad.businessArea'
+                                fieldValue={formikBag.values.abroad.businessArea}
+                    />
+                  </Block>
+                </>}
 
                 <Accordion overrides={{
                   Root: {
