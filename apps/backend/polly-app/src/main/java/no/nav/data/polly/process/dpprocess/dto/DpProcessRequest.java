@@ -11,6 +11,7 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionRequest;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 

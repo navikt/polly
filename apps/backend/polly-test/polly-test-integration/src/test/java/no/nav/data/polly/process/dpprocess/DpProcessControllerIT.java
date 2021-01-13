@@ -6,7 +6,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.dpprocess.DpProcessController.DpProcessPage;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
-import no.nav.data.polly.process.dpprocess.dto.DpRetentionRequest;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;

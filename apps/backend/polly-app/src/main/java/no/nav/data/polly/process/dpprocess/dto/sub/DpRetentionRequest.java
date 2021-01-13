@@ -1,4 +1,4 @@
-package no.nav.data.polly.process.dpprocess.dto;
+package no.nav.data.polly.process.dpprocess.dto.sub;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

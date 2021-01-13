@@ -10,7 +10,6 @@ import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.process.domain.DpProcessData;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessShortResponse;
@@ -27,7 +26,7 @@ import javax.validation.constraints.NotNull;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
 import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
-import static no.nav.data.polly.process.dpprocess.domain.DpRetention.convertRetention;
+import static no.nav.data.polly.process.dpprocess.domain.sub.DpRetention.convertRetention;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
