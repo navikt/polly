@@ -1,4 +1,4 @@
-package no.nav.data.polly.process.domain;
+package no.nav.data.polly.process.dpprocess.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
-import no.nav.data.polly.process.dpprocess.domain.DpRetention;
+import no.nav.data.polly.process.dpprocess.domain.sub.DpRetention;
 
 import java.time.LocalDate;
 import java.util.List;

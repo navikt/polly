@@ -1,11 +1,11 @@
-package no.nav.data.polly.process.dpprocess.domain;
+package no.nav.data.polly.process.dpprocess.domain.sub;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.process.dpprocess.dto.DpRetentionRequest;
-import no.nav.data.polly.process.dpprocess.dto.DpRetentionResponse;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionRequest;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 
 @Data
 @Builder

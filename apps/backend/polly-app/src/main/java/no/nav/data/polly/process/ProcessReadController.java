@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.AuditService;
 import no.nav.data.common.auditing.dto.AuditMetadata;
@@ -14,6 +15,8 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.common.security.SecurityUtils;
 import no.nav.data.common.security.dto.UserInfo;
 import no.nav.data.common.utils.JsonUtils;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessCount;
@@ -47,25 +50,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
 @Tag(name = "Process", description = "Data Catalog Process")
 @RequestMapping("/process")
+@RequiredArgsConstructor
 public class ProcessReadController {
 
     private final TeamService teamService;
     private final ProcessRepository repository;
     private final ProcessService processService;
     private final AuditService auditService;
-
-    public ProcessReadController(TeamService teamService, ProcessRepository repository, ProcessService processService, AuditService auditService) {
-        this.teamService = teamService;
-        this.repository = repository;
-        this.processService = processService;
-        this.auditService = auditService;
-    }
 
     @Operation(summary = "Get Process with InformationTypes for Id or process number")
     @ApiResponse(description = "Process fetched")
@@ -120,6 +118,22 @@ public class ProcessReadController {
         log.info("Received request for all Processes");
         Page<ProcessResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
         return ResponseEntity.ok(new RestResponsePage<>(page));
+    }
+
+    @Operation(summary = "Get Processes for Purpose")
+    @ApiResponse(description = "Processes fetched")
+    @GetMapping("/purpose/{purpose}")
+    @Transactional
+    public ResponseEntity<RestResponsePage<ProcessResponse>> getPurpose(@PathVariable String purpose) {
+        log.info("Get processes for purpose={}", purpose);
+        Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
+        if (codelist == null) {
+            return ResponseEntity.notFound().build();
+        }
+        String code = codelist.getCode();
+        var processes = repository.findByPurpose(code).stream().map(Process::convertToResponse).collect(toList());
+        log.info("Got {} processes", processes.size());
+        return ResponseEntity.ok(new RestResponsePage<>(processes));
     }
 
     @Operation(summary = "Get last edited processes by logged in user")

@@ -9,6 +9,7 @@ import lombok.Singular;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 
