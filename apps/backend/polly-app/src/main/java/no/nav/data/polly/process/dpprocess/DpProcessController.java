@@ -4,6 +4,7 @@ package no.nav.data.polly.process.dpprocess;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -33,16 +34,12 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @Tag(name = "DpProcess", description = "Data Catalog DpProcess")
+@RequiredArgsConstructor
 @RequestMapping("/dpprocess")
 public class DpProcessController {
 
     private final DpProcessRepository repository;
     private final DpProcessService service;
-
-    public DpProcessController(DpProcessRepository repository, DpProcessService service) {
-        this.repository = repository;
-        this.service = service;
-    }
 
     @Operation(summary = "Get DpProcessTypes")
     @ApiResponse(description = "DpProcess fetched")

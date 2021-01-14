@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -57,8 +58,16 @@ public final class StreamUtils {
         return difference(before, after, comparing(identity()));
     }
 
+    public static <K, V> Map<K, V> toMap(Iterable<V> from, Function<? super V, K> keyExtractor) {
+        return safeStream(from).collect(Collectors.toMap(keyExtractor, Function.identity()));
+    }
+
     public static <T> List<T> nullToEmptyList(List<T> list) {
         return list == null ? Collections.emptyList() : list;
+    }
+
+    public static <T> List<T> nullToEmptyList(T item) {
+        return item == null ? Collections.emptyList() : List.of(item);
     }
 
     public static <T> List<T> copyOf(List<T> list) {

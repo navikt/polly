@@ -49,6 +49,8 @@ import no.nav.data.polly.process.dto.sub.DpiaRequest;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionRequest;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
+import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.test.TestConfig;
 import org.junit.jupiter.api.AfterEach;
@@ -111,6 +113,8 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected DocumentRepository documentRepository;
     @Autowired
+    protected ProcessorRepository processorRepository;
+    @Autowired
     protected GenericStorageRepository genericStorageRepository;
     @Autowired
     protected AuditVersionRepository auditRepository;
@@ -144,6 +148,7 @@ public abstract class IntegrationTestBase {
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
         dpProcessRepository.deleteAll();
+        processorRepository.deleteAll();
     }
 
     protected List<Policy> createAndSavePolicy(int rows) {
@@ -313,6 +318,22 @@ public abstract class IntegrationTestBase {
         return DataProcessingRequest.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
                 .transferCountries(List.of("FJI"))
+                .build();
+    }
+
+    protected ProcessorRequest createProcessorRequest() {
+        return ProcessorRequest.builder()
+                .name("name")
+                .contract("contract")
+                .contractOwner("A123456")
+                .operationalContractManager("A123456")
+                .operationalContractManager("A123457")
+                .note("note")
+
+                .outsideEU(true)
+                .transferGroundsOutsideEU("OTHER")
+                .transferGroundsOutsideEUOther("reason")
+                .country("FJI")
                 .build();
     }
 
