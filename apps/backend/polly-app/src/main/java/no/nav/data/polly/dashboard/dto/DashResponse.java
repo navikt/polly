@@ -84,9 +84,11 @@ public class DashResponse {
         private Counter retention = new Counter();
         private long retentionDataIncomplete;
         private Counter dataProcessor = new Counter();
-        private long dataProcessorAgreementMissing;
-        private Counter dataProcessorOutsideEU = new Counter();
         private long commonExternalProcessResponsible;
+
+        // TODO remove ?
+        private final long dataProcessorAgreementMissing = 0;
+        private Counter dataProcessorOutsideEU = new Counter();
 
         public void processes() {
             processes++;
@@ -130,10 +132,6 @@ public class DashResponse {
 
         public void retentionDataIncomplete() {
             retentionDataIncomplete++;
-        }
-
-        public void dataProcessorAgreementMissing() {
-            dataProcessorAgreementMissing++;
         }
 
         public void commonExternalProcessResponsible() {

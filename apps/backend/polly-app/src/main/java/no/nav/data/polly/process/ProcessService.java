@@ -1,5 +1,6 @@
 package no.nav.data.polly.process;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.mail.EmailService;
 import no.nav.data.common.mail.MailTask;
@@ -19,9 +20,13 @@ import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
+import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.dto.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
@@ -40,9 +46,11 @@ import static no.nav.data.common.utils.StreamUtils.union;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
+@RequiredArgsConstructor
 public class ProcessService extends RequestValidator<ProcessRequest> {
 
     private final ProcessRepository processRepository;
+    private final ProcessorRepository processorRepository;
     private final DisclosureRepository disclosureRepository;
     private final TeamService teamService;
     private final ResourceService resourceService;
@@ -50,22 +58,6 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final CodeUsageService codeUsageService;
     private final TemplateService templateService;
     private final EmailService emailService;
-
-    public ProcessService(
-            ProcessRepository processRepository,
-            DisclosureRepository disclosureRepository, TeamService teamService,
-            ResourceService resourceService,
-            AlertService alertService, CodeUsageService codeUsageService,
-            TemplateService templateService, EmailService emailService) {
-        this.processRepository = processRepository;
-        this.disclosureRepository = disclosureRepository;
-        this.teamService = teamService;
-        this.resourceService = resourceService;
-        this.alertService = alertService;
-        this.codeUsageService = codeUsageService;
-        this.templateService = templateService;
-        this.emailService = emailService;
-    }
 
     @Transactional
     public Process save(Process process) {
@@ -149,6 +141,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
             validateTeams(request, List.of(), validations);
             validateRiskOwner(request, null, validations);
             validations.addAll(validateRepositoryValues(request, false));
+            validations.addAll(validateObjects(request.getDataProcessing().getProcessors(), processorRepository::findAllById, request.getReference(), "processor"));
         }
         Optional<Process> byNameAndPurpose = processRepository.findByNameAndPurposes(request.getName(), request.getPurposes())
                 .filter(p -> !p.getId().equals(request.getIdAsUUID()));
@@ -205,6 +198,19 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                                 .body(templateService.needsRevision(processes))
                                 .build()
                 ));
+    }
+
+    public void runPaged(Consumer<Process> consumer, int pageSize) {
+        PageRequest pageable = PageRequest.of(0, pageSize, Sort.by("id"));
+        Page<Process> page = null;
+        do {
+            page = processRepository.findAll(
+                    Optional.ofNullable(page)
+                            .map(Page::nextPageable)
+                            .orElse(pageable)
+            );
+            page.get().forEach(consumer);
+        } while (page.hasNext());
     }
 
 }
