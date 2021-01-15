@@ -93,6 +93,7 @@ public abstract class IntegrationTestBase {
     protected static final String PROCESS_NAME_1 = "Saksbehandling";
     protected static final UUID PROCESS_ID_1 = UUID.fromString("60db8589-f383-4405-82f1-148b0333899b");
     protected static final UUID PROCESS_ID_2 = UUID.fromString("0045b96b-8af8-4b1f-8bc5-81a6bde8506d");
+    protected static final UUID PROCESSOR_ID1 = UUID.fromString("106045a5-582f-4214-a2f4-14bd758e70e2");
     protected static final String PURPOSE_CODE1 = "KONTROLL";
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
@@ -315,7 +316,11 @@ public abstract class IntegrationTestBase {
     }
 
     protected DataProcessingRequest dataProcessingRequest() {
-        return DataProcessingRequest.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
+        return DataProcessingRequest.builder()
+                .dataProcessor(true)
+                .processor(PROCESSOR_ID1.toString())
+
+                .dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
                 .transferCountries(List.of("FJI"))
                 .build();
@@ -414,6 +419,8 @@ public abstract class IntegrationTestBase {
     protected DataProcessingResponse dataProcessingResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
+                .processor(PROCESSOR_ID1)
+
                 .dataProcessorAgreements(List.of("X"))
                 .dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU(getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))

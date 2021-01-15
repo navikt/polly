@@ -5,9 +5,9 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.storage.domain.GenericStorage;
-import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.codelist.CodelistService;
@@ -46,6 +46,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.filter;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
 import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
@@ -55,24 +56,16 @@ import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
 @RestController
 @RequestMapping("/dash")
 @Tag(name = "Dashboard")
+@RequiredArgsConstructor
 public class DashboardController {
 
     private final ProcessRepository processRepository;
     private final DpProcessRepository dpProcessRepository;
     private final AlertRepository alertRepository;
     private final TeamService teamService;
-    private final LoadingCache<ProcessStatusFilter, DashResponse> dashDataCache;
-
-    public DashboardController(ProcessRepository processRepository, DpProcessRepository dpProcessRepository, AlertRepository alertRepository,
-            TeamService teamService) {
-        this.processRepository = processRepository;
-        this.dpProcessRepository = dpProcessRepository;
-        this.alertRepository = alertRepository;
-        this.teamService = teamService;
-        this.dashDataCache = Caffeine.newBuilder()
-                .expireAfterWrite(Duration.ofMinutes(3))
-                .maximumSize(3).build(this::calcDash);
-    }
+    private final LoadingCache<ProcessStatusFilter, DashResponse> dashDataCache = Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofMinutes(3))
+            .maximumSize(3).build(this::calcDash);
 
     @Operation(summary = "Get Dashboard data")
     @ApiResponse(description = "Data fetched")
@@ -96,7 +89,7 @@ public class DashboardController {
                             .orElse(pageable)
             );
             var alerts = convert(alertRepository.findByProcessIds(convert(page.getContent(), Process::getId)), GenericStorage::toAlertEvent);
-            page.get().forEach(p -> calcDashForProcess(filter, dash, p, StreamUtils.filter(alerts, a -> p.getId().equals(a.getProcessId()))));
+            page.get().forEach(p -> calcDashForProcess(filter, dash, p, filter(alerts, a -> p.getId().equals(a.getProcessId()))));
         } while (page.hasNext());
         Page<DpProcess> dpProcessPage = null;
         do {
@@ -158,14 +151,16 @@ public class DashboardController {
 
         var dataProc = pd.map(ProcessData::getDataProcessing);
         dashes.stream().map(ProcessDashCount::getDataProcessor).forEach(d -> count(d, dataProc.map(DataProcessing::getDataProcessor).orElse(null)));
-        boolean isDataProc = dataProc.map(DataProcessing::getDataProcessor).orElse(false);
-        if (isDataProc) {
-            dashes.stream().map(ProcessDashCount::getDataProcessorOutsideEU).forEach(d -> count(d, dataProc.map(DataProcessing::getDataProcessorOutsideEU).orElse(null)));
-            if (dataProc.map(DataProcessing::getDataProcessorAgreements).orElse(List.of()).isEmpty()) {
-                dashes.forEach(ProcessDashCount::dataProcessorAgreementMissing);
-            }
-        }
         pd.map(ProcessData::getCommonExternalProcessResponsible).ifPresent(c -> dashes.forEach(ProcessDashCount::commonExternalProcessResponsible));
+
+        // TODO remove?
+//        boolean isDataProc = dataProc.map(DataProcessing::getDataProcessor).orElse(false);
+//        if (isDataProc) {
+//            dashes.stream().map(ProcessDashCount::getDataProcessorOutsideEU).forEach(d -> count(d, dataProc.map(DataProcessing::getDataProcessorOutsideEU).orElse(null)));
+//            if (dataProc.map(DataProcessing::getDataProcessorAgreements).orElse(List.of()).isEmpty()) {
+//                dashes.forEach(ProcessDashCount::dataProcessorAgreementMissing);
+//            }
+//        }
     }
 
     private void calcDashForDpProcess(DashResponse dash, DpProcess dpProcess) {

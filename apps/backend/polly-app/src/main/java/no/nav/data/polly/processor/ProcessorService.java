@@ -1,10 +1,12 @@
 package no.nav.data.polly.processor;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.domain.ProcessorData;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
@@ -27,6 +29,7 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 public class ProcessorService extends RequestValidator<ProcessorRequest> {
 
     private final ProcessorRepository repository;
+    private final ProcessRepository processRepository;
     private final ResourceService resourceService;
 
     @Transactional
@@ -43,7 +46,10 @@ public class ProcessorService extends RequestValidator<ProcessorRequest> {
 
     @Transactional
     public void deleteById(UUID uuid) {
-        // todo valdiate use in process
+        var processes = processRepository.findByProcessor(uuid);
+        if (!processes.isEmpty()) {
+            throw new ValidationException("Processor in use by " + processes.size() + " processes");
+        }
         repository.deleteById(uuid);
     }
 
@@ -58,7 +64,7 @@ public class ProcessorService extends RequestValidator<ProcessorRequest> {
                 r -> validateRepositoryValues(r, existing.isPresent()),
                 r -> validateUsers(r, existing.map(Processor::getData).map(ProcessorData::getOperationalContractManagers).orElse(List.of()), r.getOperationalContractManagers()),
                 r -> validateUser(r, existing.map(Processor::getData).map(ProcessorData::getContractOwner), r.getContractOwner())
-                );
+        );
 
         ifErrorsThrowValidationException(validationErrors);
     }

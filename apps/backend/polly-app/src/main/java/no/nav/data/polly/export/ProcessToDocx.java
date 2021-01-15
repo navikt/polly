@@ -1,5 +1,6 @@
 package no.nav.data.polly.export;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
@@ -19,12 +20,15 @@ import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
+import no.nav.data.polly.processor.domain.Processor;
+import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.Resource;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.docx4j.com.google.common.base.Function;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.properties.table.tr.TrCantSplit;
 import org.docx4j.model.table.TblFactory;
@@ -71,9 +75,12 @@ import java.util.stream.Collectors;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.common.utils.StreamUtils.filter;
+import static org.docx4j.com.google.common.base.Strings.nullToEmpty;
 
 @Service
+@RequiredArgsConstructor
 public class ProcessToDocx {
 
     private static final ObjectFactory fac = Context.getWmlObjectFactory();
@@ -84,13 +91,7 @@ public class ProcessToDocx {
     private final ResourceService resourceService;
     private final TeamService teamService;
     private final ProcessRepository processRepository;
-
-    public ProcessToDocx(AlertService alertService, ResourceService resourceService, TeamService teamService, ProcessRepository processRepository) {
-        this.alertService = alertService;
-        this.resourceService = resourceService;
-        this.teamService = teamService;
-        this.processRepository = processRepository;
-    }
+    private final ProcessorRepository processorRepository;
 
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
@@ -146,6 +147,7 @@ public class ProcessToDocx {
         public static final String HEADING_1 = "Heading1";
         public static final String HEADING_2 = "Heading2";
         public static final String HEADING_4 = "Heading4";
+        public static final String HEADING_5 = "Heading5";
 
         WordprocessingMLPackage pack;
         MainDocumentPart main;
@@ -213,7 +215,9 @@ public class ProcessToDocx {
                     text("Profilering: ", boolToText(data.getProfiling()))
             );
 
-            dataProcessing(process.getData().getDataProcessing());
+            var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ?
+                    processorRepository.findAllById(process.getData().getDataProcessing().getProcessors()) : List.<Processor>of();
+            dataProcessing(process.getData().getDataProcessing(), processors);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
 
@@ -360,23 +364,41 @@ public class ProcessToDocx {
             );
         }
 
-        private void dataProcessing(DataProcessing data) {
+        private void dataProcessing(DataProcessing data, List<Processor> processors) {
             if (data == null) {
                 return;
             }
-            var transferGrounds = Boolean.TRUE.equals(data.getDataProcessorOutsideEU()) ?
-                    text("Overføringsgrunnlag for behandling utenfor EU/EØS: ",
-                            shortName(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, data.getTransferGroundsOutsideEU()),
-                            Optional.ofNullable(data.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
-                    : text("");
-
-            addHeading4("Databehandler");
+            addHeading4("Databehandlere");
             addTexts(
-                    text("Databehandler benyttes: ", boolToText(data.getDataProcessor())),
-                    text("Ref. til databehandleravtale: ", data.getDataProcessorAgreements() == null ? "" : String.join(", ", data.getDataProcessorAgreements())),
-                    text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(data.getDataProcessorOutsideEU())),
-                    transferGrounds
+                    text("Databehandler benyttes: ", boolToText(data.getDataProcessor()))
             );
+            var resources = new ArrayList<String>();
+            processors.forEach(p -> {
+                resources.add(p.getData().getContractOwner());
+                resources.addAll(p.getData().getOperationalContractManagers());
+            });
+            var resourceInfo = resourceService.getResources(resources);
+            Function<String, String> navn = (ident) -> Optional.ofNullable(resourceInfo.get(ident)).map(Resource::getFullName).orElse(ident);
+
+            processors.forEach(processor -> {
+                var pd = processor.getData();
+                var transferGrounds = Boolean.TRUE.equals(pd.getOutsideEU()) ?
+                        text("Overføringsgrunnlag for behandling utenfor EU/EØS: ",
+                                shortName(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, pd.getTransferGroundsOutsideEU()),
+                                Optional.ofNullable(pd.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
+                        : text("");
+
+                addHeading5(pd.getName());
+                addTexts(
+                        text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
+                        text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
+                        text("Avtaleforvaltere: ", String.join(", ", convert(pd.getOperationalContractManagers(), navn))),
+                        text("Notat: ", nullToEmpty(pd.getNote())),
+                        text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
+                        transferGrounds,
+                        text("Overføres til land: ", String.join(", ", copyOf(pd.getCountries())))
+                );
+            });
         }
 
         private void retention(Retention retention) {
@@ -417,6 +439,11 @@ public class ProcessToDocx {
 
         private void addHeading4(String text) {
             P p = main.addStyledParagraphOfText(HEADING_4, text);
+            ((R) p.getContent().get(0)).setRPr(createRpr());
+        }
+
+        private void addHeading5(String text) {
+            P p = main.addStyledParagraphOfText(HEADING_5, text);
             ((R) p.getContent().get(0)).setRPr(createRpr());
         }
 

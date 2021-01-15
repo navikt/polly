@@ -4,6 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.processor.ProcessorController.ProcessorPage;
+import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.dto.ProcessorResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,18 @@ class ProcessorControllerIT extends IntegrationTestBase {
 
         restTemplate.delete("/processor/{id}", resp.getBody().getId().toString());
         assertThat(processorRepository.count()).isZero();
+    }
+
+    @Test
+    void deleteProcessorFail() {
+        var p = new Processor().convertFromRequest(createProcessorRequest());
+        p.setId(PROCESSOR_ID1);
+        processorRepository.save(p);
+        createAndSaveProcess(PURPOSE_CODE1);
+        assertThat(processorRepository.count()).isOne();
+
+        restTemplate.delete("/processor/{id}", PROCESSOR_ID1);
+        assertThat(processorRepository.count()).isOne();
     }
 
     private void assertBody(ProcessorResponse body) {
