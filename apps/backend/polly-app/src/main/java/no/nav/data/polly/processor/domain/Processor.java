@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
+import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.processor.dto.ProcessorResponse;
 import org.hibernate.annotations.Type;
@@ -76,6 +77,9 @@ public class Processor extends Auditable {
         return this;
     }
 
+    public UsedInInstance getInstanceIdentification() {
+        return new UsedInInstance(id.toString(), data.getName());
+    }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessorBuilder {
