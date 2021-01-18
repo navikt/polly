@@ -32,6 +32,7 @@ import javax.persistence.EntityManagerFactory;
 
 import static no.nav.data.common.utils.MdcUtils.wrapAsync;
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.copyOf;
 
 @Slf4j
 @EntityScan(basePackageClasses = AppStarter.class)
@@ -97,7 +98,7 @@ public class JpaConfig {
                                     .outsideEU(dp.getDataProcessorOutsideEU())
                                     .transferGroundsOutsideEU(dp.getTransferGroundsOutsideEU())
                                     .transferGroundsOutsideEUOther(dp.getTransferGroundsOutsideEUOther())
-                                    .countries(dp.getTransferCountries())
+                                    .countries(copyOf(dp.getTransferCountries()))
                                     .build())
                             .build());
                     processorRepository.saveAll(processors);
