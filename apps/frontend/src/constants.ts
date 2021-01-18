@@ -348,7 +348,7 @@ export interface DpProcess extends IDurationed {
   affiliation: Affiliation;
   externalProcessResponsible?: Code;
   dataProcessingAgreements: string[];
-  subDataProcessing: DataProcessing;
+  subDataProcessing: Omit<DataProcessing, 'processors'>;
   changeStamp: ChangeStamp;
   art9?: boolean;
   art10?: boolean;
@@ -363,7 +363,7 @@ export interface DpProcessFormValues {
   affiliation: AffiliationFormValues
   externalProcessResponsible?: string;
   dataProcessingAgreements: string[];
-  subDataProcessing: DataProcessingFormValues;
+  subDataProcessing: Omit<DataProcessingFormValues, 'processors'>;
   art9?: boolean;
   art10?: boolean;
   retention: DpRetention
