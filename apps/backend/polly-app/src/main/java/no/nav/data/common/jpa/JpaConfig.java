@@ -80,10 +80,10 @@ public class JpaConfig {
     @DependsOn("initAudit")
     public ApplicationRunner migrateProcessors(ProcessService processService, ProcessorRepository processorRepository, TransactionTemplate tt) {
         return args -> wrapAsync(() -> processService.runPaged(process -> {
+            if (process.getData().getDataProcessing().getProcessors() != null) {
+                return;
+            }
             tt.executeWithoutResult(ts -> {
-                if (process.getData().getDataProcessing().getProcessors() != null) {
-                    return;
-                }
                 DataProcessing dp = process.getData().getDataProcessing();
 
                 if (dp.getDataProcessor() != Boolean.TRUE) {
