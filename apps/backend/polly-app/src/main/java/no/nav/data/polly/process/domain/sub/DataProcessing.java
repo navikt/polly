@@ -11,7 +11,6 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +26,7 @@ public class DataProcessing {
 
     private Boolean dataProcessor;
     @Singular
-    private List<UUID> processors = new ArrayList<>();
+    private List<UUID> processors;
 
     private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;
