@@ -185,6 +185,7 @@ export interface Dpia {
 
 export interface DataProcessingFormValues {
   dataProcessor?: boolean;
+  processors: string[]
   dataProcessorAgreements: string[];
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: string;
@@ -194,6 +195,7 @@ export interface DataProcessingFormValues {
 
 export interface DataProcessing {
   dataProcessor?: boolean;
+  processors: string[]
   dataProcessorAgreements: string[];
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: Code;
