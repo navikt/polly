@@ -78,9 +78,19 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   }, [code, filter])
 
   const handleChangePanel = (process?: Partial<Process>) => {
-    if (process?.id !== currentProcess?.id) history.push(genProcessPath(section, code, process, filter))
+    console.log("process:" + process?.id + "  current:" + currentProcess?.id)
+    if (process?.id !== currentProcess?.id) {
+      console.log("push")
+      history.push(genProcessPath(section, code, process, filter))
+    }
     // reuse method to reload a process
-    else if (process?.id) getProcessById(process.id).catch(setErrorProcessModal)
+    else if (process?.id) {
+
+    history.push(genProcessPath(section, code, process, filter))
+    getProcessById(process.id).catch(setErrorProcessModal)
+  }
+
+
   }
 
   const hasAccess = () => user.canWrite()
