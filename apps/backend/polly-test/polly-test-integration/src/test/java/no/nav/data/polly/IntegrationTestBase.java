@@ -5,7 +5,6 @@ import io.prometheus.client.CollectorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.AppStarter;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
-import no.nav.data.common.nais.LeaderElectionService;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
@@ -130,7 +129,6 @@ public abstract class IntegrationTestBase {
     @BeforeEach
     public void setUpAbstract() {
         CodelistStub.initializeCodelist();
-        WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
         mockTerms();
         delete();
     }
