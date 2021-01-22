@@ -48,7 +48,6 @@ export enum ProcessField {
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
   DATA_PROCESSOR = 'DATA_PROCESSOR',
-  DATA_PROCESSOR_OUTSIDE_EU = 'DATA_PROCESSOR_OUTSIDE_EU',
   DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
   EXCESS_INFO = 'EXCESS_INFO',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
@@ -624,12 +623,12 @@ export type RecursivePartial<T> = {
 };
 
 export interface DashboardData {
-  allProcesses: ProcessesDashCount
-  departmentProcesses: DepartmentProcessDashCount[]
-  productAreaProcesses: ProductAreaProcessDashCount[]
+  all: AllDashCount
+  departments: DepartmentDashCount[]
+  productAreas: ProductAreaDashCount[]
 }
 
-export interface ProcessesDashCount {
+interface DashCount {
   processes: number
   dpProcesses: number
   processesCompleted: number
@@ -651,11 +650,16 @@ export interface ProcessesDashCount {
   dpiaReferenceMissing: number
 }
 
-export interface DepartmentProcessDashCount extends ProcessesDashCount {
+export interface AllDashCount extends DashCount {
+  disclosures: number
+  disclosuresIncomplete: number
+}
+
+export interface DepartmentDashCount extends DashCount {
   department: string;
 }
 
-export interface ProductAreaProcessDashCount extends DepartmentProcessDashCount {
+export interface ProductAreaDashCount extends DashCount {
   productAreaId: string;
 }
 

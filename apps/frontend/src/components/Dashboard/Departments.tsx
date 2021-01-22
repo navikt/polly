@@ -5,7 +5,7 @@ import {cardShadow} from '../common/Style'
 import {Block} from 'baseui/block'
 import {Label1, Paragraph2} from 'baseui/typography'
 import {intl, theme, useAwait} from '../../util'
-import {DashboardData, DepartmentProcessDashCount as DepartmentProcess, ProcessStatus} from '../../constants'
+import {DashboardData, DepartmentDashCount as DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
 import RouteLink from '../common/RouteLink'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
@@ -77,7 +77,7 @@ const Departments = (props: DepartmentsProps) => {
     return <Spinner/>
   }
 
-  const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
+  const sortedData = () => data.departments.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
 
   return (
     <Block width="100%" display="flex" flexWrap justifyContent="space-between">

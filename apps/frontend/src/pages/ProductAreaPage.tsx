@@ -6,14 +6,14 @@ import {PageHeader} from '../components/common/PageHeader'
 import {InfoTypeTable} from '../components/InformationType/InfoTypeTableSimple'
 import {intl} from '../util'
 import {getDashboard, getInformationTypesBy} from '../api'
-import {ProcessStatus, ProductAreaProcessDashCount} from '../constants'
+import {ProcessStatus, ProductAreaDashCount} from '../constants'
 import Charts from '../components/Charts/Charts'
 import {Block} from 'baseui/block'
 import {HeadingSmall} from 'baseui/typography'
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = React.useState(true)
-  const [chartData, setChartData] = React.useState<ProductAreaProcessDashCount>()
+  const [chartData, setChartData] = React.useState<ProductAreaDashCount>()
   const {productAreaId} = useParams<{productAreaId: string}>()
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export const ProductAreaPage = () => {
         setIsLoading(true)
         const response = await getDashboard(ProcessStatus.All)
 
-        if (response) setChartData(response.productAreaProcesses.find(p => p.productAreaId === productAreaId))
+        if (response) setChartData(response.productAreas.find(p => p.productAreaId === productAreaId))
 
         setIsLoading(false)
     })()

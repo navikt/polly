@@ -4,7 +4,7 @@ import {useEffect} from 'react'
 import ProcessList from '../components/Process'
 import {ListName} from '../service/Codelist'
 import {generatePath, useHistory, useParams} from 'react-router-dom'
-import {DepartmentProcessDashCount, Process, ProcessStatus} from '../constants'
+import {DepartmentDashCount, Process, ProcessStatus} from '../constants'
 import {useQueryParam} from '../util/hooks'
 import {processPath} from '../routes'
 import * as queryString from 'query-string'
@@ -42,7 +42,7 @@ export type PathParams = {
 
 const ProcessPage = () => {
   const [isLoading, setIsLoading] = React.useState(true)
-  const [chartData, setChartData] = React.useState<DepartmentProcessDashCount>()
+  const [chartData, setChartData] = React.useState<DepartmentDashCount>()
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
   const {section, code, processId} = params
@@ -64,7 +64,7 @@ const ProcessPage = () => {
       (async () => {
         setIsLoading(true)
         let res = await getDashboard(ProcessStatus.All)
-        if (res) setChartData(res.departmentProcesses.find(d => d.department === code))
+        if (res) setChartData(res.departments.find(d => d.department === code))
         setIsLoading(false)
       })()
     }
