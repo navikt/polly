@@ -16,4 +16,7 @@ public interface DisclosureRepository extends JpaRepository<Disclosure, UUID>, D
     @Query(value = "select * from disclosure where data ->> 'name' ilike %?1%", nativeQuery = true)
     List<Disclosure> findByNameContaining(String name);
 
+    @Query(value = "select * from disclosure where jsonb_array_length(data -> 'legalBases') = 0 ", nativeQuery = true)
+    List<Disclosure> findByNoLegalBases();
+
 }

@@ -4,6 +4,7 @@ package no.nav.data.polly.disclosure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -45,6 +46,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RestController
 @RequestMapping("/disclosure")
 @Tag(name = "Disclosure")
+@RequiredArgsConstructor
 public class DisclosureController {
 
     private final DisclosureRepository repository;
@@ -54,15 +56,6 @@ public class DisclosureController {
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
 
-    public DisclosureController(DisclosureRepository repository, DisclosureService service, DocumentService documentService,
-            InformationTypeRepository informationTypeRepository, ProcessRepository processRepository) {
-        this.repository = repository;
-        this.service = service;
-        this.documentService = documentService;
-        this.informationTypeRepository = informationTypeRepository;
-        this.processRepository = processRepository;
-    }
-
     @Operation(summary = "Get All Disclosures")
     @ApiResponse(description = "All Disclosures fetched")
     @GetMapping
@@ -70,7 +63,8 @@ public class DisclosureController {
             @RequestParam(required = false) UUID informationTypeId,
             @RequestParam(required = false) UUID processId,
             @RequestParam(required = false) String recipient,
-            @RequestParam(required = false) UUID documentId
+            @RequestParam(required = false) UUID documentId,
+            @RequestParam(required = false) Boolean emptyLegalBases
     ) {
         log.info("Received request for all Disclosures. informationType={} process={} recipient={}, documentId={}", informationTypeId, processId, recipient, documentId);
         List<Disclosure> filtered = null;
@@ -82,6 +76,8 @@ public class DisclosureController {
             filtered = repository.findByRecipient(recipient);
         } else if (documentId != null) {
             filtered = repository.findByDocumentId(documentId.toString());
+        } else if (Boolean.TRUE.equals(emptyLegalBases)) {
+            filtered = repository.findByNoLegalBases();
         }
         if (filtered != null) {
             return returnResults(new RestResponsePage<>(convert(filtered, Disclosure::convertToResponse)));

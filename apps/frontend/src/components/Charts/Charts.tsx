@@ -132,7 +132,7 @@ const Charts = (props: ChartsProps) => {
       <Block {...chartCardProps}>
         <Paragraph2>
           {intl.disclosures}: <RouteLink
-          href={"/thirdparty"}>{all.disclosures}</RouteLink>
+          href={"/disclosure"}>{all.disclosures}</RouteLink>
         </Paragraph2>
         <Chart chartTitle={intl.legalBasisNotFound + " " + intl.disclosures} data={[
           {label: intl.completed, size: all.disclosures - all.disclosuresIncomplete, color: chartColor.generalBlue},
