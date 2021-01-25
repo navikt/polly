@@ -12,6 +12,10 @@ export const getDisclosuresByPageAndPageSize = async (pageNumber: number, pageSi
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
 }
 
+export const getDisclosuresWithEmptyLegalBases = async () => {
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/?emptyLegalBases=true`)).data.content
+}
+
 export const getDisclosuresByRecipient = async (recipient: string) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/?recipient=${recipient}`)).data.content
 }

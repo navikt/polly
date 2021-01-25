@@ -135,8 +135,18 @@ const Charts = (props: ChartsProps) => {
           href={"/disclosure"}>{all.disclosures}</RouteLink>
         </Paragraph2>
         <Chart chartTitle={intl.legalBasisNotFound + " " + intl.disclosures} data={[
-          {label: intl.completed, size: all.disclosures - all.disclosuresIncomplete, color: chartColor.generalBlue},
-          {label: intl.incompleteLegalBasis, size: all.disclosuresIncomplete, color: chartColor.generalRed}
+          {
+            label: intl.completed,
+            size: all.disclosures - all.disclosuresIncomplete,
+            color: chartColor.generalBlue,
+            onClick: () => history.push('/disclosure?filter=legalbases')
+          },
+          {
+            label: intl.incompleteLegalBasis,
+            size: all.disclosuresIncomplete,
+            color: chartColor.generalRed,
+            onClick: () => history.push('/disclosure?filter=emptylegalbases')
+          }
         ]} size={chartSize}/>
       </Block>}
 
