@@ -214,6 +214,7 @@ export interface IStrings {
   documentSideMenuHelpText: string;
   externalPartsSideMenuHelpText: string;
   systemSideMenuHelpText: string;
+  disclosuresSideMenuHelpText: string;
   dashboard: string;
   dashboardSideMenuHelpText: string;
   processActivity: string;

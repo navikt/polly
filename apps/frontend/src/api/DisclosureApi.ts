@@ -1,16 +1,16 @@
-import axios from "axios";
-import {Disclosure, DisclosureFormValues, PageResponse} from "../constants";
-import {env} from "../util/env"
-import {convertLegalBasesToFormValues} from "./PolicyApi"
-import {mapBool} from "../util/helper-functions";
-
-export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content;
-};
+import axios from 'axios'
+import {Disclosure, DisclosureFormValues, PageResponse} from '../constants'
+import {env} from '../util/env'
+import {convertLegalBasesToFormValues} from './PolicyApi'
+import {mapBool} from '../util/helper-functions'
 
 export const getDisclosure = async (disclosureId: string) => {
   return (await axios.get<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data;
-};
+}
+
+export const getDisclosuresByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+}
 
 export const getDisclosuresByRecipient = async (recipient: string) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/?recipient=${recipient}`)).data.content
@@ -21,16 +21,16 @@ export const getDisclosuresByInformationTypeId = async (informationTypeId: strin
 }
 
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
-  let body = convertFormValuesToDisclosure(disclosure);
-  return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data;
-};
+  let body = convertFormValuesToDisclosure(disclosure)
+  return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data
+}
 
 export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
-  let body = convertFormValuesToDisclosure(disclosure);
+  let body = convertFormValuesToDisclosure(disclosure)
   return (
     await axios.put<Disclosure>(`${env.pollyBaseUrl}/disclosure/${body.id}`, body)
-  ).data;
-};
+  ).data
+}
 
 export const deleteDisclosure = async (disclosureId: string) => {
   return (await axios.delete<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
@@ -55,8 +55,8 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
       refToAgreement: values.abroad.refToAgreement,
       businessArea: values.abroad.businessArea
     }
-  };
-};
+  }
+}
 
 export const convertDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => {
   return {
