@@ -15,12 +15,13 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "recipient", "processes"})
+@JsonPropertyOrder({"id", "name", "description", "recipient", "processes", "legalBases"})
 public class DisclosureSummaryResponse {
 
     private UUID id;
     private String name;
     private CodelistResponse recipient;
     private List<ProcessVeryShortResponse> processes;
+    private Integer legalBases;
 
 }

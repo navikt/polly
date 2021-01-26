@@ -98,6 +98,7 @@ public class Disclosure extends Auditable {
                 .name(data.getName())
                 .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
                 .processes(processes)
+                .legalBases(data.getLegalBases().size())
                 .build();
     }
 

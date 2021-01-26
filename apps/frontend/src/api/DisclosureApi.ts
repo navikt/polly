@@ -1,8 +1,9 @@
 import axios from 'axios'
-import {Disclosure, DisclosureFormValues, PageResponse} from '../constants'
+import {Disclosure, DisclosureFormValues, PageResponse, ProcessShort} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import {mapBool} from '../util/helper-functions'
+import {Code} from '../service/Codelist'
 
 export const getDisclosure = async (disclosureId: string) => {
   return (await axios.get<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data;
@@ -10,6 +11,10 @@ export const getDisclosure = async (disclosureId: string) => {
 
 export const getDisclosuresByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+}
+
+export const getDisclosureSummaries = async () => {
+  return (await axios.get<PageResponse<DisclosureSummary>>(`${env.pollyBaseUrl}/disclosure/summary`)).data
 }
 
 export const getDisclosuresWithEmptyLegalBases = async () => {
@@ -85,3 +90,10 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
   }
 }
 
+export interface DisclosureSummary {
+  id: string;
+  name: string;
+  recipient: Code;
+  processes: ProcessShort[]
+  legalBases: number
+}

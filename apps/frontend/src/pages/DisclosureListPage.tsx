@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {HeadingLarge, LabelMedium} from 'baseui/typography'
 import {intl, theme} from '../util'
-import {Disclosure} from '../constants'
-import {getAll, getDisclosuresByPageAndPageSize} from '../api'
+import {DisclosureSummary, getAll, getDisclosureSummaries} from '../api'
 import AlphabeticList from '../components/common/AlphabeticList'
 import {useQueryParam} from '../util/hooks'
 import {Block} from 'baseui/block'
@@ -17,15 +16,15 @@ enum FilterType {
 }
 
 export const DisclosureListPage = () => {
-  const [disclosures, setDisclosures] = useState<Disclosure[]>([])
+  const [disclosures, setDisclosures] = useState<DisclosureSummary[]>([])
   const filter = useQueryParam<FilterType>('filter')
   const history = useHistory()
 
   useEffect(() => {
     (async () => {
-      const all = await getAll(getDisclosuresByPageAndPageSize)()
-      if (filter === FilterType.emptylegalbases) setDisclosures(all.filter(d => !d.legalBases.length))
-      else if (filter === FilterType.legalbases) setDisclosures(all.filter(d => !!d.legalBases.length))
+      const all = await getAll(getDisclosureSummaries)()
+      if (filter === FilterType.emptylegalbases) setDisclosures(all.filter(d => !d.legalBases))
+      else if (filter === FilterType.legalbases) setDisclosures(all.filter(d => !!d.legalBases))
       else setDisclosures(all)
     })()
   }, [filter])
