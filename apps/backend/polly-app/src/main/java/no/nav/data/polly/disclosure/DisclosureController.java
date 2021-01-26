@@ -13,6 +13,7 @@ import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
+import no.nav.data.polly.disclosure.dto.DisclosureSummaryResponse;
 import no.nav.data.polly.document.DocumentService;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -41,6 +42,8 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.convertFlat;
+import static no.nav.data.common.utils.StreamUtils.filter;
 
 @Slf4j
 @RestController
@@ -83,6 +86,20 @@ public class DisclosureController {
             return returnResults(new RestResponsePage<>(convert(filtered, Disclosure::convertToResponse)));
         }
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
+    }
+
+    @Operation(summary = "Get All Disclosure summaries")
+    @ApiResponse(description = "All Disclosure summaries fetched")
+    @GetMapping("/summary")
+    public ResponseEntity<RestResponsePage<DisclosureSummaryResponse>> getSummary() {
+        log.info("Received request for all Disclosure summaries");
+        var discs = repository.findAll();
+        var processIds = convertFlat(discs, d -> d.getData().getProcessIds());
+        var processes = processRepository.findSummaryById(processIds);
+        return ResponseEntity.ok(new RestResponsePage<>(convert(discs, d -> {
+            var procsForDisc = filter(processes, p -> d.getData().getProcessIds().contains(p.getId()));
+            return d.convertToSummary(procsForDisc);
+        })));
     }
 
     @Operation(summary = "Search disclosures")
@@ -164,6 +181,10 @@ public class DisclosureController {
             response.setProcesses(convert(processes, Process::convertToShortResponse));
         }
         return response;
+    }
+
+    static class DisclosureSummaryPage extends RestResponsePage<DisclosureSummaryResponse> {
+
     }
 
     static class DisclosurePage extends RestResponsePage<DisclosureResponse> {

@@ -105,6 +105,20 @@ class DisclosureControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void getAllDisclosureSummary() {
+        var process = createAndSaveProcess(PURPOSE_CODE1);
+        DisclosureRequest request = buildDisclosure();
+        request.setProcessIds(List.of(process.getId().toString()));
+        var d1 = restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
+        var d2 = restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        var resp = restTemplate.getForEntity("/disclosure/summary", String.class);
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody()).contains(PURPOSE_CODE1, process.getId().toString(), d1.getBody().getId().toString(), d2.getBody().getId().toString());
+    }
+
+    @Test
     void searchDisclosure() {
         restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure/search/{string}", DisclosurePage.class, "disc name");

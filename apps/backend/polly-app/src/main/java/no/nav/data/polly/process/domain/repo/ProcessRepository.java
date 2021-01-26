@@ -2,6 +2,7 @@ package no.nav.data.polly.process.domain.repo;
 
 import no.nav.data.common.storage.domain.LastModified;
 import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.dto.ProcessVeryShortResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -30,6 +31,13 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     @Query(value = "select * from process where data ->> 'name' ilike %?1%", nativeQuery = true)
     List<Process> findByNameContaining(String name);
+
+    @Query(value = """
+            select cast(process_id as text) as id, 
+             data->>'name' as name, data->>'number' as number, data->>'purposes' as purposes 
+             from process where process_id in ?1
+            """, nativeQuery = true)
+    List<ProcessVeryShortResponse> findSummaryById(List<UUID> uuids);
 
     // Count
 
