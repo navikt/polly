@@ -67,7 +67,6 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false)
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
-  const [alerts, setAlerts] = useState<Alerts>({})
   const [isLoading, setLoading] = useState<boolean>(false)
   const history = useHistory()
   const [hasAlert, setHasAlert] = useState<boolean>(false)
@@ -76,26 +75,16 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const {disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal} = props
 
   useEffect(() => {
-    (async () => {
-      const alertMap = (await Promise.all(disclosureList.map(d => getAlertForDisclosure(d.id))))
-      .reduce((acc: Alerts, alert) => {
-        acc[alert.disclosureId] = alert
-        return acc
-      }, {} as Alerts)
-      setAlerts(alertMap)
-    })()
-  }, [disclosureList])
-
-  useEffect(() => {
-    if (selectedDisclosure) {
-      setHasAlert(alerts[selectedDisclosure.id].missingArt6)
-    }
-  }, [selectedDisclosure])
+    props.expand && renewDisclosureDetails(props.expand)
+  }, [props.expand])
 
   const renewDisclosureDetails = async (disclosureId: string) => {
     setLoading(true)
-    setSelectedDisclosure(await getDisclosure(disclosureId))
-    setLoading((false))
+    const disc = await getDisclosure(disclosureId)
+    setSelectedDisclosure(disc)
+    const alert = await getAlertForDisclosure(disclosureId)
+    setHasAlert(alert.missingArt6)
+    setLoading(false)
   }
 
   return (
