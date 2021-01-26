@@ -12,6 +12,7 @@ import {Paragraph1, Paragraph2} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
 import {Section} from '../../pages/ProcessPage'
 import {Card} from "baseui/card";
+import {lowerFirst} from 'lodash'
 
 const chartSize = 80
 
@@ -130,24 +131,24 @@ const Charts = (props: ChartsProps) => {
 
       {all.disclosures !== undefined &&
       <Block {...chartCardProps}>
-        <Paragraph2>
-          {intl.disclosures}: <RouteLink
-          href={"/disclosure"}>{all.disclosures}</RouteLink>
-        </Paragraph2>
-        <Chart chartTitle={intl.legalBasisNotFound + " " + intl.disclosures} data={[
+        <Chart chartTitle={intl.disclosures + " " + lowerFirst(intl.legalBasesShort)} data={[
           {
-            label: intl.completed,
+            label: intl.filled,
             size: all.disclosures - all.disclosuresIncomplete,
             color: chartColor.generalBlue,
             onClick: () => history.push('/disclosure?filter=legalbases')
           },
           {
-            label: intl.incompleteLegalBasis,
+            label: intl.incomplete,
             size: all.disclosuresIncomplete,
             color: chartColor.generalRed,
             onClick: () => history.push('/disclosure?filter=emptylegalbases')
           }
         ]} size={chartSize}/>
+        <Paragraph2>
+          {intl.disclosures}: <RouteLink
+          href={"/disclosure"}>{all.disclosures}</RouteLink>
+        </Paragraph2>
       </Block>}
 
       <Block marginTop="2.5rem" width={"100%"}>
