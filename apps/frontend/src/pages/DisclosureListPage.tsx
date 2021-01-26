@@ -2,13 +2,15 @@ import React, {useEffect, useState} from 'react'
 import {HeadingLarge, LabelMedium} from 'baseui/typography'
 import {intl, theme} from '../util'
 import {DisclosureSummary, getAll, getDisclosureSummaries} from '../api'
-import AlphabeticList from '../components/common/AlphabeticList'
 import {useQueryParam} from '../util/hooks'
 import {Block} from 'baseui/block'
 import {Button as BButton} from 'baseui/button'
 import {ButtonGroup} from 'baseui/button-group'
 import {useHistory} from 'react-router-dom'
 import {lowerFirst} from 'lodash'
+import {Cell, HeadCell, Row, Table} from '../components/common/Table'
+import {ObjectLink} from '../components/common/RouteLink'
+import {ObjectType} from '../constants'
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -46,7 +48,34 @@ export const DisclosureListPage = () => {
         </Block>
       </Block>
 
-      <AlphabeticList items={disclosures.map(dc => ({id: dc.id, label: dc.name}))} baseUrl={'/disclosure/'}/>
+      <Table emptyText={intl.disclosures}
+             headers={
+               <>
+                 <HeadCell title={intl.name}/>
+                 <HeadCell title={intl.thirdParty}/>
+                 <HeadCell title={intl.processes}/>
+                 <HeadCell title={intl.legalBasesShort}/>
+               </>
+             }>
+        {disclosures.map(d => (
+          <Row key={d.id}>
+            <Cell>{d.name}</Cell>
+            <Cell>{d.recipient.shortName}</Cell>
+            <Cell>
+              <Block display='flex' flexDirection='column'>
+                {d.processes.map(p =>
+                  <Block key={p.id} marginRight={theme.sizing.scale400}>
+                    <ObjectLink id={p.id} type={ObjectType.PROCESS}>
+                      {p.purposes.join(', ')}: {p.name}
+                    </ObjectLink>
+                  </Block>
+                )}
+              </Block>
+            </Cell>
+            <Cell>{d.legalBases ? intl.yes : intl.no}</Cell>
+          </Row>
+        ))}
+      </Table>
     </>
   )
 }

@@ -4,6 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
+import no.nav.data.polly.disclosure.DisclosureController.DisclosureSummaryPage;
 import no.nav.data.polly.disclosure.dto.DisclosureAbroadRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureAbroadResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
@@ -29,6 +30,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nav.data.common.utils.StreamUtils.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DisclosureControllerIT extends IntegrationTestBase {
@@ -111,11 +113,14 @@ class DisclosureControllerIT extends IntegrationTestBase {
         request.setProcessIds(List.of(process.getId().toString()));
         var d1 = restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
         var d2 = restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        var resp = restTemplate.getForEntity("/disclosure/summary", String.class);
+        var resp = restTemplate.getForEntity("/disclosure/summary", DisclosureSummaryPage.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody()).contains(PURPOSE_CODE1, process.getId().toString(), d1.getBody().getId().toString(), d2.getBody().getId().toString());
+        assertThat(resp.getBody().getContent()).hasSize(2);
+        var d1Res = get(resp.getBody().getContent(), d -> d.getId().equals(d1.getBody().getId()));
+        assertThat(d1Res.getProcesses()).hasSize(1);
+        assertThat(d1Res.getProcesses().get(0).getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE1);
     }
 
     @Test

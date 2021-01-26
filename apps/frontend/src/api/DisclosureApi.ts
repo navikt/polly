@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Disclosure, DisclosureFormValues, PageResponse, ProcessShort} from '../constants'
+import {Disclosure, DisclosureFormValues, PageResponse} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import {mapBool} from '../util/helper-functions'
@@ -94,6 +94,6 @@ export interface DisclosureSummary {
   id: string;
   name: string;
   recipient: Code;
-  processes: ProcessShort[]
+  processes: {id: string, name: string, number: number, purposes: Code[]}[]
   legalBases: number
 }
