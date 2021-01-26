@@ -85,7 +85,7 @@ public final class StreamUtils {
     }
 
     public static <T, F> List<T> convertFlat(Collection<F> from, Function<F, List<T>> converter) {
-        return safeStream(from).flatMap(o -> converter.apply(o).stream()).collect(toList());
+        return safeStream(from).flatMap(o -> Optional.ofNullable(converter.apply(o)).orElse(List.of()).stream()).collect(toList());
     }
 
     @SafeVarargs
