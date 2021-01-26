@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {HeadingLarge, LabelMedium} from 'baseui/typography'
 import {intl, theme} from '../util'
 import {DisclosureSummary, getAll, getDisclosureSummaries} from '../api'
-import {useQueryParam} from '../util/hooks'
+import {useQueryParam, useTable} from '../util/hooks'
 import {Block} from 'baseui/block'
 import {Button as BButton} from 'baseui/button'
 import {ButtonGroup} from 'baseui/button-group'
@@ -19,6 +19,15 @@ enum FilterType {
 
 export const DisclosureListPage = () => {
   const [disclosures, setDisclosures] = useState<DisclosureSummary[]>([])
+  const [table, sortColumn] = useTable<DisclosureSummary, keyof DisclosureSummary>(disclosures, {
+    sorting: {
+      name: (a, b) => a.name.localeCompare(b.name),
+      legalBases: (a, b) => a.legalBases - b.legalBases,
+      recipient: (a, b) => a.recipient.shortName.localeCompare(b.recipient.shortName),
+      processes: (a, b) => a.processes.length - b.processes.length
+    },
+    initialSortColumn: 'name'
+  })
   const filter = useQueryParam<FilterType>('filter')
   const history = useHistory()
 
@@ -51,13 +60,13 @@ export const DisclosureListPage = () => {
       <Table emptyText={intl.disclosures}
              headers={
                <>
-                 <HeadCell title={intl.name}/>
-                 <HeadCell title={intl.thirdParty}/>
-                 <HeadCell title={intl.processes}/>
-                 <HeadCell title={intl.legalBasesShort}/>
+                 <HeadCell title={intl.name} column='name' tableState={[table, sortColumn]}/>
+                 <HeadCell title={intl.thirdParty} column='recipient' tableState={[table, sortColumn]}/>
+                 <HeadCell title={intl.processes} column='processes' tableState={[table, sortColumn]}/>
+                 <HeadCell title={intl.legalBasesShort} column='legalBases' tableState={[table, sortColumn]}/>
                </>
              }>
-        {disclosures.map(d => (
+        {table.data.map(d => (
           <Row key={d.id}>
             <Cell>{d.name}</Cell>
             <Cell>{d.recipient.shortName}</Cell>
@@ -66,7 +75,7 @@ export const DisclosureListPage = () => {
                 {d.processes.map(p =>
                   <Block key={p.id} marginRight={theme.sizing.scale400}>
                     <ObjectLink id={p.id} type={ObjectType.PROCESS}>
-                      {p.purposes.join(', ')}: {p.name}
+                      {p.purposes.map(pu => pu.shortName).join(', ')}: {p.name}
                     </ObjectLink>
                   </Block>
                 )}
