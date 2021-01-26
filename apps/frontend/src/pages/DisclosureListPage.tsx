@@ -11,6 +11,7 @@ import {lowerFirst} from 'lodash'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import {ObjectLink} from '../components/common/RouteLink'
 import {ObjectType} from '../constants'
+import {ListName} from '../service/Codelist'
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -68,8 +69,16 @@ export const DisclosureListPage = () => {
              }>
         {table.data.map(d => (
           <Row key={d.id}>
-            <Cell>{d.name}</Cell>
-            <Cell>{d.recipient.shortName}</Cell>
+            <Cell>
+              <ObjectLink id={d.id} type={ObjectType.DISCLOSURE}>
+                {d.name}
+              </ObjectLink>
+            </Cell>
+            <Cell>
+              <ObjectLink id={d.recipient.code} type={ListName.THIRD_PARTY}>
+                {d.recipient.shortName}
+              </ObjectLink>
+            </Cell>
             <Cell>
               <Block display='flex' flexDirection='column'>
                 {d.processes.map(p =>
