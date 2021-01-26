@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
 
+import static no.nav.data.common.utils.StreamUtils.contains;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.convertFlat;
 import static no.nav.data.common.utils.StreamUtils.filter;
@@ -97,7 +98,7 @@ public class DisclosureController {
         var processIds = convertFlat(discs, d -> d.getData().getProcessIds());
         var processes = processRepository.findSummaryById(processIds);
         return ResponseEntity.ok(new RestResponsePage<>(convert(discs, d -> {
-            var procsForDisc = filter(processes, p -> d.getData().getProcessIds().contains(p.getId()));
+            var procsForDisc = filter(processes, p ->  contains(d.getData().getProcessIds(), p.getId()));
             return d.convertToSummary(procsForDisc);
         })));
     }

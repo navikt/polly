@@ -120,4 +120,8 @@ public final class StreamUtils {
     public static <T> Optional<T> tryFind(Iterable<T> objects, Predicate<T> filter) {
         return safeStream(objects).filter(filter).findFirst();
     }
+
+    public static <T, S extends T> boolean contains(Collection<T> collection, S item) {
+        return collection != null && collection.contains(item);
+    }
 }
