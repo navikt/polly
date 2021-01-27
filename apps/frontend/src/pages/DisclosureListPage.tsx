@@ -61,9 +61,9 @@ export const DisclosureListPage = () => {
       <Table emptyText={intl.disclosures}
              headers={
                <>
-                 <HeadCell title={intl.name} column='name' tableState={[table, sortColumn]}/>
-                 <HeadCell title={intl.thirdParty} column='recipient' tableState={[table, sortColumn]}/>
-                 <HeadCell title={intl.processes} column='processes' tableState={[table, sortColumn]}/>
+                 <HeadCell title={intl.disclosureName} column='name' tableState={[table, sortColumn]}/>
+                 <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column='recipient' tableState={[table, sortColumn]}/>
+                 <HeadCell title={intl.relatedProcesses} column='processes' tableState={[table, sortColumn]}/>
                  <HeadCell title={intl.legalBasesShort} column='legalBases' tableState={[table, sortColumn]}/>
                </>
              }>
