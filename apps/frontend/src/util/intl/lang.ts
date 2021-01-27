@@ -488,7 +488,7 @@ export const no: IStrings = {
 
   shortcutSubtitleProcess: 'Se og endre behandlinger',
   shortcutSubtitleInformationtype: 'Se og endre opplysningstyper',
-  shortcutSubtitleThirdParty: 'Se alle eksterne eksterne parter',
+  shortcutSubtitleThirdParty: 'Se alle eksterne parter',
   shortcutSubtitleDashboard: 'Se statistikk over behandlinger',
 
 };
