@@ -49,6 +49,7 @@ export const infoTypeSchema = () =>
 const dataProcessingSchema = () =>
   yup.object<DataProcessingFormValues>({
     dataProcessor: yup.boolean(),
+    processors: yup.array().of(yup.string()),
     dataProcessorAgreements: yup.array().of(yup.string()),
     dataProcessorOutsideEU: yup.boolean(),
     transferGroundsOutsideEU: yup.string().test({

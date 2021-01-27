@@ -5,12 +5,15 @@ import no.nav.data.polly.process.dto.StateDbRequest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ProcessRepositoryCustom {
 
     Optional<Process> findByNameAndPurposes(String name, List<String> purposes);
 
     List<Process> findByPurpose(String purpose);
+
+    List<Process> findByProcessor(UUID processor);
 
     List<Process> findByGDPRArticle(String gdpr);
 

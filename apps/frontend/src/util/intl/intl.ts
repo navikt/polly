@@ -83,6 +83,7 @@ export interface IStrings {
   processesWithoutArticle9LegalBasis: string;
   incompleteLegalBasis: string;
   notFilled: string;
+  filled: string;
   automation: string;
   isAutomationNeeded: string;
   status: string;
@@ -91,6 +92,7 @@ export interface IStrings {
   isProcessImplemented: string;
   inProgress: string;
   completed: string;
+  incomplete: string;
   automaticProcessing: string;
   automaticProcessingExtra: string;
   done: string;
@@ -214,6 +216,7 @@ export interface IStrings {
   documentSideMenuHelpText: string;
   externalPartsSideMenuHelpText: string;
   systemSideMenuHelpText: string;
+  disclosuresSideMenuHelpText: string;
   dashboard: string;
   dashboardSideMenuHelpText: string;
   processActivity: string;

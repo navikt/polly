@@ -1,6 +1,7 @@
 package no.nav.data.polly.process.domain.repo;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -50,6 +50,13 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     public List<Process> findByPurpose(String purpose) {
         var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{purposes}' ?? :purpose",
                 new MapSqlParameterSource().addValue("purpose", purpose));
+        return getProcesses(resp);
+    }
+
+    @Override
+    public List<Process> findByProcessor(UUID processor) {
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{dataProcessing,processors}' ?? :processor::text",
+                new MapSqlParameterSource().addValue("processor", processor));
         return getProcesses(resp);
     }
 
@@ -158,7 +165,6 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case RETENTION -> " data #> '{retention,retentionPlan}' %s ";
             case RETENTION_DATA -> " data #> '{retention,retentionStart}' %1$s or data #> '{retention,retentionMonths}' %1$s ";
             case DATA_PROCESSOR -> " data #> '{dataProcessing,dataProcessor}' %s ";
-            case DATA_PROCESSOR_OUTSIDE_EU -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorOutsideEU}' %s ";
 
             // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
             case DPIA_REFERENCE_MISSING -> {
@@ -182,7 +188,6 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     private List<Process> getProcesses(List<Map<String, Object>> resp) {
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
-        return processRepository.findAllById(ids);
+        return processRepository.findAllById(StreamUtils.convert(resp, i -> (UUID) i.values().iterator().next()));
     }
 }

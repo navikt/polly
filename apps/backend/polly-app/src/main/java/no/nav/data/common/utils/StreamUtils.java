@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -57,8 +58,16 @@ public final class StreamUtils {
         return difference(before, after, comparing(identity()));
     }
 
+    public static <K, V> Map<K, V> toMap(Iterable<V> from, Function<? super V, K> keyExtractor) {
+        return safeStream(from).collect(Collectors.toMap(keyExtractor, Function.identity()));
+    }
+
     public static <T> List<T> nullToEmptyList(List<T> list) {
         return list == null ? Collections.emptyList() : list;
+    }
+
+    public static <T> List<T> nullToEmptyList(T item) {
+        return item == null ? Collections.emptyList() : List.of(item);
     }
 
     public static <T> List<T> copyOf(List<T> list) {
@@ -76,7 +85,7 @@ public final class StreamUtils {
     }
 
     public static <T, F> List<T> convertFlat(Collection<F> from, Function<F, List<T>> converter) {
-        return safeStream(from).flatMap(o -> converter.apply(o).stream()).collect(toList());
+        return safeStream(from).flatMap(o -> Optional.ofNullable(converter.apply(o)).orElse(List.of()).stream()).collect(toList());
     }
 
     @SafeVarargs
@@ -110,5 +119,9 @@ public final class StreamUtils {
 
     public static <T> Optional<T> tryFind(Iterable<T> objects, Predicate<T> filter) {
         return safeStream(objects).filter(filter).findFirst();
+    }
+
+    public static <T, S extends T> boolean contains(Collection<T> collection, S item) {
+        return collection != null && collection.contains(item);
     }
 }

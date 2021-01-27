@@ -4,6 +4,7 @@ package no.nav.data.polly.disclosure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -12,6 +13,7 @@ import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
+import no.nav.data.polly.disclosure.dto.DisclosureSummaryResponse;
 import no.nav.data.polly.document.DocumentService;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -39,12 +41,16 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
 
+import static no.nav.data.common.utils.StreamUtils.contains;
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.convertFlat;
+import static no.nav.data.common.utils.StreamUtils.filter;
 
 @Slf4j
 @RestController
 @RequestMapping("/disclosure")
 @Tag(name = "Disclosure")
+@RequiredArgsConstructor
 public class DisclosureController {
 
     private final DisclosureRepository repository;
@@ -54,15 +60,6 @@ public class DisclosureController {
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
 
-    public DisclosureController(DisclosureRepository repository, DisclosureService service, DocumentService documentService,
-            InformationTypeRepository informationTypeRepository, ProcessRepository processRepository) {
-        this.repository = repository;
-        this.service = service;
-        this.documentService = documentService;
-        this.informationTypeRepository = informationTypeRepository;
-        this.processRepository = processRepository;
-    }
-
     @Operation(summary = "Get All Disclosures")
     @ApiResponse(description = "All Disclosures fetched")
     @GetMapping
@@ -70,7 +67,8 @@ public class DisclosureController {
             @RequestParam(required = false) UUID informationTypeId,
             @RequestParam(required = false) UUID processId,
             @RequestParam(required = false) String recipient,
-            @RequestParam(required = false) UUID documentId
+            @RequestParam(required = false) UUID documentId,
+            @RequestParam(required = false) Boolean emptyLegalBases
     ) {
         log.info("Received request for all Disclosures. informationType={} process={} recipient={}, documentId={}", informationTypeId, processId, recipient, documentId);
         List<Disclosure> filtered = null;
@@ -82,11 +80,27 @@ public class DisclosureController {
             filtered = repository.findByRecipient(recipient);
         } else if (documentId != null) {
             filtered = repository.findByDocumentId(documentId.toString());
+        } else if (Boolean.TRUE.equals(emptyLegalBases)) {
+            filtered = repository.findByNoLegalBases();
         }
         if (filtered != null) {
             return returnResults(new RestResponsePage<>(convert(filtered, Disclosure::convertToResponse)));
         }
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
+    }
+
+    @Operation(summary = "Get All Disclosure summaries")
+    @ApiResponse(description = "All Disclosure summaries fetched")
+    @GetMapping("/summary")
+    public ResponseEntity<RestResponsePage<DisclosureSummaryResponse>> getSummary() {
+        log.info("Received request for all Disclosure summaries");
+        var discs = repository.findAll();
+        var processIds = convertFlat(discs, d -> d.getData().getProcessIds());
+        var processes = processRepository.findSummaryById(processIds);
+        return ResponseEntity.ok(new RestResponsePage<>(convert(discs, d -> {
+            var procsForDisc = filter(processes, p ->  contains(d.getData().getProcessIds(), p.getId()));
+            return d.convertToSummary(procsForDisc);
+        })));
     }
 
     @Operation(summary = "Search disclosures")
@@ -168,6 +182,10 @@ public class DisclosureController {
             response.setProcesses(convert(processes, Process::convertToShortResponse));
         }
         return response;
+    }
+
+    static class DisclosureSummaryPage extends RestResponsePage<DisclosureSummaryResponse> {
+
     }
 
     static class DisclosurePage extends RestResponsePage<DisclosureResponse> {

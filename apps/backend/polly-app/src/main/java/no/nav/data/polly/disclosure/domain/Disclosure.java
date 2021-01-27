@@ -13,10 +13,13 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
+import no.nav.data.polly.disclosure.dto.DisclosureSummaryResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import no.nav.data.polly.process.domain.repo.ProcessVeryShort;
 import org.hibernate.annotations.Type;
 
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -87,6 +90,16 @@ public class Disclosure extends Auditable {
 
     public UsedInInstance getInstanceIdentification() {
         return new UsedInInstance(id.toString(), data.getName());
+    }
+
+    public DisclosureSummaryResponse convertToSummary(List<ProcessVeryShort> processes) {
+        return DisclosureSummaryResponse.builder()
+                .id(id)
+                .name(data.getName())
+                .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
+                .processes(convert(processes, ProcessVeryShort::toResponse))
+                .legalBases(data.getLegalBases().size())
+                .build();
     }
 
     public static class DisclosureBuilder {

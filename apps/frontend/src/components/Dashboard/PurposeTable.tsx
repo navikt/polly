@@ -69,8 +69,6 @@ const PurposeTable = () => {
       setTitle(`${intl.dataProcessor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY) {
       setTitle(`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)} `)
-    } else if (filterName === ProcessField.DATA_PROCESSOR_OUTSIDE_EU) {
-      setTitle(`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle(intl.navResponsible)
     } else if(filterName  === ProcessField.DPIA_REFERENCE_MISSING){

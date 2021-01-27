@@ -23,12 +23,13 @@ import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessShortResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
+import no.nav.data.polly.processor.domain.Processor;
+import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -48,11 +49,13 @@ public class CodeUsageService {
     private final InformationTypeRepository informationTypeRepository;
     private final DisclosureRepository disclosureRepository;
     private final DocumentRepository documentRepository;
+    private final ProcessorRepository processorRepository;
     private final Summary summary;
 
     public CodeUsageService(CodelistService codelistService, ProcessRepository processRepository, DpProcessRepository dpProcessRepository,
             PolicyRepository policyRepository,
-            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, DocumentRepository documentRepository) {
+            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, DocumentRepository documentRepository,
+            ProcessorRepository processorRepository) {
         this.codelistService = codelistService;
         this.processRepository = processRepository;
         this.dpProcessRepository = dpProcessRepository;
@@ -60,6 +63,7 @@ public class CodeUsageService {
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
         this.documentRepository = documentRepository;
+        this.processorRepository = processorRepository;
         List<String[]> listnames = Stream.of(ListName.values()).map(e -> new String[]{e.name()}).collect(toList());
         this.summary = MetricUtils.summary()
                 .labels(listnames)
@@ -97,6 +101,7 @@ public class CodeUsageService {
             codeUsage.setInformationTypes(findInformationTypes(listName, code));
             codeUsage.setDisclosures(findDisclosures(listName, code));
             codeUsage.setDocuments(findDocuments(listName, code));
+            codeUsage.setProcessors(findProcessors(listName, code));
             return codeUsage;
         });
     }
@@ -151,6 +156,7 @@ public class CodeUsageService {
                 case TRANSFER_GROUNDS_OUTSIDE_EU -> {
                     getProcesses(usage).forEach(p -> p.getData().getDataProcessing().setTransferGroundsOutsideEU(newCode));
                     getDpProcesses(usage).forEach(p -> p.getData().getSubDataProcessing().setTransferGroundsOutsideEU(newCode));
+                    getProcessors(usage).forEach(p -> p.getData().setTransferGroundsOutsideEU(newCode));
                 }
             }
         }
@@ -231,7 +237,14 @@ public class CodeUsageService {
         if (listName == ListName.SUBJECT_CATEGORY) {
             return documentRepository.findBySubjectCategory(code).stream().map(Document::getInstanceIdentification).collect(toList());
         }
-        return Collections.emptyList();
+        return List.of();
+    }
+
+    private List<UsedInInstance> findProcessors(ListName listName, String code) {
+        if (listName == ListName.TRANSFER_GROUNDS_OUTSIDE_EU) {
+            return convert(processorRepository.findByTransferGroundsOutsideEU(code), Processor::getInstanceIdentification);
+        }
+        return List.of();
     }
 
     private List<InformationType> getInformationTypes(CodeUsageResponse usage) {
@@ -258,5 +271,8 @@ public class CodeUsageService {
         return documentRepository.findAllById(convert(usage.getDocuments(), UsedInInstance::getIdAsUUID));
     }
 
+    private List<Processor> getProcessors(CodeUsageResponse usage) {
+        return processorRepository.findAllById(convert(usage.getProcessors(), UsedInInstance::getIdAsUUID));
+    }
 
 }
