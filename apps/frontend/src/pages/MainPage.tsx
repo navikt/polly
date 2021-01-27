@@ -1,19 +1,18 @@
-import {intl, theme} from '../util'
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {Block} from 'baseui/block'
-import {DashboardData, Settings} from '../constants'
-import {getSettings} from '../api/SettingsApi'
-import {Card} from 'baseui/card'
-import {cardShadow, padding} from '../components/common/Style'
-import Departments from '../components/Dashboard/Departments'
-import {getDashboard} from '../api'
-import {LastEvents} from '../components/audit/LastEvents'
-import {Markdown} from '../components/common/Markdown'
-import {RecentEditsByUser} from "../components/audit/RecentEditsByUser";
-import {user} from "../service/User";
-import RouteLink from '../components/common/RouteLink'
-import {LabelMedium} from 'baseui/typography'
+import { useEffect, useState } from 'react'
+import { Block } from 'baseui/block'
+import { DashboardData, Settings } from '../constants'
+import { getSettings } from '../api/SettingsApi'
+import { Card } from 'baseui/card'
+import { cardShadow, padding } from '../components/common/Style'
+import { getDashboard } from '../api'
+import { LastEvents } from '../components/audit/LastEvents'
+import { Markdown } from '../components/common/Markdown'
+import { RecentEditsByUser } from "../components/audit/RecentEditsByUser";
+import { user } from "../service/User";
+import { HeadingLarge } from 'baseui/typography'
+import ShortcutNav from '../components/Main/ShortcutNav'
+import { theme } from '../util'
 
 export const MainPage = () => {
   const [settings, setSettings] = useState<Settings>()
@@ -37,60 +36,46 @@ export const MainPage = () => {
   }, [])
 
   return (
-    <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
+    <Block display="flex" flexWrap>
       {
         !isLoading && dashboardData && (
           <>
+            <Block width="100%" display="flex" flexDirection="column">
+              <Block display="flex" justifyContent="center"><HeadingLarge>Hva vil du gjøre?</HeadingLarge></Block>
+              <ShortcutNav />
+            </Block>
 
-            <Departments data={dashboardData}/>
+            <Block width="100%" display="flex" justifyContent="center" marginTop={theme.sizing.scale1200} marginBottom={theme.sizing.scale800}>
+              <HeadingLarge>Hva har endret seg i det siste?</HeadingLarge>
+            </Block>
 
-            <Block marginTop='2.5rem' width='100%'>
-              <Card overrides={cardShadow}>
-                <Block $style={padding('16px', '6px')} display='flex' justifyContent='center'>
-                  <LabelMedium>{intl.frontPageStartMessage}</LabelMedium>
+            <Block width="100%" display="flex" justifyContent="space-between" marginBottom="200px" flexWrap>
+              <Block width="50%" display="flex" alignContent="center" height="550px">
+                <Card overrides={cardShadow}>
+                  <LastEvents />
+                </Card>
+              </Block>
+
+              {user.isLoggedIn() && (
+                <Block display="flex" height="550px">
+                  <Card overrides={cardShadow}>
+                    <RecentEditsByUser />
+                  </Card>
                 </Block>
-              </Card>
+              )}
 
-              <Block width='100%' marginTop='1.5rem' display='flex' justifyContent='space-between'>
+              <Block height="550px" width={user.isLoggedIn() ? '100%' : '50%'} marginTop={user.isLoggedIn() ? '2.5rem' : '0'}>
                 <Card overrides={cardShadow}>
-                  <Block $style={padding('16px', '6px')}>
-                    <RouteLink href='/process'>{intl.processes}</RouteLink>
-                  </Block>
-                </Card>
-                <Card overrides={cardShadow}>
-                  <Block $style={padding('16px', '6px')}>
-                    <RouteLink href='/dpprocess'>{intl.dpProcess}</RouteLink>
-                  </Block>
-                </Card>
-                <Card overrides={cardShadow}>
-                  <Block $style={padding('16px', '6px')}>
-                    <RouteLink href='/informationtype'>{intl.informationTypes}</RouteLink>
-                  </Block>
-                </Card>
-                <Card overrides={cardShadow}>
-                  <Block $style={padding('16px', '6px')}>
-                    <RouteLink href='/document'>{intl.documents}</RouteLink>
-                  </Block>
+                  <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim />
                 </Card>
               </Block>
             </Block>
 
-            <Block marginTop="2.5rem">
-              <Card overrides={cardShadow}>
-                <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim/>
-              </Card>
-            </Block>
-
-            {user.isLoggedIn() && (
-              <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
-                <RecentEditsByUser/>
-              </Block>
-            )}
 
 
-            <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem" marginBottom={"200px"}>
-              <LastEvents/>
-            </Block>
+
+
+
 
           </>
         )
