@@ -484,7 +484,12 @@ export const no: IStrings = {
   disclosureNameTooltip: 'Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap.',
   disclosurePurposeTooltip: 'Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.',
   disclosureDescriptionTooltip: 'Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.',
-  disclosureDocumentTooltip:'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.'
+  disclosureDocumentTooltip:'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.',
+
+  shortcutSubtitleProcess: 'Se og endre behandlinger',
+  shortcutSubtitleInformationtype: 'Se og endre opplysningstyper',
+  shortcutSubtitleThirdParty: 'Se alle eksterne eksterne parter',
+  shortcutSubtitleDashboard: 'Se statistikk over behandlinger',
 
 };
 
@@ -971,7 +976,12 @@ export const en: IStrings = {
   disclosureNameTooltip: 'A short name that describe what the disclosure is about. Example: Disclosure of sickness and disability information from NAV to an insurance company',
   disclosurePurposeTooltip: 'Describe the purpose of the disclosure to the recipient. Example: The purpose is to help insurance companies to receive information from NAV that is necessary to process an insurance case',
   disclosureDescriptionTooltip: 'Relevant information that does not fit into other fields can be described here. For example, what type of information is provided, regularity or similar.',
-  disclosureDocumentTooltip: 'A collection of information types. Sick leave and income statement are examples of documents that contain several types of information.'
+  disclosureDocumentTooltip: 'A collection of information types. Sick leave and income statement are examples of documents that contain several types of information.',
+
+  shortcutSubtitleProcess: 'See and edit processes',
+  shortcutSubtitleInformationtype: 'See and edit informationtypes',
+  shortcutSubtitleThirdParty: 'See all third parties',
+  shortcutSubtitleDashboard: 'See statistics of processes',
 
 };
 

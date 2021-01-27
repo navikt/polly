@@ -307,6 +307,10 @@ export interface IStrings {
   disclosurePurposeTooltip: string;
   disclosureDescriptionTooltip: string;
   disclosureDocumentTooltip:string;
+  shortcutSubtitleProcess: string;
+  shortcutSubtitleInformationtype: string;
+  shortcutSubtitleThirdParty: string;
+  shortcutSubtitleDashboard: string;
 
   // groups
   READ: string;
