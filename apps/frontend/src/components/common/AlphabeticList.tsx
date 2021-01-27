@@ -5,6 +5,7 @@ import {primitives} from "../../util/theme";
 import {Label1} from "baseui/typography";
 import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
 import RouteLink from "./RouteLink";
+import {margin} from './Style'
 
 type Opt = {id: string, label: string}
 const AlphabeticList = (props: {items: Opt[], baseUrl: string}) => {
@@ -41,7 +42,15 @@ const AlphabeticList = (props: {items: Opt[], baseUrl: string}) => {
 
             <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
               {items[letter].map(item =>
-                <FlexGridItem key={item.id} minWidth={'fit-content'} margin={'10px 0'}>
+                <FlexGridItem key={item.id} minWidth={'fit-content'}
+                              overrides={{
+                                Block: {
+                                  style: {
+                                    ...margin('10px', '0')
+                                  }
+                                }
+                              }}
+                >
                   <RouteLink href={`${props.baseUrl}${item.id}`}>
                     {item.label}
                   </RouteLink>

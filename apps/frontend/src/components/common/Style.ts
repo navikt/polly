@@ -7,6 +7,7 @@ export const paddingZero = { paddingLeft: 0, paddingRight: 0, paddingTop: 0, pad
 export const padding = (topBot: string, leftRight: string) => ({ paddingLeft: leftRight, paddingRight: leftRight, paddingTop: topBot, paddingBottom: topBot });
 export const paddingAll = (pad: string) => ({ paddingLeft: pad, paddingRight: pad, paddingTop: pad, paddingBottom: pad });
 export const marginAll = (margin: string) => ({ marginLeft: margin, marginRight: margin, marginTop: margin, marginBottom: margin });
+export const margin = (marginY: string, marginX:string) => ({ marginLeft: marginX, marginRight: marginX, marginTop: marginY, marginBottom: marginY });
 export const borderColor = (color: string) => ({
   borderLeftColor: color, borderTopColor: color,
   borderRightColor: color, borderBottomColor: color
