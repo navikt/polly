@@ -50,19 +50,18 @@ export const MainPage = () => {
             </Block>
 
             <Block width="100%" display="flex" justifyContent="space-between" marginBottom="200px" flexWrap>
-              <Block width="50%" display="flex" alignContent="center" height="550px">
-                <Card overrides={cardShadow}>
-                  <LastEvents />
-                </Card>
-              </Block>
-
-              {user.isLoggedIn() && (
+            {user.isLoggedIn() && (
                 <Block display="flex" height="550px">
                   <Card overrides={cardShadow}>
                     <RecentEditsByUser />
                   </Card>
                 </Block>
               )}
+              <Block display="flex"  height="550px">
+                <Card overrides={cardShadow}>
+                  <LastEvents />
+                </Card>
+              </Block>
 
               <Block height="550px" width={user.isLoggedIn() ? '100%' : '50%'} marginTop={user.isLoggedIn() ? '2.5rem' : '0'}>
                 <Card overrides={cardShadow}>
@@ -70,13 +69,6 @@ export const MainPage = () => {
                 </Card>
               </Block>
             </Block>
-
-
-
-
-
-
-
           </>
         )
       }
