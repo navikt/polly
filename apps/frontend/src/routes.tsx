@@ -35,51 +35,56 @@ import {RequestRevisionPage} from './pages/admin/RequestRevisionPage'
 import {MailLogPage} from './pages/admin/MailLogPage'
 import {DashboardPage} from './pages/DashboardPage'
 import {DisclosureListPage} from './pages/DisclosureListPage'
+import DataProcessorPage from "./pages/DataProcessorPage";
 
 export const processPath = '/process/:section/:code/:processId?'
 
 const Routes = (): JSX.Element => (
   <Root>
     <Switch>
-      <Route exact path="/dashboard/:processStatus?" component={DashboardPage} />
-      <Route exact path="/thirdparty" component={ThirdPartyListPage} />
-      <Route exact path="/thirdparty/:thirdPartyCode/:section?/:id?" component={ThirdPartyMetadataPage} />
-      <Route exact path="/system" component={SystemListPage} />
-      <Route exact path="/system/:systemCode" component={SystemPage} />
-      <Route exact path="/team/:teamId" component={TeamPage} />
-      <Route exact path="/productarea/:productAreaId" component={ProductAreaPage} />
-      <Route exact path="/process" component={PurposeListPage} />
-      <Route exact path={processPath} component={ProcessPage} />
-      <Route exact path="/process/legal" component={LegalPage} />
+      <Route exact path="/dashboard/:processStatus?" component={DashboardPage}/>
+      <Route exact path="/thirdparty" component={ThirdPartyListPage}/>
+      <Route exact path="/thirdparty/:thirdPartyCode/:section?/:id?" component={ThirdPartyMetadataPage}/>
+      <Route exact path="/system" component={SystemListPage}/>
+      <Route exact path="/system/:systemCode" component={SystemPage}/>
+      <Route exact path="/team/:teamId" component={TeamPage}/>
+      <Route exact path="/productarea/:productAreaId" component={ProductAreaPage}/>
+      <Route exact path="/process" component={PurposeListPage}/>
+      <Route exact path={processPath} component={ProcessPage}/>
+      <Route exact path="/process/legal" component={LegalPage}/>
 
-      <Route exact path="/dpprocess" component={DpProcessPage} />
-      <Route exact path="/dpprocess/:id" component={DpProcessView} />
+      <Route exact path="/dpprocess" component={DpProcessPage}/>
+      <Route exact path="/dpprocess/:id" component={DpProcessView}/>
 
-      <Route exact path="/dashboard/:filterName/:filterValue/:filterStatus" component={PurposeTable} />
+      <Route exact path="/dataprocessor" component={DataProcessorPage}/>
+      <Route exact path="/dataprocessor/:id" component={DataProcessorPage}/>
 
-      <Route exact path="/process/:id" component={redirect(processUrl)} />
-      <Route exact path="/policy/:id" component={redirect(policyUrl)} />
-      <Route exact path="/disclosure" component={DisclosureListPage} />
-      <Route exact path="/disclosure/:id" component={redirect(disclosureUrl)} />
 
-      <Route exact path="/informationtype/create" component={InformationtypeCreatePage} />
-      <Route exact path="/informationtype/:id?" component={InformationtypePage} />
-      <Route exact path="/informationtype/:id/edit" component={InformationtypeEditPage} />
+      <Route exact path="/dashboard/:filterName/:filterValue/:filterStatus" component={PurposeTable}/>
 
-      <Route exact path="/admin/codelist/:listname?" component={CodelistPage} />
-      <Route exact path="/admin/audit/:id?/:auditId?" component={AuditPage} />
-      <Route exact path="/admin/settings" component={SettingsPage} />
-      <Route exact path="/admin/request-revision" component={RequestRevisionPage} />
+      <Route exact path="/process/:id" component={redirect(processUrl)}/>
+      <Route exact path="/policy/:id" component={redirect(policyUrl)}/>
+      <Route exact path="/disclosure" component={DisclosureListPage}/>
+      <Route exact path="/disclosure/:id" component={redirect(disclosureUrl)}/>
+
+      <Route exact path="/informationtype/create" component={InformationtypeCreatePage}/>
+      <Route exact path="/informationtype/:id?" component={InformationtypePage}/>
+      <Route exact path="/informationtype/:id/edit" component={InformationtypeEditPage}/>
+
+      <Route exact path="/admin/codelist/:listname?" component={CodelistPage}/>
+      <Route exact path="/admin/audit/:id?/:auditId?" component={AuditPage}/>
+      <Route exact path="/admin/settings" component={SettingsPage}/>
+      <Route exact path="/admin/request-revision" component={RequestRevisionPage}/>
       <Route exact path="/admin/maillog" component={MailLogPage}/>
 
-      <Route exact path="/document/create" component={DocumentCreatePage} />
-      <Route exact path="/document/:id?" component={DocumentPage} />
-      <Route exact path="/document/:id/edit" component={DocumentEditPage} />
+      <Route exact path="/document/create" component={DocumentCreatePage}/>
+      <Route exact path="/document/:id?" component={DocumentPage}/>
+      <Route exact path="/document/:id/edit" component={DocumentEditPage}/>
 
-      <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage} />
+      <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage}/>
 
-      <Route exact path="/" component={MainPage} />
-      <Route component={NotFound} />
+      <Route exact path="/" component={MainPage}/>
+      <Route component={NotFound}/>
     </Switch>
   </Root>
 )

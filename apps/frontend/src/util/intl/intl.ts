@@ -101,6 +101,7 @@ export interface IStrings {
   isProfilingUsed: string;
   profilingExtra: string;
   dataProcessor: string;
+  dataProcessors: string;
   dpProcessDataProcessor: string;
   dataProcessorYes: string;
   dpProcessDataProcessorYes: string;
@@ -217,6 +218,7 @@ export interface IStrings {
   externalPartsSideMenuHelpText: string;
   systemSideMenuHelpText: string;
   disclosuresSideMenuHelpText: string;
+  dataprocessorSideMenuHelpText: string;
   dashboard: string;
   dashboardSideMenuHelpText: string;
   processActivity: string;

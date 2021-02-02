@@ -55,6 +55,7 @@ export const PageHeader = (props: {section: Section, code: string}) => {
     else if (section === Section.team) return intl.team
     else if (section === Section.productarea) return intl.productArea
     else if (section === Section.system) return intl.system
+    else if (section === Section.dataprocessor) return intl.dataProcessor
     else if (section === Section.thirdparty) return `${intl.commonExternalProcessResponsible} ${intl.with} ${lowerFirst(intl.thirdParty)}`
     return intl.overallPurposeActivity
   }

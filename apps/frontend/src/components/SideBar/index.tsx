@@ -48,6 +48,7 @@ const SideBar = () => {
         <Block height={theme.sizing.scale600}/>
         <NavItem to="/thirdparty" text={intl.thirdParties} tooltip={intl.externalPartsSideMenuHelpText}/>
         <NavItem to="/system" text={intl.systems} tooltip={intl.systemSideMenuHelpText}/>
+        <NavItem to="/dataprocessor" text={intl.dataProcessors} tooltip={intl.dataprocessorSideMenuHelpText}/>
 
         <Block height={theme.sizing.scale800}/>
         <NavItem to="/dashboard" text={intl.dashboard} tooltip={intl.dashboardSideMenuHelpText}/>
