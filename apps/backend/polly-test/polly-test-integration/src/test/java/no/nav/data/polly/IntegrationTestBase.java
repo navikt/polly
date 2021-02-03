@@ -52,6 +52,7 @@ import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.test.TestConfig;
+import no.nav.data.polly.test.TestConfig.MockFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -137,6 +138,7 @@ public abstract class IntegrationTestBase {
     public void teardownAbstract() {
         delete();
         CollectorRegistry.defaultRegistry.clear();
+        MockFilter.clearUser();
     }
 
     private void delete() {
