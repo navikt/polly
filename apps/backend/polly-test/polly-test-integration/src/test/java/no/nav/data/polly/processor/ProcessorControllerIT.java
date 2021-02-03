@@ -13,6 +13,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProcessorControllerIT extends IntegrationTestBase {
@@ -95,8 +97,10 @@ class ProcessorControllerIT extends IntegrationTestBase {
         var p = new Processor().convertFromRequest(createProcessorRequest());
         p.setId(PROCESSOR_ID1);
         processorRepository.save(p);
-        createAndSaveProcess(PURPOSE_CODE1);
         assertThat(processorRepository.count()).isOne();
+        var process = createAndSaveProcess(PURPOSE_CODE1);
+        process.getData().getDataProcessing().setProcessors(List.of(p.getId()));
+        processRepository.save(process);
 
         restTemplate.delete("/processor/{id}", PROCESSOR_ID1);
         assertThat(processorRepository.count()).isOne();

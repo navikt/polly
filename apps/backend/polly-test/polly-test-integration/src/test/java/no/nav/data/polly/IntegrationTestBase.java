@@ -318,7 +318,8 @@ public abstract class IntegrationTestBase {
     protected DataProcessingRequest dataProcessingRequest() {
         return DataProcessingRequest.builder()
                 .dataProcessor(true)
-                .processor(PROCESSOR_ID1.toString())
+                // TODO processor
+//                .processor(PROCESSOR_ID1.toString())
 
                 .dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
@@ -419,7 +420,8 @@ public abstract class IntegrationTestBase {
     protected DataProcessingResponse dataProcessingResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
-                .processor(PROCESSOR_ID1)
+                // TODO processor
+//                .processor(PROCESSOR_ID1)
 
                 .dataProcessorAgreements(List.of("X"))
                 .dataProcessorOutsideEU(true)
