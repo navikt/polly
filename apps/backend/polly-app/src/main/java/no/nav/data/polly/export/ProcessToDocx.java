@@ -378,8 +378,10 @@ public class ProcessToDocx {
             );
             var resources = new ArrayList<String>();
             processors.forEach(p -> {
-                resources.add(p.getData().getContractOwner());
-                resources.addAll(p.getData().getOperationalContractManagers());
+                if (p.getData().getContractOwner() != null) {
+                    resources.add(p.getData().getContractOwner());
+                }
+                resources.addAll(List.copyOf(p.getData().getOperationalContractManagers()));
             });
             var resourceInfo = resourceService.getResources(resources);
             Function<String, String> navn = (ident) -> Optional.ofNullable(resourceInfo.get(ident)).map(Resource::getFullName).orElse(ident);
