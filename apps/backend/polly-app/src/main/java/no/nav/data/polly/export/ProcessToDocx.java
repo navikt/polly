@@ -9,6 +9,8 @@ import no.nav.data.polly.Period;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.commoncode.CommonCodeService;
+import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -94,6 +96,7 @@ public class ProcessToDocx {
     private final TeamService teamService;
     private final ProcessRepository processRepository;
     private final ProcessorRepository processorRepository;
+    private final CommonCodeService commonCodeService;
 
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
@@ -402,7 +405,7 @@ public class ProcessToDocx {
                         text("Notat: ", nullToEmpty(pd.getNote())),
                         text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
                         transferGrounds,
-                        text("Overføres til land: ", String.join(", ", copyOf(pd.getCountries())))
+                        text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
                 );
             });
         }
@@ -651,6 +654,11 @@ public class ProcessToDocx {
             case IN_PROGRESS -> "Under arbeid";
             case NEEDS_REVISION -> "Trenger revidering";
         };
+    }
+
+    private String countryName(String countryCode) {
+        return Optional.ofNullable(commonCodeService.getCountry(countryCode))
+                .map(CommonCodeResponse::getDescription).orElse(countryCode);
     }
 
 }
