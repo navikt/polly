@@ -619,7 +619,7 @@ public class ProcessToDocx {
         }
     }
 
-    // TODO remove when new processor format frontend done
+    // TODO processors remove when new processor format frontend done
     private Processor convertOldFormatProcessor(DataProcessing dataProcessing) {
         return Processor.builder()
                 .data(ProcessorData.builder()

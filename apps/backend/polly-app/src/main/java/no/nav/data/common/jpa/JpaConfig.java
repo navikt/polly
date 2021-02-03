@@ -70,7 +70,7 @@ public class JpaConfig {
         return args -> new HibernateStatisticsCollector(emf.unwrap(SessionFactory.class), "main").register();
     }
 
-// TODO disabled untill new processor frontend is done
+// TODO processors disabled untill new processor frontend is done
 //    @Bean
 //    @DependsOn("initAudit")
 //    public ApplicationRunner migrateProcessors(ProcessService processService, ProcessorRepository processorRepository, TransactionTemplate tt) {
