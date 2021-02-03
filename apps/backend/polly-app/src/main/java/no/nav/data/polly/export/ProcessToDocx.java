@@ -623,6 +623,7 @@ public class ProcessToDocx {
     private Processor convertOldFormatProcessor(DataProcessing dataProcessing) {
         return Processor.builder()
                 .data(ProcessorData.builder()
+                        .name("")
                         .contract(String.join(", ", List.copyOf(dataProcessing.getDataProcessorAgreements())))
                         .outsideEU(dataProcessing.getDataProcessorOutsideEU())
                         .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
