@@ -21,6 +21,7 @@ import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.processor.domain.Processor;
+import no.nav.data.polly.processor.domain.ProcessorData;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
@@ -70,6 +71,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
@@ -215,8 +217,10 @@ public class ProcessToDocx {
                     text("Profilering: ", boolToText(data.getProfiling()))
             );
 
+            List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ?
-                    processorRepository.findAllById(process.getData().getDataProcessing().getProcessors()) : List.<Processor>of();
+                    processorIds == null ? List.of(convertOldFormatProcessor(process.getData().getDataProcessing())) :
+                            processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
@@ -611,6 +615,19 @@ public class ProcessToDocx {
             pack.save(outStream);
             return outStream.toByteArray();
         }
+    }
+
+    // TODO remove when new processor format frontend done
+    private Processor convertOldFormatProcessor(DataProcessing dataProcessing) {
+        return Processor.builder()
+                .data(ProcessorData.builder()
+                        .contract(String.join(", ", List.copyOf(dataProcessing.getDataProcessorAgreements())))
+                        .outsideEU(dataProcessing.getDataProcessorOutsideEU())
+                        .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
+                        .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
+                        .countries(dataProcessing.getTransferCountries())
+                        .build())
+                .build();
     }
 
     private static String boolToText(Boolean aBoolean) {
