@@ -624,11 +624,11 @@ public class ProcessToDocx {
         return Processor.builder()
                 .data(ProcessorData.builder()
                         .name("")
-                        .contract(String.join(", ", List.copyOf(dataProcessing.getDataProcessorAgreements())))
+                        .contract(String.join(", ", copyOf(dataProcessing.getDataProcessorAgreements())))
                         .outsideEU(dataProcessing.getDataProcessorOutsideEU())
                         .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
                         .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
-                        .countries(dataProcessing.getTransferCountries())
+                        .countries(copyOf(dataProcessing.getTransferCountries()))
                         .build())
                 .build();
     }

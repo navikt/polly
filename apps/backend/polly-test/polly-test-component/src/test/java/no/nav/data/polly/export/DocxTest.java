@@ -158,7 +158,7 @@ public class DocxTest {
                         .profiling(true)
                         .dataProcessing(DataProcessing.builder()
                                 .dataProcessor(true)
-                                .processor(PROCESSOR_ID)
+                                .processors(List.of(PROCESSOR_ID))
                                 .build())
                         .status(ProcessStatus.COMPLETED)
                         .dpia(Dpia.builder()

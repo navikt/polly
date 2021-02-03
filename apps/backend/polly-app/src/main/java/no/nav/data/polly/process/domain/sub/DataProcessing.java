@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
@@ -25,7 +24,6 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 public class DataProcessing {
 
     private Boolean dataProcessor;
-    @Singular
     private List<UUID> processors;
 
     private List<String> dataProcessorAgreements;
