@@ -85,7 +85,7 @@ public final class StreamUtils {
     }
 
     public static <T, F> List<T> convertFlat(Collection<F> from, Function<F, List<T>> converter) {
-        return safeStream(from).flatMap(o -> converter.apply(o).stream()).collect(toList());
+        return safeStream(from).flatMap(o -> Optional.ofNullable(converter.apply(o)).orElse(List.of()).stream()).collect(toList());
     }
 
     @SafeVarargs
@@ -119,5 +119,9 @@ public final class StreamUtils {
 
     public static <T> Optional<T> tryFind(Iterable<T> objects, Predicate<T> filter) {
         return safeStream(objects).filter(filter).findFirst();
+    }
+
+    public static <T, S extends T> boolean contains(Collection<T> collection, S item) {
+        return collection != null && collection.contains(item);
     }
 }

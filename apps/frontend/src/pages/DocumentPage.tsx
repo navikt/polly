@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import {useHistory, useParams} from 'react-router-dom'
 import {intl} from '../util'
 import {Block} from 'baseui/block'
-import {deleteDocument, getAllDocument, getDocument, getProcessesFor} from '../api'
+import {deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor} from '../api'
 import {Document, Process} from '../constants'
 import DocumentMetadata from '../components/document/DocumentMetadata'
 import {user} from '../service/User'
@@ -18,7 +18,7 @@ import Button from '../components/common/Button'
 import {AuditButton} from '../components/audit/AuditButton'
 import {SIZE as ButtonSize} from 'baseui/button'
 import {tabOverride} from '../components/common/Style'
-import DocumentList from '../components/document/DocumentList';
+import AlphabeticList from '../components/common/AlphabeticList'
 
 
 const renderTextWithLabel = (label: string, text: string) => (
@@ -42,11 +42,11 @@ const DocumentPage = () => {
 
   useEffect(() => setDocumentId(params.id), [params.id])
 
-  useEffect(()=>{
-    (async ()=>{
-      setDocuments(await getAllDocument())
+  useEffect(() => {
+    (async () => {
+      setDocuments(await getAll(getDocumentByPageAndPageSize)())
     })()
-  },[])
+  }, [])
 
   const handleDelete = () => {
     if (documentId) {
@@ -128,7 +128,7 @@ const DocumentPage = () => {
             </Block>
           )}
         </Block>
-        { !currentDocument && <DocumentList documents={documents} baseUrl={'/document/'}/>}
+        {!currentDocument && <AlphabeticList items={documents.map(d => ({id: d.id, label: d.name}))} baseUrl={'/document/'}/>}
         {
           currentDocument && (
             <Block overrides={{

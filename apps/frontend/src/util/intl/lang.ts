@@ -60,6 +60,7 @@ export const no: IStrings = {
   unclarified: "Uavklart",
   unknown: "Uavklart",
   notFilled: "Ikke utfylt",
+  filled: "Utfylt",
   automation: "Automatisering og profilering",
   automaticProcessing: "Helautomatisk behandling",
   isAutomationNeeded: "Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling?",
@@ -343,6 +344,7 @@ export const no: IStrings = {
   inProgress: "Under arbeid",
   done: "Fullført",
   completed: "Godkjent",
+  incomplete: "Ufullstendig",
   inProduction: "I produksjon",
   notInProduction: "Ikke i produksjon",
   isDpiaRequired: "Er det behov for PVK?",
@@ -444,6 +446,7 @@ export const no: IStrings = {
   documentSideMenuHelpText: "En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.",
   externalPartsSideMenuHelpText: "Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere",
   systemSideMenuHelpText: "En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg",
+  disclosuresSideMenuHelpText: "En samling av utleveringer av persondata fra NAV til eksterne bedrifter eller etater",
   dashboard: "Dashboard",
   dashboardSideMenuHelpText: "Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen",
   categoryNotInUse: "Kategori {0} er ikke i bruk",
@@ -481,7 +484,12 @@ export const no: IStrings = {
   disclosureNameTooltip: 'Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap.',
   disclosurePurposeTooltip: 'Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.',
   disclosureDescriptionTooltip: 'Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.',
-  disclosureDocumentTooltip:'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.'
+  disclosureDocumentTooltip:'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.',
+
+  shortcutSubtitleProcess: 'Se og endre behandlinger',
+  shortcutSubtitleInformationtype: 'Se og endre opplysningstyper',
+  shortcutSubtitleThirdParty: 'Se alle eksterne parter',
+  shortcutSubtitleDashboard: 'Se statistikk over behandlinger',
 
 };
 
@@ -547,6 +555,7 @@ export const en: IStrings = {
   unclarified: "Unclarified",
   unknown: "Unknown",
   notFilled: "Not filled",
+  filled: "Filled",
   automation: "Automation and profiling",
   automaticProcessing: "Automatic Processing",
   isAutomationNeeded: "Is decision made based on fully automated process?",
@@ -839,6 +848,7 @@ export const en: IStrings = {
   add: "Add",
   inProgress: "In progress",
   completed: "Completed",
+  incomplete: "Incomplete",
   fomDateHelpText: "The start date is pre-filled with the date NAV was created. For treatments with a later date, this must be changed. The date can also be set ahead of time.",
   tomDateHelpText: "This should only be stated if treatment is temporary and has an end date.",
   mailLog: "Mail log",
@@ -928,6 +938,7 @@ export const en: IStrings = {
   documentSideMenuHelpText: "A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.",
   externalPartsSideMenuHelpText: "Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers",
   systemSideMenuHelpText: "A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg",
+  disclosuresSideMenuHelpText: "A collection of external organizations that NAV exchanges data with",
   dashboard: "Dashboard",
   dashboardSideMenuHelpText: "Overview for statistics related to processes and other collections in the process catalog",
   excessInfoHelpText: "Information that is available in the documents or the system being used, without this being needed or used in processing.",
@@ -965,7 +976,12 @@ export const en: IStrings = {
   disclosureNameTooltip: 'A short name that describe what the disclosure is about. Example: Disclosure of sickness and disability information from NAV to an insurance company',
   disclosurePurposeTooltip: 'Describe the purpose of the disclosure to the recipient. Example: The purpose is to help insurance companies to receive information from NAV that is necessary to process an insurance case',
   disclosureDescriptionTooltip: 'Relevant information that does not fit into other fields can be described here. For example, what type of information is provided, regularity or similar.',
-  disclosureDocumentTooltip: 'A collection of information types. Sick leave and income statement are examples of documents that contain several types of information.'
+  disclosureDocumentTooltip: 'A collection of information types. Sick leave and income statement are examples of documents that contain several types of information.',
+
+  shortcutSubtitleProcess: 'See and edit processes',
+  shortcutSubtitleInformationtype: 'See and edit informationtypes',
+  shortcutSubtitleThirdParty: 'See all third parties',
+  shortcutSubtitleDashboard: 'See statistics of processes',
 
 };
 

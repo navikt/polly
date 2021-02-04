@@ -19,39 +19,39 @@ import java.util.Map;
 @NoArgsConstructor
 public class DashResponse {
 
-    private ProcessDashCount allProcesses = new ProcessDashCount();
-    private List<ProcessDashCount> departmentProcesses = new ArrayList<>();
-    private List<ProcessDashCount> productAreaProcesses = new ArrayList<>();
+    private DashCount all = new DashCount();
+    private List<DashCount> departments = new ArrayList<>();
+    private List<DashCount> productAreas = new ArrayList<>();
 
     @JsonIgnore
-    private Map<String, ProcessDashCount> dashDepartmentMap = new HashMap<>();
+    private Map<String, DashCount> dashDepartmentMap = new HashMap<>();
     @JsonIgnore
-    private Map<String, ProcessDashCount> dashTeamMap = new HashMap<>();
+    private Map<String, DashCount> dashTeamMap = new HashMap<>();
     @JsonIgnore
-    private Map<String, ProcessDashCount> dashProductAreaMap = new HashMap<>();
+    private Map<String, DashCount> dashProductAreaMap = new HashMap<>();
 
-    public ProcessDashCount department(String department) {
+    public DashCount department(String department) {
         return dashDepartmentMap.computeIfAbsent(department, s -> {
-            var dash = new ProcessDashCount();
+            var dash = new DashCount();
             dash.setDepartment(department);
-            departmentProcesses.add(dash);
+            departments.add(dash);
             return dash;
         });
     }
 
-    public ProcessDashCount registerTeam(String teamId, String productAreaId) {
+    public DashCount registerTeam(String teamId, String productAreaId) {
         if (productAreaId == null) {
             return null;
         }
         return dashTeamMap.computeIfAbsent(teamId, t -> dashProductAreaMap.computeIfAbsent(productAreaId, p -> {
-            var dash = new ProcessDashCount();
+            var dash = new DashCount();
             dash.setProductAreaId(productAreaId);
-            productAreaProcesses.add(dash);
+            productAreas.add(dash);
             return dash;
         }));
     }
 
-    public ProcessDashCount team(String team) {
+    public DashCount team(String team) {
         return dashTeamMap.get(team);
     }
 
@@ -60,12 +60,15 @@ public class DashResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @JsonInclude(Include.NON_NULL)
-    public static class ProcessDashCount {
+    public static class DashCount {
 
         private String department;
         private String productAreaId;
         private long processes;
         private long dpProcesses;
+
+        private long disclosures;
+        private long disclosuresIncomplete;
 
         private long processesCompleted;
         private long processesInProgress;
@@ -86,16 +89,20 @@ public class DashResponse {
         private Counter dataProcessor = new Counter();
         private long commonExternalProcessResponsible;
 
-        // TODO remove ?
-        private final long dataProcessorAgreementMissing = 0;
-        private Counter dataProcessorOutsideEU = new Counter();
-
         public void processes() {
             processes++;
         }
 
         public void dpProcesses() {
             dpProcesses++;
+        }
+
+        public void disclosures() {
+            disclosures++;
+        }
+
+        public void disclosuresIncomplete() {
+            disclosuresIncomplete++;
         }
 
         public void processesCompleted() {

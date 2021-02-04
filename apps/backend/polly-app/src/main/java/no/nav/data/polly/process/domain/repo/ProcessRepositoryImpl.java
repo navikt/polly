@@ -165,8 +165,6 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case RETENTION -> " data #> '{retention,retentionPlan}' %s ";
             case RETENTION_DATA -> " data #> '{retention,retentionStart}' %1$s or data #> '{retention,retentionMonths}' %1$s ";
             case DATA_PROCESSOR -> " data #> '{dataProcessing,dataProcessor}' %s ";
-            // TODO remove ?
-//            case DATA_PROCESSOR_OUTSIDE_EU -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorOutsideEU}' %s ";
 
             // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
             case DPIA_REFERENCE_MISSING -> {

@@ -6,6 +6,7 @@ import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.codelist.CodelistStub;
+import no.nav.data.polly.codelist.commoncode.CommonCodeService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
@@ -60,6 +61,8 @@ public class DocxTest {
     private ProcessRepository processRepository;
     @Mock
     private ProcessorRepository processorRepository;
+    @Mock
+    private CommonCodeService commonCodeService;
     @InjectMocks
     private ProcessToDocx processToDocx;
 
@@ -158,7 +161,7 @@ public class DocxTest {
                         .profiling(true)
                         .dataProcessing(DataProcessing.builder()
                                 .dataProcessor(true)
-                                .processor(PROCESSOR_ID)
+                                .processors(List.of(PROCESSOR_ID))
                                 .build())
                         .status(ProcessStatus.COMPLETED)
                         .dpia(Dpia.builder()

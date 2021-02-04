@@ -34,9 +34,10 @@ type AccordionDisclosureProps = {
   submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>;
   errorModal?: string;
   onCloseModal?: () => void;
+  expand?: string
 };
 
-type Alerts = { [k: string]: DisclosureAlert }
+type Alerts = {[k: string]: DisclosureAlert}
 
 const showAbroad = (abroad: DisclosureAbroad) => {
   if (abroad.abroad === true) {
@@ -66,35 +67,24 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false)
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
-  const [alerts, setAlerts] = useState<Alerts>({})
   const [isLoading, setLoading] = useState<boolean>(false)
   const history = useHistory()
   const [hasAlert, setHasAlert] = useState<boolean>(false)
-  const [expanded, setExpanded] = useState<React.Key[]>([])
+  const [expanded, setExpanded] = useState<React.Key[]>(props.expand ? [props.expand] : [])
 
   const {disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal} = props
 
   useEffect(() => {
-    (async () => {
-      const alertMap = (await Promise.all(disclosureList.map(d => getAlertForDisclosure(d.id))))
-        .reduce((acc: Alerts, alert) => {
-          acc[alert.disclosureId] = alert
-          return acc
-        }, {} as Alerts)
-      setAlerts(alertMap)
-    })()
-  }, [disclosureList])
-
-  useEffect(() => {
-    if (selectedDisclosure) {
-      setHasAlert(alerts[selectedDisclosure.id].missingArt6)
-    }
-  }, [selectedDisclosure])
+    props.expand && renewDisclosureDetails(props.expand)
+  }, [props.expand])
 
   const renewDisclosureDetails = async (disclosureId: string) => {
     setLoading(true)
-    setSelectedDisclosure(await getDisclosure(disclosureId))
-    setLoading((false))
+    const disc = await getDisclosure(disclosureId)
+    setSelectedDisclosure(disc)
+    const alert = await getAlertForDisclosure(disclosureId)
+    setHasAlert(alert.missingArt6)
+    setLoading(false)
   }
 
   return (
@@ -217,12 +207,12 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                       {selectedDisclosure?.legalBases.length ?
                         <DataText label={intl.legalBasis} text={""}>
                           {selectedDisclosure
-                            .legalBases
-                            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code))
-                              .localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-                            .map((legalBasis, index) =>
-                              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-                            )}
+                          .legalBases
+                          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code))
+                          .localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+                          .map((legalBasis, index) =>
+                            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+                          )}
                         </DataText> :
                         <>
                           <DataText label={intl.legalBasis} text={intl.emptyMessage}/>
@@ -237,64 +227,64 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
             </Panel>
           )
         })}
-          </StatelessAccordion>
-        {editable && showEditModal && selectedDisclosure && (
-          <ModalThirdParty
+      </StatelessAccordion>
+      {editable && showEditModal && selectedDisclosure && (
+        <ModalThirdParty
           title={intl.editDisclosure}
           isOpen={showEditModal}
           initialValues={convertDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => {
-          if (submitEditDisclosure && await submitEditDisclosure(values)) {
-          renewDisclosureDetails(selectedDisclosure?.id)
-          setShowEditModal(false)
-        } else {
-          setShowEditModal(true)
-        }
-        }}
+            if (submitEditDisclosure && await submitEditDisclosure(values)) {
+              renewDisclosureDetails(selectedDisclosure?.id)
+              setShowEditModal(false)
+            } else {
+              setShowEditModal(true)
+            }
+          }}
           onClose={() => {
-          onCloseModal && onCloseModal()
-          setShowEditModal(false)
-        }}
+            onCloseModal && onCloseModal()
+            setShowEditModal(false)
+          }}
           errorOnCreate={errorModal}
           disableRecipientField={true}
-          />
-          )}
-        {showDeleteModal && (
-          <Modal
+        />
+      )}
+      {showDeleteModal && (
+        <Modal
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
           unstable_ModalBackdropScroll={true}
           size="default"
-          >
+        >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
-          <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
+            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
           </ModalBody>
 
           <ModalFooter>
-          <Block display="flex" justifyContent="flex-end">
-          <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
-          <Button
-          kind="secondary"
-          onClick={() => {
-          setShowDeleteModal(false)
-        }}
-          marginLeft marginRight
-          >
-        {intl.abort}
-          </Button>
-          <Button onClick={() => {
-          if (selectedDisclosure)
-          submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
-        }}
-          >{intl.delete}</Button>
-          </Block>
+            <Block display="flex" justifyContent="flex-end">
+              <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
+              <Button
+                kind="secondary"
+                onClick={() => {
+                  setShowDeleteModal(false)
+                }}
+                marginLeft marginRight
+              >
+                {intl.abort}
+              </Button>
+              <Button onClick={() => {
+                if (selectedDisclosure)
+                  submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+              }}
+              >{intl.delete}</Button>
+            </Block>
           </ModalFooter>
-          </Modal>
-          )}
-          </React.Fragment>
-          )
-        }
+        </Modal>
+      )}
+    </React.Fragment>
+  )
+}
 
 export default AccordionDisclosure
