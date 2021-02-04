@@ -80,14 +80,13 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const handleChangePanel = (process?: Partial<Process>) => {
 
     if (process?.id !== currentProcess?.id) {
-      console.log("push ok ")
       history.push(genProcessPath(section, code, process, filter))
     }
     // reuse method to reload a process
     else if (process?.id) {
       getProcessById(process.id).catch(setErrorProcessModal)
       history.push(genProcessPath(section, code, process, filter))
-      
+
     }
 
 
