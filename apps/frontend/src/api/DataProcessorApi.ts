@@ -4,30 +4,34 @@ import {env} from "../util/env"
 
 
 export const getDataProcessor = async (dataProcessorId: string) => {
-  return (await axios.get<DataProcessor>(`${env.pollyBaseUrl}/dataprocessor/${dataProcessorId}`)).data
+  return (await axios.get<DataProcessor>(`${env.pollyBaseUrl}/processor/${dataProcessorId}`)).data
 }
 
 export const getDataProcessorsByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
-  return (await axios.get<PageResponse<DataProcessor>>(`${env.pollyBaseUrl}/dataprocessor?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+  return (await axios.get<PageResponse<DataProcessor>>(`${env.pollyBaseUrl}/processor?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+}
+
+export const getAllDataProcessors = async () => {
+  return (await axios.get<DataProcessor>(`${env.pollyBaseUrl}/processor`)).data
 }
 
 export const createDataProcessor = async (dataProcessor: DataProcessorFormValues) => {
   let body = convertFormValuesToDataProcessor(dataProcessor)
-  return (await axios.post<DataProcessor>(`${env.pollyBaseUrl}/dataprocessor`, body)).data
+  return (await axios.post<DataProcessor>(`${env.pollyBaseUrl}/processor`, body)).data
 }
 
 export const searchDataProcessor = async (name: string) => {
-  return (await axios.get<PageResponse<DataProcessor>>(`${env.pollyBaseUrl}/dataprocessor/search/${name}`)).data
+  return (await axios.get<PageResponse<DataProcessor>>(`${env.pollyBaseUrl}/processor/search/${name}`)).data
 }
 export const updateDataProcessor = async (dataProcessor: DataProcessorFormValues) => {
   let body = convertFormValuesToDataProcessor(dataProcessor)
   return (
-    await axios.put<DataProcessor>(`${env.pollyBaseUrl}/dataprocessor/${body.id}`, body)
+    await axios.put<DataProcessor>(`${env.pollyBaseUrl}/processor/${body.id}`, body)
   ).data
 }
 
 export const deleteDataProcessor = async (dataProcessorId: string) => {
-  return (await axios.delete<DataProcessor>(`${env.pollyBaseUrl}/dataprocessor/${dataProcessorId}`)).data
+  return (await axios.delete<DataProcessor>(`${env.pollyBaseUrl}/processor/${dataProcessorId}`)).data
 }
 
 export const convertFormValuesToDataProcessor = (values: DataProcessorFormValues) => {
