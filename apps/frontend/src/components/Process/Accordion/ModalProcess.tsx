@@ -353,7 +353,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                            title={<PanelTitle title={intl.disclosure} expanded={expanded.indexOf('disclosure') >= 0}/>}
                            overrides={{...panelOverrides}}
                     >
-                      <Block width='100%'>
+                      <Block width='100%' marginBottom={"5px"}>
                         <Select
                           value={thirdParty}
                           placeholder={intl.thirdParties}
@@ -368,7 +368,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         name='disclosures'
                         render={arrayHelpers => (
                           <>
-                            <Block width='100%'>
+                            <Block width='100%' >
                               <Block width='100%'>
                                 <Select
                                   placeholder={intl.disclosures}
