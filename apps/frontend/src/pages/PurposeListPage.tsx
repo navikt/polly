@@ -1,5 +1,4 @@
 import {intl, theme} from '../util'
-import {ListName} from '../service/Codelist'
 import {H4, Label1} from 'baseui/typography'
 import React from 'react'
 import {Block} from 'baseui/block'
@@ -10,9 +9,11 @@ import ModalProcess from '../components/Process/Accordion/ModalProcess'
 import {ProcessFormValues} from '../constants'
 import {convertDisclosureToFormValues, convertProcessToFormValues, createProcess, updateDisclosure} from '../api'
 import AlphabeticList from '../components/common/AlphabeticList'
+import {convertProcessToFormValues, createProcess} from '../api'
 import {useHistory} from 'react-router-dom'
 import {genProcessPath, Section} from './ProcessPage'
 import Button from "../components/common/Button";
+import {PurposeList} from './ListSearchPage'
 
 export const PurposeListPage = () => {
   const history = useHistory()
@@ -74,7 +75,7 @@ export const PurposeListPage = () => {
         isEdit={false}
         initialValues={convertProcessToFormValues()}
       />
-      <AlphabeticList listName={ListName.PURPOSE} baseUrl={'/process/purpose/'}/>
+      <PurposeList/>
     </>
   )
 }

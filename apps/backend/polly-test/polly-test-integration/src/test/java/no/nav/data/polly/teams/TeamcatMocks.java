@@ -11,9 +11,11 @@ import no.nav.data.polly.teams.teamcat.TeamKatTeam;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static no.nav.data.common.utils.JsonUtils.toJson;
 
 public class TeamcatMocks {
@@ -26,6 +28,8 @@ public class TeamcatMocks {
         WireMock.stubFor(get("/teamcat/resource/A123456").willReturn(okJson(toJson(resource("A123456")))));
         WireMock.stubFor(get("/teamcat/resource/A123457").willReturn(okJson(toJson(resource("A123457")))));
         WireMock.stubFor(get("/teamcat/resource/A999999").willReturn(notFound().withBody(notFoundJson())));
+        WireMock.stubFor(post("/teamcat/resource/multi").withRequestBody(equalTo("[\"A123456\",\"A123457\"]"))
+                .willReturn(okJson(toJson(new RestResponsePage<>(List.of(resource("A123456"), resource("A123457")))))));
     }
 
     private static RestResponsePage<TeamKatTeam> teamMockResponse() {

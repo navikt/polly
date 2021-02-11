@@ -28,7 +28,7 @@ export const DashboardPage = () => {
         <FilterDashboardStatus setFilter={setDashboardStatus}/>
       </Block>
 
-      {dashboardData && <Charts chartData={dashboardData.allProcesses} processStatus={dashboardStatus}/>}
+      {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus}/>}
       {!dashboardData && <Spinner size={theme.sizing.scale600}/>}
     </Block>
   )

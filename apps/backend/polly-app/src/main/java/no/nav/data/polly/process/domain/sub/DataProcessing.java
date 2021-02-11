@@ -11,7 +11,9 @@ import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 
 import java.util.List;
+import java.util.UUID;
 
+import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 
 @Data
@@ -21,6 +23,8 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 public class DataProcessing {
 
     private Boolean dataProcessor;
+    private List<UUID> processors;
+
     private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;
     private String transferGroundsOutsideEU;
@@ -30,6 +34,7 @@ public class DataProcessing {
     public DataProcessingResponse convertToResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(getDataProcessor())
+                .processors(copyOf(processors))
                 .dataProcessorAgreements(nullToEmptyList(getDataProcessorAgreements()))
                 .dataProcessorOutsideEU(getDataProcessorOutsideEU())
                 .transferGroundsOutsideEU(getTransferGroundsOutsideEUCodeResponse())
@@ -42,17 +47,19 @@ public class DataProcessing {
         return CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, getTransferGroundsOutsideEU());
     }
 
-    public static DataProcessing convertDataProcessing(DataProcessingRequest dataProcessing) {
-        if (dataProcessing == null) {
+    public static DataProcessing convertDataProcessing(DataProcessingRequest request) {
+        if (request == null) {
             return new DataProcessing();
         }
         return DataProcessing.builder()
-                .dataProcessor(dataProcessing.getDataProcessor())
-                .dataProcessorAgreements(nullToEmptyList(dataProcessing.getDataProcessorAgreements()))
-                .dataProcessorOutsideEU(dataProcessing.getDataProcessorOutsideEU())
-                .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
-                .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
-                .transferCountries(nullToEmptyList(dataProcessing.getTransferCountries()))
+                .dataProcessor(request.getDataProcessor())
+                // TODO processors
+//                .processors(convert(request.getProcessors(), UUID::fromString))
+                .dataProcessorAgreements(nullToEmptyList(request.getDataProcessorAgreements()))
+                .dataProcessorOutsideEU(request.getDataProcessorOutsideEU())
+                .transferGroundsOutsideEU(request.getTransferGroundsOutsideEU())
+                .transferGroundsOutsideEUOther(request.getTransferGroundsOutsideEUOther())
+                .transferCountries(nullToEmptyList(request.getTransferCountries()))
                 .build();
     }
 }

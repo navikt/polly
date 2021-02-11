@@ -10,7 +10,7 @@ import ProcessPage from './pages/ProcessPage'
 import InformationtypeCreatePage from './pages/InformationtypeCreatePage'
 import InformationtypeEditPage from './pages/InformationtypeEditPage'
 import InformationtypePage from './pages/InformationtypePage'
-import {SystemSearchPage, ThirdPartySearchPage} from './pages/ListSearchPage'
+import {SystemListPage, ThirdPartyListPage} from './pages/ListSearchPage'
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
 import {MainPage} from './pages/MainPage'
 import CodelistPage from './pages/admin/CodelistPage'
@@ -34,6 +34,7 @@ import DpProcessView from "./components/DpProcess/DpProcessView";
 import {RequestRevisionPage} from './pages/admin/RequestRevisionPage'
 import {MailLogPage} from './pages/admin/MailLogPage'
 import {DashboardPage} from './pages/DashboardPage'
+import {DisclosureListPage} from './pages/DisclosureListPage'
 
 export const processPath = '/process/:section/:code/:processId?'
 
@@ -41,9 +42,9 @@ const Routes = (): JSX.Element => (
   <Root>
     <Switch>
       <Route exact path="/dashboard/:processStatus?" component={DashboardPage} />
-      <Route exact path="/thirdparty" component={ThirdPartySearchPage} />
-      <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage} />
-      <Route exact path="/system" component={SystemSearchPage} />
+      <Route exact path="/thirdparty" component={ThirdPartyListPage} />
+      <Route exact path="/thirdparty/:thirdPartyCode/:section?/:id?" component={ThirdPartyMetadataPage} />
+      <Route exact path="/system" component={SystemListPage} />
       <Route exact path="/system/:systemCode" component={SystemPage} />
       <Route exact path="/team/:teamId" component={TeamPage} />
       <Route exact path="/productarea/:productAreaId" component={ProductAreaPage} />
@@ -58,6 +59,7 @@ const Routes = (): JSX.Element => (
 
       <Route exact path="/process/:id" component={redirect(processUrl)} />
       <Route exact path="/policy/:id" component={redirect(policyUrl)} />
+      <Route exact path="/disclosure" component={DisclosureListPage} />
       <Route exact path="/disclosure/:id" component={redirect(disclosureUrl)} />
 
       <Route exact path="/informationtype/create" component={InformationtypeCreatePage} />
@@ -103,7 +105,7 @@ const policyUrl = async (id: string) => {
 
 const disclosureUrl = async (id: string) => {
   const disclosure = await getDisclosure(id)
-  return `/thirdparty/${disclosure.recipient.code}`
+  return `/thirdparty/${disclosure.recipient.code}/disclosure/${id}`
 }
 
 const redirect = (fetch: (id: string) => Promise<string>) => () => {

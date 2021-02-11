@@ -27,6 +27,8 @@ public class DataProcessingRequest implements Validated {
 
     private Boolean dataProcessor;
     @Singular
+    private List<String> processors;
+    @Singular
     private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;
     @Schema(description = "Codelist TRANSFER_GROUNDS_OUTSIDE_EU")
@@ -37,8 +39,10 @@ public class DataProcessingRequest implements Validated {
 
     @Override
     public void format() {
+        setProcessors(formatList(getProcessors()));
         setDataProcessorAgreements(formatList(getDataProcessorAgreements()));
         if (Boolean.FALSE.equals(getDataProcessor())) {
+            setProcessors(List.of());
             setDataProcessorAgreements(List.of());
             setDataProcessorOutsideEU(null);
         }
@@ -55,6 +59,7 @@ public class DataProcessingRequest implements Validated {
 
     @Override
     public void validate(FieldValidator validator) {
+        processors.forEach(processor -> validator.checkUUID(Fields.processors, processor));
         if (Boolean.TRUE.equals(getDataProcessorOutsideEU())) {
             validator.checkRequiredCodelist(DataProcessingRequest.Fields.transferGroundsOutsideEU, transferGroundsOutsideEU, ListName.TRANSFER_GROUNDS_OUTSIDE_EU);
         }

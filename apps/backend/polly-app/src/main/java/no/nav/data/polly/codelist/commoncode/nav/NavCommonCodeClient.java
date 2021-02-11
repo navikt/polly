@@ -44,8 +44,8 @@ public class NavCommonCodeClient {
         return cache.get(codeName);
     }
 
-    public String getDescription(String codeName, String code) {
-        return find(cache.get(codeName), c -> c.getCode().equals(code)).map(CommonCodeResponse::getDescription).orElse(null);
+    public CommonCodeResponse getCode(String codeName, String code) {
+        return find(cache.get(codeName), c -> c.getCode().equals(code)).orElse(null);
     }
 
     private List<CommonCodeResponse> getCodeList(String codeName) {

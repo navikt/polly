@@ -5,22 +5,22 @@ import {primitives} from "../../util/theme";
 import {Label1} from "baseui/typography";
 import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
 import RouteLink from "./RouteLink";
-import {Code, codelist, ListName} from "../../service/Codelist";
+import {margin} from './Style'
 
-const AlphabeticList = (props: { listName: ListName, baseUrl: string }) => {
+type Opt = {id: string, label: string}
+const AlphabeticList = (props: {items: Opt[], baseUrl: string}) => {
 
-  const lists = props.listName == ListName.THIRD_PARTY?codelist.getCodes(props.listName).filter(l=>l.shortName!='NAV'):codelist.getCodes(props.listName)
-  const codes = lists
-    .sort((a, b) => a.shortName.localeCompare(b.shortName))
-    .reduce((acc, cur) => {
-      const letter = cur.shortName.toUpperCase()[0]
-      acc[letter] = [...(acc[letter] || []), cur]
-      return acc
-    }, {} as { [letter: string]: Code[] })
+  const items = props.items
+  .sort((a, b) => a.label.localeCompare(b.label))
+  .reduce((acc, cur) => {
+    const letter = cur.label.toUpperCase()[0]
+    acc[letter] = [...(acc[letter] || []), cur]
+    return acc
+  }, {} as {[letter: string]: Opt[]})
   return (
     <>
       {
-        Object.keys(codes).map(letter =>
+        Object.keys(items).map(letter =>
           <Block key={letter} marginBottom={theme.sizing.scale800}>
 
             <Block display='flex' alignItems='center' marginBottom={theme.sizing.scale800}>
@@ -41,10 +41,18 @@ const AlphabeticList = (props: { listName: ListName, baseUrl: string }) => {
             </Block>
 
             <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
-              {codes[letter].map(code =>
-                <FlexGridItem key={code.code} minWidth={'fit-content'} margin={'10px 0'}>
-                  <RouteLink href={`${props.baseUrl}${code.code}`}>
-                    {code.shortName}
+              {items[letter].map(item =>
+                <FlexGridItem key={item.id} minWidth={'fit-content'}
+                              overrides={{
+                                Block: {
+                                  style: {
+                                    ...margin('10px', '0')
+                                  }
+                                }
+                              }}
+                >
+                  <RouteLink href={`${props.baseUrl}${item.id}`}>
+                    {item.label}
                   </RouteLink>
                 </FlexGridItem>
               )}

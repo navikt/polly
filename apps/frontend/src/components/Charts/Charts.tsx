@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useHistory} from 'react-router-dom'
 import {Block} from 'baseui/block'
 import {cardShadow, chartCardProps} from '../common/Style'
-import {DepartmentProcessDashCount, ProcessesDashCount, ProcessField, ProcessState, ProcessStatus, ProductAreaProcessDashCount} from '../../constants'
+import {AllDashCount, DepartmentDashCount, ProcessField, ProcessState, ProcessStatus, ProductAreaDashCount} from '../../constants'
 import TriChart from './TriChart'
 import {intl} from '../../util'
 import {Chart} from './Chart'
@@ -10,14 +10,14 @@ import {clickOnPieChartSlice} from '../../util/dashboard'
 import {chartColor} from '../../util/theme'
 import {Paragraph1, Paragraph2} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
-import {lowerFirst} from 'lodash'
 import {Section} from '../../pages/ProcessPage'
 import {Card} from "baseui/card";
+import {lowerFirst} from 'lodash'
 
 const chartSize = 80
 
 type ChartsProps = {
-  chartData: ProductAreaProcessDashCount | DepartmentProcessDashCount | ProcessesDashCount,
+  chartData: ProductAreaDashCount | DepartmentDashCount | AllDashCount,
   processStatus: ProcessStatus,
   type?: Section,
   departmentCode?: string,
@@ -45,6 +45,8 @@ const Charts = (props: ChartsProps) => {
     else
       return clickOnPieChartSlice(processField, processState, processStatus, history, type, productAreaId)
   }
+
+  const all = chartData as AllDashCount
 
   return (
     <Block display='flex' flexWrap={true} width={'100%'} justifyContent={"space-between"}>
@@ -125,17 +127,30 @@ const Charts = (props: ChartsProps) => {
                   processField={ProcessField.DATA_PROCESSOR}
                   onClickPieChartSlice={handleClickPieChartSlice}
         />
-        <Paragraph1>
-          {`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)}`} <RouteLink
-          href={link(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY)}>{chartData.dataProcessorAgreementMissing}</RouteLink>
-        </Paragraph1>
-        <TriChart counter={chartData.dataProcessorOutsideEU}
-                  processStatus={processStatus}
-                  title={`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}`}
-                  processField={ProcessField.DATA_PROCESSOR_OUTSIDE_EU}
-                  onClickPieChartSlice={handleClickPieChartSlice}
-        />
       </Block>
+
+      {all.disclosures !== undefined &&
+      <Block {...chartCardProps}>
+        <Chart chartTitle={intl.disclosures + " " + lowerFirst(intl.legalBasesShort)} data={[
+          {
+            label: intl.filled,
+            size: all.disclosures - all.disclosuresIncomplete,
+            color: chartColor.generalBlue,
+            onClick: () => history.push('/disclosure?filter=legalbases')
+          },
+          {
+            label: intl.incomplete,
+            size: all.disclosuresIncomplete,
+            color: chartColor.generalRed,
+            onClick: () => history.push('/disclosure?filter=emptylegalbases')
+          }
+        ]} size={chartSize}/>
+        <Paragraph2>
+          {intl.disclosures}: <RouteLink
+          href={"/disclosure"}>{all.disclosures}</RouteLink>
+        </Paragraph2>
+      </Block>}
+
       <Block marginTop="2.5rem" width={"100%"}>
         <Card overrides={cardShadow}>
           <Block>

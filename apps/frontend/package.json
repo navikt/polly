@@ -31,7 +31,7 @@
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": "^5.2.7",
     "typescript": "^3.9.7",
-    "yup": "^0.31.1"
+    "yup": "^0.30.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -64,7 +64,7 @@
     ]
   },
   "devDependencies": {
-    "@types/amplitude-js": "^5.11.0",
+    "@types/amplitude-js": "^7.0.0",
     "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.165",
     "@types/node": "^14.14.7",
@@ -82,6 +82,6 @@
     "http-proxy-middleware": "^1.0.6",
     "node-fetch": "^2.6.0",
     "npm-run-all": "^4.1.5",
-    "react-scripts": "4.0.1"
+    "react-scripts": "4.0.2"
   }
 }

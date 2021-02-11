@@ -21,7 +21,11 @@ import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import {Accordion, Panel} from 'baseui/accordion'
 import {toggleOverride} from '../components/common/Accordion'
 
-export type PathParams = { thirdPartyCode: string }
+export type PathParams = {
+  thirdPartyCode: string,
+  section: 'disclosure' | 'dpprocess' | 'informationtype' | 'process' | undefined
+  id?: string
+}
 
 const ThirdPartyPage = () => {
   const params = useParams<PathParams>()
@@ -133,8 +137,8 @@ const ThirdPartyPage = () => {
                 })
               },
               ToggleIcon: toggleOverride,
-            }}>
-            <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`}>
+            }} initialState={{expanded: params.section ? [params.section] : []}}>
+            <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`} key='disclosure'>
               <Block display="flex" justifyContent="flex-end">
                 {user.canWrite() &&
                 <Button
@@ -155,19 +159,21 @@ const ThirdPartyPage = () => {
                 submitDeleteDisclosure={handleDeleteDisclosure}
                 submitEditDisclosure={handleEditDisclosure}
                 onCloseModal={() => setError(undefined)}
+                expand={params.id}
               />
             </Panel>
 
-            <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`}>
+            <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`} key='informationtype'>
               <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
             </Panel>
 
-            <Panel
-              title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}>
+            <Panel key='dpprocess'
+                   title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}>
               <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []}/>
             </Panel>
 
-            <Panel title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
+            <Panel key='process'
+                   title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
               <ProcessList
                 section={Section.thirdparty}
                 code={params.thirdPartyCode}

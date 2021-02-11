@@ -4,8 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
-import no.nav.data.polly.disclosure.domain.Disclosure;
-import no.nav.data.polly.disclosure.domain.DisclosureData;
+import no.nav.data.polly.disclosure.DisclosureController.DisclosureSummaryPage;
 import no.nav.data.polly.disclosure.dto.DisclosureAbroadRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureAbroadResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
@@ -18,7 +17,6 @@ import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nav.data.common.utils.StreamUtils.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DisclosureControllerIT extends IntegrationTestBase {
@@ -39,14 +38,6 @@ class DisclosureControllerIT extends IntegrationTestBase {
     @Autowired
     private TestRestTemplate restTemplate;
     private Document document;
-
-    @BeforeEach
-    void setUp() {
-        disclosureRepository.saveAll(List.of(
-                Disclosure.builder().generateId().data(DisclosureData.builder().recipient("recip").start(LocalDate.now()).end(LocalDate.now()).build()).build(),
-                Disclosure.builder().generateId().data(DisclosureData.builder().recipient("recip").start(LocalDate.now()).end(LocalDate.now()).build()).build()
-        ));
-    }
 
     @Test
     void createAndGetDisclosure() {
@@ -112,7 +103,24 @@ class DisclosureControllerIT extends IntegrationTestBase {
         restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure", DisclosurePage.class);
 
-        assertDisclosures(resp, 4);
+        assertDisclosures(resp, 2);
+    }
+
+    @Test
+    void getAllDisclosureSummary() {
+        var process = createAndSaveProcess(PURPOSE_CODE1);
+        DisclosureRequest request = buildDisclosure();
+        request.setProcessIds(List.of(process.getId().toString()));
+        var d1 = restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
+        var d2 = restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        var resp = restTemplate.getForEntity("/disclosure/summary", DisclosureSummaryPage.class);
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getContent()).hasSize(2);
+        var d1Res = get(resp.getBody().getContent(), d -> d.getId().equals(d1.getBody().getId()));
+        assertThat(d1Res.getProcesses()).hasSize(1);
+        assertThat(d1Res.getProcesses().get(0).getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE1);
     }
 
     @Test
@@ -172,6 +180,17 @@ class DisclosureControllerIT extends IntegrationTestBase {
             request.setProcessIds(List.of(process.getId().toString()));
             restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
             ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?processId={processId}", DisclosurePage.class, process.getId());
+
+            assertDisclosures(resp, 1);
+        }
+
+        @Test
+        void getDisclosureByNoLegalBases() {
+            DisclosureRequest request = buildDisclosure();
+            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
+            request.setLegalBases(List.of());
+            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
+            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?emptyLegalBases=true", DisclosurePage.class);
 
             assertDisclosures(resp, 1);
         }

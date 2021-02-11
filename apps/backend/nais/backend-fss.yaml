@@ -47,7 +47,6 @@ spec:
   prometheus:
     enabled: true
     path: /internal/metrics
-  leaderElection: true
   webproxy: true
   envFrom:
     - configmap: pollycfg

@@ -9,6 +9,7 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
+import no.nav.data.polly.processor.domain.Processor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -117,6 +118,12 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
 
         @ParameterizedTest
+        @CsvSource({"TRANSFER_GROUNDS_OUTSIDE_EU,OTHER,0", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,1"})
+        void findProcessors(String list, String code, int expected) {
+            assertThat(expected).isEqualTo(countProcessors(getForListAndCode(list, code)));
+        }
+
+        @ParameterizedTest
         @CsvSource({"PURPOSE,NOT_FOUND", "DEPARTMENT,NOT_FOUND", "NATIONAL_LAW,NOT_FOUND", "SUBJECT_CATEGORY,NOT_FOUND", "SENSITIVITY,NOT_FOUND",
                 "TRANSFER_GROUNDS_OUTSIDE_EU,NOT_FOUND"})
         void shouldNotFindCodeUsage(String list, String code) {
@@ -124,15 +131,16 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE,BARNETRYGD,0,1,1", "DEPARTMENT,YTA,0,0,2", "SUB_DEPARTMENT,NAY,0,0,2", "GDPR_ARTICLE,ART92A,0,0,1", "NATIONAL_LAW,FTRL,0,2,2",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0", "SENSITIVITY,POL,2,0,0", "SYSTEM,AA_REG,1,0,1", "SYSTEM,TPS,1,0,1", "CATEGORY,ARBEIDSFORHOLD,1,0,0",
-                "THIRD_PARTY,SKATTEETATEN,1,0,1", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1"})
-        void shouldFindCodeUsage(String list, String code, int expectedCountInformationTypes, int expectedCountPolicy, int expectedCountProcess) {
+        @CsvSource({"PURPOSE,BARNETRYGD,0,1,1,0", "DEPARTMENT,YTA,0,0,2,0", "SUB_DEPARTMENT,NAY,0,0,2,0", "GDPR_ARTICLE,ART92A,0,0,1,0", "NATIONAL_LAW,FTRL,0,2,2,0",
+                "SUBJECT_CATEGORY,BRUKER,0,2,0,0", "SENSITIVITY,POL,2,0,0,0", "SYSTEM,AA_REG,1,0,1,0", "SYSTEM,TPS,1,0,1,0", "CATEGORY,ARBEIDSFORHOLD,1,0,0,0",
+                "THIRD_PARTY,SKATTEETATEN,1,0,1,0", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1,1"})
+        void shouldFindCodeUsage(String list, String code, int expectedCountInformationTypes, int expectedCountPolicy, int expectedCountProcess, int expectedCountProcessors) {
             ResponseEntity<CodeUsageResponse> response = getForListAndCode(list, code);
 
             assertThat(expectedCountInformationTypes).isEqualTo(countInformationTypes(response));
             assertThat(expectedCountPolicy).isEqualTo(countPolicies(response));
             assertThat(expectedCountProcess).isEqualTo(countProcesses(response));
+            assertThat(expectedCountProcessors).isEqualTo(countProcessors(response));
         }
 
         private ResponseEntity<CodeUsageResponse> getForListAndCode(String list, String code) {
@@ -144,14 +152,14 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
     class replaceCodelist {
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0,0",
-                "DEPARTMENT,YTA,0,0,2,1,0,0", "SUB_DEPARTMENT,NAY,0,0,2,2,0,0",
-                "SENSITIVITY,POL,2,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1", "SYSTEM,TPS,1,0,1,1,0,0",
-                "NATIONAL_LAW,FTRL,0,2,2,0,1,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0",
-                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1,1,0,0"
+        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0,0,0",
+                "DEPARTMENT,YTA,0,0,2,1,0,0,0", "SUB_DEPARTMENT,NAY,0,0,2,2,0,0,0",
+                "SENSITIVITY,POL,2,0,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0,0",
+                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1,0", "SYSTEM,TPS,1,0,1,1,0,0,0",
+                "NATIONAL_LAW,FTRL,0,2,2,0,1,0,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0,0,0",
+                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1,1,0,0,1"
         })
-        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents) {
+        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents, int processors) {
             String newCode = "REPLACECODE";
             codelistService.save(List.of(createCodelistRequest(list, newCode)));
 
@@ -166,6 +174,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
             assertThat(replace.getDpProcesses()).hasSize(dpProcesses);
             assertThat(replace.getDisclosures()).hasSize(disclosures);
             assertThat(replace.getDocuments()).hasSize(documents);
+            assertThat(replace.getProcessors()).hasSize(processors);
 
             var replaceSecondRun = replaceCode(list, code, newCode);
             assertThat(replaceSecondRun.isInUse()).isFalse();
@@ -214,6 +223,10 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         var document = createDocument("BRUKER", sivilstand.getId());
         disclosureRepository.save(disclosure);
         documentRepository.save(document);
+
+        var processor = new Processor().convertFromRequest(createProcessorRequest());
+        processor.getData().setTransferGroundsOutsideEU("APPROVED_THIRD_COUNTRY");
+        processorRepository.save(processor);
     }
 
     private void createCodelistsByRequests() {
@@ -277,4 +290,9 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
     private int countDocuments(ResponseEntity<CodeUsageResponse> response) {
         return Objects.requireNonNull(response.getBody()).getDocuments().size();
     }
+
+    private int countProcessors(ResponseEntity<CodeUsageResponse> response) {
+        return Objects.requireNonNull(response.getBody()).getProcessors().size();
+    }
+
 }

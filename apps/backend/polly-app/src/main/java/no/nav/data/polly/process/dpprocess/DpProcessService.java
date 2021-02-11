@@ -1,5 +1,6 @@
 package no.nav.data.polly.process.dpprocess;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
@@ -19,15 +20,11 @@ import java.util.UUID;
 import static java.lang.String.format;
 
 @Service
+@RequiredArgsConstructor
 public class DpProcessService extends RequestValidator<DpProcessRequest> {
 
     private final DpProcessRepository repository;
     private final TeamService teamService;
-
-    public DpProcessService(DpProcessRepository repository, TeamService teamService) {
-        this.repository = repository;
-        this.teamService = teamService;
-    }
 
     @Transactional
     public DpProcess save(DpProcess process) {

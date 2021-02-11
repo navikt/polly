@@ -115,6 +115,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     profiling: process ? mapBool(profiling) : false,
     dataProcessing: {
       dataProcessor: mapBool(dataProcessing?.dataProcessor),
+      processors: dataProcessing?.processors || [],
       dataProcessorAgreements: dataProcessing?.dataProcessorAgreements || [],
       dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU),
       transferGroundsOutsideEU: dataProcessing?.transferGroundsOutsideEU?.code || undefined,
@@ -158,6 +159,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     profiling: values.profiling,
     dataProcessing: {
       ...values.dataProcessing,
+      processors: values.dataProcessing.processors || [],
       transferGroundsOutsideEUOther: values.dataProcessing.transferGroundsOutsideEU !== TRANSFER_GROUNDS_OUTSIDE_EU_OTHER ? undefined : values.dataProcessing.transferGroundsOutsideEUOther
     },
     retention: values.retention,

@@ -156,8 +156,8 @@ const Visualization = (props: VisualizationProps) => {
                   <Block backgroundColor={idx === hover ? theme.colors.accent50 : theme.colors.white}
                          $style={cursor} display='flex' alignItems='center'>
                     <FontAwesomeIcon icon={faCircle} color={d.color}/>
-                    <Block width={theme.sizing.scale1200} display='flex' justifyContent='flex-end'>{d.size}</Block>
-                    {!hidePercent && <Block width={theme.sizing.scale1200} display='flex' justifyContent='flex-end'>{(d.fraction * 100).toFixed(0)}%</Block>}
+                    <Block minWidth={theme.sizing.scale1000} display='flex' justifyContent='flex-end'>{d.size}</Block>
+                    {!hidePercent && <Block minWidth={theme.sizing.scale1000} display='flex' justifyContent='flex-end'>{(d.fraction * 100).toFixed(0)}%</Block>}
                     <Block marginLeft={theme.sizing.scale400}>{d.label}</Block>
                   </Block>
                 </div>

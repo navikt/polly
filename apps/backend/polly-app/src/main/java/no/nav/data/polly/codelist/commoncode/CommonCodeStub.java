@@ -11,6 +11,11 @@ import java.util.List;
 public class CommonCodeStub implements CommonCodeService {
 
     @Override
+    public CommonCodeResponse getCountry(String countryCode) {
+        return null;
+    }
+
+    @Override
     public List<CommonCodeResponse> getAllCountries() {
         return List.of();
     }
