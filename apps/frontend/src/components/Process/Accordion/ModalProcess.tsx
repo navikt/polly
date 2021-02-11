@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {KeyboardEvent, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
-import {Field, FieldProps, Form, Formik, FormikProps,} from 'formik'
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
@@ -35,6 +35,10 @@ import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutside
 import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
 import FieldTransferCountries from '../common/FieldTransferCountries'
 import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
+import {Select, Value} from "baseui/select";
+import {useDisclosureSearch} from "../../../api";
+import {renderTagList} from "../../common/TagList";
+import {codelist, ListName} from "../../../service/Codelist";
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -84,6 +88,8 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   const [expanded, setExpanded] = useState<React.Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
+  const [disclosureSearchResult, setDisclosureSearch, disclosureSearchLoading] = useDisclosureSearch()
+  const [thirdParty, setThirdParty] = useState<Value>([])
 
   const expand = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
@@ -343,7 +349,48 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     >
                       <DpiaItems formikBag={formikBag}/>
                     </Panel>
+                    <Panel key='disclosure'
+                           title={<PanelTitle title={intl.disclosure} expanded={expanded.indexOf('disclosure') >= 0}/>}
+                           overrides={{...panelOverrides}}
+                    >
+                      <Block width='100%'>
+                        <Select
+                          value={thirdParty}
+                          placeholder={intl.thirdParties}
+                          options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
+                          onChange={({value}) => {
+                            setThirdParty(value)
+                          }}
+                        />
+                      </Block>
 
+                      <FieldArray
+                        name='disclosures'
+                        render={arrayHelpers => (
+                          <>
+                            <Block width='100%'>
+                              <Block width='100%'>
+                                <Select
+                                  placeholder={intl.disclosures}
+                                  disabled={thirdParty.length === 0}
+                                  options={thirdParty.length ? disclosureSearchResult.filter(d => d.recipient.code === thirdParty[0].id).filter(d=>!formikBag.values.disclosures.map(value => value.id).includes(d.id)) : disclosureSearchResult}
+                                  onInputChange={event => {
+                                    setDisclosureSearch(event.currentTarget.value)
+                                  }}
+                                  onChange={(params) => {
+                                    arrayHelpers.form.setFieldValue('disclosures', [...formikBag.values.disclosures, ...params.value.map(v => v)])
+                                  }}
+                                  labelKey='name'
+                                  valueKey='id'
+                                  isLoading={disclosureSearchLoading}
+                                />
+                              </Block>
+                              <Block>{renderTagList(formikBag.values.disclosures.map(d => d.recipient.shortName + ':' + d.name), arrayHelpers)}</Block>
+                            </Block>
+                          </>
+                        )}
+                      />
+                    </Panel>
                   </StatelessAccordion>
                 </ModalBody>
 
@@ -356,6 +403,9 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     <ModalButton type='submit'>{intl.save}</ModalButton>
                   </Block>
                 </ModalFooter>
+                {
+                  console.log(codelist.getCodes(ListName.THIRD_PARTY))
+                }
               </Form>
             )
           }}

@@ -10,6 +10,7 @@ import {user} from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
+  convertDisclosureToFormValues,
   convertProcessToFormValues,
   createPolicies,
   createPolicy,
@@ -19,6 +20,7 @@ import {
   getCodelistUsage,
   getProcess,
   getProcessesFor,
+  updateDisclosure,
   updatePolicy,
   updateProcess
 } from '../../api'
@@ -91,7 +93,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     'PURPOSE': 'purpose',
     'SYSTEM': 'system',
     'THIRD_PARTY': 'thirdparty'
-  } as {[l: string]: string})[listName]
+  } as { [l: string]: string })[listName]
 
   const getProcessList = async () => {
     try {
@@ -132,6 +134,12 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setCurrentProcess(newProcess)
       // todo uh multipurpose url....
       history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
+      process.disclosures.forEach(d=>{
+        updateDisclosure(convertDisclosureToFormValues(
+          {...d,processIds:[...d.processIds,newProcess.id?newProcess.id:'']}
+        ))
+      })
+      return newProcess.id
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')

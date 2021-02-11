@@ -8,7 +8,7 @@ import {Plus} from 'baseui/icon'
 import {user} from '../service/User'
 import ModalProcess from '../components/Process/Accordion/ModalProcess'
 import {ProcessFormValues} from '../constants'
-import {convertProcessToFormValues, createProcess} from '../api'
+import {convertDisclosureToFormValues, convertProcessToFormValues, createProcess, updateDisclosure} from '../api'
 import AlphabeticList from '../components/common/AlphabeticList'
 import {useHistory} from 'react-router-dom'
 import {genProcessPath, Section} from './ProcessPage'
@@ -29,6 +29,12 @@ export const PurposeListPage = () => {
       setShowCreateProcessModal(false)
       // todo multipurpose url
       history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
+      process.disclosures.forEach(d=>{
+        updateDisclosure(convertDisclosureToFormValues(
+          {...d,processIds:[...d.processIds,newProcess.id?newProcess.id:'']}
+        ))
+      })
+      return newProcess.id
     } catch (err) {
       setErrorProcessModal(err.message)
     }

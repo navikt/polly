@@ -8,11 +8,11 @@ import {Label2} from 'baseui/typography'
 import {intl, theme} from '../../../util'
 import {user} from '../../../service/User'
 import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../../constants'
+import {AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import {convertProcessToFormValues} from '../../../api'
+import {convertDisclosureToFormValues, convertProcessToFormValues, getDisclosuresByProcessId, updateDisclosure} from '../../../api'
 import {PathParams} from '../../../pages/ProcessPage'
 import {AddDocumentModal} from './AddDocumentModal'
 import Button from '../../common/Button'
@@ -66,6 +66,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const [showRevisionModal, setShowRevisionModal] = React.useState(false)
+  const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
   const purposeRef = React.useRef<HTMLInputElement>(null)
   const params = useParams<PathParams>()
   const history = useHistory()
@@ -97,6 +98,11 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   )
 
   useEffect(() => {
+    (async () => {
+      if (params.processId) {
+        setDisclosures(await getDisclosuresByProcessId(params.processId))
+      }
+    })()
     params.processId && !isLoading && setTimeout(() => {
       purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop - 40})
     }, 200)
@@ -115,83 +121,83 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       >
         {props.processList &&
         props
-        .processList
-        .sort((a, b) => a.purposes[0].shortName.localeCompare(b.purposes[0].shortName))
-        .map((p: ProcessShort) => {
-          const expanded = params.processId === p.id
-          return (
-            <Panel
-              title={
-                <AccordionTitle process={p} expanded={expanded}
-                                hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
-                                deleteProcess={() => setShowDeleteModal(true)}
-                                forwardRef={expanded ? purposeRef : undefined}
-                />
-              }
-              key={p.id}
-              overrides={{
-                ToggleIcon: {
-                  component: () => null
-                },
-                Content: {
-                  style: {
-                    backgroundColor: theme.colors.white,
-                    // Outline width
-                    paddingTop: '4px',
-                    paddingBottom: '4px',
-                    paddingLeft: '4px',
-                    paddingRight: '4px',
-                  }
-                }
-              }}
-            >
-              {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
-
-              {!isLoading && currentProcess && (
-                <Block $style={{
-                  outline: `4px ${theme.colors.primary200} solid`
-                }}>
-
-                  <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
-                    <ProcessData process={currentProcess}/>
-
-                    <Block display='flex' justifyContent='flex-end'>
-                      <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
-                    </Block>
-                    <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='space-between'>
-                      <Block display='flex'>
-                        {canViewAlerts() && <Block marginRight='auto'>
-                          <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                                  onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
-                        </Block>}
-                        {(user.isAdmin() || user.isSuper()) && <Block marginRight='auto'>
-                          <Button type='button' kind='tertiary' size='compact' icon={faGavel}
-                                  onClick={() => setShowRevisionModal(true)}>{intl.newRevision}</Button>
-                        </Block>}
-                      </Block>
-                      {hasAccess() &&
-                      <Block>
-                        <div ref={InformationTypeRef}/>
-                        {renderAddDocumentButton()}
-                        {renderCreatePolicyButton()}
-                      </Block>
-                      }
-                    </Block>
-                  </Block>
-
-                  <TablePolicy
-                    process={currentProcess}
-                    hasAccess={hasAccess()}
-                    errorPolicyModal={errorPolicyModal}
-                    errorDeleteModal={errorPolicyModal}
-                    submitEditPolicy={submitEditPolicy}
-                    submitDeletePolicy={submitDeletePolicy}
+          .processList
+          .sort((a, b) => a.purposes[0].shortName.localeCompare(b.purposes[0].shortName))
+          .map((p: ProcessShort) => {
+            const expanded = params.processId === p.id
+            return (
+              <Panel
+                title={
+                  <AccordionTitle process={p} expanded={expanded}
+                                  hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
+                                  deleteProcess={() => setShowDeleteModal(true)}
+                                  forwardRef={expanded ? purposeRef : undefined}
                   />
-                </Block>
-              )}
-            </Panel>
-          )
-        })}
+                }
+                key={p.id}
+                overrides={{
+                  ToggleIcon: {
+                    component: () => null
+                  },
+                  Content: {
+                    style: {
+                      backgroundColor: theme.colors.white,
+                      // Outline width
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                      paddingLeft: '4px',
+                      paddingRight: '4px',
+                    }
+                  }
+                }}
+              >
+                {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
+
+                {!isLoading && currentProcess && (
+                  <Block $style={{
+                    outline: `4px ${theme.colors.primary200} solid`
+                  }}>
+
+                    <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
+                      <ProcessData process={currentProcess} disclosures={disclosures}/>
+
+                      <Block display='flex' justifyContent='flex-end'>
+                        <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
+                      </Block>
+                      <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='space-between'>
+                        <Block display='flex'>
+                          {canViewAlerts() && <Block marginRight='auto'>
+                            <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
+                                    onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
+                          </Block>}
+                          {(user.isAdmin() || user.isSuper()) && <Block marginRight='auto'>
+                            <Button type='button' kind='tertiary' size='compact' icon={faGavel}
+                                    onClick={() => setShowRevisionModal(true)}>{intl.newRevision}</Button>
+                          </Block>}
+                        </Block>
+                        {hasAccess() &&
+                        <Block>
+                          <div ref={InformationTypeRef}/>
+                          {renderAddDocumentButton()}
+                          {renderCreatePolicyButton()}
+                        </Block>
+                        }
+                      </Block>
+                    </Block>
+
+                    <TablePolicy
+                      process={currentProcess}
+                      hasAccess={hasAccess()}
+                      errorPolicyModal={errorPolicyModal}
+                      errorDeleteModal={errorPolicyModal}
+                      submitEditPolicy={submitEditPolicy}
+                      submitDeletePolicy={submitDeletePolicy}
+                    />
+                  </Block>
+                )}
+              </Panel>
+            )
+          })}
       </StatelessAccordion>
       {!props.processList.length && <Label2 margin='1rem'>{intl.emptyTable} {intl.processes}</Label2>}
 
@@ -203,11 +209,15 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           onClose={() => setShowEditProcessModal(false)}
           isOpen={showEditProcessModal}
           submit={async (values: ProcessFormValues) => {
+            let removedDisclosures = disclosures.filter(d => !values.disclosures.map(value => value.processIds).includes(d.processIds))
+            let addedDisclosures = values.disclosures.filter(d => !disclosures.map(value => value.processIds).includes(d.processIds))
+            addedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds, currentProcess.id]})))
+            removedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds.filter(p => p !== currentProcess.id)]})))
             await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
           }}
           errorOnCreate={errorProcessModal}
           isEdit={true}
-          initialValues={convertProcessToFormValues(currentProcess)}
+          initialValues={{...convertProcessToFormValues(currentProcess), disclosures: disclosures}}
         />
         <ModalPolicy
           title={intl.policyAdd}
@@ -220,7 +230,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             subjectCategories: [],
             legalBases: [],
             documentIds: [],
-            otherPolicies: currentProcess.policies
+            otherPolicies: currentProcess.policies,
           }}
           isEdit={false}
           onClose={() => setShowCreatePolicyModal(false)}
