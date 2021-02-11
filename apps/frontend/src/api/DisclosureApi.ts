@@ -4,11 +4,6 @@ import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import {mapBool} from '../util/helper-functions'
 import {Code} from '../service/Codelist'
-import axios from "axios";
-import {Disclosure, DisclosureFormValues, PageResponse} from "../constants";
-import {env} from "../util/env"
-import {convertLegalBasesToFormValues} from "./PolicyApi"
-import {mapBool} from "../util/helper-functions";
 import {useDebouncedState} from "../util";
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
