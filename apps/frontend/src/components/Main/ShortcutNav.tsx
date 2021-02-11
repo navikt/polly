@@ -1,11 +1,9 @@
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Block, BlockProps } from 'baseui/block'
-import { Card, CardOverrides } from 'baseui/card'
-import { H6, Label2, Paragraph2 } from 'baseui/typography'
+import {Block} from 'baseui/block'
+import {Card, CardOverrides} from 'baseui/card'
+import {H6, Paragraph2} from 'baseui/typography'
 import * as React from 'react'
-import { intl, theme } from '../../util'
-import { primitives } from '../../util/theme'
+import {intl, theme} from '../../util'
+import {primitives} from '../../util/theme'
 import RouteLink from '../common/RouteLink'
 import {borderColor, marginAll} from '../common/Style'
 
@@ -53,16 +51,16 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
 
   return (
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <RouteLink href={props.to} hideUnderline plain>
+      <RouteLink href={props.to} style={{textDecoration: "none"}} hideUnderline plain>
         <Card overrides={cardOverrides(hover)}>
           <Block>
 
             <Block display="flex" justifyContent="center">
               <H6 marginTop={theme.sizing.scale300} marginBottom={theme.sizing.scale200} $style={{
-                  wordBreak: 'break-word',
-                  color: hover ? primitives.primary300 : undefined,
-                  textDecoration: 'underline' 
-                }}>{props.title}</H6>
+                wordBreak: 'break-word',
+                color: hover ? primitives.primary300 : undefined,
+                textDecoration: 'underline'
+              }}>{props.title}</H6>
             </Block>
 
             <Block display="flex" justifyContent="center" width="100%">
