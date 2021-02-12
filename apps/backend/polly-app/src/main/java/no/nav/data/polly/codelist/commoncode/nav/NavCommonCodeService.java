@@ -29,6 +29,11 @@ public class NavCommonCodeService implements CommonCodeService {
     }
 
     @Override
+    public CommonCodeResponse getCountry(String countryCode) {
+        return client.getCode(props.getCountriesCode(), countryCode);
+    }
+
+    @Override
     public List<CommonCodeResponse> getAllCountries() {
         return client.getCodesWithDescription(props.getCountriesCode());
     }

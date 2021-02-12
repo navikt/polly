@@ -52,6 +52,7 @@ import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.test.TestConfig;
+import no.nav.data.polly.test.TestConfig.MockFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -137,6 +138,7 @@ public abstract class IntegrationTestBase {
     public void teardownAbstract() {
         delete();
         CollectorRegistry.defaultRegistry.clear();
+        MockFilter.clearUser();
     }
 
     private void delete() {
@@ -316,7 +318,8 @@ public abstract class IntegrationTestBase {
     protected DataProcessingRequest dataProcessingRequest() {
         return DataProcessingRequest.builder()
                 .dataProcessor(true)
-                .processor(PROCESSOR_ID1.toString())
+                // TODO processor
+//                .processor(PROCESSOR_ID1.toString())
 
                 .dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
@@ -417,7 +420,8 @@ public abstract class IntegrationTestBase {
     protected DataProcessingResponse dataProcessingResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
-                .processor(PROCESSOR_ID1)
+                // TODO processor
+//                .processor(PROCESSOR_ID1)
 
                 .dataProcessorAgreements(List.of("X"))
                 .dataProcessorOutsideEU(true)

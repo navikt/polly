@@ -9,6 +9,8 @@ import no.nav.data.polly.Period;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.commoncode.CommonCodeService;
+import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -21,6 +23,7 @@ import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.processor.domain.Processor;
+import no.nav.data.polly.processor.domain.ProcessorData;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
@@ -70,6 +73,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
@@ -92,6 +96,7 @@ public class ProcessToDocx {
     private final TeamService teamService;
     private final ProcessRepository processRepository;
     private final ProcessorRepository processorRepository;
+    private final CommonCodeService commonCodeService;
 
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
@@ -215,8 +220,10 @@ public class ProcessToDocx {
                     text("Profilering: ", boolToText(data.getProfiling()))
             );
 
+            List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ?
-                    processorRepository.findAllById(process.getData().getDataProcessing().getProcessors()) : List.<Processor>of();
+                    processorIds == null ? List.of(convertOldFormatProcessor(process.getData().getDataProcessing())) :
+                            processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
@@ -374,8 +381,10 @@ public class ProcessToDocx {
             );
             var resources = new ArrayList<String>();
             processors.forEach(p -> {
-                resources.add(p.getData().getContractOwner());
-                resources.addAll(p.getData().getOperationalContractManagers());
+                if (p.getData().getContractOwner() != null) {
+                    resources.add(p.getData().getContractOwner());
+                }
+                resources.addAll(copyOf(p.getData().getOperationalContractManagers()));
             });
             var resourceInfo = resourceService.getResources(resources);
             Function<String, String> navn = (ident) -> Optional.ofNullable(resourceInfo.get(ident)).map(Resource::getFullName).orElse(ident);
@@ -396,7 +405,7 @@ public class ProcessToDocx {
                         text("Notat: ", nullToEmpty(pd.getNote())),
                         text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
                         transferGrounds,
-                        text("Overføres til land: ", String.join(", ", copyOf(pd.getCountries())))
+                        text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
                 );
             });
         }
@@ -613,6 +622,20 @@ public class ProcessToDocx {
         }
     }
 
+    // TODO processors remove when new processor format frontend done
+    private Processor convertOldFormatProcessor(DataProcessing dataProcessing) {
+        return Processor.builder()
+                .data(ProcessorData.builder()
+                        .name("")
+                        .contract(String.join(", ", copyOf(dataProcessing.getDataProcessorAgreements())))
+                        .outsideEU(dataProcessing.getDataProcessorOutsideEU())
+                        .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
+                        .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
+                        .countries(copyOf(dataProcessing.getTransferCountries()))
+                        .build())
+                .build();
+    }
+
     private static String boolToText(Boolean aBoolean) {
         return BooleanUtils.toString(aBoolean, "Ja", "Nei", "Uavklart");
     }
@@ -631,6 +654,11 @@ public class ProcessToDocx {
             case IN_PROGRESS -> "Under arbeid";
             case NEEDS_REVISION -> "Trenger revidering";
         };
+    }
+
+    private String countryName(String countryCode) {
+        return Optional.ofNullable(commonCodeService.getCountry(countryCode))
+                .map(CommonCodeResponse::getDescription).orElse(countryCode);
     }
 
 }
