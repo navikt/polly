@@ -33,7 +33,6 @@ export const PurposeListPage = () => {
           {...d,processIds:[...d.processIds,newProcess.id]}
         ))
       })
-      return newProcess.id
     } catch (err) {
       setErrorProcessModal(err.message)
     }

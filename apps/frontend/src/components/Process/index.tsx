@@ -148,7 +148,6 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
           {...d,processIds:[...d.processIds,newProcess.id?newProcess.id:'']}
         ))
       })
-      return newProcess.id
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
