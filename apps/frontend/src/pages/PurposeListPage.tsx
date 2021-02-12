@@ -30,7 +30,7 @@ export const PurposeListPage = () => {
       history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
       process.disclosures.forEach(d=>{
         updateDisclosure(convertDisclosureToFormValues(
-          {...d,processIds:[...d.processIds,newProcess.id?newProcess.id:'']}
+          {...d,processIds:[...d.processIds,newProcess.id]}
         ))
       })
       return newProcess.id
