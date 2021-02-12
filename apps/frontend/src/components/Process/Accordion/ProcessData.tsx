@@ -1,4 +1,4 @@
-import {Dpia, Process, ProcessStatus} from '../../../constants'
+import {Disclosure, Dpia, Process, ProcessStatus} from '../../../constants'
 import * as React from 'react'
 import {useEffect} from 'react'
 import {getResourceById} from '../../../api'
@@ -15,7 +15,7 @@ import {env} from '../../../util/env'
 import {isNil, sum, uniqBy} from 'lodash'
 import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import RouteLink from "../../common/RouteLink";
+import RouteLink, {ObjectLink} from "../../common/RouteLink";
 import DataText from "../../common/DataText";
 import {getNoDpiaLabel, shortenLinksInText} from "../../../util/helper-functions";
 
@@ -56,7 +56,7 @@ export const processStatusText = (status: ProcessStatus | undefined) => {
   }
 }
 
-const ProcessData = (props: {process: Process}) => {
+const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -85,11 +85,11 @@ const ProcessData = (props: {process: Process}) => {
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
           {process
-          .legalBases
-          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-          .map((legalBasis, index) =>
-            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-          )}
+            .legalBases
+            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+            .map((legalBasis, index) =>
+              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+            )}
         </DataText> :
         <>
           <DataText label={intl.legalBasis}/>
@@ -229,6 +229,18 @@ const ProcessData = (props: {process: Process}) => {
         </Block>
       </DataText>
 
+      <DataText label={intl.disclosures} text={props.disclosures.length === 0 && intl.notFilled}>
+        <Block>
+          {
+            props.disclosures.map(value =>
+              <>
+                <ObjectLink id={value.recipient.code} type={ListName.THIRD_PARTY}>{value.recipient.shortName}:{value.name}</ObjectLink>
+                &nbsp;
+              </>
+            )
+          }
+        </Block>
+      </DataText>
       <Completeness process={process}/>
 
       <DataText label={intl.status} text={""}>
@@ -240,7 +252,7 @@ const ProcessData = (props: {process: Process}) => {
   )
 }
 
-const Completeness = (props: {process: Process}) => {
+const Completeness = (props: { process: Process }) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),
