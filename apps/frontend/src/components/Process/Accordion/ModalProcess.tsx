@@ -403,9 +403,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     <ModalButton type='submit'>{intl.save}</ModalButton>
                   </Block>
                 </ModalFooter>
-                {
-                  console.log(codelist.getCodes(ListName.THIRD_PARTY))
-                }
               </Form>
             )
           }}
