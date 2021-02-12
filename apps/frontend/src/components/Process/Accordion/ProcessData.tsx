@@ -229,17 +229,13 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
         </Block>
       </DataText>
 
-      <DataText label={intl.disclosures} text={""}>
+      <DataText label={intl.disclosures} text={props.disclosures.length === 0 && intl.notFilled}>
         <Block>
           {
-            props.disclosures.length > 0 ? props.disclosures.map(value =>
+            props.disclosures.map(value =>
               <>
                 <ObjectLink id={value.recipient.code} type={ListName.THIRD_PARTY}>{value.recipient.shortName}:{value.name}</ObjectLink>
                 &nbsp;
-              </>
-            ):(
-              <>
-                {intl.notFilled}
               </>
             )
           }
