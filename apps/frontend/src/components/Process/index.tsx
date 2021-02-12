@@ -18,6 +18,7 @@ import {
   deletePolicy,
   deleteProcess,
   getCodelistUsage,
+  getDisclosuresByProcessId,
   getProcess,
   getProcessesFor,
   updateDisclosure,
@@ -160,6 +161,12 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const handleEditProcess = async (values: ProcessFormValues) => {
     try {
       const updatedProcess = await updateProcess(values)
+      const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
+      const removedDisclosures = disclosures.filter(d => !values.disclosures.map(value => value.processIds).includes(d.processIds))
+      const addedDisclosures = values.disclosures.filter(d => !disclosures.map(value => value.processIds).includes(d.processIds))
+      addedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds, updatedProcess.id]})))
+      removedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds.filter(p => p !== updatedProcess.id)]})))
+
       setCurrentProcess(updatedProcess)
       setProcessList(sortProcess([...processList.filter(p => p.id !== updatedProcess.id), updatedProcess]))
       handleChangePanel(updatedProcess)
@@ -219,7 +226,6 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         setErrorPolicyModal(null)
       }
       return true
-
     } catch (err) {
       setErrorPolicyModal(err.message)
       return false

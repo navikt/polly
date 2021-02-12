@@ -12,7 +12,7 @@ import {AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, Polic
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import {convertDisclosureToFormValues, convertProcessToFormValues, getDisclosuresByProcessId, updateDisclosure} from '../../../api'
+import {convertProcessToFormValues, getDisclosuresByProcessId} from '../../../api'
 import {PathParams} from '../../../pages/ProcessPage'
 import {AddDocumentModal} from './AddDocumentModal'
 import Button from '../../common/Button'
@@ -209,10 +209,6 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           onClose={() => setShowEditProcessModal(false)}
           isOpen={showEditProcessModal}
           submit={async (values: ProcessFormValues) => {
-            let removedDisclosures = disclosures.filter(d => !values.disclosures.map(value => value.processIds).includes(d.processIds))
-            let addedDisclosures = values.disclosures.filter(d => !disclosures.map(value => value.processIds).includes(d.processIds))
-            addedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds, currentProcess.id]})))
-            removedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds.filter(p => p !== currentProcess.id)]})))
             await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
           }}
           errorOnCreate={errorProcessModal}
