@@ -9,6 +9,7 @@ import {useParams} from 'react-router-dom'
 import {getDashboard} from '../api'
 import {Spinner} from '../components/common/Spinner'
 import {HeadingMedium} from 'baseui/typography'
+import Departments from "../components/Dashboard/Departments";
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData>()
@@ -28,6 +29,7 @@ export const DashboardPage = () => {
         <FilterDashboardStatus setFilter={setDashboardStatus}/>
       </Block>
 
+      {dashboardData && <Departments data={dashboardData}/>}
       {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus}/>}
       {!dashboardData && <Spinner size={theme.sizing.scale600}/>}
     </Block>
