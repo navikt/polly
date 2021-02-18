@@ -69,4 +69,37 @@ public class JpaConfig {
     public ApplicationRunner initHibernateMetrics(EntityManagerFactory emf) {
         return args -> new HibernateStatisticsCollector(emf.unwrap(SessionFactory.class), "main").register();
     }
+
+// TODO processors disabled untill new processor frontend is done
+//    @Bean
+//    @DependsOn("initAudit")
+//    public ApplicationRunner migrateProcessors(ProcessService processService, ProcessorRepository processorRepository, TransactionTemplate tt) {
+//        return args -> wrapAsync(() -> processService.runPaged(process -> {
+//            if (process.getData().getDataProcessing().getProcessors() != null) {
+//                return;
+//            }
+//            tt.executeWithoutResult(ts -> {
+//                DataProcessing dp = process.getData().getDataProcessing();
+//
+//                if (dp.getDataProcessor() != Boolean.TRUE) {
+//                    dp.setProcessors(List.of());
+//                } else {
+//                    var processors = convert(dp.getDataProcessorAgreements(), agreement -> Processor.builder()
+//                            .generateId()
+//                            .data(ProcessorData.builder()
+//                                    .name("%d: %s".formatted(process.getData().getNumber(), agreement))
+//                                    .contract(agreement)
+//                                    .outsideEU(dp.getDataProcessorOutsideEU())
+//                                    .transferGroundsOutsideEU(dp.getTransferGroundsOutsideEU())
+//                                    .transferGroundsOutsideEUOther(dp.getTransferGroundsOutsideEUOther())
+//                                    .countries(copyOf(dp.getTransferCountries()))
+//                                    .build())
+//                            .build());
+//                    processorRepository.saveAll(processors);
+//                    dp.setProcessors(convert(processors, Processor::getId));
+//                }
+//                processService.save(process);
+//            });
+//        }, 10), "migration").run();
+//    }
 }

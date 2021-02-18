@@ -4,6 +4,7 @@ import {
   AffiliationFormValues,
   CreateDocumentFormValues,
   DataProcessingFormValues,
+  Disclosure,
   DisclosureAbroad,
   DisclosureFormValues,
   Document,
@@ -49,6 +50,7 @@ export const infoTypeSchema = () =>
 const dataProcessingSchema = () =>
   yup.object<DataProcessingFormValues>({
     dataProcessor: yup.boolean(),
+    processors: yup.array().of(yup.string()),
     dataProcessorAgreements: yup.array().of(yup.string()),
     dataProcessorOutsideEU: yup.boolean(),
     transferGroundsOutsideEU: yup.string().test({
@@ -133,6 +135,7 @@ export const processSchema = () =>
       riskOwnerFunction: yup.string(),
       noDpiaReasons: yup.array().of(yup.string())
     }),
+    disclosures:yup.array().of(yup.object<Disclosure>())
   });
 
 export const dpProcessSchema =
@@ -308,6 +311,7 @@ export const disclosureSchema = () =>
       businessArea: yup.string(),
       refToAgreement: yup.string(),
     }),
+    processIds: yup.array().of(yup.string())
   });
 
 export const addDocumentToProcessSchema = () =>

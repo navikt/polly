@@ -31,6 +31,13 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where data ->> 'name' ilike %?1%", nativeQuery = true)
     List<Process> findByNameContaining(String name);
 
+    @Query(value = """
+            select cast(process_id as text) as id, 
+             data->>'name' as name, data->>'number' as number, data->>'purposes' as purposesJsonArray 
+             from process where process_id in ?1
+            """, nativeQuery = true)
+    List<ProcessVeryShort> findSummaryById(List<UUID> uuids);
+
     // Count
 
     @Query(value = "select jsonb_array_elements(data -> 'purposes') ->> 0 as code, count(p) as count from Process p group by code", nativeQuery = true)

@@ -10,6 +10,7 @@ import {user} from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
+  convertDisclosureToFormValues,
   convertProcessToFormValues,
   createPolicies,
   createPolicy,
@@ -17,8 +18,10 @@ import {
   deletePolicy,
   deleteProcess,
   getCodelistUsage,
+  getDisclosuresByProcessId,
   getProcess,
   getProcessesFor,
+  updateDisclosure,
   updatePolicy,
   updateProcess
 } from '../../api'
@@ -78,9 +81,18 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   }, [code, filter])
 
   const handleChangePanel = (process?: Partial<Process>) => {
-    if (process?.id !== currentProcess?.id) history.push(genProcessPath(section, code, process, filter))
+
+    if (process?.id !== currentProcess?.id) {
+      history.push(genProcessPath(section, code, process, filter))
+    }
     // reuse method to reload a process
-    else if (process?.id) getProcessById(process.id).catch(setErrorProcessModal)
+    else if (process?.id) {
+      getProcessById(process.id).catch(setErrorProcessModal)
+      history.push(genProcessPath(section, code, process, filter))
+
+    }
+
+
   }
 
   const hasAccess = () => user.canWrite()
@@ -91,7 +103,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     'PURPOSE': 'purpose',
     'SYSTEM': 'system',
     'THIRD_PARTY': 'thirdparty'
-  } as {[l: string]: string})[listName]
+  } as { [l: string]: string })[listName]
 
   const getProcessList = async () => {
     try {
@@ -132,6 +144,11 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setCurrentProcess(newProcess)
       // todo uh multipurpose url....
       history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
+      process.disclosures.forEach(d=>{
+        updateDisclosure(convertDisclosureToFormValues(
+          {...d,processIds:[...d.processIds,newProcess.id?newProcess.id:'']}
+        ))
+      })
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
@@ -144,6 +161,12 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const handleEditProcess = async (values: ProcessFormValues) => {
     try {
       const updatedProcess = await updateProcess(values)
+      const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
+      const removedDisclosures = disclosures.filter(d => !values.disclosures.map(value => value.processIds).includes(d.processIds))
+      const addedDisclosures = values.disclosures.filter(d => !disclosures.map(value => value.processIds).includes(d.processIds))
+      addedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds, updatedProcess.id]})))
+      removedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds.filter(p => p !== updatedProcess.id)]})))
+
       setCurrentProcess(updatedProcess)
       setProcessList(sortProcess([...processList.filter(p => p.id !== updatedProcess.id), updatedProcess]))
       handleChangePanel(updatedProcess)
@@ -203,7 +226,6 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         setErrorPolicyModal(null)
       }
       return true
-
     } catch (err) {
       setErrorPolicyModal(err.message)
       return false

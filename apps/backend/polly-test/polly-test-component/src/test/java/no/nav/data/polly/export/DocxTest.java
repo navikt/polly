@@ -6,6 +6,7 @@ import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.codelist.CodelistStub;
+import no.nav.data.polly.codelist.commoncode.CommonCodeService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
@@ -20,6 +21,9 @@ import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import no.nav.data.polly.processor.domain.Processor;
+import no.nav.data.polly.processor.domain.ProcessorData;
+import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +39,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -54,9 +59,14 @@ public class DocxTest {
     private TeamService teamService;
     @Mock
     private ProcessRepository processRepository;
+    @Mock
+    private ProcessorRepository processorRepository;
+    @Mock
+    private CommonCodeService commonCodeService;
     @InjectMocks
     private ProcessToDocx processToDocx;
 
+    UUID PROCESSOR_ID = UUID.fromString("f6749fdd-5e95-4507-bd83-b1720aca534e");
     Process process = createProcess();
 
     @BeforeEach
@@ -64,6 +74,21 @@ public class DocxTest {
         CodelistStub.initializeCodelist();
         lenient().when(resourceService.getResource(anyString())).thenReturn(Optional.empty());
         lenient().when(teamService.getTeam(anyString())).thenReturn(Optional.empty());
+        lenient().when(processorRepository.findAllById(List.of(PROCESSOR_ID))).thenReturn(List.of(
+                Processor.builder()
+                        .data(ProcessorData.builder()
+                                .name("Sky")
+                                .contract("2019-02-44.21")
+                                .contractOwner("A123456")
+                                .operationalContractManager("A123457")
+                                .note("Notat")
+                                .outsideEU(true)
+                                .transferGroundsOutsideEU("OTHER")
+                                .transferGroundsOutsideEUOther("Usikker")
+                                .country("FJI")
+                                .build())
+                        .build()
+        ));
     }
 
     @Test
@@ -136,10 +161,7 @@ public class DocxTest {
                         .profiling(true)
                         .dataProcessing(DataProcessing.builder()
                                 .dataProcessor(true)
-                                .dataProcessorOutsideEU(true)
-                                .dataProcessorAgreements(List.of("2019-02-44.21"))
-                                .transferGroundsOutsideEU("OTHER")
-                                .transferGroundsOutsideEUOther("Usikker")
+                                .processors(List.of(PROCESSOR_ID))
                                 .build())
                         .status(ProcessStatus.COMPLETED)
                         .dpia(Dpia.builder()

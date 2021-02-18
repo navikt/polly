@@ -32,8 +32,8 @@ class DashboardIT extends IntegrationTestBase {
 
         DashResponse response = resp.getBody();
         assertThat(response).isNotNull();
-        assertThat(get(response.getDepartmentProcesses(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
-        assertThat(response.getAllProcesses().getProcessesInProgress()).isEqualTo(2L);
+        assertThat(get(response.getDepartments(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
+        assertThat(response.getAll().getProcessesInProgress()).isEqualTo(2L);
     }
 
     @Test
@@ -43,8 +43,8 @@ class DashboardIT extends IntegrationTestBase {
 
         DashResponse response = resp.getBody();
         assertThat(response).isNotNull();
-        assertThat(get(response.getDepartmentProcesses(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
-        assertThat(response.getAllProcesses().getProcessesInProgress()).isEqualTo(2L);
+        assertThat(get(response.getDepartments(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
+        assertThat(response.getAll().getProcessesInProgress()).isEqualTo(2L);
     }
 
 }

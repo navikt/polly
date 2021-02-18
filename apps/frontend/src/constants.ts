@@ -48,7 +48,6 @@ export enum ProcessField {
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
   DATA_PROCESSOR = 'DATA_PROCESSOR',
-  DATA_PROCESSOR_OUTSIDE_EU = 'DATA_PROCESSOR_OUTSIDE_EU',
   DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
   EXCESS_INFO = 'EXCESS_INFO',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
@@ -128,7 +127,7 @@ export interface PolicyFormValues {
   id?: string;
   purposes: string[];
   informationType?: InformationTypeShort;
-  process: {id: string; name: string; legalBases: LegalBasis[]};
+  process: { id: string; name: string; legalBases: LegalBasis[] };
   subjectCategories: string[];
   legalBasesUse: LegalBasesUse;
   legalBases: Array<LegalBasisFormValues>;
@@ -157,6 +156,7 @@ export interface ProcessFormValues {
   profiling?: boolean;
   dataProcessing: DataProcessingFormValues;
   retention: Retention;
+  disclosures: Disclosure[]
 }
 
 export interface AffiliationFormValues {
@@ -185,6 +185,7 @@ export interface Dpia {
 
 export interface DataProcessingFormValues {
   dataProcessor?: boolean;
+  processors: string[]
   dataProcessorAgreements: string[];
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: string;
@@ -194,6 +195,7 @@ export interface DataProcessingFormValues {
 
 export interface DataProcessing {
   dataProcessor?: boolean;
+  processors: string[]
   dataProcessorAgreements: string[];
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: Code;
@@ -346,7 +348,7 @@ export interface DpProcess extends IDurationed {
   affiliation: Affiliation;
   externalProcessResponsible?: Code;
   dataProcessingAgreements: string[];
-  subDataProcessing: DataProcessing;
+  subDataProcessing: Omit<DataProcessing, 'processors'>;
   changeStamp: ChangeStamp;
   art9?: boolean;
   art10?: boolean;
@@ -361,7 +363,7 @@ export interface DpProcessFormValues {
   affiliation: AffiliationFormValues
   externalProcessResponsible?: string;
   dataProcessingAgreements: string[];
-  subDataProcessing: DataProcessingFormValues;
+  subDataProcessing: Omit<DataProcessingFormValues, 'processors'>;
   art9?: boolean;
   art10?: boolean;
   retention: DpRetention
@@ -384,7 +386,7 @@ export interface TeamResource {
 }
 
 export interface ProcessCount {
-  counts: {[code: string]: number};
+  counts: { [code: string]: number };
 }
 
 export interface UserInfo {
@@ -464,6 +466,7 @@ export interface DisclosureFormValues {
   processes: ProcessShort[];
   informationTypes?: InformationTypeShort[];
   abroad: DisclosureAbroad;
+  processIds: string[];
 }
 
 export interface DisclosureAbroad {
@@ -513,7 +516,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document
   informationTypes: DocumentInfoTypeUse[]
   linkDocumentToPolicies: boolean
-  process: {id: string; name: string; purposes: Code[]}
+  process: { id: string; name: string; purposes: Code[] }
 }
 
 export interface CreateDocumentFormValues {
@@ -538,7 +541,7 @@ export interface AuditItem {
   data: object;
 }
 
-export type Event = Omit<AuditItem, 'user' | 'data'> & {name: string};
+export type Event = Omit<AuditItem, 'user' | 'data'> & { name: string };
 
 export interface AuditLog {
   id: string;
@@ -622,12 +625,12 @@ export type RecursivePartial<T> = {
 };
 
 export interface DashboardData {
-  allProcesses: ProcessesDashCount
-  departmentProcesses: DepartmentProcessDashCount[]
-  productAreaProcesses: ProductAreaProcessDashCount[]
+  all: AllDashCount
+  departments: DepartmentDashCount[]
+  productAreas: ProductAreaDashCount[]
 }
 
-export interface ProcessesDashCount {
+interface DashCount {
   processes: number
   dpProcesses: number
   processesCompleted: number
@@ -649,11 +652,16 @@ export interface ProcessesDashCount {
   dpiaReferenceMissing: number
 }
 
-export interface DepartmentProcessDashCount extends ProcessesDashCount {
+export interface AllDashCount extends DashCount {
+  disclosures: number
+  disclosuresIncomplete: number
+}
+
+export interface DepartmentDashCount extends DashCount {
   department: string;
 }
 
-export interface ProductAreaProcessDashCount extends DepartmentProcessDashCount {
+export interface ProductAreaDashCount extends DashCount {
   productAreaId: string;
 }
 

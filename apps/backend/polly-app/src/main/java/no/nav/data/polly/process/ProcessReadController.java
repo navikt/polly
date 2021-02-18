@@ -50,8 +50,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static no.nav.data.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.filter;
 
 @Slf4j
 @RestController
@@ -161,7 +164,8 @@ public class ProcessReadController {
     @Operation(summary = "Search processes")
     @ApiResponse(description = "Processes fetched")
     @GetMapping("/search/{search}")
-    public ResponseEntity<RestResponsePage<ProcessResponse>> searchProcesses(@PathVariable String search) {
+    public ResponseEntity<RestResponsePage<ProcessResponse>> searchProcesses(@PathVariable String search,
+            @RequestParam(value = "includePurpose", defaultValue = "false") boolean includePurpose) {
         log.info("Received request for Processes search={}", search);
         if (search.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
@@ -169,6 +173,13 @@ public class ProcessReadController {
         List<Process> processes = new ArrayList<>(repository.findByNameContaining(search));
         if (StringUtils.isNumeric(search)) {
             repository.findByProcessNumber(Integer.parseInt(search)).ifPresent(processes::add);
+        }
+        if (includePurpose) {
+            var purposes = filter(CodelistService.getCodelist(ListName.PURPOSE), c -> StringUtils.containsIgnoreCase(c.getShortName(), search));
+            purposes.sort(comparing(Codelist::getShortName, startsWith(search)));
+            if (!processes.isEmpty()) {
+                processes.addAll(repository.findByPurpose(purposes.get(0).getCode()));
+            }
         }
         return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
     }

@@ -9,15 +9,19 @@ import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"dataProcessor", "dataProcessorAgreements", "dataProcessorOutsideEU", "transferGroundsOutsideEU", "transferGroundsOutsideEUOther", "transferCountries"})
+@JsonPropertyOrder({"dataProcessor", "processors", "dataProcessorAgreements", "dataProcessorOutsideEU", "transferGroundsOutsideEU", "transferGroundsOutsideEUOther",
+        "transferCountries"})
 public class DataProcessingResponse {
 
     private Boolean dataProcessor;
+    @Singular
+    private List<UUID> processors;
     @Singular
     private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;

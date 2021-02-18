@@ -5,7 +5,6 @@ import io.prometheus.client.CollectorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.AppStarter;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
-import no.nav.data.common.nais.LeaderElectionService;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
@@ -49,8 +48,11 @@ import no.nav.data.polly.process.dto.sub.DpiaRequest;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionRequest;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
+import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.test.TestConfig;
+import no.nav.data.polly.test.TestConfig.MockFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -91,6 +93,7 @@ public abstract class IntegrationTestBase {
     protected static final String PROCESS_NAME_1 = "Saksbehandling";
     protected static final UUID PROCESS_ID_1 = UUID.fromString("60db8589-f383-4405-82f1-148b0333899b");
     protected static final UUID PROCESS_ID_2 = UUID.fromString("0045b96b-8af8-4b1f-8bc5-81a6bde8506d");
+    protected static final UUID PROCESSOR_ID1 = UUID.fromString("106045a5-582f-4214-a2f4-14bd758e70e2");
     protected static final String PURPOSE_CODE1 = "KONTROLL";
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
@@ -111,6 +114,8 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected DocumentRepository documentRepository;
     @Autowired
+    protected ProcessorRepository processorRepository;
+    @Autowired
     protected GenericStorageRepository genericStorageRepository;
     @Autowired
     protected AuditVersionRepository auditRepository;
@@ -125,7 +130,6 @@ public abstract class IntegrationTestBase {
     @BeforeEach
     public void setUpAbstract() {
         CodelistStub.initializeCodelist();
-        WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
         mockTerms();
         delete();
     }
@@ -134,6 +138,7 @@ public abstract class IntegrationTestBase {
     public void teardownAbstract() {
         delete();
         CollectorRegistry.defaultRegistry.clear();
+        MockFilter.clearUser();
     }
 
     private void delete() {
@@ -144,6 +149,7 @@ public abstract class IntegrationTestBase {
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
         dpProcessRepository.deleteAll();
+        processorRepository.deleteAll();
     }
 
     protected List<Policy> createAndSavePolicy(int rows) {
@@ -310,9 +316,30 @@ public abstract class IntegrationTestBase {
     }
 
     protected DataProcessingRequest dataProcessingRequest() {
-        return DataProcessingRequest.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
+        return DataProcessingRequest.builder()
+                .dataProcessor(true)
+                // TODO processor
+//                .processor(PROCESSOR_ID1.toString())
+
+                .dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
                 .transferCountries(List.of("FJI"))
+                .build();
+    }
+
+    protected ProcessorRequest createProcessorRequest() {
+        return ProcessorRequest.builder()
+                .name("name")
+                .contract("contract")
+                .contractOwner("A123456")
+                .operationalContractManager("A123456")
+                .operationalContractManager("A123457")
+                .note("note")
+
+                .outsideEU(true)
+                .transferGroundsOutsideEU("OTHER")
+                .transferGroundsOutsideEUOther("reason")
+                .country("FJI")
                 .build();
     }
 
@@ -393,6 +420,9 @@ public abstract class IntegrationTestBase {
     protected DataProcessingResponse dataProcessingResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
+                // TODO processor
+//                .processor(PROCESSOR_ID1)
+
                 .dataProcessorAgreements(List.of("X"))
                 .dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU(getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
