@@ -177,7 +177,7 @@ public class ProcessReadController {
         if (includePurpose) {
             var purposes = filter(CodelistService.getCodelist(ListName.PURPOSE), c -> StringUtils.containsIgnoreCase(c.getShortName(), search));
             purposes.sort(comparing(Codelist::getShortName, startsWith(search)));
-            if (!processes.isEmpty()) {
+            if (!purposes.isEmpty()) {
                 processes.addAll(repository.findByPurpose(purposes.get(0).getCode()));
             }
         }
