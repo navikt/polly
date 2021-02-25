@@ -1,4 +1,4 @@
-import React, {KeyboardEvent, useState} from "react";
+import React, {useState} from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Block, BlockProps} from "baseui/block";
 import {Field, FieldProps, Form, Formik} from "formik";
@@ -21,6 +21,7 @@ import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
 import {Button, KIND} from "baseui/button";
 import FieldProduct from "../common/FieldProduct";
 import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
+import {disableEnter} from "../../util/helper-functions";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -68,9 +69,6 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
 
   const [expanded, setExpanded] = useState<React.Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!props.initialValues.externalProcessResponsible)
-  const disableEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') e.preventDefault()
-  }
 
   return (
     <Modal

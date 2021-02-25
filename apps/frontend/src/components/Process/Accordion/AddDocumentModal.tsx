@@ -1,7 +1,7 @@
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Button, KIND} from 'baseui/button'
 import * as React from 'react'
-import {KeyboardEvent, useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process} from '../../../constants'
 import {Block, BlockProps} from 'baseui/block'
 import {ArrayHelpers, Field, FieldArray, FieldProps, Form, Formik, FormikProps} from 'formik'
@@ -19,6 +19,7 @@ import {Sensitivity} from '../../InformationType/Sensitivity'
 import {Paragraph3} from 'baseui/typography'
 import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 import {Spinner} from '../../common/Spinner'
+import {disableEnter} from "../../../util/helper-functions";
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -104,10 +105,6 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
     setDocumentSearch('')
     setDocuments([])
     props.onClose()
-  }
-
-  const disableEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') e.preventDefault()
   }
 
   function extractInfoTypes(document: Document, existingPolicies: Policy[]) {

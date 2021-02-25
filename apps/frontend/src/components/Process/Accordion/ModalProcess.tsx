@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {KeyboardEvent, useState} from 'react'
+import {useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
@@ -39,6 +39,7 @@ import {Select, Value} from "baseui/select";
 import {useDisclosureSearch} from "../../../api";
 import {renderTagList} from "../../common/TagList";
 import {codelist, ListName} from "../../../service/Codelist";
+import {disableEnter} from "../../../util/helper-functions";
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -95,10 +96,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
     if (expanded.indexOf(panelKey) < 0) {
       setExpanded([panelKey])
     }
-  }
-
-  const disableEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') e.preventDefault()
   }
 
   return (

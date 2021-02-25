@@ -1,18 +1,19 @@
-import React, { KeyboardEvent } from 'react'
-import { Block, BlockProps } from 'baseui/block'
-import { Label2 } from 'baseui/typography'
-import { intl, useAwait } from '../../../util'
-import { Input, SIZE } from 'baseui/input'
-import { Textarea } from 'baseui/textarea'
-import { DocumentFormValues } from '../../../constants'
+import React from 'react'
+import {Block, BlockProps} from 'baseui/block'
+import {Label2} from 'baseui/typography'
+import {intl, useAwait} from '../../../util'
+import {Input, SIZE} from 'baseui/input'
+import {Textarea} from 'baseui/textarea'
+import {DocumentFormValues} from '../../../constants'
 import InformationTypesTable from './InformationTypesTable'
-import { Field, FieldArray, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
-import { Error } from '../../common/ModalSchema'
-import { user } from '../../../service/User'
-import { createDocumentValidation } from '../../common/schema'
-import { Notification } from 'baseui/notification'
-import { searchDocuments } from '../../../api'
+import {Field, FieldArray, FieldProps, Form, Formik, FormikHelpers, FormikProps} from 'formik'
+import {Error} from '../../common/ModalSchema'
+import {user} from '../../../service/User'
+import {createDocumentValidation} from '../../common/schema'
+import {Notification} from 'baseui/notification'
+import {searchDocuments} from '../../../api'
 import Button from '../../common/Button'
+import {disableEnter} from "../../../util/helper-functions";
 
 const rowBlockProps: BlockProps = {
   width: '50%',
@@ -35,10 +36,6 @@ const DocumentForm = (props: DocumentFormProps) => {
   const {initialValues, handleSubmit} = props
   const hasAccess = () => user.canWrite()
   useAwait(user.wait(), setLoading)
-
-  const disableEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') e.preventDefault()
-  }
 
   const onSubmit = async (values: DocumentFormValues, actions: FormikHelpers<DocumentFormValues>) => {
     const searchResults = (await searchDocuments(values.name))
