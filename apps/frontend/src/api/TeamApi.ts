@@ -38,11 +38,11 @@ export const getResourceById = async (resourceId: string) => {
   return (await axios.get<TeamResource>(`${env.pollyBaseUrl}/team/resource/${resourceId}`)).data
 }
 
-export const getResourceByName = async (resourceName: string) => {
+export const searchResourceByName = async (resourceName: string) => {
   return (await axios.get<PageResponse<TeamResource>>(`${env.pollyBaseUrl}/team/resource/search/${resourceName}`)).data
 }
 
-export const mapTeamResourceToOption = (teamResource: TeamResource) => ({id: teamResource.navIdent, label: teamResource.fullName})
+export const mapTeamResourceToOption = (teamResource: TeamResource) => ({id: teamResource.navIdent, label: teamResource.fullName, teamResource: teamResource})
 
 export const mapTeamToOption = (team: Team, idx?: number) => ({id: team.id, label: team.name, idx})
 
@@ -76,7 +76,7 @@ export const useTeamResourceSearch = () => {
     const search = async () => {
       if (teamResourceSearch && teamResourceSearch.length > 2) {
         setLoading(true)
-        const res = await getResourceByName(teamResourceSearch)
+        const res = await searchResourceByName(teamResourceSearch)
         let options: Option[] = res.content.map(mapTeamResourceToOption)
         setInfoTypeSearchResult(options)
         setLoading(false)

@@ -534,29 +534,28 @@ export interface DocumentInformationTypes {
 export interface DataProcessor {
   id: string;
   name: string;
-  contract: string;
-  contractOwner: string;
-  operationalContractManagers: string[];
-  note: string;
-  outsideEU: boolean;
-  transferGroundsOutsideEU: Code;
-  transferGroundsOutsideEUOther: string;
-  countries: string[];
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers?: TeamResource[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: Code;
+  transferGroundsOutsideEUOther?: string;
+  countries?: string[];
   changeStamp: ChangeStamp;
 }
 
 export interface DataProcessorFormValues {
-  id: string;
+  id?: string;
   name: string;
-  contract: string;
-  contractOwner: string;
-  operationalContractManagers: string[];
-  note: string;
-  outsideEU: boolean;
-  transferGroundsOutsideEU: Code;
-  transferGroundsOutsideEUOther: string;
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers?: TeamResource[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: string;
+  transferGroundsOutsideEUOther?: string;
   countries: string[];
-  changeStamp: ChangeStamp;
 }
 
 export interface AuditItem {

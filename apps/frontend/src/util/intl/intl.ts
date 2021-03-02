@@ -100,6 +100,9 @@ export interface IStrings {
   profiling: string;
   isProfilingUsed: string;
   profilingExtra: string;
+  contract: string;
+  contractOwner: string;
+  operationalContractManagers: string;
   dataProcessor: string;
   dataProcessors: string;
   dpProcessDataProcessor: string;
@@ -109,11 +112,13 @@ export interface IStrings {
   dpProcessDataProcessorNo: string;
   dataProcessorUnclarified: string;
   dpProcessDataProcessorUnclarified: string;
+  note: string;
   dataProcessorExtra: string;
   dataProcessorAgreement: string;
   dataProcessorAgreementPlaceholder: string;
   dataProcessorOutsideEU: string;
   isDataProcessedOutsideEUEEAHelpText: string;
+  transferPanelTitle: string;
   isDataProcessedOutsideEUEEA: string;
   isSubDataProcessedOutsideEUEEA: string;
   transferGroundsOutsideEUEEA: string;
@@ -172,7 +177,9 @@ export interface IStrings {
   searchWordsWrite: string;
   orgMasterSelect: string;
   purposeSelect: string;
+  dataProcessorSelect: string;
   purposeNotFound: string;
+  createDataProcessor: string;
   processingActivityUse: string;
   informationTypeExternalUse: string;
   thirdParties: string;

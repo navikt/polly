@@ -492,7 +492,13 @@ export const no: IStrings = {
   shortcutSubtitleInformationtype: 'Se og endre opplysningstyper',
   shortcutSubtitleThirdParty: 'Se alle eksterne parter',
   shortcutSubtitleDashboard: 'Se statistikk over behandlinger',
-
+  dataProcessorSelect: 'Velg databehander',
+  createDataProcessor: 'Opprett ny databehandler',
+  contract: 'Kontrakt',
+  contractOwner: 'Kontrakteier',
+  operationalContractManagers: 'Kontraktansvarlig',
+  note: 'Kommenter',
+  transferPanelTitle: 'Overføres data til utlandet',
 };
 
 export const en: IStrings = {
@@ -986,7 +992,13 @@ export const en: IStrings = {
   shortcutSubtitleInformationtype: 'See and edit informationtypes',
   shortcutSubtitleThirdParty: 'See all third parties',
   shortcutSubtitleDashboard: 'See statistics of processes',
-
+  dataProcessorSelect: 'Select data processor',
+  createDataProcessor: 'Create new data processor',
+  contract: 'Contract',
+  contractOwner: 'Contract owner',
+  operationalContractManagers:'Contract managers',
+  note: 'Comment',
+  transferPanelTitle : 'Transfer data to abroad',
 };
 
 export const ta = {
