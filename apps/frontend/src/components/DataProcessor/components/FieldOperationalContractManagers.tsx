@@ -43,7 +43,7 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
           <Block width='100%'>
             <Select
               clearable
-              options={teamResourceSearchResult}
+              options={teamResourceSearchResult.filter(r => !props.formikBag.values.operationalContractManagers?.map(ocm => ocm.navIdent).includes(r.id? r.id.toString() : ''))}
               onChange={(params) => {
                 console.log(params)
                 // setValue(value)
