@@ -46,7 +46,8 @@ const AlphabeticList = (props: {items: Opt[], baseUrl: string}) => {
                               overrides={{
                                 Block: {
                                   style: {
-                                    ...margin('10px', '0')
+                                    ...margin('10px', '0'),
+                                    maxWidth: '25%'
                                   }
                                 }
                               }}
