@@ -51,7 +51,7 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
 
   return (
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <RouteLink href={props.to} style={{textDecoration: "none"}}>
+      <RouteLink href={props.to} hideUnderline={true}>
         <Card overrides={cardOverrides(hover)}>
           <Block>
             <Block display="flex" justifyContent="center">
@@ -65,7 +65,6 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
             <Block display="flex" justifyContent="center" width="100%">
                 <Paragraph2>{props.subtitle}</Paragraph2>
             </Block>
-
           </Block>
         </Card>
       </RouteLink>
