@@ -536,13 +536,13 @@ export interface DataProcessor {
   name: string;
   contract?: string;
   contractOwner?: string;
-  operationalContractManagers?: TeamResource[];
+  operationalContractManagers: string[];
   note?: string;
   outsideEU?: boolean;
   transferGroundsOutsideEU?: Code;
   transferGroundsOutsideEUOther?: string;
   countries?: string[];
-  changeStamp: ChangeStamp;
+  changeStamp?: ChangeStamp;
 }
 
 export interface DataProcessorFormValues {
@@ -550,7 +550,7 @@ export interface DataProcessorFormValues {
   name: string;
   contract?: string;
   contractOwner?: string;
-  operationalContractManagers?: TeamResource[];
+  operationalContractManagers?: string[];
   note?: string;
   outsideEU?: boolean;
   transferGroundsOutsideEU?: string;
