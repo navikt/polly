@@ -51,10 +51,9 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
 
   return (
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <RouteLink href={props.to} style={{textDecoration: "none"}} hideUnderline plain>
+      <RouteLink href={props.to} style={{textDecoration: "none"}}>
         <Card overrides={cardOverrides(hover)}>
           <Block>
-
             <Block display="flex" justifyContent="center">
               <H6 marginTop={theme.sizing.scale300} marginBottom={theme.sizing.scale200} $style={{
                 wordBreak: 'break-word',
