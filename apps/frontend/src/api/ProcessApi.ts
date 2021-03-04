@@ -137,7 +137,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       riskOwner: dpia?.riskOwner || '',
       riskOwnerFunction: dpia?.riskOwnerFunction || '',
       noDpiaReasons: dpia?.noDpiaReasons || []
-    }
+    },
+    disclosures: []
   }
 }
 
