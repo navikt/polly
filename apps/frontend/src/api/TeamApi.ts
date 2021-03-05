@@ -42,7 +42,15 @@ export const searchResourceByName = async (resourceName: string) => {
   return (await axios.get<PageResponse<TeamResource>>(`${env.pollyBaseUrl}/team/resource/search/${resourceName}`)).data
 }
 
-export const mapTeamResourceToOption = (teamResource: TeamResource) => ({id: teamResource.navIdent, label: teamResource.fullName, teamResource: teamResource})
+export const getResourcesByIds = async (ids: string[]) => {
+  let resources: TeamResource[] = []
+  for (const id of ids) {
+    resources = [...resources, await getResourceById(id)]
+  }
+  return resources
+}
+
+export const mapTeamResourceToOption = (teamResource: TeamResource) => ({id: teamResource.navIdent, label: teamResource.fullName})
 
 export const mapTeamToOption = (team: Team, idx?: number) => ({id: team.id, label: team.name, idx})
 
