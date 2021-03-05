@@ -69,7 +69,7 @@ export const convertFormValuesToDataProcessor = (values: DataProcessorFormValues
     name: values.name,
     contract: values.contract,
     contractOwner: values.contractOwner,
-    operationalContractManagers: values.operationalContractManagers?.map(ocm => ocm.navIdent) || [],
+    operationalContractManagers: values.operationalContractManagers || [],
     note: values.note,
     outsideEU: values.outsideEU,
     transferGroundsOutsideEU: values.transferGroundsOutsideEU,
