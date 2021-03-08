@@ -484,12 +484,15 @@ export const no: IStrings = {
   disclosureNameTooltip: 'Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap.',
   disclosurePurposeTooltip: 'Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.',
   disclosureDescriptionTooltip: 'Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.',
-  disclosureDocumentTooltip:'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.',
+  disclosureDocumentTooltip: 'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.',
 
   shortcutSubtitleProcess: 'Se og endre behandlinger',
   shortcutSubtitleInformationtype: 'Se og endre opplysningstyper',
   shortcutSubtitleThirdParty: 'Se alle eksterne parter',
   shortcutSubtitleDashboard: 'Se statistikk over behandlinger',
+
+  mainPageMessage: "Hva vil du gjøre?",
+  mainPageEventsMessage: "Hva har endret seg i det siste?",
 
 };
 
@@ -982,6 +985,9 @@ export const en: IStrings = {
   shortcutSubtitleInformationtype: 'See and edit informationtypes',
   shortcutSubtitleThirdParty: 'See all third parties',
   shortcutSubtitleDashboard: 'See statistics of processes',
+
+  mainPageMessage: "What do you want to do?",
+  mainPageEventsMessage: "What has changed lately?",
 
 };
 

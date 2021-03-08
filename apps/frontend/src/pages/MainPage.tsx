@@ -12,7 +12,7 @@ import {RecentEditsByUser} from "../components/audit/RecentEditsByUser";
 import {user} from "../service/User";
 import {HeadingLarge} from 'baseui/typography'
 import ShortcutNav from '../components/Main/ShortcutNav'
-import {theme} from '../util'
+import {intl, theme} from '../util'
 
 export const MainPage = () => {
   const [settings, setSettings] = useState<Settings>()
@@ -41,12 +41,12 @@ export const MainPage = () => {
         !isLoading && dashboardData && (
           <>
             <Block width="100%" display="flex" flexDirection="column">
-              <Block display="flex" justifyContent="center"><HeadingLarge>Hva vil du gjøre?</HeadingLarge></Block>
-              <ShortcutNav />
+              <Block display="flex" justifyContent="center"><HeadingLarge>{intl.mainPageMessage}</HeadingLarge></Block>
+              <ShortcutNav/>
             </Block>
 
             <Block width="100%" display="flex" justifyContent="center" marginTop={theme.sizing.scale1200} marginBottom={theme.sizing.scale800}>
-              <HeadingLarge>Hva har endret seg i det siste?</HeadingLarge>
+              <HeadingLarge>{intl.mainPageEventsMessage}</HeadingLarge>
             </Block>
 
             <Block width="100%" display="flex" justifyContent="space-between" marginBottom="200px" flexWrap>
