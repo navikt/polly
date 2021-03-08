@@ -12,27 +12,31 @@ import DataProcessorModal from "../components/DataProcessor/DataProcessorModal";
 import {getAll} from "../api";
 import AlphabeticList from "../components/common/AlphabeticList";
 import {Spinner} from "../components/common/Spinner";
+import {useHistory} from "react-router-dom";
 
 
 export const DataProcessorListPage = () => {
   const [dataProcessors, setDataProcessors] = useState<DataProcessor[]>([])
   const [showCreateDataProcessorModal, setShowCreateDataProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  const history = useHistory()
   const hasAccess = () => user.canWrite()
 
   const fetchDataProcessors = async () => {
-    const dataProcessors = (await getAll(getDataProcessorsByPageAndPageSize)())
-    if (dataProcessors) {
-      setDataProcessors(dataProcessors)
-      console.log(dataProcessors)
+    const res = (await getAll(getDataProcessorsByPageAndPageSize)())
+    if(res){
+      console.log(res)
+      setDataProcessors(res)
     }
   }
 
   const handleCreateDataProcessor = (dataProcessor: DataProcessorFormValues) => {
     if (!dataProcessor) return
     try {
-      createDataProcessor(dataProcessor)
-      console.log(dataProcessor,"HERE")
+      (async()=>{
+        const newDataProcessor = await createDataProcessor(dataProcessor)
+        history.push(`/dataProcessor/${newDataProcessor.id}`)
+      })()
       setShowCreateDataProcessorModal(false)
     } catch (err) {
       // if (err.response.data.message.includes('already exists')) {
@@ -49,11 +53,11 @@ export const DataProcessorListPage = () => {
     setIsLoading(false)
   }, [])
 
-  useEffect(() => {
-    setIsLoading(true)
-    fetchDataProcessors()
-    setIsLoading(false)
-  }, [showCreateDataProcessorModal])
+  // useEffect(() => {
+  //   setIsLoading(true)
+  //   fetchDataProcessors()
+  //   setIsLoading(false)
+  // }, [showCreateDataProcessorModal])
 
   return isLoading ?
     (<Spinner size={theme.sizing.scale1200}/>) :

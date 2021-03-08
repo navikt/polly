@@ -1,10 +1,9 @@
 import * as React from 'react'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Block, BlockProps} from "baseui/block";
 import {Field, FieldProps, Form, Formik} from "formik";
 import {dataProcessorSchema} from "../common/schema";
-import {intl, theme} from "../../util";
 import {Button, KIND} from "baseui/button";
 import {DataProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
 import {disableEnter} from "../../util/helper-functions";
@@ -20,6 +19,8 @@ import BoolField from "../Process/common/BoolField";
 import FieldTransferGroundsOutsideEU from "./components/FieldTransferGroundsOutsideEU";
 import FieldTransferGroundsOutsideEUOther from "./components/FieldTransferGroundsOutsideEUOther";
 import FieldCountries from "./components/FieldCountries";
+import {getResourcesByIds} from "../../api";
+import {intl, theme} from "../../util";
 
 type ModalDataProcessorProps = {
   title: string
@@ -68,6 +69,16 @@ const rowBlockProps: BlockProps = {
 const DataProcessorModal = (props: ModalDataProcessorProps) => {
 
   const [expanded, setExpanded] = useState<React.Key[]>([])
+  const [operationalContractManagers, setOperationalContractManagers] = useState(new Map<string, string>())
+
+  useEffect(() => {
+    (async () => {
+      if (props.initialValues.operationalContractManagers && props.initialValues.operationalContractManagers?.length > 0) {
+        const res = await getResourcesByIds(props.initialValues.operationalContractManagers)
+        res.forEach(r => operationalContractManagers.set(r.navIdent, r.fullName))
+      }
+    })()
+  }, [])
 
   return (
     <Modal
@@ -129,7 +140,7 @@ const DataProcessorModal = (props: ModalDataProcessorProps) => {
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.operationalContractManagers}/>
-                    <FieldOperationalContractManagers formikBag={formikBag}/>
+                    <FieldOperationalContractManagers formikBag={formikBag} resources={operationalContractManagers}/>
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
