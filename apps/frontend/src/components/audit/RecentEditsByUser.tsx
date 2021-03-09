@@ -19,7 +19,7 @@ export const RecentEditsByUser = () => {
   }, [])
 
   return (
-    <Block alignItems='center' width='700px'>
+    <Block alignItems='center' width='600px'>
       <HeadingMedium>{intl.userLastChanges}</HeadingMedium>
       {
         recentEdits

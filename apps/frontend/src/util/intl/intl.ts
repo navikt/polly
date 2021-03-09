@@ -470,6 +470,8 @@ export interface IStrings {
   defaultProcessDocument: string;
   goToSite: string;
   categoryNotInUse: string;
+  mainPageMessage: string;
+  mainPageEventsMessage: string;
 
   no_dpia_no_special_category_pi: string;
   no_dpia_small_scale: string;

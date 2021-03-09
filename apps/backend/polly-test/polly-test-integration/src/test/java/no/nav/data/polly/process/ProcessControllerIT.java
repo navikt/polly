@@ -117,7 +117,9 @@ class ProcessControllerIT extends IntegrationTestBase {
         AzureUserInfo userInfo = new AzureUserInfo(new Builder().claim(StandardClaimNames.NAME, "Name Nameson").claim(AzureConstants.IDENT_CLAIM, "S123456").build(), Set.of());
 
         MdcUtils.setUser(userInfo.getIdentName());
-        createAndSaveProcess(PURPOSE_CODE2);
+        for (int i = 0; i < 40; i++) {
+            createAndSaveProcess(PURPOSE_CODE2 + i);
+        }
         var deleted = createAndSaveProcess("deleted");
         var deleted2 = createAndSaveProcess("deleted2");
         processService.deleteById(deleted.getId());
@@ -130,9 +132,11 @@ class ProcessControllerIT extends IntegrationTestBase {
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(20L);
         assertThat(resp.getBody().getContent().get(0).getTime()).isNotNull();
-        assertThat(resp.getBody().getContent().get(0).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2);
+        for (int i = 0; i < 20; i++) {
+            assertThat(resp.getBody().getContent().get(i).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2 + (39 - i));
+        }
     }
 
     @Test
