@@ -499,6 +499,8 @@ export const no: IStrings = {
   operationalContractManagers: 'Kontraktansvarlig',
   note: 'Kommenter',
   transferPanelTitle: 'Overføres data til utlandet',
+  mainPageMessage: "Hva vil du gjøre?",
+  mainPageEventsMessage: "Hva har endret seg i det siste?",
 };
 
 export const en: IStrings = {
@@ -999,6 +1001,8 @@ export const en: IStrings = {
   operationalContractManagers:'Contract managers',
   note: 'Comment',
   transferPanelTitle : 'Transfer data to abroad',
+  mainPageMessage: "What do you want to do?",
+  mainPageEventsMessage: "What has changed lately?",
 };
 
 export const ta = {
