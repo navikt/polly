@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import {FieldArray, FormikProps} from 'formik'
 import {Block} from 'baseui/block'
 import {DataProcessorFormValues} from "../../../constants";
-import {Select, Value} from "baseui/select";
+import {Select} from "baseui/select";
 import {getResourcesByIds, useTeamResourceSearch} from "../../../api";
 import {renderTagList} from "../../common/TagList";
 
@@ -13,28 +13,8 @@ type fieldOperationalContractManagersProps = {
 }
 
 const FieldOperationalContractManagers = (props: fieldOperationalContractManagersProps) => {
-  const [value, setValue] = React.useState<Value>()
   const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] = useTeamResourceSearch()
   const [resources, setResources] = useState(props.resources ? props.resources : new Map<string, string>())
-  // const resources = new Map()
-  // useEffect(()=>{
-  //   props.formikBag.values.operationalContractManagers?.forEach(id=>{
-  //     (async ()=>{
-  //       setResources([...resources,await getResourceById(id)])
-  //     })()
-  //   })
-  //   }, [props.formikBag.values.operationalContractManagers])
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (OperationalContractManagers) {
-  //       const teamResource = await getResourceById(OperationalContractManagers)
-  //       setValue([{id: OperationalContractManagers, label: teamResource.fullName, resource: teamResource}])
-  //     } else {
-  //       setValue([])
-  //     }
-  //   })()
-  // }, [props.formikBag.values.operationalContractManagers])
 
   useEffect(() => {
     (async () => {
