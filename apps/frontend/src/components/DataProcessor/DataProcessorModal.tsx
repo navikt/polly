@@ -92,7 +92,6 @@ const DataProcessorModal = (props: ModalDataProcessorProps) => {
       <Block {...modalBlockProps}>
         <Formik
           onSubmit={values => {
-            console.log(values)
             props.submit(values)
           }}
           initialValues={props.initialValues}

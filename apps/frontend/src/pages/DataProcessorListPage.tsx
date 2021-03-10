@@ -26,7 +26,6 @@ export const DataProcessorListPage = () => {
   const fetchDataProcessors = async () => {
     const res = (await getAll(getDataProcessorsByPageAndPageSize)())
     if(res){
-      console.log(res)
       setDataProcessors(res)
     }
   }

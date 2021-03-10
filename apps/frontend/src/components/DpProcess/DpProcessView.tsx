@@ -44,7 +44,6 @@ const DpProcessView = () => {
       setErrorDpProcessModal('')
       toggleModal()
     } catch (err) {
-      console.log(err.response)
       if (err.response.data.message.includes('already exists')) {
         setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return
@@ -62,7 +61,6 @@ const DpProcessView = () => {
         history.push(`/dpprocess`)
       }
     } catch (err) {
-      console.log(err.response)
       if (err.response.data.message.includes('already exists')) {
         setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return

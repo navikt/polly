@@ -118,7 +118,6 @@ const DataProcessorView = () => {
       {
         !isLoading ? (currentDataProcessor &&
           <Block display="flex" marginBottom="1rem">
-            <>{console.log(currentDataProcessor)}</>
             <Block width="40%" paddingRight={dividerDistance}>
               <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                 <FlexGridItem>

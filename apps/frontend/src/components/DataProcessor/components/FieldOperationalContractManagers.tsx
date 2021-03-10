@@ -55,8 +55,6 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
               clearable
               options={teamResourceSearchResult.filter(r => !props.formikBag.values.operationalContractManagers?.map(ocm => ocm).includes(r.id ? r.id.toString() : ''))}
               onChange={(params) => {
-                console.log(params.value[0].teamResource)
-                console.log(params.value)
                 if (params.value[0].id && params.value[0].label) {
                   resources.set(params.value[0].id.toString(), params.value[0].label.toString())
                 }

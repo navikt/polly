@@ -249,7 +249,6 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       await createPolicies(policies)
       await getProcessById(formValues.process.id)
     } catch (e) {
-      console.log(e)
       setErrorDocumentModal(e.message)
       return false
     }
