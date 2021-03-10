@@ -26,8 +26,7 @@ type ModalDataProcessorProps = {
   title: string
   isOpen: boolean
   initialValues: DataProcessorFormValues
-  // isEdit?: boolean
-  // errorOnCreate: any | undefined
+  errorMessage: any | undefined
   submit: (dataProcessor: DataProcessorFormValues) => void
   onClose: () => void
 }
@@ -194,7 +193,7 @@ const DataProcessorModal = (props: ModalDataProcessorProps) => {
                   borderTop: 0
                 }}>
                   <Block display='flex' justifyContent='flex-end'>
-                    {/*<Block alignSelf='flex-end'>{errorOnCreate && <p>{errorOnCreate}</p>}</Block>*/}
+                    <Block alignSelf='flex-end'>{props.errorMessage && <p>{props.errorMessage}</p>}</Block>
                     <Button type='button' kind={KIND.minimal} onClick={props.onClose}>{intl.abort}</Button>
                     <ModalButton type='submit'>{intl.save}</ModalButton>
                   </Block>

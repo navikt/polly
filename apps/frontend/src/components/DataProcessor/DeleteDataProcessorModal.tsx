@@ -12,7 +12,7 @@ interface DeleteProcessProps {
   isOpen: boolean
   dataProcessor: DataProcessor
   submitDeleteDataProcessor: (dp: DataProcessor) => Promise<boolean>
-  errorDataProcessorModal: string
+  errorDataProcessorModal: undefined | any
 }
 
 export const DeleteDataProcessorModal = (props: DeleteProcessProps) => {
@@ -28,9 +28,8 @@ export const DeleteDataProcessorModal = (props: DeleteProcessProps) => {
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
-        <Paragraph2>{intl.deleteProcessText}</Paragraph2>
-        {<Paragraph2>{intl.confirmDeleteProcessText} {dataProcessor.name}</Paragraph2>}
-        {/*{<Paragraph2>{intl.formatString(intl.cannotDeleteProcess, dataProcessor.name, '' + dataProcessor.policies.length)}</Paragraph2>}*/}
+        <Paragraph2>{intl.deleteDataProcessorText}</Paragraph2>
+        {<Paragraph2>{intl.confirmDeleteDataProcessorText} {dataProcessor.name}</Paragraph2>}
       </ModalBody>
 
       <ModalFooter>

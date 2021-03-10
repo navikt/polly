@@ -254,7 +254,9 @@ export interface IStrings {
   confirmDeleteHeader: string;
   confirmDeletePolicyText: string;
   deleteProcessText: string;
+  deleteDataProcessorText: string;
   confirmDeleteProcessText: string;
+  confirmDeleteDataProcessorText: string;
   confirmDeleteDocumentText: string;
   confirmDeleteDpProcess: string;
   cannotDeleteProcess: string;

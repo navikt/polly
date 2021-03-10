@@ -19,6 +19,7 @@ export const DataProcessorListPage = () => {
   const [dataProcessors, setDataProcessors] = useState<DataProcessor[]>([])
   const [showCreateDataProcessorModal, setShowCreateDataProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  const [modalErrorMessage,setModalErrorMessage] = useState<string>()
   const history = useHistory()
   const hasAccess = () => user.canWrite()
 
@@ -39,11 +40,7 @@ export const DataProcessorListPage = () => {
       })()
       setShowCreateDataProcessorModal(false)
     } catch (err) {
-      // if (err.response.data.message.includes('already exists')) {
-      //   setErrorProcessModal('Behandlingen eksisterer allerede.')
-      //   return
-      // }
-      // setErrorProcessModal(err.response.data.message)
+      setModalErrorMessage(err.response.data.message)
     }
   }
 
@@ -53,16 +50,9 @@ export const DataProcessorListPage = () => {
     setIsLoading(false)
   }, [])
 
-  // useEffect(() => {
-  //   setIsLoading(true)
-  //   fetchDataProcessors()
-  //   setIsLoading(false)
-  // }, [showCreateDataProcessorModal])
-
   return isLoading ?
     (<Spinner size={theme.sizing.scale1200}/>) :
     (<>
-        {/*<PageHeader section={Section.dataprocessor} code={id}/>*/}
         <H4>{intl.dataProcessors}</H4>
         <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Block>
@@ -86,10 +76,11 @@ export const DataProcessorListPage = () => {
           })} baseUrl={"/DataProcessor/"}/>
         </Block>
         <DataProcessorModal
-          title={"Test"}
+          title={intl.createDataProcessor}
           isOpen={showCreateDataProcessorModal}
           initialValues={convertDataProcessorToFormValues({})}
           submit={handleCreateDataProcessor}
+          errorMessage={modalErrorMessage}
           onClose={() => setShowCreateDataProcessorModal(false)}
         />
       </>

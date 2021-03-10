@@ -27,11 +27,11 @@ const blockProps: BlockProps = {
 const DataProcessorView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [currentDataProcessor, setCurrentDataProcessor] = useState<DataProcessor>()
-  const [resources, setResources] = useState<TeamResource[]>([])
   const [showEditDataProcessorModal, setShowEditDataProcessorModal] = useState<boolean>(false)
   const [showDeleteDataProcessorModal, setShowDeleteDataProcessorModal] = useState<boolean>(false)
   const [contractOwner, setContractOwner] = useState<TeamResource>()
   const [operationalContractManagers, setOperationalContractManagers] = useState<TeamResource[]>([])
+  const [modalErrorMessage,setModalErrorMessage] = useState<string>()
   const hasAccess = () => user.canWrite()
   const history = useHistory()
   const params = useParams<{ id?: string }>()
@@ -48,11 +48,7 @@ const DataProcessorView = () => {
       })()
       setShowEditDataProcessorModal(false)
     } catch (err) {
-      // if (err.response.data.message.includes('already exists')) {
-      //   setErrorProcessModal('Behandlingen eksisterer allerede.')
-      //   return
-      // }
-      // setErrorProcessModal(err.response.data.message)
+      setModalErrorMessage(err.response.data.message)
     }
   }
 
@@ -62,12 +58,8 @@ const DataProcessorView = () => {
       history.push("/dataProcessor/")
       return true
     } catch (err) {
+      setModalErrorMessage(err.response.data.message)
       return false
-      // if (err.response.data.message.includes('already exists')) {
-      //   setErrorProcessModal('Behandlingen eksisterer allerede.')
-      //   return
-      // }
-      // setErrorProcessModal(err.response.data.message)
     }
   }
 
@@ -99,7 +91,6 @@ const DataProcessorView = () => {
 
   return (
     <>
-
       <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
         <H4 marginTop="0">{currentDataProcessor?.name}</H4>
         <Block marginTop={'auto'}>
@@ -151,7 +142,6 @@ const DataProcessorView = () => {
                   <TextWithLabel label={intl.contractOwner} text={currentDataProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
-
                   <TextWithLabel label={intl.dataProcessor} text={""}>
                     <Block {...blockProps}>
                       {currentDataProcessor?.outsideEU === null && intl.unclarified}
@@ -160,7 +150,6 @@ const DataProcessorView = () => {
                     <>
                       {currentDataProcessor.outsideEU &&
                       <Block>
-                        {/*<Block>{intl.dataProcessorYes}</Block>*/}
                         <Block {...blockProps}>
                           <span>{intl.isDataProcessedOutsideEUEEA} </span>
                           <span>{boolToText(currentDataProcessor.outsideEU)}</span>
@@ -185,10 +174,11 @@ const DataProcessorView = () => {
                 </FlexGridItem>
               </FlexGrid>
               <DataProcessorModal
-                title={"Test"}
+                title={intl.dataProcessor}
                 isOpen={showEditDataProcessorModal}
                 initialValues={convertDataProcessorToFormValues(currentDataProcessor)}
                 submit={handleEditDataProcessor}
+                errorMessage={modalErrorMessage}
                 onClose={() => setShowEditDataProcessorModal(false)}
               />
               <DeleteDataProcessorModal
@@ -196,7 +186,7 @@ const DataProcessorView = () => {
                 dataProcessor={currentDataProcessor}
                 submitDeleteDataProcessor={handleDeleteDataProcessor}
                 onClose={() => setShowDeleteDataProcessorModal(false)}
-                errorDataProcessorModal={""}/>
+                errorDataProcessorModal={modalErrorMessage}/>
             </Block>
           </Block>) : <Spinner size={theme.sizing.scale1200}/>
       }
