@@ -257,6 +257,7 @@ export interface IStrings {
   deleteDataProcessorText: string;
   confirmDeleteProcessText: string;
   confirmDeleteDataProcessorText: string;
+  notFoundDataProcessor: string;
   confirmDeleteDocumentText: string;
   confirmDeleteDpProcess: string;
   cannotDeleteProcess: string;
@@ -317,7 +318,7 @@ export interface IStrings {
   disclosureNameTooltip: string;
   disclosurePurposeTooltip: string;
   disclosureDescriptionTooltip: string;
-  disclosureDocumentTooltip:string;
+  disclosureDocumentTooltip: string;
   shortcutSubtitleProcess: string;
   shortcutSubtitleInformationtype: string;
   shortcutSubtitleThirdParty: string;
@@ -391,10 +392,10 @@ export interface IStrings {
   addManyFromSystem: string;
   level: string;
   type: string;
-  help:string;
-  helpTooltip:string;
+  help: string;
+  helpTooltip: string;
   allProcesses: string;
-  navResponsible:string;
+  navResponsible: string;
   completedProcesses: string;
   showCompletedProcesses: string;
   inProgressProcesses: string;
@@ -433,9 +434,9 @@ export interface IStrings {
   fomDateHelpText: string;
   tomDateHelpText: string;
   mailLog: string;
-  deliverAbroad:string;
-  socialSecurityAgreement:string;
-  socialSecurityArea:string;
+  deliverAbroad: string;
+  socialSecurityAgreement: string;
+  socialSecurityArea: string;
 
   code: string;
   codes: string;
@@ -504,8 +505,8 @@ export interface IStrings {
   noPotentialPersonalCategoryUsageInTable: string;
   usesAllInformationTypes: string;
   noAuditsAvailableInTable: string;
-  noDisclosuresToThirdPartyAvailableInTable:string;
-  noRetrievedFromThirdPartyAvailableInTable:string;
+  noDisclosuresToThirdPartyAvailableInTable: string;
+  noRetrievedFromThirdPartyAvailableInTable: string;
   noAlertsAvailableInTable: string;
 
 }

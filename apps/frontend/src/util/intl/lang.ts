@@ -503,6 +503,7 @@ export const no: IStrings = {
   transferPanelTitle: 'Overføres data til utlandet',
   mainPageMessage: "Hva vil du gjøre?",
   mainPageEventsMessage: "Hva har endret seg i det siste?",
+  notFoundDataProcessor: "Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
 };
 
 export const en: IStrings = {
@@ -1007,6 +1008,7 @@ export const en: IStrings = {
   transferPanelTitle : 'Transfer data to abroad',
   mainPageMessage: "What do you want to do?",
   mainPageEventsMessage: "What has changed lately?",
+  notFoundDataProcessor: "Data processor is not registered in the solution. Register the data processor first.",
 };
 
 export const ta = {

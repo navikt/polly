@@ -2,10 +2,21 @@ import axios from "axios"
 import {DataProcessor, DataProcessorFormValues, PageResponse} from "../constants"
 import {env} from "../util/env"
 import {mapBool} from "../util/helper-functions";
+import {useDebouncedState} from "../util";
+import {default as React, Dispatch, SetStateAction, useEffect} from "react";
+import {Option} from "baseui/select";
 
 
 export const getDataProcessor = async (dataProcessorId: string) => {
   return (await axios.get<DataProcessor>(`${env.pollyBaseUrl}/processor/${dataProcessorId}`)).data
+}
+
+export const getDataProcessorsByIds = async (ids: string[]) => {
+  let dataProcessors: DataProcessor[] = []
+  for (const id of ids) {
+    dataProcessors = [...dataProcessors, await getDataProcessor(id)]
+  }
+  return dataProcessors
 }
 
 export const getDataProcessorsByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
@@ -79,3 +90,27 @@ export const convertFormValuesToDataProcessor = (values: DataProcessorFormValues
   }
 }
 
+export const useDataProcessorSearch = () => {
+  const [dataProcessorSearch, setDataProcessorSearch] = useDebouncedState<string>('', 200)
+  const [dataProcessorSearchResult, setDataProcessorSearchResult] = React.useState<Option[]>([])
+  const [loading, setLoading] = React.useState<boolean>(false)
+
+  useEffect(() => {
+    (async () => {
+      if (dataProcessorSearch && dataProcessorSearch.length > 2) {
+        setLoading(true)
+        setDataProcessorSearchResult((await searchDataProcessor(dataProcessorSearch)).content.map((dp) => {
+          return {
+            id: dp.id,
+            label: dp.name
+          }
+        }))
+        setLoading(false)
+      } else {
+        setDataProcessorSearchResult([])
+      }
+    })()
+  }, [dataProcessorSearch])
+
+  return [dataProcessorSearchResult, setDataProcessorSearch, loading] as [DataProcessor[], Dispatch<SetStateAction<string>>, boolean]
+}

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {ProcessFormValues, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../../../constants'
+import {ProcessFormValues, ProcessStatus} from '../../../constants'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
 import {Panel, PanelOverrides, StatelessAccordion} from 'baseui/accordion'
@@ -19,7 +19,6 @@ import FieldSubDepartments from '../../common/FieldSubDepartments'
 import FieldProductTeam from '../../common/form/FieldProductTeam'
 import FieldProduct from '../../common/FieldProduct'
 import BoolField from '../common/BoolField'
-import FieldDataProcessorAgreements from '../common/FieldDataProcessorAgreements'
 import RetentionItems from '../common/RetentionItems'
 import {ALIGN, Radio, RadioGroup} from 'baseui/radio'
 import DpiaItems from '../common/DpiaItems'
@@ -31,15 +30,15 @@ import {env} from '../../../util/env'
 import {writeLog} from '../../../api/LogApi'
 import FieldLegalBasis from "../common/FieldLegalBasis";
 import PanelTitle from "../common/PanelTitle";
-import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutsideEU'
-import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
-import FieldTransferCountries from '../common/FieldTransferCountries'
 import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
 import {Select, Value} from "baseui/select";
 import {useDisclosureSearch} from "../../../api";
 import {renderTagList} from "../../common/TagList";
 import {codelist, ListName} from "../../../service/Codelist";
 import {disableEnter} from "../../../util/helper-functions";
+import {FlexGridItem} from "baseui/flex-grid";
+import {getDataProcessorsByIds} from "../../../api/DataProcessorApi";
+import FieldDataProcessors from "../common/FieldDataProcessors";
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -90,6 +89,9 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
   const [expanded, setExpanded] = useState<React.Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
   const [disclosureSearchResult, setDisclosureSearch, disclosureSearchLoading] = useDisclosureSearch()
+
+  // const [dataProcessorValue, setDataProcessorValue] = React.useState<Option>(formInitialValues.term ? [{id: formInitialValues.term, label: formInitialValues.term}] : []);
+  const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<Value>([])
 
   const expand = (panelKey: string) => {
@@ -97,6 +99,15 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
       setExpanded([panelKey])
     }
   }
+
+  useEffect(() => {
+    (async () => {
+      if (initialValues.dataProcessing.dataProcessorAgreements && initialValues.dataProcessing.dataProcessorAgreements?.length > 0) {
+        const res = await getDataProcessorsByIds(initialValues.dataProcessing.dataProcessorAgreements)
+        res.forEach(d => dataProcessors.set(d.id, d.name))
+      }
+    })()
+  }, [])
 
   return (
     <Modal
@@ -300,37 +311,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       {formikBag.values.dataProcessing.dataProcessor && <>
                         <Block {...rowBlockProps}>
                           <ModalLabel label={intl.dataProcessorAgreement}/>
-                          <FieldDataProcessorAgreements formikBag={formikBag}/>
+                          <FieldDataProcessors formikBag={formikBag} dataProcessors={dataProcessors}/>
                         </Block>
-                        <Error fieldName='dataProcessing.dataProcessorAgreement'/>
-
-                        <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
-                          <BoolField fieldName='dataProcessing.dataProcessorOutsideEU'
-                                     value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
-                        </Block>
-                        {formikBag.values.dataProcessing.dataProcessorOutsideEU &&
-                        <>
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
-                            <FieldTransferGroundsOutsideEU
-                              code={formikBag.values.dataProcessing.transferGroundsOutsideEU}/>
-                          </Block>
-                          <Error fieldName='dataProcessing.transferGroundsOutsideEU'/>
-
-                          {formikBag.values.dataProcessing.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
-                            <FieldTransferGroundsOutsideEUOther/>
-                          </Block>}
-                          <Error fieldName='dataProcessing.transferGroundsOutsideEUOther'/>
-
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.countries}/>
-                            <FieldTransferCountries formikBag={formikBag}/>
-                          </Block>
-                          <Error fieldName='dataProcessing.transferCountries'/>
-                        </>}
+                        <Error fieldName='dataProcessing.dataProcessorAgreements'/>
+                        <FlexGridItem>
+                        </FlexGridItem>
                       </>}
                     </Panel>
                     <Panel key='retention'
@@ -365,12 +350,12 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         name='disclosures'
                         render={arrayHelpers => (
                           <>
-                            <Block width='100%' >
+                            <Block width='100%'>
                               <Block width='100%'>
                                 <Select
                                   placeholder={intl.disclosures}
                                   disabled={thirdParty.length === 0}
-                                  options={thirdParty.length ? disclosureSearchResult.filter(d => d.recipient.code === thirdParty[0].id).filter(d=>!formikBag.values.disclosures.map(value => value.id).includes(d.id)) : disclosureSearchResult}
+                                  options={thirdParty.length ? disclosureSearchResult.filter(d => d.recipient.code === thirdParty[0].id).filter(d => !formikBag.values.disclosures.map(value => value.id).includes(d.id)) : disclosureSearchResult}
                                   onInputChange={event => {
                                     setDisclosureSearch(event.currentTarget.value)
                                   }}

@@ -1,13 +1,13 @@
-import {Disclosure, Dpia, Process, ProcessStatus} from '../../../constants'
+import {DataProcessor, Disclosure, Dpia, Process, ProcessStatus} from '../../../constants'
 import * as React from 'react'
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import {getResourceById} from '../../../api'
 import {codelist, ListName} from '../../../service/Codelist'
 import {Block} from 'baseui/block'
 import {intl, theme} from '../../../util'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {ActiveIndicator} from '../../common/Durations'
-import {DotTags} from '../../common/DotTag'
+import {DotTag, DotTags} from '../../common/DotTag'
 import {TeamList} from '../../common/Team'
 import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
@@ -18,6 +18,7 @@ import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import RouteLink, {ObjectLink} from "../../common/RouteLink";
 import DataText from "../../common/DataText";
 import {getNoDpiaLabel, shortenLinksInText} from "../../../util/helper-functions";
+import {getDataProcessorsByIds} from "../../../api/DataProcessorApi";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -60,6 +61,7 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
+  const [dataProcessors, setDataProcessors] = useState<DataProcessor[]>([])
 
   useEffect(() => {
     (async () => {
@@ -70,6 +72,15 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
       }
     })()
   }, [process])
+
+  useEffect(() => {
+    (async () => {
+      if (process.dataProcessing.dataProcessorAgreements && process.dataProcessing.dataProcessorAgreements?.length > 0) {
+        const res = await getDataProcessorsByIds(process.dataProcessing.dataProcessorAgreements)
+        setDataProcessors([...res])
+      }
+    })()
+  }, [])
 
   const subjectCategoriesSummarised = uniqBy(process.policies.flatMap(p => p.subjectCategories), 'code')
 
@@ -176,7 +187,17 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
                 <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
                   {`${intl.dataProcessorAgreement}: `}
                 </Block>
-                <DotTags items={process.dataProcessing.dataProcessorAgreements} markdown/>
+                <Block display='flex' flexWrap>
+                  {dataProcessors.map((dp, i) => (
+                    <Block key={i} marginRight={i < dataProcessors.length ? theme.sizing.scale200 : 0}>
+                      <DotTag>
+                        <RouteLink href={"/DataProcessor/"+dp.id}>
+                          {dp.name}
+                        </RouteLink>
+                      </DotTag>
+                    </Block>
+                  ))}
+                </Block>
               </Block>
               }
             </Block>
