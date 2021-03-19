@@ -75,6 +75,13 @@ export const convertDataProcessorToFormValues = (values?: Partial<DataProcessor>
   }
 }
 
+export const convertDataProcessorToOption = (dataProcessor:DataProcessor)=>{
+  return {
+    id:dataProcessor.id,
+    label: dataProcessor.name
+  }
+}
+
 export const convertFormValuesToDataProcessor = (values: DataProcessorFormValues) => {
   return {
     id: values.id,
@@ -99,12 +106,7 @@ export const useDataProcessorSearch = () => {
     (async () => {
       if (dataProcessorSearch && dataProcessorSearch.length > 2) {
         setLoading(true)
-        setDataProcessorSearchResult((await searchDataProcessor(dataProcessorSearch)).content.map((dp) => {
-          return {
-            id: dp.id,
-            label: dp.name
-          }
-        }))
+        setDataProcessorSearchResult((await searchDataProcessor(dataProcessorSearch)).content.map(convertDataProcessorToOption))
         setLoading(false)
       } else {
         setDataProcessorSearchResult([])
