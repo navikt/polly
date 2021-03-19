@@ -189,8 +189,8 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
                 </Block>
                 <Block display='flex' flexWrap>
                   {dataProcessors.map((dp, i) => (
-                    <Block key={i} marginRight={i < dataProcessors.length ? theme.sizing.scale200 : 0}>
-                      <DotTag>
+                    <Block key={dp.id} marginRight={i < dataProcessors.length ? theme.sizing.scale200 : 0}>
+                      <DotTag key={dp.id}>
                         <RouteLink href={"/DataProcessor/"+dp.id}>
                           {dp.name}
                         </RouteLink>
