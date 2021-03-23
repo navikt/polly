@@ -12,11 +12,11 @@ export const getDataProcessor = async (dataProcessorId: string) => {
 }
 
 export const getDataProcessorsByIds = async (ids: string[]) => {
-  let dataProcessors: DataProcessor[] = []
+  const dataProcessesPromise: Promise<any>[] = []
   for (const id of ids) {
-    dataProcessors = [...dataProcessors, await getDataProcessor(id)]
+    dataProcessesPromise.push(getDataProcessor(id))
   }
-  return dataProcessors
+  return dataProcessesPromise.length > 0 ? (await Promise.all(dataProcessesPromise)) : []
 }
 
 export const getDataProcessorsByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
@@ -75,9 +75,9 @@ export const convertDataProcessorToFormValues = (values?: Partial<DataProcessor>
   }
 }
 
-export const convertDataProcessorToOption = (dataProcessor:DataProcessor)=>{
+export const convertDataProcessorToOption = (dataProcessor: DataProcessor) => {
   return {
-    id:dataProcessor.id,
+    id: dataProcessor.id,
     label: dataProcessor.name
   }
 }
