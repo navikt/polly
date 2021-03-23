@@ -90,7 +90,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
   const [disclosureSearchResult, setDisclosureSearch, disclosureSearchLoading] = useDisclosureSearch()
 
-  // const [dataProcessorValue, setDataProcessorValue] = React.useState<Option>(formInitialValues.term ? [{id: formInitialValues.term, label: formInitialValues.term}] : []);
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<Value>([])
 
