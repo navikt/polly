@@ -43,11 +43,11 @@ export const searchResourceByName = async (resourceName: string) => {
 }
 
 export const getResourcesByIds = async (ids: string[]) => {
-  let resources: TeamResource[] = []
+  const resourcesPromise: Promise<any>[] = []
   for (const id of ids) {
-    resources = [...resources, await getResourceById(id)]
+    resourcesPromise.push(getResourceById(id))
   }
-  return resources
+  return resourcesPromise.length > 0 ? (await Promise.all(resourcesPromise)) : []
 }
 
 export const mapTeamResourceToOption = (teamResource: TeamResource) => ({id: teamResource.navIdent, label: teamResource.fullName})
