@@ -31,15 +31,17 @@
         <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <docx4j.version>11.2.8</docx4j.version>
 
-        <microsoft-graph.version>2.10.0</microsoft-graph.version>
+        <microsoft-graph.version>3.0.0</microsoft-graph.version>
         <msal4j.version>1.9.1</msal4j.version>
 
         <!-- transitive versions -->
         <commons-compress.version>1.20</commons-compress.version>
         <commons-io.version>2.8.0</commons-io.version>
-        <guava.version>30.1-jre</guava.version>
+        <guava.version>30.1.1-jre</guava.version>
         <json-smart.version>2.3</json-smart.version>
         <jna.version>5.7.0</jna.version>
+        <jetbrains.annotation.version>20.1.0</jetbrains.annotation.version>
+        <stax2-api.version>4.2.1</stax2-api.version>
 
         <!-- Test -->
         <testcontainers.version>1.15.2</testcontainers.version>
@@ -99,6 +101,13 @@
                 <groupId>com.microsoft.graph</groupId>
                 <artifactId>microsoft-graph</artifactId>
                 <version>${microsoft-graph.version}</version>
+                <exclusions>
+                    <!-- dependency used for intellij plugins... includes old unsecure transitive dependencies -->
+                    <exclusion>
+                        <groupId>org.linguafranca.pwdb</groupId>
+                        <artifactId>KeePassJava2</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
@@ -110,6 +119,21 @@
                         <artifactId>oauth2-oidc-sdk</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${jetbrains.annotation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>stax2-api</artifactId>
+                <version>${stax2-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
