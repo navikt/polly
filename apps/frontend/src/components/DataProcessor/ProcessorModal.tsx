@@ -5,7 +5,7 @@ import {Block, BlockProps} from "baseui/block";
 import {Field, FieldProps, Form, Formik} from "formik";
 import {dataProcessorSchema} from "../common/schema";
 import {Button, KIND} from "baseui/button";
-import {DataProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
+import {ProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
 import {disableEnter} from "../../util/helper-functions";
 import CustomizedModalBlock from "../common/CustomizedModalBlock";
 import {Error, ModalLabel} from "../common/ModalSchema";
@@ -22,12 +22,12 @@ import FieldCountries from "./components/FieldCountries";
 import {getResourcesByIds} from "../../api";
 import {intl, theme} from "../../util";
 
-type ModalDataProcessorProps = {
+type ModalProcessorProps = {
   title: string
   isOpen: boolean
-  initialValues: DataProcessorFormValues
+  initialValues: ProcessorFormValues
   errorMessage: any | undefined
-  submit: (dataProcessor: DataProcessorFormValues) => void
+  submit: (processor: ProcessorFormValues) => void
   onClose: () => void
 }
 
@@ -65,7 +65,7 @@ const rowBlockProps: BlockProps = {
   marginTop: '1rem',
 }
 
-const DataProcessorModal = (props: ModalDataProcessorProps) => {
+const ProcessorModal = (props: ModalProcessorProps) => {
 
   const [expanded, setExpanded] = useState<React.Key[]>([])
   const [operationalContractManagers, setOperationalContractManagers] = useState(new Map<string, string>())
@@ -111,7 +111,7 @@ const DataProcessorModal = (props: ModalDataProcessorProps) => {
                     <ModalLabel label={intl.name}/>
                     <Field
                       name='name'
-                      render={({field, form}: FieldProps<string, DataProcessorFormValues>) => (
+                      render={({field, form}: FieldProps<string, ProcessorFormValues>) => (
                         <Input {...field} type='input' size={InputSIZE.default} autoFocus
                                error={!!form.errors.name && form.touched.name}/>
                       )}
@@ -123,7 +123,7 @@ const DataProcessorModal = (props: ModalDataProcessorProps) => {
                     <ModalLabel label={intl.contract}/>
                     <Field
                       name='contract'
-                      render={({field, form}: FieldProps<string, DataProcessorFormValues>) => (
+                      render={({field, form}: FieldProps<string, ProcessorFormValues>) => (
                         <Input {...field} type='input' size={InputSIZE.default}
                                error={!!form.errors.contract && form.touched.contract}/>
                       )}
@@ -206,4 +206,4 @@ const DataProcessorModal = (props: ModalDataProcessorProps) => {
   )
 }
 
-export default DataProcessorModal
+export default ProcessorModal

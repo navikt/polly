@@ -4,7 +4,6 @@ import {
   AffiliationFormValues,
   CreateDocumentFormValues,
   DataProcessingFormValues,
-  DataProcessorFormValues,
   Disclosure,
   DisclosureAbroad,
   DisclosureFormValues,
@@ -22,6 +21,7 @@ import {
   PolicyFormValues,
   Process,
   ProcessFormValues,
+  ProcessorFormValues,
   ProcessShort,
   ProcessStatus,
   Retention,
@@ -84,7 +84,7 @@ const dataProcessingSchema = () =>
   })
 
 export const dataProcessorSchema = () =>
-  yup.object<DataProcessorFormValues>(
+  yup.object<ProcessorFormValues>(
     {
       name: yup.string().max(max, maxError()).required(intl.required),
       outsideEU: yup.boolean(),

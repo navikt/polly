@@ -2,11 +2,11 @@ import * as React from 'react'
 import {Select} from 'baseui/select'
 import {codelist} from '../../../service/Codelist'
 import {FieldArray, FormikProps} from 'formik'
-import {DataProcessorFormValues} from '../../../constants'
+import {ProcessorFormValues} from '../../../constants'
 import {Block} from 'baseui/block'
 import {renderTagList} from "../../common/TagList"
 
-const FieldCountries = (props: {formikBag: FormikProps<DataProcessorFormValues>}) => {
+const FieldCountries = (props: {formikBag: FormikProps<ProcessorFormValues>}) => {
   const countries = props.formikBag.values.countries
 
   return (

@@ -37,7 +37,7 @@ import {renderTagList} from "../../common/TagList";
 import {codelist, ListName} from "../../../service/Codelist";
 import {disableEnter} from "../../../util/helper-functions";
 import {FlexGridItem} from "baseui/flex-grid";
-import {getDataProcessorsByIds} from "../../../api/DataProcessorApi";
+import {getProcessorsByIds} from "../../../api/ProcessorApi";
 import FieldDataProcessors from "../common/FieldDataProcessors";
 
 const modalHeaderProps: BlockProps = {
@@ -102,7 +102,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
   useEffect(() => {
     (async () => {
       if (initialValues.dataProcessing.dataProcessorAgreements && initialValues.dataProcessing.dataProcessorAgreements?.length > 0) {
-        const res = await getDataProcessorsByIds(initialValues.dataProcessing.dataProcessorAgreements)
+        const res = await getProcessorsByIds(initialValues.dataProcessing.dataProcessorAgreements)
         res.forEach(d => dataProcessors.set(d.id, d.name))
       }
     })()
@@ -298,18 +298,18 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     </Panel>
 
                     <Panel key='dataProcessor'
-                           title={<PanelTitle title={intl.dataProcessor} expanded={expanded.indexOf('dataProcessor') >= 0}/>}
+                           title={<PanelTitle title={intl.processor} expanded={expanded.indexOf('dataProcessor') >= 0}/>}
                            overrides={{...panelOverrides}}
                     >
                       <Block {...rowBlockProps} marginTop={0}>
-                        <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
+                        <ModalLabel label={intl.isProcessorUsed} tooltip={intl.processorHelpText}/>
                         <BoolField fieldName='dataProcessing.dataProcessor'
                                    value={formikBag.values.dataProcessing.dataProcessor}/>
                       </Block>
 
                       {formikBag.values.dataProcessing.dataProcessor && <>
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.dataProcessorAgreement}/>
+                          <ModalLabel label={intl.processorAgreement}/>
                           <FieldDataProcessors formikBag={formikBag} dataProcessors={dataProcessors}/>
                         </Block>
                         <Error fieldName='dataProcessing.dataProcessorAgreements'/>

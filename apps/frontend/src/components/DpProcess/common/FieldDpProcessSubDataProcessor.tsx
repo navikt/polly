@@ -27,7 +27,7 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
 
       {formikBag.values.subDataProcessing.dataProcessor && <>
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.dataProcessorAgreement}/>
+          <ModalLabel label={intl.processorAgreement}/>
           <FieldDpProcessSubDataProcessorAgreements formikBag={formikBag}/>
         </Block>
         <Error fieldName='subDataProcessing.dataProcessorAgreement'/>

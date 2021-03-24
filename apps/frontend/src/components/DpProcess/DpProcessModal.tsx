@@ -150,7 +150,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   </CustomizedModalBlock>
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.dataProcessorAgreement}/>
+                    <ModalLabel label={intl.processorAgreement}/>
                     <FieldDpProcessDataProcessingAgreements formikBag={formikBag}/>
                   </Block>
                   <Error fieldName='dataProcessingAgreements'/>

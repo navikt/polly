@@ -5,7 +5,7 @@ import {Block} from 'baseui/block'
 import {ProcessFormValues} from "../../../constants";
 import {Select} from "baseui/select";
 import {renderTagList} from "../../common/TagList";
-import {getDataProcessorsByIds, useDataProcessorSearch} from "../../../api/DataProcessorApi";
+import {getProcessorsByIds, useProcessorSearch} from "../../../api/ProcessorApi";
 import {intl} from "../../../util";
 
 type fieldDataProcessorsProps = {
@@ -14,13 +14,13 @@ type fieldDataProcessorsProps = {
 }
 
 const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
-  const [dataProcessorSearchResult, setDataProcessorSearch, dataProcessorLoading] = useDataProcessorSearch()
+  const [dataProcessorSearchResult, setDataProcessorSearch, dataProcessorLoading] = useProcessorSearch()
   const [dataProcessors, setDataProcessors] = useState(props.dataProcessors ? props.dataProcessors : new Map<string, string>())
 
   useEffect(() => {
     (async () => {
       if (props.formikBag.values.dataProcessing.dataProcessorAgreements && props.formikBag.values.dataProcessing.dataProcessorAgreements?.length > 0) {
-        const res = await getDataProcessorsByIds(props.formikBag.values.dataProcessing.dataProcessorAgreements)
+        const res = await getProcessorsByIds(props.formikBag.values.dataProcessing.dataProcessorAgreements)
         res.forEach(r => dataProcessors.set(r.id, r.name))
       }
     })()
@@ -34,7 +34,7 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
           <Block width='100%'>
             <Select
               clearable
-              noResultsMsg={intl.notFoundDataProcessor}
+              noResultsMsg={intl.notFoundProcessor}
               options={dataProcessorSearchResult.filter(dp => !props.formikBag.values.dataProcessing.dataProcessorAgreements.includes(dp.id ? dp.id.toString() : ''))}
               onChange={(params) => {
                 if (params.value[0].id && params.value[0].label) {

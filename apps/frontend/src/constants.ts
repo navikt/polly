@@ -531,7 +531,7 @@ export interface DocumentInformationTypes {
   subjectCategories: string[];
 }
 
-export interface DataProcessor {
+export interface Processor {
   id: string;
   name: string;
   contract?: string;
@@ -545,7 +545,7 @@ export interface DataProcessor {
   changeStamp?: ChangeStamp;
 }
 
-export interface DataProcessorFormValues {
+export interface ProcessorFormValues {
   id?: string;
   name: string;
   contract?: string;

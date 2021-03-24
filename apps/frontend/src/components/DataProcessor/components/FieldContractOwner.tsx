@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect} from 'react'
 import {Select, Value} from 'baseui/select'
 import {Field, FieldProps} from 'formik'
-import {DataProcessorFormValues} from '../../../constants'
+import {ProcessorFormValues} from '../../../constants'
 import {Block} from 'baseui/block'
 import {getResourceById, useTeamResourceSearch} from '../../../api'
 
@@ -24,7 +24,7 @@ const FieldContractOwner = (props: { contractOwner?: string }) => {
   return (
     <Field
       name="contractOwner"
-      render={({form, field}: FieldProps<DataProcessorFormValues>) => (
+      render={({form, field}: FieldProps<ProcessorFormValues>) => (
         <Block width={'100%'}>
           <Select
             options={teamResourceSearchResult}

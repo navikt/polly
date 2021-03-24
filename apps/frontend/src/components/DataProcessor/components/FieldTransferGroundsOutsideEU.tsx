@@ -2,7 +2,7 @@ import * as React from "react";
 import {Select, Value} from "baseui/select";
 import {codelist, ListName} from "../../../service/Codelist";
 import {Field, FieldProps} from "formik";
-import {DataProcessorFormValues} from "../../../constants";
+import {ProcessorFormValues} from "../../../constants";
 import {Block} from "baseui/block";
 
 const FieldTransferGroundsOutsideEU = (props: {code?: string}) => {
@@ -15,7 +15,7 @@ const FieldTransferGroundsOutsideEU = (props: {code?: string}) => {
   return (
     <Field
       name='transferGroundsOutsideEU'
-      render={({form}: FieldProps<string, DataProcessorFormValues>) => (
+      render={({form}: FieldProps<string, ProcessorFormValues>) => (
         <Block width={'100%'}>
           <Select
             options={codelist.getParsedOptions(ListName.TRANSFER_GROUNDS_OUTSIDE_EU)}

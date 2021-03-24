@@ -152,7 +152,7 @@ const DpProcessView = () => {
                   {isDataProcessingAgreementsAvailable &&
                   <Block display='flex' alignItems="center">
                     <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
-                      {`${intl.dataProcessorAgreement}: `}
+                      {`${intl.processorAgreement}: `}
                     </Block>
                     <DotTags items={dpProcess?.dataProcessingAgreements} markdown/>
                   </Block>
@@ -164,18 +164,18 @@ const DpProcessView = () => {
 
           <DataText label={intl.subDataProcessor} text={""}>
             <>
-              {dpProcess?.subDataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
-              {dpProcess?.subDataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+              {dpProcess?.subDataProcessing?.dataProcessor === null && intl.processorUnclarified}
+              {dpProcess?.subDataProcessing?.dataProcessor === false && intl.processorNo}
             </>
             <>
               {dpProcess?.subDataProcessing?.dataProcessor &&
               <Block>
-                <Block>{intl.dataProcessorYes}</Block>
+                <Block>{intl.processorYes}</Block>
                 <Block>
                   {isSubDataProcessorAgreementsAvailable &&
                   <Block display='flex' alignItems="center">
                     <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
-                      {`${intl.dataProcessorAgreement}: `}
+                      {`${intl.processorAgreement}: `}
                     </Block>
                     <DotTags items={dpProcess?.subDataProcessing.dataProcessorAgreements} markdown/>
                   </Block>

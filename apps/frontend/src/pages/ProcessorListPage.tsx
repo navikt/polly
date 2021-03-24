@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {convertDataProcessorToFormValues, createDataProcessor, getDataProcessorsByPageAndPageSize} from "../api/DataProcessorApi";
-import {DataProcessor, DataProcessorFormValues} from "../constants";
+import {convertProcessorToFormValues, createProcessor, getProcessorsByPageAndPageSize} from "../api/ProcessorApi";
+import {Processor, ProcessorFormValues} from "../constants";
 import {intl, theme} from "../util";
 import {H4, Label1} from "baseui/typography";
 import {Block} from "baseui/block";
@@ -8,36 +8,36 @@ import Button from "../components/common/Button";
 import {user} from "../service/User";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
-import DataProcessorModal from "../components/DataProcessor/DataProcessorModal";
+import ProcessorModal from "../components/DataProcessor/ProcessorModal";
 import {getAll} from "../api";
 import AlphabeticList from "../components/common/AlphabeticList";
 import {Spinner} from "../components/common/Spinner";
 import {useHistory} from "react-router-dom";
 
 
-export const DataProcessorListPage = () => {
-  const [dataProcessors, setDataProcessors] = useState<DataProcessor[]>([])
-  const [showCreateDataProcessorModal, setShowCreateDataProcessorModal] = useState<boolean>(false)
+export const ProcessorListPage = () => {
+  const [processors, setProcessors] = useState<Processor[]>([])
+  const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [modalErrorMessage,setModalErrorMessage] = useState<string>()
   const history = useHistory()
   const hasAccess = () => user.canWrite()
 
-  const fetchDataProcessors = async () => {
-    const res = (await getAll(getDataProcessorsByPageAndPageSize)())
+  const fetchProcessors = async () => {
+    const res = (await getAll(getProcessorsByPageAndPageSize)())
     if(res){
-      setDataProcessors(res)
+      setProcessors(res)
     }
   }
 
-  const handleCreateDataProcessor = (dataProcessor: DataProcessorFormValues) => {
-    if (!dataProcessor) return
+  const handleCreateProcessor = (processor: ProcessorFormValues) => {
+    if (!processor) return
     try {
       (async()=>{
-        const newDataProcessor = await createDataProcessor(dataProcessor)
+        const newDataProcessor = await createProcessor(processor)
         history.push(`/dataProcessor/${newDataProcessor.id}`)
       })()
-      setShowCreateDataProcessorModal(false)
+      setShowCreateProcessorModal(false)
     } catch (err) {
       setModalErrorMessage(err.response.data.message)
     }
@@ -45,46 +45,46 @@ export const DataProcessorListPage = () => {
 
   useEffect(() => {
     setIsLoading(true)
-    fetchDataProcessors()
+    fetchProcessors()
     setIsLoading(false)
   }, [])
 
   return isLoading ?
     (<Spinner size={theme.sizing.scale1200}/>) :
     (<>
-        <H4>{intl.dataProcessors}</H4>
+        <H4>{intl.processors}</H4>
         <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Block>
-            <Label1>{intl.dataProcessorSelect}</Label1>
+            <Label1>{intl.processorSelect}</Label1>
           </Block>
 
           <Block marginTop={'auto'}>
             {hasAccess() && (
               <Button
                 kind="outline"
-                onClick={() => setShowCreateDataProcessorModal(true)}
+                onClick={() => setShowCreateProcessorModal(true)}
               >
-                <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createDataProcessor}
+                <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createProcessor}
               </Button>
             )}
           </Block>
         </Block>
         <Block>
-          <AlphabeticList items={dataProcessors.map(value => {
+          <AlphabeticList items={processors.map(value => {
             return {id: value.id, label: value.name}
           })} baseUrl={"/DataProcessor/"}/>
         </Block>
-        <DataProcessorModal
-          title={intl.createDataProcessor}
-          isOpen={showCreateDataProcessorModal}
-          initialValues={convertDataProcessorToFormValues({})}
-          submit={handleCreateDataProcessor}
+        <ProcessorModal
+          title={intl.createProcessor}
+          isOpen={showCreateProcessorModal}
+          initialValues={convertProcessorToFormValues({})}
+          submit={handleCreateProcessor}
           errorMessage={modalErrorMessage}
-          onClose={() => setShowCreateDataProcessorModal(false)}
+          onClose={() => setShowCreateProcessorModal(false)}
         />
       </>
     )
 }
-export default DataProcessorListPage
+export default ProcessorListPage
 
 

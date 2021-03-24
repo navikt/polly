@@ -35,8 +35,8 @@ import {RequestRevisionPage} from './pages/admin/RequestRevisionPage'
 import {MailLogPage} from './pages/admin/MailLogPage'
 import {DashboardPage} from './pages/DashboardPage'
 import {DisclosureListPage} from './pages/DisclosureListPage'
-import DataProcessorListPage from "./pages/DataProcessorListPage";
-import DataProcessorView from "./components/DataProcessor/DataProcessorView";
+import ProcessorListPage from "./pages/ProcessorListPage";
+import ProcessorView from "./components/DataProcessor/ProcessorView";
 
 export const processPath = '/process/:section/:code/:processId?'
 
@@ -57,8 +57,8 @@ const Routes = (): JSX.Element => (
       <Route exact path="/dpprocess" component={DpProcessPage}/>
       <Route exact path="/dpprocess/:id" component={DpProcessView}/>
 
-      <Route exact path="/dataprocessor" component={DataProcessorListPage}/>
-      <Route exact path="/dataprocessor/:id" component={DataProcessorView}/>
+      <Route exact path="/dataprocessor" component={ProcessorListPage}/>
+      <Route exact path="/dataprocessor/:id" component={ProcessorView}/>
 
 
       <Route exact path="/dashboard/:filterName/:filterValue/:filterStatus" component={PurposeTable}/>

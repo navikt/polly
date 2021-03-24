@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {useHistory, useParams} from "react-router-dom";
-import {DataProcessor, DataProcessorFormValues, TeamResource} from "../../constants";
-import {convertDataProcessorToFormValues, deleteDataProcessor, getDataProcessor, updateDataProcessor} from "../../api/DataProcessorApi";
+import {Processor, ProcessorFormValues, TeamResource} from "../../constants";
+import {convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor} from "../../api/ProcessorApi";
 import {getResourceById, getResourcesByIds} from "../../api";
 import {Block, BlockProps} from "baseui/block";
 import {intl, theme} from "../../util";
@@ -16,19 +16,19 @@ import {boolToText} from "../common/Radio";
 import {codelist} from "../../service/Codelist";
 import {marginZero} from "../common/Style";
 import Button from "../common/Button";
-import DataProcessorModal from "./DataProcessorModal";
-import {DeleteDataProcessorModal} from "./DeleteDataProcessorModal";
+import ProcessorModal from "./ProcessorModal";
+import {DeleteProcessorModal} from "./DeleteProcessorModal";
 
 const blockProps: BlockProps = {
   font: "ParagraphMedium",
   $style: {whiteSpace: 'pre-wrap', ...marginZero},
   display: "flex"
 }
-const DataProcessorView = () => {
+const ProcessorView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [currentDataProcessor, setCurrentDataProcessor] = useState<DataProcessor>()
-  const [showEditDataProcessorModal, setShowEditDataProcessorModal] = useState<boolean>(false)
-  const [showDeleteDataProcessorModal, setShowDeleteDataProcessorModal] = useState<boolean>(false)
+  const [currentProcessor, setCurrentProcessor] = useState<Processor>()
+  const [showEditProcessorModal, setShowEditProcessorModal] = useState<boolean>(false)
+  const [showDeleteProcessorModal, setShowDeleteProcessorModal] = useState<boolean>(false)
   const [contractOwner, setContractOwner] = useState<TeamResource>()
   const [operationalContractManagers, setOperationalContractManagers] = useState<TeamResource[]>([])
   const [modalErrorMessage,setModalErrorMessage] = useState<string>()
@@ -37,24 +37,24 @@ const DataProcessorView = () => {
   const params = useParams<{ id?: string }>()
   const dividerDistance = theme.sizing.scale2400
 
-  const handleEditDataProcessor = (dataProcessor: DataProcessorFormValues) => {
-    if (!dataProcessor) return
+  const handleEditDataProcessor = (processor: ProcessorFormValues) => {
+    if (!processor) return
     try {
       (async () => {
-        const newDataProcessor = await updateDataProcessor(dataProcessor)
+        const newDataProcessor = await updateProcessor(processor)
         setIsLoading(true)
-        setCurrentDataProcessor(await getDataProcessor(newDataProcessor.id))
+        setCurrentProcessor(await getProcessor(newDataProcessor.id))
         setIsLoading(false)
       })()
-      setShowEditDataProcessorModal(false)
+      setShowEditProcessorModal(false)
     } catch (err) {
       setModalErrorMessage(err.response.data.message)
     }
   }
 
-  const handleDeleteDataProcessor = async (dataProcessor: DataProcessor) => {
+  const handleDeleteDataProcessor = async (processor: Processor) => {
     try {
-      await deleteDataProcessor(dataProcessor.id)
+      await deleteProcessor(processor.id)
       history.push("/dataProcessor/")
       return true
     } catch (err) {
@@ -67,7 +67,7 @@ const DataProcessorView = () => {
     (async () => {
       if (params.id) {
         setIsLoading(true)
-        setCurrentDataProcessor(await getDataProcessor(params.id))
+        setCurrentProcessor(await getProcessor(params.id))
         setIsLoading(false)
       }
     })()
@@ -75,37 +75,37 @@ const DataProcessorView = () => {
 
   useEffect(() => {
     (async () => {
-      if (currentDataProcessor?.contractOwner) {
+      if (currentProcessor?.contractOwner) {
         setIsLoading(true)
-        setContractOwner(await getResourceById(currentDataProcessor?.contractOwner))
+        setContractOwner(await getResourceById(currentProcessor?.contractOwner))
         setIsLoading(false)
       }
-      if (currentDataProcessor?.operationalContractManagers) {
+      if (currentProcessor?.operationalContractManagers) {
         setIsLoading(true)
-        setOperationalContractManagers(await getResourcesByIds(currentDataProcessor.operationalContractManagers))
+        setOperationalContractManagers(await getResourcesByIds(currentProcessor.operationalContractManagers))
         setIsLoading(false)
       }
     })()
-  }, [currentDataProcessor])
+  }, [currentProcessor])
 
 
   return (
     <>
       <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
-        <H4 marginTop="0">{currentDataProcessor?.name}</H4>
+        <H4 marginTop="0">{currentProcessor?.name}</H4>
         <Block marginTop={'auto'}>
           {hasAccess() && (
             <>
               <Button
                 kind="outline"
-                onClick={() => setShowEditDataProcessorModal(true)}
+                onClick={() => setShowEditProcessorModal(true)}
               >
                 <FontAwesomeIcon icon={faEdit}/>&nbsp;{intl.edit}
               </Button>
               <Button
                 kind="outline"
                 onClick={() => {
-                  setShowDeleteDataProcessorModal(true)
+                  setShowDeleteProcessorModal(true)
                 }}
                 marginLeft={true}
               >
@@ -116,54 +116,54 @@ const DataProcessorView = () => {
         </Block>
       </Block>
       {
-        !isLoading ? (currentDataProcessor &&
+        !isLoading ? (currentProcessor &&
           <Block display="flex" marginBottom="1rem">
             <Block width="40%" paddingRight={dividerDistance}>
               <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.contract} text={currentDataProcessor.contract ? currentDataProcessor.contract : intl.notFilled}/>
+                  <TextWithLabel label={intl.contract} text={currentProcessor.contract ? currentProcessor.contract : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.contractOwner} text={currentDataProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
+                  <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
                   <TextWithLabel label={intl.operationalContractManagers}
-                                 text={currentDataProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map(r => r.fullName).join(", ") : intl.notFilled}/>
+                                 text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map(r => r.fullName).join(", ") : intl.notFilled}/>
                 </FlexGridItem>
               </FlexGrid>
             </Block>
             <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
               <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.note} text={currentDataProcessor.note ? currentDataProcessor.note : intl.notFilled}/>
+                  <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.contractOwner} text={currentDataProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
+                  <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.dataProcessor} text={""}>
+                  <TextWithLabel label={intl.processor} text={""}>
                     <Block {...blockProps}>
-                      {currentDataProcessor?.outsideEU === null && intl.unclarified}
-                      {currentDataProcessor.outsideEU === false && intl.no}
+                      {currentProcessor?.outsideEU === null && intl.unclarified}
+                      {currentProcessor.outsideEU === false && intl.no}
                     </Block>
                     <>
-                      {currentDataProcessor.outsideEU &&
+                      {currentProcessor.outsideEU &&
                       <Block>
                         <Block {...blockProps}>
                           <span>{intl.isDataProcessedOutsideEUEEA} </span>
-                          <span>{boolToText(currentDataProcessor.outsideEU)}</span>
+                          <span>{boolToText(currentProcessor.outsideEU)}</span>
                         </Block>
-                        {currentDataProcessor.outsideEU &&
+                        {currentProcessor.outsideEU &&
                         <>
                           <Block {...blockProps}>
                             <span>{intl.transferGroundsOutsideEUEEA}: </span>
-                            {currentDataProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentDataProcessor.transferGroundsOutsideEU)} </span>}
-                            {!currentDataProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                            {currentDataProcessor.transferGroundsOutsideEUOther && <span>: {currentDataProcessor.transferGroundsOutsideEUOther}</span>}
+                            {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
+                            {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
+                            {currentProcessor.transferGroundsOutsideEUOther && <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
                           </Block>
-                          {currentDataProcessor.countries && !!currentDataProcessor?.countries.length && <Block {...blockProps}>
+                          {currentProcessor.countries && !!currentProcessor?.countries.length && <Block {...blockProps}>
                             <span>{intl.countries}: </span>
-                            <span>{currentDataProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
+                            <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
                           </Block>}
                         </>
                         }
@@ -172,20 +172,20 @@ const DataProcessorView = () => {
                   </TextWithLabel>
                 </FlexGridItem>
               </FlexGrid>
-              <DataProcessorModal
-                title={intl.dataProcessor}
-                isOpen={showEditDataProcessorModal}
-                initialValues={convertDataProcessorToFormValues(currentDataProcessor)}
+              <ProcessorModal
+                title={intl.processor}
+                isOpen={showEditProcessorModal}
+                initialValues={convertProcessorToFormValues(currentProcessor)}
                 submit={handleEditDataProcessor}
                 errorMessage={modalErrorMessage}
-                onClose={() => setShowEditDataProcessorModal(false)}
+                onClose={() => setShowEditProcessorModal(false)}
               />
-              <DeleteDataProcessorModal
-                isOpen={showDeleteDataProcessorModal}
-                dataProcessor={currentDataProcessor}
-                submitDeleteDataProcessor={handleDeleteDataProcessor}
-                onClose={() => setShowDeleteDataProcessorModal(false)}
-                errorDataProcessorModal={modalErrorMessage}/>
+              <DeleteProcessorModal
+                isOpen={showDeleteProcessorModal}
+                processor={currentProcessor}
+                submitDeleteProcessor={handleDeleteDataProcessor}
+                onClose={() => setShowDeleteProcessorModal(false)}
+                errorProcessorModal={modalErrorMessage}/>
             </Block>
           </Block>) : <Spinner size={theme.sizing.scale1200}/>
       }
@@ -193,4 +193,4 @@ const DataProcessorView = () => {
   )
 }
 
-export default DataProcessorView
+export default ProcessorView

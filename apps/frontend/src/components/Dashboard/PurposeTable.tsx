@@ -66,9 +66,9 @@ const PurposeTable = () => {
     } else if (filterName === ProcessField.AUTOMATION) {
       setTitle(`${intl.automaticProcessing}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR) {
-      setTitle(`${intl.dataProcessor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`${intl.processor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY) {
-      setTitle(`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)} `)
+      setTitle(`${intl.processorAgreement} ${lowerFirst(intl.emptyMessage)} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle(intl.navResponsible)
     } else if(filterName  === ProcessField.DPIA_REFERENCE_MISSING){

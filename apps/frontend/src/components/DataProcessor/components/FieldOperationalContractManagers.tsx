@@ -2,13 +2,13 @@ import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {FieldArray, FormikProps} from 'formik'
 import {Block} from 'baseui/block'
-import {DataProcessorFormValues} from "../../../constants";
+import {ProcessorFormValues} from "../../../constants";
 import {Select} from "baseui/select";
 import {getResourcesByIds, useTeamResourceSearch} from "../../../api";
 import {renderTagList} from "../../common/TagList";
 
 type fieldOperationalContractManagersProps = {
-  formikBag: FormikProps<DataProcessorFormValues>;
+  formikBag: FormikProps<ProcessorFormValues>;
   resources?: Map<string, string>
 }
 
