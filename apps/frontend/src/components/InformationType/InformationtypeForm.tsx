@@ -1,5 +1,5 @@
 import * as React from "react";
-import {KeyboardEvent, useEffect} from "react";
+import {useEffect} from "react";
 import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps} from "formik";
 import {Label2} from "baseui/typography";
 import {Input} from "baseui/input";
@@ -18,6 +18,7 @@ import {infoTypeSchema} from "../common/schema"
 import {renderTagList} from "../common/TagList"
 import {Error} from "../common/ModalSchema"
 import FieldProductTeam from '../common/form/FieldProductTeam'
+import {disableEnter} from "../../util/helper-functions";
 
 const labelProps: BlockProps = {
   marginBottom: "8px",
@@ -86,9 +87,6 @@ const InformationtypeForm = ({
     }
   };
 
-  const disableEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') e.preventDefault()
-  }
   const onAddKeyword = (arrayHelpers: FieldArrayRenderProps) => {
     if (!currentKeywordValue) {
       return

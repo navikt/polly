@@ -102,6 +102,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     'SUB_DEPARTMENT': 'subDepartment',
     'PURPOSE': 'purpose',
     'SYSTEM': 'system',
+    'DATA_PROCESSOR': 'dataprocessor',
     'THIRD_PARTY': 'thirdparty'
   } as { [l: string]: string })[listName]
 
@@ -248,7 +249,6 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       await createPolicies(policies)
       await getProcessById(formValues.process.id)
     } catch (e) {
-      console.log(e)
       setErrorDocumentModal(e.message)
       return false
     }

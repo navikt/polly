@@ -24,6 +24,7 @@ const codelistPage = (listName: ListName, baseUrl: string, title?: string) => ()
   )
 }
 
+
 export const ThirdPartyListPage = codelistPage(ListName.THIRD_PARTY, '/thirdparty/', intl.thirdParties)
 export const SystemListPage = codelistPage(ListName.SYSTEM, '/system/', intl.systems)
 export const PurposeList = codelistPage(ListName.PURPOSE, '/process/purpose/')

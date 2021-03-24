@@ -1,13 +1,13 @@
-import {Disclosure, Dpia, ObjectType, Process, ProcessStatus} from '../../../constants'
+import {Disclosure, Dpia, ObjectType, Process, Processor, ProcessStatus} from '../../../constants'
 import * as React from 'react'
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import {getResourceById} from '../../../api'
 import {codelist, ListName} from '../../../service/Codelist'
 import {Block} from 'baseui/block'
 import {intl, theme} from '../../../util'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {ActiveIndicator} from '../../common/Durations'
-import {DotTags} from '../../common/DotTag'
+import {DotTag, DotTags} from '../../common/DotTag'
 import {TeamList} from '../../common/Team'
 import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
@@ -18,6 +18,7 @@ import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import RouteLink, {ObjectLink} from "../../common/RouteLink";
 import DataText from "../../common/DataText";
 import {getNoDpiaLabel, shortenLinksInText} from "../../../util/helper-functions";
+import {getProcessorsByIds} from "../../../api/ProcessorApi";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -60,6 +61,7 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
+  const [dataProcessors, setDataProcessors] = useState<Processor[]>([])
 
   useEffect(() => {
     (async () => {
@@ -70,6 +72,15 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
       }
     })()
   }, [process])
+
+  useEffect(() => {
+    (async () => {
+      if (process.dataProcessing.dataProcessorAgreements && process.dataProcessing.dataProcessorAgreements?.length > 0) {
+        const res = await getProcessorsByIds(process.dataProcessing.dataProcessorAgreements)
+        setDataProcessors([...res])
+      }
+    })()
+  }, [])
 
   const subjectCategoriesSummarised = uniqBy(process.policies.flatMap(p => p.subjectCategories), 'code')
 
@@ -161,22 +172,32 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
         </Block>
       </DataText>
 
-      <DataText label={intl.dataProcessor} text={""}>
+      <DataText label={intl.processor} text={""}>
         <>
-          {process.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
-          {process.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+          {process.dataProcessing?.dataProcessor === null && intl.processorUnclarified}
+          {process.dataProcessing?.dataProcessor === false && intl.processorNo}
         </>
         <>
           {process.dataProcessing?.dataProcessor &&
           <Block>
-            <Block>{intl.dataProcessorYes}</Block>
+            <Block>{intl.processorYes}</Block>
             <Block>
               {dataProcessorAgreements &&
               <Block display='flex' alignItems="center">
                 <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
-                  {`${intl.dataProcessorAgreement}: `}
+                  {`${intl.processorAgreement}: `}
                 </Block>
-                <DotTags items={process.dataProcessing.dataProcessorAgreements} markdown/>
+                <Block display='flex' flexWrap>
+                  {dataProcessors.map((dp, i) => (
+                    <Block key={dp.id} marginRight={i < dataProcessors.length ? theme.sizing.scale200 : 0}>
+                      <DotTag key={dp.id}>
+                        <RouteLink href={"/DataProcessor/"+dp.id}>
+                          {dp.name}
+                        </RouteLink>
+                      </DotTag>
+                    </Block>
+                  ))}
+                </Block>
               </Block>
               }
             </Block>
@@ -289,9 +310,9 @@ const Completeness = (props: { process: Process }) => {
         <p>{!completeness.automation && intl.automation}</p>
         <p>{!completeness.retention && intl.retention}</p>
         <p>{!completeness.retentionTime && intl.retentionMonths}</p>
-        <p>{!completeness.dataProcessor && intl.dataProcessor}</p>
-        <p>{!completeness.dataProcessorAgreementMissing && intl.dataProcessorAgreement}</p>
-        <p>{!completeness.dataProcessorOutsideEU && intl.dataProcessorOutsideEU}</p>
+        <p>{!completeness.dataProcessor && intl.processor}</p>
+        <p>{!completeness.dataProcessorAgreementMissing && intl.processorAgreement}</p>
+        <p>{!completeness.dataProcessorOutsideEU && intl.processorOutsideEU}</p>
         <p>{!completeness.policies && intl.informationTypes}</p>
         <p>{!completeness.completed && intl.processStatus}</p>
       </Block>}>

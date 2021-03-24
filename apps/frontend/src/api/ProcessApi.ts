@@ -53,7 +53,7 @@ export const getProcessPurposeCount = async (query: 'purpose' | 'department' | '
 }
 
 export const createProcess = async (process: ProcessFormValues) => {
-  let body = mapProcessFromForm(process)
+  let body = convertFormValuesToProcess(process)
   return (await axios.post<Process>(`${env.pollyBaseUrl}/process`, body)).data
 }
 
@@ -62,7 +62,7 @@ export const deleteProcess = async (processId: string) => {
 }
 
 export const updateProcess = async (process: ProcessFormValues) => {
-  let body = mapProcessFromForm(process)
+  let body = convertFormValuesToProcess(process)
   const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
   return data
@@ -142,7 +142,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
   }
 }
 
-export const mapProcessFromForm = (values: ProcessFormValues) => {
+export const convertFormValuesToProcess = (values: ProcessFormValues) => {
   return {
     id: values.id,
     name: values.name,

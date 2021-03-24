@@ -531,6 +531,33 @@ export interface DocumentInformationTypes {
   subjectCategories: string[];
 }
 
+export interface Processor {
+  id: string;
+  name: string;
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers: string[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: Code;
+  transferGroundsOutsideEUOther?: string;
+  countries?: string[];
+  changeStamp?: ChangeStamp;
+}
+
+export interface ProcessorFormValues {
+  id?: string;
+  name: string;
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers?: string[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: string;
+  transferGroundsOutsideEUOther?: string;
+  countries: string[];
+}
+
 export interface AuditItem {
   action: AuditAction;
   id: string;
