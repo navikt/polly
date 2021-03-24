@@ -1,4 +1,5 @@
 import {DataProcessor, Disclosure, Dpia, Process, ProcessStatus} from '../../../constants'
+import {Disclosure, Dpia, ObjectType, Process, ProcessStatus} from '../../../constants'
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {getResourceById} from '../../../api'
@@ -255,9 +256,10 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
           {
             props.disclosures.map(value =>
               <>
-                <ObjectLink id={value.recipient.code} type={ListName.THIRD_PARTY}>{value.recipient.shortName}:{value.name}</ObjectLink>
+                <ObjectLink id={value.id} type={ObjectType.DISCLOSURE}>{value.recipient.shortName}: {value.name}</ObjectLink>
                 &nbsp;
               </>
+
             )
           }
         </Block>
