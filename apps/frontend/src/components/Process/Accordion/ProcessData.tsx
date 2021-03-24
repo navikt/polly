@@ -1,5 +1,4 @@
-import {DataProcessor, Disclosure, Dpia, Process, ProcessStatus} from '../../../constants'
-import {Disclosure, Dpia, ObjectType, Process, ProcessStatus} from '../../../constants'
+import {DataProcessor, Disclosure, Dpia, ObjectType, Process, ProcessStatus} from '../../../constants'
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {getResourceById} from '../../../api'
