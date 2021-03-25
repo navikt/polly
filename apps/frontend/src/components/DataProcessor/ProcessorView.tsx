@@ -55,7 +55,7 @@ const ProcessorView = () => {
   const handleDeleteDataProcessor = async (processor: Processor) => {
     try {
       await deleteProcessor(processor.id)
-      history.push("/dataProcessor/")
+      history.push("/processor/")
       return true
     } catch (err) {
       setModalErrorMessage(err.response.data.message)

@@ -33,6 +33,7 @@ export enum ObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
+  PROCESSOR = 'PROCESSOR',
   DP_PROCESS = 'DP_PROCESS',
   DISCLOSURE = 'DISCLOSURE',
   DOCUMENT = 'DOCUMENT',
@@ -584,6 +585,7 @@ export interface CodeUsage {
   informationTypes: [Use];
   policies: [UseWithPurpose];
   processes: [ProcessShort];
+  processors: [Use];
   dpProcesses: [DpProcessShort];
 }
 

@@ -102,7 +102,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     'SUB_DEPARTMENT': 'subDepartment',
     'PURPOSE': 'purpose',
     'SYSTEM': 'system',
-    'DATA_PROCESSOR': 'dataprocessor',
+    'DATA_PROCESSOR': 'processor',
     'THIRD_PARTY': 'thirdparty'
   } as { [l: string]: string })[listName]
 
