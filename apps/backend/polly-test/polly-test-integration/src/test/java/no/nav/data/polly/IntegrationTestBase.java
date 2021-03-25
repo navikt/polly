@@ -318,9 +318,7 @@ public abstract class IntegrationTestBase {
     protected DataProcessingRequest dataProcessingRequest() {
         return DataProcessingRequest.builder()
                 .dataProcessor(true)
-                // TODO processor
-//                .processor(PROCESSOR_ID1.toString())
-
+                .processor(PROCESSOR_ID1.toString())
                 .dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
                 .transferCountries(List.of("FJI"))
@@ -420,9 +418,7 @@ public abstract class IntegrationTestBase {
     protected DataProcessingResponse dataProcessingResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
-                // TODO processor
-//                .processor(PROCESSOR_ID1)
-
+                .processor(PROCESSOR_ID1)
                 .dataProcessorAgreements(List.of("X"))
                 .dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU(getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))

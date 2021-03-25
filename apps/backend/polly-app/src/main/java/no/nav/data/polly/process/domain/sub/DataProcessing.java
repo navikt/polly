@@ -13,6 +13,7 @@ import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 
@@ -53,8 +54,7 @@ public class DataProcessing {
         }
         return DataProcessing.builder()
                 .dataProcessor(request.getDataProcessor())
-                // TODO processors
-//                .processors(convert(request.getProcessors(), UUID::fromString))
+                .processors(convert(request.getProcessors(), UUID::fromString))
                 .dataProcessorAgreements(nullToEmptyList(request.getDataProcessorAgreements()))
                 .dataProcessorOutsideEU(request.getDataProcessorOutsideEU())
                 .transferGroundsOutsideEU(request.getTransferGroundsOutsideEU())
