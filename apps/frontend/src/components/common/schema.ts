@@ -239,7 +239,8 @@ export const policySchema = () =>
         return !missingArt6LegalBasisForInfoType(parent);
       },
     }),
-    subjectCategories: yup.array().of(yup.string()).min(1, intl.required).required(intl.required)
+    subjectCategories: yup.array().of(yup.string())
+    .required(intl.required).min(1, intl.required)
     .test({
       name: 'duplicateSubjectCategory',
       message: 'placeholder',

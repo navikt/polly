@@ -1,14 +1,15 @@
 import * as React from 'react'
 import {KeyboardEvent, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Radio, RadioGroup} from 'baseui/radio'
-import {Select, StatefulSelect, TYPE} from 'baseui/select'
+import {Select, StatefulSelect} from 'baseui/select'
 import {codelist, ListName} from '../../../service/Codelist'
 import {Button, KIND} from 'baseui/button'
 import {InformationTypeShort, LegalBasesUse, PolicyFormValues} from '../../../constants'
-import {useInfoTypeSearch} from '../../../api'
+import {getInformationTypesShort} from '../../../api'
 import {Error, ModalLabel} from '../../common/ModalSchema'
 import {intl} from '../../../util'
 import {policySchema} from '../../common/schema'
@@ -55,7 +56,13 @@ const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => {
 }
 
 const FieldInformationType = () => {
-  const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
+  const [infoTypes, setInfoTypes] = useState<InformationTypeShort[]>([])
+
+  useEffect(() => {
+    getInformationTypesShort().then(its => {
+      setInfoTypes([...its].sort((a, b) => a.name.localeCompare(b.name)))
+    })
+  }, [])
 
   return (
     <Field
@@ -63,16 +70,12 @@ const FieldInformationType = () => {
       render={({form}: FieldProps<PolicyFormValues>) => (
         <StatefulSelect
           maxDropdownHeight="400px"
-          searchable={true}
           noResultsMsg={intl.emptyTable}
-          type={TYPE.search}
-          options={infoTypeSearchResult}
+          options={infoTypes}
           placeholder={form.values.informationType ? '' : intl.informationTypeSearch}
           initialState={{value: form.values.informationType}}
-          onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
           onChange={params => form.setFieldValue('informationType', params.value[0] as InformationTypeShort)}
           error={!!form.errors.informationType && !!form.submitCount}
-          filterOptions={options => options}
           labelKey="name"
         />
       )}
@@ -144,7 +147,6 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
           initialValues={initialValues} validationSchema={policySchema()}
           onSubmit={(values) => {
             submit(values)
-            onClose()
           }}
           render={(formikBag: FormikProps<PolicyFormValues>) => (
             <Form onKeyDown={disableEnter}>
@@ -175,7 +177,7 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
                           onChange={({option}) => {
                             arrayHelpers.push(option ? option.id : null)
                           }}
-                          error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
+                          error={!!formikBag.errors.subjectCategories && !!formikBag.submitCount}
                         />
                         {renderTagList(codelist.getShortnames(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories), arrayHelpers)}
                       </Block>
