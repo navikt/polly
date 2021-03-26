@@ -5,7 +5,7 @@ import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {ProcessFormValues, ProcessStatus} from '../../../constants'
+import {Disclosure, ProcessFormValues, ProcessStatus} from '../../../constants'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
 import {Panel, PanelOverrides, StatelessAccordion} from 'baseui/accordion'
@@ -32,7 +32,7 @@ import FieldLegalBasis from "../common/FieldLegalBasis";
 import PanelTitle from "../common/PanelTitle";
 import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
 import {Select, Value} from "baseui/select";
-import {useDisclosureSearch} from "../../../api";
+import {getDisclosuresByRecipient, useDisclosureSearch} from "../../../api";
 import {renderTagList} from "../../common/TagList";
 import {codelist, ListName} from "../../../service/Codelist";
 import {disableEnter} from "../../../util/helper-functions";
@@ -92,6 +92,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<Value>([])
+  const [disclosures, setDisclosures] = useState<Disclosure[]>([])
 
   const expand = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
@@ -108,6 +109,17 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
     })()
   }, [])
 
+  useEffect(() => {
+    (async () => {
+      if (thirdParty.length > 0 && thirdParty[0].id) {
+        const res = await getDisclosuresByRecipient(thirdParty[0].id.toString())
+        console.log(res)
+        setDisclosures(res)
+        // setDisclosures()
+      }
+    })()
+  }, [thirdParty])
+
   return (
     <Modal
       onClose={onClose}
@@ -122,6 +134,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
+            console.log("submit",values)
             submit(values)
           }}
           validationSchema={processSchema()}
@@ -354,16 +367,13 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                 <Select
                                   placeholder={intl.disclosures}
                                   disabled={thirdParty.length === 0}
-                                  options={thirdParty.length ? disclosureSearchResult.filter(d => d.recipient.code === thirdParty[0].id).filter(d => !formikBag.values.disclosures.map(value => value.id).includes(d.id)) : disclosureSearchResult}
-                                  onInputChange={event => {
-                                    setDisclosureSearch(event.currentTarget.value)
-                                  }}
+                                  noResultsMsg={intl.notFoundDisclosure}
+                                  options={disclosures.filter(d => !formikBag.values.disclosures.map(v => v.id).includes(d.id))}
                                   onChange={(params) => {
                                     arrayHelpers.form.setFieldValue('disclosures', [...formikBag.values.disclosures, ...params.value.map(v => v)])
                                   }}
                                   labelKey='name'
                                   valueKey='id'
-                                  isLoading={disclosureSearchLoading}
                                 />
                               </Block>
                               <Block>{renderTagList(formikBag.values.disclosures.map(d => d.recipient.shortName + ':' + d.name), arrayHelpers)}</Block>

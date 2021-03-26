@@ -163,11 +163,10 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     try {
       const updatedProcess = await updateProcess(values)
       const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
-      const removedDisclosures = disclosures.filter(d => !values.disclosures.map(value => value.processIds).includes(d.processIds))
-      const addedDisclosures = values.disclosures.filter(d => !disclosures.map(value => value.processIds).includes(d.processIds))
-      addedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds, updatedProcess.id]})))
+      const removedDisclosures = disclosures.filter(d => !values.disclosures.map(value => value.id).includes(d.id))
+      const addedDisclosures = values.disclosures.filter(d => !disclosures.map(value => value.id).includes(d.id))
       removedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds.filter(p => p !== updatedProcess.id)]})))
-
+      addedDisclosures.forEach(d => updateDisclosure(convertDisclosureToFormValues({...d, processIds: [...d.processIds, updatedProcess.id]})))
       setCurrentProcess(updatedProcess)
       setProcessList(sortProcess([...processList.filter(p => p.id !== updatedProcess.id), updatedProcess]))
       handleChangePanel(updatedProcess)

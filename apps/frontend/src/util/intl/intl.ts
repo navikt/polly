@@ -258,6 +258,7 @@ export interface IStrings {
   confirmDeleteProcessText: string;
   confirmDeleteProcessorText: string;
   notFoundProcessor: string;
+  notFoundDisclosure: string;
   confirmDeleteDocumentText: string;
   confirmDeleteDpProcess: string;
   cannotDeleteProcess: string;

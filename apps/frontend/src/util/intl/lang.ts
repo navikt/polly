@@ -503,7 +503,8 @@ export const no: IStrings = {
   transferPanelTitle: "Overføres data til utlandet",
   mainPageMessage: "Hva vil du gjøre?",
   mainPageEventsMessage: "Hva har endret seg i det siste?",
-  notFoundProcessor: "Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
+  notFoundProcessor: "Databehandler er ikke registrert i løsningen. Registrer databehandleren først.",
+  notFoundDisclosure: "Ingen eksisterende utleveringer matcher søket. Opprett ny utlevering før du legger den til her."
 };
 
 export const en: IStrings = {
@@ -1009,6 +1010,7 @@ export const en: IStrings = {
   mainPageMessage: "What do you want to do?",
   mainPageEventsMessage: "What has changed lately?",
   notFoundProcessor: "Data processor is not registered in the solution. Register the data processor first.",
+  notFoundDisclosure: "Disclosure is not registered. Create a new disclosure before adding it here."
 };
 
 export const ta = {
