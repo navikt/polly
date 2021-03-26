@@ -17,6 +17,7 @@ const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
   const {usage, rows} = props
   const informationTypes = !!usage.informationTypes.length
   const processes = !!usage.processes.length
+  const processors = !!usage.processors.length
   const dpProcesses = !!usage.dpProcesses.length
   const policies = !!usage.policies.length
   const disclosures = !!usage.disclosures.length
@@ -29,6 +30,7 @@ const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
         <>
           {informationTypes && <HeadCell title={intl.informationType}/>}
           {processes && <HeadCell title={intl.process}/>}
+          {processors && <HeadCell title={intl.processors}/>}
           {dpProcesses && <HeadCell title={intl.dpProcess}/>}
           {policies && <HeadCell title={intl.policy}/>}
           {disclosures && <HeadCell title={intl.disclosure}/>}
@@ -40,6 +42,7 @@ const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
         const it = usage.informationTypes[index]
         const po = usage.policies[index]
         const pr = usage.processes[index]
+        const pro = usage.processors[index]
         const dpr = usage.dpProcesses[index]
         const di = usage.disclosures[index]
         const doc = usage.documents[index]
@@ -51,6 +54,9 @@ const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
             {processes && <Cell>
               {pr && <ObjectLink id={pr.id} type={ObjectType.PROCESS}
                                  withHistory={true}>{codelist.getShortnames(ListName.PURPOSE, pr.purposes.map(p => p.code)).join(", ")} {pr.name}</ObjectLink>}
+            </Cell>}
+            {processors && <Cell>
+              {pr && <ObjectLink id={pro.id} type={ObjectType.PROCESSOR} withHistory={true}>{pro.name}</ObjectLink>}
             </Cell>}
             {dpProcesses && <Cell>
               {dpr && <ObjectLink id={dpr.id} type={ObjectType.DP_PROCESS} withHistory={true}>{dpr.name}</ObjectLink>}

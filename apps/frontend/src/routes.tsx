@@ -57,8 +57,8 @@ const Routes = (): JSX.Element => (
       <Route exact path="/dpprocess" component={DpProcessPage}/>
       <Route exact path="/dpprocess/:id" component={DpProcessView}/>
 
-      <Route exact path="/dataprocessor" component={ProcessorListPage}/>
-      <Route exact path="/dataprocessor/:id" component={ProcessorView}/>
+      <Route exact path="/processor" component={ProcessorListPage}/>
+      <Route exact path="/processor/:id" component={ProcessorView}/>
 
 
       <Route exact path="/dashboard/:filterName/:filterValue/:filterStatus" component={PurposeTable}/>

@@ -35,7 +35,7 @@ export const ProcessorListPage = () => {
     try {
       (async()=>{
         const newDataProcessor = await createProcessor(processor)
-        history.push(`/dataProcessor/${newDataProcessor.id}`)
+        history.push(`/processor/${newDataProcessor.id}`)
       })()
       setShowCreateProcessorModal(false)
     } catch (err) {
@@ -72,7 +72,7 @@ export const ProcessorListPage = () => {
         <Block>
           <AlphabeticList items={processors.map(value => {
             return {id: value.id, label: value.name}
-          })} baseUrl={"/DataProcessor/"}/>
+          })} baseUrl={"/processor/"}/>
         </Block>
         <ProcessorModal
           title={intl.createProcessor}

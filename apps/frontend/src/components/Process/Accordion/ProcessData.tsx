@@ -57,11 +57,11 @@ export const processStatusText = (status: ProcessStatus | undefined) => {
   }
 }
 
-const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => {
+const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
-  const [dataProcessors, setDataProcessors] = useState<Processor[]>([])
+  const [processors, setProcessors] = useState<Processor[]>([])
 
   useEffect(() => {
     (async () => {
@@ -77,7 +77,7 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
     (async () => {
       if (process.dataProcessing.dataProcessorAgreements && process.dataProcessing.dataProcessorAgreements?.length > 0) {
         const res = await getProcessorsByIds(process.dataProcessing.dataProcessorAgreements)
-        setDataProcessors([...res])
+        setProcessors([...res])
       }
     })()
   }, [])
@@ -96,11 +96,11 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
           {process
-            .legalBases
-            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-            .map((legalBasis, index) =>
-              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-            )}
+          .legalBases
+          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+          .map((legalBasis, index) =>
+            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+          )}
         </DataText> :
         <>
           <DataText label={intl.legalBasis}/>
@@ -188,10 +188,10 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
                   {`${intl.processorAgreement}: `}
                 </Block>
                 <Block display='flex' flexWrap>
-                  {dataProcessors.map((dp, i) => (
-                    <Block key={dp.id} marginRight={i < dataProcessors.length ? theme.sizing.scale200 : 0}>
+                  {processors.map((dp, i) => (
+                    <Block key={dp.id} marginRight={i < processors.length ? theme.sizing.scale200 : 0}>
                       <DotTag key={dp.id}>
-                        <RouteLink href={"/DataProcessor/"+dp.id}>
+                        <RouteLink href={"/processor/" + dp.id}>
                           {dp.name}
                         </RouteLink>
                       </DotTag>
@@ -258,7 +258,6 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
                 <ObjectLink id={value.id} type={ObjectType.DISCLOSURE}>{value.recipient.shortName}: {value.name}</ObjectLink>
                 &nbsp;
               </>
-
             )
           }
         </Block>
@@ -274,7 +273,7 @@ const ProcessData = (props: { process: Process, disclosures: Disclosure[] }) => 
   )
 }
 
-const Completeness = (props: { process: Process }) => {
+const Completeness = (props: {process: Process}) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),
