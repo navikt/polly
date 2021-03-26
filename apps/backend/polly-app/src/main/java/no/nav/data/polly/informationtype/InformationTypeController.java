@@ -12,6 +12,7 @@ import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import org.springframework.data.domain.Page;
@@ -118,6 +119,14 @@ public class InformationTypeController {
         return ResponseEntity.ok(new RestResponsePage<>(informationTypes));
     }
 
+
+    @Operation(summary = "Get All InformationTypes short")
+    @ApiResponse(description = "InformationTypes short fetched")
+    @GetMapping("/short")
+    public ResponseEntity<RestResponsePage<InformationTypeShortResponse>> shorts() {
+        return ResponseEntity.ok(new RestResponsePage<>(repository.findAllShort()));
+    }
+
     @Operation(summary = "Count all InformationTypes")
     @ApiResponse(description = "Count of InformationTypes fetched")
     @GetMapping("/count")
@@ -185,6 +194,10 @@ public class InformationTypeController {
     }
 
     static final class InformationTypePage extends RestResponsePage<InformationTypeResponse> {
+
+    }
+
+    static final class InformationTypeShortPage extends RestResponsePage<InformationTypeShortResponse> {
 
     }
 
