@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {KeyboardEvent, useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
@@ -148,8 +148,10 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
           initialValues={initialValues} validationSchema={policySchema()}
           onSubmit={(values) => {
             //workaround for not functioning subjectCategories validation in yup
-            if (!!values.subjectCategories.length)
+            if (!!values.subjectCategories.length) {
               submit(values)
+              onClose()
+            }
           }}
           render={(formikBag: FormikProps<PolicyFormValues>) => {
             let subjectCatError = (!!formikBag.errors.subjectCategories || !formikBag.values.subjectCategories.length) && !!formikBag.touched.subjectCategories
