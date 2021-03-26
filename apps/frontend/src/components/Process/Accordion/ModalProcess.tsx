@@ -113,9 +113,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
     (async () => {
       if (thirdParty.length > 0 && thirdParty[0].id) {
         const res = await getDisclosuresByRecipient(thirdParty[0].id.toString())
-        console.log(res)
         setDisclosures(res)
-        // setDisclosures()
       }
     })()
   }, [thirdParty])
@@ -134,7 +132,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            console.log("submit",values)
             submit(values)
           }}
           validationSchema={processSchema()}
