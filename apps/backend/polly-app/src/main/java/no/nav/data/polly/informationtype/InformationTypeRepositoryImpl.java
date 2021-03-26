@@ -1,6 +1,9 @@
 package no.nav.data.polly.informationtype;
 
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -52,6 +55,16 @@ public class InformationTypeRepositoryImpl implements InformationTypeRepositoryC
         var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{productTeams}' ??| array[ :productTeams ]",
                 new MapSqlParameterSource().addValue("productTeams", productTeams));
         return fetch(resp);
+    }
+
+    @Override
+    public List<InformationTypeShortResponse> findAllShort() {
+        return jdbcTemplate.query("select information_type_id, data->>'name', data->>'sensitivity' from information_type",
+                (rs, rowNum) -> InformationTypeShortResponse.builder()
+                        .id(UUID.fromString(rs.getString(1)))
+                        .name(rs.getString(2))
+                        .sensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, rs.getString(3)))
+                        .build());
     }
 
     private List<InformationType> fetch(List<Map<String, Object>> resp) {
