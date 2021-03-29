@@ -7,7 +7,7 @@ import {ObjectLink} from "../common/RouteLink";
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 import moment from "moment";
 import {HeadingMedium} from "baseui/typography";
-import {intl} from "../../util";
+import {intl, theme} from "../../util";
 
 export const RecentEditsByUser = () => {
   const [recentEdits, setRecentEdits] = React.useState<RecentEdits[]>([]);
@@ -19,7 +19,7 @@ export const RecentEditsByUser = () => {
   }, [])
 
   return (
-    <Block alignItems='center' width='600px'>
+    <Block alignItems='center' width='100%'>
       <HeadingMedium>{intl.userLastChanges}</HeadingMedium>
       {
         recentEdits
@@ -27,7 +27,7 @@ export const RecentEditsByUser = () => {
           .sort((a, b) => moment(b.time).valueOf() - moment(a.time).valueOf())
           .map(ps =>
             <ObjectLink id={ps.process.id} type={ObjectType.PROCESS} hideUnderline key={ps.process.id}>
-              <Block width='100%' display='flex' justifyContent='space-between' marginBottom=".3rem">
+              <Block width='100%' display='flex' justifyContent='space-between' marginBottom={theme.sizing.scale200}>
                 <Block>
                   {ps.process.name}
                 </Block>
