@@ -18,7 +18,7 @@ import Button from '../../components/common/Button'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
 const CodeListPage = () => {
-  const params = useParams<{ listname?: string }>()
+  const params = useParams<{listname?: string}>()
   const history = useHistory()
   const [loading, setLoading] = React.useState(true)
   const [listname, setListname] = React.useState(params.listname)
@@ -76,7 +76,7 @@ const CodeListPage = () => {
             initialState={{value: listname ? [{id: listname, label: listname}] : []}}
           />
         </Block>
-        <Block>
+        {listname && <Block>
           <Button
             tooltip={intl.addNew}
             icon={faPlus}
@@ -86,7 +86,7 @@ const CodeListPage = () => {
           >
             {intl.createNewCodeList}
           </Button>
-        </Block>
+        </Block>}
       </Block>
     )}
 

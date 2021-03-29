@@ -1,14 +1,14 @@
 import * as React from 'react'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Radio, RadioGroup} from 'baseui/radio'
-import {Select, StatefulSelect, TYPE} from 'baseui/select'
+import {Select, StatefulSelect} from 'baseui/select'
 import {codelist, ListName} from '../../../service/Codelist'
 import {Button, KIND} from 'baseui/button'
 import {InformationTypeShort, LegalBasesUse, PolicyFormValues} from '../../../constants'
-import {useInfoTypeSearch} from '../../../api'
+import {getInformationTypesShort} from '../../../api'
 import {Error, ModalLabel} from '../../common/ModalSchema'
 import {intl} from '../../../util'
 import {policySchema} from '../../common/schema'
@@ -16,6 +16,8 @@ import {Tag, VARIANT} from 'baseui/tag'
 import {Docs} from './TablePolicy'
 import FieldLegalBasis from "../common/FieldLegalBasis";
 import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
+import {KIND as NKIND, Notification} from 'baseui/notification'
+import {paddingZero} from '../../common/Style'
 import {disableEnter} from "../../../util/helper-functions";
 
 
@@ -56,7 +58,13 @@ const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => {
 }
 
 const FieldInformationType = () => {
-  const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
+  const [infoTypes, setInfoTypes] = useState<InformationTypeShort[]>([])
+
+  useEffect(() => {
+    getInformationTypesShort().then(its => {
+      setInfoTypes([...its].sort((a, b) => a.name.localeCompare(b.name)))
+    })
+  }, [])
 
   return (
     <Field
@@ -64,16 +72,12 @@ const FieldInformationType = () => {
       render={({form}: FieldProps<PolicyFormValues>) => (
         <StatefulSelect
           maxDropdownHeight="400px"
-          searchable={true}
           noResultsMsg={intl.emptyTable}
-          type={TYPE.search}
-          options={infoTypeSearchResult}
+          options={infoTypes}
           placeholder={form.values.informationType ? '' : intl.informationTypeSearch}
           initialState={{value: form.values.informationType}}
-          onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
           onChange={params => form.setFieldValue('informationType', params.value[0] as InformationTypeShort)}
           error={!!form.errors.informationType && !!form.submitCount}
-          filterOptions={options => options}
           labelKey="name"
         />
       )}
@@ -140,78 +144,94 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
         <Formik
           initialValues={initialValues} validationSchema={policySchema()}
           onSubmit={(values) => {
-            submit(values)
-            onClose()
+            //workaround for not functioning subjectCategories validation in yup
+            if (!!values.subjectCategories.length) {
+              submit(values)
+              onClose()
+            }
           }}
-          render={(formikBag: FormikProps<PolicyFormValues>) => (
-            <Form onKeyDown={disableEnter}>
-              <ModalHeader>
-                <Block display="flex" justifyContent="space-around" marginBottom="2rem">
-                  {title}
-                  {addBatch && <Button type="button" kind="secondary" size="compact"
-                                       onClick={addBatch}>{intl.addManyFromSystem}</Button>}
-                </Block>
-              </ModalHeader>
+          render={(formikBag: FormikProps<PolicyFormValues>) => {
+            let subjectCatError = (!!formikBag.errors.subjectCategories || !formikBag.values.subjectCategories.length) && !!formikBag.touched.subjectCategories
+            return (
+              <Form onKeyDown={disableEnter}>
+                <ModalHeader>
+                  <Block display="flex" justifyContent="space-around" marginBottom="2rem">
+                    {title}
+                    {addBatch && <Button type="button" kind="secondary" size="compact"
+                                         onClick={addBatch}>{intl.addManyFromSystem}</Button>}
+                  </Block>
+                </ModalHeader>
 
-              <ModalBody>
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.informationType}/>
-                  <FieldInformationType/>
-                </Block>
-                <Error fieldName="informationType"/>
+                <ModalBody>
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.informationType}/>
+                    <FieldInformationType/>
+                  </Block>
+                  <Error fieldName="informationType"/>
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.subjectCategories}/>
-                  <FieldArray
-                    name="subjectCategories"
-                    render={arrayHelpers => (
-                      <Block width="100%">
-                        <Select
-                          options={codelist.getParsedOptionsFilterOutSelected(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories)}
-                          maxDropdownHeight="300px"
-                          onChange={({option}) => {
-                            arrayHelpers.push(option ? option.id : null)
-                          }}
-                          error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
-                        />
-                        {renderTagList(codelist.getShortnames(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories), arrayHelpers)}
-                      </Block>
-                    )}
-                  />
-                </Block>
-                <Error fieldName="subjectCategories"/>
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.subjectCategories}/>
+                    <FieldArray
+                      name="subjectCategories"
+                      render={arrayHelpers =>
+                        (
+                          <Block width="100%">
+                            <Select
+                              options={codelist.getParsedOptionsFilterOutSelected(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories)}
+                              maxDropdownHeight="300px"
+                              onChange={({option}) => {
+                                arrayHelpers.push(option ? option.id : null)
+                              }}
+                              error={subjectCatError}
+                            />
+                            {renderTagList(codelist.getShortnames(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories), arrayHelpers)}
+                          </Block>
+                        )}
+                    />
+                  </Block>
+                  <Error fieldName="subjectCategories"/>
 
-                {!!formikBag.values.documentIds?.length && docs &&
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.documents}/>
-                  <FieldArray name="documentIds"
-                              render={arrayHelpers => (
-                                <Block width='100%'>{renderTagList(formikBag.values.documentIds.map(id => docs[id].name), arrayHelpers)}</Block>
-                              )}/>
-                </Block>
-                }
+                  {/*workaround for not functioning subjectCategories validation in yup */}
+                  <Block display={subjectCatError ? 'flex' : 'none'} width="100%" marginTop=".2rem">
+                    <ModalLabel/>
+                    <Block width="100%">
+                      <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}}
+                                    kind={NKIND.negative}>{intl.required}</Notification>
+                    </Block>
+                  </Block>
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.legalBasesShort}/>
-                  <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse}/>
-                </Block>
-                <Error fieldName="legalBasesUse"/>
+                  {!!formikBag.values.documentIds?.length && docs &&
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.documents}/>
+                    <FieldArray name="documentIds"
+                                render={arrayHelpers => (
+                                  <Block width='100%'>{renderTagList(formikBag.values.documentIds.map(id => docs[id].name), arrayHelpers)}</Block>
+                                )}/>
+                  </Block>
+                  }
 
-                {formikBag.values.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && (
-                  <FieldLegalBasis formikBag={formikBag}/>
-                )}
-              </ModalBody>
-              <Error fieldName="legalBasesOpen" fullWidth={true}/>
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.legalBasesShort}/>
+                    <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse}/>
+                  </Block>
+                  <Error fieldName="legalBasesUse"/>
 
-              <ModalFooter>
-                <Block display="flex" justifyContent="flex-end">
-                  <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                  <Button type="button" kind={KIND.minimal} onClick={onClose}>{intl.abort}</Button>
-                  <ModalButton type="submit">{intl.save}</ModalButton>
-                </Block>
-              </ModalFooter>
-            </Form>
-          )}
+                  {formikBag.values.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && (
+                    <FieldLegalBasis formikBag={formikBag}/>
+                  )}
+                </ModalBody>
+                <Error fieldName="legalBasesOpen" fullWidth={true}/>
+
+                <ModalFooter>
+                  <Block display="flex" justifyContent="flex-end">
+                    <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
+                    <Button type="button" kind={KIND.minimal} onClick={onClose}>{intl.abort}</Button>
+                    <ModalButton type="submit">{intl.save}</ModalButton>
+                  </Block>
+                </ModalFooter>
+              </Form>
+            )
+          }}
         />
 
       </Block>

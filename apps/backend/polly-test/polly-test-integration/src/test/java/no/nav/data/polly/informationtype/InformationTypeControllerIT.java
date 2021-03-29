@@ -2,6 +2,7 @@ package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.informationtype.InformationTypeController.InformationTypePage;
+import no.nav.data.polly.informationtype.InformationTypeController.InformationTypeShortPage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
@@ -50,6 +51,20 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         assertThat(responseEntity.getBody().getNumberOfElements()).isEqualTo(2L);
         assertThat(responseEntity.getBody().getContent().get(0).getName()).isEqualTo("TypeData");
         assertThat(responseEntity.getBody().getContent().get(1).getName()).isEqualTo("InformationTypeData");
+    }
+
+    @Test
+    void getAllShort() {
+        var it = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
+
+        var responseEntity = restTemplate.getForEntity("/informationtype/short", InformationTypeShortPage.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getNumberOfElements()).isEqualTo(1L);
+        assertThat(responseEntity.getBody().getContent().get(0).getId()).isEqualTo(it.getId());
+        assertThat(responseEntity.getBody().getContent().get(0).getName()).isEqualTo(it.getData().getName());
+        assertThat(responseEntity.getBody().getContent().get(0).getSensitivity().getCode()).isEqualTo(it.getData().getSensitivity());
     }
 
     @Nested

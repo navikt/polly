@@ -108,11 +108,11 @@ export const processSchema = () =>
   yup.object<ProcessFormValues>({
     name: yup.string().max(max, maxError()).required(intl.required),
     purposes: yup.array().of(yup
-      .string()
-      .oneOf(
-        codelist.getCodes(ListName.PURPOSE).map((p) => p.code),
-        intl.required
-      )).min(1, intl.required),
+    .string()
+    .oneOf(
+      codelist.getCodes(ListName.PURPOSE).map((p) => p.code),
+      intl.required
+    )).min(1, intl.required),
     description: yup.string(),
     additionalDescription: yup.string(),
     affiliation: yup.object<AffiliationFormValues>({
@@ -183,13 +183,13 @@ export const createDocumentValidation = () =>
     name: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
     informationTypes: yup
-      .array(
-        yup.object().shape<DocumentInformationTypes>({
-          subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
-          informationTypeId: yup.string().required(intl.required),
-        })
-      )
-      .min(1, intl.required),
+    .array(
+      yup.object().shape<DocumentInformationTypes>({
+        subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
+        informationTypeId: yup.string().required(intl.required),
+      })
+    )
+    .min(1, intl.required),
   });
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
@@ -223,53 +223,54 @@ const subjectCategoryExistsGen = (otherPolicies: Policy[], informationType: Info
   const existingPolicyIdents = otherPolicies.flatMap(p => p.subjectCategories.map(c => p.informationType.id + '.' + c.code))
   const matchingIdents = subjectCategories.map(c => informationType?.id + '.' + c).filter(policyIdent => existingPolicyIdents.indexOf(policyIdent) >= 0)
   const errors = matchingIdents
-    .map(ident => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
-    .map(category => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name) as string)
+  .map(ident => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
+  .map(category => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name) as string)
   return errors.length ? new yup.ValidationError(errors, undefined, path) : true
 }
 
 export const policySchema = () =>
   yup.object<PolicyFormValues>({
     informationType: yup
-      .object<InformationTypeShort>()
-      .required(intl.required)
-      .test({
-        name: "policyHasArt9",
-        message: intl.requiredGdprArt9,
-        test: function (informationType) {
-          const {parent} = this;
-          return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent);
-        },
-      })
-      .test({
-        name: "policyHasArt6",
-        message: intl.requiredGdprArt6,
-        test: function () {
-          const {parent} = this;
-          return !missingArt6LegalBasisForInfoType(parent);
-        },
-      }),
-    subjectCategories: yup.array().of(yup.string()).min(1, intl.required)
-      .test({
-        name: 'duplicateSubjectCategory',
-        message: 'placeholder',
-        test: function () {
-          const {parent, path} = this
-          return subjectCategoryExists(path, parent);
-        }
-      }),
+    .object<InformationTypeShort>()
+    .required(intl.required)
+    .test({
+      name: "policyHasArt9",
+      message: intl.requiredGdprArt9,
+      test: function (informationType) {
+        const {parent} = this;
+        return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent);
+      },
+    })
+    .test({
+      name: "policyHasArt6",
+      message: intl.requiredGdprArt6,
+      test: function () {
+        const {parent} = this;
+        return !missingArt6LegalBasisForInfoType(parent);
+      },
+    }),
+    subjectCategories: yup.array().of(yup.string())
+    .required(intl.required).min(1, intl.required)
+    .test({
+      name: 'duplicateSubjectCategory',
+      message: 'placeholder',
+      test: function () {
+        const {parent, path} = this
+        return subjectCategoryExists(path, parent);
+      }
+    }),
     legalBasesUse: yup
-      .mixed()
-      .oneOf(Object.values(LegalBasesUse))
-      .required(intl.required)
-      .test({
-        name: "policyHasLegalBasisIfDedicated",
-        message: intl.requiredLegalBasisForDedicated,
-        test: function () {
-          const {parent} = this;
-          return !missingLegalBasisForDedicated(parent);
-        },
-      }),
+    .mixed()
+    .oneOf(Object.values(LegalBasesUse))
+    .required(intl.required)
+    .test({
+      name: "policyHasLegalBasisIfDedicated",
+      message: intl.requiredLegalBasisForDedicated,
+      test: function () {
+        const {parent} = this;
+        return !missingLegalBasisForDedicated(parent);
+      },
+    }),
     legalBases: yup.array().of(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     process: yup.object(),
