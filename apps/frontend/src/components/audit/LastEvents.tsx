@@ -16,7 +16,7 @@ export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
   const [table, setTable] = useState<ObjectType>(ObjectType.PROCESS)
   const [action, setAction] = useState<Value>([{id: AuditAction.CREATE, label: intl.CREATE} as Option])
-  const eventNameCutOff = 48;
+  const eventNameCutOff = 68;
 
   useEffect(() => {
     (async () => {

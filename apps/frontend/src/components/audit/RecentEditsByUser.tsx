@@ -17,6 +17,7 @@ export const RecentEditsByUser = () => {
       setRecentEdits(data)
     })()
   }, [])
+  const eventNameCutOff = 68;
 
   return (
     <Block alignItems='center' width='100%'>
@@ -29,7 +30,7 @@ export const RecentEditsByUser = () => {
             <ObjectLink id={ps.process.id} type={ObjectType.PROCESS} hideUnderline key={ps.process.id}>
               <Block width='100%' display='flex' justifyContent='space-between' marginBottom={theme.sizing.scale200}>
                 <Block>
-                  {ps.process.name}
+                  {ps.process.name.length < eventNameCutOff ? ps.process.name : ps.process.name.slice(0, eventNameCutOff - 3) + "..."}
                 </Block>
                 <CustomizedStatefulTooltip content={moment(ps.time).format('lll')}>
                   {moment(ps.time).fromNow()}
