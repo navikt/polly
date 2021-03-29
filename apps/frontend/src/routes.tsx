@@ -36,7 +36,7 @@ import {MailLogPage} from './pages/admin/MailLogPage'
 import {DashboardPage} from './pages/DashboardPage'
 import {DisclosureListPage} from './pages/DisclosureListPage'
 import ProcessorListPage from "./pages/ProcessorListPage";
-import ProcessorView from "./components/DataProcessor/ProcessorView";
+import ProcessorView from "./components/Processor/ProcessorView";
 
 export const processPath = '/process/:section/:code/:processId?'
 

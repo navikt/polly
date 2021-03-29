@@ -8,7 +8,7 @@ import Button from "../components/common/Button";
 import {user} from "../service/User";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
-import ProcessorModal from "../components/DataProcessor/ProcessorModal";
+import ProcessorModal from "../components/Processor/ProcessorModal";
 import {getAll} from "../api";
 import AlphabeticList from "../components/common/AlphabeticList";
 import {Spinner} from "../components/common/Spinner";
