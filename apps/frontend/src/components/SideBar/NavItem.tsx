@@ -18,7 +18,7 @@ const NavItem = (props: NavItemProps) => (
     <Block display="flex" alignItems="center" height={"35px"}>
       <Block marginRight="scale400">
         <FontAwesomeIcon
-          icon={useLocation().pathname.split("/")[1].includes(props.to.split("/")[1]) ? faChevronDown : faChevronRight}
+          icon={useLocation().pathname.split("/")[1] === props.to.split("/")[1] ? faChevronDown : faChevronRight}
           color="white"
           size="lg"/>
       </Block>
