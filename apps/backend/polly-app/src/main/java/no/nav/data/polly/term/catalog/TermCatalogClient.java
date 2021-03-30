@@ -74,6 +74,10 @@ public class TermCatalogClient implements TermService {
             }
             throw e;
         }
+        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+            log.debug("term {} not found", termId);
+            return null;
+        }
         verifyResponse(response);
         CatalogTerm[] body = requireNonNull(response.getBody());
         if (body.length == 0) {

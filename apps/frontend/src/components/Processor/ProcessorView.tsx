@@ -18,6 +18,7 @@ import {marginZero} from "../common/Style";
 import Button from "../common/Button";
 import ProcessorModal from "./ProcessorModal";
 import {DeleteProcessorModal} from "./DeleteProcessorModal";
+import {shortenLinksInText} from "../../util/helper-functions";
 
 const blockProps: BlockProps = {
   font: "ParagraphMedium",
@@ -31,7 +32,7 @@ const ProcessorView = () => {
   const [showDeleteProcessorModal, setShowDeleteProcessorModal] = useState<boolean>(false)
   const [contractOwner, setContractOwner] = useState<TeamResource>()
   const [operationalContractManagers, setOperationalContractManagers] = useState<TeamResource[]>([])
-  const [modalErrorMessage,setModalErrorMessage] = useState<string>()
+  const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const hasAccess = () => user.canWrite()
   const history = useHistory()
   const params = useParams<{ id?: string }>()
@@ -121,7 +122,7 @@ const ProcessorView = () => {
             <Block width="40%" paddingRight={dividerDistance}>
               <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.contract} text={currentProcessor.contract ? currentProcessor.contract : intl.notFilled}/>
+                  <TextWithLabel label={intl.contract} text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
                   <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
@@ -138,10 +139,7 @@ const ProcessorView = () => {
                   <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
-                </FlexGridItem>
-                <FlexGridItem>
-                  <TextWithLabel label={intl.processor} text={""}>
+                  <TextWithLabel label={intl.isDataProcessedOutsideEUEEA} text={""}>
                     <Block {...blockProps}>
                       {currentProcessor?.outsideEU === null && intl.unclarified}
                       {currentProcessor.outsideEU === false && intl.no}
@@ -150,24 +148,28 @@ const ProcessorView = () => {
                       {currentProcessor.outsideEU &&
                       <Block>
                         <Block {...blockProps}>
-                          <span>{intl.isDataProcessedOutsideEUEEA} </span>
                           <span>{boolToText(currentProcessor.outsideEU)}</span>
                         </Block>
-                        {currentProcessor.outsideEU &&
-                        <>
-                          <Block {...blockProps}>
-                            <span>{intl.transferGroundsOutsideEUEEA}: </span>
-                            {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
-                            {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                            {currentProcessor.transferGroundsOutsideEUOther && <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
-                          </Block>
-                          {currentProcessor.countries && !!currentProcessor?.countries.length && <Block {...blockProps}>
-                            <span>{intl.countries}: </span>
-                            <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
-                          </Block>}
-                        </>
-                        }
-                      </Block>}
+                      </Block>
+                      }
+                      {
+                        currentProcessor.outsideEU &&
+                            <>
+                              <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={""}>
+                                <Block {...blockProps}>
+                                  {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
+                                  {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
+                                  {currentProcessor.transferGroundsOutsideEUOther && <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
+                                </Block>
+                              </TextWithLabel>
+                              {currentProcessor.countries && !!currentProcessor?.countries.length && <TextWithLabel label={intl.countries} text={""}>
+                                <Block {...blockProps}>
+                                  <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
+                                </Block>
+                              </TextWithLabel>}
+                            </>
+
+                      }
                     </>
                   </TextWithLabel>
                 </FlexGridItem>

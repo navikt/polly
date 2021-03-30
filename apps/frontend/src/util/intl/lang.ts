@@ -496,15 +496,16 @@ export const no: IStrings = {
   shortcutSubtitleDashboard: "Se statistikk over behandlinger",
   processorSelect: "Velg databehander",
   createProcessor: "Opprett ny databehandler",
-  contract: "Kontrakt",
-  contractOwner: "Kontrakteier",
-  operationalContractManagers: "Kontraktansvarlig",
-  note: "Kommenter",
+  contract: "Ref. på databehandleravtale",
+  contractOwner: "Avtaleeier",
+  operationalContractManagers: "Fagansvarlig",
+  note: "Merknad",
   transferPanelTitle: "Overføres data til utlandet",
   mainPageMessage: "Hva vil du gjøre?",
   mainPageEventsMessage: "Hva har endret seg i det siste?",
   notFoundProcessor: "Databehandler er ikke registrert i løsningen. Registrer databehandleren først.",
-  notFoundDisclosure: "Ingen eksisterende utleveringer matcher søket. Opprett ny utlevering før du legger den til her."
+  notFoundDisclosure: "Ingen eksisterende utleveringer matcher søket. Opprett ny utlevering før du legger den til her.",
+  processorName: "Navn på databehandler"
 };
 
 export const en: IStrings = {
@@ -1002,15 +1003,16 @@ export const en: IStrings = {
   shortcutSubtitleDashboard: "See statistics of processes",
   processorSelect: "Select processor",
   createProcessor: "Create new processor",
-  contract: "Contract",
-  contractOwner: "Contract owner",
-  operationalContractManagers: "Contract managers",
-  note: "Comment",
+  contract: "Data processor reference",
+  contractOwner: "Agreement owner",
+  operationalContractManagers: "Subject manager",
+  note: "Note",
   transferPanelTitle: "Transfer data to abroad",
   mainPageMessage: "What do you want to do?",
   mainPageEventsMessage: "What has changed lately?",
   notFoundDisclosure: "Disclosure is not registered. Create a new disclosure before adding it here.",
   notFoundProcessor: "Processor is not registered in the solution. Register the processor first.",
+  processorName: "Processor name"
 };
 
 export const ta = {

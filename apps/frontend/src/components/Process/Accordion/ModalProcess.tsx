@@ -348,7 +348,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         <Select
                           value={thirdParty}
                           placeholder={intl.thirdParties}
-                          options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
+                          options={codelist.getParsedOptions(ListName.THIRD_PARTY).filter(thirdParty=>thirdParty.id!='NAV')}
                           onChange={({value}) => {
                             setThirdParty(value)
                           }}
