@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
+import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.document.dto.DocumentResponse;
@@ -42,6 +43,8 @@ public class DisclosureResponse {
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     private DisclosureAbroadResponse abroad;
+
+    private ChangeStampResponse changeStamp;
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
