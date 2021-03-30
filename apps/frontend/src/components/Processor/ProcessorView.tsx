@@ -18,6 +18,7 @@ import {marginZero} from "../common/Style";
 import Button from "../common/Button";
 import ProcessorModal from "./ProcessorModal";
 import {DeleteProcessorModal} from "./DeleteProcessorModal";
+import {shortenLinksInText} from "../../util/helper-functions";
 
 const blockProps: BlockProps = {
   font: "ParagraphMedium",
@@ -121,7 +122,7 @@ const ProcessorView = () => {
             <Block width="40%" paddingRight={dividerDistance}>
               <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.contract} text={currentProcessor.contract ? currentProcessor.contract : intl.notFilled}/>
+                  <TextWithLabel label={intl.contract} text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
                   <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
