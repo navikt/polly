@@ -13,8 +13,8 @@ import {replaceCodelistUsage} from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {Cell, HeadCell, Row, Table} from '../common/Table'
 
-const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
-  const {usage, rows} = props
+const UsageTable = (props: {usage: CodeUsage}) => {
+  const {usage} = props
   const informationTypes = !!usage.informationTypes.length
   const processes = !!usage.processes.length
   const processors = !!usage.processors.length
@@ -22,6 +22,10 @@ const UsageTable = (props: {usage: CodeUsage, rows: number}) => {
   const policies = !!usage.policies.length
   const disclosures = !!usage.disclosures.length
   const documents = !!usage.documents.length
+
+  const rows = usage ? Math.max(usage.informationTypes.length, usage.processes.length, usage.processors.length,
+    usage.dpProcesses.length, usage.policies.length, usage.disclosures.length, usage.documents.length) : -1
+
   return (
     <Table
       emptyText={intl.noUsageAvailableInTable}
@@ -84,8 +88,6 @@ export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
   const ref = useRef<HTMLElement>()
 
   const {usage, refresh} = props
-  const maxRows = usage ? Math.max(usage.disclosures.length, usage.informationTypes.length, usage.processes.length, usage.dpProcesses.length, usage.policies.length) : -1
-  const noUsage = maxRows === 0
 
   useEffect(() => {
     setShowReplace(false)
@@ -101,7 +103,7 @@ export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
     <Block marginTop="2rem" ref={ref}>
       <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
         <Label2 font="font450">{intl.usage}</Label2>
-        {!noUsage && <Button type="button" kind="secondary" size="compact" onClick={() => setShowReplace(true)}>{intl.replaceAllUse}</Button>}
+        {!!usage?.inUse && <Button type="button" kind="secondary" size="compact" onClick={() => setShowReplace(true)}>{intl.replaceAllUse}</Button>}
       </Block>
 
       {showReplace && usage && usage.listName && (
@@ -113,9 +115,9 @@ export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
         </Block>
       )}
 
-      {usage && <UsageTable usage={usage} rows={maxRows}/>}
+      {usage && <UsageTable usage={usage}/>}
       {!usage && <StyledSpinnerNext/>}
-      {noUsage && <Label4 marginTop=".5rem">{intl.usageNotFound}</Label4>}
+      {(usage && !usage.inUse) && <Label4 marginTop=".5rem">{intl.usageNotFound}</Label4>}
     </Block>
   )
 }
