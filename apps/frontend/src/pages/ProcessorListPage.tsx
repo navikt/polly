@@ -12,7 +12,7 @@ import {getAll} from "../api";
 import AlphabeticList from "../components/common/AlphabeticList";
 import {Spinner} from "../components/common/Spinner";
 import {useHistory} from "react-router-dom";
-import ProcessorModal from "../components/DataProcessor/ProcessorModal";
+import ProcessorModal from "../components/Processor/ProcessorModal";
 
 
 export const ProcessorListPage = () => {
