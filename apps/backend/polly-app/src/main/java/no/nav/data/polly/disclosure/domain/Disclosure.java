@@ -85,6 +85,7 @@ public class Disclosure extends Auditable {
                 .informationTypeIds(copyOf(data.getInformationTypeIds()))
                 .processIds(copyOf(data.getProcessIds()))
                 .abroad(data.getAbroad().convertToResponse())
+                .changeStamp(convertChangeStampResponse())
                 .build();
     }
 
