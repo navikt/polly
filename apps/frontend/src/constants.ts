@@ -491,6 +491,7 @@ export interface Disclosure extends IDurationed {
   informationTypes?: InformationTypeShort[]
   informationTypeIds?: string[]
   abroad: DisclosureAbroad;
+  changeStamp: ChangeStamp;
 }
 
 export interface DocumentFormValues {
