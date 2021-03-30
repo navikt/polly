@@ -16,7 +16,6 @@ export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
   const [table, setTable] = useState<ObjectType>(ObjectType.PROCESS)
   const [action, setAction] = useState<Value>([{id: AuditAction.CREATE, label: intl.CREATE} as Option])
-  const eventNameCutOff = 68;
 
   useEffect(() => {
     (async () => {
@@ -28,13 +27,15 @@ export const LastEvents = () => {
     <Block key={event.id} marginBottom={theme.sizing.scale200}>
       <ObjectLink id={event.tableId} type={event.table} disable={event.action === AuditAction.DELETE} hideUnderline>
         <Block width='100%' display='flex' justifyContent='space-between'>
-          <Block paddingRight={theme.sizing.scale300}>
+          <Block paddingRight={theme.sizing.scale300} $style={{overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>
             <AuditActionIcon action={event.action}/>
-            {event.name.length < eventNameCutOff ? event.name : event.name.slice(0, eventNameCutOff - 3) + "..."}
+            {event.name}
           </Block>
-          <CustomizedStatefulTooltip content={moment(event.time).format('lll')}>
-            {moment(event.time).fromNow()}
-          </CustomizedStatefulTooltip>
+          <Block minWidth={'125px'} $style={{textAlign: 'right'}}>
+            <CustomizedStatefulTooltip content={moment(event.time).format('lll')}>
+              {moment(event.time).fromNow()}
+            </CustomizedStatefulTooltip>
+          </Block>
         </Block>
       </ObjectLink>
     </Block>

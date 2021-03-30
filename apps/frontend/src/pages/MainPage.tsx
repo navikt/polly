@@ -60,22 +60,22 @@ export const MainPage = () => {
 
             <Block width="100%" display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale800} flexWrap>
               {user.isLoggedIn() && (
-                <Block display="flex" width='48%' marginBottom={theme.sizing.scale800} height="550px">
+                <Block display="flex" width='48%' marginBottom={theme.sizing.scale800} minHeight="550px">
                   <Card overrides={cardOverrides}>
                     <RecentEditsByUser/>
                   </Card>
                 </Block>
               )}
-              <Block display="flex" width='48%' marginBottom={theme.sizing.scale800} height="550px">
+              <Block display="flex" width='48%' marginBottom={theme.sizing.scale800} minHeight="550px">
                 <Card overrides={cardOverrides}>
                   <LastEvents/>
 
                 </Card>
               </Block>
 
-              <Block height="550px" width={user.isLoggedIn() ? '100%' : '48%'}
+              <Block minHeight="550px" width={user.isLoggedIn() ? '100%' : '48%'}
                      marginTop={user.isLoggedIn() ? theme.sizing.scale1200 : theme.sizing.scale0}
-                     marginBottom={user.isLoggedIn() ? theme.sizing.scale0 : theme.sizing.scale2400}>
+                     marginBottom={user.isLoggedIn() ? theme.sizing.scale0 : theme.sizing.scale800}>
                 <Card overrides={cardShadow}>
                   <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim/>
                 </Card>
