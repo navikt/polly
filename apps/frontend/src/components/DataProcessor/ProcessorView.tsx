@@ -138,9 +138,6 @@ const ProcessorView = () => {
                   <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled}/>
                 </FlexGridItem>
                 <FlexGridItem>
-                  <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
-                </FlexGridItem>
-                <FlexGridItem>
                   <TextWithLabel label={intl.processor} text={""}>
                     <Block {...blockProps}>
                       {currentProcessor?.outsideEU === null && intl.unclarified}
