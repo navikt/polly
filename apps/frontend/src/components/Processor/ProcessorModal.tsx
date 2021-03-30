@@ -108,7 +108,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                 <ModalBody>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.name}/>
+                    <ModalLabel label={intl.processorName}/>
                     <Field
                       name='name'
                       render={({field, form}: FieldProps<string, ProcessorFormValues>) => (
