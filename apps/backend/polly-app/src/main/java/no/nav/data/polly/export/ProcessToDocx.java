@@ -177,7 +177,7 @@ public class ProcessToDocx {
             addText(periodText(process.getData().toPeriod()));
 
             addHeading4("Behandlingsnummer");
-            addText(process.getData().getNumber());
+            addText(Integer.toString(process.getData().getNumber()));
 
             data.getPurposes().forEach(purpose -> {
                 addHeading4("Overordnet formål: " + shortName(ListName.PURPOSE, purpose));
