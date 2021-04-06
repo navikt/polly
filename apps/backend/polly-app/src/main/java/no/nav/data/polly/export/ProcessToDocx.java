@@ -101,7 +101,7 @@ public class ProcessToDocx {
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
         var doc = new DocumentBuilder();
-        doc.addTitle("Behandling: " + process.getData().getName());
+        doc.addTitle("Behandling: "+ process.getData().getNumber() + " - " + process.getData().getName());
         doc.generate(process);
         return doc.build();
     }
@@ -171,7 +171,7 @@ public class ProcessToDocx {
             ProcessData data = process.getData();
             String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
-            var header = addHeading1(purposeNames + ": " + process.getData().getName() + " " + process.getData().getNumber());
+            var header = addHeading1(purposeNames + ": " + process.getData().getNumber()+ " - " + process.getData().getName());
 
             addBookmark(header, process.getId().toString());
             addText(periodText(process.getData().toPeriod()));
@@ -511,7 +511,7 @@ public class ProcessToDocx {
             long currListId = listId++;
 
             for (Process process : processes) {
-                var name = shortNames(ListName.PURPOSE, process.getData().getPurposes()) + ": " + process.getData().getName();
+                var name = shortNames(ListName.PURPOSE, process.getData().getPurposes()) + ": "+ process.getData().getNumber() + " - " + process.getData().getName();
                 var bookmark = process.getId().toString();
 
                 addListItem(name, currListId, bookmark);
