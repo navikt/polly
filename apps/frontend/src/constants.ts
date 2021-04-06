@@ -33,6 +33,7 @@ export enum ObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
+  PROCESSOR = 'PROCESSOR',
   DP_PROCESS = 'DP_PROCESS',
   DISCLOSURE = 'DISCLOSURE',
   DOCUMENT = 'DOCUMENT',
@@ -490,6 +491,7 @@ export interface Disclosure extends IDurationed {
   informationTypes?: InformationTypeShort[]
   informationTypeIds?: string[]
   abroad: DisclosureAbroad;
+  changeStamp: ChangeStamp;
 }
 
 export interface DocumentFormValues {
@@ -531,6 +533,33 @@ export interface DocumentInformationTypes {
   subjectCategories: string[];
 }
 
+export interface Processor {
+  id: string;
+  name: string;
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers: string[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: Code;
+  transferGroundsOutsideEUOther?: string;
+  countries?: string[];
+  changeStamp?: ChangeStamp;
+}
+
+export interface ProcessorFormValues {
+  id?: string;
+  name: string;
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers?: string[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: string;
+  transferGroundsOutsideEUOther?: string;
+  countries: string[];
+}
+
 export interface AuditItem {
   action: AuditAction;
   id: string;
@@ -557,6 +586,7 @@ export interface CodeUsage {
   informationTypes: [Use];
   policies: [UseWithPurpose];
   processes: [ProcessShort];
+  processors: [Use];
   dpProcesses: [DpProcessShort];
 }
 

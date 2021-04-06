@@ -29,7 +29,7 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
           <Input
             type='text'
             size='compact'
-            placeholder={intl.dataProcessorAgreementPlaceholder}
+            placeholder={intl.processorAgreementPlaceholder}
             value={currentKeywordValue}
             onChange={event => setCurrentKeywordValue(event.currentTarget.value)}
             onKeyDown={(e) => {

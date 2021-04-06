@@ -32,7 +32,7 @@ const Main = props => {
           <Router history={history}>
             <Block display="flex" height="100%" minHeight={"100vh"} width={"100%"} backgroundColor="#F1F1F1">
               <Block minWidth={"240px"} minHeight={"100%"}><SideBar/></Block>
-              <Block minHeight={"100%"} width={"100%"}>
+              <Block minHeight={"100%"} width={"100%"} marginBottom={'200px'}>
                 <Block>
                   <Header setLang={setLang}/>
                 </Block>

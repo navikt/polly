@@ -1,4 +1,4 @@
-import React, {KeyboardEvent, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process} from '../../../constants'
 import {getInformationTypesBy} from '../../../api'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
@@ -16,6 +16,7 @@ import {LabelMedium, LabelSmall} from 'baseui/typography'
 import {lowerFirst} from 'lodash'
 import {Sensitivity} from '../../InformationType/Sensitivity'
 import {KIND} from 'baseui/button'
+import {disableEnter} from "../../../util/helper-functions";
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -60,10 +61,6 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
     setSystem([])
     setInfoTypes([])
     props.onClose()
-  }
-
-  const disableEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') e.preventDefault()
   }
 
   const mapToUse = (it: InformationType): DocumentInfoTypeUse => {

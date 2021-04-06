@@ -46,6 +46,7 @@ const SideBar = () => {
         <NavItem to="/disclosure" text={intl.disclosures} tooltip={intl.disclosuresSideMenuHelpText}/>
         <NavItem to="/thirdparty" text={intl.thirdParties} tooltip={intl.externalPartsSideMenuHelpText}/>
         <NavItem to="/system" text={intl.systems} tooltip={intl.systemSideMenuHelpText}/>
+        <NavItem to="/processor" text={intl.processors} tooltip={intl.processorSideMenuHelpText}/>
         <NavItem to="/dashboard" text={intl.dashboard} tooltip={intl.dashboardSideMenuHelpText}/>
         {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts}/>}
       </Block>

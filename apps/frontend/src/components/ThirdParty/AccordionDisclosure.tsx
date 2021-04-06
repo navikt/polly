@@ -16,7 +16,7 @@ import {useHistory} from 'react-router-dom'
 import {SIZE as ButtonSize} from "baseui/button";
 import ModalThirdParty from "./ModalThirdPartyForm";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
-import {Paragraph2} from "baseui/typography";
+import {Paragraph2, ParagraphSmall} from "baseui/typography";
 import {StyledLink} from "baseui/link";
 import LinkListProcess from "./components/LinkListProcess";
 import {codelist, ListName} from "../../service/Codelist";
@@ -24,6 +24,7 @@ import {LegalBasisView} from "../common/LegalBasis";
 import {shortenLinksInText} from "../../util/helper-functions";
 import {user} from "../../service/User";
 import LinkListInformationType from "./components/LinkListInformationType";
+import {lastModifiedDate} from "../../util/date-formatter";
 
 
 type AccordionDisclosureProps = {
@@ -210,9 +211,9 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                           .legalBases
                           .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code))
                           .localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-                          .map((legalBasis, index) =>
-                            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-                          )}
+                            .map((legalBasis, index) =>
+                              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+                            )}
                         </DataText> :
                         <>
                           <DataText label={intl.legalBasis} text={intl.emptyMessage}/>
@@ -220,6 +221,13 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                       }
                     </Block>
                     {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
+                  </Block>
+                  <Block display='flex' justifyContent='flex-end' marginBottom={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+                    <ParagraphSmall>
+                      {selectedDisclosure &&
+                      <i>{intl.formatString(intl.lastModified, selectedDisclosure?.changeStamp?.lastModifiedBy, lastModifiedDate(selectedDisclosure?.changeStamp?.lastModifiedDate))}</i>
+                      }
+                    </ParagraphSmall>
                   </Block>
                 </Block>
               }

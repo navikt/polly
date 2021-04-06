@@ -35,6 +35,15 @@ export const MainPage = () => {
     getDashboard().then(setDashboardData)
   }, [])
 
+  const cardOverrides = {
+    Root: {
+      style: {
+        ...cardShadow.Root.style,
+        width: '100%'
+      }
+    }
+  }
+
   return (
     <Block display="flex" flexWrap>
       {
@@ -49,21 +58,24 @@ export const MainPage = () => {
               <HeadingLarge>{intl.mainPageEventsMessage}</HeadingLarge>
             </Block>
 
-            <Block width="100%" display="flex" justifyContent="space-between" marginBottom="200px" flexWrap>
-            {user.isLoggedIn() && (
-                <Block display="flex" height="550px">
-                  <Card overrides={cardShadow}>
-                    <RecentEditsByUser />
+            <Block width="100%" display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale800} flexWrap>
+              {user.isLoggedIn() && (
+                <Block display="flex" width='48%' marginBottom={theme.sizing.scale800} minHeight="550px">
+                  <Card overrides={cardOverrides}>
+                    <RecentEditsByUser/>
                   </Card>
                 </Block>
               )}
-              <Block display="flex"  height="550px">
-                <Card overrides={cardShadow}>
-                  <LastEvents />
+              <Block display="flex" width='48%' marginBottom={theme.sizing.scale800} minHeight="550px">
+                <Card overrides={cardOverrides}>
+                  <LastEvents/>
+
                 </Card>
               </Block>
 
-              <Block height="550px" width={user.isLoggedIn() ? '100%' : '635px'} marginTop={user.isLoggedIn() ? '2.5rem' : '0'}>
+              <Block minHeight="550px" width={user.isLoggedIn() ? '100%' : '48%'}
+                     marginTop={user.isLoggedIn() ? theme.sizing.scale1200 : theme.sizing.scale0}
+                     marginBottom={user.isLoggedIn() ? theme.sizing.scale0 : theme.sizing.scale800}>
                 <Card overrides={cardShadow}>
                   <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim/>
                 </Card>

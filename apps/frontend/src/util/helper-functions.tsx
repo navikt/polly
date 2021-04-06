@@ -1,6 +1,7 @@
 import {intl} from "./intl/intl";
 import {StyledLink} from "baseui/link";
 import * as React from "react";
+import {KeyboardEvent} from "react";
 import {StatefulTooltip} from 'baseui/tooltip'
 import {lowerFirst} from 'lodash'
 
@@ -30,6 +31,10 @@ export const shortenLinksInText = (text: string) => {
 }
 
 export const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
+
+export const disableEnter = (e: KeyboardEvent) => {
+  if (e.key === 'Enter') e.preventDefault()
+}
 
 export const getNoDpiaLabel = (id: string) => {
   if (id === 'NO_SPECIAL_CATEGORY_PI') {

@@ -21,6 +21,7 @@ import {
   PolicyFormValues,
   Process,
   ProcessFormValues,
+  ProcessorFormValues,
   ProcessShort,
   ProcessStatus,
   Retention,
@@ -82,6 +83,15 @@ const dataProcessingSchema = () =>
     )
   })
 
+export const dataProcessorSchema = () =>
+  yup.object<ProcessorFormValues>(
+    {
+      name: yup.string().max(max, maxError()).required(intl.required),
+      outsideEU: yup.boolean(),
+      countries: yup.array().of(yup.string())
+    }
+  )
+
 const transferGroundsOutsideEUMissing = (values: DataProcessingFormValues) => {
   return !!values.dataProcessorOutsideEU && !values.transferGroundsOutsideEU
 }
@@ -135,7 +145,7 @@ export const processSchema = () =>
       riskOwnerFunction: yup.string(),
       noDpiaReasons: yup.array().of(yup.string())
     }),
-    disclosures:yup.array().of(yup.object<Disclosure>())
+    disclosures: yup.array().of(yup.object<Disclosure>())
   });
 
 export const dpProcessSchema =
@@ -239,7 +249,8 @@ export const policySchema = () =>
         return !missingArt6LegalBasisForInfoType(parent);
       },
     }),
-    subjectCategories: yup.array().of(yup.string()).min(1, intl.required)
+    subjectCategories: yup.array().of(yup.string())
+    .required(intl.required).min(1, intl.required)
     .test({
       name: 'duplicateSubjectCategory',
       message: 'placeholder',
