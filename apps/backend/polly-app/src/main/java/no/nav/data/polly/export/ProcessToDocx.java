@@ -171,9 +171,13 @@ public class ProcessToDocx {
             ProcessData data = process.getData();
             String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
-            var header = addHeading1(purposeNames + ": " + process.getData().getName());
+            var header = addHeading1(purposeNames + ": " + process.getData().getName() + " " + process.getData().getNumber());
+
             addBookmark(header, process.getId().toString());
             addText(periodText(process.getData().toPeriod()));
+
+            addHeading4("Behandlingsnummer");
+            addText(process.getData().getNumber());
 
             data.getPurposes().forEach(purpose -> {
                 addHeading4("Overordnet formål: " + shortName(ListName.PURPOSE, purpose));
