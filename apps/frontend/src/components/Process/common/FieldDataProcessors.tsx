@@ -19,8 +19,8 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
 
   useEffect(() => {
     (async () => {
-      if (props.formikBag.values.dataProcessing.dataProcessorAgreements && props.formikBag.values.dataProcessing.dataProcessorAgreements?.length > 0) {
-        const res = await getProcessorsByIds(props.formikBag.values.dataProcessing.dataProcessorAgreements)
+      if (props.formikBag.values.dataProcessing.processors?.length) {
+        const res = await getProcessorsByIds(props.formikBag.values.dataProcessing.processors)
         res.forEach(r => dataProcessors.set(r.id, r.name))
       }
     })()

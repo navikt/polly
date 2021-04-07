@@ -75,8 +75,8 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
 
   useEffect(() => {
     (async () => {
-      if (process.dataProcessing.dataProcessorAgreements && process.dataProcessing.dataProcessorAgreements?.length > 0) {
-        const res = await getProcessorsByIds(process.dataProcessing.dataProcessorAgreements)
+      if (process.dataProcessing.processors?.length) {
+        const res = await getProcessorsByIds(process.dataProcessing.processors)
         setProcessors([...res])
       }
     })()

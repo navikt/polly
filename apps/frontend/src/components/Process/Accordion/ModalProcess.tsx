@@ -102,8 +102,8 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   useEffect(() => {
     (async () => {
-      if (initialValues.dataProcessing.dataProcessorAgreements && initialValues.dataProcessing.dataProcessorAgreements?.length > 0) {
-        const res = await getProcessorsByIds(initialValues.dataProcessing.dataProcessorAgreements)
+      if (initialValues.dataProcessing.processors?.length > 0) {
+        const res = await getProcessorsByIds(initialValues.dataProcessing.processors)
         res.forEach(d => dataProcessors.set(d.id, d.name))
       }
     })()
