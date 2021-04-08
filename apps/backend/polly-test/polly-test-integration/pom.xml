@@ -40,7 +40,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>--enable-preview</argLine>
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
