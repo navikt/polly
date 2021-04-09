@@ -187,9 +187,6 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                       </>}
                     </Panel>
                   </StatelessAccordion>
-                  <Block>
-                    {JSON.stringify(formikBag.errors)}
-                  </Block>
                 </ModalBody>
                 <ModalFooter style={{
                   borderTop: 0
