@@ -59,7 +59,6 @@ export const processStatusText = (status: ProcessStatus | undefined) => {
 
 const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
   const {process} = props
-  const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
   const [processors, setProcessors] = useState<Processor[]>([])
 
@@ -182,7 +181,7 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
           <Block>
             <Block>{intl.processorYes}</Block>
             <Block>
-              {dataProcessorAgreements &&
+              {processors &&
               <Block display='flex' alignItems="center">
                 <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
                   {`${intl.processorAgreement}: `}
@@ -201,24 +200,6 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
               </Block>
               }
             </Block>
-            <Block>
-              <span>{intl.isDataProcessedOutsideEUEEA} </span>
-              <span>{boolToText(process.dataProcessing.dataProcessorOutsideEU)}</span>
-            </Block>
-            {process.dataProcessing.dataProcessorOutsideEU &&
-            <>
-              <Block>
-                <span>{intl.transferGroundsOutsideEUEEA}: </span>
-                {process.dataProcessing.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(process.dataProcessing.transferGroundsOutsideEU)} </span>}
-                {!process.dataProcessing.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                {process.dataProcessing.transferGroundsOutsideEUOther && <span>: {process.dataProcessing.transferGroundsOutsideEUOther}</span>}
-              </Block>
-              {!!process.dataProcessing?.transferCountries.length && <Block>
-                <span>{intl.countries}: </span>
-                <span>{process.dataProcessing.transferCountries.map(c => codelist.countryName(c)).join(', ')}</span>
-              </Block>}
-            </>
-            }
           </Block>}
         </>
       </DataText>
@@ -283,8 +264,7 @@ const Completeness = (props: {process: Process}) => {
     retention: !isNil(process.retention?.retentionPlan),
     retentionTime: !process.retention?.retentionPlan || (!!process.retention.retentionStart && !!process.retention.retentionMonths),
     dataProcessor: !isNil(process.dataProcessing?.dataProcessor),
-    dataProcessorAgreementMissing: !process.dataProcessing?.dataProcessor || !!process.dataProcessing?.dataProcessorAgreements.length,
-    dataProcessorOutsideEU: !process.dataProcessing?.dataProcessor || !isNil(process.dataProcessing?.dataProcessorOutsideEU),
+    dataProcessors: !process.dataProcessing?.dataProcessor || !process.dataProcessing?.processors,
     policies: process.usesAllInformationTypes || !!process.policies.length,
     completed: process.status === ProcessStatus.COMPLETED
   }
@@ -310,8 +290,7 @@ const Completeness = (props: {process: Process}) => {
         <p>{!completeness.retention && intl.retention}</p>
         <p>{!completeness.retentionTime && intl.retentionMonths}</p>
         <p>{!completeness.dataProcessor && intl.processor}</p>
-        <p>{!completeness.dataProcessorAgreementMissing && intl.processorAgreement}</p>
-        <p>{!completeness.dataProcessorOutsideEU && intl.processorOutsideEU}</p>
+        <p>{!completeness.dataProcessors && intl.processorAgreement}</p>
         <p>{!completeness.policies && intl.informationTypes}</p>
         <p>{!completeness.completed && intl.processStatus}</p>
       </Block>}>

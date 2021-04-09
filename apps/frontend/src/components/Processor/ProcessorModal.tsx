@@ -74,7 +74,9 @@ const ProcessorModal = (props: ModalProcessorProps) => {
     (async () => {
       if (props.initialValues.operationalContractManagers && props.initialValues.operationalContractManagers?.length > 0) {
         const res = await getResourcesByIds(props.initialValues.operationalContractManagers)
-        res.forEach(r => operationalContractManagers.set(r.navIdent, r.fullName))
+        const newConMans = new Map<string, string>()
+        res.forEach(r => newConMans.set(r.navIdent, r.fullName))
+        setOperationalContractManagers(newConMans)
       }
     })()
   }, [])
@@ -109,25 +111,23 @@ const ProcessorModal = (props: ModalProcessorProps) => {
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.processorName}/>
-                    <Field
-                      name='name'
-                      render={({field, form}: FieldProps<string, ProcessorFormValues>) => (
+                    <Field name='name'>
+                      {({field, form}: FieldProps<string, ProcessorFormValues>) => (
                         <Input {...field} type='input' size={InputSIZE.default} autoFocus
                                error={!!form.errors.name && form.touched.name}/>
                       )}
-                    />
+                    </Field>
                   </CustomizedModalBlock>
                   <Error fieldName={'name'}/>
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.contract}/>
-                    <Field
-                      name='contract'
-                      render={({field, form}: FieldProps<string, ProcessorFormValues>) => (
+                    <Field name='contract'>
+                      {({field, form}: FieldProps<string, ProcessorFormValues>) => (
                         <Input {...field} type='input' size={InputSIZE.default}
                                error={!!form.errors.contract && form.touched.contract}/>
                       )}
-                    />
+                    </Field>
                   </CustomizedModalBlock>
                   <Error fieldName={'contract'}/>
 
@@ -165,28 +165,31 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                       </Block>
 
                       {formikBag.values.outsideEU && <>
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
-                            <FieldTransferGroundsOutsideEU
-                              code={formikBag.values.transferGroundsOutsideEU}/>
-                          </Block>
-                          <Error fieldName='transferGroundsOutsideEU'/>
+                        <Block {...rowBlockProps}>
+                          <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
+                          <FieldTransferGroundsOutsideEU
+                            code={formikBag.values.transferGroundsOutsideEU}/>
+                        </Block>
+                        <Error fieldName='transferGroundsOutsideEU'/>
 
-                          {formikBag.values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
-                            <FieldTransferGroundsOutsideEUOther/>
-                          </Block>}
-                          <Error fieldName='transferGroundsOutsideEUOther'/>
+                        {formikBag.values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
+                        <Block {...rowBlockProps}>
+                          <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
+                          <FieldTransferGroundsOutsideEUOther/>
+                        </Block>}
+                        <Error fieldName='transferGroundsOutsideEUOther'/>
 
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.countries}/>
-                            <FieldCountries formikBag={formikBag}/>
-                          </Block>
-                          <Error fieldName='countries'/>
+                        <Block {...rowBlockProps}>
+                          <ModalLabel label={intl.countries}/>
+                          <FieldCountries formikBag={formikBag}/>
+                        </Block>
+                        <Error fieldName='countries'/>
                       </>}
                     </Panel>
                   </StatelessAccordion>
+                  <Block>
+                    {JSON.stringify(formikBag.errors)}
+                  </Block>
                 </ModalBody>
                 <ModalFooter style={{
                   borderTop: 0
