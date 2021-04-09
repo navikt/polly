@@ -9,9 +9,9 @@ import lombok.Singular;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpDataProcessingResponse;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
-import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +35,7 @@ public class DpProcessResponse {
 
     @Singular
     private List<String> dataProcessingAgreements;
-    private DataProcessingResponse subDataProcessing;
+    private DpDataProcessingResponse subDataProcessing;
 
     private String purposeDescription;
     private String description;
