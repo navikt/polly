@@ -419,11 +419,6 @@ public abstract class IntegrationTestBase {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
                 .processor(PROCESSOR_ID1)
-                .dataProcessorAgreements(List.of("X"))
-                .dataProcessorOutsideEU(true)
-                .transferGroundsOutsideEU(getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
-                .transferGroundsOutsideEUOther("pretend its ok")
-                .transferCountries(List.of("FJI"))
                 .build();
     }
 
