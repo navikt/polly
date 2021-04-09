@@ -1,21 +1,10 @@
 import axios from 'axios'
-import {
-  PageResponse,
-  Process,
-  ProcessCount,
-  ProcessField,
-  ProcessFormValues,
-  ProcessShort,
-  ProcessState,
-  ProcessStatus,
-  RecentEdits,
-  TRANSFER_GROUNDS_OUTSIDE_EU_OTHER
-} from '../constants'
+import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, RecentEdits,} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import * as queryString from 'query-string'
 import {mapBool} from "../util/helper-functions";
-import {useDebouncedState} from '../util/hooks'
+import {useDebouncedState} from '../util'
 import {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 export const getProcess = async (processId: string) => {
@@ -115,12 +104,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     profiling: process ? mapBool(profiling) : false,
     dataProcessing: {
       dataProcessor: mapBool(dataProcessing?.dataProcessor),
-      processors: dataProcessing?.processors || [],
-      dataProcessorAgreements: dataProcessing?.dataProcessorAgreements || [],
-      dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU),
-      transferGroundsOutsideEU: dataProcessing?.transferGroundsOutsideEU?.code || undefined,
-      transferGroundsOutsideEUOther: dataProcessing?.transferGroundsOutsideEUOther || '',
-      transferCountries: dataProcessing?.transferCountries || []
+      processors: dataProcessing?.processors || []
     },
     retention: {
       retentionPlan: mapBool(retention?.retentionPlan),
@@ -158,9 +142,8 @@ export const convertFormValuesToProcess = (values: ProcessFormValues) => {
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessing: {
-      ...values.dataProcessing,
-      processors: values.dataProcessing.processors || [],
-      transferGroundsOutsideEUOther: values.dataProcessing.transferGroundsOutsideEU !== TRANSFER_GROUNDS_OUTSIDE_EU_OTHER ? undefined : values.dataProcessing.transferGroundsOutsideEUOther
+      dataProcessor: values.dataProcessing,
+      processors: values.dataProcessing.processors || []
     },
     retention: values.retention,
     status: values.status,

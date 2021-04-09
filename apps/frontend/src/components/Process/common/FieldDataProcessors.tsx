@@ -27,7 +27,7 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
   }, [])
 
   return <FieldArray
-    name='dataProcessing.dataProcessorAgreements'
+    name='dataProcessing.processors'
     render={arrayHelpers => (
       <>
         <Block width='100%'>
@@ -35,18 +35,18 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
             <Select
               clearable
               noResultsMsg={intl.notFoundProcessor}
-              options={dataProcessorSearchResult.filter(dp => !props.formikBag.values.dataProcessing.dataProcessorAgreements.includes(dp.id ? dp.id.toString() : ''))}
+              options={dataProcessorSearchResult.filter(dp => !props.formikBag.values.dataProcessing.processors.includes(dp.id ? dp.id.toString() : ''))}
               onChange={(params) => {
                 if (params.value[0].id && params.value[0].label) {
                   dataProcessors.set(params.value[0].id.toString(), params.value[0].label.toString())
                 }
-                arrayHelpers.form.setFieldValue('dataProcessing.dataProcessorAgreements', [...props.formikBag.values.dataProcessing.dataProcessorAgreements || [], ...params.value.map(v => v.id)])
+                arrayHelpers.form.setFieldValue('dataProcessing.processors', [...props.formikBag.values.dataProcessing.processors || [], ...params.value.map(v => v.id)])
               }}
               onInputChange={event => setDataProcessorSearch(event.currentTarget.value)}
               isLoading={dataProcessorLoading}
             />
           </Block>
-          <Block>{props.formikBag.values.dataProcessing.dataProcessorAgreements && renderTagList(props.formikBag.values.dataProcessing.dataProcessorAgreements.map(dp => {
+          <Block>{props.formikBag.values.dataProcessing.processors && renderTagList(props.formikBag.values.dataProcessing.processors.map(dp => {
             let dataProcessorName = ""
             if (dp) {
               if (dataProcessors.has(dp)) {

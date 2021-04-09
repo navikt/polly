@@ -15,20 +15,20 @@ const FieldTransferGroundsOutsideEU = (props: {code?: string}) => {
   return (
     <Field
       name='transferGroundsOutsideEU'
-      render={({form}: FieldProps<string, ProcessorFormValues>) => (
-        <Block width={'100%'}>
-          <Select
-            options={codelist.getParsedOptions(ListName.TRANSFER_GROUNDS_OUTSIDE_EU)}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('transferGroundsOutsideEU', value.length > 0 ? value[0].id : '')
-            }}
-            value={value}
-            error={!!(form.errors.transferGroundsOutsideEU && form.touched.transferGroundsOutsideEU)}
-          />
-        </Block>
-      )}
-    />
+    >{({form}: FieldProps<string, ProcessorFormValues>) => (
+      <Block width={'100%'}>
+        <Select
+          options={codelist.getParsedOptions(ListName.TRANSFER_GROUNDS_OUTSIDE_EU)}
+          onChange={({value}) => {
+            setValue(value)
+            form.setFieldValue('transferGroundsOutsideEU', value.length > 0 ? value[0].id : '')
+          }}
+          value={value}
+          error={!!(form.errors.transferGroundsOutsideEU && form.touched.transferGroundsOutsideEU)}
+        />
+      </Block>
+    )}
+    </Field>
   )
 }
 

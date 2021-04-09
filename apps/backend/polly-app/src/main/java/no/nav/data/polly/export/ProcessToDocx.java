@@ -23,7 +23,6 @@ import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.ProcessorData;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
@@ -109,20 +108,24 @@ public class ProcessToDocx {
     public byte[] generateDocFor(ListName list, String code) {
         List<Process> processes;
         String title;
-        if (list == ListName.DEPARTMENT) {
-            title = "Avdeling";
-            processes = processRepository.findByDepartment(code);
-        } else if (list == ListName.SUB_DEPARTMENT) {
-            title = "Linja (Ytre etat)";
-            processes = processRepository.findBySubDepartment(code);
-        } else if (list == ListName.PURPOSE) {
-            title = "Formål";
-            processes = processRepository.findByPurpose(code);
-        } else if (list == ListName.SYSTEM) {
-            title = "System";
-            processes = processRepository.findByProduct(code);
-        } else {
-            throw new ValidationException("no list given");
+        switch (list) {
+            case DEPARTMENT -> {
+                title = "Avdeling";
+                processes = processRepository.findByDepartment(code);
+            }
+            case SUB_DEPARTMENT -> {
+                title = "Linja (Ytre etat)";
+                processes = processRepository.findBySubDepartment(code);
+            }
+            case PURPOSE -> {
+                title = "Formål";
+                processes = processRepository.findByPurpose(code);
+            }
+            case SYSTEM -> {
+                title = "System";
+                processes = processRepository.findByProduct(code);
+            }
+            default -> throw new ValidationException("no list given");
         }
         processes = new ArrayList<>(processes);
         Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
@@ -225,9 +228,7 @@ public class ProcessToDocx {
             );
 
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
-            var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ?
-                    processorIds == null ? List.of(convertOldFormatProcessor(process.getData().getDataProcessing())) :
-                            processorRepository.findAllById(processorIds) : List.<Processor>of();
+            var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
@@ -624,20 +625,6 @@ public class ProcessToDocx {
             pack.save(outStream);
             return outStream.toByteArray();
         }
-    }
-
-    // TODO processors remove when new processor format frontend done
-    private Processor convertOldFormatProcessor(DataProcessing dataProcessing) {
-        return Processor.builder()
-                .data(ProcessorData.builder()
-                        .name("")
-                        .contract(String.join(", ", copyOf(dataProcessing.getDataProcessorAgreements())))
-                        .outsideEU(dataProcessing.getDataProcessorOutsideEU())
-                        .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
-                        .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
-                        .countries(copyOf(dataProcessing.getTransferCountries()))
-                        .build())
-                .build();
     }
 
     private static String boolToText(Boolean aBoolean) {

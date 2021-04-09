@@ -8,11 +8,11 @@ const FieldTransferGroundsOutsideEUOther = () => {
   return (
     <Field
       name='transferGroundsOutsideEUOther'
-      render={({field, form}: FieldProps<string, ProcessorFormValues>) => (
-        <Input {...field} type='input' size={SIZE.default}
-               error={!!form.errors.transferGroundsOutsideEUOther && form.touched.transferGroundsOutsideEUOther}/>
-      )}
-    />
+    >{({field, form}: FieldProps<string, ProcessorFormValues>) => (
+      <Input {...field} type='input' size={SIZE.default}
+             error={!!form.errors.transferGroundsOutsideEUOther && form.touched.transferGroundsOutsideEUOther}/>
+    )}
+    </Field>
   )
 }
 

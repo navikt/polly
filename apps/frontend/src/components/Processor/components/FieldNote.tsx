@@ -7,11 +7,11 @@ import * as React from "react";
 const FieldNote = () => (
   <Field
     name='note'
-    render={({field, form}: FieldProps<string, ProcessorFormValues>) => (
-      <Textarea {...field} type='input' size={InputSIZE.default}
-                error={!!form.errors.note && form.touched.note}/>
-    )}
-  />
+  >{({field, form}: FieldProps<string, ProcessorFormValues>) => (
+    <Textarea {...field} type='input' size={InputSIZE.default}
+              error={!!form.errors.note && form.touched.note}/>
+  )}
+  </Field>
 )
 
 export default FieldNote

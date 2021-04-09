@@ -10,6 +10,7 @@ import {
   Document,
   DocumentInformationTypes,
   DocumentInfoTypeUse,
+  DpDataProcessingFormValues,
   Dpia,
   DpProcessFormValues,
   DpRetention,
@@ -51,7 +52,12 @@ export const infoTypeSchema = () =>
 const dataProcessingSchema = () =>
   yup.object<DataProcessingFormValues>({
     dataProcessor: yup.boolean(),
-    processors: yup.array().of(yup.string()),
+    processors: yup.array().of(yup.string())
+  })
+
+const dpDataProcessingSchema = () =>
+  yup.object<DpDataProcessingFormValues>({
+    dataProcessor: yup.boolean(),
     dataProcessorAgreements: yup.array().of(yup.string()),
     dataProcessorOutsideEU: yup.boolean(),
     transferGroundsOutsideEU: yup.string().test({
@@ -59,7 +65,7 @@ const dataProcessingSchema = () =>
         message: intl.required,
         test: function () {
           const {parent} = this;
-          return !transferGroundsOutsideEUMissing(parent)
+          return !dpTransferGroundsOutsideEUMissing(parent)
         }
       }
     ),
@@ -68,7 +74,7 @@ const dataProcessingSchema = () =>
         message: intl.required,
         test: function () {
           const {parent} = this;
-          return !transferGroundsOutsideEUOtherMissing(parent)
+          return !dpTransferGroundsOutsideEUOtherMissing(parent)
         }
       }
     ),
@@ -77,56 +83,76 @@ const dataProcessingSchema = () =>
         message: intl.required,
         test: function () {
           const {parent} = this;
-          return !transferCountriesMissing(parent)
+          return !dpTransferCountriesMissing(parent)
         }
       }
     )
   })
 
+const dpTransferGroundsOutsideEUMissing = (values: DpDataProcessingFormValues) => {
+  return !!values.dataProcessorOutsideEU && !values.transferGroundsOutsideEU
+}
+
+const dpTransferCountriesMissing = (values: DpDataProcessingFormValues) => {
+  return !!values.dataProcessorOutsideEU && !values.transferCountries.length
+}
+
+const dpTransferGroundsOutsideEUOtherMissing = (values: DpDataProcessingFormValues) => {
+  return values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && !values.transferGroundsOutsideEUOther
+}
+
 export const dataProcessorSchema = () =>
   yup.object<ProcessorFormValues>(
     {
       name: yup.string().max(max, maxError()).required(intl.required),
+      contractOwner: yup.string(),
+      operationalContractManagers: yup.array().of(yup.string()),
+      note: yup.string(),
+      contract: yup.string(),
       outsideEU: yup.boolean(),
       transferGroundsOutsideEU: yup.string().test({
-          name: 'dataProcessOutsideEU_transferGrounds',
+          name: 'transferGrounds',
           message: intl.required,
           test: function () {
             const {parent} = this;
-            return !(!!parent.outsideEU && !parent.transferGroundsOutsideEU)
+            return !transferGroundsOutsideEUMissing(parent)
           }
         }
       ),
       transferGroundsOutsideEUOther: yup.string().test({
-          name: 'dataProcessOutsideEU_transferGroundsOther',
+          name: 'transferGroundsOther',
           message: intl.required,
           test: function () {
             const {parent} = this;
-            return !(parent.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && !parent.transferGroundsOutsideEUOther)
+            return !transferGroundsOutsideEUOtherMissing(parent)
           }
         }
       ),
       countries: yup.array().of(yup.string()).test({
-          name: 'dataProcessOutsideEU_transferCountries',
-          message: intl.required,
+          name: 'transferCountries',
           test: function () {
             const {parent} = this;
-            return !(!!parent.outsideEU && !parent.countries.length)
+            const error = transferCountriesMissing(parent)
+            if (!error) return true
+            return this.createError({
+              path: 'countries',
+              message: intl.required
+            })
           }
         }
       )
     }
   )
 
-const transferGroundsOutsideEUMissing = (values: DataProcessingFormValues) => {
-  return !!values.dataProcessorOutsideEU && !values.transferGroundsOutsideEU
+const transferGroundsOutsideEUMissing = (values: ProcessorFormValues) => {
+  return !!values.outsideEU && !values.transferGroundsOutsideEU
 }
 
-const transferCountriesMissing = (values: DataProcessingFormValues) => {
-  return !!values.dataProcessorOutsideEU && !values.transferCountries.length
+const transferCountriesMissing = (values: ProcessorFormValues) => {
+  return !!values.outsideEU && !values.countries.length
 }
 
-const transferGroundsOutsideEUOtherMissing = (values: DataProcessingFormValues) => {
+const transferGroundsOutsideEUOtherMissing = (values: ProcessorFormValues) => {
   return values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && !values.transferGroundsOutsideEUOther
 }
 
@@ -201,7 +227,7 @@ export const dpProcessSchema =
     }),
 
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
-    subDataProcessing: dataProcessingSchema()
+    subDataProcessing: dpDataProcessingSchema()
   })
 
 export const createDocumentValidation = () =>
