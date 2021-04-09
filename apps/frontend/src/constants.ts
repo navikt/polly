@@ -185,23 +185,13 @@ export interface Dpia {
 }
 
 export interface DataProcessingFormValues {
-  dataProcessor?: boolean;
+  dataProcessor?: boolean
   processors: string[]
-  dataProcessorAgreements: string[];
-  dataProcessorOutsideEU?: boolean;
-  transferGroundsOutsideEU?: string;
-  transferGroundsOutsideEUOther?: string;
-  transferCountries: string[];
 }
 
 export interface DataProcessing {
-  dataProcessor?: boolean;
+  dataProcessor?: boolean
   processors: string[]
-  dataProcessorAgreements: string[];
-  dataProcessorOutsideEU?: boolean;
-  transferGroundsOutsideEU?: Code;
-  transferGroundsOutsideEUOther?: string;
-  transferCountries: string[];
 }
 
 export interface Retention {
