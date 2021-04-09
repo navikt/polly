@@ -183,7 +183,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                             <ModalLabel label={intl.countries}/>
                             <FieldCountries formikBag={formikBag}/>
                           </Block>
-                          <Error fieldName='transferCountries'/>
+                          <Error fieldName='countries'/>
                       </>}
                     </Panel>
                   </StatelessAccordion>

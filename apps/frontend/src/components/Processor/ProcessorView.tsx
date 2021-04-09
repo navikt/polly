@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useHistory, useParams} from "react-router-dom";
-import {Processor, ProcessorFormValues, TeamResource} from "../../constants";
+import {Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
 import {convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor} from "../../api/ProcessorApi";
 import {getResourceById, getResourcesByIds} from "../../api";
 import {Block, BlockProps} from "baseui/block";
@@ -159,7 +159,7 @@ const ProcessorView = () => {
                                 <Block {...blockProps}>
                                   {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
                                   {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                                  {currentProcessor.transferGroundsOutsideEUOther && <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
+                                  {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther && <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
                                 </Block>
                               </TextWithLabel>
                               {currentProcessor.countries && !!currentProcessor?.countries.length && <TextWithLabel label={intl.countries} text={""}>
