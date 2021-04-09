@@ -142,7 +142,7 @@ export const convertFormValuesToProcess = (values: ProcessFormValues) => {
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessing: {
-      dataProcessor: values.dataProcessing,
+      dataProcessor: values.dataProcessing.dataProcessor,
       processors: values.dataProcessing.processors || []
     },
     retention: values.retention,
