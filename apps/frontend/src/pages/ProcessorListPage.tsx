@@ -19,21 +19,14 @@ export const ProcessorListPage = () => {
   const [processors, setProcessors] = useState<Processor[]>([])
   const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
-  const [modalErrorMessage,setModalErrorMessage] = useState<string>()
+  const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const history = useHistory()
   const hasAccess = () => user.canWrite()
-
-  const fetchProcessors = async () => {
-    const res = (await getAll(getProcessorsByPageAndPageSize)())
-    if(res){
-      setProcessors(res)
-    }
-  }
 
   const handleCreateProcessor = (processor: ProcessorFormValues) => {
     if (!processor) return
     try {
-      (async()=>{
+      (async () => {
         const newDataProcessor = await createProcessor(processor)
         history.push(`/processor/${newDataProcessor.id}`)
       })()
@@ -44,9 +37,14 @@ export const ProcessorListPage = () => {
   }
 
   useEffect(() => {
-    setIsLoading(true)
-    fetchProcessors()
-    setIsLoading(false)
+    (async () => {
+      setIsLoading(true)
+      const res = (await getAll(getProcessorsByPageAndPageSize)())
+      if (res) {
+        setProcessors(res)
+      }
+      setIsLoading(false)
+    })()
   }, [])
 
   return isLoading ?

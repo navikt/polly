@@ -178,8 +178,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                     field != ProcessField.MISSING_LEGAL_BASIS &&
                     field != ProcessField.EXCESS_INFO &&
                     field != ProcessField.RETENTION_DATA &&
-                    field != ProcessField.DPIA_REFERENCE_MISSING &&
-                    field != ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY;
+                    field != ProcessField.DPIA_REFERENCE_MISSING;
         }
 
         @ParameterizedTest
@@ -266,6 +265,16 @@ class ProcessControllerIT extends IntegrationTestBase {
 
             ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?documentId={documentId}", ProcessPage.class,
                     policy.getData().getDocumentIds().get(0));
+
+            assertSize(resp, 1);
+        }
+
+        @Test
+        void getByProcessorId() {
+            Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?processorId={processorId}", ProcessPage.class,
+                    policy.getProcess().getData().getDataProcessing().getProcessors().get(0));
 
             assertSize(resp, 1);
         }

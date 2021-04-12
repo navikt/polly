@@ -32,7 +32,7 @@ import FieldLegalBasis from "../common/FieldLegalBasis";
 import PanelTitle from "../common/PanelTitle";
 import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
 import {Select, Value} from "baseui/select";
-import {getDisclosuresByRecipient, useDisclosureSearch} from "../../../api";
+import {getDisclosuresByRecipient} from "../../../api";
 import {renderTagList} from "../../common/TagList";
 import {codelist, ListName} from "../../../service/Codelist";
 import {disableEnter} from "../../../util/helper-functions";
@@ -88,7 +88,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   const [expanded, setExpanded] = useState<React.Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
-  const [disclosureSearchResult, setDisclosureSearch, disclosureSearchLoading] = useDisclosureSearch()
 
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<Value>([])
@@ -102,9 +101,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   useEffect(() => {
     (async () => {
-      if (initialValues.dataProcessing.dataProcessorAgreements && initialValues.dataProcessing.dataProcessorAgreements?.length > 0) {
-        const res = await getProcessorsByIds(initialValues.dataProcessing.dataProcessorAgreements)
-        res.forEach(d => dataProcessors.set(d.id, d.name))
+      if (initialValues.dataProcessing.processors?.length > 0) {
+        const res = await getProcessorsByIds(initialValues.dataProcessing.processors)
+        const newProcs = new Map<string, string>()
+        res.forEach(d => newProcs.set(d.id, d.name))
+        setDataProcessors(newProcs)
       }
     })()
   }, [])
@@ -141,12 +142,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
               writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
               if (formikBag.errors.legalBasesOpen) {
                 expand('legalBasis')
-              } else if (
-                formikBag.errors.dataProcessing?.transferGroundsOutsideEU ||
-                formikBag.errors.dataProcessing?.transferGroundsOutsideEUOther ||
-                formikBag.errors.dataProcessing?.transferCountries
-              ) {
-                expand('dataProcessor')
               }
             }
             return (

@@ -106,9 +106,9 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public List<Process> findByDocumentId(String documentId) {
+    public List<Process> findByDocumentId(UUID documentId) {
         var resp = jdbcTemplate.queryForList("select distinct(process_id) from policy where data #>'{documentIds}' ?? :documentId",
-                new MapSqlParameterSource().addValue("documentId", documentId));
+                new MapSqlParameterSource().addValue("documentId", documentId.toString()));
         return getProcesses(resp);
     }
 
@@ -171,10 +171,10 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 processState = ProcessState.UNKNOWN;
                 yield " data #> '{dpia,needForDpia}' = 'true'::jsonb and data #> '{dpia,refToDpia}' %s ";
             }
-            case DATA_PROCESSOR_AGREEMENT_EMPTY -> {
-                processState = ProcessState.UNKNOWN;
-                yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
-            }
+//            case DATA_PROCESSOR_AGREEMENT_EMPTY -> {
+//                processState = ProcessState.UNKNOWN;
+//                yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
+//            }
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 

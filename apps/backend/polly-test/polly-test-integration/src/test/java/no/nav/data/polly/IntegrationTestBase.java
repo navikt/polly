@@ -8,6 +8,7 @@ import no.nav.data.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
+import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.disclosure.domain.Disclosure;
@@ -37,6 +38,9 @@ import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.DpProcessData;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
+import no.nav.data.polly.process.dpprocess.domain.sub.DpDataProcessing;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpDataProcessingRequest;
+import no.nav.data.polly.process.dpprocess.dto.sub.DpDataProcessingResponse;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
@@ -267,7 +271,7 @@ public abstract class IntegrationTestBase {
                                 .products(List.of(product))
                                 .build())
                         .externalProcessResponsible(externalProcessResponsible)
-                        .subDataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
+                        .subDataProcessing(DpDataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
                         .build())
                 .build());
     }
@@ -318,9 +322,13 @@ public abstract class IntegrationTestBase {
     protected DataProcessingRequest dataProcessingRequest() {
         return DataProcessingRequest.builder()
                 .dataProcessor(true)
-                // TODO processor
-//                .processor(PROCESSOR_ID1.toString())
+                .processor(PROCESSOR_ID1.toString())
+                .build();
+    }
 
+    protected DpDataProcessingRequest dpDataProcessingRequest() {
+        return DpDataProcessingRequest.builder()
+                .dataProcessor(true)
                 .dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
                 .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
                 .transferCountries(List.of("FJI"))
@@ -420,12 +428,15 @@ public abstract class IntegrationTestBase {
     protected DataProcessingResponse dataProcessingResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
-                // TODO processor
-//                .processor(PROCESSOR_ID1)
+                .processor(PROCESSOR_ID1)
+                .build();
+    }
 
-                .dataProcessorAgreements(List.of("X"))
-                .dataProcessorOutsideEU(true)
-                .transferGroundsOutsideEU(getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
+    protected DpDataProcessingResponse dpDataProcessingResponse() {
+        return DpDataProcessingResponse.builder()
+                .dataProcessor(true)
+                .dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
+                .transferGroundsOutsideEU(CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
                 .transferGroundsOutsideEUOther("pretend its ok")
                 .transferCountries(List.of("FJI"))
                 .build();

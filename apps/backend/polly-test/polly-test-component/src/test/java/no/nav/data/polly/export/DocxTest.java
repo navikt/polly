@@ -142,6 +142,7 @@ public class DocxTest {
                 .generateId()
                 .data(ProcessData.builder()
                         .name("Saksbehandling")
+                        .number(245)
                         .purpose("AAP")
                         .purpose("KONTROLL")
                         .description(
