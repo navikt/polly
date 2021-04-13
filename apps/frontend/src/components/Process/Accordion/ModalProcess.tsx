@@ -324,7 +324,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                       {formikBag.values.dataProcessing.dataProcessor && <>
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.processorAgreement}/>
+                          <ModalLabel label={intl.processor}/>
                           <FieldDataProcessors formikBag={formikBag} dataProcessors={dataProcessors} options={processorList.map(p=>{
                             return {
                               id:p.id,
