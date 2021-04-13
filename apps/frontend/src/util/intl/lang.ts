@@ -505,7 +505,18 @@ export const no: IStrings = {
   mainPageEventsMessage: "Hva har endret seg i det siste?",
   notFoundProcessor: "Databehandler er ikke registrert i løsningen. Registrer databehandleren først.",
   notFoundDisclosure: "Ingen eksisterende utleveringer matcher søket. Opprett ny utlevering før du legger den til her.",
-  processorName: "Navn på databehandler"
+  processorName: "Navn på databehandler",
+  processorNameHelpText: " Navn på databehandler.",
+  contractHelpText: "Referanse til avtalen, gjerne URL til avtalen i WebSak e.l. ",
+  contractOwnerHelpText: "Den som formelt står som eier av avtalen med databehandler.",
+  operationalContractManagersHelpText: "De(n) som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne.",
+  noteHelpText: "Eventuelle vesentlige merknader/begrensninger som bruker av databehandleren må være ekstra oppmerksom på.",
+  transferGroundsOutsideEUEEAHelpText: "I tilfeller hvor databehandler behandler personopplysninger utenfor EU/EØS, hva er overføringsgrunnlaget?",
+  transferGroundsOutsideEUEEAOtherHelpText: "Du har valgt at overføringsgrunnlaget er \"annet\", spesifiser grunnlaget her.",
+  countriesHelpText: "I hvilke(t) land lagrer databehandleren personopplysninger i?",
+  isDataProcessedOutsideEUEEAHelpTextDP: "Angi om databehandler overfører/behandler personopplysninger i land utenfor EU/EØS."
+
+
 };
 
 export const en: IStrings = {
@@ -1012,7 +1023,18 @@ export const en: IStrings = {
   mainPageEventsMessage: "What has changed lately?",
   notFoundDisclosure: "Disclosure is not registered. Create a new disclosure before adding it here.",
   notFoundProcessor: "Processor is not registered in the solution. Register the processor first.",
-  processorName: "Processor name"
+  processorName: "Processor name",
+  processorNameHelpText: "Processor name.",
+  contractHelpText: "Reference to the agreement, preferably URL to the agreement in WebSak or similar",
+  contractOwnerHelpText: "The person who formally owns the agreement with the data processor.",
+  operationalContractManagersHelpText: "Those who can respond to details related to the agreement and its operationalization.",
+  noteHelpText: "Any significant remarks/restrictions that the user of the data processor must pay extra attention to.",
+  transferGroundsOutsideEUEEAHelpText: "In cases where the data processor processes personal data outside the EU/EEA, what is the transfer grounds?",
+  transferGroundsOutsideEUEEAOtherHelpText: "You have chosen that the transfer grounds is \"other\", specify it here.",
+  countriesHelpText: "In which country(ies) does the data processor store personal information?",
+  isDataProcessedOutsideEUEEAHelpTextDP: "Indicate whether the data processor transfers/processes personal data in countries outside the EU/EEA."
+
+
 };
 
 export const ta = {

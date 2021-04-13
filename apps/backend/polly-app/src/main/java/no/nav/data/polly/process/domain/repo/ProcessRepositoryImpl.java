@@ -106,9 +106,9 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public List<Process> findByDocumentId(String documentId) {
+    public List<Process> findByDocumentId(UUID documentId) {
         var resp = jdbcTemplate.queryForList("select distinct(process_id) from policy where data #>'{documentIds}' ?? :documentId",
-                new MapSqlParameterSource().addValue("documentId", documentId));
+                new MapSqlParameterSource().addValue("documentId", documentId.toString()));
         return getProcesses(resp);
     }
 

@@ -184,7 +184,6 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
               {processors &&
               <Block display='flex' alignItems="center">
                 <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
-                  {`${intl.processorAgreement}: `}
                 </Block>
                 <Block display='flex' flexWrap>
                   {processors.map((dp, i) => (
@@ -231,7 +230,8 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
         </Block>
       </DataText>
 
-      <DataText label={intl.disclosures} text={props.disclosures.length === 0 && intl.notFilled}>
+      {props.disclosures.length !== 0 &&
+      <DataText label={intl.disclosures} text={""}>
         <Block>
           {
             props.disclosures.map(value =>
@@ -243,6 +243,7 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
           }
         </Block>
       </DataText>
+      }
       <Completeness process={process}/>
 
       <DataText label={intl.status} text={""}>

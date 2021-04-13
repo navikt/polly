@@ -110,7 +110,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                 <ModalBody>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.processorName}/>
+                    <ModalLabel label={intl.processorName} tooltip={intl.processorNameHelpText}/>
                     <Field name='name'>
                       {({field, form}: FieldProps<string, ProcessorFormValues>) => (
                         <Input {...field} type='input' size={InputSIZE.default} autoFocus
@@ -121,7 +121,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                   <Error fieldName={'name'}/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.contract}/>
+                    <ModalLabel label={intl.contract} tooltip={intl.contractHelpText}/>
                     <Field name='contract'>
                       {({field, form}: FieldProps<string, ProcessorFormValues>) => (
                         <Input {...field} type='input' size={InputSIZE.default}
@@ -132,17 +132,17 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                   <Error fieldName={'contract'}/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.contractOwner}/>
+                    <ModalLabel label={intl.contractOwner} tooltip={intl.contractOwnerHelpText}/>
                     <FieldContractOwner contractOwner={formikBag.values.contractOwner}/>
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.operationalContractManagers}/>
+                    <ModalLabel label={intl.operationalContractManagers} tooltip={intl.operationalContractManagersHelpText}/>
                     <FieldOperationalContractManagers formikBag={formikBag} resources={operationalContractManagers}/>
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.note}/>
+                    <ModalLabel label={intl.note} tooltip={intl.noteHelpText}/>
                     <FieldNote/>
                   </CustomizedModalBlock>
 
@@ -159,14 +159,14 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                       overrides={{...panelOverrides}}
                     >
                       <Block {...rowBlockProps} marginTop={0}>
-                        <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
+                        <ModalLabel label={intl.isDataProcessedOutsideEUEEA} tooltip={intl.isDataProcessedOutsideEUEEAHelpTextDP}/>
                         <BoolField fieldName='outsideEU'
                                    value={formikBag.values.outsideEU}/>
                       </Block>
 
                       {formikBag.values.outsideEU && <>
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
+                          <ModalLabel label={intl.transferGroundsOutsideEUEEA} tooltip={intl.transferGroundsOutsideEUEEAHelpText}/>
                           <FieldTransferGroundsOutsideEU
                             code={formikBag.values.transferGroundsOutsideEU}/>
                         </Block>
@@ -174,13 +174,13 @@ const ProcessorModal = (props: ModalProcessorProps) => {
 
                         {formikBag.values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
+                          <ModalLabel label={intl.transferGroundsOutsideEUEEAOther} tooltip={intl.transferGroundsOutsideEUEEAOtherHelpText}/>
                           <FieldTransferGroundsOutsideEUOther/>
                         </Block>}
                         <Error fieldName='transferGroundsOutsideEUOther'/>
 
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.countries}/>
+                          <ModalLabel label={intl.countries} tooltip={intl.countriesHelpText}/>
                           <FieldCountries formikBag={formikBag}/>
                         </Block>
                         <Error fieldName='countries'/>

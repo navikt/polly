@@ -5,7 +5,7 @@ import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {Disclosure, ProcessFormValues, ProcessStatus} from '../../../constants'
+import {Disclosure, ProcessFormValues, Processor, ProcessStatus} from '../../../constants'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
 import {Panel, PanelOverrides, StatelessAccordion} from 'baseui/accordion'
@@ -32,12 +32,12 @@ import FieldLegalBasis from "../common/FieldLegalBasis";
 import PanelTitle from "../common/PanelTitle";
 import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
 import {Select, Value} from "baseui/select";
-import {getDisclosuresByRecipient} from "../../../api";
+import {getAll, getDisclosuresByRecipient} from "../../../api";
 import {renderTagList} from "../../common/TagList";
 import {codelist, ListName} from "../../../service/Codelist";
 import {disableEnter} from "../../../util/helper-functions";
 import {FlexGridItem} from "baseui/flex-grid";
-import {getProcessorsByIds} from "../../../api/ProcessorApi";
+import {getProcessorsByIds, getProcessorsByPageAndPageSize} from "../../../api/ProcessorApi";
 import FieldDataProcessors from "../common/FieldDataProcessors";
 
 const modalHeaderProps: BlockProps = {
@@ -92,6 +92,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<Value>([])
   const [disclosures, setDisclosures] = useState<Disclosure[]>([])
+  const [processorList, setProcessorList] = useState<Processor[]>([])
 
   const expand = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
@@ -118,6 +119,15 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
       }
     })()
   }, [thirdParty])
+
+  useEffect(() => {
+    (async () => {
+      const res = (await getAll(getProcessorsByPageAndPageSize)())
+      if (res) {
+        setProcessorList(res)
+      }
+    })()
+  }, [])
 
   return (
     <Modal
@@ -314,10 +324,15 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                       {formikBag.values.dataProcessing.dataProcessor && <>
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.processorAgreement}/>
-                          <FieldDataProcessors formikBag={formikBag} dataProcessors={dataProcessors}/>
+                          <ModalLabel label={intl.processor}/>
+                          <FieldDataProcessors formikBag={formikBag} dataProcessors={dataProcessors} options={processorList.map(p=>{
+                            return {
+                              id:p.id,
+                              label:p.name
+                            }
+                          })}/>
                         </Block>
-                        <Error fieldName='dataProcessing.dataProcessorAgreements'/>
+                        <Error fieldName='dataProcessing.processors'/>
                         <FlexGridItem>
                         </FlexGridItem>
                       </>}
