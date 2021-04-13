@@ -1,17 +1,20 @@
 import React, {useEffect, useState} from 'react'
 import {HeadingLarge, LabelMedium} from 'baseui/typography'
 import {intl, theme} from '../util'
-import {DisclosureSummary, getAll, getDisclosureSummaries} from '../api'
+import {createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries} from '../api'
 import {useQueryParam, useTable} from '../util/hooks'
 import {Block} from 'baseui/block'
-import {Button as BButton} from 'baseui/button'
+import {Button, Button as BButton, KIND} from 'baseui/button'
 import {ButtonGroup} from 'baseui/button-group'
 import {useHistory} from 'react-router-dom'
 import {lowerFirst} from 'lodash'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import {ObjectLink} from '../components/common/RouteLink'
-import {ObjectType} from '../constants'
+import {Disclosure, DisclosureFormValues, ObjectType} from '../constants'
 import {ListName} from '../service/Codelist'
+import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
+import {user} from "../service/User";
+import {Plus} from "baseui/icon";
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -19,6 +22,9 @@ enum FilterType {
 }
 
 export const DisclosureListPage = () => {
+  const [showCreateModal, setShowCreateModal] = React.useState(false)
+  const [newDisclosure, setNewDisclosure] = React.useState<Disclosure>()
+  const [error, setError] = React.useState<string>()
   const [disclosures, setDisclosures] = useState<DisclosureSummary[]>([])
   const [table, sortColumn] = useTable<DisclosureSummary, keyof DisclosureSummary>(disclosures, {
     sorting: {
@@ -32,6 +38,21 @@ export const DisclosureListPage = () => {
   const filter = useQueryParam<FilterType>('filter')
   const history = useHistory()
 
+  const initialFormValues: DisclosureFormValues = {
+    name: '',
+    recipient: '',
+    recipientPurpose: '',
+    description: '',
+    document: undefined,
+    legalBases: [],
+    legalBasesOpen: false,
+    start: undefined,
+    end: undefined,
+    processes: [],
+    abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''},
+    processIds: []
+  }
+
   useEffect(() => {
     (async () => {
       const all = await getAll(getDisclosureSummaries)()
@@ -39,7 +60,17 @@ export const DisclosureListPage = () => {
       else if (filter === FilterType.legalbases) setDisclosures(all.filter(d => !!d.legalBases))
       else setDisclosures(all)
     })()
-  }, [filter])
+  }, [filter, newDisclosure])
+
+  const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
+    try {
+      setNewDisclosure(await createDisclosure(disclosure))
+      setShowCreateModal(false)
+    } catch (err) {
+      setShowCreateModal(true)
+      setError(err.message)
+    }
+  }
 
   return (
     <>
@@ -57,7 +88,18 @@ export const DisclosureListPage = () => {
           </ButtonGroup>
         </Block>
       </Block>
-
+      <Block display="flex" justifyContent="flex-end">
+        {user.canWrite() &&
+        <Button
+          size="compact"
+          kind={KIND.minimal}
+          onClick={() => setShowCreateModal(true)}
+          startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+        >
+          {intl.createNew}
+        </Button>
+        }
+      </Block>
       <Table emptyText={intl.disclosures}
              headers={
                <>
@@ -94,6 +136,18 @@ export const DisclosureListPage = () => {
           </Row>
         ))}
       </Table>
+      <ModalThirdParty
+        title={intl.createThirdPartyModalTitle}
+        isOpen={showCreateModal}
+        initialValues={initialFormValues}
+        submit={handleCreateDisclosure}
+        onClose={() => {
+          setShowCreateModal(false)
+          setError(undefined)
+        }}
+        errorOnCreate={error}
+        disableRecipientField={false}
+      />
     </>
   )
 }
