@@ -334,6 +334,8 @@ export interface IStrings {
   shortcutSubtitleInformationtype: string;
   shortcutSubtitleThirdParty: string;
   shortcutSubtitleDashboard: string;
+  canNotDeleteProcessorParagraph1: string;
+  canNotDeleteProcessorParagraph2: string;
 
   // groups
   READ: string;

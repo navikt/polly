@@ -13,10 +13,11 @@ interface DeleteProcessProps {
   processor: Processor
   submitDeleteProcessor: (dp: Processor) => Promise<boolean>
   errorProcessorModal: undefined | any
+  usageCount: number
 }
 
 export const DeleteProcessorModal = (props: DeleteProcessProps) => {
-  const {processor, onClose, isOpen, submitDeleteProcessor, errorProcessorModal} = props
+  const {processor, onClose, isOpen, submitDeleteProcessor, errorProcessorModal, usageCount} = props
 
   return (
     <Modal
@@ -28,8 +29,13 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
-        <Paragraph2>{intl.deleteProcessorText}</Paragraph2>
-        {<Paragraph2>{intl.confirmDeleteProcessorText} {processor.name}</Paragraph2>}
+        {usageCount === 0 ? <>
+          < Paragraph2> {intl.deleteProcessorText}</Paragraph2>
+          <Paragraph2>{intl.confirmDeleteProcessorText} {processor.name}</Paragraph2>
+        </> : <>
+          <Paragraph2>{intl.formatString(intl.canNotDeleteProcessorParagraph1,processor.name)}</Paragraph2>
+          <Paragraph2>{intl.formatString(intl.canNotDeleteProcessorParagraph2,usageCount)}</Paragraph2>
+        </>}
       </ModalBody>
 
       <ModalFooter>
@@ -43,7 +49,7 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
             {intl.abort}
           </Button>
           <Block display='inline' marginRight={theme.sizing.scale500}/>
-          <Button onClick={() => submitDeleteProcessor(processor).then(onClose)}>
+          <Button onClick={() => submitDeleteProcessor(processor).then(onClose)} disabled={usageCount > 0}>
             {intl.delete}
           </Button>
         </Block>
