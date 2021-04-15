@@ -57,7 +57,6 @@ const DocumentPage = () => {
         history.push('/document')
       }).catch((e) => {
         setErrorMessage(e.message)
-        console.log(e)
       })
     }
   }

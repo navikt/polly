@@ -100,24 +100,38 @@ export interface IStrings {
   profiling: string;
   isProfilingUsed: string;
   profilingExtra: string;
-  dataProcessor: string;
+  contract: string;
+  contractHelpText: string;
+  contractOwner: string;
+  contractOwnerHelpText: string;
+  operationalContractManagers: string;
+  operationalContractManagersHelpText: string;
+  processor: string;
+  processors: string;
   dpProcessDataProcessor: string;
-  dataProcessorYes: string;
-  dpProcessDataProcessorYes: string;
-  dataProcessorNo: string;
+  processorYes: string;
+  dpProcessProcessorYes: string;
+  processorNo: string;
   dpProcessDataProcessorNo: string;
-  dataProcessorUnclarified: string;
+  processorUnclarified: string;
   dpProcessDataProcessorUnclarified: string;
-  dataProcessorExtra: string;
-  dataProcessorAgreement: string;
-  dataProcessorAgreementPlaceholder: string;
-  dataProcessorOutsideEU: string;
+  note: string;
+  noteHelpText: string;
+  processorExtra: string;
+  processorAgreement: string;
+  processorAgreementPlaceholder: string;
+  processorOutsideEU: string;
   isDataProcessedOutsideEUEEAHelpText: string;
+  isDataProcessedOutsideEUEEAHelpTextDP: string;
+  transferPanelTitle: string;
   isDataProcessedOutsideEUEEA: string;
   isSubDataProcessedOutsideEUEEA: string;
   transferGroundsOutsideEUEEA: string;
+  transferGroundsOutsideEUEEAHelpText: string;
   transferGroundsOutsideEUEEAOther: string;
+  transferGroundsOutsideEUEEAOtherHelpText: string;
   countries: string;
+  countriesHelpText: string;
   includeDefaultDocument: string;
   inProduction: string;
   notInProduction: string;
@@ -171,7 +185,9 @@ export interface IStrings {
   searchWordsWrite: string;
   orgMasterSelect: string;
   purposeSelect: string;
+  processorSelect: string;
   purposeNotFound: string;
+  createProcessor: string;
   processingActivityUse: string;
   informationTypeExternalUse: string;
   thirdParties: string;
@@ -202,11 +218,11 @@ export interface IStrings {
   usesAllInformationTypesHelpText: string;
   processAutomationHelpText: string;
   profilingHelpText: string;
-  isDataProcessorUsed: string;
+  isProcessorUsed: string;
   isSubDataProcessorUsed: string;
-  dataProcessorHelpText: string;
-  dataProcessorAgreementHelpText: string;
-  dataProcessorOutsideEUExtraHelpText: string;
+  processorHelpText: string;
+  processorAgreementHelpText: string;
+  processorOutsideEUExtraHelpText: string;
   legalBasisHelpText: string;
   retentionHelpText: string;
   retentionDescriptionHelpText: string;
@@ -217,6 +233,7 @@ export interface IStrings {
   externalPartsSideMenuHelpText: string;
   systemSideMenuHelpText: string;
   disclosuresSideMenuHelpText: string;
+  processorSideMenuHelpText: string;
   dashboard: string;
   dashboardSideMenuHelpText: string;
   processActivity: string;
@@ -245,7 +262,13 @@ export interface IStrings {
   confirmDeleteHeader: string;
   confirmDeletePolicyText: string;
   deleteProcessText: string;
+  deleteProcessorText: string;
   confirmDeleteProcessText: string;
+  confirmDeleteProcessorText: string;
+  notFoundProcessor: string;
+  notFoundDisclosure: string;
+  processorName: string;
+  processorNameHelpText: string;
   confirmDeleteDocumentText: string;
   confirmDeleteDpProcess: string;
   cannotDeleteProcess: string;
@@ -306,11 +329,13 @@ export interface IStrings {
   disclosureNameTooltip: string;
   disclosurePurposeTooltip: string;
   disclosureDescriptionTooltip: string;
-  disclosureDocumentTooltip:string;
+  disclosureDocumentTooltip: string;
   shortcutSubtitleProcess: string;
   shortcutSubtitleInformationtype: string;
   shortcutSubtitleThirdParty: string;
   shortcutSubtitleDashboard: string;
+  canNotDeleteProcessorParagraph1: string;
+  canNotDeleteProcessorParagraph2: string;
 
   // groups
   READ: string;
@@ -380,10 +405,10 @@ export interface IStrings {
   addManyFromSystem: string;
   level: string;
   type: string;
-  help:string;
-  helpTooltip:string;
+  help: string;
+  helpTooltip: string;
   allProcesses: string;
-  navResponsible:string;
+  navResponsible: string;
   completedProcesses: string;
   showCompletedProcesses: string;
   inProgressProcesses: string;
@@ -422,9 +447,9 @@ export interface IStrings {
   fomDateHelpText: string;
   tomDateHelpText: string;
   mailLog: string;
-  deliverAbroad:string;
-  socialSecurityAgreement:string;
-  socialSecurityArea:string;
+  deliverAbroad: string;
+  socialSecurityAgreement: string;
+  socialSecurityArea: string;
 
   code: string;
   codes: string;
@@ -461,6 +486,8 @@ export interface IStrings {
   defaultProcessDocument: string;
   goToSite: string;
   categoryNotInUse: string;
+  mainPageMessage: string;
+  mainPageEventsMessage: string;
 
   no_dpia_no_special_category_pi: string;
   no_dpia_small_scale: string;
@@ -491,8 +518,8 @@ export interface IStrings {
   noPotentialPersonalCategoryUsageInTable: string;
   usesAllInformationTypes: string;
   noAuditsAvailableInTable: string;
-  noDisclosuresToThirdPartyAvailableInTable:string;
-  noRetrievedFromThirdPartyAvailableInTable:string;
+  noDisclosuresToThirdPartyAvailableInTable: string;
+  noRetrievedFromThirdPartyAvailableInTable: string;
   noAlertsAvailableInTable: string;
 
 }

@@ -22,7 +22,8 @@ export enum Section {
   subdepartment = 'subdepartment',
   team = 'team',
   productarea = 'productarea',
-  thirdparty = 'thirdparty'
+  thirdparty = 'thirdparty',
+  processor = 'processor'
 }
 
 export const listNameForSection = (section: Section) => {

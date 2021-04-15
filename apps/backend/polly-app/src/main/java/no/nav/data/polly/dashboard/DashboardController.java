@@ -67,7 +67,7 @@ public class DashboardController {
     private final TeamService teamService;
     private final LoadingCache<ProcessStatusFilter, DashResponse> dashDataCache = Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofMinutes(3))
-            .maximumSize(3).build(this::calcDash);
+            .maximumSize(5).build(this::calcDash);
 
     @Operation(summary = "Get Dashboard data")
     @ApiResponse(description = "Data fetched")

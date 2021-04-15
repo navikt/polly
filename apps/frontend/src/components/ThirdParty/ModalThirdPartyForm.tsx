@@ -134,7 +134,10 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            submit(values)
+            submit({
+              ...values,
+              processIds: values.processes.map(p => p.id)
+            })
           }}
           validationSchema={disclosureSchema()}
           render={(formikBag: FormikProps<DisclosureFormValues>) => (
@@ -173,14 +176,14 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.relatedProcesses}/>
                   <Block width="100%">
-                    <SelectProcess formikBag={formikBag} />
+                    <SelectProcess formikBag={formikBag}/>
                   </Block>
                 </Block>
 
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.informationTypes}/>
                   <Block width="100%">
-                    <SelectInformationTypes formikBag={formikBag} />
+                    <SelectInformationTypes formikBag={formikBag}/>
                   </Block>
                 </Block>
 
@@ -234,12 +237,12 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     />
                   </Block>
 
-                    <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.socialSecurityAgreement}/>
-                      <FieldInput fieldName='abroad.refToAgreement'
-                                  fieldValue={formikBag.values.abroad.refToAgreement}
-                                  />
-                    </Block>
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.socialSecurityAgreement}/>
+                    <FieldInput fieldName='abroad.refToAgreement'
+                                fieldValue={formikBag.values.abroad.refToAgreement}
+                    />
+                  </Block>
 
                   <Block {...rowBlockProps}>
                     <ModalLabel label={intl.socialSecurityArea}/>

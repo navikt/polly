@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {AuditAction, Event, ObjectType, PageResponse} from '../../constants'
 import {Option, StatefulSelect, Value} from 'baseui/select'
-import {intl} from '../../util'
+import {intl, theme} from '../../util'
 import {getEvents} from '../../api/AuditApi'
 import {Block} from 'baseui/block'
 import {ObjectLink} from '../common/RouteLink'
@@ -24,16 +24,18 @@ export const LastEvents = () => {
   }, [table, action])
 
   const content = events?.content.map((event, index) =>
-    <Block key={event.id} marginBottom=".3rem">
+    <Block key={event.id} marginBottom={theme.sizing.scale200}>
       <ObjectLink id={event.tableId} type={event.table} disable={event.action === AuditAction.DELETE} hideUnderline>
         <Block width='100%' display='flex' justifyContent='space-between'>
-          <Block>
+          <Block paddingRight={theme.sizing.scale300} $style={{overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>
             <AuditActionIcon action={event.action}/>
             {event.name}
           </Block>
-          <CustomizedStatefulTooltip content={moment(event.time).format('lll')}>
-            {moment(event.time).fromNow()}
-          </CustomizedStatefulTooltip>
+          <Block minWidth={'125px'} $style={{textAlign: 'right'}}>
+            <CustomizedStatefulTooltip content={moment(event.time).format('lll')}>
+              {moment(event.time).fromNow()}
+            </CustomizedStatefulTooltip>
+          </Block>
         </Block>
       </ObjectLink>
     </Block>
@@ -41,10 +43,10 @@ export const LastEvents = () => {
 
   return (
     <Block>
-      <Block display='flex' justifyContent='space-between' alignItems='center' width='600px'>
+      <Block display='flex' justifyContent='space-between' alignItems='center' width='100%'>
         <HeadingMedium>{intl.lastEvents}</HeadingMedium>
         <Block display="flex" justifyContent="space-between" alignItems="center">
-          <Label2 marginRight=".5rem">{intl.eventType}</Label2>
+          <Label2 marginRight={theme.sizing.scale300}>{intl.eventType}</Label2>
           <StatefulSelect
             size="compact"
             clearable={false}
@@ -52,9 +54,9 @@ export const LastEvents = () => {
             options={Object.keys(AuditAction).map(auditAction => ({id: auditAction, label: intl[auditAction as AuditAction]}))}
             initialState={{value: action}} onChange={params => setAction(params.value)}
             overrides={{
-              Root:{
-                style:{
-                  width:"120px"
+              Root: {
+                style: {
+                  width: "120px"
                 }
               }
             }}

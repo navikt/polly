@@ -1,21 +1,10 @@
 import axios from 'axios'
-import {
-  PageResponse,
-  Process,
-  ProcessCount,
-  ProcessField,
-  ProcessFormValues,
-  ProcessShort,
-  ProcessState,
-  ProcessStatus,
-  RecentEdits,
-  TRANSFER_GROUNDS_OUTSIDE_EU_OTHER
-} from '../constants'
+import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, RecentEdits,} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import * as queryString from 'query-string'
 import {mapBool} from "../util/helper-functions";
-import {useDebouncedState} from '../util/hooks'
+import {useDebouncedState} from '../util'
 import {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 export const getProcess = async (processId: string) => {
@@ -44,6 +33,10 @@ export const getProcessesByPurpose = async (text: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/purpose/${text}`)).data
 }
 
+export const getProcessesByProcessor = async (processorId: string) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?pageNumber=0&pageSize=200&processorId=${processorId}`)).data
+}
+
 export const getProcessesFor = async (params: {productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string}) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, {skipNull: true})}&pageSize=250`)).data
 }
@@ -53,7 +46,7 @@ export const getProcessPurposeCount = async (query: 'purpose' | 'department' | '
 }
 
 export const createProcess = async (process: ProcessFormValues) => {
-  let body = mapProcessFromForm(process)
+  let body = convertFormValuesToProcess(process)
   return (await axios.post<Process>(`${env.pollyBaseUrl}/process`, body)).data
 }
 
@@ -62,7 +55,7 @@ export const deleteProcess = async (processId: string) => {
 }
 
 export const updateProcess = async (process: ProcessFormValues) => {
-  let body = mapProcessFromForm(process)
+  let body = convertFormValuesToProcess(process)
   const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
   return data
@@ -115,12 +108,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     profiling: process ? mapBool(profiling) : false,
     dataProcessing: {
       dataProcessor: mapBool(dataProcessing?.dataProcessor),
-      processors: dataProcessing?.processors || [],
-      dataProcessorAgreements: dataProcessing?.dataProcessorAgreements || [],
-      dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU),
-      transferGroundsOutsideEU: dataProcessing?.transferGroundsOutsideEU?.code || undefined,
-      transferGroundsOutsideEUOther: dataProcessing?.transferGroundsOutsideEUOther || '',
-      transferCountries: dataProcessing?.transferCountries || []
+      processors: dataProcessing?.processors || []
     },
     retention: {
       retentionPlan: mapBool(retention?.retentionPlan),
@@ -142,7 +130,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
   }
 }
 
-export const mapProcessFromForm = (values: ProcessFormValues) => {
+export const convertFormValuesToProcess = (values: ProcessFormValues) => {
   return {
     id: values.id,
     name: values.name,
@@ -158,9 +146,8 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessing: {
-      ...values.dataProcessing,
-      processors: values.dataProcessing.processors || [],
-      transferGroundsOutsideEUOther: values.dataProcessing.transferGroundsOutsideEU !== TRANSFER_GROUNDS_OUTSIDE_EU_OTHER ? undefined : values.dataProcessing.transferGroundsOutsideEUOther
+      dataProcessor: values.dataProcessing.dataProcessor,
+      processors: values.dataProcessing.processors || []
     },
     retention: values.retention,
     status: values.status,

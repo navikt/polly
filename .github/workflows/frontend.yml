@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Set up node
-        uses: actions/setup-node@v2.1.4
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: '15.x'
       
@@ -38,6 +38,7 @@ jobs:
       - name: Build
         run: CI=false npm run build
       - name: Docker
+        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

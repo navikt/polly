@@ -93,7 +93,8 @@ public class ProcessReadController {
     public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters,
             @RequestParam(required = false) String productTeam,
             @RequestParam(required = false) String productArea,
-            @RequestParam(required = false) String documentId,
+            @RequestParam(required = false) UUID documentId,
+            @RequestParam(required = false) UUID processorId,
             @Parameter(description = "Can be combined with nationalLaw") @RequestParam(required = false) String gdprArticle,
             @Parameter(description = "Can be combined with gdprArticle") @RequestParam(required = false) String nationalLaw
     ) {
@@ -111,6 +112,11 @@ public class ProcessReadController {
         if (documentId != null) {
             log.info("Received request for Processeses for documentId {}", documentId);
             var processes = repository.findByDocumentId(documentId);
+            return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
+        }
+        if (processorId != null) {
+            log.info("Received request for Processeses for processorId {}", processorId);
+            var processes = repository.findByProcessor(processorId);
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
         }
         if (gdprArticle != null || nationalLaw != null) {

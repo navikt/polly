@@ -9,14 +9,24 @@ import {useStyletron} from 'baseui'
 import {ListName} from '../../service/Codelist'
 
 type RouteLinkProps = {
-  href: string
+  href: string,
+  hideUnderline?: boolean
+  plain?: boolean
 }
 
 const RouteLink = (props: RouteLinkProps & any) => {
   const history = useHistory()
-  const {...restprops} = props
+  const {hideUnderline, plain, ...restprops} = props
+
+  const [useCss] = useStyletron()
+  const css = useCss({
+    textDecoration: hideUnderline ? 'none' : undefined,
+    color: plain ? 'inherit !important' : undefined
+  })
+
+
   return (
-    <StyledLink {...restprops} onClick={(e: Event) => {
+    <StyledLink className={css} {...restprops} onClick={(e: Event) => {
       e.preventDefault()
       history.push(props.href)
     }}/>
@@ -45,6 +55,8 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       return `/policy/${id}`
     case ObjectType.PROCESS:
       return `/process/${id}`
+    case ObjectType.PROCESSOR:
+      return `/processor/${id}`
     case ObjectType.DP_PROCESS:
       return `/dpprocess/${id}`
     case ObjectType.DISCLOSURE:

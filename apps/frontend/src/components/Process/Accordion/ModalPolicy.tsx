@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {KeyboardEvent, useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
@@ -18,6 +18,7 @@ import FieldLegalBasis from "../common/FieldLegalBasis";
 import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 import {KIND as NKIND, Notification} from 'baseui/notification'
 import {paddingZero} from '../../common/Style'
+import {disableEnter} from "../../../util/helper-functions";
 
 
 const modalBlockProps: BlockProps = {
@@ -128,10 +129,6 @@ type ModalPolicyProps = {
 };
 
 const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, docs, title, addBatch}: ModalPolicyProps) => {
-
-  const disableEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') e.preventDefault()
-  }
 
   return (
     <Modal

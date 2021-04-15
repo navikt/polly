@@ -33,6 +33,7 @@ export enum ObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
+  PROCESSOR = 'PROCESSOR',
   DP_PROCESS = 'DP_PROCESS',
   DISCLOSURE = 'DISCLOSURE',
   DOCUMENT = 'DOCUMENT',
@@ -48,7 +49,7 @@ export enum ProcessField {
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
   DATA_PROCESSOR = 'DATA_PROCESSOR',
-  DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
+  // DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
   EXCESS_INFO = 'EXCESS_INFO',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
@@ -184,8 +185,17 @@ export interface Dpia {
 }
 
 export interface DataProcessingFormValues {
-  dataProcessor?: boolean;
+  dataProcessor?: boolean
   processors: string[]
+}
+
+export interface DataProcessing {
+  dataProcessor?: boolean
+  processors: string[]
+}
+
+export interface DpDataProcessingFormValues {
+  dataProcessor?: boolean;
   dataProcessorAgreements: string[];
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: string;
@@ -193,9 +203,8 @@ export interface DataProcessingFormValues {
   transferCountries: string[];
 }
 
-export interface DataProcessing {
+export interface DpDataProcessing {
   dataProcessor?: boolean;
-  processors: string[]
   dataProcessorAgreements: string[];
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: Code;
@@ -348,7 +357,7 @@ export interface DpProcess extends IDurationed {
   affiliation: Affiliation;
   externalProcessResponsible?: Code;
   dataProcessingAgreements: string[];
-  subDataProcessing: Omit<DataProcessing, 'processors'>;
+  subDataProcessing: DpDataProcessing;
   changeStamp: ChangeStamp;
   art9?: boolean;
   art10?: boolean;
@@ -363,7 +372,7 @@ export interface DpProcessFormValues {
   affiliation: AffiliationFormValues
   externalProcessResponsible?: string;
   dataProcessingAgreements: string[];
-  subDataProcessing: Omit<DataProcessingFormValues, 'processors'>;
+  subDataProcessing: DpDataProcessingFormValues;
   art9?: boolean;
   art10?: boolean;
   retention: DpRetention
@@ -490,6 +499,7 @@ export interface Disclosure extends IDurationed {
   informationTypes?: InformationTypeShort[]
   informationTypeIds?: string[]
   abroad: DisclosureAbroad;
+  changeStamp: ChangeStamp;
 }
 
 export interface DocumentFormValues {
@@ -531,6 +541,33 @@ export interface DocumentInformationTypes {
   subjectCategories: string[];
 }
 
+export interface Processor {
+  id: string;
+  name: string;
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers: string[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: Code;
+  transferGroundsOutsideEUOther?: string;
+  countries?: string[];
+  changeStamp?: ChangeStamp;
+}
+
+export interface ProcessorFormValues {
+  id?: string;
+  name: string;
+  contract?: string;
+  contractOwner?: string;
+  operationalContractManagers?: string[];
+  note?: string;
+  outsideEU?: boolean;
+  transferGroundsOutsideEU?: string;
+  transferGroundsOutsideEUOther?: string;
+  countries: string[];
+}
+
 export interface AuditItem {
   action: AuditAction;
   id: string;
@@ -557,6 +594,7 @@ export interface CodeUsage {
   informationTypes: [Use];
   policies: [UseWithPurpose];
   processes: [ProcessShort];
+  processors: [Use];
   dpProcesses: [DpProcessShort];
 }
 

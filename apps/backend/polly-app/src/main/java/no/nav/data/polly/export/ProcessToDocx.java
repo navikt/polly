@@ -23,7 +23,6 @@ import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.ProcessorData;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
@@ -101,7 +100,7 @@ public class ProcessToDocx {
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
         var doc = new DocumentBuilder();
-        doc.addTitle("Behandling: " + process.getData().getName());
+        doc.addTitle("Behandling: "+ process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")" );
         doc.generate(process);
         return doc.build();
     }
@@ -109,20 +108,24 @@ public class ProcessToDocx {
     public byte[] generateDocFor(ListName list, String code) {
         List<Process> processes;
         String title;
-        if (list == ListName.DEPARTMENT) {
-            title = "Avdeling";
-            processes = processRepository.findByDepartment(code);
-        } else if (list == ListName.SUB_DEPARTMENT) {
-            title = "Linja (Ytre etat)";
-            processes = processRepository.findBySubDepartment(code);
-        } else if (list == ListName.PURPOSE) {
-            title = "Formål";
-            processes = processRepository.findByPurpose(code);
-        } else if (list == ListName.SYSTEM) {
-            title = "System";
-            processes = processRepository.findByProduct(code);
-        } else {
-            throw new ValidationException("no list given");
+        switch (list) {
+            case DEPARTMENT -> {
+                title = "Avdeling";
+                processes = processRepository.findByDepartment(code);
+            }
+            case SUB_DEPARTMENT -> {
+                title = "Linja (Ytre etat)";
+                processes = processRepository.findBySubDepartment(code);
+            }
+            case PURPOSE -> {
+                title = "Formål";
+                processes = processRepository.findByPurpose(code);
+            }
+            case SYSTEM -> {
+                title = "System";
+                processes = processRepository.findByProduct(code);
+            }
+            default -> throw new ValidationException("no list given");
         }
         processes = new ArrayList<>(processes);
         Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
@@ -171,9 +174,13 @@ public class ProcessToDocx {
             ProcessData data = process.getData();
             String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
-            var header = addHeading1(purposeNames + ": " + process.getData().getName());
+            var header = addHeading1(purposeNames + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
+
             addBookmark(header, process.getId().toString());
             addText(periodText(process.getData().toPeriod()));
+
+            addHeading4("Behandlingsnummer");
+            addText(Integer.toString(process.getData().getNumber()));
 
             data.getPurposes().forEach(purpose -> {
                 addHeading4("Overordnet formål: " + shortName(ListName.PURPOSE, purpose));
@@ -221,9 +228,7 @@ public class ProcessToDocx {
             );
 
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
-            var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ?
-                    processorIds == null ? List.of(convertOldFormatProcessor(process.getData().getDataProcessing())) :
-                            processorRepository.findAllById(processorIds) : List.<Processor>of();
+            var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
@@ -507,7 +512,7 @@ public class ProcessToDocx {
             long currListId = listId++;
 
             for (Process process : processes) {
-                var name = shortNames(ListName.PURPOSE, process.getData().getPurposes()) + ": " + process.getData().getName();
+                var name = shortNames(ListName.PURPOSE, process.getData().getPurposes()) + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")";
                 var bookmark = process.getId().toString();
 
                 addListItem(name, currListId, bookmark);
@@ -620,20 +625,6 @@ public class ProcessToDocx {
             pack.save(outStream);
             return outStream.toByteArray();
         }
-    }
-
-    // TODO processors remove when new processor format frontend done
-    private Processor convertOldFormatProcessor(DataProcessing dataProcessing) {
-        return Processor.builder()
-                .data(ProcessorData.builder()
-                        .name("")
-                        .contract(String.join(", ", copyOf(dataProcessing.getDataProcessorAgreements())))
-                        .outsideEU(dataProcessing.getDataProcessorOutsideEU())
-                        .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
-                        .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
-                        .countries(copyOf(dataProcessing.getTransferCountries()))
-                        .build())
-                .build();
     }
 
     private static String boolToText(Boolean aBoolean) {

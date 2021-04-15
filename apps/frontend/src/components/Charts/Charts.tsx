@@ -123,7 +123,7 @@ const Charts = (props: ChartsProps) => {
       <Block {...chartCardProps}>
         <TriChart counter={chartData.dataProcessor}
                   processStatus={processStatus}
-                  title={intl.isDataProcessorUsed}
+                  title={intl.isProcessorUsed}
                   processField={ProcessField.DATA_PROCESSOR}
                   onClickPieChartSlice={handleClickPieChartSlice}
         />

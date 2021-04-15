@@ -63,6 +63,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
         InformationType infoType = createAndSaveInformationType();
         var disclosureResponse = resp.getBody();
         assertThat(disclosureResponse).isNotNull();
+        assertThat(disclosureResponse.getChangeStamp()).isNotNull();
+        disclosureResponse.setChangeStamp(null);
 
         InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
                 CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));

@@ -117,7 +117,9 @@ class ProcessControllerIT extends IntegrationTestBase {
         AzureUserInfo userInfo = new AzureUserInfo(new Builder().claim(StandardClaimNames.NAME, "Name Nameson").claim(AzureConstants.IDENT_CLAIM, "S123456").build(), Set.of());
 
         MdcUtils.setUser(userInfo.getIdentName());
-        createAndSaveProcess(PURPOSE_CODE2);
+        for (int i = 0; i < 40; i++) {
+            createAndSaveProcess(PURPOSE_CODE2 + i);
+        }
         var deleted = createAndSaveProcess("deleted");
         var deleted2 = createAndSaveProcess("deleted2");
         processService.deleteById(deleted.getId());
@@ -130,9 +132,11 @@ class ProcessControllerIT extends IntegrationTestBase {
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(20L);
         assertThat(resp.getBody().getContent().get(0).getTime()).isNotNull();
-        assertThat(resp.getBody().getContent().get(0).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2);
+        for (int i = 0; i < 20; i++) {
+            assertThat(resp.getBody().getContent().get(i).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2 + (39 - i));
+        }
     }
 
     @Test
@@ -174,8 +178,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                     field != ProcessField.MISSING_LEGAL_BASIS &&
                     field != ProcessField.EXCESS_INFO &&
                     field != ProcessField.RETENTION_DATA &&
-                    field != ProcessField.DPIA_REFERENCE_MISSING &&
-                    field != ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY;
+                    field != ProcessField.DPIA_REFERENCE_MISSING;
         }
 
         @ParameterizedTest
@@ -262,6 +265,16 @@ class ProcessControllerIT extends IntegrationTestBase {
 
             ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?documentId={documentId}", ProcessPage.class,
                     policy.getData().getDocumentIds().get(0));
+
+            assertSize(resp, 1);
+        }
+
+        @Test
+        void getByProcessorId() {
+            Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?processorId={processorId}", ProcessPage.class,
+                    policy.getProcess().getData().getDataProcessing().getProcessors().get(0));
 
             assertSize(resp, 1);
         }
