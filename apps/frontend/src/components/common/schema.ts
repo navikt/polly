@@ -361,7 +361,7 @@ export const disclosureSchema = () =>
     recipient: yup.string(),
     name: yup.string().required(intl.required),
     recipientPurpose: yup.string().required(intl.required),
-    description: yup.string(),
+    description: yup.mixed(),
     document: yup.mixed(),
     legalBases: yup.array().of(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
