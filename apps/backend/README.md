@@ -14,7 +14,6 @@ og bruk ``no.nav.data.polly.LocalAppStarter``
 Swagger-dokumentasjon av tjenestene er tilgjenglig på http://localhost:8080/swagger-ui.html
 
 
-
 ## Libraries
 
 * Java
