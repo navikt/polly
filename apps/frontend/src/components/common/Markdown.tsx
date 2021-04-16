@@ -1,20 +1,23 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown/with-html'
+import ReactMarkdown, {PluggableList} from 'react-markdown'
 import {Paragraph2} from 'baseui/typography'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 
 /**
  * singleWord true remove paragraph wrapper for content
  */
-export const Markdown = (props: {source?: string, escapeHtml?: boolean, singleWord?: boolean, verbatim?: boolean}) => {
+export const Markdown = ({singleWord, escapeHtml = true, verbatim, source}: {source?: string, escapeHtml?: boolean, singleWord?: boolean, verbatim?: boolean}) => {
   const renderers = {
-    paragraph: (parProps: any) => props.singleWord ? parProps.children :
-      props.verbatim ? <p>{parProps.children}</p> : <Paragraph2>{parProps.children}</Paragraph2>
+    p: (parProps: any) => singleWord ? <React.Fragment {...parProps}/> :
+      verbatim ? <p {...parProps}/> : <Paragraph2 {...parProps}/>
   }
-  return <ReactMarkdown source={props.source || ''}
-                        escapeHtml={props.escapeHtml}
+
+  const htmlPlugins: PluggableList = escapeHtml ? [] : [rehypeRaw]
+  return <ReactMarkdown children={source || ''}
+                        components={renderers}
                         linkTarget='_blank'
-                        renderers={renderers}
-                        plugins={[remarkGfm]}
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={htmlPlugins}
   />
 }
