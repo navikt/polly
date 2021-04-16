@@ -22,12 +22,6 @@ public class DataProcessing {
     private Boolean dataProcessor;
     private List<UUID> processors;
 
-    private List<String> dataProcessorAgreements;
-    private Boolean dataProcessorOutsideEU;
-    private String transferGroundsOutsideEU;
-    private String transferGroundsOutsideEUOther;
-    private List<String> transferCountries;
-
     public DataProcessingResponse convertToResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(getDataProcessor())

@@ -28,7 +28,6 @@ public class ProcessStateRequest implements Validated {
 
         // Not real true/false/null field, see repository
         DPIA_REFERENCE_MISSING,
-//        DATA_PROCESSOR_AGREEMENT_EMPTY,
         COMMON_EXTERNAL_PROCESSOR,
 
         // Alert events
