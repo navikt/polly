@@ -37,6 +37,8 @@ jobs:
       
       - name: Build
         run: CI=false npm run build
+      - name: Test
+        run: npm run test
       - name: Docker
         if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
         env:
