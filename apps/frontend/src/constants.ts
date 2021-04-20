@@ -92,8 +92,14 @@ export type NavigableItem =
   | 'team'
   | 'productarea';
 
-export enum ProcessStatus {
+export enum ProcessStatusFilter {
   All = 'ALL',
+  COMPLETED = 'COMPLETED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  NEEDS_REVISION = 'NEEDS_REVISION'
+}
+
+export enum ProcessStatus {
   COMPLETED = 'COMPLETED',
   IN_PROGRESS = 'IN_PROGRESS',
   NEEDS_REVISION = 'NEEDS_REVISION'

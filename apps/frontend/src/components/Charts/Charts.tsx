@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useHistory} from 'react-router-dom'
 import {Block} from 'baseui/block'
 import {cardShadow, chartCardProps} from '../common/Style'
-import {AllDashCount, DepartmentDashCount, ProcessField, ProcessState, ProcessStatus, ProductAreaDashCount} from '../../constants'
+import {AllDashCount, DepartmentDashCount, ProcessField, ProcessState, ProcessStatusFilter, ProductAreaDashCount} from '../../constants'
 import TriChart from './TriChart'
 import {intl} from '../../util'
 import {Chart} from './Chart'
@@ -18,7 +18,7 @@ const chartSize = 80
 
 type ChartsProps = {
   chartData: ProductAreaDashCount | DepartmentDashCount | AllDashCount,
-  processStatus: ProcessStatus,
+  processStatus: ProcessStatusFilter,
   type?: Section,
   departmentCode?: string,
   productAreaId?: string
@@ -37,7 +37,7 @@ const Charts = (props: ChartsProps) => {
       return `/dashboard/${processField}/${processState}/${processStatus}?productarea=${productAreaId}`
   }
 
-  const handleClickPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus) => {
+  const handleClickPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter) => {
     if (!type)
       return clickOnPieChartSlice(processField, processState, processStatus, history)
     else if (type === Section.department)
