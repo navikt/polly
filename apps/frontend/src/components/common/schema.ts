@@ -200,7 +200,7 @@ export const processSchema = () =>
     disclosures: yup.array().of(yup.object<Disclosure>())
   });
 
-export const dpProcessSchema =
+export const dpProcessSchema =()=>
   yup.object<DpProcessFormValues>({
     affiliation: yup.object<AffiliationFormValues>({
       department: yup.string(),

@@ -1,9 +1,9 @@
-import {infoTypeSchema} from '../components/common/schema'
-import {InformationtypeFormValues} from '../constants'
+import {dataProcessorSchema, infoTypeSchema} from '../components/common/schema'
+import {InformationtypeFormValues, ProcessorFormValues} from '../constants'
 import './config/schemaValidator'
 
-const schema = infoTypeSchema()
-const data: InformationtypeFormValues = {
+const itSchema = infoTypeSchema()
+const it: InformationtypeFormValues = {
   name: 'name',
   description: '',
   sensitivity: 'SEN',
@@ -13,16 +13,43 @@ const data: InformationtypeFormValues = {
   sources: []
 }
 
-test('infoTypeSchema ok', () => {
-  expect(data).toBeSchema(schema)
+test('informationType ok', () => {
+  expect(it).toBeSchema(itSchema)
 });
 
-test('infoTypeSchema req sensitivty', () => {
-  data.sensitivity = ''
-  expect(data).toBeSchemaErrorAt(schema, 'sensitivity')
+test('informationType req sensitivty', () => {
+  it.sensitivity = ''
+  expect(it).toBeSchemaErrorAt(itSchema, 'sensitivity')
 });
 
-test('infoTypeSchema req category', () => {
-  data.categories = []
-  expect(data).toBeSchemaErrorAt(schema, 'categories', 'påkrevd')
+test('informationType req category', () => {
+  it.categories = []
+  expect(it).toBeSchemaErrorAt(itSchema, 'categories', 'påkrevd')
 });
+
+const processorSchema = dataProcessorSchema()
+const processor: ProcessorFormValues = {
+  name: 'name',
+  countries: []
+}
+
+test('processor ok', () => {
+  expect(processor).toBeSchema(processorSchema)
+})
+
+test('processor outsideEU requires transfer grounds', () => {
+  processor.outsideEU = true
+  expect(processor).toBeSchemaErrorAt(processorSchema, 'countries')
+  processor.countries = ['USA']
+  expect(processor).toBeSchemaErrorAt(processorSchema, 'transferGroundsOutsideEU')
+  processor.transferGroundsOutsideEU = 'REASON'
+  expect(processor).toBeSchema(processorSchema)
+
+  // OTHER requires an additional manual reason
+  processor.transferGroundsOutsideEU = 'OTHER'
+  expect(processor).toBeSchemaErrorAt(processorSchema, 'transferGroundsOutsideEUOther')
+  processor.transferGroundsOutsideEUOther = 'some reason'
+  expect(processor).toBeSchema(processorSchema)
+})
+
+
