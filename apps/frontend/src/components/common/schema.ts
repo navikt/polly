@@ -230,7 +230,7 @@ export const dpProcessSchema =()=>
     subDataProcessing: dpDataProcessingSchema()
   })
 
-export const createDocumentValidation = () =>
+export const createDocumentSchema = () =>
   yup.object<CreateDocumentFormValues>({
     name: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
