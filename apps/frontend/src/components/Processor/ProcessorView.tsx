@@ -9,7 +9,7 @@ import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
 import TextWithLabel from "../common/TextWithLabel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {H4} from "baseui/typography";
+import {H4, ParagraphSmall} from "baseui/typography";
 import {user} from "../../service/User";
 import {Spinner} from "../common/Spinner";
 import {boolToText} from "../common/Radio";
@@ -19,6 +19,7 @@ import Button from "../common/Button";
 import ProcessorModal from "./ProcessorModal";
 import {DeleteProcessorModal} from "./DeleteProcessorModal";
 import {shortenLinksInText} from "../../util/helper-functions";
+import {lastModifiedDate} from "../../util/date-formatter";
 
 const blockProps: BlockProps = {
   font: "ParagraphMedium",
@@ -186,6 +187,11 @@ const ProcessorView = () => {
                   </TextWithLabel>
                 </FlexGridItem>
               </FlexGrid>
+              <Block display='flex' justifyContent='flex-end'>
+                {currentProcessor.changeStamp &&
+                <ParagraphSmall><i>{intl.formatString(intl.lastModified, currentProcessor.changeStamp.lastModifiedBy, lastModifiedDate(currentProcessor.changeStamp.lastModifiedDate))}</i></ParagraphSmall>
+                }
+              </Block>
               <ProcessorModal
                 title={intl.processor}
                 isOpen={showEditProcessorModal}
