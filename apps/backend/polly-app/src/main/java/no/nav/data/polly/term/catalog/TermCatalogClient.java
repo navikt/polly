@@ -94,6 +94,9 @@ public class TermCatalogClient implements TermService {
                 .queryParam("term_name", searchString)
                 .build().toUri();
         ResponseEntity<CatalogTerm[]> response = restTemplate.getForEntity(uri, CatalogTerm[].class);
+        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+            return List.of();
+        }
         verifyResponse(response);
         return asList(requireNonNull(response.getBody()));
     }
