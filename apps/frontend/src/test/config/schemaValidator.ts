@@ -1,7 +1,8 @@
 import {ObjectSchema, ValidationError} from 'yup'
+import {ObjectShape} from 'yup/lib/object'
 
 expect.extend({
-  toBeSchema: <R extends object>(obj: R, schema: ObjectSchema<R>) => {
+  toBeSchema: <R extends ObjectShape>(obj: R, schema: ObjectSchema<R>) => {
     try {
       schema.validateSync(obj)
     } catch (error) {
@@ -16,7 +17,7 @@ expect.extend({
       message: () => 'ok'
     }
   },
-  toBeSchemaErrorAt: <R extends object>(obj: R, schema: ObjectSchema<R>, path: string, message?: string) => {
+  toBeSchemaErrorAt: <R extends ObjectShape>(obj: R, schema: ObjectSchema<R>, path: string, message?: string) => {
     try {
       schema.validateSync(obj)
     } catch (error) {

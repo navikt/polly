@@ -472,7 +472,7 @@ export interface DisclosureFormValues {
   recipientPurpose?: string;
   description?: string;
   documentId?: string;
-  document?: DocumentFormValues | undefined;
+  document?: DocumentFormValues;
   legalBases: LegalBasisFormValues[];
   legalBasesOpen: boolean;
   end?: string;
@@ -565,7 +565,7 @@ export interface ProcessorFormValues {
   name: string;
   contract?: string;
   contractOwner?: string;
-  operationalContractManagers?: string[];
+  operationalContractManagers: string[];
   note?: string;
   outsideEU?: boolean;
   transferGroundsOutsideEU?: string;
