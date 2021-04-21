@@ -246,7 +246,7 @@ export const createDocumentSchema = () =>
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
   const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES || policy.legalBasesUse === LegalBasesUse.INHERITED_FROM_PROCESS;
-  const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code);
+  const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity?.code);
   const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length;
   const processMissingArt9 = !policy.process.legalBases.filter((lb) => codelist.isArt9(lb.gdpr.code)).length;
   return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9;
