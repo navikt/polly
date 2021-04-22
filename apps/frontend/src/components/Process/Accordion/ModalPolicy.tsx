@@ -16,8 +16,6 @@ import {Tag, VARIANT} from 'baseui/tag'
 import {Docs} from './TablePolicy'
 import FieldLegalBasis from "../common/FieldLegalBasis";
 import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
-import {KIND as NKIND, Notification} from 'baseui/notification'
-import {paddingZero} from '../../common/Style'
 import {disableEnter} from "../../../util/helper-functions";
 
 
@@ -144,14 +142,10 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
         <Formik
           initialValues={initialValues} validationSchema={policySchema()}
           onSubmit={(values) => {
-            //workaround for not functioning subjectCategories validation in yup
-            if (!!values.subjectCategories.length) {
-              submit(values)
-              onClose()
-            }
+            submit(values)
+            onClose()
           }}
           render={(formikBag: FormikProps<PolicyFormValues>) => {
-            let subjectCatError = (!!formikBag.errors.subjectCategories || !formikBag.values.subjectCategories.length) && !!formikBag.touched.subjectCategories
             return (
               <Form onKeyDown={disableEnter}>
                 <ModalHeader>
@@ -182,7 +176,7 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
                               onChange={({option}) => {
                                 arrayHelpers.push(option ? option.id : null)
                               }}
-                              error={subjectCatError}
+                              error={!!formikBag.errors.subjectCategories && !!formikBag.touched.subjectCategories}
                             />
                             {renderTagList(codelist.getShortnames(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories), arrayHelpers)}
                           </Block>
@@ -190,15 +184,6 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
                     />
                   </Block>
                   <Error fieldName="subjectCategories"/>
-
-                  {/*workaround for not functioning subjectCategories validation in yup */}
-                  <Block display={subjectCatError ? 'flex' : 'none'} width="100%" marginTop=".2rem">
-                    <ModalLabel/>
-                    <Block width="100%">
-                      <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}}
-                                    kind={NKIND.negative}>{intl.required}</Notification>
-                    </Block>
-                  </Block>
 
                   {!!formikBag.values.documentIds?.length && docs &&
                   <Block {...rowBlockProps}>

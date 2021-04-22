@@ -253,21 +253,22 @@ const missingLegalBasisForDedicated = (policy: PolicyFormValues) => {
   return policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && !policy.legalBases.length;
 }
 
-const subjectCategoryExists = (path: string, policy: PolicyFormValues) => {
-  return subjectCategoryExistsGen(policy.otherPolicies, policy.informationType!, policy.subjectCategories, path)
+const subjectCategoryExists = (path: string, policy: PolicyFormValues, context: yup.TestContext<any>) => {
+  return subjectCategoryExistsGen(policy.otherPolicies, policy.informationType!, policy.subjectCategories, path, context)
 }
 
-const subjectCategoryExistsBatch = (path: string, otherPolicies: Policy[], it: DocumentInfoTypeUse) => {
-  return subjectCategoryExistsGen(otherPolicies, it.informationType, it.subjectCategories.map(sc => sc.code), path)
+const subjectCategoryExistsBatch = (path: string, otherPolicies: Policy[], it: DocumentInfoTypeUse, context: yup.TestContext<any>) => {
+  return subjectCategoryExistsGen(otherPolicies, it.informationType, it.subjectCategories.map(sc => sc.code), path, context)
 }
 
-const subjectCategoryExistsGen = (otherPolicies: Policy[], informationType: InformationTypeShort, subjectCategories: string[], path: string) => {
+const subjectCategoryExistsGen = (otherPolicies: Policy[], informationType: InformationTypeShort, subjectCategories: string[], path: string, context: yup.TestContext<any>) => {
   const existingPolicyIdents = otherPolicies.flatMap(p => p.subjectCategories.map(c => p.informationType.id + '.' + c.code))
   const matchingIdents = subjectCategories.map(c => informationType?.id + '.' + c).filter(policyIdent => existingPolicyIdents.indexOf(policyIdent) >= 0)
   const errors = matchingIdents
   .map(ident => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
   .map(category => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name) as string)
-  return errors.length ? new yup.ValidationError(errors.map(e => new yup.ValidationError(e)), undefined, path) : true
+  console.log(errors)
+  return errors.length ? context.createError({path, message: errors.join(', ')}) : true
 }
 
 export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () => yup.object({
@@ -292,9 +293,9 @@ export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () => yup.obje
   .test({
     name: 'duplicateSubjectCategory',
     message: 'placeholder',
-    test: function () {
+    test: function (val, context) {
       const {parent, path} = this
-      return subjectCategoryExists(path, parent);
+      return subjectCategoryExists(path, parent, context);
     }
   }),
   legalBasesUse: yup.mixed().oneOf(Object.values(LegalBasesUse)).required(intl.required)
@@ -381,9 +382,9 @@ export const addBatchInfoTypesToProcessSchema: (otherPolicies: Policy[]) => yup.
   .test({
     name: 'duplicateSubjectCategory',
     message: 'placeholder',
-    test: function (informationTypeUse: DocumentInfoTypeUse) {
+    test: function (informationTypeUse: DocumentInfoTypeUse, context: yup.TestContext<any>) {
       const {path} = this
-      return subjectCategoryExistsBatch(path, otherPolicies, informationTypeUse);
+      return subjectCategoryExistsBatch(path, otherPolicies, informationTypeUse, context);
     }
   })).min(1, intl.required),
   linkDocumentToPolicies: yup.boolean().equals([false]),
