@@ -267,7 +267,6 @@ const subjectCategoryExistsGen = (otherPolicies: Policy[], informationType: Info
   const errors = matchingIdents
   .map(ident => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
   .map(category => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name) as string)
-  console.log(errors)
   return errors.length ? context.createError({path, message: errors.join(', ')}) : true
 }
 
