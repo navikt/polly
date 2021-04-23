@@ -30,9 +30,9 @@ enum ProcessSelection {
 
 interface ProcessRevisionRequest {
   processSelection: ProcessSelection
-  processId: string
-  department: string
-  productAreaId: string
+  processId?: string
+  department?: string
+  productAreaId?: string
   revisionText: string
   completedOnly: boolean
 }
@@ -46,15 +46,15 @@ const initialValues: ProcessRevisionRequest = {
   completedOnly: false
 }
 
-const schema = () => {
+const schema: () => yup.SchemaOf<ProcessRevisionRequest> = () => {
   const requiredString = yup.string().required(intl.required)
-  return yup.object<ProcessRevisionRequest>({
+  return yup.object({
     processSelection: yup.mixed().oneOf(Object.values(ProcessSelection)).required(),
     processId: yup.string().when('processSelection', {is: ProcessSelection.ONE, then: requiredString}),
     department: yup.string().when('processSelection', {is: ProcessSelection.DEPARTMENT, then: requiredString}),
     productAreaId: yup.string().when('processSelection', {is: ProcessSelection.PRODUCT_AREA, then: requiredString}),
     revisionText: requiredString,
-    completedOnly: yup.boolean()
+    completedOnly: yup.boolean().required()
   })
 }
 
@@ -176,7 +176,7 @@ export const RequestRevisionPage = (props: {close?: () => void, processId?: stri
                 <ModalLabel label={intl.department}/>
                 <Block width='100%'>
                   <Combobox mapOptionToString={o => o.label} options={departments}
-                            value={values.department} onChange={code => setFieldValue('department', code)}
+                            value={values.department!} onChange={code => setFieldValue('department', code)}
                   />
                 </Block>
               </Block>}
@@ -187,7 +187,7 @@ export const RequestRevisionPage = (props: {close?: () => void, processId?: stri
                 <ModalLabel label={intl.productArea}/>
                 <Block width='100%'>
                   <Combobox mapOptionToString={o => o.name} options={areas}
-                            value={values.productAreaId} onChange={code => setFieldValue('productAreaId', code)}
+                            value={values.productAreaId!} onChange={code => setFieldValue('productAreaId', code)}
                   />
                 </Block>
               </Block>}

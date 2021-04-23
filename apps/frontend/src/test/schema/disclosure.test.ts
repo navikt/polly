@@ -6,6 +6,13 @@ const schema = disclosureSchema()
 const disclosure: () => DisclosureFormValues = () => ({
   name: 'name',
   recipientPurpose: 'PURPOSE',
+  abroad: {
+    countries: []
+  },
+  legalBases: [],
+  legalBasesOpen: false,
+  processes: [],
+  processIds: []
 })
 
 test('Disclosure ok', () => {

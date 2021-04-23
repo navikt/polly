@@ -7,7 +7,7 @@ import '../config/schemaValidator'
 addCode(ListName.PURPOSE, 'PURPOSE')
 
 const schema = processSchema()
-const createProcess: () => ProcessFormValues = () => ({
+export const createProcess: () => ProcessFormValues = () => ({
   name: 'name',
   purposes: ['PURPOSE'],
   affiliation: {
