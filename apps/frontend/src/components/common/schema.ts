@@ -182,10 +182,10 @@ export const processSchema: () => yup.SchemaOf<ProcessFormValues> = () => yup.ob
   }),
   status: yup.mixed().oneOf(Object.values(ProcessStatus)),
   dpia: yup.object({
-    grounds: yup.string().required(),
+    grounds: yup.string(),
     needForDpia: yup.boolean(),
     processImplemented: yup.boolean().required(),
-    refToDpia: yup.string().required(),
+    refToDpia: yup.string(),
     riskOwner: yup.string(),
     riskOwnerFunction: yup.string(),
     noDpiaReasons: yup.array().of(yup.string().required()).required(),

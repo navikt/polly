@@ -180,10 +180,10 @@ export interface Affiliation {
 }
 
 export interface Dpia {
-  grounds: string;
+  grounds?: string;
   needForDpia?: boolean;
-  processImplemented: boolean;
-  refToDpia: string;
+  processImplemented?: boolean;
+  refToDpia?: string;
   riskOwner?: string;
   riskOwnerFunction?: string;
   noDpiaReasons: string[]
