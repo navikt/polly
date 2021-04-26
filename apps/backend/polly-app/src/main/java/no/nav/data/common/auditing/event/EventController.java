@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static no.nav.data.common.auditing.domain.AuditVersionRepository.exampleFrom;
 import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
@@ -49,16 +48,11 @@ public class EventController {
     @Operation(summary = "Get events")
     @ApiResponse(description = "Events fetched")
     @GetMapping
-    public ResponseEntity<RestResponsePage<EventResponse>> getAll(PageParameters paging,
-            @RequestParam String table,
-            @RequestParam(required = false) String tableId,
-            @RequestParam(required = false) Action action
-    ) {
+    public ResponseEntity<RestResponsePage<EventResponse>> getAll(PageParameters paging, @RequestParam String table, @RequestParam Action action) {
         log.info("Received request for Events {} table {}", paging, table);
-        Pageable pageable = paging.createSortedPageByFieldDescending(Fields.time);
         validateTable(table);
-        var example = AuditVersion.builder().table(table).tableId(tableId).action(action).build();
-        Page<EventResponse> page = repository.findAll(exampleFrom(example), pageable).map(AuditVersion::convertToEventResponse);
+        Pageable pageable = paging.createSortedPageByFieldDescending(Fields.time);
+        Page<EventResponse> page = repository.findForTableAndAction(table, action.name(), pageable).map(AuditVersion::convertToEventResponse);
         return new ResponseEntity<>(new RestResponsePage<>(page), HttpStatus.OK);
     }
 

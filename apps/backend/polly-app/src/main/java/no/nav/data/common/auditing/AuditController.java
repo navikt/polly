@@ -4,6 +4,7 @@ package no.nav.data.common.auditing;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.domain.AuditVersion;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
@@ -36,17 +37,12 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RestController
 @RequestMapping("/audit")
 @Tag(name = "Audit")
+@RequiredArgsConstructor
 public class AuditController {
 
     private final AuditVersionRepository repository;
     private final StorageService storage;
     private final MailLogRepository mailLogRepository;
-
-    public AuditController(AuditVersionRepository repository, StorageService storage, MailLogRepository mailLogRepository) {
-        this.repository = repository;
-        this.storage = storage;
-        this.mailLogRepository = mailLogRepository;
-    }
 
     @Operation(summary = "Get Audit log")
     @ApiResponse(description = "Audit log fetched")
@@ -65,7 +61,6 @@ public class AuditController {
 
     @Operation(summary = "Get Audit log for object")
     @ApiResponse(description = "Audit log fetched")
-
     @GetMapping("/log/{id}")
     public ResponseEntity<AuditLogResponse> findForId(@PathVariable String id) {
         log.info("Received request for Audit with the id={}", id);

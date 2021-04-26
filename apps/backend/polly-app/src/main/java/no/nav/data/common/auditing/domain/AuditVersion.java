@@ -92,7 +92,7 @@ public class AuditVersion {
 
     private String findName() {
         JsonNode json = JsonUtils.toJsonNode(data);
-        if (table.equals(AuditVersion.tableName(Policy.class))) {
+        if (table.equals(tableName(Policy.class))) {
             List<String> purposes = getPurposes(json);
             return String.join(", ", purposes) + " - " + json.get("informationTypeName").textValue();
         } else if (table.equals(tableName(Process.class))) {
