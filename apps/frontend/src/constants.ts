@@ -182,7 +182,7 @@ export interface Affiliation {
 export interface Dpia {
   grounds?: string;
   needForDpia?: boolean;
-  processImplemented?: boolean;
+  processImplemented: boolean;
   refToDpia?: string;
   riskOwner?: string;
   riskOwnerFunction?: string;

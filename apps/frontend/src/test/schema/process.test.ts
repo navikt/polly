@@ -27,7 +27,8 @@ export const createProcess: () => ProcessFormValues = () => ({
   },
   status: ProcessStatus.IN_PROGRESS,
   dpia: {
-    noDpiaReasons: []
+    noDpiaReasons: [],
+    processImplemented: true
   },
   disclosures: []
 })
