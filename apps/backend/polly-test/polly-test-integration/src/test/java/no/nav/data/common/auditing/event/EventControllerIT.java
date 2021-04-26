@@ -31,7 +31,7 @@ public class EventControllerIT extends IntegrationTestBase {
     void getAllChanges() {
         createAndSaveInformationType();
 
-        var resp = template.getForEntity("/event?table={table}", EventPage.class, AuditVersion.tableName(InformationType.class));
+        var resp = template.getForEntity("/event?table={table}&action={action}", EventPage.class, AuditVersion.tableName(InformationType.class), Action.CREATE);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         assertThat(resp.getBody()).isNotNull();
