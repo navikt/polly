@@ -4,7 +4,7 @@ import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {Block} from 'baseui/block'
 import {intl, theme} from '../util'
-import {DashboardData, ProcessStatus} from '../constants'
+import {DashboardData, ProcessStatusFilter} from '../constants'
 import {useParams} from 'react-router-dom'
 import {getDashboard} from '../api'
 import {Spinner} from '../components/common/Spinner'
@@ -13,8 +13,8 @@ import Departments from "../components/Dashboard/Departments";
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData>()
-  const {processStatus} = useParams<{processStatus: ProcessStatus}>()
-  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(processStatus ? processStatus as ProcessStatus : ProcessStatus.All)
+  const {processStatus} = useParams<{processStatus: ProcessStatusFilter}>()
+  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatusFilter>(processStatus ? processStatus as ProcessStatusFilter : ProcessStatusFilter.All)
 
   useEffect(() => {
     (async () => {

@@ -5,7 +5,6 @@ import {env} from '../../util/env'
 import {PageResponse} from '../../constants'
 import {Block} from 'baseui/block'
 import {Card} from 'baseui/card'
-import ReactMarkdown from "react-markdown/with-html"
 import moment from 'moment'
 import {intl, theme} from '../../util'
 import {PLACEMENT, StatefulPopover} from 'baseui/popover'
@@ -13,6 +12,7 @@ import {StatefulMenu} from 'baseui/menu'
 import {Button, KIND} from 'baseui/button'
 import {TriangleDown} from 'baseui/icon'
 import {Pagination} from 'baseui/pagination'
+import {Markdown} from '../../components/common/Markdown'
 
 interface MailLog {
   time: string
@@ -55,8 +55,11 @@ export const MailLogPage = () => {
     <H4>{intl.mailLog}</H4>
     {log?.content.map((l, i) => {
       let html = l.body
-      html = html.substring(l.body.indexOf('<body>') + 6)
-      html = html.substring(0, html.lastIndexOf('</body>'))
+      const bodyIdx = l.body.indexOf('<body>')
+      if (bodyIdx >= 0) {
+        html = html.substring(l.body.indexOf('<body>') + 6)
+        html = html.substring(0, html.lastIndexOf('</body>'))
+      }
       // some odd bug in html parser didnt like newlines inside <ul>
       html = html.replace(/\n/g, '')
       const rowNum = log.pageNumber * log.pageSize + i + 1
@@ -65,10 +68,9 @@ export const MailLogPage = () => {
         <H6 marginBottom={0}>#{rowNum} Tid: {moment(l.time).format('lll')} Til: {l.to}</H6>
         <H6 marginTop={0} marginBottom={theme.sizing.scale400}>Emne: {l.subject}</H6>
         <Card>
-          <ReactMarkdown
+          <Markdown
             source={html}
             escapeHtml={false}
-            linkTarget='_blank'
           />
         </Card>
       </Block>

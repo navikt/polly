@@ -9,7 +9,7 @@ import InformationTypesTable from './InformationTypesTable'
 import {Field, FieldArray, FieldProps, Form, Formik, FormikHelpers, FormikProps} from 'formik'
 import {Error} from '../../common/ModalSchema'
 import {user} from '../../../service/User'
-import {createDocumentValidation} from '../../common/schema'
+import {createDocumentSchema} from '../../common/schema'
 import {Notification} from 'baseui/notification'
 import {searchDocuments} from '../../../api'
 import Button from '../../common/Button'
@@ -59,7 +59,7 @@ const DocumentForm = (props: DocumentFormProps) => {
     <Formik
       initialValues={initialValues}
       onSubmit={onSubmit}
-      validationSchema={createDocumentValidation()}
+      validationSchema={createDocumentSchema()}
     >
       {
         (formikProps: FormikProps<DocumentFormValues>) => (

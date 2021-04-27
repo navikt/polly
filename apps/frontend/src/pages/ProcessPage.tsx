@@ -4,7 +4,7 @@ import {useEffect} from 'react'
 import ProcessList from '../components/Process'
 import {ListName} from '../service/Codelist'
 import {generatePath, useHistory, useParams} from 'react-router-dom'
-import {DepartmentDashCount, Process, ProcessStatus} from '../constants'
+import {DepartmentDashCount, Process, ProcessStatus, ProcessStatusFilter} from '../constants'
 import {useQueryParam} from '../util/hooks'
 import {processPath} from '../routes'
 import * as queryString from 'query-string'
@@ -64,7 +64,7 @@ const ProcessPage = () => {
     if (section === Section.department) {
       (async () => {
         setIsLoading(true)
-        let res = await getDashboard(ProcessStatus.All)
+        let res = await getDashboard(ProcessStatusFilter.All)
         if (res) setChartData(res.departments.find(d => d.department === code))
         setIsLoading(false)
       })()
@@ -91,7 +91,7 @@ const ProcessPage = () => {
           <HeadingSmall>{intl.overview}</HeadingSmall>
             <Charts
                 chartData={chartData!}
-                processStatus={ProcessStatus.All}
+                processStatus={ProcessStatusFilter.All}
                 departmentCode={code}
                 type={section === Section.department ? Section.department : Section.productarea}
              />

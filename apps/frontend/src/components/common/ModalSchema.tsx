@@ -5,7 +5,7 @@ import {Label2} from 'baseui/typography'
 import * as React from 'react'
 import {theme} from '../../util'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons'
 import {paddingZero} from './Style'
 import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
@@ -34,7 +34,7 @@ export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactE
                             <Block>{props.label}</Block>
                             <Block alignSelf={'center'}>
                                 <FontAwesomeIcon style={{marginLeft: '.5rem', alignSelf: 'center'}}
-                                                 icon={faExclamationCircle} color={theme.colors.primary300}
+                                                 icon={faQuestionCircle} color={theme.colors.primary300}
                                                  size="sm"/>
                             </Block>
                         </Block>

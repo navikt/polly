@@ -14,7 +14,7 @@ const TextWithLabel = (props: { label: string, text?: ReactNode, icon?: IconDefi
   const value = props.text &&
     <Block font="ParagraphMedium"
            $style={{whiteSpace: 'pre-wrap', ...marginZero}}
-           display="flex">
+           display="block">
       {props.error && errorIcon} {props.text}
     </Block>
 

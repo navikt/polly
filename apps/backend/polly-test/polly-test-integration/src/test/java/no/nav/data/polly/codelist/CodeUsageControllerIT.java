@@ -67,7 +67,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,1", "DEPARTMENT,YTA,2", "SUB_DEPARTMENT,NAY,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2",
-                "THIRD_PARTY,SKATTEETATEN,1", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,1"})
+                "THIRD_PARTY,SKATTEETATEN,1"})
         void findProcesses(String list, String code, int expectedCountProcess) {
             var response = getForListAndCode(list, code);
 
@@ -133,7 +133,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         @ParameterizedTest
         @CsvSource({"PURPOSE,BARNETRYGD,0,1,1,0", "DEPARTMENT,YTA,0,0,2,0", "SUB_DEPARTMENT,NAY,0,0,2,0", "GDPR_ARTICLE,ART92A,0,0,1,0", "NATIONAL_LAW,FTRL,0,2,2,0",
                 "SUBJECT_CATEGORY,BRUKER,0,2,0,0", "SENSITIVITY,POL,2,0,0,0", "SYSTEM,AA_REG,1,0,1,0", "SYSTEM,TPS,1,0,1,0", "CATEGORY,ARBEIDSFORHOLD,1,0,0,0",
-                "THIRD_PARTY,SKATTEETATEN,1,0,1,0", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1,1"})
+                "THIRD_PARTY,SKATTEETATEN,1,0,1,0", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,1"})
         void shouldFindCodeUsage(String list, String code, int expectedCountInformationTypes, int expectedCountPolicy, int expectedCountProcess, int expectedCountProcessors) {
             ResponseEntity<CodeUsageResponse> response = getForListAndCode(list, code);
 
@@ -157,7 +157,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
                 "SENSITIVITY,POL,2,0,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0,0",
                 "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1,0", "SYSTEM,TPS,1,0,1,1,0,0,0",
                 "NATIONAL_LAW,FTRL,0,2,2,0,1,0,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0,0,0",
-                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1,1,0,0,1"
+                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,1,0,0,1"
         })
         void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents, int processors) {
             String newCode = "REPLACECODE";

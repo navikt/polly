@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Counter, ProcessField, ProcessStatus, ProcessState } from '../../constants'
-import { Chart } from './Chart'
-import { intl } from '../../util'
-import { chartColor } from '../../util/theme'
+import {Counter, ProcessField, ProcessState, ProcessStatusFilter} from '../../constants'
+import {Chart} from './Chart'
+import {intl} from '../../util'
+import {chartColor} from '../../util/theme'
 
 const chartSize = 80
 
@@ -11,7 +11,7 @@ type TriChartProps = {
     header?: string
     counter: Counter,
     processField: ProcessField,
-    processStatus: ProcessStatus,
+    processStatus: ProcessStatusFilter,
     onClickPieChartSlice: Function
 }
 

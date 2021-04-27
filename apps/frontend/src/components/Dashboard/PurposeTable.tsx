@@ -1,10 +1,9 @@
 import React, {useEffect} from 'react'
 import {getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, getProcessByStateAndStatusForProductArea} from '../../api'
-import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
+import {ProcessField, ProcessShort, ProcessState, ProcessStatusFilter} from '../../constants'
 import {useParams} from 'react-router-dom'
 import {HeadingLarge} from 'baseui/typography'
 import {intl} from '../../util'
-import {lowerFirst} from 'lodash'
 import {SimpleProcessTable} from '../Process/SimpleProcessTable'
 import {useQueryParam} from '../../util/hooks'
 import {Spinner} from '../common/Spinner'
@@ -12,7 +11,7 @@ import {Spinner} from '../common/Spinner'
 interface PathProps {
   filterName: ProcessField,
   filterValue: ProcessState,
-  filterStatus: ProcessStatus,
+  filterStatus: ProcessStatusFilter,
 }
 
 const PurposeTable = () => {
@@ -67,8 +66,6 @@ const PurposeTable = () => {
       setTitle(`${intl.automaticProcessing}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR) {
       setTitle(`${intl.processor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
-    // } else if (filterName === ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY) {
-    //   setTitle(`${intl.processorAgreement} ${lowerFirst(intl.emptyMessage)} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle(intl.navResponsible)
     } else if(filterName  === ProcessField.DPIA_REFERENCE_MISSING){
@@ -80,7 +77,7 @@ const PurposeTable = () => {
     <>
       <HeadingLarge>{title}</HeadingLarge>
       {loading && <Spinner size='80px'/>}
-      {!loading && <SimpleProcessTable processes={filtered} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR ? true : false}/>}
+      {!loading && <SimpleProcessTable processes={filtered} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR}/>}
     </>
   )
 }

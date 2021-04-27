@@ -184,7 +184,6 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
               {processors &&
               <Block display='flex' alignItems="center">
                 <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
-                  {`${intl.processorAgreement}: `}
                 </Block>
                 <Block display='flex' flexWrap>
                   {processors.map((dp, i) => (

@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react'
 import {useHistory, useParams} from "react-router-dom";
 import {Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
 import {convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor} from "../../api/ProcessorApi";
-import {getResourceById, getResourcesByIds} from "../../api";
+import {getProcessesByProcessor, getResourceById, getResourcesByIds} from "../../api";
 import {Block, BlockProps} from "baseui/block";
 import {intl, theme} from "../../util";
 import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
 import TextWithLabel from "../common/TextWithLabel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {H4} from "baseui/typography";
+import {H4, ParagraphSmall} from "baseui/typography";
 import {user} from "../../service/User";
 import {Spinner} from "../common/Spinner";
 import {boolToText} from "../common/Radio";
@@ -19,6 +19,7 @@ import Button from "../common/Button";
 import ProcessorModal from "./ProcessorModal";
 import {DeleteProcessorModal} from "./DeleteProcessorModal";
 import {shortenLinksInText} from "../../util/helper-functions";
+import {lastModifiedDate} from "../../util/date-formatter";
 
 const blockProps: BlockProps = {
   font: "ParagraphMedium",
@@ -33,10 +34,20 @@ const ProcessorView = () => {
   const [contractOwner, setContractOwner] = useState<TeamResource>()
   const [operationalContractManagers, setOperationalContractManagers] = useState<TeamResource[]>([])
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
+  const [usageCount, setUsageCount] = useState<number>(0)
   const hasAccess = () => user.canWrite()
   const history = useHistory()
   const params = useParams<{ id?: string }>()
   const dividerDistance = theme.sizing.scale2400
+
+  useEffect(() => {
+    (async () => {
+      if (params.id && showDeleteProcessorModal === true) {
+        let res = await getProcessesByProcessor(params.id)
+        setUsageCount(res.numberOfElements)
+      }
+    })()
+  }, [showDeleteProcessorModal])
 
   const handleEditDataProcessor = (processor: ProcessorFormValues) => {
     if (!processor) return
@@ -60,6 +71,7 @@ const ProcessorView = () => {
       return true
     } catch (err) {
       setModalErrorMessage(err.response.data.message)
+      setShowDeleteProcessorModal(true)
       return false
     }
   }
@@ -154,26 +166,32 @@ const ProcessorView = () => {
                       }
                       {
                         currentProcessor.outsideEU &&
-                            <>
-                              <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={""}>
-                                <Block {...blockProps}>
-                                  {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
-                                  {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                                  {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther && <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
-                                </Block>
-                              </TextWithLabel>
-                              {currentProcessor.countries && !!currentProcessor?.countries.length && <TextWithLabel label={intl.countries} text={""}>
-                                <Block {...blockProps}>
-                                  <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
-                                </Block>
-                              </TextWithLabel>}
-                            </>
+                        <>
+                          <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={""}>
+                            <Block {...blockProps}>
+                              {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
+                              {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
+                              {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther &&
+                              <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
+                            </Block>
+                          </TextWithLabel>
+                          {currentProcessor.countries && !!currentProcessor?.countries.length && <TextWithLabel label={intl.countries} text={""}>
+                            <Block {...blockProps}>
+                              <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
+                            </Block>
+                          </TextWithLabel>}
+                        </>
 
                       }
                     </>
                   </TextWithLabel>
                 </FlexGridItem>
               </FlexGrid>
+              <Block display='flex' justifyContent='flex-end'>
+                {currentProcessor.changeStamp &&
+                <ParagraphSmall><i>{intl.formatString(intl.lastModified, currentProcessor.changeStamp.lastModifiedBy, lastModifiedDate(currentProcessor.changeStamp.lastModifiedDate))}</i></ParagraphSmall>
+                }
+              </Block>
               <ProcessorModal
                 title={intl.processor}
                 isOpen={showEditProcessorModal}
@@ -187,7 +205,9 @@ const ProcessorView = () => {
                 processor={currentProcessor}
                 submitDeleteProcessor={handleDeleteDataProcessor}
                 onClose={() => setShowDeleteProcessorModal(false)}
-                errorProcessorModal={modalErrorMessage}/>
+                errorProcessorModal={modalErrorMessage}
+                usageCount={usageCount}
+              />
             </Block>
           </Block>) : <Spinner size={theme.sizing.scale1200}/>
       }

@@ -4,7 +4,7 @@ import {Field, FieldProps} from 'formik'
 import {Datepicker} from 'baseui/datepicker'
 import moment from 'moment'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCalendar, faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
+import {faCalendar, faQuestionCircle} from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 
 import {intl, theme} from '../../util'
@@ -32,7 +32,7 @@ const LabelWithTooltip = (props: {text: string; tooltip: string}) => (
       {props.text}
       <FontAwesomeIcon
         style={{marginLeft: '.5rem', alignSelf: 'center'}}
-        icon={faExclamationCircle}
+        icon={faQuestionCircle}
         color={theme.colors.primary300}
         size="sm"
       />

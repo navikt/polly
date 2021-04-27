@@ -171,10 +171,6 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 processState = ProcessState.UNKNOWN;
                 yield " data #> '{dpia,needForDpia}' = 'true'::jsonb and data #> '{dpia,refToDpia}' %s ";
             }
-//            case DATA_PROCESSOR_AGREEMENT_EMPTY -> {
-//                processState = ProcessState.UNKNOWN;
-//                yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
-//            }
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 

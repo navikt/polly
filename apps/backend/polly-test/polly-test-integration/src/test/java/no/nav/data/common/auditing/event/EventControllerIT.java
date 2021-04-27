@@ -31,7 +31,7 @@ public class EventControllerIT extends IntegrationTestBase {
     void getAllChanges() {
         createAndSaveInformationType();
 
-        var resp = template.getForEntity("/event?table={table}", EventPage.class, AuditVersion.tableName(InformationType.class));
+        var resp = template.getForEntity("/event?table={table}&action={action}", EventPage.class, AuditVersion.tableName(InformationType.class), Action.CREATE);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         assertThat(resp.getBody()).isNotNull();
@@ -41,17 +41,15 @@ public class EventControllerIT extends IntegrationTestBase {
     @Test
     void getProcessObject() {
         createAndSaveInformationType();
-        createAndSaveProcess(PROCESS_NAME_1 + 1);
         var process = createAndSaveProcess(PURPOSE_CODE1);
+        processRepository.delete(createAndSaveProcess(PURPOSE_CODE1 + 2));
 
-        var resp = template.getForEntity("/event?table={table}&action={action}&tableId={id}", EventPage.class,
-                AuditVersion.tableName(Process.class),
-                Action.CREATE,
-                process.getId()
-        );
+        var resp = template.getForEntity("/event?table={table}&action={action}",
+                EventPage.class, AuditVersion.tableName(Process.class), Action.CREATE);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
         assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1);
+        assertThat(resp.getBody().getContent().get(0).getTableId()).isEqualTo(process.getId().toString());
     }
 }

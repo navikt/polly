@@ -85,7 +85,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
             props.submit(values)
           }}
           initialValues={props.initialValues}
-          validationSchema={dpProcessSchema}
+          validationSchema={dpProcessSchema()}
         >
           {
             formikBag => (

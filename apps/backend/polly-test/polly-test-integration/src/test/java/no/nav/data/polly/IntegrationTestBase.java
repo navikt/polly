@@ -252,7 +252,7 @@ public abstract class IntegrationTestBase {
                                 .build())
                         .commonExternalProcessResponsible(commonExternalProcessResponsible)
                         .legalBases(legalBases)
-                        .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
+                        .dataProcessing(DataProcessing.builder().dataProcessor(true).build())
                         .build())
                 .build());
     }

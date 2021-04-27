@@ -19,7 +19,7 @@ export const LastEvents = () => {
 
   useEffect(() => {
     (async () => {
-      setEvents(await getEvents(0, 10, table, undefined, action[0].id as AuditAction))
+      setEvents(await getEvents(0, 10, table, action[0].id as AuditAction))
     })()
   }, [table, action])
 

@@ -6,7 +6,7 @@ import {PageHeader} from '../components/common/PageHeader'
 import {InfoTypeTable} from '../components/InformationType/InfoTypeTableSimple'
 import {intl} from '../util'
 import {getDashboard, getInformationTypesBy} from '../api'
-import {ProcessStatus, ProductAreaDashCount} from '../constants'
+import {ProcessStatusFilter, ProductAreaDashCount} from '../constants'
 import Charts from '../components/Charts/Charts'
 import {Block} from 'baseui/block'
 import {HeadingSmall} from 'baseui/typography'
@@ -19,7 +19,7 @@ export const ProductAreaPage = () => {
   useEffect(() => {
     (async () => {
         setIsLoading(true)
-        const response = await getDashboard(ProcessStatus.All)
+        const response = await getDashboard(ProcessStatusFilter.All)
 
         if (response) setChartData(response.productAreas.find(p => p.productAreaId === productAreaId))
 
@@ -38,7 +38,7 @@ export const ProductAreaPage = () => {
       {!isLoading && chartData && (
         <Block marginBottom="240px">
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <Charts chartData={chartData} processStatus={ProcessStatus.All} type={Section.productarea} productAreaId={productAreaId} />
+          <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId} />
         </Block>
       )}
     </>

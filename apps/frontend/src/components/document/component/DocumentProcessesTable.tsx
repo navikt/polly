@@ -47,7 +47,7 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
         headers={
           <>
             <HeadCell
-              title={intl.purpose}
+              title={intl.overallPurposeActivity}
               column="purposes"
               tableState={[table, sortColumn]}
             />

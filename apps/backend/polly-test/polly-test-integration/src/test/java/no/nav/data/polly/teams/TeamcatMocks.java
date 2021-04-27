@@ -1,6 +1,5 @@
 package no.nav.data.polly.teams;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.teams.dto.Resource;
 import no.nav.data.polly.teams.dto.ResourceType;
@@ -11,24 +10,24 @@ import no.nav.data.polly.teams.teamcat.TeamKatTeam;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static no.nav.data.common.utils.JsonUtils.toJson;
 
 public class TeamcatMocks {
 
     public static void mock() {
-        WireMock.stubFor(get("/teamcat/team").willReturn(okJson(toJson(teamMockResponse()))));
-        WireMock.stubFor(get("/teamcat/productarea").willReturn(okJson(toJson(productAreaMockResponse()))));
+        stubFor(get("/teamcat/team").willReturn(okJson(toJson(teamMockResponse()))));
+        stubFor(get("/teamcat/productarea").willReturn(okJson(toJson(productAreaMockResponse()))));
 
-        WireMock.stubFor(get("/teamcat/resource/search/fam").willReturn(okJson(toJson(new RestResponsePage<>(List.of(resource("A123456"), resource("A123457")))))));
-        WireMock.stubFor(get("/teamcat/resource/A123456").willReturn(okJson(toJson(resource("A123456")))));
-        WireMock.stubFor(get("/teamcat/resource/A123457").willReturn(okJson(toJson(resource("A123457")))));
-        WireMock.stubFor(get("/teamcat/resource/A999999").willReturn(notFound().withBody(notFoundJson())));
-        WireMock.stubFor(post("/teamcat/resource/multi").withRequestBody(equalTo("[\"A123456\",\"A123457\"]"))
+        stubFor(get("/teamcat/resource/search/fam").willReturn(okJson(toJson(new RestResponsePage<>(List.of(resource("A123456"), resource("A123457")))))));
+        stubFor(get("/teamcat/resource/A123456").willReturn(okJson(toJson(resource("A123456")))));
+        stubFor(get("/teamcat/resource/A123457").willReturn(okJson(toJson(resource("A123457")))));
+        stubFor(get("/teamcat/resource/A999999").willReturn(notFound().withBody(notFoundJson())));
+        stubFor(post("/teamcat/resource/multi")
                 .willReturn(okJson(toJson(new RestResponsePage<>(List.of(resource("A123456"), resource("A123457")))))));
     }
 

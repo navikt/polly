@@ -494,7 +494,7 @@ export const no: IStrings = {
   shortcutSubtitleInformationtype: "Se og endre opplysningstyper",
   shortcutSubtitleThirdParty: "Se alle eksterne parter",
   shortcutSubtitleDashboard: "Se statistikk over behandlinger",
-  processorSelect: "Velg databehander",
+  processorSelect: "Velg databehandler",
   createProcessor: "Opprett ny databehandler",
   contract: "Ref. på databehandleravtale",
   contractOwner: "Avtaleeier",
@@ -514,9 +514,9 @@ export const no: IStrings = {
   transferGroundsOutsideEUEEAHelpText: "I tilfeller hvor databehandler behandler personopplysninger utenfor EU/EØS, hva er overføringsgrunnlaget?",
   transferGroundsOutsideEUEEAOtherHelpText: "Du har valgt at overføringsgrunnlaget er \"annet\", spesifiser grunnlaget her.",
   countriesHelpText: "I hvilke(t) land lagrer databehandleren personopplysninger i?",
-  isDataProcessedOutsideEUEEAHelpTextDP: "Angi om databehandler overfører/behandler personopplysninger i land utenfor EU/EØS."
-
-
+  isDataProcessedOutsideEUEEAHelpTextDP: "Angi om databehandler overfører/behandler personopplysninger i land utenfor EU/EØS.",
+  canNotDeleteProcessorParagraph1: "Kan ikke slette databehandleren {0} da den er",
+  canNotDeleteProcessorParagraph2: "knyttet til {0} behandling(er)"
 };
 
 export const en: IStrings = {
@@ -1032,8 +1032,9 @@ export const en: IStrings = {
   transferGroundsOutsideEUEEAHelpText: "In cases where the data processor processes personal data outside the EU/EEA, what is the transfer grounds?",
   transferGroundsOutsideEUEEAOtherHelpText: "You have chosen that the transfer grounds is \"other\", specify it here.",
   countriesHelpText: "In which country(ies) does the data processor store personal information?",
-  isDataProcessedOutsideEUEEAHelpTextDP: "Indicate whether the data processor transfers/processes personal data in countries outside the EU/EEA."
-
+  isDataProcessedOutsideEUEEAHelpTextDP: "Indicate whether the data processor transfers/processes personal data in countries outside the EU/EEA.",
+  canNotDeleteProcessorParagraph1: "Can not delete processor {0} because it is",
+  canNotDeleteProcessorParagraph2: "used in {0} processes"
 
 };
 

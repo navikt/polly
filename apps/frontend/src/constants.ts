@@ -49,7 +49,6 @@ export enum ProcessField {
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
   DATA_PROCESSOR = 'DATA_PROCESSOR',
-  // DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
   EXCESS_INFO = 'EXCESS_INFO',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
@@ -93,8 +92,14 @@ export type NavigableItem =
   | 'team'
   | 'productarea';
 
-export enum ProcessStatus {
+export enum ProcessStatusFilter {
   All = 'ALL',
+  COMPLETED = 'COMPLETED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  NEEDS_REVISION = 'NEEDS_REVISION'
+}
+
+export enum ProcessStatus {
   COMPLETED = 'COMPLETED',
   IN_PROGRESS = 'IN_PROGRESS',
   NEEDS_REVISION = 'NEEDS_REVISION'
@@ -175,10 +180,10 @@ export interface Affiliation {
 }
 
 export interface Dpia {
-  grounds: string;
+  grounds?: string;
   needForDpia?: boolean;
   processImplemented: boolean;
-  refToDpia: string;
+  refToDpia?: string;
   riskOwner?: string;
   riskOwnerFunction?: string;
   noDpiaReasons: string[]
@@ -467,7 +472,7 @@ export interface DisclosureFormValues {
   recipientPurpose?: string;
   description?: string;
   documentId?: string;
-  document?: DocumentFormValues | undefined;
+  document?: DocumentFormValues;
   legalBases: LegalBasisFormValues[];
   legalBasesOpen: boolean;
   end?: string;
@@ -560,7 +565,7 @@ export interface ProcessorFormValues {
   name: string;
   contract?: string;
   contractOwner?: string;
-  operationalContractManagers?: string[];
+  operationalContractManagers: string[];
   note?: string;
   outsideEU?: boolean;
   transferGroundsOutsideEU?: string;
