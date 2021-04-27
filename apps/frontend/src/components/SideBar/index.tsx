@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {intl, theme} from '../../util'
 import {Block, BlockProps} from 'baseui/block'
-import {H6, Paragraph4} from 'baseui/typography'
+import {Label1, Paragraph4} from 'baseui/typography'
 import NavLogo from '../../resources/navlogo.svg'
 import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
@@ -29,18 +29,18 @@ const Brand = () => (
   <Block display="flex" flexDirection='column' padding="1rem" position={'fixed'}>
     <StyledLink style={{textDecoration: 'none', textAlign: 'center'}} href="/">
       <img alt='logo' src={BKLogo}/>
-      <H6 color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
+      <Label1 $style={{fontSize: '130%'}} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</Label1>
     </StyledLink>
   </Block>
 )
 
 const SideBar = () => {
   return (
-    <Block {...sideBarProps}>
+    <Block {...sideBarProps} overrides={{Block: {props: {role: 'navigation'}}}}>
       <Brand/>
       <Block {...items} position={'fixed'} top={'150px'}>
         <NavItem to="/process" text={intl.processes} tooltip={intl.processSideMenuHelpText}/>
-        <NavItem to="/dpProcess" text={intl.dpProcess} />
+        <NavItem to="/dpProcess" text={intl.dpProcess}/>
         <NavItem to="/informationtype" text={intl.informationTypes} tooltip={intl.informationTypeSideMenuHelpText}/>
         <NavItem to="/document" text={intl.documents} tooltip={intl.documentSideMenuHelpText}/>
         <NavItem to="/disclosure" text={intl.disclosures} tooltip={intl.disclosuresSideMenuHelpText}/>

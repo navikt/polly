@@ -6,7 +6,7 @@ import {Block} from "baseui/block/index";
 import {ObjectLink} from "../common/RouteLink";
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 import moment from "moment";
-import {HeadingMedium} from "baseui/typography";
+import {HeadingXLarge} from "baseui/typography";
 import {intl, theme} from "../../util";
 
 export const RecentEditsByUser = () => {
@@ -20,7 +20,7 @@ export const RecentEditsByUser = () => {
 
   return (
     <Block alignItems='center' width='100%'>
-      <HeadingMedium>{intl.userLastChanges}</HeadingMedium>
+      <HeadingXLarge>{intl.userLastChanges}</HeadingXLarge>
       {
         recentEdits
           .slice(0, 10)

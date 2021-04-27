@@ -225,6 +225,7 @@ export const MainSearch = () => {
           searchable={true}
           type={TYPE.search}
           options={searchResult}
+          aria-label={intl.search}
           placeholder={intl.search}
           value={value}
           onInputChange={event => {
@@ -253,6 +254,7 @@ export const MainSearch = () => {
             },
             ControlContainer: {
               style: {
+                backgroundColor: "white",
                 ...(filter ? {borderBottomLeftRadius: 0} : {}),
                 ...(filter ? {borderBottomRightRadius: 0} : {})
               }
@@ -274,7 +276,7 @@ export const MainSearch = () => {
           }
         />
         <Button onClick={() => setFilter(!filter)} icon={faFilter} size='compact' kind={filter ? 'primary' : 'tertiary'} marginLeft
-                $style={{height: theme.sizing.scale1000, width: theme.sizing.scale1000}}/>
+                $style={{height: theme.sizing.scale1000, width: theme.sizing.scale1000}}><img aria-label={intl.filter}/></Button>
       </Block>
       {filter && <SelectType type={type} setType={setType}/>}
     </Block>

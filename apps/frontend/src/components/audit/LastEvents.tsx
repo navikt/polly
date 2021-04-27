@@ -8,7 +8,7 @@ import {Block} from 'baseui/block'
 import {ObjectLink} from '../common/RouteLink'
 import {AuditActionIcon} from './AuditComponents'
 import moment from 'moment'
-import {HeadingMedium, Label2} from 'baseui/typography'
+import {HeadingXLarge, Label2} from 'baseui/typography'
 import {StatefulTabs, Tab} from 'baseui/tabs'
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
@@ -44,7 +44,7 @@ export const LastEvents = () => {
   return (
     <Block>
       <Block display='flex' justifyContent='space-between' alignItems='center' width='100%'>
-        <HeadingMedium>{intl.lastEvents}</HeadingMedium>
+        <HeadingXLarge>{intl.lastEvents}</HeadingXLarge>
         <Block display="flex" justifyContent="space-between" alignItems="center">
           <Label2 marginRight={theme.sizing.scale300}>{intl.eventType}</Label2>
           <StatefulSelect
