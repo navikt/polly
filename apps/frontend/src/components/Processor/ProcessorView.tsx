@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useHistory, useParams} from "react-router-dom";
-import {Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
+import {Process, Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
 import {convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor} from "../../api/ProcessorApi";
 import {getProcessesByProcessor, getResourceById, getResourcesByIds} from "../../api";
 import {Block, BlockProps} from "baseui/block";
@@ -20,6 +20,7 @@ import ProcessorModal from "./ProcessorModal";
 import {DeleteProcessorModal} from "./DeleteProcessorModal";
 import {shortenLinksInText} from "../../util/helper-functions";
 import {lastModifiedDate} from "../../util/date-formatter";
+import RelatedProcessesTable from "./components/RelatedProcessesTable";
 
 const blockProps: BlockProps = {
   font: "ParagraphMedium",
@@ -29,6 +30,7 @@ const blockProps: BlockProps = {
 const ProcessorView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [currentProcessor, setCurrentProcessor] = useState<Processor>()
+  const [relatedProcesses, setRelatedProcess] = useState<Process[]>([])
   const [showEditProcessorModal, setShowEditProcessorModal] = useState<boolean>(false)
   const [showDeleteProcessorModal, setShowDeleteProcessorModal] = useState<boolean>(false)
   const [contractOwner, setContractOwner] = useState<TeamResource>()
@@ -81,6 +83,7 @@ const ProcessorView = () => {
       if (params.id) {
         setIsLoading(true)
         setCurrentProcessor(await getProcessor(params.id))
+        setRelatedProcess((await getProcessesByProcessor(params.id)).content)
         setIsLoading(false)
       }
     })()
@@ -130,86 +133,92 @@ const ProcessorView = () => {
       </Block>
       {
         !isLoading ? (currentProcessor &&
-          <Block display="flex" marginBottom="1rem">
-            <Block width="40%" paddingRight={dividerDistance}>
-              <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
-                <FlexGridItem>
-                  <TextWithLabel label={intl.contract} text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : intl.notFilled}/>
-                </FlexGridItem>
-                <FlexGridItem>
-                  <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
-                </FlexGridItem>
-                <FlexGridItem>
-                  <TextWithLabel label={intl.operationalContractManagers}
-                                 text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map(r => r.fullName).join(", ") : intl.notFilled}/>
-                </FlexGridItem>
-              </FlexGrid>
-            </Block>
-            <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
-              <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
-                <FlexGridItem>
-                  <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled}/>
-                </FlexGridItem>
-                <FlexGridItem>
-                  <TextWithLabel label={intl.isDataProcessedOutsideEUEEA} text={""}>
-                    <Block {...blockProps}>
-                      {currentProcessor?.outsideEU === null && intl.unclarified}
-                      {currentProcessor.outsideEU === false && intl.no}
-                    </Block>
-                    <>
-                      {currentProcessor.outsideEU &&
-                      <Block>
-                        <Block {...blockProps}>
-                          <span>{boolToText(currentProcessor.outsideEU)}</span>
-                        </Block>
-                      </Block>
-                      }
-                      {
-                        currentProcessor.outsideEU &&
-                        <>
-                          <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={""}>
-                            <Block {...blockProps}>
-                              {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
-                              {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                              {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther &&
-                              <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
-                            </Block>
-                          </TextWithLabel>
-                          {currentProcessor.countries && !!currentProcessor?.countries.length && <TextWithLabel label={intl.countries} text={""}>
-                            <Block {...blockProps}>
-                              <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
-                            </Block>
-                          </TextWithLabel>}
-                        </>
-
-                      }
-                    </>
-                  </TextWithLabel>
-                </FlexGridItem>
-              </FlexGrid>
-              <Block display='flex' justifyContent='flex-end'>
-                {currentProcessor.changeStamp &&
-                <ParagraphSmall><i>{intl.formatString(intl.lastModified, currentProcessor.changeStamp.lastModifiedBy, lastModifiedDate(currentProcessor.changeStamp.lastModifiedDate))}</i></ParagraphSmall>
-                }
+          <>
+            <Block display="flex" marginBottom="1rem">
+              <Block width="40%" paddingRight={dividerDistance}>
+                <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
+                  <FlexGridItem>
+                    <TextWithLabel label={intl.contract} text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : intl.notFilled}/>
+                  </FlexGridItem>
+                  <FlexGridItem>
+                    <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
+                  </FlexGridItem>
+                  <FlexGridItem>
+                    <TextWithLabel label={intl.operationalContractManagers}
+                                   text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map(r => r.fullName).join(", ") : intl.notFilled}/>
+                  </FlexGridItem>
+                </FlexGrid>
               </Block>
-              <ProcessorModal
-                title={intl.processor}
-                isOpen={showEditProcessorModal}
-                initialValues={convertProcessorToFormValues(currentProcessor)}
-                submit={handleEditDataProcessor}
-                errorMessage={modalErrorMessage}
-                onClose={() => setShowEditProcessorModal(false)}
-              />
-              <DeleteProcessorModal
-                isOpen={showDeleteProcessorModal}
-                processor={currentProcessor}
-                submitDeleteProcessor={handleDeleteDataProcessor}
-                onClose={() => setShowDeleteProcessorModal(false)}
-                errorProcessorModal={modalErrorMessage}
-                usageCount={usageCount}
-              />
+              <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
+                <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
+                  <FlexGridItem>
+                    <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled}/>
+                  </FlexGridItem>
+                  <FlexGridItem>
+                    <TextWithLabel label={intl.isDataProcessedOutsideEUEEA} text={""}>
+                      <Block {...blockProps}>
+                        {currentProcessor?.outsideEU === null && intl.unclarified}
+                        {currentProcessor.outsideEU === false && intl.no}
+                      </Block>
+                      <>
+                        {currentProcessor.outsideEU &&
+                        <Block>
+                          <Block {...blockProps}>
+                            <span>{boolToText(currentProcessor.outsideEU)}</span>
+                          </Block>
+                        </Block>
+                        }
+                        {
+                          currentProcessor.outsideEU &&
+                          <>
+                            <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={""}>
+                              <Block {...blockProps}>
+                                {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
+                                {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
+                                {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther &&
+                                <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
+                              </Block>
+                            </TextWithLabel>
+                            {currentProcessor.countries && !!currentProcessor?.countries.length && <TextWithLabel label={intl.countries} text={""}>
+                              <Block {...blockProps}>
+                                <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
+                              </Block>
+                            </TextWithLabel>}
+                          </>
+
+                        }
+                      </>
+                    </TextWithLabel>
+                  </FlexGridItem>
+                </FlexGrid>
+                <Block display='flex' justifyContent='flex-end'>
+                  {currentProcessor.changeStamp &&
+                  <ParagraphSmall><i>{intl.formatString(intl.lastModified, currentProcessor.changeStamp.lastModifiedBy, lastModifiedDate(currentProcessor.changeStamp.lastModifiedDate))}</i></ParagraphSmall>
+                  }
+                </Block>
+                <ProcessorModal
+                  title={intl.processor}
+                  isOpen={showEditProcessorModal}
+                  initialValues={convertProcessorToFormValues(currentProcessor)}
+                  submit={handleEditDataProcessor}
+                  errorMessage={modalErrorMessage}
+                  onClose={() => setShowEditProcessorModal(false)}
+                />
+                <DeleteProcessorModal
+                  isOpen={showDeleteProcessorModal}
+                  processor={currentProcessor}
+                  submitDeleteProcessor={handleDeleteDataProcessor}
+                  onClose={() => setShowDeleteProcessorModal(false)}
+                  errorProcessorModal={modalErrorMessage}
+                  usageCount={usageCount}
+                />
+              </Block>
             </Block>
-          </Block>) : <Spinner size={theme.sizing.scale1200}/>
+            <Block>
+              <RelatedProcessesTable relatedProcesses={relatedProcesses}/>
+            </Block>
+          </>
+        ) : <Spinner size={theme.sizing.scale1200}/>
       }
     </>
   )

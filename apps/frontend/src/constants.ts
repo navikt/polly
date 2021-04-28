@@ -302,6 +302,12 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
+export const processSort: ColumnCompares<Process> = {
+  name: (a, b) => a.name.localeCompare(b.name),
+  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), intl.getLanguage()),
+  affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
+}
+
 export const dpProcessSort: ColumnCompares<DpProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
   externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
