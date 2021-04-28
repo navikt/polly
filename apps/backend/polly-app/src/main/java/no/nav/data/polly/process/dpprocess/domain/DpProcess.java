@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
-import static no.nav.data.polly.process.dpprocess.domain.sub.DpDataProcessing.convertDataProcessing;
+import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
 import static no.nav.data.polly.process.dpprocess.domain.sub.DpRetention.convertRetention;
 
 @Data
@@ -63,7 +63,7 @@ public class DpProcess extends Auditable {
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setDataProcessingAgreements(copyOf(request.getDataProcessingAgreements()));
-        data.setSubDataProcessing(convertDataProcessing(request.getSubDataProcessing()));
+        data.setDataProcessing(convertDataProcessing(request.getDataProcessing()));
         data.setPurposeDescription(request.getPurposeDescription());
         data.setDescription(request.getDescription());
         data.setArt9(request.getArt9());
@@ -81,7 +81,7 @@ public class DpProcess extends Auditable {
                 .start(data.getStart())
                 .end(data.getEnd())
                 .dataProcessingAgreements(copyOf(data.getDataProcessingAgreements()))
-                .subDataProcessing(data.getSubDataProcessing().convertToResponse())
+                .dataProcessing(data.getDataProcessing().convertToResponse())
                 .purposeDescription(data.getPurposeDescription())
                 .description(data.getDescription())
                 .art9(data.getArt9())
