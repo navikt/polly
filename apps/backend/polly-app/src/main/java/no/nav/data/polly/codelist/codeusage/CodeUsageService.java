@@ -154,7 +154,6 @@ public class CodeUsageService {
                     getDpProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getProducts(), oldCode, newCode));
                 }
                 case TRANSFER_GROUNDS_OUTSIDE_EU -> {
-                    getDpProcesses(usage).forEach(p -> p.getData().getSubDataProcessing().setTransferGroundsOutsideEU(newCode));
                     getProcessors(usage).forEach(p -> p.getData().setTransferGroundsOutsideEU(newCode));
                 }
             }
