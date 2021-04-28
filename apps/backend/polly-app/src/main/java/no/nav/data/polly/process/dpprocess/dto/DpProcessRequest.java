@@ -11,9 +11,10 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.process.dpprocess.dto.sub.DpDataProcessingRequest;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionRequest;
+import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
+import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class DpProcessRequest implements RequestElement {
 
     @Singular
     private List<String> dataProcessingAgreements;
-    private DpDataProcessingRequest subDataProcessing;
+    private DataProcessingRequest dataProcessing;
 
     private String purposeDescription;
     private String description;
@@ -70,7 +71,7 @@ public class DpProcessRequest implements RequestElement {
         setDataProcessingAgreements(formatList(getDataProcessingAgreements()));
 
         setAffiliation(getAffiliation() != null ? getAffiliation() : new AffiliationRequest());
-        setSubDataProcessing(getSubDataProcessing() != null ? getSubDataProcessing() : new DpDataProcessingRequest());
+        setDataProcessing(getDataProcessing() != null ? getDataProcessing() : new DataProcessingRequest());
         setRetention(getRetention() != null ? getRetention() : new DpRetentionRequest());
     }
 
@@ -81,7 +82,7 @@ public class DpProcessRequest implements RequestElement {
         validator.checkBlank(Fields.name, name);
         validator.checkCodelist(Fields.externalProcessResponsible, externalProcessResponsible, ListName.THIRD_PARTY);
         validator.validateType(Fields.affiliation, affiliation);
-        validator.validateType(Fields.subDataProcessing, subDataProcessing);
+        validator.validateType(ProcessRequest.Fields.dataProcessing, dataProcessing);
         validator.validateType(Fields.retention, retention);
     }
 }
