@@ -267,7 +267,7 @@ public abstract class IntegrationTestBase {
                                 .products(List.of(product))
                                 .build())
                         .externalProcessResponsible(externalProcessResponsible)
-                        .dataProcessing(DataProcessing.builder().dataProcessor(true).build())
+                        .subDataProcessing(DataProcessing.builder().dataProcessor(true).build())
                         .build())
                 .build());
     }

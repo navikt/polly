@@ -45,7 +45,7 @@ public class DpProcessRequest implements RequestElement {
 
     @Singular
     private List<String> dataProcessingAgreements;
-    private DataProcessingRequest dataProcessing;
+    private DataProcessingRequest subDataProcessing;
 
     private String purposeDescription;
     private String description;
@@ -71,7 +71,7 @@ public class DpProcessRequest implements RequestElement {
         setDataProcessingAgreements(formatList(getDataProcessingAgreements()));
 
         setAffiliation(getAffiliation() != null ? getAffiliation() : new AffiliationRequest());
-        setDataProcessing(getDataProcessing() != null ? getDataProcessing() : new DataProcessingRequest());
+        setSubDataProcessing(getSubDataProcessing() != null ? getSubDataProcessing() : new DataProcessingRequest());
         setRetention(getRetention() != null ? getRetention() : new DpRetentionRequest());
     }
 
@@ -82,7 +82,7 @@ public class DpProcessRequest implements RequestElement {
         validator.checkBlank(Fields.name, name);
         validator.checkCodelist(Fields.externalProcessResponsible, externalProcessResponsible, ListName.THIRD_PARTY);
         validator.validateType(Fields.affiliation, affiliation);
-        validator.validateType(ProcessRequest.Fields.dataProcessing, dataProcessing);
+        validator.validateType(Fields.subDataProcessing, subDataProcessing);
         validator.validateType(Fields.retention, retention);
     }
 }

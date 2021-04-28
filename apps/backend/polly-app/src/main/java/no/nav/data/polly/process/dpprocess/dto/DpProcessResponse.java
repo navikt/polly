@@ -35,7 +35,7 @@ public class DpProcessResponse {
 
     @Singular
     private List<String> dataProcessingAgreements;
-    private DataProcessingResponse dataProcessing;
+    private DataProcessingResponse subDataProcessing;
 
     private String purposeDescription;
     private String description;

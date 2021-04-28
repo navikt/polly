@@ -31,7 +31,7 @@ public class DpProcessData {
 
     private List<String> dataProcessingAgreements;
     @Default
-    private DataProcessing dataProcessing = new DataProcessing();
+    private DataProcessing subDataProcessing = new DataProcessing();
 
     private String purposeDescription;
     private String description;

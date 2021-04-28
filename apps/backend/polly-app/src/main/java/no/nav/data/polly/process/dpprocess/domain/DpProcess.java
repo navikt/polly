@@ -63,7 +63,7 @@ public class DpProcess extends Auditable {
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setDataProcessingAgreements(copyOf(request.getDataProcessingAgreements()));
-        data.setDataProcessing(convertDataProcessing(request.getDataProcessing()));
+        data.setSubDataProcessing(convertDataProcessing(request.getSubDataProcessing()));
         data.setPurposeDescription(request.getPurposeDescription());
         data.setDescription(request.getDescription());
         data.setArt9(request.getArt9());
@@ -81,7 +81,7 @@ public class DpProcess extends Auditable {
                 .start(data.getStart())
                 .end(data.getEnd())
                 .dataProcessingAgreements(copyOf(data.getDataProcessingAgreements()))
-                .dataProcessing(data.getDataProcessing().convertToResponse())
+                .subDataProcessing(data.getSubDataProcessing().convertToResponse())
                 .purposeDescription(data.getPurposeDescription())
                 .description(data.getDescription())
                 .art9(data.getArt9())
