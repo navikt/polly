@@ -51,7 +51,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"PURPOSE, 2", "DEPARTMENT,2", "SUB_DEPARTMENT,1", "GDPR_ARTICLE,2", "NATIONAL_LAW,1", "SUBJECT_CATEGORY,1", "SENSITIVITY,1", "SYSTEM,2", "CATEGORY,2",
-                "THIRD_PARTY,2", "TRANSFER_GROUNDS_OUTSIDE_EU,2"})
+                "THIRD_PARTY,2", "TRANSFER_GROUNDS_OUTSIDE_EU,1"})
         void shouldFindCodeUsage(String list, int expectedCodesInUse) {
             ResponseEntity<CodelistUsageResponse> response = restTemplate
                     .exchange(String.format("/codelist/usage/find/%s", list), HttpMethod.GET, HttpEntity.EMPTY, CodelistUsageResponse.class);
@@ -76,7 +76,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"DEPARTMENT,YTA,1", "SUB_DEPARTMENT,NAY,2",
-                "THIRD_PARTY,SKATTEETATEN,1", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,1"})
+                "THIRD_PARTY,SKATTEETATEN,1"})
         void findDpProcesses(String list, String code, int expectedCountDpProcess) {
             var response = getForListAndCode(list, code);
 
@@ -157,7 +157,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
                 "SENSITIVITY,POL,2,0,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0,0",
                 "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1,0", "SYSTEM,TPS,1,0,1,1,0,0,0",
                 "NATIONAL_LAW,FTRL,0,2,2,0,1,0,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0,0,0",
-                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,1,0,0,1"
+                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,0,0,0,1"
         })
         void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents, int processors) {
             String newCode = "REPLACECODE";
