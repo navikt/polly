@@ -22,7 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "affiliation", "externalProcessResponsible", "start", "end", "active",
-        "dataProcessingAgreements", "dataProcessing",
+        "dataProcessingAgreements", "subDataProcessing",
         "purposeDescription", "description", "art9", "art10", "retention", "changeStamp"})
 public class DpProcessResponse {
 
