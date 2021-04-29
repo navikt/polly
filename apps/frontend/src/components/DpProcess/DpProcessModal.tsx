@@ -178,7 +178,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                            title={<PanelTitle title={intl.subDataProcessor} expanded={expanded.indexOf('subDataProcessor') >= 0}/>}
                            overrides={{...panelOverrides}}
                     >
-                      <FieldDpProcessSubDataProcessor rowBlockProps={rowBlockProps} formikBag={formikBag}/>
+                      <FieldDpProcessSubDataProcessor rowBlockProps={rowBlockProps} formikBag={formikBag} initialValues={props.initialValues} />
                     </Panel>
 
                     <Panel key='retention'
