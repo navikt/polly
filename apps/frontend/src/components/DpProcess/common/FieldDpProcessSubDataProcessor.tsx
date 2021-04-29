@@ -1,64 +1,68 @@
 import React from 'react'
-import {Block, BlockProps} from "baseui/block";
-import {Error, ModalLabel} from "../../common/ModalSchema";
-import {intl} from "../../../util";
-import BoolField from "../../Process/common/BoolField";
-import FieldDpProcessSubDataProcessorAgreements from "./FieldDpProcessSubDataProcessorAgreements";
-import FieldDpProcessSubDataProcessorTransferGroundsOutsideEU from "./FieldDpProcessSubDataProcessorTransferGroundsOutsideEU";
-import {DpProcessFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../../constants";
-import FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther from "./FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther";
-import FieldDpProcessSubDataProcessorTransferCountries from "./FieldDpProcessSubDataProcessorTransferCountries";
-import {FormikProps} from "formik";
+import { Block, BlockProps } from 'baseui/block'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { intl } from '../../../util'
+import BoolField from '../../Process/common/BoolField'
+import { DpProcessFormValues, Processor } from '../../../constants'
+import { FormikProps } from 'formik'
+import FieldDpDataProcessors from './FieldDpDataProcessors'
+import { getAll } from '../../../api'
+import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
+import { FlexGridItem } from 'baseui/flex-grid'
 
 type FieldDpProcessSubDataProcessorProps = {
   rowBlockProps: BlockProps
   formikBag: FormikProps<DpProcessFormValues>
+  initialValues: DpProcessFormValues
 }
 
 const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorProps) => {
-  const {rowBlockProps, formikBag} = props
+  const { rowBlockProps, formikBag } = props
+  const [processorList, setProcessorList] = React.useState<Processor[]>([])
+  const [subDataProcessors, setSubDataProcessors] = React.useState(new Map<string, string>())
+
+  React.useEffect(() => {
+    (async () => {
+      if (props.initialValues.subDataProcessing.processors.length > 0) {
+        const res = await getProcessorsByIds(props.initialValues.subDataProcessing.processors)
+        const newProcs = new Map<string, string>()
+        res.forEach(d => newProcs.set(d.id, d.name))
+        setSubDataProcessors(newProcs)
+      }
+    })()
+  }, [])
+
+  React.useEffect(() => {
+    (async () => {
+      const res = (await getAll(getProcessorsByPageAndPageSize)())
+      if (res) {
+        setProcessorList(res)
+      }
+    })()
+  }, [])
+
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.isSubDataProcessorUsed} tooltip={intl.isSubDataProcessorUsedDpProcessHelpText}/>
+        <ModalLabel label={intl.isSubDataProcessorUsed} tooltip={intl.isSubDataProcessorUsedDpProcessHelpText} />
         <BoolField fieldName='subDataProcessing.dataProcessor'
-                   value={formikBag.values.subDataProcessing.dataProcessor}/>
+          value={formikBag.values.subDataProcessing.dataProcessor} />
       </Block>
 
       {formikBag.values.subDataProcessing.dataProcessor && <>
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.processorAgreement}/>
-          <FieldDpProcessSubDataProcessorAgreements formikBag={formikBag}/>
+          <ModalLabel label={intl.processor} />
+          <FieldDpDataProcessors formikBag={formikBag} subDataProcessors={subDataProcessors} options={processorList.map(p => {
+            return {
+              id: p.id,
+              label: p.name
+            }
+          })}
+          />
         </Block>
-        <Error fieldName='subDataProcessing.dataProcessorAgreement'/>
-
-        <Block {...rowBlockProps}>
-          <ModalLabel label={intl.isSubDataProcessedOutsideEUEEA}/>
-          <BoolField fieldName='subDataProcessing.dataProcessorOutsideEU'
-                     value={formikBag.values.subDataProcessing.dataProcessorOutsideEU}/>
-        </Block>
-        {formikBag.values.subDataProcessing.dataProcessorOutsideEU &&
-        <>
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
-            <FieldDpProcessSubDataProcessorTransferGroundsOutsideEU
-              code={formikBag.values.subDataProcessing.transferGroundsOutsideEU}/>
-          </Block>
-          <Error fieldName='subDataProcessing.transferGroundsOutsideEU'/>
-
-          {formikBag.values.subDataProcessing.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
-            <FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther/>
-          </Block>}
-          <Error fieldName='subDataProcessing.transferGroundsOutsideEUOther'/>
-
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.countries}/>
-            <FieldDpProcessSubDataProcessorTransferCountries formikBag={formikBag}/>
-          </Block>
-          <Error fieldName='subDataProcessing.transferCountries'/>
-        </>}
+        <Error fieldName='subDataProcessing.procesors' />
+        <FlexGridItem>
+        </FlexGridItem>
       </>}
     </>
   )
