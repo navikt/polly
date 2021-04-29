@@ -199,24 +199,6 @@ export interface DataProcessing {
   processors: string[]
 }
 
-export interface DpDataProcessingFormValues {
-  dataProcessor?: boolean;
-  dataProcessorAgreements: string[];
-  dataProcessorOutsideEU?: boolean;
-  transferGroundsOutsideEU?: string;
-  transferGroundsOutsideEUOther?: string;
-  transferCountries: string[];
-}
-
-export interface DpDataProcessing {
-  dataProcessor?: boolean;
-  dataProcessorAgreements: string[];
-  dataProcessorOutsideEU?: boolean;
-  transferGroundsOutsideEU?: Code;
-  transferGroundsOutsideEUOther?: string;
-  transferCountries: string[];
-}
-
 export interface Retention {
   retentionPlan?: boolean;
   retentionMonths?: number;
@@ -368,7 +350,7 @@ export interface DpProcess extends IDurationed {
   affiliation: Affiliation;
   externalProcessResponsible?: Code;
   dataProcessingAgreements: string[];
-  subDataProcessing: DpDataProcessing;
+  subDataProcessing: DataProcessing;
   changeStamp: ChangeStamp;
   art9?: boolean;
   art10?: boolean;
@@ -383,7 +365,7 @@ export interface DpProcessFormValues {
   affiliation: AffiliationFormValues
   externalProcessResponsible?: string;
   dataProcessingAgreements: string[];
-  subDataProcessing: DpDataProcessingFormValues;
+  subDataProcessing: DataProcessingFormValues;
   art9?: boolean;
   art10?: boolean;
   retention: DpRetention
