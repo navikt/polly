@@ -15,10 +15,10 @@ import {env} from '../../../util/env'
 import {isNil, sum, uniqBy} from 'lodash'
 import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import RouteLink, {ObjectLink} from "../../common/RouteLink";
-import DataText from "../../common/DataText";
-import {getNoDpiaLabel, shortenLinksInText} from "../../../util/helper-functions";
-import {getProcessorsByIds} from "../../../api/ProcessorApi";
+import RouteLink, {ObjectLink} from '../../common/RouteLink'
+import DataText from '../../common/DataText'
+import {getNoDpiaLabel, shortenLinksInText} from '../../../util/helper-functions'
+import {getProcessorsByIds} from '../../../api/ProcessorApi'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
