@@ -6,7 +6,7 @@ import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.process.domain.sub.Affiliation;
-import no.nav.data.polly.process.dpprocess.domain.sub.DpDataProcessing;
+import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.dpprocess.domain.sub.DpRetention;
 
 import java.time.LocalDate;
@@ -31,7 +31,7 @@ public class DpProcessData {
 
     private List<String> dataProcessingAgreements;
     @Default
-    private DpDataProcessing subDataProcessing = new DpDataProcessing();
+    private DataProcessing subDataProcessing = new DataProcessing();
 
     private String purposeDescription;
     private String description;
