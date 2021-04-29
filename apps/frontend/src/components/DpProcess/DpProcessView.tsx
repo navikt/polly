@@ -78,16 +78,17 @@ const DpProcessView = () => {
         setLoading(false)
       }
     })()
+
   }, [])
 
   useEffect(() => {
     (async () => {
-      if (dpProcess?.subDataProcessing.processors?.length) {
+      if (dpProcess?.subDataProcessing.processors.length) {
         const res = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
         setProcessors([...res])
       }
     })()
-  }, [])
+  }, [dpProcess])
 
   return (
     <>
@@ -178,7 +179,7 @@ const DpProcessView = () => {
               {dpProcess?.subDataProcessing?.dataProcessor === false && intl.processorNo}
             </>
             <>
-              {dpProcess?.subDataProcessing?.dataProcessor &&
+              {dpProcess?.subDataProcessing.dataProcessor &&
                 <Block>
                   <Block>{intl.processorYes}</Block>
                   <Block>
