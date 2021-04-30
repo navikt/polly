@@ -1,37 +1,38 @@
-import React, {useEffect, useReducer, useState} from 'react';
-import {useHistory, useParams} from 'react-router-dom';
-import {DpProcess, DpProcessFormValues} from '../../constants';
-import {deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess} from '../../api/DpProcessApi';
-import {StyledSpinnerNext} from 'baseui/spinner';
-import {Block} from 'baseui/block';
-import {H4} from "baseui/typography";
-import {intl} from "../../util";
-import {DotTags} from "../common/DotTag";
-import DataText from "../common/DataText";
-import {codelist, ListName} from "../../service/Codelist";
-import {TeamList} from "../common/Team";
-import {RetentionView} from "../Process/Retention";
-import {ActiveIndicator} from "../common/Durations";
-import {boolToText} from "../common/Radio";
-import RouteLink from "../common/RouteLink";
-import Button from "../common/Button";
-import DpProcessModal from "./DpProcessModal";
-import {DpProcessDeleteModal} from "./DpProcessDeleteModal";
-import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {SIZE as ButtonSize} from "baseui/button";
-import {user} from "../../service/User";
+import React, { useEffect, useReducer, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
+import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { Block } from 'baseui/block'
+import { H4 } from 'baseui/typography'
+import { intl, theme } from '../../util'
+import { DotTags, DotTag } from '../common/DotTag'
+import DataText from '../common/DataText'
+import { codelist, ListName } from '../../service/Codelist'
+import { TeamList } from '../common/Team'
+import { RetentionView } from '../Process/Retention'
+import { ActiveIndicator } from '../common/Durations'
+import { boolToText } from '../common/Radio'
+import RouteLink from '../common/RouteLink'
+import Button from '../common/Button'
+import DpProcessModal from './DpProcessModal'
+import { DpProcessDeleteModal } from './DpProcessDeleteModal'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { user } from '../../service/User'
+import { getProcessorsByIds } from '../../api/ProcessorApi'
 
 const DpProcessView = () => {
   const history = useHistory()
-  const params = useParams<{id?: string}>()
+  const params = useParams<{ id?: string }>()
   const [dpProcess, setDpProcess] = useState<DpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
   const [showDeleteModal, toggleDeleteModal] = useReducer(prevState => !prevState, false)
+  const [processors, setProcessors] = useState<Processor[]>([])
 
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
 
-  const isSubDataProcessorAgreementsAvailable = !!dpProcess?.subDataProcessing?.dataProcessorAgreements.length
   const isDataProcessingAgreementsAvailable = !!dpProcess?.dataProcessingAgreements.length
 
   const handleEditDpProcess = async (dpProcess: DpProcessFormValues) => {
@@ -77,7 +78,17 @@ const DpProcessView = () => {
         setLoading(false)
       }
     })()
+
   }, [])
+
+  useEffect(() => {
+    (async () => {
+      if (dpProcess?.subDataProcessing.processors.length) {
+        const res = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
+        setProcessors([...res])
+      }
+    })()
+  }, [dpProcess])
 
   return (
     <>
@@ -86,14 +97,14 @@ const DpProcessView = () => {
           <Block display="flex" justifyContent={"space-between"} alignItems={"center"}>
             <H4>{dpProcess?.name}</H4>
             {user.canWrite() && /*!env.disableDpProcess &&*/
-            <Block>
-              <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>
-                {intl.edit}
-              </Button>
-              <Button size={ButtonSize.compact} kind='outline' onClick={toggleDeleteModal} tooltip={intl.delete} icon={faTrash}>
-                {intl.delete}
-              </Button>
-            </Block>
+              <Block>
+                <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>
+                  {intl.edit}
+                </Button>
+                <Button size={ButtonSize.compact} kind='outline' onClick={toggleDeleteModal} tooltip={intl.delete} icon={faTrash}>
+                  {intl.delete}
+                </Button>
+              </Block>
             }
           </Block>
 
@@ -105,43 +116,43 @@ const DpProcessView = () => {
               : intl.no}</span>
           </DataText>
 
-          <DataText label={intl.description} text={dpProcess?.description}/>
+          <DataText label={intl.description} text={dpProcess?.description} />
 
-          <DataText label={intl.purpose} text={dpProcess?.purposeDescription}/>
+          <DataText label={intl.purpose} text={dpProcess?.purposeDescription} />
 
           <DataText label={intl.validityOfProcess} text={""}>
             <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
           </DataText>
 
-          <DataText label={intl.article9} text={boolToText(dpProcess?.art9)}/>
-          <DataText label={intl.article10} text={boolToText(dpProcess?.art10)}/>
+          <DataText label={intl.article9} text={boolToText(dpProcess?.art9)} />
+          <DataText label={intl.article10} text={boolToText(dpProcess?.art10)} />
 
           <DataText label={intl.system} text={""}>
-            {dpProcess && (<DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist/>)}
+            {dpProcess && (<DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist />)}
           </DataText>
 
           <DataText label={intl.organizing} text={""}>
             {dpProcess?.affiliation.department ? <Block>
               <span>{intl.department}: </span>
-              <span><DotTags list={ListName.DEPARTMENT} codes={[dpProcess?.affiliation.department]} commaSeparator linkCodelist/> </span>
+              <span><DotTags list={ListName.DEPARTMENT} codes={[dpProcess?.affiliation.department]} commaSeparator linkCodelist /> </span>
             </Block> : <span>{intl.department}: {intl.notFilled}</span>}
             {!!dpProcess?.affiliation.subDepartments.length && <Block>
-                <Block display="flex">
-                  <span>{intl.subDepartment}: </span>
-                  <DotTags list={ListName.SUB_DEPARTMENT} codes={dpProcess?.affiliation.subDepartments} linkCodelist/>
-                </Block>
+              <Block display="flex">
+                <span>{intl.subDepartment}: </span>
+                <DotTags list={ListName.SUB_DEPARTMENT} codes={dpProcess?.affiliation.subDepartments} linkCodelist />
               </Block>
+            </Block>
             }
 
             <Block display="flex">
               <span>{intl.productTeam}: </span>
-              {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams}/> : intl.notFilled}
+              {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : intl.notFilled}
             </Block>
           </DataText>
           <DataText label={intl.retention} text={""}>
             <>
               <Block>
-                <RetentionView retention={dpProcess?.retention}/>
+                <RetentionView retention={dpProcess?.retention} />
               </Block>
             </>
           </DataText>
@@ -150,12 +161,12 @@ const DpProcessView = () => {
               <Block>
                 <Block>
                   {isDataProcessingAgreementsAvailable &&
-                  <Block display='flex' alignItems="center">
-                    <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
-                      {`${intl.processorAgreement}: `}
+                    <Block display='flex' alignItems="center">
+                      <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }}>
+                        {`${intl.processorAgreement}: `}
+                      </Block>
+                      <DotTags items={dpProcess?.dataProcessingAgreements} markdown />
                     </Block>
-                    <DotTags items={dpProcess?.dataProcessingAgreements} markdown/>
-                  </Block>
                   }
                 </Block>
               </Block>
@@ -168,38 +179,28 @@ const DpProcessView = () => {
               {dpProcess?.subDataProcessing?.dataProcessor === false && intl.processorNo}
             </>
             <>
-              {dpProcess?.subDataProcessing?.dataProcessor &&
-              <Block>
-                <Block>{intl.processorYes}</Block>
+              {dpProcess?.subDataProcessing.dataProcessor &&
                 <Block>
-                  {isSubDataProcessorAgreementsAvailable &&
-                  <Block display='flex' alignItems="center">
-                    <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
-                      {`${intl.processorAgreement}: `}
-                    </Block>
-                    <DotTags items={dpProcess?.subDataProcessing.dataProcessorAgreements} markdown/>
-                  </Block>
-                  }
-                </Block>
-                <Block>
-                  <span>{intl.isDataProcessedOutsideEUEEA} </span>
-                  <span>{boolToText(dpProcess?.subDataProcessing.dataProcessorOutsideEU)}</span>
-                </Block>
-                {dpProcess?.subDataProcessing.dataProcessorOutsideEU &&
-                <>
+                  <Block>{intl.processorYes}</Block>
                   <Block>
-                    <span>{intl.transferGroundsOutsideEUEEA}: </span>
-                    {dpProcess?.subDataProcessing.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(dpProcess?.subDataProcessing.transferGroundsOutsideEU)} </span>}
-                    {!dpProcess?.subDataProcessing.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                    {dpProcess?.subDataProcessing.transferGroundsOutsideEUOther && <span>: {dpProcess?.subDataProcessing.transferGroundsOutsideEUOther}</span>}
+                    {processors && (
+                      <Block display='flex' alignItems='center'>
+                        <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }} />
+                        <Block display='flex' flexWrap>
+                          {processors.map((dp, i) => (
+                            <Block key={dp.id} marginRight={i < processors.length ? theme.sizing.scale200 : 0}>
+                              <DotTag key={dp.id}>
+                                <RouteLink href={"/processor/" + dp.id}>
+                                  {dp.name}
+                                </RouteLink>
+                              </DotTag>
+                            </Block>
+                          ))}
+                        </Block>
+                      </Block>
+                    )}
                   </Block>
-                  {!!dpProcess?.subDataProcessing?.transferCountries.length && <Block>
-                    <span>{intl.countries}: </span>
-                    <span>{dpProcess?.subDataProcessing.transferCountries.map(c => codelist.countryName(c)).join(', ')}</span>
-                  </Block>}
-                </>
-                }
-              </Block>}
+                </Block>}
             </>
           </DataText>
           <DpProcessModal
@@ -218,7 +219,7 @@ const DpProcessView = () => {
           />
         </>
       ) : (
-        <StyledSpinnerNext/>
+        <StyledSpinnerNext />
       )}
     </>
   )

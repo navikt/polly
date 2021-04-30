@@ -76,11 +76,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     externalProcessResponsible: (externalProcessResponsible && externalProcessResponsible.code) || undefined,
     subDataProcessing: {
       dataProcessor: mapBool(subDataProcessing?.dataProcessor),
-      dataProcessorAgreements: subDataProcessing?.dataProcessorAgreements || [],
-      dataProcessorOutsideEU: mapBool(subDataProcessing?.dataProcessorOutsideEU),
-      transferGroundsOutsideEU: subDataProcessing?.transferGroundsOutsideEU?.code || undefined,
-      transferGroundsOutsideEUOther: subDataProcessing?.transferGroundsOutsideEUOther || '',
-      transferCountries: subDataProcessing?.transferCountries || []
+      processors: subDataProcessing?.processors || []
     },
     id: id,
     name: name || '',
@@ -104,8 +100,8 @@ export const fromValuesToDpProcess = (values: DpProcessFormValues) => {
     end: values.end,
     externalProcessResponsible: values.externalProcessResponsible ? values.externalProcessResponsible : undefined,
     subDataProcessing: {
-      ...values.subDataProcessing,
-      transferGroundsOutsideEUOther: values.subDataProcessing.transferGroundsOutsideEU !== TRANSFER_GROUNDS_OUTSIDE_EU_OTHER ? undefined : values.subDataProcessing.transferGroundsOutsideEUOther
+      dataProcessor: values.subDataProcessing.dataProcessor,
+      processors: values.subDataProcessing.processors || []
     },
     id: values.id,
     name: values.name || '',
