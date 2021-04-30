@@ -61,8 +61,6 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
           />
         </Block>
         <Error fieldName='subDataProcessing.procesors' />
-        <FlexGridItem>
-        </FlexGridItem>
       </>}
     </>
   )
