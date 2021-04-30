@@ -21,7 +21,9 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
     (async () => {
       if (props.formikBag.values.subDataProcessing.processors?.length) {
         const res = await getProcessorsByIds(props.formikBag.values.subDataProcessing.processors)
-        res.forEach(r => subDataProcessors.set(r.id, r.name))
+        const resDataProcessors = new Map<string, string>()
+        res.forEach(r => resDataProcessors.set(r.id, r.name))
+        setSubDataProcessors(resDataProcessors)
       }
     })()
   }, [])
