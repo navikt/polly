@@ -19,8 +19,8 @@ const RelatedProcessesTable = ({relatedProcesses}: RelatedProcessesTableProps) =
         backgroundColor={theme.colors.primary100}
         headers={
           <>
-            <HeadCell title={intl.purpose} column={'purposes'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.overallPurposeActivity} column={'name'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.process} column={'name'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.system}/>
           </>
