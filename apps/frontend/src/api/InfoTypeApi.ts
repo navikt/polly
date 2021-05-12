@@ -1,8 +1,8 @@
 import axios from 'axios'
-import {InformationType, InformationtypeFormValues, InformationTypeShort, PageResponse, Policy} from '../constants'
-import {default as React, Dispatch, SetStateAction, useEffect} from 'react'
-import {useDebouncedState} from '../util'
-import {env} from '../util/env'
+import { InformationType, InformationtypeFormValues, InformationTypeShort, PageResponse, Policy } from '../constants'
+import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
+import { useDebouncedState } from '../util'
+import { env } from '../util/env'
 import * as queryString from 'query-string'
 
 export const getInformationTypes = async (page: number, limit: number) => {
@@ -13,12 +13,12 @@ export const getInformationTypesShort = async () => {
   return (await axios.get<PageResponse<InformationTypeShort>>(`${env.pollyBaseUrl}/informationtype/short`)).data.content
 }
 
-export const getInformationTypesBy = async (params: {source?: string, orgMaster?: string, productTeam?: string, productArea?: string}) => {
-  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?${queryString.stringify(params, {skipNull: true})}`)).data
+export const getInformationTypesBy = async (params: { source?: string, orgMaster?: string, productTeam?: string, productArea?: string }) => {
+  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?${queryString.stringify(params, { skipNull: true })}`)).data
 }
 
 export const searchInformationType = async (text: string) => {
-  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype/search/${text}`)).data
+  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype/search`, { params: { name: text } })).data
 }
 
 export const getInformationType = async (informationTypeId: string) => {
