@@ -2,6 +2,7 @@ package no.nav.data.polly.informationtype;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -73,8 +74,8 @@ public class InformationTypeController {
 
     @Operation(summary = "Search InformationTypes")
     @ApiResponse(description = "InformationTypes fetched")
-    @GetMapping("/search/{name}")
-    public ResponseEntity<RestResponsePage<InformationTypeResponse>> searchInformationTypeByName(@PathVariable String name) {
+    @GetMapping("/search")
+    public ResponseEntity<RestResponsePage<InformationTypeResponse>> searchInformationTypeByName(@RequestParam("name") String name) {
         log.info("Received request for InformationTypes with the name like {}", name);
         if (name.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
