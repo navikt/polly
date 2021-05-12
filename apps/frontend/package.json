@@ -66,7 +66,7 @@
     ]
   },
   "devDependencies": {
-    "@types/amplitude-js": "^7.0.0",
+    "@types/amplitude-js": "^8.0.0",
     "@types/jest": "^26.0.22",
     "@types/lodash": "^4.14.165",
     "@types/node": "^15.0.0",
