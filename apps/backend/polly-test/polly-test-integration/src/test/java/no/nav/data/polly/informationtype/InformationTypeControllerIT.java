@@ -54,6 +54,19 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void searchInformationTypeByNameWithForwardSlash() {
+        informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationType/Data"));
+        informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "Type/Data"));
+        ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/search?name={search}", InformationTypePage.class, "type/data");
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getNumberOfElements()).isEqualTo(2L);
+        assertThat(responseEntity.getBody().getContent().get(0).getName()).isEqualTo("Type/Data");
+        assertThat(responseEntity.getBody().getContent().get(1).getName()).isEqualTo("InformationType/Data");
+    }
+
+    @Test
     void getAllShort() {
         var it = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
 
