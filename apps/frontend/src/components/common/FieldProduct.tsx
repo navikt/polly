@@ -23,6 +23,7 @@ const FieldProduct = (props:fieldProductsProps ) => {
               onChange={({value}) => {
                 arrayHelpers.form.setFieldValue('affiliation.products', [...props.formikBag.values.affiliation.products, ...value.map(v => v.id)])
               }}
+              overrides={{Placeholder: {style: {color: 'black'}}}}
             />
           </Block>
           <Block>{renderTagList(props.formikBag.values.affiliation.products.map(p => codelist.getShortname(ListName.SYSTEM, p)), arrayHelpers)}</Block>

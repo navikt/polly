@@ -25,6 +25,7 @@ const FieldCommonExternalProcessResponsible = (props: { thirdParty?: string, hid
               form.setFieldValue('commonExternalProcessResponsible', value.length > 0 ? value[0].id : '')
             }}
             value={value}
+            overrides={{Placeholder: {style: {color: 'black'}}}}
           />
         </Block>
       )}

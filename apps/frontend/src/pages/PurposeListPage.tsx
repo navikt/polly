@@ -1,5 +1,5 @@
 import {intl, theme} from '../util'
-import {H4, Label1} from 'baseui/typography'
+import {H1, Label1} from 'baseui/typography'
 import React from 'react'
 import {Block} from 'baseui/block'
 import {SIZE as ButtonSize} from 'baseui/button'
@@ -39,40 +39,42 @@ export const PurposeListPage = () => {
   }
 
   return (
-    <>
-      <H4>{intl.processingActivities}</H4>
+    <Block overrides={{Block: {props: {role: 'main'}}}}>
+      <>
+        <H1>{intl.processingActivities}</H1>
 
-      <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
-        <Block>
-          <Label1>{intl.purposeSelect}</Label1>
+        <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
+          <Block>
+            <Label1>{intl.purposeSelect}</Label1>
+          </Block>
+
+          <Block marginTop={'auto'}>
+            {hasAccess() && (
+              <Button
+                size={ButtonSize.compact}
+                kind={'outline'}
+                onClick={() => setShowCreateProcessModal(true)}
+                startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
+              >
+                {intl.processingActivitiesNew}
+              </Button>
+            )}
+          </Block>
         </Block>
 
-        <Block marginTop={'auto'}>
-          {hasAccess() && (
-            <Button
-              size={ButtonSize.compact}
-              kind={'outline'}
-              onClick={() => setShowCreateProcessModal(true)}
-              startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
-            >
-              {intl.processingActivitiesNew}
-            </Button>
-          )}
-        </Block>
-      </Block>
+        <Block marginBottom={theme.sizing.scale800}/>
 
-      <Block marginBottom={theme.sizing.scale800}/>
-
-      <ModalProcess
-        title={intl.processingActivitiesNew}
-        onClose={() => setShowCreateProcessModal(false)}
-        isOpen={showCreateProcessModal}
-        submit={(values: ProcessFormValues) => handleCreateProcess(values)}
-        errorOnCreate={errorProcessModal}
-        isEdit={false}
-        initialValues={convertProcessToFormValues()}
-      />
-      <PurposeList/>
-    </>
+        <ModalProcess
+          title={intl.processingActivitiesNew}
+          onClose={() => setShowCreateProcessModal(false)}
+          isOpen={showCreateProcessModal}
+          submit={(values: ProcessFormValues) => handleCreateProcess(values)}
+          errorOnCreate={errorProcessModal}
+          isEdit={false}
+          initialValues={convertProcessToFormValues()}
+        />
+        <PurposeList/>
+      </>
+    </Block>
   )
 }

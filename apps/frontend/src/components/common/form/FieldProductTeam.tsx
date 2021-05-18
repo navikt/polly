@@ -43,6 +43,7 @@ const FieldProductTeam = (props: {productTeams: string[], fieldName: string}) =>
                 }}
                 onInputChange={event => setTeamSearch(event.currentTarget.value)}
                 isLoading={teamSearchLoading}
+                overrides={{Placeholder: {style: {color: 'black'}}}}
               />
             </Block>
             <Block>
