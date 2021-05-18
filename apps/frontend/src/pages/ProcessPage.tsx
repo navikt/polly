@@ -76,27 +76,29 @@ const ProcessPage = () => {
 
   return (
     <>
-      <PageHeader section={section} code={code}/>
-      <ProcessList
-        code={code}
-        listName={listNameForSection(section)}
-        processId={processId}
-        filter={filter}
-        section={section}
-        moveScroll={moveScroll}
-        isEditable={true}
-      />
-      {!isLoading && section === Section.department &&(
-        <Block marginBottom={theme.sizing.scale1200}>
-          <HeadingSmall>{intl.overview}</HeadingSmall>
+      <Block overrides={{Block: {props: {role: 'main'}}}}>
+        <PageHeader section={section} code={code}/>
+        <ProcessList
+          code={code}
+          listName={listNameForSection(section)}
+          processId={processId}
+          filter={filter}
+          section={section}
+          moveScroll={moveScroll}
+          isEditable={true}
+        />
+        {!isLoading && section === Section.department && (
+          <Block marginBottom={theme.sizing.scale1200}>
+            <HeadingSmall>{intl.overview}</HeadingSmall>
             <Charts
-                chartData={chartData!}
-                processStatus={ProcessStatusFilter.All}
-                departmentCode={code}
-                type={section === Section.department ? Section.department : Section.productarea}
-             />
-        </Block>
-      )}
+              chartData={chartData!}
+              processStatus={ProcessStatusFilter.All}
+              departmentCode={code}
+              type={section === Section.department ? Section.department : Section.productarea}
+            />
+          </Block>
+        )}
+      </Block>
     </>
   )
 }

@@ -1,9 +1,9 @@
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { user } from '../../service/User'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {user} from '../../service/User'
 import RouteLink from '../common/RouteLink'
-import { intl } from '../../util'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHistory } from '@fortawesome/free-solid-svg-icons'
+import {intl} from '../../util'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faHistory} from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import Button from '../common/Button'
 
@@ -19,7 +19,7 @@ export const AuditButton = (props: { id: string, auditId?: string, kind?: KIND[k
             size={ButtonSize.compact}
             kind={props.kind || 'outline'}
           >
-            <FontAwesomeIcon icon={faHistory}/>
+            <FontAwesomeIcon title={intl.version} icon={faHistory}/>
           </Button>
         </>
       }

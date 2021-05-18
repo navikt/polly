@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect} from 'react'
 
 import {Block} from 'baseui/block'
-import {HeadingSmall, Label2} from 'baseui/typography'
+import {HeadingXLarge, Label2} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus} from '../../constants'
 import {intl, theme, useAwait} from '../../util'
@@ -305,9 +305,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
           </Label2>
         </Block>
         <Block marginRight='auto'>
-          {!hideTitle && <HeadingSmall>
+          {!hideTitle && <HeadingXLarge>
             {titleOverride || intl.processes} ({processList.length})
-          </HeadingSmall>}
+          </HeadingXLarge>}
         </Block>
       </Block>
 

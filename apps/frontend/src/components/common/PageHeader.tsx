@@ -1,5 +1,5 @@
 import {Block} from 'baseui/block'
-import {HeadingLarge, LabelLarge} from 'baseui/typography'
+import {HeadingXXLarge, LabelLarge} from 'baseui/typography'
 import {intl, theme} from '../../util'
 import {Markdown} from './Markdown'
 import * as React from 'react'
@@ -97,7 +97,7 @@ export const PageHeader = (props: {section: Section, code: string}) => {
       {!isLoading &&
       <>
         <Block marginBottom="3rem" display='flex' alignItems='center'>
-          <HeadingLarge>{getTitle()}</HeadingLarge>
+          <HeadingXXLarge>{getTitle()}</HeadingXXLarge>
           {externalLink()}
         </Block>
 
