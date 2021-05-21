@@ -174,7 +174,7 @@ public class DashboardController {
         }
     }
 
-    @Scheduled(initialDelayString = "PT30S", fixedRateString = "PT30S")
+    @Scheduled(initialDelayString = "PT2M", fixedRateString = "PT30S")
     public void warmup() {
         Arrays.stream(ProcessStatusFilter.values()).forEach(this::getDashboardData);
     }
