@@ -55,7 +55,9 @@ public class ExportController {
             @RequestParam(name = "department", required = false) String department,
             @RequestParam(name = "subDepartment", required = false) String subDepartment,
             @RequestParam(name = "system", required = false) String system,
-            @RequestParam(name = "purpose", required = false) String purpose
+            @RequestParam(name = "purpose", required = false) String purpose,
+            @RequestParam(name = "productArea", required = false) String productArea,
+            @RequestParam(name = "productTeam", required = false) String productTeam
     ) {
         byte[] doc;
         String filename;
@@ -82,6 +84,12 @@ public class ExportController {
             } else if (system != null) {
                 list = ListName.SYSTEM;
                 code = system;
+            } else if (productArea != null) {
+                list = ListName.PRODUCT_AREA;
+                code = productArea;
+            } else if (productTeam != null) {
+                list = ListName.PRODUCT_TEAM;
+                code = productTeam;
             } else {
                 throw new ValidationException("No paramater given");
             }

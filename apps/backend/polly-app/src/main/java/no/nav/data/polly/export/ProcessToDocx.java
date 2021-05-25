@@ -125,6 +125,15 @@ public class ProcessToDocx {
                 title = "System";
                 processes = processRepository.findByProduct(code);
             }
+            case PRODUCT_AREA -> {
+                title = "Produktområde";
+                var teams = teamService.getTeamsForProductArea(code);
+                processes = processRepository.findByProductTeams(convert(teams, Team::getId));
+            }
+            case PRODUCT_TEAM -> {
+                title = "Team";
+                processes = processRepository.findByProductTeam(code);
+            }
             default -> throw new ValidationException("no list given");
         }
         processes = new ArrayList<>(processes);
