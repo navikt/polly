@@ -30,7 +30,6 @@ import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.Resource;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jni.Proc;
 import org.docx4j.com.google.common.base.Function;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.properties.table.tr.TrCantSplit;
@@ -98,22 +97,23 @@ public class ProcessToDocx {
     private final ProcessorRepository processorRepository;
     private final CommonCodeService commonCodeService;
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
+
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
         var doc = new DocumentBuilder();
-        doc.addTitle("Behandling: "+ process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")" );
+        doc.addTitle("Behandling: " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
         doc.generate(process);
         return doc.build();
     }
 
-    public byte[] generateDocForProcessList(List<Process> processes, String title){
+    public byte[] generateDocForProcessList(List<Process> processes, String title) {
         List<Process> processList = new ArrayList<>(processes);
         Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
                 .thenComparing(p -> p.getData().getName());
         processList.sort(comparator);
         var doc = new DocumentBuilder();
         doc.addTitle(title);
-        doc.addHeading1(String.format(headingProcessList,processList.size()));
+        doc.addHeading1(String.format(headingProcessList, processList.size()));
         doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {
@@ -157,7 +157,7 @@ public class ProcessToDocx {
         doc.addTitle(title + ": " + codelist.getShortName());
         doc.addText(codelist.getDescription());
 
-        doc.addHeading1(String.format(headingProcessList,processes.size()));
+        doc.addHeading1(String.format(headingProcessList, processes.size()));
         doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {

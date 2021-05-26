@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.servlet.http.HttpServletResponse;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 
@@ -79,11 +79,11 @@ public class ExportController {
         } else if (productArea != null) {
             var teams = teamService.getTeamsForProductArea(productArea);
             List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
-            doc = processToDocx.generateDocForProcessList(processes, "Produktområde");
+            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: "+productArea);
             filename = "behandling_produktområde_" + productArea + ".docx";
         } else if (productTeam != null) {
             List<Process> processes = processRepository.findByProductTeam(productTeam);
-            doc = processToDocx.generateDocForProcessList(processes, "Team");
+            doc = processToDocx.generateDocForProcessList(processes, "Team: "+productTeam);
             filename = "behandling_team_" + productTeam + ".docx";
         } else {
             ListName list;
