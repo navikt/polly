@@ -19,6 +19,7 @@ import no.nav.data.polly.teams.domain.Team;
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,11 +80,11 @@ public class ExportController {
         } else if (productArea != null) {
             var teams = teamService.getTeamsForProductArea(productArea);
             List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
-            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: "+productArea);
+            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productArea));
             filename = "behandling_produktområde_" + productArea + ".docx";
         } else if (productTeam != null) {
             List<Process> processes = processRepository.findByProductTeam(productTeam);
-            doc = processToDocx.generateDocForProcessList(processes, "Team: "+productTeam);
+            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeam));
             filename = "behandling_team_" + productTeam + ".docx";
         } else {
             ListName list;
