@@ -79,12 +79,18 @@ public class ExportController {
             filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
         } else if (productArea != null) {
             var teams = teamService.getTeamsForProductArea(productArea);
+            var productAreaData = teamService.getProductArea(productArea);
+            String productAreaName = productAreaData.isPresent() ? productAreaData.get().getName() : "";
+
             List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
-            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productArea));
+            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productAreaName));
             filename = "behandling_produktområde_" + productArea + ".docx";
         } else if (productTeam != null) {
             List<Process> processes = processRepository.findByProductTeam(productTeam);
-            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeam));
+            var productTeamData = teamService.getTeam(productTeam);
+            String productTeamName = productTeamData.isPresent() ? productTeamData.get().getName() : "";
+
+            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeamName));
             filename = "behandling_team_" + productTeam + ".docx";
         } else {
             ListName list;
