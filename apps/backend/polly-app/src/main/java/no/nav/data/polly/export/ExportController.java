@@ -14,6 +14,8 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
@@ -22,9 +24,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
+
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
@@ -37,11 +42,13 @@ public class ExportController {
     private final ProcessRepository processRepository;
     private final CodelistService codelistService;
     private final ProcessToDocx processToDocx;
+    private final TeamService teamService;
 
-    public ExportController(ProcessRepository processRepository, CodelistService codelistService, ProcessToDocx processToDocx) {
+    public ExportController(ProcessRepository processRepository, CodelistService codelistService, ProcessToDocx processToDocx, TeamService teamService) {
         this.processRepository = processRepository;
         this.codelistService = codelistService;
         this.processToDocx = processToDocx;
+        this.teamService = teamService;
     }
 
     @Operation(summary = "Get export for process")
@@ -69,6 +76,15 @@ public class ExportController {
             Process p = process.get();
             doc = processToDocx.generateDocForProcess(p);
             filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
+        } else if (productArea != null) {
+            var teams = teamService.getTeamsForProductArea(productArea);
+            List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
+            doc = processToDocx.generateDocForProcessList(processes, "Produktområde");
+            filename = "behandling_produktområde_" + productArea + ".docx";
+        } else if (productTeam != null) {
+            List<Process> processes = processRepository.findByProductTeam(productTeam);
+            doc = processToDocx.generateDocForProcessList(processes, "Team");
+            filename = "behandling_team_" + productTeam + ".docx";
         } else {
             ListName list;
             String code;
@@ -84,13 +100,8 @@ public class ExportController {
             } else if (system != null) {
                 list = ListName.SYSTEM;
                 code = system;
-            } else if (productArea != null) {
-                list = ListName.PRODUCT_AREA;
-                code = productArea;
-            } else if (productTeam != null) {
-                list = ListName.PRODUCT_TEAM;
-                code = productTeam;
-            } else {
+            }
+            else {
                 throw new ValidationException("No paramater given");
             }
             codelistService.validateListNameAndCode(list.name(), code);

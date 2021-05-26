@@ -12,6 +12,4 @@ public enum ListName {
     SUB_DEPARTMENT,
     SYSTEM,
     TRANSFER_GROUNDS_OUTSIDE_EU,
-    PRODUCT_AREA,
-    PRODUCT_TEAM
 }

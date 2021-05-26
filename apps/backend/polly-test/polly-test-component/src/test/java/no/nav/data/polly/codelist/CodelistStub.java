@@ -37,8 +37,6 @@ public class CodelistStub {
         add(ListName.SYSTEM, "AA_REG", "AA-REG", "Arbeidsgiver / Arbeidstaker register");
         add(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "APPROVED_THIRD_COUNTRY", "Godkjent tredjeland", "Godkjent tredjeland");
         add(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER", "Other", "Other");
-        add(ListName.PRODUCT_AREA, "PRODUKTOMRÅDE_HELSE", "produktområde helse", "produktområde helse");
-        add(ListName.PRODUCT_TEAM, "DATAJEGERNE", "datajegerne", "datajegerne");
     }
 
     private static void add(ListName source, String code, String name, String desc) {
