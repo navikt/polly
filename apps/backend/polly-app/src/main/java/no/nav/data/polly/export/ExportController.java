@@ -100,8 +100,7 @@ public class ExportController {
             } else if (system != null) {
                 list = ListName.SYSTEM;
                 code = system;
-            }
-            else {
+            } else {
                 throw new ValidationException("No paramater given");
             }
             codelistService.validateListNameAndCode(list.name(), code);
