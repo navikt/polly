@@ -36,10 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -122,10 +119,19 @@ public class DocxTest {
         assertThat(docx).isNotNull();
     }
 
+    @Test
+    void createDocForProductTeam() {
+        List<Process> processes = List.of(createProcess(), createProcess(), createProcess());
+        processes.forEach(this::mockAlert);
+        var docx = processToDocx.generateDocForProcessList(processes, "Product Team");
+        assertThat(docx).isNotNull();
+        write(docx);
+    }
+
     @SneakyThrows
     private void write(byte[] docx) {
         Path tempFile = Files.createTempFile("process", ".docx");
-//        Path tempFile = Paths.get("/Users/s143147/process.docx");
+        //Path tempFile = Paths.get("/Users/s143147/process.docx");
         Files.write(tempFile, docx);
         log.info("Written to {}", tempFile.toAbsolutePath());
     }

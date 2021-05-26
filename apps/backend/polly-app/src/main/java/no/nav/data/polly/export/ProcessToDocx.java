@@ -107,12 +107,13 @@ public class ProcessToDocx {
     }
 
     public byte[] generateDocForProcessList(List<Process> processes, String title){
+        List<Process> processList = new ArrayList<>(processes);
         Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
                 .thenComparing(p -> p.getData().getName());
-        processes.sort(comparator);
+        processList.sort(comparator);
         var doc = new DocumentBuilder();
         doc.addTitle(title);
-        doc.addHeading1(String.format(headingProcessList,processes.size()));
+        doc.addHeading1(String.format(headingProcessList,processList.size()));
         doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {
