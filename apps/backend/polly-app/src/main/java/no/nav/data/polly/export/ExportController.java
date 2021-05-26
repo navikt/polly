@@ -14,17 +14,23 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.servlet.http.HttpServletResponse;
+
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
@@ -37,11 +43,13 @@ public class ExportController {
     private final ProcessRepository processRepository;
     private final CodelistService codelistService;
     private final ProcessToDocx processToDocx;
+    private final TeamService teamService;
 
-    public ExportController(ProcessRepository processRepository, CodelistService codelistService, ProcessToDocx processToDocx) {
+    public ExportController(ProcessRepository processRepository, CodelistService codelistService, ProcessToDocx processToDocx, TeamService teamService) {
         this.processRepository = processRepository;
         this.codelistService = codelistService;
         this.processToDocx = processToDocx;
+        this.teamService = teamService;
     }
 
     @Operation(summary = "Get export for process")
@@ -55,7 +63,9 @@ public class ExportController {
             @RequestParam(name = "department", required = false) String department,
             @RequestParam(name = "subDepartment", required = false) String subDepartment,
             @RequestParam(name = "system", required = false) String system,
-            @RequestParam(name = "purpose", required = false) String purpose
+            @RequestParam(name = "purpose", required = false) String purpose,
+            @RequestParam(name = "productArea", required = false) String productArea,
+            @RequestParam(name = "productTeam", required = false) String productTeam
     ) {
         byte[] doc;
         String filename;
@@ -67,6 +77,15 @@ public class ExportController {
             Process p = process.get();
             doc = processToDocx.generateDocForProcess(p);
             filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
+        } else if (productArea != null) {
+            var teams = teamService.getTeamsForProductArea(productArea);
+            List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
+            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productArea));
+            filename = "behandling_produktområde_" + productArea + ".docx";
+        } else if (productTeam != null) {
+            List<Process> processes = processRepository.findByProductTeam(productTeam);
+            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeam));
+            filename = "behandling_team_" + productTeam + ".docx";
         } else {
             ListName list;
             String code;
