@@ -239,6 +239,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                             .purposes(List.of(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2)))
                             .build()
             );
+            assertThat(processPage.getContent().get(0).getNumber()).isEqualTo(policy2.getProcess().getData().getNumber());
         }
 
         @Test

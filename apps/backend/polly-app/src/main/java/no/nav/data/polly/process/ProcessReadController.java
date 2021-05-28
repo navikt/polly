@@ -125,7 +125,7 @@ public class ProcessReadController {
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
         }
         log.info("Received request for all Processes");
-        Page<ProcessResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
+        Page<ProcessResponse> page = repository.findAllSortedByNumber(pageParameters.createPage()).map(Process::convertToResponse);
         return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 
