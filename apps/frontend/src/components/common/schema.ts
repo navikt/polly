@@ -7,7 +7,6 @@ import {
   DisclosureAbroad,
   DisclosureFormValues,
   DocumentInfoTypeUse,
-  DpDataProcessingFormValues,
   DpProcessFormValues,
   InformationtypeFormValues,
   InformationTypeShort,
@@ -50,50 +49,10 @@ const dataProcessingSchema: () => yup.SchemaOf<DataProcessingFormValues> = () =>
   processors: yup.array().of(yup.string().required())
 })
 
-const dpDataProcessingSchema: () => yup.SchemaOf<DpDataProcessingFormValues> = () => yup.object({
+const dpDataProcessingSchema: () => yup.SchemaOf<DataProcessingFormValues> = () => yup.object({
   dataProcessor: yup.boolean(),
-  dataProcessorAgreements: yup.array().of(yup.string().required()),
-  dataProcessorOutsideEU: yup.boolean(),
-  transferGroundsOutsideEU: yup.string().test({
-      name: 'dataProcessOutsideEU_transferGrounds',
-      message: intl.required,
-      test: function () {
-        const {parent} = this;
-        return !dpTransferGroundsOutsideEUMissing(parent)
-      }
-    }
-  ),
-  transferGroundsOutsideEUOther: yup.string().test({
-      name: 'dataProcessOutsideEU_transferGroundsOther',
-      message: intl.required,
-      test: function () {
-        const {parent} = this;
-        return !dpTransferGroundsOutsideEUOtherMissing(parent)
-      }
-    }
-  ),
-  transferCountries: yup.array().of(yup.string().required()).test({
-      name: 'dataProcessOutsideEU_transferCountries',
-      message: intl.required,
-      test: function () {
-        const {parent} = this;
-        return !dpTransferCountriesMissing(parent)
-      }
-    }
-  )
+  processors: yup.array().of(yup.string().required())
 })
-
-const dpTransferGroundsOutsideEUMissing = (values: DpDataProcessingFormValues) => {
-  return !!values.dataProcessorOutsideEU && !values.transferGroundsOutsideEU
-}
-
-const dpTransferCountriesMissing = (values: DpDataProcessingFormValues) => {
-  return !!values.dataProcessorOutsideEU && !values.transferCountries.length
-}
-
-const dpTransferGroundsOutsideEUOtherMissing = (values: DpDataProcessingFormValues) => {
-  return values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && !values.transferGroundsOutsideEUOther
-}
 
 export const dataProcessorSchema: () => yup.SchemaOf<ProcessorFormValues> = () => yup.object({
     id: yup.string(),

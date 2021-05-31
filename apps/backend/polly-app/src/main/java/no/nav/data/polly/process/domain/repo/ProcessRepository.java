@@ -2,6 +2,8 @@ package no.nav.data.polly.process.domain.repo;
 
 import no.nav.data.common.storage.domain.LastModified;
 import no.nav.data.polly.process.domain.Process;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -49,6 +51,8 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select jsonb_array_elements(data #> '{affiliation,productTeams}') ->> 0  as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countTeam();
 
+    // other...
+
     @Query(value = "select nextval('process_number')", nativeQuery = true)
     int nextProcessNumber();
 
@@ -57,4 +61,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     @Query(value = "select cast(process_id as text) as id, last_modified_by as lastModifiedBy from process where process_id in ?1", nativeQuery = true)
     List<LastModified> getLastModifiedBy(List<UUID> ids);
+
+    @Query(value = "select * from process order by data -> 'number' desc",
+            countQuery = "select count(1) from process", nativeQuery = true)
+    Page<Process> findAllSortedByNumber(Pageable pageable);
+
 }

@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
-import static no.nav.data.polly.process.dpprocess.domain.sub.DpDataProcessing.convertDataProcessing;
+import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
 import static no.nav.data.polly.process.dpprocess.domain.sub.DpRetention.convertRetention;
 
 @Data

@@ -63,6 +63,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const current_location = useLocation()
   const [codelistLoading, setCodelistLoading] = React.useState(true)
   const history = useHistory()
+  const [exportHref, setExportHref] = React.useState<string>("")
   useAwait(codelist.wait(), setCodelistLoading)
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
@@ -78,6 +79,12 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setIsLoadingProcessList(false)
       if (moveScroll) moveScroll()
     })()
+    const pathName = current_location.pathname.split("/")[1]
+    if (pathName === 'productarea') {
+      setExportHref(`${env.pollyBaseUrl}/export/process?productArea=${code}`)
+    } else if(pathName==='team'){
+      setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
+    }
   }, [code, filter])
 
   const handleChangePanel = (process?: Partial<Process>) => {
@@ -260,7 +267,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         <Block>
           <StyledLink
             style={{textDecoration: 'none'}}
-            href={`${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
+            href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
             <Button
               kind={KIND.minimal}
               size={ButtonSize.compact}
