@@ -20,6 +20,7 @@ const FieldPurpose = (props: {formikBag: FormikProps<ProcessFormValues>}) => {
               onChange={({value}) => {
                 arrayHelpers.form.setFieldValue('purposes', value.map(v => v.id))
               }}
+              overrides={{Placeholder: {style: {color: 'black'}}}}
             />
           </Block>
         </Block>

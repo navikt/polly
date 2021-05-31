@@ -24,6 +24,7 @@ const FieldDepartment = (props: { department?: string }) => {
               form.setFieldValue('affiliation.department', value.length > 0 ? value[0].id : '')
             }}
             value={value}
+            overrides={{Placeholder: {style: {color: 'black'}}}}
           />
         </Block>
       )}

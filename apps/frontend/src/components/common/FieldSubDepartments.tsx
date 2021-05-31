@@ -19,6 +19,7 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
               onChange={({value}) => {
                 arrayHelpers.form.setFieldValue('affiliation.subDepartments', [...props.formikBag.values.affiliation.subDepartments, ...value.map(v => v.id)])
               }}
+              overrides={{Placeholder: {style: {color: 'black'}}}}
             />
           </Block>
           <Block>

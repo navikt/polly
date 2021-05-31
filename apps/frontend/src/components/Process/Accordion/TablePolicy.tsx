@@ -122,7 +122,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                               setShowEditModal(true)
                             }}
                           >
-                            <FontAwesomeIcon icon={faEdit}/>
+                            <FontAwesomeIcon title={intl.edit} icon={faEdit}/>
                           </Button>
                         </CustomizedStatefulTooltip>
                         <CustomizedStatefulTooltip content={intl.delete}>
@@ -134,7 +134,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                               setShowDeleteModal(true)
                             }}
                           >
-                            <FontAwesomeIcon icon={faTrash}/>
+                            <FontAwesomeIcon title={intl.delete} icon={faTrash}/>
                           </Button>
                         </CustomizedStatefulTooltip>
                       </>

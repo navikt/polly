@@ -362,6 +362,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                           onChange={({value}) => {
                             setThirdParty(value)
                           }}
+                          overrides={{Placeholder: {style: {color: 'black'}}}}
                         />
                       </Block>
 
@@ -381,6 +382,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                   }}
                                   labelKey='name'
                                   valueKey='id'
+                                  overrides={{Placeholder: {style: {color: 'black'}}}}
                                 />
                               </Block>
                               <Block>{renderTagList(formikBag.values.disclosures.map(d => d.recipient.shortName + ':' + d.name), arrayHelpers)}</Block>

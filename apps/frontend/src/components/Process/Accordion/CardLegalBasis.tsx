@@ -106,6 +106,7 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton, sensiti
                          }}
                          value={gdpr}
                          error={!!form.errors.gdpr && !!form.submitCount}
+                         overrides={{Placeholder: {style: {color: 'black'}}}}
                        />
                      )}/>
             </Block>
