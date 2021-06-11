@@ -265,7 +265,7 @@ const Completeness = (props: {process: Process}) => {
     retention: !isNil(process.retention?.retentionPlan),
     retentionTime: !process.retention?.retentionPlan || (!!process.retention.retentionStart && !!process.retention.retentionMonths),
     dataProcessor: !isNil(process.dataProcessing?.dataProcessor),
-    dataProcessors: !process.dataProcessing?.dataProcessor || !process.dataProcessing?.processors,
+    dataProcessors: !process.dataProcessing?.dataProcessor || !!process.dataProcessing?.processors.length,
     policies: process.usesAllInformationTypes || !!process.policies.length,
     completed: process.status === ProcessStatus.COMPLETED
   }
