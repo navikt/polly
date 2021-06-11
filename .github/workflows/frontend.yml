@@ -23,10 +23,19 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: '15.x'
+          node-version: '16.x'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
       
-      - name: npm install
-        run: npm i
+      - name: yarn install
+        run: yarn install
       - name: use prod config
         if: github.ref == 'refs/heads/prod'
         run: cp .env.prod .env
@@ -36,9 +45,9 @@ jobs:
         run: echo "REACT_APP_GIT_VERSION=${GITHUB_SHA}" >> .env
       
       - name: Build
-        run: CI=false npm run build
+        run: CI=false yarn run build
       - name: Test
-        run: npm run test
+        run: yarn run test
       - name: Docker
         if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
         env:
