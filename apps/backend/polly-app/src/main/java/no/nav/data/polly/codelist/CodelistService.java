@@ -14,6 +14,7 @@ import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @Lazy(false)
 @Service
-public class CodelistService extends RequestValidator<CodelistRequest> {
+public class CodelistService extends RequestValidator<CodelistRequest> implements InitializingBean {
 
     private static final String FIELD_NAME_LIST = "list";
     private static final String FIELD_NAME_CODE = "code";
@@ -76,7 +76,6 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT1M")
-    @PostConstruct
     public void refreshCache() {
         log.info("Refreshing codelist cache");
         List<Codelist> allCodelists = codelistRepository.findAll();
@@ -179,4 +178,9 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         ifErrorsThrowValidationException(validationErrors);
     }
 
+    @Override
+    public void afterPropertiesSet() {
+        log.info("init codelist cache");
+        refreshCache();
+    }
 }
