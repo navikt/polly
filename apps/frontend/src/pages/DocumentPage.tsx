@@ -76,6 +76,7 @@ const DocumentPage = () => {
     })()
   }, [documentId])
 
+  console.log(currentDocument)
 
   return (
     <>

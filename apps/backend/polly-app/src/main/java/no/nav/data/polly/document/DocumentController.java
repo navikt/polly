@@ -94,7 +94,7 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DocumentResponse> createPolicy(@Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to create Document");
-        log.debug(request.getInformationTypes().toString());
+        log.debug(request.toString());
         var setup = service.save(request);
         log.debug(setup.toString());
         return new ResponseEntity<>(convertToResponseWithInfoTypes(setup), HttpStatus.CREATED);
