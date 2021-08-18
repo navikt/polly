@@ -1,5 +1,6 @@
 import React from 'react'
-import ReactMarkdown, {PluggableList} from 'react-markdown'
+import ReactMarkdown from 'react-markdown'
+import { PluggableList } from 'react-markdown/lib/react-markdown'
 import {Paragraph2} from 'baseui/typography'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
