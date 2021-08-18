@@ -94,9 +94,7 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DocumentResponse> createPolicy(@Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to create Document");
-        log.debug(request.toString());
         var setup = service.save(request);
-        log.debug(setup.toString());
         return new ResponseEntity<>(convertToResponseWithInfoTypes(setup), HttpStatus.CREATED);
     }
 
@@ -122,7 +120,6 @@ public class DocumentController {
 
     private DocumentResponse convertToResponseWithInfoTypes(Document document) {
         var response = document.convertToResponse();
-        log.debug(response.toString());
         Map<UUID, InformationTypeShortResponse> informationTypes = service.getInformationTypes(document);
         response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;
