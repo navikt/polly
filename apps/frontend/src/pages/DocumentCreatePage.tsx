@@ -17,7 +17,6 @@ const DocumentCreatePage = () => {
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
     let body = {...values}
-    console.log(body)
     try {
       const res = await createInformationTypesDocument(body)
       history.push(`/document/${res.id}`)
