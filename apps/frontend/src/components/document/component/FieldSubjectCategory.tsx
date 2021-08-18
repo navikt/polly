@@ -17,7 +17,7 @@ const FieldSubjectCategory = (props: {
       options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
       onChange={({value}) => {
         setValue(value);
-        handleChange({...documentInformationType, subjectCategories: [...value].map(category => codelist.getCode(ListName.SUBJECT_CATEGORY, category.id as string))})
+        handleChange({...documentInformationType, subjectCategories: [...value].map(category => codelist.getCode(ListName.SUBJECT_CATEGORY, category.id as string)?.code)})
       }}
       value={value}
       multi
