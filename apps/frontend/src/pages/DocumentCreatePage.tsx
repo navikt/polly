@@ -12,13 +12,27 @@ let initialCreateDocumentFormValues: DocumentFormValues = {
   informationTypes: []
 }
 
+export const convertDocumentToFormRequest = (values: DocumentFormValues) => {
+  let newValue = {...values}
+ 
+  newValue.informationTypes.forEach(it => {
+    let subCatList: any = []
+    it.subjectCategories.forEach(subCat => {
+      subCatList.push({code: subCat})
+    })
+    it.subjectCategories = subCatList
+  })
+
+  return newValue
+}
+
 const DocumentCreatePage = () => {
   const history = useHistory()
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
-    let body = {...values}
+
     try {
-      const res = await createInformationTypesDocument(body)
+      const res = await createInformationTypesDocument(convertDocumentToFormRequest(values))
       history.push(`/document/${res.id}`)
     } catch (error) {
       console.log(error, 'Error')
