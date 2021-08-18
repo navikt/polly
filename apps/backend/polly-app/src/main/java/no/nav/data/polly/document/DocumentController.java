@@ -18,21 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import javax.validation.Valid;
 
 import static java.util.Comparator.comparing;
 import static no.nav.data.common.utils.StartsWithComparator.startsWith;
@@ -103,7 +94,10 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DocumentResponse> createPolicy(@Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to create Document");
-        return new ResponseEntity<>(convertToResponseWithInfoTypes(service.save(request)), HttpStatus.CREATED);
+        log.debug(request.getInformationTypes().toString());
+        var setup = service.save(request);
+        log.debug(setup.toString());
+        return new ResponseEntity<>(convertToResponseWithInfoTypes(setup), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update Document")
@@ -128,6 +122,7 @@ public class DocumentController {
 
     private DocumentResponse convertToResponseWithInfoTypes(Document document) {
         var response = document.convertToResponse();
+        log.debug(response.toString());
         Map<UUID, InformationTypeShortResponse> informationTypes = service.getInformationTypes(document);
         response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;
