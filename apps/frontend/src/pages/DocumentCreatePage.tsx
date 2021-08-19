@@ -30,7 +30,6 @@ const DocumentCreatePage = () => {
   const history = useHistory()
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
-
     try {
       const res = await createInformationTypesDocument(convertDocumentToFormRequest(values))
       history.push(`/document/${res.id}`)
