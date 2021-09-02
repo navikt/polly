@@ -127,7 +127,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
       setProcessList(sortProcess(list).filter(p => !filter || p.status === filter))
-    } catch (err) {
+    } catch (err:any) {
       console.log(err)
     }
   }
@@ -258,7 +258,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       }))
       await createPolicies(policies)
       await getProcessById(formValues.process.id)
-    } catch (e) {
+    } catch (e:any) {
       setErrorDocumentModal(e.message)
       return false
     }

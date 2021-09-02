@@ -37,7 +37,7 @@ const CodeListPage = () => {
       await createCodelist({...values} as Code)
       await codelist.refreshCodeLists()
       setCreateCodeListModal(false)
-    } catch (error) {
+    } catch (error:any) {
       setCreateCodeListModal(true)
       setErrorOnResponse(error.message)
     }

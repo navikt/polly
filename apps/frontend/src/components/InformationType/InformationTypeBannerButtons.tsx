@@ -36,7 +36,7 @@ export const DeleteModal = (props: { id: string, showDeleteModal: boolean, close
     try {
       await deleteInformationType(props.id)
       history.replace('/informationtype')
-    } catch (e) {
+    } catch (e:any) {
       setErrorProcessModal(e.message)
     }
   }

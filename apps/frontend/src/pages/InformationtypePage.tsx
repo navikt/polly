@@ -49,7 +49,7 @@ const InformationtypePage = () => {
         setPolicies((await getPoliciesForInformationType(informationTypeId)).content)
         setDisclosures(await getDisclosuresByInformationTypeId(informationTypeId))
         setDocuments((await getDocumentsForInformationType(informationTypeId)).content)
-      } catch (err) {
+      } catch (err:any) {
         setError(err.message)
       }
 

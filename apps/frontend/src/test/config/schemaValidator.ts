@@ -5,7 +5,7 @@ expect.extend({
   toBeSchema: <R extends ObjectShape>(obj: R, schema: ObjectSchema<R>) => {
     try {
       schema.validateSync(obj)
-    } catch (error) {
+    } catch (error:any) {
       const validation = error as ValidationError
       return {
         pass: false,
@@ -20,7 +20,7 @@ expect.extend({
   toBeSchemaErrorAt: <R extends ObjectShape>(obj: R, schema: ObjectSchema<R>, path: string, message?: string) => {
     try {
       schema.validateSync(obj)
-    } catch (error) {
+    } catch (error:any) {
       const validation = error as ValidationError
       const pathError = validation.path !== path
       const messageError = message !== undefined && validation.message.indexOf(message) < 0

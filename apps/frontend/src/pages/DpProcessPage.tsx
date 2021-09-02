@@ -39,7 +39,7 @@ const DpProcessPage = () => {
       setErrorDpProcessModal('')
       history.push(`/dpprocess/${response.id}`)
       toggleModal()
-    } catch (err) {
+    } catch (err:any) {
       if (err.response.data.message.includes('already exists')) {
         setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return

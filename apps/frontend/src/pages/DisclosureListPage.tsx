@@ -66,7 +66,7 @@ export const DisclosureListPage = () => {
     try {
       setNewDisclosure(await createDisclosure(disclosure))
       setShowCreateModal(false)
-    } catch (err) {
+    } catch (err:any) {
       setShowCreateModal(true)
       setError(err.message)
     }

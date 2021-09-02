@@ -23,7 +23,7 @@ const InformationtypeCreatePage = () => {
     try {
       const infoType = await createInformationType(values)
       history.push(`/informationtype/${infoType.id}`)
-    } catch (err) {
+    } catch (err:any) {
       setErrorSubmit(err.message)
     }
   }

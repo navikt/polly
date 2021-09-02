@@ -7,7 +7,7 @@ import {Document, DocumentFormValues, DocumentInfoTypeUse,} from '../constants'
 import shortid from 'shortid'
 import {H4} from 'baseui/typography'
 import {intl} from '../util'
-import { convertDocumentToFormRequest } from './DocumentCreatePage'
+import {convertDocumentToFormRequest} from './DocumentCreatePage'
 
 const convertToDocumentFormValues = (document: Document) => {
   return {
@@ -35,7 +35,7 @@ const DocumentEditPage = () => {
     try {
       const res = await updateInformationTypesDocument(convertDocumentToFormRequest(values))
       history.push(`/document/${res.id}`)
-    } catch (err) {
+    } catch (err:any) {
       console.log(err, 'ERR')
     }
   }

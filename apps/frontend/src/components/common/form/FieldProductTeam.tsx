@@ -19,7 +19,7 @@ const FieldProductTeam = (props: {productTeams: string[], fieldName: string}) =>
       const fs = productTeams.map((id, idx) => (async () => {
         try {
           vals.push(mapTeamToOption(await getTeam(id), idx))
-        } catch (e) {
+        } catch (e:any) {
           vals.push({id, label: 'na: ' + id, idx})
         }
       })())

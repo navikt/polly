@@ -1,5 +1,5 @@
-import { SORT_DIRECTION } from "baseui/table"
-import { useEffect, useState } from "react"
+import {SORT_DIRECTION} from "baseui/table"
+import {useEffect, useState} from "react"
 
 type TableConfig<T, K extends keyof T> = {
     sorting?: ColumnCompares<T>,
@@ -75,7 +75,7 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
                         ordered = [...ordered.filter(p => !showLast(p)), ...ordered.filter(showLast)]
                     }
                     return ordered
-                } catch (e) {
+                } catch (e:any) {
                     console.error("Error during sort of ", initialData, sortFunct, e)
                 }
             }

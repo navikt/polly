@@ -29,7 +29,7 @@ export const SettingsPage = () => {
       setLoading(true)
       try {
         setSettings(await writeSettings(settings))
-      } catch (e) {
+      } catch (e:any) {
         setError(e)
       }
       setLoading(false)

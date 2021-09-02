@@ -61,7 +61,7 @@ const ProcessorView = () => {
         setIsLoading(false)
       })()
       setShowEditProcessorModal(false)
-    } catch (err) {
+    } catch (err:any) {
       setModalErrorMessage(err.response.data.message)
     }
   }
@@ -71,7 +71,7 @@ const ProcessorView = () => {
       await deleteProcessor(processor.id)
       history.push("/processor/")
       return true
-    } catch (err) {
+    } catch (err:any) {
       setModalErrorMessage(err.response.data.message)
       setShowDeleteProcessorModal(true)
       return false

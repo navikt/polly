@@ -67,7 +67,7 @@ const InformationtypeForm = ({
     (async () => {
       try {
         setTermValue(await initialValueTerm())
-      } catch (e) {
+      } catch (e:any) {
         console.error("failed to get term", e)
       }
     })()

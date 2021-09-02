@@ -36,7 +36,7 @@ const InformationtypeEditPage = () => {
     try {
       await updateInformationType(body)
       history.push(`/informationtype/${params.id}`)
-    } catch (e) {
+    } catch (e:any) {
       setErrorSubmit(e.message)
     }
   }
@@ -47,7 +47,7 @@ const InformationtypeEditPage = () => {
       try {
         const infoType = await getInformationType(params.id)
         setInformationType(infoType)
-      } catch (e) {
+      } catch (e:any) {
         handleAxiosError(e)
       }
       await codelist.wait()

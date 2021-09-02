@@ -87,7 +87,7 @@ export const RequestRevisionPage = (props: {close?: () => void, processId?: stri
     try {
       await requestRevision(request)
       setDone(true)
-    } catch (e) {
+    } catch (e:any) {
       setError(e.message)
     }
     setLoading(false)

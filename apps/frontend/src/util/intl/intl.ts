@@ -593,7 +593,7 @@ function storageAvailable() {
     localStorage.setItem(key, key);
     localStorage.removeItem(key);
     return true;
-  } catch (e) {
+  } catch (e:any) {
     return false;
   }
 }

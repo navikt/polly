@@ -40,7 +40,7 @@ export const AuditPage = () => {
         if (log.audits.length && id !== params.id) {
           history.push(`/admin/audit/${id}`)
         }
-      } catch (e) {
+      } catch (e:any) {
         setError(e)
       }
       setLoading(false)

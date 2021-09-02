@@ -26,7 +26,7 @@ const DescriptionData = (props: {termId?: string, description?: string, keywords
         try {
           const termResponse = await getTerm(props.termId)
           setTerm(mapTermToOption(termResponse).label)
-        } catch (e) {
+        } catch (e:any) {
           console.error('couldnt find term', e)
           setTermError(true)
         }

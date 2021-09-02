@@ -14,7 +14,7 @@ let initialCreateDocumentFormValues: DocumentFormValues = {
 
 export const convertDocumentToFormRequest = (values: DocumentFormValues) => {
   let newValue = {...values}
- 
+
   newValue.informationTypes.forEach(it => {
     let subCatList: any = []
     it.subjectCategories.forEach(subCat => {
@@ -33,7 +33,7 @@ const DocumentCreatePage = () => {
     try {
       const res = await createInformationTypesDocument(convertDocumentToFormRequest(values))
       history.push(`/document/${res.id}`)
-    } catch (error) {
+    } catch (error:any) {
       console.log(error, 'Error')
     }
   }

@@ -31,7 +31,7 @@ export const ProcessorListPage = () => {
         history.push(`/processor/${newDataProcessor.id}`)
       })()
       setShowCreateProcessorModal(false)
-    } catch (err) {
+    } catch (err:any) {
       setModalErrorMessage(err.response.data.message)
     }
   }
