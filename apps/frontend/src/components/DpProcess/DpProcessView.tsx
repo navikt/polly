@@ -1,26 +1,26 @@
-import React, { useEffect, useReducer, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
-import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { Block } from 'baseui/block'
-import { H4 } from 'baseui/typography'
-import { intl, theme } from '../../util'
-import { DotTags, DotTag } from '../common/DotTag'
+import React, {useEffect, useReducer, useState} from 'react'
+import {useHistory, useParams} from 'react-router-dom'
+import {DpProcess, DpProcessFormValues, Processor} from '../../constants'
+import {deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess} from '../../api/DpProcessApi'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import {Block} from 'baseui/block'
+import {H4} from 'baseui/typography'
+import {intl, theme} from '../../util'
+import {DotTag, DotTags} from '../common/DotTag'
 import DataText from '../common/DataText'
-import { codelist, ListName } from '../../service/Codelist'
-import { TeamList } from '../common/Team'
-import { RetentionView } from '../Process/Retention'
-import { ActiveIndicator } from '../common/Durations'
-import { boolToText } from '../common/Radio'
+import {codelist, ListName} from '../../service/Codelist'
+import {TeamList} from '../common/Team'
+import {RetentionView} from '../Process/Retention'
+import {ActiveIndicator} from '../common/Durations'
+import {boolToText} from '../common/Radio'
 import RouteLink from '../common/RouteLink'
 import Button from '../common/Button'
 import DpProcessModal from './DpProcessModal'
-import { DpProcessDeleteModal } from './DpProcessDeleteModal'
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { SIZE as ButtonSize } from 'baseui/button'
-import { user } from '../../service/User'
-import { getProcessorsByIds } from '../../api/ProcessorApi'
+import {DpProcessDeleteModal} from './DpProcessDeleteModal'
+import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {SIZE as ButtonSize} from 'baseui/button'
+import {user} from '../../service/User'
+import {getProcessorsByIds} from '../../api/ProcessorApi'
 
 const DpProcessView = () => {
   const history = useHistory()
@@ -44,7 +44,7 @@ const DpProcessView = () => {
       }
       setErrorDpProcessModal('')
       toggleModal()
-    } catch (err) {
+    } catch (err:any) {
       if (err.response.data.message.includes('already exists')) {
         setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return
@@ -61,7 +61,7 @@ const DpProcessView = () => {
         toggleModal()
         history.push(`/dpprocess`)
       }
-    } catch (err) {
+    } catch (err:any) {
       if (err.response.data.message.includes('already exists')) {
         setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return
