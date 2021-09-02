@@ -49,7 +49,7 @@ const CodeListTable = ({tableData, refresh}: TableCodelistProps) => {
       await updateCodelist({...values} as Code)
       refresh()
       setShowEditModal(false)
-    } catch (error) {
+    } catch (error:any) {
       setShowEditModal(true)
       setErrorOnResponse(error.response.data.message)
     }
