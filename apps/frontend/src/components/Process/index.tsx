@@ -136,7 +136,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     try {
       setIsLoadingProcess(true)
       setCurrentProcess(await getProcess(id))
-    } catch (err) {
+    } catch (err:any) {
       console.log(err)
     }
     setIsLoadingProcess(false)
@@ -157,7 +157,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
           {...d,processIds:[...d.processIds,newProcess.id?newProcess.id:'']}
         ))
       })
-    } catch (err) {
+    } catch (err:any) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
         return
@@ -178,7 +178,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setProcessList(sortProcess([...processList.filter(p => p.id !== updatedProcess.id), updatedProcess]))
       handleChangePanel(updatedProcess)
       return true
-    } catch (err) {
+    } catch (err:any) {
       console.log(err)
       return false
     }
@@ -189,7 +189,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setProcessList(sortProcess(processList.filter((p: ProcessShort) => p.id !== process.id)))
       setErrorProcessModal('')
       return true
-    } catch (err) {
+    } catch (err:any) {
       if (err.response.data.message.includes('disclosure(s)')) {
         setErrorProcessModal(intl.deleteProcessDisclosureError)
         return false
@@ -207,7 +207,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       await getProcessById(policy.process.id)
       setErrorPolicyModal(null)
       return true
-    } catch (err) {
+    } catch (err:any) {
       setErrorPolicyModal(err.message)
       return false
     }
@@ -223,7 +223,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         setErrorPolicyModal(null)
       }
       return true
-    } catch (err) {
+    } catch (err:any) {
       setErrorPolicyModal(err.message)
       return false
     }
@@ -237,7 +237,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         setErrorPolicyModal(null)
       }
       return true
-    } catch (err) {
+    } catch (err:any) {
       setErrorPolicyModal(err.message)
       return false
     }
