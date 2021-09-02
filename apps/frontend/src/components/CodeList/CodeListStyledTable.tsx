@@ -51,7 +51,7 @@ const CodeListTable = ({tableData, refresh}: TableCodelistProps) => {
       setShowEditModal(false)
     } catch (error:any) {
       setShowEditModal(true)
-      setErrorOnResponse(error.response.data.message)
+      setErrorOnResponse(error.message)
     }
   }
 
@@ -60,7 +60,7 @@ const CodeListTable = ({tableData, refresh}: TableCodelistProps) => {
       await deleteCodelist(values.list, values.code)
       refresh()
       setShowDeleteModal(false)
-    } catch (error) {
+    } catch (error:any) {
       setShowDeleteModal(true)
       setErrorOnResponse(error.message)
     }
