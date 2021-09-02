@@ -58,6 +58,7 @@ export interface IStrings {
   systems: string;
   disclosure: string;
   disclosures: string;
+  deleteProcessDisclosureError: string;
   editDisclosure: string;
   documents: string;
   thirdParty: string;

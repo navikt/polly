@@ -516,7 +516,9 @@ export const no: IStrings = {
   countriesHelpText: "I hvilke(t) land lagrer databehandleren personopplysninger i?",
   isDataProcessedOutsideEUEEAHelpTextDP: "Angi om databehandler overfører/behandler personopplysninger i land utenfor EU/EØS.",
   canNotDeleteProcessorParagraph1: "Kan ikke slette databehandleren {0} da den er",
-  canNotDeleteProcessorParagraph2: "knyttet til {0} behandling(er)"
+  canNotDeleteProcessorParagraph2: "knyttet til {0} behandling(er)",
+  deleteProcessDisclosureError: "Du kan ikke slette behandlinger med eksisterende utleveringer."
+
 };
 
 export const en: IStrings = {
@@ -1034,8 +1036,8 @@ export const en: IStrings = {
   countriesHelpText: "In which country(ies) does the data processor store personal information?",
   isDataProcessedOutsideEUEEAHelpTextDP: "Indicate whether the data processor transfers/processes personal data in countries outside the EU/EEA.",
   canNotDeleteProcessorParagraph1: "Can not delete processor {0} because it is",
-  canNotDeleteProcessorParagraph2: "used in {0} processes"
-
+  canNotDeleteProcessorParagraph2: "used in {0} processes",
+  deleteProcessDisclosureError: "You can not delete a process with disclosures."
 };
 
 export const ta = {

@@ -4,7 +4,7 @@ import {Paragraph2} from 'baseui/typography'
 import {Block} from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
-import {Process} from '../../../constants'
+import {Disclosure, Process} from '../../../constants'
 
 
 interface DeleteProcessProps {
@@ -13,10 +13,11 @@ interface DeleteProcessProps {
   process: Process
   submitDeleteProcess: (process: Process) => Promise<boolean>
   errorProcessModal: string
+  disclosures: Disclosure[]
 }
 
 export const DeleteProcessModal = (props: DeleteProcessProps) => {
-  const {process, onClose, isOpen, submitDeleteProcess, errorProcessModal} = props
+  const {process, onClose, isOpen, submitDeleteProcess, errorProcessModal,disclosures} = props
 
   return (
     <Modal
@@ -32,6 +33,9 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
         {!process.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {process.name}</Paragraph2>}
         {!!process.policies.length &&
         <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</Paragraph2>}
+
+        {!!disclosures.length &&
+        <Paragraph2>{intl.deleteProcessDisclosureError}</Paragraph2>}
       </ModalBody>
 
       <ModalFooter>
@@ -45,8 +49,11 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
             {intl.abort}
           </Button>
           <Block display='inline' marginRight={theme.sizing.scale500}/>
-          <Button onClick={() => submitDeleteProcess(process).then(onClose)}
-                  disabled={!!process.policies.length}>
+          <Button onClick={() => {
+            submitDeleteProcess(process)
+            if(!!errorProcessModal) onClose()
+          }}
+                  disabled={!!process.policies.length || !!disclosures.length}>
             {intl.delete}
           </Button>
         </Block>

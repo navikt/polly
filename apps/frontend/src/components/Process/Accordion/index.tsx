@@ -261,9 +261,13 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           error={props.errorDocumentModal}
         />
 
-        <DeleteProcessModal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal}
-                            errorProcessModal={errorProcessModal} submitDeleteProcess={submitDeleteProcess}
-                            process={currentProcess}/>
+        <DeleteProcessModal onClose={() => setShowDeleteModal(false)}
+                            isOpen={showDeleteModal}
+                            errorProcessModal={errorProcessModal}
+                            submitDeleteProcess={submitDeleteProcess}
+                            process={currentProcess}
+                            disclosures={disclosures}
+        />
 
         <ProcessCreatedModal openAddPolicy={() => setShowCreatePolicyModal(true)}
                              openAddDocument={() => {

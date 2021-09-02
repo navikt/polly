@@ -190,7 +190,11 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setErrorProcessModal('')
       return true
     } catch (err) {
-      setErrorProcessModal(err)
+      if (err.response.data.message.includes('disclosure(s)')) {
+        setErrorProcessModal(intl.deleteProcessDisclosureError)
+        return false
+      }
+      setErrorProcessModal(err.response.data.message)
       return false
     }
   }
