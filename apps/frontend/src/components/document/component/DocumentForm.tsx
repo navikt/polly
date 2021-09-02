@@ -45,7 +45,7 @@ const DocumentForm = (props: DocumentFormProps) => {
     } else {
       try {
         handleSubmit(values)
-      } catch (e) {
+      } catch (e:any) {
         setErrorMessage(e.message)
       }
     }
