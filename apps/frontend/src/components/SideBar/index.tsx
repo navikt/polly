@@ -51,7 +51,7 @@ const SideBar = () => {
         {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts}/>}
       </Block>
 
-      <Block bottom={0} marginTop={"auto"} position={'fixed'}>
+      <Block bottom={0} marginTop={"auto"} position={'fixed'} maxWidth={"240px"}>
         <Block display="flex" justifyContent="center">
           <Block paddingBottom={theme.sizing.scale600} width="40%">
             <img src={NavLogo} alt='NAV logo' width="100%"/>
