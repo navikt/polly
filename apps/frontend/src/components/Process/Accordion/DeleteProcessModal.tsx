@@ -50,8 +50,7 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
           </Button>
           <Block display='inline' marginRight={theme.sizing.scale500}/>
           <Button onClick={() => {
-            submitDeleteProcess(process)
-            if(!!errorProcessModal) onClose()
+            submitDeleteProcess(process).then(onClose)
           }}
                   disabled={!!process.policies.length || !!disclosures.length}>
             {intl.delete}
