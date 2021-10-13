@@ -1,0 +1,50 @@
+server {
+  listen       8080;
+
+  location /isAlive {
+    return 200 'OK';
+  }
+
+  location /isReady {
+    return 200 'OK';
+  }
+
+  location / {
+    root   /usr/share/nginx/html;
+    index  index.html index.htm;
+    try_files $uri $uri/ /index.html;
+  }
+
+  location /api {
+    location /api/internal {
+      return 403 'Forbidden';
+    }
+
+    rewrite /api/(.*)   /$1   break;
+    proxy_set_header    Nav-Consumer-Id behandlingskatalog;
+    proxy_redirect      off;
+
+    proxy_pass http://polly;
+  }
+
+  location /login {
+    proxy_set_header    Nav-Consumer-Id behandlingskatalog;
+    proxy_redirect      off;
+
+    proxy_pass http://polly;
+  }
+
+  location /oauth2 {
+    proxy_set_header    Nav-Consumer-Id teamsfrontend;
+    proxy_redirect      off;
+
+    proxy_pass http://polly;
+  }
+
+  location /logout {
+    proxy_set_header    Nav-Consumer-Id teamsfrontend;
+    proxy_redirect      off;
+
+    proxy_pass http://polly;
+  }
+}
