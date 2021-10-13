@@ -19,10 +19,10 @@ const RelatedProcessesTable = ({relatedProcesses}: RelatedProcessesTableProps) =
         backgroundColor={theme.colors.primary100}
         headers={
           <>
-            <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.process} column={'name'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.system}/>
+            <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]} $style={{maxWidth:'25%'}}/>
+            <HeadCell title={intl.process} column={'name'} tableState={[table, sortColumn]} $style={{maxWidth:'25%'}}/>
+            <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]} $style={{maxWidth:'25%'}}/>
+            <HeadCell title={intl.system} $style={{maxWidth:'25%'}}/>
           </>
         }>
         {table.data.map((row: Process, index: number) => {
@@ -30,27 +30,29 @@ const RelatedProcessesTable = ({relatedProcesses}: RelatedProcessesTableProps) =
             <React.Fragment key={index}>
               <Row>
                 <Block display="flex" width="100%" justifyContent="space-between">
-                  <Cell>
+                  <Cell $style={{maxWidth:'25%'}}>
                     <RouteLink href={`/process/purpose/${row.purposes[0].code}`}>
                       {row.purposes[0].shortName}
                     </RouteLink>
                   </Cell>
-                  <Cell>
+                  <Cell $style={{maxWidth:'25%'}}>
                     <RouteLink href={`/process/${row.id}`} width="25%">
                       {row.name}
                     </RouteLink>
                   </Cell>
-                  <Cell>
+                  <Cell $style={{maxWidth:'25%'}}>
                     <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>{row.affiliation.department?.shortName}</RouteLink>
                   </Cell>
-                  <Cell>
+                  <Cell $style={{maxWidth:'25%'}}>
+                    <Block>
                     {
                       row.affiliation.products.map(s => (
-                        <span style={{marginRight:"10px"}}>
+                        <Block marginRight={"10%"}>
                         <RouteLink href={`/process/system/${s.code}`}>{s.shortName}</RouteLink>
-                        </span>
+                        </Block>
                       ))
                     }
+                    </Block>
                   </Cell>
                 </Block>
               </Row>
