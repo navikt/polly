@@ -312,6 +312,20 @@ export interface ProcessShort {
   affiliation: Affiliation;
   status?: ProcessStatus;
   commonExternalProcessResponsible?: Code;
+  changeStamp: ChangeStamp;
+}
+
+export interface ProcessShortWithEmail {
+  id: string;
+  name: string;
+  number: number;
+  description?: string;
+  purposes: Code[];
+  affiliation: Affiliation;
+  status?: ProcessStatus;
+  commonExternalProcessResponsible?: Code;
+  changeStamp: ChangeStamp;
+  lastModifiedEmail?: string;
 }
 
 export interface DpProcessShort {
