@@ -59,7 +59,7 @@ export const LegalPage = () => {
 const ProcessTable = (props: {processes: Process[]}) => (
   <Block display={'flex'} flexDirection={'column'}>
     <HeadingMedium>{intl.processes} ({props.processes.length})</HeadingMedium>
-    <SimpleProcessTable processes={props.processes}/>
+    <SimpleProcessTable title={intl.processes + ' (' + props.processes.length + ')'} processes={props.processes}/>
   </Block>
 )
 
