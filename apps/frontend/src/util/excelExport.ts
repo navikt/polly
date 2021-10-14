@@ -1,4 +1,5 @@
 import XLSX from 'xlsx'
+import { intl } from '.'
 import { processStatusText } from '../components/Process/Accordion/ProcessData'
 import { ProcessShortWithEmail } from '../constants'
 
@@ -8,14 +9,16 @@ export const handleExcelExport = (processes: ProcessShortWithEmail[], fileName: 
   const workSheetData: any[] = []
 
   processes.forEach((p) => {
-    workSheetData.push({
-      name: p.purposes[0].shortName + ': ' + p.name,
-      affiliation: p.affiliation.department?.shortName,
-      status: processStatusText(p.status),
-      department: p.commonExternalProcessResponsible?.shortName,
-      lastModifieBy: p.changeStamp.lastModifiedBy,
-      email: p.lastModifiedEmail
-    })
+    const newProcessObject: any= {}
+    
+    newProcessObject[`${intl.process}`] = p.purposes[0].shortName + ': ' + p.name
+    newProcessObject[`${intl.department}`] = p.affiliation.department?.shortName
+    newProcessObject[`${intl.status}`] = processStatusText(p.status)
+    newProcessObject[`${intl.commonExternalProcessResponsible}`] = p.commonExternalProcessResponsible?.shortName
+    newProcessObject[`${intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)}`] = p.changeStamp.lastModifiedBy
+    newProcessObject[`${intl.email}`] = p.lastModifiedEmail
+    
+    workSheetData.push(newProcessObject)
   })
 
   workSheetData.sort((a, b) => a.name > b.name ? 1 : -1)
