@@ -18,7 +18,7 @@ const cellStyle: StyleObject = {
   wordBreak: 'break-word'
 }
 
-export const SimpleProcessTable = (props: { processes: ProcessShort[], showCommonExternalProcessResponsible?: boolean }) => {
+export const SimpleProcessTable = (props: { processes: ProcessShort[],title: string, showCommonExternalProcessResponsible?: boolean }) => {
   const { processes } = props
   const [processesWithEmail, setProcessesWithEmail] = useState<ProcessShortWithEmail[]>(processes)
 
@@ -67,7 +67,7 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[], showCommo
           icon={faFileExcel}
           tooltip={intl.export}
           marginRight
-          onClick={() => handleExcelExport(processesWithEmail)}
+          onClick={() => handleExcelExport(processesWithEmail, props.title)}
         >
           {intl.export}
         </Button>

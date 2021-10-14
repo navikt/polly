@@ -77,7 +77,7 @@ const PurposeTable = () => {
     <>
       <HeadingLarge>{title}</HeadingLarge>
       {loading && <Spinner size='80px'/>}
-      {!loading && <SimpleProcessTable processes={filtered} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR}/>}
+      {!loading && <SimpleProcessTable processes={filtered} title={title} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR}/>}
     </>
   )
 }
