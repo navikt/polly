@@ -294,7 +294,8 @@ export const dpProcessSort: ColumnCompares<DpProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
   externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
   affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
-  description: (a, b) => (a.description || '').localeCompare(b.description || '')
+  description: (a, b) => (a.description || '').localeCompare(b.description || ''),
+  changeStamp: (a, b) => (a.changeStamp.lastModifiedBy || '').localeCompare(b.changeStamp.lastModifiedBy || ''),
 }
 
 export interface InformationTypeShort {
@@ -369,6 +370,22 @@ export interface DpProcess extends IDurationed {
   art9?: boolean;
   art10?: boolean;
   retention: DpRetention
+}
+
+export interface DpProcessWithEmail extends IDurationed {
+  id: string;
+  name: string;
+  description?: string;
+  purposeDescription?: string;
+  affiliation: Affiliation;
+  externalProcessResponsible?: Code;
+  dataProcessingAgreements: string[];
+  subDataProcessing: DataProcessing;
+  changeStamp: ChangeStamp;
+  art9?: boolean;
+  art10?: boolean;
+  retention: DpRetention
+  lastModifiedEmail?: string;
 }
 
 export interface DpProcessFormValues {
