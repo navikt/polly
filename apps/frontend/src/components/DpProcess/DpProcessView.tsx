@@ -1,26 +1,28 @@
-import React, {useEffect, useReducer, useState} from 'react'
-import {useHistory, useParams} from 'react-router-dom'
-import {DpProcess, DpProcessFormValues, Processor} from '../../constants'
-import {deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess} from '../../api/DpProcessApi'
-import {StyledSpinnerNext} from 'baseui/spinner'
-import {Block} from 'baseui/block'
-import {H4} from 'baseui/typography'
-import {intl, theme} from '../../util'
-import {DotTag, DotTags} from '../common/DotTag'
+import React, { useEffect, useReducer, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
+import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { Block } from 'baseui/block'
+import { H4 } from 'baseui/typography'
+import { intl, theme } from '../../util'
+import { DotTag, DotTags } from '../common/DotTag'
 import DataText from '../common/DataText'
-import {codelist, ListName} from '../../service/Codelist'
-import {TeamList} from '../common/Team'
-import {RetentionView} from '../Process/Retention'
-import {ActiveIndicator} from '../common/Durations'
-import {boolToText} from '../common/Radio'
+import { codelist, ListName } from '../../service/Codelist'
+import { TeamList } from '../common/Team'
+import { RetentionView } from '../Process/Retention'
+import { ActiveIndicator } from '../common/Durations'
+import { boolToText } from '../common/Radio'
 import RouteLink from '../common/RouteLink'
 import Button from '../common/Button'
 import DpProcessModal from './DpProcessModal'
-import {DpProcessDeleteModal} from './DpProcessDeleteModal'
-import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
-import {SIZE as ButtonSize} from 'baseui/button'
-import {user} from '../../service/User'
-import {getProcessorsByIds} from '../../api/ProcessorApi'
+import { DpProcessDeleteModal } from './DpProcessDeleteModal'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { user } from '../../service/User'
+import { getProcessorsByIds } from '../../api/ProcessorApi'
+import { lastModifiedDate } from '../../util/date-formatter'
+import { getResourceById } from '../../api'
 
 const DpProcessView = () => {
   const history = useHistory()
@@ -32,6 +34,7 @@ const DpProcessView = () => {
   const [processors, setProcessors] = useState<Processor[]>([])
 
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
+  const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')
 
   const isDataProcessingAgreementsAvailable = !!dpProcess?.dataProcessingAgreements.length
 
@@ -44,7 +47,7 @@ const DpProcessView = () => {
       }
       setErrorDpProcessModal('')
       toggleModal()
-    } catch (err:any) {
+    } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
         setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return
@@ -61,7 +64,7 @@ const DpProcessView = () => {
         toggleModal()
         history.push(`/dpprocess`)
       }
-    } catch (err:any) {
+    } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
         setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return
@@ -86,6 +89,13 @@ const DpProcessView = () => {
       if (dpProcess?.subDataProcessing.processors.length) {
         const res = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
         setProcessors([...res])
+      }
+
+      if (dpProcess) {
+        const userIdent = dpProcess.changeStamp.lastModifiedBy.split(' ')[0]
+        await getResourceById(userIdent)
+          .then((res) => setLastModifiedUserEmail(res.email))
+          .catch((e) => console.log('Unable to get email for user that last modified'))
       }
     })()
   }, [dpProcess])
@@ -203,6 +213,23 @@ const DpProcessView = () => {
                 </Block>}
             </>
           </DataText>
+          {dpProcess &&
+            <Block
+              $style={
+                {
+                  fontFamily: 'system-ui, Helvetica Neue, Helvetica, Arial, sans-serif',
+                  fontSize: '14px',
+                  color: '#3e3832'
+                }
+              }>
+              <Block display='flex' justifyContent='flex-end'>
+                <span><i>{intl.formatString(intl.lastModified, dpProcess.changeStamp.lastModifiedBy, lastModifiedDate(dpProcess.changeStamp.lastModifiedDate))}</i></span>
+              </Block>
+              <Block display='flex' justifyContent='flex-end'>
+                <span><i>{intl.email}: <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a></i></span>
+              </Block>
+            </Block>
+          }
           <DpProcessModal
             isOpen={showModal}
             onClose={toggleModal}
