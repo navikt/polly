@@ -80,8 +80,7 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[],title: str
             <HeadCell title={intl.commonExternalProcessResponsible} column='commonExternalProcessResponsible' tableState={[table, sortColumn]} $style={cellStyle} />
           )}
           <HeadCell title={intl.status} column='status' tableState={[table, sortColumn]} $style={cellStyle} />
-          <HeadCell title={intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} column='changeStamp' tableState={[table, sortColumn]} $style={cellStyle} />
-          <HeadCell title={intl.email} column='lastModifiedEmail' tableState={[table, sortColumn]} $style={cellStyle} />
+          <HeadCell title={intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} column='lastModifiedEmail' tableState={[table, sortColumn]} $style={cellStyle} />
         </>
       }>
         {table.data.map(process =>
@@ -99,7 +98,6 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[],title: str
                 <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible?.code}`}>{process.commonExternalProcessResponsible?.shortName}</RouteLink>}</Cell>
             )}
             <Cell $style={cellStyle}>{processStatusText(process.status)}</Cell>
-            <Cell $style={cellStyle}>{process.changeStamp.lastModifiedBy}</Cell>
             <Cell $style={cellStyle}><StyledLink href={'mailto: ' + process.lastModifiedEmail}>{process.lastModifiedEmail}</StyledLink></Cell>
           </Row>)}
       </Table>

@@ -49,8 +49,7 @@ const DpProcessTable = (props: DpProcessTableProps) => {
           <>
             <HeadCell title={intl.process} column="name" tableState={[table, sortColumn]} />
             <HeadCell title={intl.externalProcessResponsible} column="externalProcessResponsible" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.formatString(intl.lastModified, "", "").toString().slice(0, -2)} column="changeStamp" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.email} column="lastModifiedEmail" tableState={[table, sortColumn]} />
+            <HeadCell title={intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} column="lastModifiedEmail" tableState={[table, sortColumn]} />
           </>
         }
       >
@@ -66,7 +65,6 @@ const DpProcessTable = (props: DpProcessTableProps) => {
                 {process.externalProcessResponsible?.shortName}
               </RouteLink>
             </Cell>
-            <Cell>{process.changeStamp.lastModifiedBy}</Cell>
             <Cell><StyledLink href={'mailto: ' + process.lastModifiedEmail}>{process.lastModifiedEmail}</StyledLink></Cell>
           </Row>
         ))}

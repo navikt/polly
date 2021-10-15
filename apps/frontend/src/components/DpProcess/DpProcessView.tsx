@@ -223,10 +223,7 @@ const DpProcessView = () => {
                 }
               }>
               <Block display='flex' justifyContent='flex-end'>
-                <span><i>{intl.formatString(intl.lastModified, dpProcess.changeStamp.lastModifiedBy, lastModifiedDate(dpProcess.changeStamp.lastModifiedDate))}</i></span>
-              </Block>
-              <Block display='flex' justifyContent='flex-end'>
-                <span><i>{intl.email}: <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a></i></span>
+                <span><i>{intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>, {lastModifiedDate(dpProcess.changeStamp.lastModifiedDate)}</i></span>
               </Block>
             </Block>
           }

@@ -177,10 +177,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
                         <Block>
                           <Block display='flex' justifyContent='flex-end'>
-                            <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
-                          </Block>
-                          <Block display='flex' justifyContent='flex-end'>
-                            <span><i>{intl.email}: <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a></i></span>
+                            <span><i>{intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>, {lastModifiedDate(currentProcess.changeStamp.lastModifiedDate)}</i></span>
                           </Block>
                         </Block>
                         <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='space-between'>
