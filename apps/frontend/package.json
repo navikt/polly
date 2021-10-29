@@ -10,7 +10,7 @@
     "axios": "^0.21.1",
     "baseui": "^10.0.0",
     "core-js": "^3.7.0",
-    "flag-icon-css": "^3.5.0",
+    "flag-icon-css": "^4.1.4",
     "formik": "^2.2.4",
     "lodash": "^4.17.19",
     "moment": "2.29.1",
