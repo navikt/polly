@@ -6,8 +6,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.term.TermService;
-import no.nav.data.polly.term.catalog.EsCatalog.EsCatalogTerm;
-import no.nav.data.polly.term.catalog.EsCatalog.Hits;
 import no.nav.data.polly.term.domain.PollyTerm;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -16,9 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,9 +64,9 @@ public class TermCatalogClient implements TermService {
     }
 
     private CatalogTerm getFromCatalog(String termId) {
-        ResponseEntity<Hits> response;
+        ResponseEntity<CatalogTerm[]> response;
         try {
-            response = restTemplate.getForEntity(properties.getGetUrl(), Hits.class, termId);
+            response = restTemplate.getForEntity(properties.getGetUrl(), CatalogTerm[].class, termId);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 log.debug("term {} not found", termId);
@@ -81,9 +79,7 @@ public class TermCatalogClient implements TermService {
             return null;
         }
         verifyResponse(response);
-        List<CatalogTerm> results = new ArrayList<>();
-        results.add(requireNonNull(requireNonNull(response.getBody()).get_source()));
-        CatalogTerm[] body = results.toArray(CatalogTerm[]::new);
+        CatalogTerm[] body = requireNonNull(response.getBody());
         if (body.length == 0 ) {
             log.debug("term {} not found", termId);
             return null;
@@ -96,12 +92,16 @@ public class TermCatalogClient implements TermService {
     @SneakyThrows
     private List<CatalogTerm> searchCatalog(String searchString) {
 
-        ResponseEntity<EsCatalogTerm> response = restTemplate.getForEntity(properties.getSearchUrl(), EsCatalogTerm.class, searchString);
+        var uri = UriComponentsBuilder.fromUriString(properties.getSearchUrl())
+                .queryParam("term_name", searchString)
+                .build().toUri();
+        ResponseEntity<CatalogTerm[]> response = restTemplate.getForEntity(uri, CatalogTerm[].class);
+
         if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
             return List.of();
         }
         verifyResponse(response);
-        return asList(requireNonNull(requireNonNull(response.getBody()).getResults()));
+        return asList(requireNonNull(response.getBody()));
     }
 
     private void verifyResponse(ResponseEntity<?> responseEntity) {
