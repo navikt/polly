@@ -40,14 +40,7 @@ import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
-import no.nav.data.polly.process.dto.sub.AffiliationRequest;
-import no.nav.data.polly.process.dto.sub.AffiliationResponse;
-import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
-import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
-import no.nav.data.polly.process.dto.sub.DpiaRequest;
-import no.nav.data.polly.process.dto.sub.DpiaResponse;
-import no.nav.data.polly.process.dto.sub.RetentionRequest;
-import no.nav.data.polly.process.dto.sub.RetentionResponse;
+import no.nav.data.polly.process.dto.sub.*;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
@@ -448,8 +441,8 @@ public abstract class IntegrationTestBase {
     }
 
     private void mockTerms() {
-        CatalogTerm termOne = CatalogTerm.builder().id("term").term("new term").description("description").build();
-        CatalogTerm termTwo = CatalogTerm.builder().id("term2").term("term old").description("description").build();
+        CatalogTerm termOne = CatalogTerm.builder().id("term").title("new term").description("description").build();
+        CatalogTerm termTwo = CatalogTerm.builder().id("term2").title("term old").description("description").build();
         WireMock.stubFor(get("/termcatalog/term/search?term_name=term")
                 .willReturn(okJson(JsonUtils.toJson(List.of(termOne, termTwo)))));
 
