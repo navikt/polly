@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.term.TermService;
+import no.nav.data.polly.term.catalog.EsCatalog.EsCatalogTerm;
 import no.nav.data.polly.term.domain.PollyTerm;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -64,9 +65,9 @@ public class TermCatalogClient implements TermService {
     }
 
     private CatalogTerm getFromCatalog(String termId) {
-        ResponseEntity<CatalogTerm[]> response;
+        ResponseEntity<EsCatalogTerm> response;
         try {
-            response = restTemplate.getForEntity(properties.getGetUrl(), CatalogTerm[].class, termId);
+            response = restTemplate.getForEntity(properties.getGetUrl(), EsCatalogTerm.class, termId);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 log.debug("term {} not found", termId);
@@ -79,7 +80,7 @@ public class TermCatalogClient implements TermService {
             return null;
         }
         verifyResponse(response);
-        CatalogTerm[] body = requireNonNull(response.getBody());
+        CatalogTerm[] body = requireNonNull(response.getBody().getResults());
         if (body.length == 0) {
             log.debug("term {} not found", termId);
             return null;

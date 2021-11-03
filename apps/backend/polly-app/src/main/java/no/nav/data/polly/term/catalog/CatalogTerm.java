@@ -13,13 +13,13 @@ import no.nav.data.polly.term.domain.PollyTerm;
 public class CatalogTerm {
 
     private String id;
-    private String term;
+    private String title;
     private String description;
 
     public PollyTerm convertToPollyTerm() {
         return PollyTerm.builder()
                 .id(id)
-                .name(term)
+                .name(title)
                 .description(description)
                 .build();
     }
