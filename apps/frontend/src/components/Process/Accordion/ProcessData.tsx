@@ -86,7 +86,7 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
   return (
     <Block>
 
-      <DataText label={intl.processNumber} text={'' + process.number}/>
+      <DataText label={intl.processNumber} text={'B' + process.number}/>
 
       <DataText label={intl.purposeOfTheProcess} text={process.description}/>
 
