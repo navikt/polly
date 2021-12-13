@@ -336,13 +336,7 @@ const InformationtypeForm = ({
                       </Block>
 
                       <Select
-                        options={codelist.getParsedOptions(ListName.SENSITIVITY).sort((a, b) => {
-                          if (a.label.includes('Ikke') || b.label.includes('Ikke')) {
-                            return -1
-                          } else {
-                            return 0
-                          }
-                        })}
+                        options={codelist.getParsedOptions(ListName.SENSITIVITY).filter((s) => !s.label.includes('Ikke'))}
                         value={sensitivityValue as Value}
                         placeholder={formikBag.values.sensitivity ? "" : intl.sensitivitySelect}
                         onChange={(params) => {
