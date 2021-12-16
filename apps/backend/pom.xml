@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <java.version>16</java.version>
+        <java.version>17</java.version>
         <start-class>no.nav.data.AppStarter</start-class>
 
         <springdoc-openapi-ui.version>1.6.1</springdoc-openapi-ui.version>
