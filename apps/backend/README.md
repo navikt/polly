@@ -28,6 +28,7 @@ Swagger-dokumentasjon av tjenestene er tilgjenglig på http://localhost:8080/swa
 
 
 ### low pri
+
 * Caffeine cache
 * Springdoc-openapi (swagger+)
 * Prometheis metrics
