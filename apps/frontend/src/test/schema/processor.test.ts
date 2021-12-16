@@ -3,9 +3,10 @@ import {ProcessorFormValues} from '../../constants'
 import '../config/schemaValidator'
 
 const schema = dataProcessorSchema()
-const createProcessor: () => ProcessorFormValues = () => ({
+const createProcessor = (): ProcessorFormValues => ({
   name: 'name',
-  countries: []
+  countries: [],
+  operationalContractManagers: []
 })
 
 test('processor ok', () => {
