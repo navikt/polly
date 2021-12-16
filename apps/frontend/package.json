@@ -70,7 +70,7 @@
     "@types/amplitude-js": "^8.0.0",
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.165",
-    "@types/node": "^16.6.1",
+    "@types/node": "^17.0.0",
     "@types/randomcolor": "^0.5.5",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
