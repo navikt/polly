@@ -1,5 +1,5 @@
 import {processSchema} from '../../components/common/schema'
-import {ProcessFormValues, ProcessStatus} from '../../constants'
+import {LegalBasisFormValues, ProcessFormValues, ProcessStatus} from '../../constants'
 import {ListName, NATIONAL_LAW_GDPR_ARTICLES} from '../../service/Codelist'
 import {addCode} from '../config/codelist'
 import '../config/schemaValidator'
@@ -7,7 +7,7 @@ import '../config/schemaValidator'
 addCode(ListName.PURPOSE, 'PURPOSE')
 
 const schema = processSchema()
-export const createProcess: () => ProcessFormValues = () => ({
+export const createProcess = (): ProcessFormValues => ({
   name: 'name',
   purposes: ['PURPOSE'],
   affiliation: {
@@ -15,7 +15,7 @@ export const createProcess: () => ProcessFormValues = () => ({
     products: [],
     subDepartments: []
   },
-  legalBases: [],
+  legalBases: new Array<LegalBasisFormValues>(),
   legalBasesOpen: false,
   dataProcessing: {
     dataProcessor: true,
@@ -43,9 +43,9 @@ test('Process purposes required', () => {
 })
 
 test('Process legalBasis', () => {
-  let process = {...createProcess(), legalBases: [{gdpr: NATIONAL_LAW_GDPR_ARTICLES[0]}]}
+  let process = {...createProcess(), legalBases: [{gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: '', nationalLaw: ''}]}
   expect(process).toBeSchemaErrorAt(schema, 'legalBases[0].description')
-  process = {...createProcess(), legalBases: [{gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: 'desc'}]}
+  process = {...createProcess(), legalBases: [{gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: 'desc', nationalLaw: ''}]}
   expect(process).toBeSchemaErrorAt(schema, 'legalBases[0].nationalLaw')
   process = {...createProcess(), legalBases: [{gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: 'desc', nationalLaw: 'LAW_1'}]}
   expect(process).toBeSchema(schema)
