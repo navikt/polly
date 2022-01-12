@@ -31,7 +31,7 @@
         <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
         <docx4j.version>11.2.9</docx4j.version>
 
-        <microsoft-graph.version>5.9.0</microsoft-graph.version>
+        <microsoft-graph.version>5.10.0</microsoft-graph.version>
         <msal4j.version>1.11.0</msal4j.version>
 
         <!-- transitive versions -->
