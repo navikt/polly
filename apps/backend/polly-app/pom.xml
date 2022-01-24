@@ -31,6 +31,14 @@
                     <groupId>io.github.classgraph</groupId>
                     <artifactId>classgraph</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging-processor</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
