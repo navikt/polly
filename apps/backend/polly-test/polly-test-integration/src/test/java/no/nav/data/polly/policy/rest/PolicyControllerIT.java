@@ -117,8 +117,9 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody(), notNullValue());
 
-        ResponseEntity<PolicyResponse> getEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + createEntity.getBody().getContent().get(0).getId(), HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
+        ResponseEntity<PolicyResponse> getEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + createEntity.getBody().getContent().get(0).getId(),
+                PolicyResponse.class);
         assertThat(getEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(getEntity.getBody(), notNullValue());
         assertPolicy(getEntity.getBody(), PROCESS_NAME_1, INFORMATION_TYPE_NAME);
@@ -127,8 +128,8 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void getNotExistingPolicy() {
-        ResponseEntity<PolicyResponse> createEntity = restTemplate
-                .exchange(POLICY_REST_ENDPOINT + "1-1-1-1-1", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
+        ResponseEntity<PolicyResponse> createEntity = restTemplate.getForEntity(POLICY_REST_ENDPOINT + "1-1-1-1-1",
+                PolicyResponse.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
@@ -258,8 +259,9 @@ class PolicyControllerIT extends IntegrationTestBase {
     void get20FirstPolicies() {
         createAndSavePolicy(100);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT, HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyPage.class);
+        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT,
+                PolicyPage.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), notNullValue());
         assertThat(responseEntity.getBody().getNumberOfElements(), is(20L));
@@ -272,8 +274,8 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getManyPolicies() {
         createAndSavePolicy(25);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "?pageNumber=0&pageSize=25", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
+        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + "?pageNumber=0&pageSize=25",
                 PolicyPage.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), notNullValue());
@@ -287,8 +289,9 @@ class PolicyControllerIT extends IntegrationTestBase {
     void countPolicies() {
         createAndSavePolicy(100);
 
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "count", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), Long.class);
+        ResponseEntity<Long> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + "count",
+                Long.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), is(100L));
     }
@@ -297,8 +300,8 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getPoliciesPageBeyondMax() {
         createAndSavePolicy(100);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "?pageNumber=1&pageSize=100", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
+        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + "?pageNumber=1&pageSize=100",
                 PolicyPage.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), notNullValue());
@@ -310,9 +313,11 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getPolicyForProcess() {
         List<Policy> policies = createAndSavePolicy(5);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "?processId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
-                PolicyPage.class, policies.get(0).getProcess().getId());
+        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + "?processId={id}",
+                PolicyPage.class,
+                policies.get(0).getProcess().getId());
+
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), notNullValue());
         assertThat(responseEntity.getBody().getTotalElements(), is(5L));
@@ -323,8 +328,8 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getPolicyForInformationType1() {
         createAndSavePolicy(5);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
+        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + "?informationTypeId={id}",
                 PolicyPage.class, INFORMATION_TYPE_ID_1);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), notNullValue());
@@ -336,8 +341,10 @@ class PolicyControllerIT extends IntegrationTestBase {
     void countPolicyForInformationType1() {
         createAndSavePolicy(5);
 
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "count?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), Long.class, INFORMATION_TYPE_ID_1);
+        ResponseEntity<Long> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + "count?informationTypeId={id}",
+                Long.class,
+                INFORMATION_TYPE_ID_1);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), is(5L));
     }
@@ -346,8 +353,8 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getPoliciesForInformationType() {
         createAndSavePolicy(5);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
+        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
+                POLICY_REST_ENDPOINT + "?informationTypeId={id}",
                 PolicyPage.class, INFORMATION_TYPE_ID_1);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), notNullValue());
