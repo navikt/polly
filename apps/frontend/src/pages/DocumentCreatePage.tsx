@@ -2,7 +2,7 @@ import React from 'react'
 import DocumentForm from '../components/document/component/DocumentForm'
 import {DocumentFormValues} from '../constants'
 import {createInformationTypesDocument} from '../api'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {H4} from 'baseui/typography'
 import {intl} from '../util'
 
@@ -27,12 +27,12 @@ export const convertDocumentToFormRequest = (values: DocumentFormValues) => {
 }
 
 const DocumentCreatePage = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
     try {
       const res = await createInformationTypesDocument(convertDocumentToFormRequest(values))
-      history.push(`/document/${res.id}`)
+      navigate(`/document/${res.id}`)
     } catch (error:any) {
       console.log(error, 'Error')
     }
