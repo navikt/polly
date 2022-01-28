@@ -27,14 +27,13 @@ import {
 } from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {Code, codelist, ListName} from '../../service/Codelist'
-import {useLocation} from 'react-router'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useLocation} from 'react-router-dom'
 
 type ProcessListProps = {
   section: Section
