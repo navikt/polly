@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 import {StatefulSelect} from 'baseui/select'
 import {Block} from 'baseui/block'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {useHistory, useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 
 import {Code, codelist} from '../../service/Codelist'
 import CreateCodeListModal from '../../components/CodeList/ModalCreateCodeList'
@@ -19,7 +19,7 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
 const CodeListPage = () => {
   const params = useParams<{listname?: string}>()
-  const history = useHistory()
+  const havigate = useNavigate()
   const [loading, setLoading] = React.useState(true)
   const [listname, setListname] = React.useState(params.listname)
   const [createCodeListModal, setCreateCodeListModal] = React.useState(false)
@@ -55,7 +55,7 @@ const CodeListPage = () => {
 
   useEffect(() => {
     if (listname && listname !== params.listname) {
-      history.replace(`/admin/codelist/${listname}`)
+      havigate(`/admin/codelist/${listname}`, {replace: true})
     }
   }, [listname, lists])
 
