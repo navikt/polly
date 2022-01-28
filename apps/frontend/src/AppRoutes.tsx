@@ -118,8 +118,6 @@ const NotFound = () => (
 
 const processUrl = async (id: string) => {
   const process = await getProcess(id)
-
-  console.log(process)
   // todo multipurpose url
   return `/process/purpose/${process.purposes[0].code}/${process.id}`
 }
