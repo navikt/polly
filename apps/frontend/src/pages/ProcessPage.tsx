@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 
 import ProcessList from '../components/Process'
 import {ListName} from '../service/Codelist'
-import {generatePath, useHistory, useParams} from 'react-router-dom'
+import {generatePath, useParams} from 'react-router-dom'
 import {DepartmentDashCount, Process, ProcessStatus, ProcessStatusFilter} from '../constants'
 import {useQueryParam} from '../util/hooks'
 import {processPath} from '../routes'
@@ -14,6 +14,7 @@ import {intl, theme} from '../util'
 import {Block} from "baseui/block/index"
 import {getDashboard} from '../api'
 import Charts from '../components/Charts/Charts'
+import { useLocation } from 'react-router-dom'
 
 export enum Section {
   purpose = 'purpose',
@@ -47,16 +48,16 @@ const ProcessPage = () => {
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
   const {section, code, processId} = params
-  const history = useHistory()
+  const location = useLocation()
 
   const moveScroll = () => {
-    window.scrollTo(0, localStorage.getItem("Yposition" + history.location.pathname) != null ? Number(localStorage.getItem("Yposition" + history.location.pathname)) + 200 : 0)
-    localStorage.removeItem("Yposition" + history.location.pathname)
+    window.scrollTo(0, localStorage.getItem("Yposition" + location.pathname) != null ? Number(localStorage.getItem("Yposition" + history.location.pathname)) + 200 : 0)
+    localStorage.removeItem("Yposition" + location.pathname)
   }
 
   const saveScroll = () => {
     if (window.pageYOffset !== 0) {
-      localStorage.setItem("Yposition" + history.location.pathname, window.pageYOffset.toString())
+      localStorage.setItem("Yposition" + location.pathname, window.pageYOffset.toString())
     }
   }
 
@@ -77,8 +78,8 @@ const ProcessPage = () => {
   return (
     <>
       <Block overrides={{Block: {props: {role: 'main'}}}}>
-        <PageHeader section={section} code={code}/>
-        <ProcessList
+        {section && code && <PageHeader section={section} code={code}/>}
+        {section && code && <ProcessList
           code={code}
           listName={listNameForSection(section)}
           processId={processId}
@@ -86,7 +87,7 @@ const ProcessPage = () => {
           section={section}
           moveScroll={moveScroll}
           isEditable={true}
-        />
+        />}
         {!isLoading && section === Section.department && (
           <Block marginBottom={theme.sizing.scale1200}>
             <HeadingSmall>{intl.overview}</HeadingSmall>
