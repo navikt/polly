@@ -5,7 +5,7 @@ import {InformationType, InformationtypeFormValues} from '../constants'
 import {codelist} from '../service/Codelist'
 import {intl} from '../util'
 import {getInformationType, mapInfoTypeToFormVals, updateInformationType} from '../api'
-import {useHistory, useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {H4} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 
@@ -15,7 +15,7 @@ const InformationtypeEditPage = () => {
   const [errorSubmit, setErrorSubmit] = React.useState(null)
   const [informationtype, setInformationType] = React.useState<InformationType>()
   const params = useParams<{id: string}>()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const handleAxiosError = (error: any) => {
     if (error.response) {
@@ -35,7 +35,7 @@ const InformationtypeEditPage = () => {
 
     try {
       await updateInformationType(body)
-      history.push(`/informationtype/${params.id}`)
+      navigate(`/informationtype/${params.id}`)
     } catch (e:any) {
       setErrorSubmit(e.message)
     }
@@ -45,8 +45,10 @@ const InformationtypeEditPage = () => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const infoType = await getInformationType(params.id)
-        setInformationType(infoType)
+        if(params.id) {
+          const infoType = await getInformationType(params.id)
+          setInformationType(infoType)
+        }
       } catch (e:any) {
         handleAxiosError(e)
       }

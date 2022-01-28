@@ -9,12 +9,14 @@ import {InfoTypeTable} from '../components/InformationType/InfoTypeTableSimple'
 import {intl} from '../util'
 
 export const SystemPage = () => {
-  const {systemCode} = useParams<{systemCode: string}>()
+  const {systemCode} = useParams<{ systemCode: string }>()
 
   return (
     <>
-      <PageHeader section={Section.system} code={systemCode}/>
-      <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM} isEditable={false}/>
+      {systemCode && <>
+        <PageHeader section={Section.system} code={systemCode}/>
+        <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM} isEditable={false}/>
+      </>}
 
       <InfoTypeTable title={intl.orgMasterInfTypeHeader}
                      getInfoTypes={async () => (await getInformationTypesBy({orgMaster: systemCode})).content}/>

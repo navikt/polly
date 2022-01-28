@@ -8,7 +8,7 @@ import {SimpleProcessTable} from '../Process/SimpleProcessTable'
 import {useQueryParam} from '../../util/hooks'
 import {Spinner} from '../common/Spinner'
 
-interface PathProps {
+type PathProps =  {
   filterName: ProcessField,
   filterValue: ProcessState,
   filterStatus: ProcessStatusFilter,
@@ -26,22 +26,24 @@ const PurposeTable = () => {
     (async () => {
       setLoading(true)
       changeTitle()
-      if (department) {
-        let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
-        setFiltered(res)
-      } else if (productareaId) {
-        let res = await getProcessByStateAndStatusForProductArea(filterName, filterValue, filterStatus, productareaId)
-        setFiltered(res)
-      } else {
-        let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
-        setFiltered(res)
+      if(filterName && filterValue){
+        if (department) {
+          let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
+          setFiltered(res)
+        } else if (productareaId) {
+          let res = await getProcessByStateAndStatusForProductArea(filterName, filterValue, filterStatus, productareaId)
+          setFiltered(res)
+        } else {
+          let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
+          setFiltered(res)
+        }
       }
       setLoading(false)
     })()
   }, [filterName, filterValue, filterStatus, department])
 
   const changeTitle = () => {
-    if (filterName === ProcessField.DPIA) {
+    if (filterName === ProcessField.DPIA && filterValue) {
       setTitle(`${intl.dpiaNeeded}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.MISSING_LEGAL_BASIS) {
       setTitle(intl.processesWithUnknownLegalBasis)
@@ -60,11 +62,11 @@ const PurposeTable = () => {
         case ProcessState.UNKNOWN:
           return setTitle(intl.retentionPlanUnclarified)
       }
-    } else if (filterName === ProcessField.PROFILING) {
+    } else if (filterName === ProcessField.PROFILING && filterValue) {
       setTitle(`${intl.profiling}: ${intl.getString(filterValue.toLowerCase() || '')} `)
-    } else if (filterName === ProcessField.AUTOMATION) {
+    } else if (filterName === ProcessField.AUTOMATION && filterValue) {
       setTitle(`${intl.automaticProcessing}: ${intl.getString(filterValue.toLowerCase() || '')} `)
-    } else if (filterName === ProcessField.DATA_PROCESSOR) {
+    } else if (filterName === ProcessField.DATA_PROCESSOR && filterValue) {
       setTitle(`${intl.processor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle(intl.navResponsible)

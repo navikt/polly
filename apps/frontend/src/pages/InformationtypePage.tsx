@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 import {Block} from 'baseui/block'
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {useHistory, useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {H4} from 'baseui/typography'
 
 import {InformationtypeMetadata} from '../components/InformationType/InformationtypeMetadata/'
@@ -20,7 +20,7 @@ export type PurposeMap = {[purpose: string]: Policy[]}
 
 const InformationtypePage = () => {
   const params = useParams<{id?: string}>()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [error, setError] = React.useState(null)
   const [informationTypeId, setInformationTypeId] = React.useState(params.id)
@@ -53,7 +53,7 @@ const InformationtypePage = () => {
         setError(err.message)
       }
 
-      if (!params.id) history.push(`/informationtype/${informationTypeId}`)
+      if (!params.id) navigate(`/informationtype/${informationTypeId}`)
     })()
   }, [informationTypeId])
 
@@ -79,7 +79,7 @@ const InformationtypePage = () => {
         <H4 marginTop='0'>{intl.informationTypes}</H4>
         <Block>
           {user.canWrite() &&
-          <Button kind="outline" onClick={() => history.push('/informationtype/create')}>
+          <Button kind="outline" onClick={() => navigate('/informationtype/create')}>
             <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
           </Button>
           }

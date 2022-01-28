@@ -3,17 +3,17 @@ import {intl} from '../../../util'
 import {Block} from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
-import {useHistory, useLocation} from 'react-router-dom'
+import {useNavigate, useLocation} from 'react-router-dom'
 import {Paragraph2} from 'baseui/typography'
 
 
 export const ProcessCreatedModal = (props: {openAddPolicy: () => void, openAddDocument: () => void}) => {
-  const history = useHistory()
+  const history = useNavigate()
   const location = useLocation()
-  const closeModal = () => history.push(location.pathname)
+  const closeModal = () => history(location.pathname)
 
   return (
-    <Modal isOpen={history.location.search.indexOf('create') >= 0} closeable={false}>
+    <Modal isOpen={location.search.indexOf('create') >= 0} closeable={false}>
       <ModalHeader>{intl.processCreated}</ModalHeader>
       <ModalBody>
         <Paragraph2>{intl.doYouWantToAddPolicies}</Paragraph2>

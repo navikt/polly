@@ -1,6 +1,6 @@
 import React from 'react'
 import DocumentForm from '../components/document/component/DocumentForm'
-import {useHistory, useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {codelist} from '../service/Codelist'
 import {getDocument, updateInformationTypesDocument} from '../api'
 import {Document, DocumentFormValues, DocumentInfoTypeUse,} from '../constants'
@@ -29,12 +29,12 @@ const DocumentEditPage = () => {
   const [document, setDocument] = React.useState<Document>()
   const [isLoading, setLoading] = React.useState(false)
   const params = useParams<{id: string}>()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const handleEditDocument = async (values: DocumentFormValues) => {
     try {
       const res = await updateInformationTypesDocument(convertDocumentToFormRequest(values))
-      history.push(`/document/${res.id}`)
+      navigate(`/document/${res.id}`)
     } catch (err:any) {
       console.log(err, 'ERR')
     }

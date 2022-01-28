@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {useHistory, useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {intl} from '../util'
 import {Block} from 'baseui/block'
 import {deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor} from '../api'
@@ -30,7 +30,7 @@ const renderTextWithLabel = (label: string, text: string) => (
 
 const DocumentPage = () => {
   const params = useParams<{id?: string}>()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>()
   const [documentId, setDocumentId] = React.useState<string | undefined>(params.id)
@@ -54,7 +54,7 @@ const DocumentPage = () => {
       .then(() => {
         setCurrentDocument(undefined)
         setDeleteModalVisibility(false)
-        history.push('/document')
+        navigate('/document')
       }).catch((e) => {
         setErrorMessage(e.message)
       })
@@ -68,10 +68,10 @@ const DocumentPage = () => {
         const res = await getDocument(documentId)
         setDocumentUsages((await getProcessesFor({documentId})).content)
         setCurrentDocument(res)
-        if (params.id !== documentId) history.push(`/document/${documentId}`)
+        if (params.id !== documentId) navigate(`/document/${documentId}`)
       } else {
         setCurrentDocument(undefined)
-        if (!!params.id) history.push('/document')
+        if (!!params.id) navigate('/document')
       }
     })()
   }, [documentId])
@@ -106,7 +106,7 @@ const DocumentPage = () => {
                   icon={faEdit}
                   kind="outline"
                   size={ButtonSize.compact}
-                  onClick={() => history.push(`/document/${currentDocument.id}/edit`)}
+                  onClick={() => navigate(`/document/${currentDocument.id}/edit`)}
                   marginLeft
                 >
                   {intl.edit}
@@ -118,7 +118,7 @@ const DocumentPage = () => {
                 size={ButtonSize.compact}
                 icon={faPlusCircle}
                 tooltip={intl.createNew}
-                onClick={() => history.push('/document/create')}
+                onClick={() => navigate('/document/create')}
                 marginLeft
               >
                 {intl.createNew}

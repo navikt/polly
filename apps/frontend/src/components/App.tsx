@@ -3,7 +3,7 @@ import { FlexGrid, FlexGridItem } from 'baseui/flex-grid';
 import { Block } from 'baseui/block';
 import { LightTheme } from 'baseui';
 import SideBar from './SideBar';
-import Routes from "../routes";
+import AppRoutes from "../AppRoutes";
 
 const narrowItemProps = {
   overrides: {
@@ -28,7 +28,7 @@ const App = () => (
 
     <FlexGridItem>
         <Block margin="0 auto" width="80%">
-            <Routes />
+            <AppRoutes />
         </Block>
     </FlexGridItem>
   </FlexGrid>

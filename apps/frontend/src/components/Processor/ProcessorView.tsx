@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useHistory, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Process, Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
 import {convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor} from "../../api/ProcessorApi";
 import {getProcessesByProcessor, getResourceById, getResourcesByIds} from "../../api";
@@ -38,7 +38,7 @@ const ProcessorView = () => {
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const [usageCount, setUsageCount] = useState<number>(0)
   const hasAccess = () => user.canWrite()
-  const history = useHistory()
+  const navigate = useNavigate()
   const params = useParams<{ id?: string }>()
   const dividerDistance = theme.sizing.scale2400
 
@@ -69,7 +69,7 @@ const ProcessorView = () => {
   const handleDeleteDataProcessor = async (processor: Processor) => {
     try {
       await deleteProcessor(processor.id)
-      history.push("/processor/")
+      navigate("/processor/")
       return true
     } catch (err:any) {
       setModalErrorMessage(err.response.data.message)

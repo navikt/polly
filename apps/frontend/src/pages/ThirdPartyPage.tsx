@@ -57,7 +57,7 @@ const ThirdPartyPage = () => {
         setDisclosureList([...disclosureList, createdDisclosure])
 
       setShowCreateModal(false)
-    } catch (err:any) {
+    } catch (err: any) {
       setShowCreateModal(true)
       setError(err.message)
     }
@@ -68,7 +68,7 @@ const ThirdPartyPage = () => {
       let updatedDisclosure = await updateDisclosure(disclosure)
       setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== updatedDisclosure.id), updatedDisclosure])
       return true
-    } catch (err:any) {
+    } catch (err: any) {
       setError(err.message)
       return false
     }
@@ -82,7 +82,7 @@ const ThirdPartyPage = () => {
       setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== disclosure.id)])
       setError(undefined)
       return true
-    } catch (err:any) {
+    } catch (err: any) {
       setError(err.message)
       return false
     }
@@ -100,7 +100,7 @@ const ThirdPartyPage = () => {
     end: undefined,
     processes: [],
     abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''},
-    processIds:[]
+    processIds: []
   }
 
   useEffect(() => {
@@ -122,10 +122,10 @@ const ThirdPartyPage = () => {
 
       {!isLoading && codelist && (
         <>
-          <Block marginBottom="3rem">
+          {params.thirdPartyCode && <Block marginBottom="3rem">
             <H5>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</H5>
             <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</Paragraph2>
-          </Block>
+          </Block>}
 
 
           <Accordion
@@ -141,14 +141,14 @@ const ThirdPartyPage = () => {
             <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`} key='disclosure'>
               <Block display="flex" justifyContent="flex-end">
                 {user.canWrite() &&
-                <Button
-                  size="compact"
-                  kind={KIND.minimal}
-                  onClick={() => setShowCreateModal(true)}
-                  startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-                >
-                  {intl.createNew}
-                </Button>
+                  <Button
+                    size="compact"
+                    kind={KIND.minimal}
+                    onClick={() => setShowCreateModal(true)}
+                    startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+                  >
+                    {intl.createNew}
+                  </Button>
                 }
               </Block>
               <AccordionDisclosure
@@ -167,21 +167,21 @@ const ThirdPartyPage = () => {
               <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
             </Panel>
 
-            <Panel key='dpprocess'
-                   title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}>
+            {params.thirdPartyCode && <Panel key='dpprocess'
+                                             title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}>
               <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []}/>
-            </Panel>
+            </Panel>}
 
             <Panel key='process'
                    title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
-              <ProcessList
+              {params.thirdPartyCode && <ProcessList
                 section={Section.thirdparty}
                 code={params.thirdPartyCode}
                 listName={ListName.THIRD_PARTY}
                 isEditable={false}
                 hideTitle
                 getCount={setProcessListCount}
-              />
+              />}
             </Panel>
 
           </Accordion>

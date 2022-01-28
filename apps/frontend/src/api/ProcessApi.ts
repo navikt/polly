@@ -13,15 +13,23 @@ export const getProcess = async (processId: string) => {
   return data
 }
 
-export const getProcessByStateAndStatus = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter = ProcessStatusFilter.All) => {
+export const getProcessByStateAndStatus = async (processField: ProcessField,
+                                                 processState: ProcessState,
+                                                 processStatus: ProcessStatusFilter = ProcessStatusFilter.All) => {
   return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}`)).data.content
 }
 
-export const getProcessByStateAndStatusForProductArea = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter = ProcessStatusFilter.All, productreaId: string) => {
+export const getProcessByStateAndStatusForProductArea = async (processField: ProcessField,
+                                                               processState: ProcessState,
+                                                               processStatus: ProcessStatusFilter = ProcessStatusFilter.All,
+                                                               productreaId: string) => {
   return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&productAreaId=${productreaId}`)).data.content
 }
 
-export const getProcessByStateAndStatusForDepartment = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter = ProcessStatusFilter.All, departmentCode: string) => {
+export const getProcessByStateAndStatusForDepartment = async (processField: ProcessField,
+                                                              processState: ProcessState,
+                                                              processStatus: ProcessStatusFilter = ProcessStatusFilter.All,
+                                                              departmentCode: string) => {
   return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&department=${departmentCode}`)).data.content
 }
 

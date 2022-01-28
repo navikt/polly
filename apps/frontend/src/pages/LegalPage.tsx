@@ -9,7 +9,7 @@ import {codelist, ListName} from '../service/Codelist'
 import {intl, theme} from '../util'
 import {lowerFirst} from 'lodash'
 import {SimpleProcessTable} from '../components/Process/SimpleProcessTable'
-import {useHistory} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import * as queryString from 'query-string'
 
 const val = (v: Value) => v.length ? v[0].id as string : undefined
@@ -18,7 +18,8 @@ export const LegalPage = () => {
   const [processes, setProcesses] = useState<Process[]>([])
   const gdprArticle = useQueryParam('gdprArticle')
   const nationalLaw = useQueryParam('nationalLaw')
-  const history = useHistory()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     if (!gdprArticle && !nationalLaw) {
@@ -37,7 +38,7 @@ export const LegalPage = () => {
             maxDropdownHeight='400px'
             value={gdprArticle ? [{id: gdprArticle}] : []}
             options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
-            onChange={p => history.push(history.location.pathname + '?' + queryString.stringify({gdprArticle: val(p.value), nationalLaw}, {skipNull: true}))
+            onChange={p => navigate(location.pathname + '?' + queryString.stringify({gdprArticle: val(p.value), nationalLaw}, {skipNull: true}))
             }
           />
         </Block>
@@ -47,7 +48,7 @@ export const LegalPage = () => {
             maxDropdownHeight='400px'
             value={nationalLaw ? [{id: nationalLaw}] : []}
             options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-            onChange={p => history.push(history.location.pathname + '?' + queryString.stringify({gdprArticle, nationalLaw: val(p.value)}, {skipNull: true}))}
+            onChange={p => navigate(location.pathname + '?' + queryString.stringify({gdprArticle, nationalLaw: val(p.value)}, {skipNull: true}))}
           />
         </Block>
       </Block>
@@ -56,7 +57,7 @@ export const LegalPage = () => {
   )
 }
 
-const ProcessTable = (props: {processes: Process[]}) => (
+const ProcessTable = (props: { processes: Process[] }) => (
   <Block display={'flex'} flexDirection={'column'}>
     <HeadingMedium>{intl.processes} ({props.processes.length})</HeadingMedium>
     <SimpleProcessTable title={intl.processes + ' (' + props.processes.length + ')'} processes={props.processes}/>

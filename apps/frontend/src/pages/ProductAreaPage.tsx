@@ -14,23 +14,25 @@ import {HeadingSmall} from 'baseui/typography'
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = React.useState(true)
   const [chartData, setChartData] = React.useState<ProductAreaDashCount>()
-  const {productAreaId} = useParams<{productAreaId: string}>()
+  const {productAreaId} = useParams<{ productAreaId: string }>()
 
   useEffect(() => {
     (async () => {
-        setIsLoading(true)
-        const response = await getDashboard(ProcessStatusFilter.All)
+      setIsLoading(true)
+      const response = await getDashboard(ProcessStatusFilter.All)
 
-        if (response) setChartData(response.productAreas.find(p => p.productAreaId === productAreaId))
+      if (response) setChartData(response.productAreas.find(p => p.productAreaId === productAreaId))
 
-        setIsLoading(false)
+      setIsLoading(false)
     })()
-}, [productAreaId])
+  }, [productAreaId])
 
   return (
     <>
-      <PageHeader section={Section.productarea} code={productAreaId}/>
-      <ProcessList section={Section.productarea} code={productAreaId} isEditable={false}/>
+      {productAreaId && <>
+        <PageHeader section={Section.productarea} code={productAreaId}/>
+        <ProcessList section={Section.productarea} code={productAreaId} isEditable={false}/>
+      </>}
 
       <InfoTypeTable title={intl.informationTypes}
                      getInfoTypes={async () => (await getInformationTypesBy({productArea: productAreaId})).content}/>
@@ -38,7 +40,7 @@ export const ProductAreaPage = () => {
       {!isLoading && chartData && (
         <Block marginBottom="240px">
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId} />
+          <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId}/>
         </Block>
       )}
     </>

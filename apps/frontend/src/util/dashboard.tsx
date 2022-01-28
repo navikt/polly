@@ -1,13 +1,13 @@
 import {ProcessField, ProcessState, ProcessStatusFilter} from "../constants"
-import * as H from 'history'
 import {Section} from "../pages/ProcessPage"
+import {NavigateFunction} from "react-router-dom";
 
 export const clickOnPieChartSlice =
-    (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter, history: H.History, type?: Section, id?: string) => () => {
+    (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter, navigate: NavigateFunction, type?: Section, id?: string) => () => {
         if (!type)
-            history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
+            navigate(`/dashboard/${processField}/${processState}/${processStatus}`)
         else if (type === Section.department)
-            history.push(`/dashboard/${processField}/${processState}/${processStatus}?department=${id}`)
+            navigate(`/dashboard/${processField}/${processState}/${processStatus}?department=${id}`)
         else
-            history.push(`/dashboard/${processField}/${processState}/${processStatus}?productarea=${id}`)
+            navigate(`/dashboard/${processField}/${processState}/${processStatus}?productarea=${id}`)
     }
