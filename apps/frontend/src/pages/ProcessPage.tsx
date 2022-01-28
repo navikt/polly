@@ -1,18 +1,18 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 
 import ProcessList from '../components/Process'
-import {ListName} from '../service/Codelist'
-import {generatePath, useParams} from 'react-router-dom'
-import {DepartmentDashCount, Process, ProcessStatus, ProcessStatusFilter} from '../constants'
-import {useQueryParam} from '../util/hooks'
-import {processPath} from '../AppRoutes'
+import { ListName } from '../service/Codelist'
+import { generatePath, useParams } from 'react-router-dom'
+import { DepartmentDashCount, Process, ProcessStatus, ProcessStatusFilter } from '../constants'
+import { useQueryParam } from '../util/hooks'
+import { processPath, processPathNoId } from '../AppRoutes'
 import * as queryString from 'query-string'
-import {PageHeader} from '../components/common/PageHeader'
-import {HeadingSmall} from 'baseui/typography'
-import {intl, theme} from '../util'
-import {Block} from "baseui/block/index"
-import {getDashboard} from '../api'
+import { PageHeader } from '../components/common/PageHeader'
+import { HeadingSmall } from 'baseui/typography'
+import { intl, theme } from '../util'
+import { Block } from "baseui/block/index"
+import { getDashboard } from '../api'
 import Charts from '../components/Charts/Charts'
 import { useLocation } from 'react-router-dom'
 
@@ -47,7 +47,7 @@ const ProcessPage = () => {
   const [chartData, setChartData] = React.useState<DepartmentDashCount>()
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
-  const {section, code, processId} = params
+  const { section, code, processId } = params
   const location = useLocation()
 
   const moveScroll = () => {
@@ -77,8 +77,8 @@ const ProcessPage = () => {
 
   return (
     <>
-      <Block overrides={{Block: {props: {role: 'main'}}}}>
-        {section && code && <PageHeader section={section} code={code}/>}
+      <Block overrides={{ Block: { props: { role: 'main' } } }}>
+        {section && code && <PageHeader section={section} code={code} />}
         {section && code && <ProcessList
           code={code}
           listName={listNameForSection(section)}
@@ -106,10 +106,23 @@ const ProcessPage = () => {
 
 export default ProcessPage
 
-export const genProcessPath = (section: Section, code: string, process?: Partial<Process>, filter?: ProcessStatus, create?: boolean) =>
-  generatePath(processPath, {
+export const genProcessPath = (section: Section, code: string, process?: Partial<Process>, filter?: ProcessStatus, create?: boolean) => {
+
+  if (process && process.id) {
+    return generatePath(processPath, {
+      section,
+      // todo multipurpose url
+      code: section === Section.purpose && !!process?.purposes ? process.purposes[0].code : code,
+      processId: process.id
+    }) + '?' + queryString.stringify({ filter, create }, { skipNull: true })
+
+  }
+
+  return generatePath(processPathNoId, {
     section,
     // todo multipurpose url
-    code: section === Section.purpose && !!process?.purposes ? process.purposes[0].code : code,
-    processId: process?.id
-  }) + '?' + queryString.stringify({filter, create}, {skipNull: true})
+    code: section === Section.purpose && !!process?.purposes ? process.purposes[0].code : code
+  }) + '?' + queryString.stringify({ filter, create }, { skipNull: true })
+
+}
+

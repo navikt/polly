@@ -39,10 +39,12 @@ import ProcessorListPage from "./pages/ProcessorListPage";
 import ProcessorView from "./components/Processor/ProcessorView";
 
 export const processPath = '/process/:section/:code/:processId'
+export const processPathNoId = '/process/:section/:code/'
 
 const AppRoutes = (): JSX.Element => (
   <Root>
     <Routes>
+      <Route path="/dashboard/:filterName/:filterValue/:filterStatus" element={<PurposeTable />} caseSensitive={true} />
       <Route path="/dashboard/:processStatus" element={<DashboardPage />} caseSensitive={true} />
       <Route path="/dashboard/" element={<DashboardPage />} caseSensitive={true} />
 
@@ -54,11 +56,13 @@ const AppRoutes = (): JSX.Element => (
 
       <Route path="/system" element={<SystemListPage />} caseSensitive={true} />
       <Route path="/system/:systemCode" element={<SystemPage />} caseSensitive={true} />
+
       <Route path="/team/:teamId" element={<TeamPage />} caseSensitive={true} />
+      
       <Route path="/productarea/:productAreaId" element={<ProductAreaPage />} caseSensitive={true} />
       <Route path="/process" element={<PurposeListPage />} caseSensitive={true} />
 
-      <Route path="/process/:section/:code/" element={<ProcessPage />} caseSensitive={true} />
+      <Route path={processPathNoId} element={<ProcessPage />} caseSensitive={true} />
       <Route path={processPath} element={<ProcessPage />} caseSensitive={true} />
       <Route path="/process/legal" element={<LegalPage />} caseSensitive={true} />
 
@@ -67,9 +71,6 @@ const AppRoutes = (): JSX.Element => (
 
       <Route path="/processor" element={<ProcessorListPage />} caseSensitive={true} />
       <Route path="/processor/:id" element={<ProcessorView />} caseSensitive={true} />
-
-
-      <Route path="/dashboard/:filterName/:filterValue/:filterStatus" element={<PurposeTable />} caseSensitive={true} />
 
       <Route path="/process/:id" element={<Redirect to={processUrl} />} caseSensitive={true} />
       <Route path="/policy/:id" element={<Redirect to={policyUrl} />} caseSensitive={true} />

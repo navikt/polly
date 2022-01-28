@@ -28,7 +28,7 @@ export const DashboardPage = () => {
         <HeadingMedium marginTop='0'>{intl.dashboard}</HeadingMedium>
         <FilterDashboardStatus setFilter={setDashboardStatus}/>
       </Block>
-
+    
       {dashboardData && <Departments data={dashboardData}/>}
       {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus}/>}
       {!dashboardData && <Spinner size={theme.sizing.scale600}/>}
