@@ -63,10 +63,10 @@ const AppRoutes = (): JSX.Element => (
 
       <Route path="/dashboard/:filterName/:filterValue/:filterStatus" element={<PurposeTable/>} caseSensitive={true}/>
 
-      <Route path="/process/:id" component={redirect(processUrl)} caseSensitive={true}/>
-      <Route path="/policy/:id" component={redirect(policyUrl)} caseSensitive={true}/>
-      <Route path="/disclosure" component={DisclosureListPage} caseSensitive={true}/>
-      <Route path="/disclosure/:id" component={redirect(disclosureUrl)} caseSensitive={true}/>
+      <Route path="/process/:id" element={redirect(processUrl)} caseSensitive={true}/>
+      <Route path="/policy/:id" element={redirect(policyUrl)} caseSensitive={true}/>
+      <Route path="/disclosure" element={<DisclosureListPage/>} caseSensitive={true}/>
+      <Route path="/disclosure/:id" element={redirect(disclosureUrl)} caseSensitive={true}/>
 
       <Route path="/informationtype/create" element={<InformationtypeCreatePage/>} caseSensitive={true}/>
       <Route path="/informationtype/:id?" element={<InformationtypePage/>} caseSensitive={true}/>
@@ -116,8 +116,13 @@ const disclosureUrl = async (id: string) => {
 
 const redirect = (fetch: (id: string) => Promise<string>) => () => {
   const {id} = useParams<{ id: string }>()
-  const history = useHistory()
-  fetch(id).then(history.replace)
+  if(id){
+    (async ()=>{
+      const url = await fetch(id)
+      const navigate= useNavigate()
+      navigate(url,{replace:true})
+    })()
+  }
   return <Spinner/>
 }
 
