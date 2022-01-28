@@ -11,7 +11,7 @@ import {PurposeMap} from '../../../pages/InformationtypePage'
 import {Policy} from '../../../constants'
 import {paddingZero} from '../../common/Style'
 import {useQueryParam} from '../../../util/hooks'
-import {useHistory} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import * as queryString from 'query-string'
 import {toggleOverride} from '../../common/Accordion'
 
@@ -36,7 +36,8 @@ export interface AccordionInformationtypeProps {
 const AccordionInformationType = (props: AccordionInformationtypeProps) => {
   const {policies} = props
   const selectedPurpose = useQueryParam('purpose')
-  const history = useHistory()
+  const navigate = useNavigate()
+  const location = useLocation()
   if (!policies) return <Paragraph2>{intl.purposeNotFound}</Paragraph2>
   if (!codelist.isLoaded()) return <Paragraph2>{intl.couldntLoad}</Paragraph2>
 
@@ -46,9 +47,9 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
   return (
     <Accordion initialState={{expanded: selectedPurpose ? [selectedPurpose] : []}}
                onChange={key => {
-                 let pathname = history.location.pathname
+                 let pathname = location.pathname
                  let purpose = key.expanded[0]
-                 history.push(pathname + '?' + queryString.stringify({purpose}, {skipNull: true}))
+                 navigate(pathname + '?' + queryString.stringify({purpose}, {skipNull: true}))
                }}>
       {Object.keys(purposeMap).map((key) => (
         <Panel title={<span><FontAwesomeIcon icon={faUsersCog}/> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}

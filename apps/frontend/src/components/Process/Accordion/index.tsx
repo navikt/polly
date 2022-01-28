@@ -23,7 +23,7 @@ import { faExclamationCircle, faGavel } from '@fortawesome/free-solid-svg-icons'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { DeleteProcessModal } from './DeleteProcessModal'
 import { ProcessCreatedModal } from './ProcessCreatedModal'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { RequestRevisionPage } from '../../../pages/admin/RequestRevisionPage'
@@ -70,7 +70,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
   const purposeRef = React.useRef<HTMLInputElement>(null)
   const params = useParams<PathParams>()
-  const history = useHistory()
+  const history = useNavigate()
 
   const hasAccess = () => user.canWrite()
 
@@ -184,7 +184,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                           <Block display='flex'>
                             {canViewAlerts() && <Block marginRight='auto'>
                               <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                                onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
+                                onClick={() => history(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
                             </Block>}
                             {(user.isAdmin() || user.isSuper()) && <Block marginRight='auto'>
                               <Button type='button' kind='tertiary' size='compact' icon={faGavel}

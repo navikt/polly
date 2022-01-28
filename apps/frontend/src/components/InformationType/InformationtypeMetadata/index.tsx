@@ -19,7 +19,7 @@ import { tabOverride } from '../../common/Style'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Spinner } from '../../common/Spinner'
 import { useQueryParam } from '../../../util/hooks'
 
@@ -71,7 +71,7 @@ const Disclosures = ({ disclosures }: { disclosures: Disclosure[] }) => {
 
 export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
   const [activeTab, setActiveTab] = useState('purposes')
-  const history = useHistory()
+  const navigate = useNavigate()
   return (
     <>
       {props.informationtype && (
@@ -88,7 +88,7 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
           <Block display='flex' justifyContent='flex-end' marginBottom={theme.sizing.scale600}>
             {canViewAlerts() && <Block marginRight='auto'>
               <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                onClick={() => history.push(`/alert/events/informationtype/${props.informationtype.id}`)}>{intl.alerts}</Button>
+                onClick={() => navigate(`/alert/events/informationtype/${props.informationtype.id}`)}>{intl.alerts}</Button>
             </Block>}
             <ParagraphSmall>
               <i>{intl.formatString(intl.lastModified, props.informationtype.changeStamp.lastModifiedBy, lastModifiedDate(props.informationtype.changeStamp.lastModifiedDate))}</i>

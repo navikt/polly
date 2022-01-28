@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {Block} from 'baseui/block'
 import {cardShadow, chartCardProps} from '../common/Style'
 import {AllDashCount, DepartmentDashCount, ProcessField, ProcessState, ProcessStatusFilter, ProductAreaDashCount} from '../../constants'
@@ -26,7 +26,7 @@ type ChartsProps = {
 
 const Charts = (props: ChartsProps) => {
   const {chartData, processStatus, type, departmentCode, productAreaId} = props
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const link = (processField: ProcessField, processState: ProcessState = ProcessState.UNKNOWN) => {
     if (!type)
@@ -39,11 +39,11 @@ const Charts = (props: ChartsProps) => {
 
   const handleClickPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter) => {
     if (!type)
-      return clickOnPieChartSlice(processField, processState, processStatus, history)
+      return clickOnPieChartSlice(processField, processState, processStatus, navigate)
     else if (type === Section.department)
-      return clickOnPieChartSlice(processField, processState, processStatus, history, type, departmentCode)
+      return clickOnPieChartSlice(processField, processState, processStatus, navigate, type, departmentCode)
     else
-      return clickOnPieChartSlice(processField, processState, processStatus, history, type, productAreaId)
+      return clickOnPieChartSlice(processField, processState, processStatus, navigate, type, productAreaId)
   }
 
   const all = chartData as AllDashCount
@@ -136,13 +136,13 @@ const Charts = (props: ChartsProps) => {
             label: intl.filled,
             size: all.disclosures - all.disclosuresIncomplete,
             color: chartColor.generalBlue,
-            onClick: () => history.push('/disclosure?filter=legalbases')
+            onClick: () => navigate('/disclosure?filter=legalbases')
           },
           {
             label: intl.incomplete,
             size: all.disclosuresIncomplete,
             color: chartColor.generalRed,
-            onClick: () => history.push('/disclosure?filter=emptylegalbases')
+            onClick: () => navigate('/disclosure?filter=emptylegalbases')
           }
         ]} size={chartSize}/>
         <Paragraph2>

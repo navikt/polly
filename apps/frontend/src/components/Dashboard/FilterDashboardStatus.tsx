@@ -3,11 +3,11 @@ import {ProcessStatusFilter} from '../../constants'
 import {StatefulSelect} from 'baseui/select'
 import {intl, theme} from '../../util'
 import {Block} from 'baseui/block'
-import {useHistory, useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {Label2} from "baseui/typography";
 
 export const FilterDashboardStatus = (props: {setFilter: Function}) => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const {processStatus} = useParams<{processStatus: ProcessStatusFilter}>()
   return (
     <Block width='100%' display="flex" flexDirection='row-reverse' marginTop={theme.sizing.scale600}>
@@ -27,7 +27,7 @@ export const FilterDashboardStatus = (props: {setFilter: Function}) => {
           filterOutSelected={false}
           searchable={false}
           onChange={(params: any) => {
-            history.push(`/dashboard/${params.value[0].id}`)
+            navigate(`/dashboard/${params.value[0].id}`)
             props.setFilter(params.value[0].id)
           }}
         />

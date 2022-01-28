@@ -2,7 +2,7 @@ import * as React from 'react'
 import {ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList,} from 'baseui/header-navigation'
 import {Button} from 'baseui/button'
 import {Block, BlockProps} from 'baseui/block'
-import {useHistory, useLocation} from 'react-router-dom'
+import {useNavigate, useLocation} from 'react-router-dom'
 import {intl, theme} from '../util'
 import {user} from '../service/User'
 import {StyledLink} from 'baseui/link'
@@ -119,7 +119,7 @@ const LangDropdown = (props: {setLang: (lang: string) => void}) => {
 }
 
 const AdminOptions = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const pages = [
     {label: intl.manageCodeListTitle, href: '/admin/codelist'},
     {label: intl.audit, href: '/admin/audit'},
@@ -135,7 +135,7 @@ const AdminOptions = () => {
           onItemSelect={select => {
             select.event?.preventDefault()
             close()
-            history.push(select.item.href)
+            navigate(select.item.href)
           }}
         />
       }>
