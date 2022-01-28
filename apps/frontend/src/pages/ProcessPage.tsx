@@ -51,7 +51,7 @@ const ProcessPage = () => {
   const location = useLocation()
 
   const moveScroll = () => {
-    window.scrollTo(0, localStorage.getItem("Yposition" + location.pathname) != null ? Number(localStorage.getItem("Yposition" + history.location.pathname)) + 200 : 0)
+    window.scrollTo(0, localStorage.getItem("Yposition" + location.pathname) != null ? Number(localStorage.getItem("Yposition" + location.pathname)) + 200 : 0)
     localStorage.removeItem("Yposition" + location.pathname)
   }
 
