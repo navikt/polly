@@ -11,7 +11,7 @@ import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {getAll} from "../api";
 import AlphabeticList from "../components/common/AlphabeticList";
 import {Spinner} from "../components/common/Spinner";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import ProcessorModal from "../components/Processor/ProcessorModal";
 
 
@@ -20,7 +20,7 @@ export const ProcessorListPage = () => {
   const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
-  const history = useHistory()
+  const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
 
   const handleCreateProcessor = (processor: ProcessorFormValues) => {
@@ -28,7 +28,7 @@ export const ProcessorListPage = () => {
     try {
       (async () => {
         const newDataProcessor = await createProcessor(processor)
-        history.push(`/processor/${newDataProcessor.id}`)
+        navigate(`/processor/${newDataProcessor.id}`)
       })()
       setShowCreateProcessorModal(false)
     } catch (err:any) {
