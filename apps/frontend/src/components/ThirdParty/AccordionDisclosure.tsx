@@ -12,7 +12,7 @@ import {StyledSpinnerNext} from "baseui/spinner";
 import DataText from "../common/DataText";
 import {canViewAlerts} from "../../pages/AlertEventPage";
 import Button from "../common/Button";
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {SIZE as ButtonSize} from "baseui/button";
 import ModalThirdParty from "./ModalThirdPartyForm";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
@@ -69,7 +69,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false)
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
   const [isLoading, setLoading] = useState<boolean>(false)
-  const history = useHistory()
+  const navigate = useNavigate()
   const [hasAlert, setHasAlert] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<React.Key[]>(props.expand ? [props.expand] : [])
 
@@ -120,7 +120,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                             icon={faExclamationCircle}
                             marginRight
                             tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
-                            onClick={() => history.push(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                            onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
                           >
                             {intl.alerts}
                           </Button>

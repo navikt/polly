@@ -15,7 +15,7 @@ import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 import {convertDisclosureToFormValues} from '../../api'
 import {Cell, HeadCell, Row, Table} from './Table'
 import {canViewAlerts} from '../../pages/AlertEventPage'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import Button from './Button'
 import {getAlertForDisclosure} from '../../api/AlertApi'
 
@@ -136,7 +136,7 @@ const DisclosureRow = (props: {
   disclosure: Disclosure, editable: boolean, showRecipient: boolean, alert: DisclosureAlert,
   setSelectedDisclosure: (d: Disclosure) => void, showEditModal: () => void, showDeleteModal: () => void
 }) => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const {disclosure, editable, alert, showRecipient, setSelectedDisclosure, showEditModal, showDeleteModal} = props
   const hasAlert = alert?.missingArt6
 
@@ -161,7 +161,7 @@ const DisclosureRow = (props: {
         <Button type='button' kind='tertiary' size='compact'
                 icon={faExclamationCircle} tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
                 $style={{color: hasAlert ? theme.colors.warning500 : undefined}}
-                onClick={() => history.push(`/alert/events/disclosure/${disclosure.id}`)}
+                onClick={() => navigate(`/alert/events/disclosure/${disclosure.id}`)}
         />
         }
 

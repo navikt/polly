@@ -6,7 +6,7 @@ import {useQueryParam, useTable} from '../util/hooks'
 import {Block} from 'baseui/block'
 import {Button, Button as BButton, KIND} from 'baseui/button'
 import {ButtonGroup} from 'baseui/button-group'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {lowerFirst} from 'lodash'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import {ObjectLink} from '../components/common/RouteLink'
@@ -36,7 +36,7 @@ export const DisclosureListPage = () => {
     initialSortColumn: 'name'
   })
   const filter = useQueryParam<FilterType>('filter')
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const initialFormValues: DisclosureFormValues = {
     name: '',
@@ -82,9 +82,15 @@ export const DisclosureListPage = () => {
             selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2}
             mode='radio' shape='pill'
           >
-            <BButton onClick={() => history.replace("/disclosure")}>{intl.all}</BButton>
-            <BButton onClick={() => history.replace("/disclosure?filter=legalbases")}>{intl.filled}</BButton>
-            <BButton onClick={() => history.replace("/disclosure?filter=emptylegalbases")}>{intl.incomplete}</BButton>
+            <BButton onClick={() => navigate("/disclosure",{
+              replace:true
+            })}>{intl.all}</BButton>
+            <BButton onClick={() => navigate("/disclosure?filter=legalbases",{
+              replace:true
+            })}>{intl.filled}</BButton>
+            <BButton onClick={() => navigate("/disclosure?filter=emptylegalbases",{
+              replace:true
+            })}>{intl.incomplete}</BButton>
           </ButtonGroup>
         </Block>
       </Block>
