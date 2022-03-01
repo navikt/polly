@@ -31,13 +31,13 @@
         <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
         <docx4j.version>11.3.2</docx4j.version>
 
-        <microsoft-graph.version>5.14.0</microsoft-graph.version>
+        <microsoft-graph.version>5.15.0</microsoft-graph.version>
         <msal4j.version>1.11.0</msal4j.version>
 
         <!-- transitive versions -->
         <commons-compress.version>1.21</commons-compress.version>
         <commons-io.version>2.11.0</commons-io.version>
-        <guava.version>31.0.1-jre</guava.version>
+        <guava.version>31.1-jre</guava.version>
         <jna.version>5.10.0</jna.version>
         <jetbrains.annotation.version>23.0.0</jetbrains.annotation.version>
         <stax2-api.version>4.2.1</stax2-api.version>
