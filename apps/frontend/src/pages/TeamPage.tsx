@@ -8,12 +8,14 @@ import {intl} from '../util'
 import {getInformationTypesBy} from '../api'
 
 export const TeamPage = () => {
-  const {teamId} = useParams<{teamId: string}>()
+  const {teamId} = useParams<{ teamId: string }>()
 
   return (
     <>
-      <PageHeader section={Section.team} code={teamId}/>
-      <ProcessList section={Section.team} code={teamId} isEditable={false} />
+      {teamId && <>
+        <PageHeader section={Section.team} code={teamId}/>
+        <ProcessList section={Section.team} code={teamId} isEditable={false}/>
+      </>}
 
       <InfoTypeTable title={intl.informationTypes}
                      getInfoTypes={async () => (await getInformationTypesBy({productTeam: teamId})).content}/>

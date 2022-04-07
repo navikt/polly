@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
 import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
 import { StyledSpinnerNext } from 'baseui/spinner'
@@ -25,7 +25,7 @@ import { lastModifiedDate } from '../../util/date-formatter'
 import { getResourceById } from '../../api'
 
 const DpProcessView = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const params = useParams<{ id?: string }>()
   const [dpProcess, setDpProcess] = useState<DpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -62,7 +62,7 @@ const DpProcessView = () => {
         await deleteDpProcess(id)
         setErrorDpProcessModal('')
         toggleModal()
-        history.push(`/dpprocess`)
+        navigate(`/dpprocess`)
       }
     } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {

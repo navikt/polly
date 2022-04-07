@@ -5,7 +5,7 @@ export const navSlackTeamId = 'T5LNAMWNA'
 export const behandlingskatalogSlackChannelId = 'CR1B19E6L'
 
 export const datajegerSlackLink = `slack://channel?team=${navSlackTeamId}&id=${behandlingskatalogSlackChannelId}`
-export const documentationLink = 'https://dataplattform.gitbook.io/nada/kataloger/behandlingskatalog'
+export const documentationLink = 'https://navikt.github.io/naka/behandlingskatalog'
 export const helpLink = 'https://navno.sharepoint.com/sites/intranett-personvern'
 
 export const termUrl = (termId: string) => `https://data.adeo.no/begrep/${termId}`

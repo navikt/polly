@@ -27,14 +27,13 @@ import {
 } from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {Code, codelist, ListName} from '../../service/Codelist'
-import {useLocation} from 'react-router'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
-import {useHistory} from 'react-router-dom'
+import {useNavigate, useLocation} from 'react-router-dom'
 
 type ProcessListProps = {
   section: Section
@@ -62,7 +61,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
   const [codelistLoading, setCodelistLoading] = React.useState(true)
-  const history = useHistory()
+  const navigate = useNavigate()
   const [exportHref, setExportHref] = React.useState<string>("")
   useAwait(codelist.wait(), setCodelistLoading)
 
@@ -90,12 +89,12 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const handleChangePanel = (process?: Partial<Process>) => {
 
     if (process?.id !== currentProcess?.id) {
-      history.push(genProcessPath(section, code, process, filter))
+      navigate(genProcessPath(section, code, process, filter))
     }
     // reuse method to reload a process
     else if (process?.id) {
       getProcessById(process.id).catch(setErrorProcessModal)
-      history.push(genProcessPath(section, code, process, filter))
+      navigate(genProcessPath(section, code, process, filter))
 
     }
 
@@ -151,7 +150,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
       // todo uh multipurpose url....
-      history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
+      navigate(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
       process.disclosures.forEach(d=>{
         updateDisclosure(convertDisclosureToFormValues(
           {...d,processIds:[...d.processIds,newProcess.id?newProcess.id:'']}
@@ -308,7 +307,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             initialState={{value: [{id: filter}]}}
             filterOutSelected={false}
             searchable={false}
-            onChange={(params: any) => history.push(genProcessPath(section, code, undefined, params.value[0].id))}/>
+            onChange={(params: any) => navigate(genProcessPath(section, code, undefined, params.value[0].id))}/>
         </Block>
         <Block>
           <Label2 color={theme.colors.primary} marginRight={'1rem'}>

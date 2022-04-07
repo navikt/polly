@@ -6,7 +6,7 @@ import {Client as Styletron} from 'styletron-engine-atomic'
 import {Provider as StyletronProvider} from 'styletron-react'
 import Header from './components/Header'
 import SideBar from './components/SideBar'
-import Routes from './routes'
+import AppRoutes from './AppRoutes'
 import {ampli} from './service/Amplitude'
 import {codelist} from './service/Codelist'
 import {user} from './service/User'
@@ -37,7 +37,7 @@ const Main = props => {
                   <Header setLang={setLang}/>
                 </Block>
                 <Block marginTop={"4rem"} paddingRight={"30px"} paddingLeft={"30px"}>
-                  <Routes/>
+                  <AppRoutes/>
                 </Block>
               </Block>
             </Block>

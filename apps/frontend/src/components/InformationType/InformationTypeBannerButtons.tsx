@@ -6,7 +6,7 @@ import {SIZE as ButtonSize} from 'baseui/button'
 import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 import {useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
 import {intl, theme} from '../../util'
 import {Paragraph2} from 'baseui/typography'
@@ -20,7 +20,7 @@ export const DeleteModal = (props: { id: string, showDeleteModal: boolean, close
   const [infoType, setInfoType] = React.useState<InformationType>()
   const [policies, setPolicies] = React.useState<number>()
   const [documents, setDocuments] = React.useState<number>()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   useEffect(() => {
     (async () => {
@@ -35,8 +35,10 @@ export const DeleteModal = (props: { id: string, showDeleteModal: boolean, close
   const submitDeleteProcess = async () => {
     try {
       await deleteInformationType(props.id)
-      history.replace('/informationtype')
-    } catch (e:any) {
+      navigate('/informationtype', {
+        replace: true
+      })
+    } catch (e: any) {
       setErrorProcessModal(e.message)
     }
   }

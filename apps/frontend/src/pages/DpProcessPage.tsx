@@ -11,7 +11,7 @@ import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {Block} from "baseui/block";
 import {H4} from "baseui/typography";
 import {user} from "../service/User";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {StyledSpinnerNext} from "baseui/spinner";
 
 const DpProcessPage = () => {
@@ -19,7 +19,7 @@ const DpProcessPage = () => {
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
   const [isLoading,setLoading] = useState<boolean>(true)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   useEffect(() => {
     (async () => {
@@ -37,7 +37,7 @@ const DpProcessPage = () => {
     try {
       const response = await createDpProcess(dpProcess)
       setErrorDpProcessModal('')
-      history.push(`/dpprocess/${response.id}`)
+      navigate(`/dpprocess/${response.id}`)
       toggleModal()
     } catch (err:any) {
       if (err.response.data.message.includes('already exists')) {

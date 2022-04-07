@@ -3,7 +3,7 @@ import {Block, BlockProps} from 'baseui/block'
 import {H4} from 'baseui/typography'
 import {intl, theme} from '../../util'
 import {Spinner} from '../../components/common/Spinner'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {codelist, ListName} from '../../service/Codelist'
 import {useAllAreas, useProcessSearch} from '../../api'
 import axios from "axios"
@@ -70,7 +70,7 @@ const rowBlockProps: BlockProps = {
 const formatProcessName = (process: Process) => process.purposes.map(p => p.shortName).join(", ") + ': ' + process.name
 
 export const RequestRevisionPage = (props: {close?: () => void, processId?: string}) => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -81,7 +81,7 @@ export const RequestRevisionPage = (props: {close?: () => void, processId?: stri
   const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
 
   const modalView = !!props.processId
-  const abort = props.close || history.goBack
+  const abort = () => props.close || navigate(-1)
   const save = async (request: ProcessRevisionRequest) => {
     setLoading(true)
     try {

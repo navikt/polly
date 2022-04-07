@@ -7,14 +7,14 @@ import {intl, useAwait} from '../util'
 import {user} from '../service/User'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
 import {createInformationType, mapInfoTypeToFormVals} from '../api'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {H4} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 
 const InformationtypeCreatePage = () => {
   const [isLoading, setLoading] = React.useState(true)
   const [errorSubmit, setErrorSubmit] = React.useState(null)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const handleSubmit = async (values: InformationtypeFormValues) => {
     if (!values) return
@@ -22,7 +22,7 @@ const InformationtypeCreatePage = () => {
     setErrorSubmit(null)
     try {
       const infoType = await createInformationType(values)
-      history.push(`/informationtype/${infoType.id}`)
+      navigate(`/informationtype/${infoType.id}`)
     } catch (err:any) {
       setErrorSubmit(err.message)
     }

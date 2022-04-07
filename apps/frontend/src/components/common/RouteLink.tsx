@@ -1,4 +1,4 @@
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {StyledLink} from 'baseui/link'
 import React from 'react'
 import {KIND} from 'baseui/button'
@@ -15,7 +15,7 @@ type RouteLinkProps = {
 }
 
 const RouteLink = (props: RouteLinkProps & any) => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const {hideUnderline, plain, ...restprops} = props
 
   const [useCss] = useStyletron()
@@ -28,7 +28,7 @@ const RouteLink = (props: RouteLinkProps & any) => {
   return (
     <StyledLink className={css} {...restprops} onClick={(e: Event) => {
       e.preventDefault()
-      history.push(props.href)
+      navigate(props.href)
     }}/>
   )
 }

@@ -8,7 +8,7 @@ import {intl, theme} from '../../util'
 import {searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam} from '../../api'
 import {Select, TYPE, Value} from 'baseui/select'
 import {urlForObject} from '../common/RouteLink'
-import {useHistory, useLocation} from 'react-router-dom'
+import {useNavigate, useLocation} from 'react-router-dom'
 import {faFilter} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 import {searchResultColor} from "../../util/theme";
@@ -210,7 +210,7 @@ export const MainSearch = () => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
   const [filter, setFilter] = useState(false)
   const [value, setValue] = useState<Value>()
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
 
   return (
@@ -236,7 +236,7 @@ export const MainSearch = () => {
             const item = params.value[0] as SearchItem;
             (async () => {
               if (item) {
-                history.push(urlForObject(item.type, item.id))
+                navigate(urlForObject(item.type, item.id))
               } else {
                 setValue([])
               }
