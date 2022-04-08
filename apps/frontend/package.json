@@ -8,7 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "amplitude-js": "^8.0.0",
     "axios": "^0.26.0",
-    "baseui": "^10.0.0",
+    "baseui": "^11.0.0",
     "core-js": "^3.7.0",
     "flag-icon-css": "^4.1.6",
     "formik": "^2.2.4",
