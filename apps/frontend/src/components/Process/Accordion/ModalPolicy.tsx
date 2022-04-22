@@ -93,7 +93,8 @@ const FieldLegalBasesUse = (props: {legalBasesUse: LegalBasesUse}) => {
           <Block width="100%">
             <RadioGroup
               value={value}
-              align="vertical" isError={!!form.errors.legalBasesUse && !!form.submitCount}
+              align="vertical" 
+              error={(!!form.errors.legalBasesUse && !!form.submitCount)}
               onChange={e => {
                 const selected = (e.target as HTMLInputElement).value
                 form.setFieldValue('legalBasesUse', selected)
