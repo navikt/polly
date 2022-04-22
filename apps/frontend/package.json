@@ -37,7 +37,7 @@
   },
   "resolutions": {
     "@types/react": "17.0.44",
-    "@types/react-dom": "17.0.15"
+    "@types/react-dom": "18.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -77,7 +77,7 @@
     "@types/node": "^17.0.0",
     "@types/randomcolor": "^0.5.5",
     "@types/react": "^17.0.44",
-    "@types/react-dom": "^17.0.15",
+    "@types/react-dom": "^18.0.2",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.6",
     "@types/shortid": "0.0.29",
