@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Block, BlockProps} from "baseui/block";
-import {Label2} from "baseui/typography";
+import {LabelMedium} from "baseui/typography";
 import {Field, FieldProps, Form, Formik} from "formik";
 import {CodeListFormValues} from "../../constants";
 import {Input, SIZE as InputSIZE} from "baseui/input";
@@ -65,9 +65,9 @@ const CreateCodeListModal = ({isOpen, title, list, errorOnCreate, onClose, submi
               <ModalHeader>{title}</ModalHeader>
               <ModalBody>
                 <Block {...rowBlockProps}>
-                  <Label2 marginRight={"1rem"} width="25%">
+                  <LabelMedium marginRight={"1rem"} width="25%">
                     Code:
-                  </Label2>
+                  </LabelMedium>
                   <Field
                     name="code"
                     render={({field}: FieldProps) => (
@@ -82,9 +82,9 @@ const CreateCodeListModal = ({isOpen, title, list, errorOnCreate, onClose, submi
                 <Error fieldName="code"/>
 
                 <Block {...rowBlockProps}>
-                  <Label2 marginRight={"1rem"} width="25%">
+                  <LabelMedium marginRight={"1rem"} width="25%">
                     Short name:
-                  </Label2>
+                  </LabelMedium>
                   <Field
                     name="shortName"
                     render={({field}: FieldProps) => (
@@ -99,9 +99,9 @@ const CreateCodeListModal = ({isOpen, title, list, errorOnCreate, onClose, submi
                 <Error fieldName="shortName"/>
 
                 <Block {...rowBlockProps}>
-                  <Label2 marginRight={"1rem"} width="25%">
+                  <LabelMedium marginRight={"1rem"} width="25%">
                     Description:
-                  </Label2>
+                  </LabelMedium>
                   <Field
                     name="description"
                     render={({field}: FieldProps) => (

@@ -1,7 +1,7 @@
 import React, {useReducer, useState} from 'react'
 import {Block} from 'baseui/block'
 import {intl, theme} from '../../util'
-import {Label1} from 'baseui/typography'
+import {LabelLarge} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChartBar, faChartPie, faCircle} from '@fortawesome/free-solid-svg-icons'
 import {Card} from 'baseui/card'
@@ -107,7 +107,7 @@ export const Chart = (props: ChartProps) => {
 
   return <>
     {headerTitle && (<Block marginLeft={(size - 1) * 2 + "px"}>
-      <Label1 marginLeft={theme.sizing.scale700}>{headerTitle}</Label1>
+      <LabelLarge marginLeft={theme.sizing.scale700}>{headerTitle}</LabelLarge>
     </Block>)}
     <Block>
       <Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} hidePercent={!!hidePercent} type={props.type || 'pie'}/>
@@ -148,9 +148,9 @@ const Visualization = (props: VisualizationProps) => {
               {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover}/>}
             </Block>}
             <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200} marginTop={noChartData ? theme.sizing.scale400 : undefined}>
-              <Label1 marginBottom={theme.sizing.scale300}>
+              <LabelLarge marginBottom={theme.sizing.scale300}>
                 {chartTitle}
-              </Label1>
+              </LabelLarge>
               {!noChartData && data.map((d, idx) =>
                 <div key={idx} onMouseOver={() => setHover(idx)} onClick={d.onClick}>
                   <Block backgroundColor={idx === hover ? theme.colors.accent50 : theme.colors.white}

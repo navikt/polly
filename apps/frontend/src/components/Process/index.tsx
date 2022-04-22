@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect} from 'react'
 
 import {Block} from 'baseui/block'
-import {HeadingXLarge, Label2} from 'baseui/typography'
+import {HeadingXLarge, LabelMedium} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus} from '../../constants'
 import {intl, theme, useAwait} from '../../util'
@@ -310,9 +310,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             onChange={(params: any) => navigate(genProcessPath(section, code, undefined, params.value[0].id))}/>
         </Block>
         <Block>
-          <Label2 color={theme.colors.primary} marginRight={'1rem'}>
+          <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
             {intl.filter}
-          </Label2>
+          </LabelMedium>
         </Block>
         <Block marginRight='auto'>
           {!hideTitle && <HeadingXLarge>

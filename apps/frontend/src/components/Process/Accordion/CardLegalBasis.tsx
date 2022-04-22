@@ -3,7 +3,7 @@ import {Select, TYPE, Value} from 'baseui/select'
 import {Block, BlockProps} from 'baseui/block'
 import {Card} from 'baseui/card'
 import {StatefulInput} from 'baseui/input'
-import {Label2} from 'baseui/typography'
+import {LabelMedium} from 'baseui/typography'
 import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
 import {codelist, ListName, SensitivityLevel} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
@@ -40,7 +40,7 @@ const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => {
     <Block display="flex">
       <CustomizedStatefulTooltip content={sensitivityLevel === SensitivityLevel.ART6 ? intl.article6HelpText : intl.article9HelpText}>
         <Block display="flex">
-          <Label2>{text}</Label2>
+          <LabelMedium>{text}</LabelMedium>
           <FontAwesomeIcon style={{marginLeft: '.25rem'}} icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
         </Block>
       </CustomizedStatefulTooltip>

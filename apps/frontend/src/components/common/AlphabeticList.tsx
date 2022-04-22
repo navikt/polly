@@ -2,7 +2,7 @@ import * as React from "react";
 import {Block} from "baseui/block";
 import {theme} from "../../util";
 import {primitives} from "../../util/theme";
-import {Label1} from "baseui/typography";
+import {LabelLarge} from "baseui/typography";
 import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
 import RouteLink from "./RouteLink";
 import {margin} from './Style'
@@ -33,7 +33,7 @@ const AlphabeticList = (props: {items: Opt[], baseUrl: string}) => {
                 alignItems='center'
                 justifyContent='center'
               >
-                <Label1 $style={{fontSize: '1.2em'}}>{letter}</Label1>
+                <LabelLarge $style={{fontSize: '1.2em'}}>{letter}</LabelLarge>
               </Block>
 
               <Block marginBottom={theme.sizing.scale800} marginRight={theme.sizing.scale400}/>

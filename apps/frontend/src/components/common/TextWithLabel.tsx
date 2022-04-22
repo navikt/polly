@@ -6,7 +6,7 @@ import {faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 import {theme} from "../../util";
 import {Block} from "baseui/block";
 import {marginZero} from "./Style";
-import {Label2} from "baseui/typography";
+import {LabelMedium} from "baseui/typography";
 import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 const TextWithLabel = (props: { label: string, text?: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string, children?: ReactNode }) => {
@@ -20,9 +20,9 @@ const TextWithLabel = (props: { label: string, text?: ReactNode, icon?: IconDefi
 
   return (
     <>
-      <Label2 marginBottom={theme.sizing.scale100}>
+      <LabelMedium marginBottom={theme.sizing.scale100}>
         {props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}
-      </Label2>
+      </LabelMedium>
       {!props.error && value}
       {props.error && <CustomizedStatefulTooltip content={props.error}>{value}</CustomizedStatefulTooltip>}
       {props.children}

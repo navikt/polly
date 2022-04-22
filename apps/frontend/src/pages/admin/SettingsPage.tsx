@@ -7,7 +7,7 @@ import {Select, TYPE} from 'baseui/select'
 import {intl, theme} from '../../util'
 import {getSettings, writeSettings} from '../../api/SettingsApi'
 import {StyledSpinnerNext} from 'baseui/spinner'
-import {H4, Label2} from 'baseui/typography'
+import {H4, LabelMedium} from 'baseui/typography'
 import {Button} from 'baseui/button'
 import {StatefulTextarea} from 'baseui/textarea'
 import {Markdown} from '../../components/common/Markdown'
@@ -93,7 +93,7 @@ const DefaultProcessDocument = (props: { documentId?: string, setDocumentId: (id
 
   return (
     <Block display="flex" alignItems="center">
-      <Label2 marginRight="1rem">{intl.defaultProcessDocument}</Label2>
+      <LabelMedium marginRight="1rem">{intl.defaultProcessDocument}</LabelMedium>
       <Block width="40%">
         <Select
           clearable
@@ -123,7 +123,7 @@ const FrontpageMessage = (props: { message?: string, setMessage: (message: strin
   return (
     <>
       <Block alignItems="center" marginTop="1rem">
-        <Label2 marginRight="1rem">Forsidemelding</Label2>
+        <LabelMedium marginRight="1rem">Forsidemelding</LabelMedium>
         <Block width="100%" display="flex">
           <Block width="50%" marginRight="1rem">
             <StatefulTextarea initialState={{value: props.message}} rows={20}

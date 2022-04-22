@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {intl, theme} from '../../util'
 import {Block, BlockProps} from 'baseui/block'
-import {Label1, ParagraphXSmal} from 'baseui/typography'
+import {LabelLarge, ParagraphXSmal} from 'baseui/typography'
 import NavLogo from '../../resources/navlogo.svg'
 import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
@@ -29,7 +29,7 @@ const Brand = () => (
   <Block display="flex" flexDirection='column' padding="1rem" position={'fixed'}>
     <StyledLink style={{textDecoration: 'none', textAlign: 'center'}} href="/">
       <img alt='logo' src={BKLogo}/>
-      <Label1 $style={{fontSize: '130%'}} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</Label1>
+      <LabelLarge $style={{fontSize: '130%'}} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</LabelLarge>
     </StyledLink>
   </Block>
 )

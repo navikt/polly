@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useEffect, useRef, useState} from 'react'
 import {Block} from 'baseui/block'
-import {Label2, Label4} from 'baseui/typography'
+import {LabelMedium, LabelXSmall} from 'baseui/typography'
 import {Select, Value} from 'baseui/select'
 import {Button} from 'baseui/button'
 
@@ -102,7 +102,7 @@ export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
   return (
     <Block marginTop="2rem" ref={ref}>
       <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
-        <Label2 font="font450">{intl.usage}</Label2>
+        <LabelMedium font="font450">{intl.usage}</LabelMedium>
         {!!usage?.inUse && <Button type="button" kind="secondary" size="compact" onClick={() => setShowReplace(true)}>{intl.replaceAllUse}</Button>}
       </Block>
 
@@ -117,7 +117,7 @@ export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
 
       {usage && <UsageTable usage={usage}/>}
       {!usage && <StyledSpinnerNext/>}
-      {(usage && !usage.inUse) && <Label4 marginTop=".5rem">{intl.usageNotFound}</Label4>}
+      {(usage && !usage.inUse) && <LabelXSmall marginTop=".5rem">{intl.usageNotFound}</LabelXSmall>}
     </Block>
   )
 }

@@ -3,7 +3,7 @@ import {useState} from 'react'
 import {Card} from 'baseui/card'
 import {cardShadow} from '../common/Style'
 import {Block} from 'baseui/block'
-import {Label1, ParagraphMedium} from 'baseui/typography'
+import {LabelLarge, ParagraphMedium} from 'baseui/typography'
 import {intl, theme, useAwait} from '../../util'
 import {DashboardData, DepartmentDashCount as DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
@@ -46,7 +46,7 @@ const DepartmentCard = (props: DepartmentCardProps) => {
           >
 
             <RouteLink href={genProcessPath(Section.department, department.department, undefined)} style={{textDecoration: 'none'}}>
-              <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
+              <LabelLarge color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</LabelLarge>
             </RouteLink>
 
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)} style={{textDecoration: 'none'}}>

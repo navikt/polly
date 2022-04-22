@@ -7,7 +7,7 @@ import {copyToClipboard, intl, theme} from '../../util'
 import {Card, StyledBody} from 'baseui/card'
 import {ListItem, ListItemLabel, ListOverrides} from 'baseui/list'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import {Label3, ParagraphSmal} from 'baseui/typography'
+import {LabelSmall, ParagraphSmall} from 'baseui/typography'
 import Button from './Button'
 import {SlackLink} from './SlackLink'
 import {StyledLink} from 'baseui/link'
@@ -39,12 +39,12 @@ const TeamContent = (props: { team: Team }) => (
   >
     <StyledBody>
       <dl>
-        <dt><Label3>{intl.description}</Label3></dt>
-        <dd><ParagraphSmal>
+        <dt><LabelSmall>{intl.description}</LabelSmall></dt>
+        <dd><ParagraphSmall>
           <Markdown source={props.team.description}/>
-        </ParagraphSmal></dd>
+        </ParagraphSmall></dd>
         {props.team.slackChannel && <>
-          <dt><Label3>{intl.slack}</Label3></dt>
+          <dt><LabelSmall>{intl.slack}</LabelSmall></dt>
           <dd><SlackLink channel={props.team.slackChannel}/></dd>
         </>}
       </dl>

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {convertProcessorToFormValues, createProcessor, getProcessorsByPageAndPageSize} from "../api/ProcessorApi";
 import {Processor, ProcessorFormValues} from "../constants";
 import {intl, theme} from "../util";
-import {H4, Label1} from "baseui/typography";
+import {H4, LabelLarge} from "baseui/typography";
 import {Block} from "baseui/block";
 import Button from "../components/common/Button";
 import {user} from "../service/User";
@@ -53,7 +53,7 @@ export const ProcessorListPage = () => {
         <H4>{intl.processors}</H4>
         <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Block>
-            <Label1>{intl.processorSelect}</Label1>
+            <LabelLarge>{intl.processorSelect}</LabelLarge>
           </Block>
 
           <Block marginTop={'auto'}>

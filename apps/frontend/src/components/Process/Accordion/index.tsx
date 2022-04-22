@@ -4,7 +4,7 @@ import { Panel, StatelessAccordion } from 'baseui/accordion'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { StyledSpinnerNext } from 'baseui/spinner'
 import { Block } from 'baseui/block'
-import { Label2 } from 'baseui/typography'
+import { LabelMedium } from 'baseui/typography'
 import { intl, theme } from '../../../util'
 import { user } from '../../../service/User'
 import { Plus } from 'baseui/icon'
@@ -215,7 +215,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               )
             })}
       </StatelessAccordion>
-      {!props.processList.length && <Label2 margin='1rem'>{intl.emptyTable} {intl.processes}</Label2>}
+      {!props.processList.length && <LabelMedium margin='1rem'>{intl.emptyTable} {intl.processes}</LabelMedium>}
 
       {!!currentProcess &&
         <>

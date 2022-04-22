@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import { Label2 } from "baseui/typography";
+import { LabelMedium } from "baseui/typography";
 import { Input } from "baseui/input";
 import { Block, BlockProps } from "baseui/block";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
@@ -131,7 +131,7 @@ const InformationtypeForm = ({
                   render={({ form, field }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.name}</Label2>
+                        <LabelMedium>{intl.name}</LabelMedium>
                       </Block>
                       <Input
                         {...field}
@@ -150,7 +150,7 @@ const InformationtypeForm = ({
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block marginBottom="1em">
                       <Block {...labelProps}>
-                        <Label2>{intl.orgMaster}</Label2>
+                        <LabelMedium>{intl.orgMaster}</LabelMedium>
                       </Block>
 
                       <Select
@@ -176,7 +176,7 @@ const InformationtypeForm = ({
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.termEditHeader}</Label2>
+                        <LabelMedium>{intl.termEditHeader}</LabelMedium>
                       </Block>
                       <Select
                         noResultsMsg={intl.emptyTable}
@@ -207,7 +207,7 @@ const InformationtypeForm = ({
                   render={arrayHelpers => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>Kilder</Label2>
+                        <LabelMedium>Kilder</LabelMedium>
                       </Block>
                       <Select
                         options={getParsedOptions(ListName.THIRD_PARTY, formikBag.values.sources)}
@@ -231,7 +231,7 @@ const InformationtypeForm = ({
                   render={arrayHelpers => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.searchWords}</Label2>
+                        <LabelMedium>{intl.searchWords}</LabelMedium>
                       </Block>
                       <Input
                         type="text"
@@ -270,7 +270,7 @@ const InformationtypeForm = ({
               <FlexGridItem>
                 <Block>
                   <Block {...labelProps}>
-                    <Label2>{intl.productTeam}</Label2>
+                    <LabelMedium>{intl.productTeam}</LabelMedium>
                   </Block>
                   <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName='productTeams' />
                 </Block>
@@ -282,7 +282,7 @@ const InformationtypeForm = ({
                   render={arrayHelpers => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.categories}</Label2>
+                        <LabelMedium>{intl.categories}</LabelMedium>
                       </Block>
                       <Select
                         options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
@@ -312,7 +312,7 @@ const InformationtypeForm = ({
                   }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.usefulInformation}</Label2>
+                        <LabelMedium>{intl.usefulInformation}</LabelMedium>
                       </Block>
                       <Textarea onKeyDown={e => {
                         if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
@@ -332,7 +332,7 @@ const InformationtypeForm = ({
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.sensitivity}</Label2>
+                        <LabelMedium>{intl.sensitivity}</LabelMedium>
                       </Block>
 
                       <Select

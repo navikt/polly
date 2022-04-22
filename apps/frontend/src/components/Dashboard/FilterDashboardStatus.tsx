@@ -4,7 +4,7 @@ import {StatefulSelect} from 'baseui/select'
 import {intl, theme} from '../../util'
 import {Block} from 'baseui/block'
 import {useNavigate, useParams} from 'react-router-dom'
-import {Label2} from "baseui/typography";
+import {LabelMedium} from "baseui/typography";
 
 export const FilterDashboardStatus = (props: {setFilter: Function}) => {
   const navigate = useNavigate()
@@ -33,9 +33,9 @@ export const FilterDashboardStatus = (props: {setFilter: Function}) => {
         />
       </Block>
       <Block alignSelf='center'>
-        <Label2 color={theme.colors.primary} marginRight={'1rem'}>
+        <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
           {intl.filterPieChartsByStatus}
-        </Label2>
+        </LabelMedium>
       </Block>
     </Block>)
 }
