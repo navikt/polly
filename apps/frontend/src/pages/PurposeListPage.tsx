@@ -1,5 +1,5 @@
 import {intl, theme} from '../util'
-import {H1, Label1} from 'baseui/typography'
+import {HeadingXXLarge, LabelLarge} from 'baseui/typography'
 import React from 'react'
 import {Block} from 'baseui/block'
 import {SIZE as ButtonSize} from 'baseui/button'
@@ -41,11 +41,11 @@ export const PurposeListPage = () => {
   return (
     <Block overrides={{Block: {props: {role: 'main'}}}}>
       <>
-        <H1>{intl.processingActivities}</H1>
+        <HeadingXXLarge>{intl.processingActivities}</HeadingXXLarge>
 
         <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Block>
-            <Label1>{intl.purposeSelect}</Label1>
+            <LabelLarge>{intl.purposeSelect}</LabelLarge>
           </Block>
 
           <Block marginTop={'auto'}>
