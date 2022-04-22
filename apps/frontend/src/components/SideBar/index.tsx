@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {intl, theme} from '../../util'
 import {Block, BlockProps} from 'baseui/block'
-import {Label1, Paragraph4} from 'baseui/typography'
+import {Label1, ParagraphXSmal} from 'baseui/typography'
 import NavLogo from '../../resources/navlogo.svg'
 import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
@@ -61,19 +61,19 @@ const SideBar = () => {
         <a href={helpLink} style={{textDecoration: 'none'}} target="_blank">
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
             <CustomizedStatefulTooltip content={intl.helpTooltip} ignoreBoundary={false}>
-              <Paragraph4 color={theme.colors.white}>{intl.help}</Paragraph4>
+              <ParagraphXSmal color={theme.colors.white}>{intl.help}</ParagraphXSmal>
             </CustomizedStatefulTooltip>
           </Block>
         </a>
         <a href={datajegerSlackLink} style={{textDecoration: 'none'}}>
           <Block display="flex" justifyContent="center" alignItems="center">
             <img src={SlackLogo} width="60px" alt="slack logo"/>
-            <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
+            <ParagraphXSmal color={theme.colors.white}>#behandlingskatalogen</ParagraphXSmal>
           </Block>
         </a>
         <a href={documentationLink} style={{textDecoration: 'none'}} target="_blank">
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
-            <Paragraph4 color={theme.colors.white}>{intl.aboutUs}</Paragraph4>
+            <ParagraphXSmal color={theme.colors.white}>{intl.aboutUs}</ParagraphXSmal>
           </Block>
         </a>
       </Block>

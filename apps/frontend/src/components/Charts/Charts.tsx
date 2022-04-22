@@ -8,7 +8,7 @@ import {intl} from '../../util'
 import {Chart} from './Chart'
 import {clickOnPieChartSlice} from '../../util/dashboard'
 import {chartColor} from '../../util/theme'
-import {Paragraph1, Paragraph2} from 'baseui/typography'
+import {ParagraphLarge, ParagraphMedium} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
 import {Section} from '../../pages/ProcessPage'
 import {Card} from "baseui/card";
@@ -57,10 +57,10 @@ const Charts = (props: ChartsProps) => {
                   processField={ProcessField.DPIA}
                   onClickPieChartSlice={handleClickPieChartSlice}
         />
-        <Paragraph2>
+        <ParagraphMedium>
           {intl.missingPVK}: <RouteLink
           href={link(ProcessField.DPIA_REFERENCE_MISSING, ProcessState.YES)}>{chartData.dpiaReferenceMissing}</RouteLink>
-        </Paragraph2>
+        </ParagraphMedium>
       </Block>
 
       <Block {...chartCardProps}>
@@ -115,9 +115,9 @@ const Charts = (props: ChartsProps) => {
                   processField={ProcessField.RETENTION}
                   onClickPieChartSlice={handleClickPieChartSlice}
         />
-        <Paragraph1>
+        <ParagraphLarge>
           {intl.processWithIncompleteRetention} <RouteLink href={link(ProcessField.RETENTION_DATA)}>{chartData.retentionDataIncomplete}</RouteLink>
-        </Paragraph1>
+        </ParagraphLarge>
       </Block>
 
       <Block {...chartCardProps}>
@@ -145,23 +145,23 @@ const Charts = (props: ChartsProps) => {
             onClick: () => navigate('/disclosure?filter=emptylegalbases')
           }
         ]} size={chartSize}/>
-        <Paragraph2>
+        <ParagraphMedium>
           {intl.disclosures}: <RouteLink
           href={"/disclosure"}>{all.disclosures}</RouteLink>
-        </Paragraph2>
+        </ParagraphMedium>
       </Block>}
 
       <Block marginTop="2.5rem" width={"100%"}>
         <Card overrides={cardShadow}>
           <Block>
-            <Paragraph2>
+            <ParagraphMedium>
               {intl.navResponsible}: <RouteLink
               href={link(ProcessField.COMMON_EXTERNAL_PROCESSOR, ProcessState.YES)}>{chartData.commonExternalProcessResponsible}</RouteLink>
-            </Paragraph2>
-            <Paragraph2>
+            </ParagraphMedium>
+            <ParagraphMedium>
               {intl.dpProcessPageTitle}: <RouteLink
               href={"/dpprocess"}>{chartData.dpProcesses}</RouteLink>
-            </Paragraph2>
+            </ParagraphMedium>
           </Block>
         </Card>
       </Block>

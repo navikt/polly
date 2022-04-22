@@ -1,6 +1,6 @@
 import {Block} from 'baseui/block'
 import {Card, CardOverrides} from 'baseui/card'
-import {Paragraph1, Paragraph2} from 'baseui/typography'
+import {ParagraphLarge, ParagraphMedium} from 'baseui/typography'
 import * as React from 'react'
 import {intl, theme} from '../../util'
 import {primitives} from '../../util/theme'
@@ -55,17 +55,17 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
         <Card overrides={cardOverrides(hover)}>
           <Block>
             <Block display="flex" justifyContent="center">
-              <Paragraph1 marginTop={theme.sizing.scale300} marginBottom={theme.sizing.scale200} $style={{
+              <ParagraphLarge marginTop={theme.sizing.scale300} marginBottom={theme.sizing.scale200} $style={{
                 wordBreak: 'break-word',
                 color: hover ? primitives.primary300 : undefined,
                 textDecoration: 'underline',
                 fontSize: '130%',
                 fontWeight: 'bolder'
-              }}>{props.title}</Paragraph1>
+              }}>{props.title}</ParagraphLarge>
             </Block>
 
             <Block display="flex" justifyContent="center" width="100%">
-                <Paragraph2>{props.subtitle}</Paragraph2>
+                <ParagraphMedium>{props.subtitle}</ParagraphMedium>
             </Block>
           </Block>
         </Card>

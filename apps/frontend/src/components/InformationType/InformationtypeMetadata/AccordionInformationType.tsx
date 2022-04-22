@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Accordion, Panel} from 'baseui/accordion'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faUsersCog} from '@fortawesome/free-solid-svg-icons'
@@ -38,8 +38,8 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
   const selectedPurpose = useQueryParam('purpose')
   const navigate = useNavigate()
   const location = useLocation()
-  if (!policies) return <Paragraph2>{intl.purposeNotFound}</Paragraph2>
-  if (!codelist.isLoaded()) return <Paragraph2>{intl.couldntLoad}</Paragraph2>
+  if (!policies) return <ParagraphMedium>{intl.purposeNotFound}</ParagraphMedium>
+  if (!codelist.isLoaded()) return <ParagraphMedium>{intl.couldntLoad}</ParagraphMedium>
 
   const purposeMap = reducePolicyList(policies)
   const getPolicylistForPurpose = (purpose: string) => !purposeMap[purpose] ? [] : purposeMap[purpose]

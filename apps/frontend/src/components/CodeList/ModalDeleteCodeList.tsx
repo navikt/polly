@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {intl} from "../../util";
-import {Paragraph2} from "baseui/typography";
+import {ParagraphMedium} from "baseui/typography";
 import {Button} from "baseui/button";
 import {Block} from "baseui/block";
 import {CodeListFormValues} from "../../constants";
@@ -27,7 +27,7 @@ const DeleteCodeListModal = ({title, initialValues, isOpen, errorOnDelete, submi
     >
       <ModalHeader>{title}</ModalHeader>
       <ModalBody>
-        <Paragraph2> Bekreft sletting av code "{initialValues.code}" fra "{initialValues.list}".</Paragraph2>
+        <ParagraphMedium> Bekreft sletting av code "{initialValues.code}" fra "{initialValues.list}".</ParagraphMedium>
       </ModalBody>
 
       <ModalFooter>

@@ -3,7 +3,7 @@ import {useState} from 'react'
 import {Card} from 'baseui/card'
 import {cardShadow} from '../common/Style'
 import {Block} from 'baseui/block'
-import {Label1, Paragraph2} from 'baseui/typography'
+import {Label1, ParagraphMedium} from 'baseui/typography'
 import {intl, theme, useAwait} from '../../util'
 import {DashboardData, DepartmentDashCount as DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
@@ -14,9 +14,9 @@ import {Spinner} from '../common/Spinner'
 
 const TextWithNumber = (props: { label: string; number: number }) => (
   <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
-    <Paragraph2 margin="0">{props.label} <b style={{
+    <ParagraphMedium margin="0">{props.label} <b style={{
       textDecoration:'underline'
-    }}>{props.number}</b></Paragraph2>
+    }}>{props.number}</b></ParagraphMedium>
   </Block>
 )
 

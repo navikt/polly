@@ -16,7 +16,7 @@ import {codelist, ListName} from '../../../service/Codelist'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faMinusCircle} from '@fortawesome/free-solid-svg-icons'
 import {Sensitivity} from '../../InformationType/Sensitivity'
-import {Paragraph3} from 'baseui/typography'
+import {ParagraphSmal} from 'baseui/typography'
 import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 import {Spinner} from '../../common/Spinner'
 import {disableEnter} from "../../../util/helper-functions";
@@ -189,7 +189,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
 
                   {!!formik.values.document &&
                   <>
-                    <Paragraph3>{formik.values.document.description}</Paragraph3>
+                    <ParagraphSmal>{formik.values.document.description}</ParagraphSmal>
                     <Block {...rowBlockProps}>
                       <ModalLabel label={intl.informationTypes}/>
                       <FieldArray name="informationTypes"

@@ -16,7 +16,7 @@ import {useNavigate} from 'react-router-dom'
 import {SIZE as ButtonSize} from "baseui/button";
 import ModalThirdParty from "./ModalThirdPartyForm";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
-import {Paragraph2, ParagraphSmall} from "baseui/typography";
+import {ParagraphMedium, ParagraphSmall} from "baseui/typography";
 import {StyledLink} from "baseui/link";
 import LinkListProcess from "./components/LinkListProcess";
 import {codelist, ListName} from "../../service/Codelist";
@@ -267,7 +267,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
-            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
+            <ParagraphMedium>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>

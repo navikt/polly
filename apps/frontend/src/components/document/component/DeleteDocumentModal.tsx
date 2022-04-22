@@ -1,5 +1,5 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
-import {Paragraph2} from "baseui/typography";
+import {ParagraphMedium} from "baseui/typography";
 import {Block} from "baseui/block";
 import {Button} from "baseui/button";
 import {intl} from "../../../util";
@@ -27,10 +27,10 @@ const DeleteDocumentModal = ({title, documentName = "", isOpen, onClose, submit,
       <ModalHeader>{title}</ModalHeader>
       <ModalBody>
         {!!!documentUsageCount ? (
-            <Paragraph2> {intl.confirmDeleteDocumentText} "{documentName}"</Paragraph2>
+            <ParagraphMedium> {intl.confirmDeleteDocumentText} "{documentName}"</ParagraphMedium>
           ) :
           (
-            <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, documentName.toString(), documentUsageCount.toString())}</Paragraph2>
+            <ParagraphMedium>{intl.formatString(intl.cannotDeleteProcess, documentName.toString(), documentUsageCount.toString())}</ParagraphMedium>
           )}
       </ModalBody>
 

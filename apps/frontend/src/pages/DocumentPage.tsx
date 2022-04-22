@@ -10,7 +10,7 @@ import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
 import {Notification} from 'baseui/notification'
-import {H4, Label2, Paragraph2} from 'baseui/typography'
+import {H4, Label2, ParagraphMedium} from 'baseui/typography'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
 import {Tab} from 'baseui/tabs'
 import {CustomizedTabs} from '../components/common/CustomizedTabs'
@@ -24,7 +24,7 @@ import AlphabeticList from '../components/common/AlphabeticList'
 const renderTextWithLabel = (label: string, text: string) => (
   <Block marginTop="scale1000">
     <Label2 font="font400">{label}</Label2>
-    <Paragraph2>{text}</Paragraph2>
+    <ParagraphMedium>{text}</ParagraphMedium>
   </Block>
 )
 

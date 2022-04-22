@@ -11,7 +11,7 @@ import {processString} from '../../util/string-processor'
 import {intl, theme} from '../../util'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 export const LegalBasisView = (props: {legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues}) => {
@@ -148,9 +148,9 @@ export const ListLegalBases = (
           sublist
           key={i}
         >
-          <Paragraph2 $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
+          <ParagraphMedium $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
             <LegalBasisView legalBasisForm={legalBasis}/>
-          </Paragraph2>
+          </ParagraphMedium>
         </ListItem>
       ))}
     </React.Fragment>

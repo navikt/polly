@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import { PluggableList } from 'react-markdown/lib/react-markdown'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 
@@ -11,7 +11,7 @@ import rehypeRaw from 'rehype-raw'
 export const Markdown = ({singleWord, escapeHtml = true, verbatim, source}: {source?: string, escapeHtml?: boolean, singleWord?: boolean, verbatim?: boolean}) => {
   const renderers = {
     p: (parProps: any) => singleWord ? <React.Fragment {...parProps}/> :
-      verbatim ? <p {...parProps}/> : <Paragraph2 {...parProps}/>
+      verbatim ? <p {...parProps}/> : <ParagraphMedium {...parProps}/>
   }
 
   const htmlPlugins: PluggableList = escapeHtml ? [] : [rehypeRaw]
