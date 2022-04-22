@@ -12,7 +12,7 @@ import {intl, theme} from '../../util'
 import {ParagraphMedium} from 'baseui/typography'
 import {deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType} from '../../api'
 import {InformationType} from '../../constants'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import Button from '../common/Button'
 
 export const DeleteModal = (props: { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
@@ -55,7 +55,7 @@ export const DeleteModal = (props: { id: string, showDeleteModal: boolean, close
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
-        {!infoType && <StyledSpinnerNext/>}
+        {!infoType && <Spinner/>}
         {canDelete && <ParagraphMedium>{intl.confirmDeleteInformationTypeText} {infoType?.name}</ParagraphMedium>}
         {infoType && !canDelete && <ParagraphMedium>
           {intl.formatString(intl.cannotDeleteInformationTypes, infoType.name)}

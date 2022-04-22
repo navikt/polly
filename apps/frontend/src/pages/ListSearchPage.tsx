@@ -2,7 +2,7 @@ import * as React from 'react'
 import {intl, useAwait} from '../util'
 import {codelist, ListName} from '../service/Codelist'
 import {HeadingMedium} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import AlphabeticList from '../components/common/AlphabeticList'
 
 const codelistPage = (listName: ListName, baseUrl: string, title?: string) => () => {
@@ -15,7 +15,7 @@ const codelistPage = (listName: ListName, baseUrl: string, title?: string) => ()
     <>
       {title && <HeadingMedium>{title}</HeadingMedium>}
 
-      {isLoading && <StyledSpinnerNext/>}
+      {isLoading && <Spinner/>}
 
       {!!codes.length && (
         <AlphabeticList items={codes.map(c => ({id: c.code, label: c.shortName}))} baseUrl={baseUrl}/>

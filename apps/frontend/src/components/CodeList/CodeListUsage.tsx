@@ -10,7 +10,7 @@ import {CodeUsage, ObjectType} from '../../constants'
 import {ObjectLink} from '../common/RouteLink'
 import {codelist, ListName} from '../../service/Codelist'
 import {replaceCodelistUsage} from '../../api'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import {Cell, HeadCell, Row, Table} from '../common/Table'
 
 const UsageTable = (props: {usage: CodeUsage}) => {
@@ -116,7 +116,7 @@ export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
       )}
 
       {usage && <UsageTable usage={usage}/>}
-      {!usage && <StyledSpinnerNext/>}
+      {!usage && <Spinner/>}
       {(usage && !usage.inUse) && <LabelXSmall marginTop=".5rem">{intl.usageNotFound}</LabelXSmall>}
     </Block>
   )

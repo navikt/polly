@@ -14,7 +14,7 @@ import {ObjectLink} from '../common/RouteLink'
 import {StatefulPopover} from 'baseui/popover'
 import DiffViewer from 'react-diff-viewer'
 import {useRefs} from '../../util/hooks'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import Button from '../common/Button'
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
@@ -46,7 +46,7 @@ export const AuditView = (props: AuditViewProps) => {
   const newestAudit = auditLog?.audits[0]
 
   return <Card>
-    {loading && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
+    {loading && <Spinner $size={theme.sizing.scale2400}/>}
     {!loading && auditLog && !logFound && <LabelLarge>{intl.auditNotFound}</LabelLarge>}
 
     {logFound && <>

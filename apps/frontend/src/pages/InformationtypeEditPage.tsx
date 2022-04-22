@@ -7,7 +7,7 @@ import {intl} from '../util'
 import {getInformationType, mapInfoTypeToFormVals, updateInformationType} from '../api'
 import {useNavigate, useParams} from 'react-router-dom'
 import {HeadingMedium} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 
 const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = React.useState(true)
@@ -61,7 +61,7 @@ const InformationtypeEditPage = () => {
   return (
     <React.Fragment>
       {isLoading ? (
-        <StyledSpinnerNext size={30}/>
+        <Spinner $size={30}/>
       ) : (
         <React.Fragment>
           <HeadingMedium>{intl.edit}</HeadingMedium>

@@ -13,7 +13,7 @@ import {intl, theme, useAwait, useForceUpdate} from '../../util'
 import {createCodelist} from '../../api'
 import {CodeListFormValues} from '../../constants'
 import {HeadingMedium} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import Button from '../../components/common/Button'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
@@ -60,12 +60,12 @@ const CodeListPage = () => {
   }, [listname, lists])
 
   if (!user.isAdmin() || !lists) {
-    return <StyledSpinnerNext size={theme.sizing.scale2400}/>
+    return <Spinner $size={theme.sizing.scale2400}/>
   }
 
   return <>
     <HeadingMedium>{intl.manageCodeListTitle}</HeadingMedium>
-    {loading ? <StyledSpinnerNext/> : (
+    {loading ? <Spinner/> : (
       <Block display='flex' justifyContent='space-between' width='100%'>
         <Block width='600px'>
           <StatefulSelect

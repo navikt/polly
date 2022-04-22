@@ -8,7 +8,7 @@ import {Panel, StatelessAccordion} from "baseui/accordion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight, faEdit, faExclamationCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {convertDisclosureToFormValues, getDisclosure} from "../../api";
-import {StyledSpinnerNext} from "baseui/spinner";
+import {Spinner} from "baseui/spinner";
 import DataText from "../common/DataText";
 import {canViewAlerts} from "../../pages/AlertEventPage";
 import Button from "../common/Button";
@@ -171,7 +171,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                 }
               }}
             >
-              {isLoading ? <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block> :
+              {isLoading ? <Block padding={theme.sizing.scale400}><Spinner $size={theme.sizing.scale1200}/></Block> :
                 <Block $style={{
                   outline: `4px ${theme.colors.primary200} solid`
                 }}>

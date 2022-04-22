@@ -12,7 +12,7 @@ import {Block} from "baseui/block";
 import {HeadingMedium} from "baseui/typography";
 import {user} from "../service/User";
 import {useNavigate} from "react-router-dom";
-import {StyledSpinnerNext} from "baseui/spinner";
+import {Spinner} from "baseui/spinner";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
@@ -67,7 +67,7 @@ const DpProcessPage = () => {
         submit={handleCreateDpProcess}
         errorOnCreate={errorDpProcessModal}
       />
-      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses}/> : <StyledSpinnerNext size={30}/> }
+      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses}/> : <Spinner $size={30}/> }
     </>
   )
 }

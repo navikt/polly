@@ -9,7 +9,7 @@ import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
 import {createInformationType, mapInfoTypeToFormVals} from '../api'
 import {useNavigate} from 'react-router-dom'
 import {HeadingMedium} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 
 const InformationtypeCreatePage = () => {
   const [isLoading, setLoading] = React.useState(true)
@@ -38,7 +38,7 @@ const InformationtypeCreatePage = () => {
         : (
           <>
             {isLoading ? (
-              <StyledSpinnerNext size={30}/>
+              <Spinner $size={30}/>
             ) : (
               <>
                 <HeadingMedium>{intl.informationTypeCreate}</HeadingMedium>
