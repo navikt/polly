@@ -3,7 +3,7 @@ import * as React from "react";
 import {Block} from "baseui/block";
 import {Button} from "baseui/button";
 import {intl} from "../../util";
-import {Paragraph2} from "baseui/typography";
+import {ParagraphMedium} from "baseui/typography";
 
 export const DpProcessDeleteModal = (props: {errorOnDeletion:string, isOpen: boolean, onClose: () => void, onSubmit: Function, title: String }) => {
   return (
@@ -11,16 +11,15 @@ export const DpProcessDeleteModal = (props: {errorOnDeletion:string, isOpen: boo
       <Modal
         autoFocus
         animate
-        unstable_ModalBackdropScroll={true}
         size="default"
         isOpen={props.isOpen}
         onClose={props.onClose}
       >
         <ModalHeader>{props.title}</ModalHeader>
         <ModalBody>
-          <Paragraph2>
+          <ParagraphMedium>
             {intl.confirmDeleteProcessText}
-          </Paragraph2>
+          </ParagraphMedium>
         </ModalBody>
         <ModalFooter>
           <Block display="flex" justifyContent="flex-end">

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Block, BlockProps} from 'baseui/block'
-import {H4} from 'baseui/typography'
+import {HeadingMedium} from 'baseui/typography'
 import {intl, theme} from '../../util'
 import {Spinner} from '../../components/common/Spinner'
 import {useNavigate} from 'react-router-dom'
@@ -101,7 +101,7 @@ export const RequestRevisionPage = (props: {close?: () => void, processId?: stri
 
   return (
     <Block>
-      <H4>{intl.needsRevision}</H4>
+      <HeadingMedium>{intl.needsRevision}</HeadingMedium>
       {loading ? <Spinner/> : error && <Notification kind={'negative'}>{error}</Notification>}
 
       {done ?

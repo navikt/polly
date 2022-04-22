@@ -5,7 +5,7 @@ import {Field, FieldProps, Form, Formik,} from "formik";
 
 import {Button, KIND} from "baseui/button";
 import {Block, BlockProps} from "baseui/block";
-import {Label2} from "baseui/typography";
+import {LabelMedium} from "baseui/typography";
 import {Textarea} from "baseui/textarea";
 import {Input, SIZE as InputSIZE} from "baseui/input";
 import {CodeListFormValues, ProcessFormValues} from "../../constants";
@@ -43,7 +43,6 @@ const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClo
       isOpen={isOpen}
       animate
       autoFocus
-      unstable_ModalBackdropScroll={true}
       size={SIZE.auto}
       role={ROLE.dialog}
     >
@@ -60,9 +59,9 @@ const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClo
               <ModalHeader>{title}</ModalHeader>
               <ModalBody>
                 <Block {...rowBlockProps}>
-                  <Label2 marginRight={"1rem"} width="25%">
+                  <LabelMedium marginRight={"1rem"} width="25%">
                     Short name:
-                  </Label2>
+                  </LabelMedium>
                   <Field
                     name="shortName"
                     render={({field}: FieldProps<ProcessFormValues>) => (
@@ -78,9 +77,9 @@ const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClo
                 </Block>
                 <Error fieldName="shortName"/>
                 <Block {...rowBlockProps}>
-                  <Label2 marginRight={"1rem"} width="25%">
+                  <LabelMedium marginRight={"1rem"} width="25%">
                     Description:
-                  </Label2>
+                  </LabelMedium>
                   <Field
                     name="description"
                     render={({field}: FieldProps<ProcessFormValues>) => (

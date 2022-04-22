@@ -9,10 +9,10 @@ import {useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
 import {intl, theme} from '../../util'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import {deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType} from '../../api'
 import {InformationType} from '../../constants'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import Button from '../common/Button'
 
 export const DeleteModal = (props: { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
@@ -50,20 +50,19 @@ export const DeleteModal = (props: { id: string, showDeleteModal: boolean, close
       onClose={props.closeModal}
       isOpen={props.showDeleteModal}
       animate
-      unstable_ModalBackdropScroll={true}
       size="default"
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
-        {!infoType && <StyledSpinnerNext/>}
-        {canDelete && <Paragraph2>{intl.confirmDeleteInformationTypeText} {infoType?.name}</Paragraph2>}
-        {infoType && !canDelete && <Paragraph2>
+        {!infoType && <Spinner/>}
+        {canDelete && <ParagraphMedium>{intl.confirmDeleteInformationTypeText} {infoType?.name}</ParagraphMedium>}
+        {infoType && !canDelete && <ParagraphMedium>
           {intl.formatString(intl.cannotDeleteInformationTypes, infoType.name)}
           <br/>
           {!!policies && intl.formatString(intl.informationTypeHasPolicies, policies)}
           <br/>
           {!!documents && intl.formatString(intl.informationTypeHasDocuments, documents)}
-        </Paragraph2>}
+        </ParagraphMedium>}
       </ModalBody>
 
       <ModalFooter>

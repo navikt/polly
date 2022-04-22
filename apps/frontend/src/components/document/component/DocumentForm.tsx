@@ -1,6 +1,6 @@
 import React from 'react'
 import {Block, BlockProps} from 'baseui/block'
-import {Label2} from 'baseui/typography'
+import {LabelMedium} from 'baseui/typography'
 import {intl, useAwait} from '../../../util'
 import {Input, SIZE} from 'baseui/input'
 import {Textarea} from 'baseui/textarea'
@@ -66,7 +66,7 @@ const DocumentForm = (props: DocumentFormProps) => {
           <Form onKeyDown={disableEnter}>
             <Block {...rowBlockProps}>
               <Block>
-                <Label2 {...labelProps}>{intl.name}</Label2>
+                <LabelMedium {...labelProps}>{intl.name}</LabelMedium>
                 <Field name="name">
                   {
                     (props: FieldProps) => (
@@ -78,7 +78,7 @@ const DocumentForm = (props: DocumentFormProps) => {
               </Block>
             </Block>
             <Block {...rowBlockProps}>
-              <Label2 {...labelProps}>{intl.description}</Label2>
+              <LabelMedium {...labelProps}>{intl.description}</LabelMedium>
               <Field name="description">
                 {
                   (props: FieldProps) => (
@@ -92,7 +92,7 @@ const DocumentForm = (props: DocumentFormProps) => {
             </Block>
 
             <Block marginTop="3rem">
-              <Label2 marginBottom="2rem">{intl.informationtypesUsedInDocument}</Label2>
+              <LabelMedium marginBottom="2rem">{intl.informationtypesUsedInDocument}</LabelMedium>
               <FieldArray
                 name="informationTypes"
                 render={

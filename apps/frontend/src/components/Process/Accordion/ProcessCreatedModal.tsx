@@ -4,7 +4,7 @@ import {Block} from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
 import {useNavigate, useLocation} from 'react-router-dom'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 
 
 export const ProcessCreatedModal = (props: {openAddPolicy: () => void, openAddDocument: () => void}) => {
@@ -16,7 +16,7 @@ export const ProcessCreatedModal = (props: {openAddPolicy: () => void, openAddDo
     <Modal isOpen={location.search.indexOf('create') >= 0} closeable={false}>
       <ModalHeader>{intl.processCreated}</ModalHeader>
       <ModalBody>
-        <Paragraph2>{intl.doYouWantToAddPolicies}</Paragraph2>
+        <ParagraphMedium>{intl.doYouWantToAddPolicies}</ParagraphMedium>
       </ModalBody>
       <ModalFooter>
         <Block display='flex' justifyContent='flex-end'>

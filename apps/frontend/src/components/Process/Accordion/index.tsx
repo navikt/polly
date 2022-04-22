@@ -1,32 +1,32 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { Block } from 'baseui/block'
-import { Label2 } from 'baseui/typography'
-import { intl, theme } from '../../../util'
-import { user } from '../../../service/User'
-import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
+import {useEffect} from 'react'
+import {Panel, StatelessAccordion} from 'baseui/accordion'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {Spinner} from 'baseui/spinner'
+import {Block} from 'baseui/block'
+import {LabelMedium} from 'baseui/typography'
+import {intl, theme} from '../../../util'
+import {user} from '../../../service/User'
+import {Plus} from 'baseui/icon'
+import {AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import { convertProcessToFormValues, getDisclosuresByProcessId, getResourceById } from '../../../api'
-import { PathParams } from '../../../pages/ProcessPage'
-import { AddDocumentModal } from './AddDocumentModal'
+import {convertProcessToFormValues, getDisclosuresByProcessId, getResourceById} from '../../../api'
+import {PathParams} from '../../../pages/ProcessPage'
+import {AddDocumentModal} from './AddDocumentModal'
 import Button from '../../common/Button'
-import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
+import AccordionTitle, {InformationTypeRef} from './AccordionTitle'
 import ProcessData from './ProcessData'
-import { lastModifiedDate } from '../../../util/date-formatter'
-import { faExclamationCircle, faGavel } from '@fortawesome/free-solid-svg-icons'
-import { canViewAlerts } from '../../../pages/AlertEventPage'
-import { DeleteProcessModal } from './DeleteProcessModal'
-import { ProcessCreatedModal } from './ProcessCreatedModal'
-import { useNavigate, useParams } from 'react-router-dom'
-import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
-import { Modal, ModalBody, SIZE } from 'baseui/modal'
-import { RequestRevisionPage } from '../../../pages/admin/RequestRevisionPage'
+import {lastModifiedDate} from '../../../util/date-formatter'
+import {faExclamationCircle, faGavel} from '@fortawesome/free-solid-svg-icons'
+import {canViewAlerts} from '../../../pages/AlertEventPage'
+import {DeleteProcessModal} from './DeleteProcessModal'
+import {ProcessCreatedModal} from './ProcessCreatedModal'
+import {useNavigate, useParams} from 'react-router-dom'
+import {AddBatchInformationTypesModal} from './AddBatchInformationTypesModal'
+import {Modal, ModalBody, SIZE} from 'baseui/modal'
+import {RequestRevisionPage} from '../../../pages/admin/RequestRevisionPage'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -165,7 +165,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                     }
                   }}
                 >
-                  {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200} /></Block>}
+                  {isLoading && <Block padding={theme.sizing.scale400}><Spinner $size={theme.sizing.scale1200} /></Block>}
 
                   {!isLoading && currentProcess && (
                     <Block $style={{
@@ -215,7 +215,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               )
             })}
       </StatelessAccordion>
-      {!props.processList.length && <Label2 margin='1rem'>{intl.emptyTable} {intl.processes}</Label2>}
+      {!props.processList.length && <LabelMedium margin='1rem'>{intl.emptyTable} {intl.processes}</LabelMedium>}
 
       {!!currentProcess &&
         <>
@@ -294,7 +294,6 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           <Modal
             isOpen={showRevisionModal}
             size={SIZE.auto}
-            unstable_ModalBackdropScroll={true}
             // role='dialog'
             onClose={closeRevision}
           >

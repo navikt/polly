@@ -1,5 +1,5 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import {Block} from 'baseui/block'
 import * as React from 'react'
 import {Processor} from "../../constants";
@@ -24,17 +24,16 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
       onClose={onClose}
       isOpen={isOpen}
       animate
-      unstable_ModalBackdropScroll={true}
       size='default'
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
         {usageCount === 0 ? <>
-          < Paragraph2> {intl.deleteProcessorText}</Paragraph2>
-          <Paragraph2>{intl.confirmDeleteProcessorText} {processor.name}</Paragraph2>
+          < ParagraphMedium> {intl.deleteProcessorText}</ParagraphMedium>
+          <ParagraphMedium>{intl.confirmDeleteProcessorText} {processor.name}</ParagraphMedium>
         </> : <>
-          <Paragraph2>{intl.formatString(intl.canNotDeleteProcessorParagraph1,processor.name)}</Paragraph2>
-          <Paragraph2>{intl.formatString(intl.canNotDeleteProcessorParagraph2,usageCount)}</Paragraph2>
+          <ParagraphMedium>{intl.formatString(intl.canNotDeleteProcessorParagraph1,processor.name)}</ParagraphMedium>
+          <ParagraphMedium>{intl.formatString(intl.canNotDeleteProcessorParagraph2,usageCount)}</ParagraphMedium>
         </>}
       </ModalBody>
 

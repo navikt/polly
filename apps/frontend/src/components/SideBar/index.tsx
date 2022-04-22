@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {intl, theme} from '../../util'
 import {Block, BlockProps} from 'baseui/block'
-import {Label1, Paragraph4} from 'baseui/typography'
+import {LabelLarge, ParagraphXSmall} from 'baseui/typography'
 import NavLogo from '../../resources/navlogo.svg'
 import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
@@ -29,7 +29,7 @@ const Brand = () => (
   <Block display="flex" flexDirection='column' padding="1rem" position={'fixed'}>
     <StyledLink style={{textDecoration: 'none', textAlign: 'center'}} href="/">
       <img alt='logo' src={BKLogo}/>
-      <Label1 $style={{fontSize: '130%'}} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</Label1>
+      <LabelLarge $style={{fontSize: '130%'}} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</LabelLarge>
     </StyledLink>
   </Block>
 )
@@ -61,19 +61,19 @@ const SideBar = () => {
         <a href={helpLink} style={{textDecoration: 'none'}} target="_blank">
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
             <CustomizedStatefulTooltip content={intl.helpTooltip} ignoreBoundary={false}>
-              <Paragraph4 color={theme.colors.white}>{intl.help}</Paragraph4>
+              <ParagraphXSmall color={theme.colors.white}>{intl.help}</ParagraphXSmall>
             </CustomizedStatefulTooltip>
           </Block>
         </a>
         <a href={datajegerSlackLink} style={{textDecoration: 'none'}}>
           <Block display="flex" justifyContent="center" alignItems="center">
             <img src={SlackLogo} width="60px" alt="slack logo"/>
-            <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
+            <ParagraphXSmall color={theme.colors.white}>#behandlingskatalogen</ParagraphXSmall>
           </Block>
         </a>
         <a href={documentationLink} style={{textDecoration: 'none'}} target="_blank">
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
-            <Paragraph4 color={theme.colors.white}>{intl.aboutUs}</Paragraph4>
+            <ParagraphXSmall color={theme.colors.white}>{intl.aboutUs}</ParagraphXSmall>
           </Block>
         </a>
       </Block>

@@ -1,7 +1,7 @@
 import {default as React, ReactNode} from 'react'
 import {Block} from 'baseui/block'
 import {intl, theme} from '../../util'
-import {Label2, Paragraph2} from 'baseui/typography'
+import {LabelMedium, ParagraphMedium} from 'baseui/typography'
 
 type DataTextProps = {
   label?: string
@@ -16,13 +16,13 @@ const DataText = (props: DataTextProps) => {
   return (
     <Block display='flex' alignContent='flex-start' marginBottom='1rem' width='100%'>
       <Block width='40%' paddingRight={theme.sizing.scale400} maxWidth='300px'>
-        <Label2>{props.label}</Label2>
+        <LabelMedium>{props.label}</LabelMedium>
       </Block>
       <Block width='60%'>
         {texts && texts.map((text, index) =>
-          <Paragraph2 marginTop='0' marginBottom='0' key={index}>
+          <ParagraphMedium marginTop='0' marginBottom='0' key={index}>
             {text}
-          </Paragraph2>
+          </ParagraphMedium>
         )}
         {props.children &&
         <Block font='ParagraphMedium'>

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Route, Routes, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom'
 import { Block } from 'baseui/block'
-import { Paragraph1 } from 'baseui/typography'
+import { ParagraphLarge } from 'baseui/typography'
 import { Spinner } from 'baseui/icon'
 
 
@@ -112,7 +112,7 @@ const AppRoutes = (): JSX.Element => (
 
 const NotFound = () => (
   <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale4800}>
-    <Paragraph1>{intl.pageNotFound} - {useLocation().pathname}</Paragraph1>
+    <ParagraphLarge>{intl.pageNotFound} - {useLocation().pathname}</ParagraphLarge>
     <img src={notFound} alt={intl.pageNotFound} style={{ maxWidth: '65%' }} />
   </Block>
 )

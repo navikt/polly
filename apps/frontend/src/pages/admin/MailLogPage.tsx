@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {H4, H6} from 'baseui/typography'
+import {HeadingMedium, HeadingXSmall} from 'baseui/typography'
 import axios from 'axios'
 import {env} from '../../util/env'
 import {PageResponse} from '../../constants'
@@ -52,7 +52,7 @@ export const MailLogPage = () => {
   }, [limit, log.totalElements])
 
   return <>
-    <H4>{intl.mailLog}</H4>
+    <HeadingMedium>{intl.mailLog}</HeadingMedium>
     {log?.content.map((l, i) => {
       let html = l.body
       const bodyIdx = l.body.indexOf('<body>')
@@ -65,8 +65,8 @@ export const MailLogPage = () => {
       const rowNum = log.pageNumber * log.pageSize + i + 1
 
       return <Block key={i} marginBottom={theme.sizing.scale800}>
-        <H6 marginBottom={0}>#{rowNum} Tid: {moment(l.time).format('lll')} Til: {l.to}</H6>
-        <H6 marginTop={0} marginBottom={theme.sizing.scale400}>Emne: {l.subject}</H6>
+        <HeadingXSmall marginBottom={0}>#{rowNum} Tid: {moment(l.time).format('lll')} Til: {l.to}</HeadingXSmall>
+        <HeadingXSmall marginTop={0} marginBottom={theme.sizing.scale400}>Emne: {l.subject}</HeadingXSmall>
         <Card>
           <Markdown
             source={html}

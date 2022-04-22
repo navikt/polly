@@ -5,7 +5,7 @@ import {codelist} from '../service/Codelist'
 import {getDocument, updateInformationTypesDocument} from '../api'
 import {Document, DocumentFormValues, DocumentInfoTypeUse,} from '../constants'
 import shortid from 'shortid'
-import {H4} from 'baseui/typography'
+import {HeadingMedium} from 'baseui/typography'
 import {intl} from '../util'
 import {convertDocumentToFormRequest} from './DocumentCreatePage'
 
@@ -55,7 +55,7 @@ const DocumentEditPage = () => {
     <React.Fragment>
       {!isLoading && document && (
         <React.Fragment>
-          <H4>{intl.editDocument}</H4>
+          <HeadingMedium>{intl.editDocument}</HeadingMedium>
           <DocumentForm initialValues={convertToDocumentFormValues(document)} handleSubmit={handleEditDocument} />
         </React.Fragment>
 

@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect} from 'react'
 
 import {Block} from 'baseui/block'
-import {HeadingXLarge, Label2} from 'baseui/typography'
+import {HeadingXLarge, LabelMedium} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus} from '../../constants'
 import {intl, theme, useAwait} from '../../util'
@@ -25,7 +25,7 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import {Code, codelist, ListName} from '../../service/Codelist'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
@@ -33,7 +33,7 @@ import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
-import {useNavigate, useLocation} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 
 type ProcessListProps = {
   section: Section
@@ -272,7 +272,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             style={{textDecoration: 'none'}}
             href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
             <Button
-              kind={KIND.minimal}
+              kind={KIND.tertiary}
               size={ButtonSize.compact}
               icon={faFileWord}
               tooltip={intl.export}
@@ -284,7 +284,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
           {isEditable && hasAccess() && (
             <Button
               size={ButtonSize.compact}
-              kind={KIND.minimal}
+              kind={KIND.tertiary}
               icon={faPlus}
               onClick={() => setShowCreateProcessModal(true)}
             >
@@ -310,9 +310,9 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             onChange={(params: any) => navigate(genProcessPath(section, code, undefined, params.value[0].id))}/>
         </Block>
         <Block>
-          <Label2 color={theme.colors.primary} marginRight={'1rem'}>
+          <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
             {intl.filter}
-          </Label2>
+          </LabelMedium>
         </Block>
         <Block marginRight='auto'>
           {!hideTitle && <HeadingXLarge>
@@ -321,7 +321,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         </Block>
       </Block>
 
-      {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
+      {isLoadingProcessList && <Spinner $size={theme.sizing.scale2400}/>}
 
       {!isLoadingProcessList &&
       <AccordionProcess

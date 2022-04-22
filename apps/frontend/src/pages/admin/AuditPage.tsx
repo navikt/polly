@@ -8,7 +8,7 @@ import {AuditLabel as Label} from '../../components/audit/AuditComponents'
 import {getAuditLog} from '../../api/AuditApi'
 import {AuditLog} from '../../constants'
 import {AuditRecentTable} from '../../components/audit/AuditRecentTable'
-import {H4, Paragraph2} from 'baseui/typography'
+import {HeadingMedium, ParagraphMedium} from 'baseui/typography'
 import {useNavigate, useParams} from 'react-router-dom'
 
 const format = (id: string) => _.trim(id, '"')
@@ -52,7 +52,7 @@ export const AuditPage = () => {
 
   return (
     <>
-      <H4>{intl.audit}</H4>
+      <HeadingMedium>{intl.audit}</HeadingMedium>
       <Block marginBottom="1rem">
         <Label label={intl.searchId}>
           <Input size="compact" value={idInput}
@@ -63,7 +63,7 @@ export const AuditPage = () => {
         </Label>
       </Block>
 
-      {error && <Paragraph2>{_.escape(error)}</Paragraph2>}
+      {error && <ParagraphMedium>{_.escape(error)}</ParagraphMedium>}
       {idInput && <AuditView auditLog={auditLog} auditId={params.auditId} loading={loading} viewId={lookupVersion}/>}
       <AuditRecentTable show={!idInput}/>
     </>

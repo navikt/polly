@@ -8,7 +8,7 @@ import {Panel, StatelessAccordion} from "baseui/accordion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight, faEdit, faExclamationCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {convertDisclosureToFormValues, getDisclosure} from "../../api";
-import {StyledSpinnerNext} from "baseui/spinner";
+import {Spinner} from "baseui/spinner";
 import DataText from "../common/DataText";
 import {canViewAlerts} from "../../pages/AlertEventPage";
 import Button from "../common/Button";
@@ -16,7 +16,7 @@ import {useNavigate} from 'react-router-dom'
 import {SIZE as ButtonSize} from "baseui/button";
 import ModalThirdParty from "./ModalThirdPartyForm";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
-import {Paragraph2, ParagraphSmall} from "baseui/typography";
+import {ParagraphMedium, ParagraphSmall} from "baseui/typography";
 import {StyledLink} from "baseui/link";
 import LinkListProcess from "./components/LinkListProcess";
 import {codelist, ListName} from "../../service/Codelist";
@@ -171,7 +171,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                 }
               }}
             >
-              {isLoading ? <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block> :
+              {isLoading ? <Block padding={theme.sizing.scale400}><Spinner $size={theme.sizing.scale1200}/></Block> :
                 <Block $style={{
                   outline: `4px ${theme.colors.primary200} solid`
                 }}>
@@ -262,12 +262,11 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
-          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
-            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
+            <ParagraphMedium>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>

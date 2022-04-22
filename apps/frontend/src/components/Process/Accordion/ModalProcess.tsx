@@ -137,7 +137,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
-      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik
@@ -399,7 +398,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 }}>
                   <Block display='flex' justifyContent='flex-end'>
                     <Block alignSelf='flex-end'>{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                    <Button type='button' kind={KIND.minimal} onClick={onClose}>{intl.abort}</Button>
+                    <Button type='button' kind={KIND.tertiary} onClick={onClose}>{intl.abort}</Button>
                     <ModalButton type='submit'>{intl.save}</ModalButton>
                   </Block>
                 </ModalFooter>

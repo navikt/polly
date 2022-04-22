@@ -5,7 +5,7 @@ import {Block} from 'baseui/block'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 
 import {codelist, ListName} from '../../../service/Codelist'
 import {Sensitivity} from '../../InformationType/Sensitivity'
@@ -167,12 +167,11 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
-          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
-            <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy.informationType.name}</Paragraph2>
+            <ParagraphMedium>{intl.confirmDeletePolicyText} {currentPolicy.informationType.name}</ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>

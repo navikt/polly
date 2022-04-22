@@ -6,8 +6,8 @@ import {codelist} from '../service/Codelist'
 import {intl} from '../util'
 import {getInformationType, mapInfoTypeToFormVals, updateInformationType} from '../api'
 import {useNavigate, useParams} from 'react-router-dom'
-import {H4} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {HeadingMedium} from 'baseui/typography'
+import {Spinner} from 'baseui/spinner'
 
 const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = React.useState(true)
@@ -61,10 +61,10 @@ const InformationtypeEditPage = () => {
   return (
     <React.Fragment>
       {isLoading ? (
-        <StyledSpinnerNext size={30}/>
+        <Spinner $size={30}/>
       ) : (
         <React.Fragment>
-          <H4>{intl.edit}</H4>
+          <HeadingMedium>{intl.edit}</HeadingMedium>
 
           {!error && informationtype ? (
             <React.Fragment>

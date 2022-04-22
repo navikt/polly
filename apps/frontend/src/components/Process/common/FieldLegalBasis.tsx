@@ -60,7 +60,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                 <Block>
                   <Button
                     size={ButtonSize.compact}
-                    kind={KIND.minimal}
+                    kind={KIND.tertiary}
                     onClick={() => {
                       formikBag.setFieldValue('legalBasesOpen', true)
                       setSensitivityLevel(SensitivityLevel.ART6)
@@ -94,7 +94,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                 <Block>
                   <Button
                     size={ButtonSize.compact}
-                    kind={KIND.minimal}
+                    kind={KIND.tertiary}
                     onClick={() => {
                       formikBag.setFieldValue('legalBasesOpen', true)
                       setSensitivityLevel(SensitivityLevel.ART9)

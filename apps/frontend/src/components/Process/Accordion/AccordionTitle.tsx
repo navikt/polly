@@ -1,6 +1,6 @@
 import {ProcessShort} from '../../../constants'
 import {Block} from 'baseui/block'
-import {Label1} from 'baseui/typography'
+import {LabelLarge} from 'baseui/typography'
 import {intl, theme} from '../../../util'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChevronDown, faChevronRight, faEdit, faFileWord, faTrash} from '@fortawesome/free-solid-svg-icons'
@@ -27,13 +27,13 @@ const AccordionTitle = (props: AccordionTitleProps) => {
   const {process, expanded, hasAccess} = props
   return <>
     <Block ref={props.forwardRef}>
-      <Label1 color={theme.colors.primary}>
+      <LabelLarge color={theme.colors.primary}>
         {expanded ?
           <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
         <span> </span>
         <span>{process.purposes.map(p => codelist.getShortname(ListName.PURPOSE, p.code)).join(", ")}: </span>
         <span>{process.name}</span>
-      </Label1>
+      </LabelLarge>
     </Block>
     <div onClick={(e) => {
       e.stopPropagation()

@@ -128,7 +128,6 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
-      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik
@@ -275,7 +274,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
               <ModalFooter style={{borderTop: 0}}>
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                  <Button type="button" kind="minimal" onClick={() => onClose()}>{intl.abort}</Button>
+                  <Button type="button" kind="tertiary" onClick={() => onClose()}>{intl.abort}</Button>
                   <ModalButton type="submit">{intl.save}</ModalButton>
                 </Block>
               </ModalFooter>

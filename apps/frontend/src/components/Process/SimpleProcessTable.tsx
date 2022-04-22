@@ -62,7 +62,7 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[],title: str
     <Block>
       <Block display="flex" justifyContent="flex-end">
         <Button
-          kind={KIND.minimal}
+          kind={KIND.tertiary}
           size={ButtonSize.compact}
           icon={faFileExcel}
           tooltip={intl.export}
