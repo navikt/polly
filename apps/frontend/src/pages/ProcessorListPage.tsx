@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {convertProcessorToFormValues, createProcessor, getProcessorsByPageAndPageSize} from "../api/ProcessorApi";
 import {Processor, ProcessorFormValues} from "../constants";
 import {intl, theme} from "../util";
-import {H4, LabelLarge} from "baseui/typography";
+import {HeadingMedium, LabelLarge} from "baseui/typography";
 import {Block} from "baseui/block";
 import Button from "../components/common/Button";
 import {user} from "../service/User";
@@ -50,7 +50,7 @@ export const ProcessorListPage = () => {
   return isLoading ?
     (<Spinner size={theme.sizing.scale1200}/>) :
     (<>
-        <H4>{intl.processors}</H4>
+        <HeadingMedium>{intl.processors}</HeadingMedium>
         <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Block>
             <LabelLarge>{intl.processorSelect}</LabelLarge>

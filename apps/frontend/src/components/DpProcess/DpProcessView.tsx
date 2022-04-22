@@ -4,7 +4,7 @@ import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
 import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
 import { StyledSpinnerNext } from 'baseui/spinner'
 import { Block } from 'baseui/block'
-import { H4 } from 'baseui/typography'
+import { HeadingMedium } from 'baseui/typography'
 import { intl, theme } from '../../util'
 import { DotTag, DotTags } from '../common/DotTag'
 import DataText from '../common/DataText'
@@ -105,7 +105,7 @@ const DpProcessView = () => {
       {!isLoading ? (
         <>
           <Block display="flex" justifyContent={"space-between"} alignItems={"center"}>
-            <H4>{dpProcess?.name}</H4>
+            <HeadingMedium>{dpProcess?.name}</HeadingMedium>
             {user.canWrite() && /*!env.disableDpProcess &&*/
               <Block>
                 <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>

@@ -7,7 +7,7 @@ import {Select, TYPE} from 'baseui/select'
 import {intl, theme} from '../../util'
 import {getSettings, writeSettings} from '../../api/SettingsApi'
 import {StyledSpinnerNext} from 'baseui/spinner'
-import {H4, LabelMedium} from 'baseui/typography'
+import {HeadingMedium, LabelMedium} from 'baseui/typography'
 import {Button} from 'baseui/button'
 import {StatefulTextarea} from 'baseui/textarea'
 import {Markdown} from '../../components/common/Markdown'
@@ -42,7 +42,7 @@ export const SettingsPage = () => {
 
   return (
     <Block>
-      <H4>{intl.settings}</H4>
+      <HeadingMedium>{intl.settings}</HeadingMedium>
       {loading ? <StyledSpinnerNext size={40}/> :
         error || !settings ? {error} :
           <Block>

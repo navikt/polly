@@ -12,7 +12,7 @@ import CodeListTable from '../../components/CodeList/CodeListStyledTable'
 import {intl, theme, useAwait, useForceUpdate} from '../../util'
 import {createCodelist} from '../../api'
 import {CodeListFormValues} from '../../constants'
-import {H4} from 'baseui/typography'
+import {HeadingMedium} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import Button from '../../components/common/Button'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
@@ -64,7 +64,7 @@ const CodeListPage = () => {
   }
 
   return <>
-    <H4>{intl.manageCodeListTitle}</H4>
+    <HeadingMedium>{intl.manageCodeListTitle}</HeadingMedium>
     {loading ? <StyledSpinnerNext/> : (
       <Block display='flex' justifyContent='space-between' width='100%'>
         <Block width='600px'>

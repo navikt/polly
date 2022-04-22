@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {intl, useAwait} from '../util'
 import {codelist, ListName} from '../service/Codelist'
-import {H4} from 'baseui/typography'
+import {HeadingMedium} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import AlphabeticList from '../components/common/AlphabeticList'
 
@@ -13,7 +13,7 @@ const codelistPage = (listName: ListName, baseUrl: string, title?: string) => ()
 
   return (
     <>
-      {title && <H4>{title}</H4>}
+      {title && <HeadingMedium>{title}</HeadingMedium>}
 
       {isLoading && <StyledSpinnerNext/>}
 

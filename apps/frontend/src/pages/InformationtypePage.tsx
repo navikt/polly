@@ -4,7 +4,7 @@ import {Block} from 'baseui/block'
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useNavigate, useParams} from 'react-router-dom'
-import {H4} from 'baseui/typography'
+import {HeadingMedium} from 'baseui/typography'
 
 import {InformationtypeMetadata} from '../components/InformationType/InformationtypeMetadata/'
 import {intl, theme} from '../util'
@@ -76,7 +76,7 @@ const InformationtypePage = () => {
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <H4 marginTop='0'>{intl.informationTypes}</H4>
+        <HeadingMedium marginTop='0'>{intl.informationTypes}</HeadingMedium>
         <Block>
           {user.canWrite() &&
           <Button kind="outline" onClick={() => navigate('/informationtype/create')}>

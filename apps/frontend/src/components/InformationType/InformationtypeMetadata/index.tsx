@@ -10,7 +10,7 @@ import InformationtypePolicyTable from './InformationtypePolicyTable'
 import TableDisclosure from '../../common/TableDisclosure'
 import { DocumentTable } from './DocumentTable'
 import { Tab } from 'baseui/tabs'
-import { H4, ParagraphSmall } from 'baseui/typography'
+import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
 import { user } from '../../../service/User'
 import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
 import Button from '../../common/Button'
@@ -77,7 +77,7 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
       {props.informationtype && (
         <>
           <Block display="flex" justifyContent="space-between">
-            <H4 marginTop="0">{props.informationtype.name}</H4>
+            <HeadingMedium marginTop="0">{props.informationtype.name}</HeadingMedium>
             {user.canWrite() && (
               <InformationTypeBannerButtons id={props.informationtype.id} />
             )}

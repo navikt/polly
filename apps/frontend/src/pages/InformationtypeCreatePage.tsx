@@ -8,7 +8,7 @@ import {user} from '../service/User'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
 import {createInformationType, mapInfoTypeToFormVals} from '../api'
 import {useNavigate} from 'react-router-dom'
-import {H4} from 'baseui/typography'
+import {HeadingMedium} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 
 const InformationtypeCreatePage = () => {
@@ -41,7 +41,7 @@ const InformationtypeCreatePage = () => {
               <StyledSpinnerNext size={30}/>
             ) : (
               <>
-                <H4>{intl.informationTypeCreate}</H4>
+                <HeadingMedium>{intl.informationTypeCreate}</HeadingMedium>
                 {codelist ? (
                   <>
                     <InformationtypeForm

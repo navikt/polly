@@ -10,7 +10,7 @@ import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
 import {Notification} from 'baseui/notification'
-import {H4, LabelMedium, ParagraphMedium} from 'baseui/typography'
+import {HeadingMedium, LabelMedium, ParagraphMedium} from 'baseui/typography'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
 import {Tab} from 'baseui/tabs'
 import {CustomizedTabs} from '../components/common/CustomizedTabs'
@@ -80,7 +80,7 @@ const DocumentPage = () => {
     <>
       <>
         <Block width="100%">
-          <H4>{intl.documents}</H4>
+          <HeadingMedium>{intl.documents}</HeadingMedium>
         </Block>
         <Block display="flex" flexDirection="row-reverse" marginTop="10px">
           {user.canWrite() && (

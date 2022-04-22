@@ -3,7 +3,7 @@ import DocumentForm from '../components/document/component/DocumentForm'
 import {DocumentFormValues} from '../constants'
 import {createInformationTypesDocument} from '../api'
 import {useNavigate} from 'react-router-dom'
-import {H4} from 'baseui/typography'
+import {HeadingMedium} from 'baseui/typography'
 import {intl} from '../util'
 
 let initialCreateDocumentFormValues: DocumentFormValues = {
@@ -40,7 +40,7 @@ const DocumentCreatePage = () => {
 
   return (
     <React.Fragment>
-      <H4>{intl.createDocument}</H4>
+      <HeadingMedium>{intl.createDocument}</HeadingMedium>
       <DocumentForm initialValues={initialCreateDocumentFormValues} handleSubmit={handleCreateDocument}/>
     </React.Fragment>
   )
