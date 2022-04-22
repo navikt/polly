@@ -183,7 +183,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                 <ModalFooter>
                   <Block display="flex" justifyContent="flex-end">
                     <Block alignSelf="flex-end">{props.error && <p>{props.error}</p>}</Block>
-                    <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
+                    <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>{intl.abort}</Button>
                     <ModalButton type="submit">{intl.add}</ModalButton>
                   </Block>
                 </ModalFooter>

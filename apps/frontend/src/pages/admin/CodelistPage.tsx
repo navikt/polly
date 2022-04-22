@@ -81,7 +81,7 @@ const CodeListPage = () => {
             tooltip={intl.addNew}
             icon={faPlus}
             size={ButtonSize.compact}
-            kind={KIND.minimal}
+            kind={KIND.tertiary}
             onClick={() => setCreateCodeListModal(!createCodeListModal)}
           >
             {intl.createNewCodeList}

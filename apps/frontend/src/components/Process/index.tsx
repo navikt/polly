@@ -272,7 +272,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             style={{textDecoration: 'none'}}
             href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
             <Button
-              kind={KIND.minimal}
+              kind={KIND.tertiary}
               size={ButtonSize.compact}
               icon={faFileWord}
               tooltip={intl.export}
@@ -284,7 +284,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
           {isEditable && hasAccess() && (
             <Button
               size={ButtonSize.compact}
-              kind={KIND.minimal}
+              kind={KIND.tertiary}
               icon={faPlus}
               onClick={() => setShowCreateProcessModal(true)}
             >

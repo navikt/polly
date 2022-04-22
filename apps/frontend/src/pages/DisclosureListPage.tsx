@@ -98,7 +98,7 @@ export const DisclosureListPage = () => {
         {user.canWrite() &&
         <Button
           size="compact"
-          kind={KIND.minimal}
+          kind={KIND.tertiary}
           onClick={() => setShowCreateModal(true)}
           startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
         >

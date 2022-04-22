@@ -148,7 +148,7 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton, sensiti
             <Error fieldName="description"/>
 
             <Block {...rowBlockProps} justifyContent="flex-end">
-              <Button type='button' kind={KIND.minimal} size={ButtonSize.compact} onClick={() => hideCard()}>
+              <Button type='button' kind={KIND.tertiary} size={ButtonSize.compact} onClick={() => hideCard()}>
                 {intl.abort}
               </Button>
               <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>

@@ -111,7 +111,7 @@ const LangDropdown = (props: {setLang: (lang: string) => void}) => {
         />
       }
     >
-      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="minimal">
+      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="tertiary">
         <FlagWithName langCode={intl.getLanguage()}/>
       </Button>
     </StatefulPopover>

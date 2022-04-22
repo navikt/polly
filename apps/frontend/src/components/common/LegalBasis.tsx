@@ -125,7 +125,7 @@ export const ListLegalBases = (
               <Block minWidth="100px">
                 <Button
                   type="button"
-                  kind="minimal"
+                  kind="tertiary"
                   size="compact"
                   onClick={() => {
                     onEdit(legalBases?.findIndex(l => l.key === legalBasis.key))
@@ -135,7 +135,7 @@ export const ListLegalBases = (
                 </Button>
                 <Button
                   type="button"
-                  kind="minimal"
+                  kind="tertiary"
                   size="compact"
                   onClick={() => {
                     onRemove(legalBases?.findIndex(l => l.key === legalBasis.key))
