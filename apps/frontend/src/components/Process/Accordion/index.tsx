@@ -294,7 +294,6 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           <Modal
             isOpen={showRevisionModal}
             size={SIZE.auto}
-            unstable_ModalBackdropScroll={true}
             // role='dialog'
             onClose={closeRevision}
           >

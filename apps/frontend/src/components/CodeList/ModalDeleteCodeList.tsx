@@ -22,7 +22,6 @@ const DeleteCodeListModal = ({title, initialValues, isOpen, errorOnDelete, submi
       isOpen={isOpen}
       autoFocus
       animate
-      unstable_ModalBackdropScroll={true}
       size="default"
     >
       <ModalHeader>{title}</ModalHeader>

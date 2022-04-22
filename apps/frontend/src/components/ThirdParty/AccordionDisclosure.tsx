@@ -262,7 +262,6 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
-          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

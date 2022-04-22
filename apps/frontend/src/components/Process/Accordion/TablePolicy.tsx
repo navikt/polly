@@ -167,7 +167,6 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
-          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

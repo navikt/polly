@@ -42,7 +42,6 @@ const CreateCodeListModal = ({isOpen, title, list, errorOnCreate, onClose, submi
       size={SIZE.auto}
       role={ROLE.dialog}
       isOpen={isOpen}
-      unstable_ModalBackdropScroll={true}
       onClose={() => onClose()}
     >
       <Block {...modalBlockProps}>

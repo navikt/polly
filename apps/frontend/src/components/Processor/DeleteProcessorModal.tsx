@@ -24,7 +24,6 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
       onClose={onClose}
       isOpen={isOpen}
       animate
-      unstable_ModalBackdropScroll={true}
       size='default'
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

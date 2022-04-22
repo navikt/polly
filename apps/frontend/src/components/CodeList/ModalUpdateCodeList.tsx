@@ -43,7 +43,6 @@ const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClo
       isOpen={isOpen}
       animate
       autoFocus
-      unstable_ModalBackdropScroll={true}
       size={SIZE.auto}
       role={ROLE.dialog}
     >

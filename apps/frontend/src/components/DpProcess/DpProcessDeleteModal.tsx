@@ -11,7 +11,6 @@ export const DpProcessDeleteModal = (props: {errorOnDeletion:string, isOpen: boo
       <Modal
         autoFocus
         animate
-        unstable_ModalBackdropScroll={true}
         size="default"
         isOpen={props.isOpen}
         onClose={props.onClose}

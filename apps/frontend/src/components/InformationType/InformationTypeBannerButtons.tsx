@@ -50,7 +50,6 @@ export const DeleteModal = (props: { id: string, showDeleteModal: boolean, close
       onClose={props.closeModal}
       isOpen={props.showDeleteModal}
       animate
-      unstable_ModalBackdropScroll={true}
       size="default"
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

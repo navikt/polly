@@ -137,7 +137,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
-      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik

@@ -77,7 +77,6 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
-      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik

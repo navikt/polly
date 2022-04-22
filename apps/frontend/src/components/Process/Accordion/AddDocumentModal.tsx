@@ -124,7 +124,6 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
       onClose={onCloseModal} isOpen={props.isOpen}
       animate
       size={SIZE.auto}
-      unstable_ModalBackdropScroll={true}
       role={ROLE.dialog}
     >
       {loading && <Spinner/>}

@@ -136,7 +136,6 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
-      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik
