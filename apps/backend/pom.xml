@@ -29,7 +29,7 @@
         <simpleclient.version>0.15.0</simpleclient.version>
         <nav-vault-jdbc.version>1.3.9</nav-vault-jdbc.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
-        <docx4j.version>11.3.2</docx4j.version>
+        <docx4j.version>11.4.7</docx4j.version>
 
         <microsoft-graph.version>5.25.0</microsoft-graph.version>
         <msal4j.version>1.12.0</msal4j.version>
