@@ -72,9 +72,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
     })
   }
 
-  return <Modal onClose={onCloseModal} isOpen={props.isOpen} animate size={SIZE.auto}
-                unstable_ModalBackdropScroll role={ROLE.dialog}
-  >
+  return <Modal onClose={onCloseModal} isOpen={props.isOpen} animate size={SIZE.auto} role={ROLE.dialog}>
     <Formik onSubmit={props.submit}
             initialValues={{
               informationTypes: [],
@@ -183,7 +181,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                 <ModalFooter>
                   <Block display="flex" justifyContent="flex-end">
                     <Block alignSelf="flex-end">{props.error && <p>{props.error}</p>}</Block>
-                    <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
+                    <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>{intl.abort}</Button>
                     <ModalButton type="submit">{intl.add}</ModalButton>
                   </Block>
                 </ModalFooter>

@@ -7,7 +7,7 @@ import {intl, theme} from '../util'
 import {user} from '../service/User'
 import {StyledLink} from 'baseui/link'
 import {StatefulPopover} from 'baseui/popover'
-import {Label2} from 'baseui/typography'
+import {LabelMedium} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faUser} from '@fortawesome/free-solid-svg-icons'
 import {OptionProfile, StatefulMenu} from 'baseui/menu'
@@ -33,8 +33,8 @@ const LoggedInHeader = () => {
     <StatefulPopover
       content={
         <Block padding={theme.sizing.scale400}>
-          <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
-          <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
+          <LabelMedium {...blockStyle}>{intl.name}: {user.getName()}</LabelMedium>
+          <LabelMedium {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</LabelMedium>
           <Block {...blockStyle}>
             <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>
               {intl.logout}
@@ -111,7 +111,7 @@ const LangDropdown = (props: {setLang: (lang: string) => void}) => {
         />
       }
     >
-      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="minimal">
+      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="tertiary">
         <FlagWithName langCode={intl.getLanguage()}/>
       </Button>
     </StatefulPopover>

@@ -1,4 +1,4 @@
-import {Label1, Label3} from 'baseui/typography'
+import {LabelLarge, LabelSmall} from 'baseui/typography'
 import React, {useEffect, useState} from 'react'
 import {getAudits} from '../../api/AuditApi'
 import {AuditItem, ObjectType, PageResponse} from '../../constants'
@@ -64,9 +64,9 @@ export const AuditRecentTable = (props: { show: boolean }) => {
   return (
     <>
       <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
-        <Label1>{intl.lastChanges}</Label1>
+        <LabelLarge>{intl.lastChanges}</LabelLarge>
         <Block width="300px" display="flex" justifyContent="space-between">
-          <Label3 alignSelf="center" marginRight=".5rem">{intl.table}: </Label3>
+          <LabelSmall alignSelf="center" marginRight=".5rem">{intl.table}: </LabelSmall>
           <StatefulSelect size="compact" options={Object.keys(ObjectType).map(ot => ({id: ot, label: ot}))} onChange={p => setTable(p?.value[0]?.id as ObjectType)}/>
         </Block>
       </Block>

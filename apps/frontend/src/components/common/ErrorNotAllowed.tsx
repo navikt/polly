@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { KIND, Notification } from 'baseui/notification'
-import { Paragraph2 } from 'baseui/typography'
+import { ParagraphMedium } from 'baseui/typography'
 import { intl } from '../../util'
 
 const ErrorNotAllowed = () => {
@@ -12,7 +12,7 @@ const ErrorNotAllowed = () => {
                 Body: { style: { marginTop: '2rem', width: 'auto' } }
             }}
         >
-            <Paragraph2>{intl.notAllowedMessage}</Paragraph2>
+            <ParagraphMedium>{intl.notAllowedMessage}</ParagraphMedium>
         </Notification>
     )
 }

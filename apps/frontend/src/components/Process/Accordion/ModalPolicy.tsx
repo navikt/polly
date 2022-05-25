@@ -93,7 +93,8 @@ const FieldLegalBasesUse = (props: {legalBasesUse: LegalBasesUse}) => {
           <Block width="100%">
             <RadioGroup
               value={value}
-              align="vertical" isError={!!form.errors.legalBasesUse && !!form.submitCount}
+              align="vertical" 
+              error={(!!form.errors.legalBasesUse && !!form.submitCount)}
               onChange={e => {
                 const selected = (e.target as HTMLInputElement).value
                 form.setFieldValue('legalBasesUse', selected)
@@ -136,7 +137,6 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
-      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik
@@ -210,7 +210,7 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
                 <ModalFooter>
                   <Block display="flex" justifyContent="flex-end">
                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                    <Button type="button" kind={KIND.minimal} onClick={onClose}>{intl.abort}</Button>
+                    <Button type="button" kind={KIND.tertiary} onClick={onClose}>{intl.abort}</Button>
                     <ModalButton type="submit">{intl.save}</ModalButton>
                   </Block>
                 </ModalFooter>

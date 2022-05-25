@@ -13,7 +13,7 @@ import {Sensitivity} from '../components/InformationType/Sensitivity'
 import Button from '../components/common/Button'
 import {faChevronDown, faTimes} from '@fortawesome/free-solid-svg-icons'
 import {StatefulSelect} from 'baseui/select'
-import {HeadingLarge, Label2} from 'baseui/typography'
+import {HeadingLarge, LabelMedium} from 'baseui/typography'
 import {useParams} from 'react-router-dom'
 import {user} from '../service/User'
 import {codelist} from '../service/Codelist'
@@ -118,7 +118,7 @@ export const AlertEventPage = () => {
       <Block display='flex' width='100%' justifyContent='space-between' alignItems='center'>
         <HeadingLarge>{intl.alerts}</HeadingLarge>
         {(state.informationTypeId || state.processId || state.disclosureId) && <Block display='flex' alignItems='center'>
-          <Label2>{intl.filter}: </Label2>
+          <LabelMedium>{intl.filter}: </LabelMedium>
           <Button kind='secondary'
                   size='compact' marginLeft marginRight
                   iconEnd={faTimes} onClick={() => dispatch({type: 'OBJECT_FILTER'})}
@@ -128,7 +128,7 @@ export const AlertEventPage = () => {
       <Block width='100%' display='flex' marginBottom={theme.sizing.scale200}>
 
         <Block width='50%' display='flex' justifyContent='flex-start' alignItems='center'>
-          <Label2 marginRight={theme.sizing.scale600}>{intl.type}: </Label2>
+          <LabelMedium marginRight={theme.sizing.scale600}>{intl.type}: </LabelMedium>
           <StatefulSelect
             options={Object.values(AlertEventType).map(t => ({id: t, label: intl[t]}))}
             onChange={params => setType(params?.option?.id as AlertEventType)}
@@ -136,7 +136,7 @@ export const AlertEventPage = () => {
         </Block>
 
         <Block width='50%' display='flex' justifyContent='flex-end' alignItems='center'>
-          <Label2 marginRight={theme.sizing.scale600}>{intl.level}: </Label2>
+          <LabelMedium marginRight={theme.sizing.scale600}>{intl.level}: </LabelMedium>
           {levelButton(intl.all)}
           {levelButton(intl.INFO, AlertEventLevel.INFO)}
           {levelButton(intl.WARNING, AlertEventLevel.WARNING)}

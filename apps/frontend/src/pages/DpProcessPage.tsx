@@ -9,10 +9,10 @@ import DpProcessTable from "../components/DpProcess/DpProcessTable";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {Block} from "baseui/block";
-import {H4} from "baseui/typography";
+import {HeadingMedium} from "baseui/typography";
 import {user} from "../service/User";
 import {useNavigate} from "react-router-dom";
-import {StyledSpinnerNext} from "baseui/spinner";
+import {Spinner} from "baseui/spinner";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
@@ -51,7 +51,7 @@ const DpProcessPage = () => {
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <H4 marginTop='0'>{intl.dpProcessPageTitle}</H4>
+        <HeadingMedium marginTop='0'>{intl.dpProcessPageTitle}</HeadingMedium>
         <Block>
           {user.canWrite() && /*!env.disableDpProcess &&*/
           <Button kind="outline" onClick={() => toggleModal()}>
@@ -67,7 +67,7 @@ const DpProcessPage = () => {
         submit={handleCreateDpProcess}
         errorOnCreate={errorDpProcessModal}
       />
-      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses}/> : <StyledSpinnerNext size={30}/> }
+      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses}/> : <Spinner $size={30}/> }
     </>
   )
 }

@@ -77,7 +77,6 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
-      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik
@@ -199,7 +198,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     <Block alignSelf='flex-end'>
                       {props.errorOnCreate && <p>{props.errorOnCreate}</p>}
                     </Block>
-                    <Button type='button' kind={KIND.minimal} onClick={props.onClose}>{intl.abort}</Button>
+                    <Button type='button' kind={KIND.tertiary} onClick={props.onClose}>{intl.abort}</Button>
                     <ModalButton type='submit'>{intl.save}</ModalButton>
                   </Block>
                 </ModalFooter>

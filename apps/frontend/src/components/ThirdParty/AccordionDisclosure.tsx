@@ -1,30 +1,30 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {Disclosure, DisclosureAbroad, DisclosureAlert, DisclosureFormValues, ObjectType} from "../../constants";
-import {getAlertForDisclosure} from "../../api/AlertApi";
-import {intl, theme} from "../../util";
-import {Block} from "baseui/block";
-import {Panel, StatelessAccordion} from "baseui/accordion";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronRight, faEdit, faExclamationCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {convertDisclosureToFormValues, getDisclosure} from "../../api";
-import {StyledSpinnerNext} from "baseui/spinner";
+import { useEffect, useState } from 'react'
+import { Disclosure, DisclosureAbroad, DisclosureAlert, DisclosureFormValues, ObjectType } from "../../constants";
+import { getAlertForDisclosure } from "../../api/AlertApi";
+import { intl, theme } from "../../util";
+import { Block } from "baseui/block";
+import { Panel, StatelessAccordion } from "baseui/accordion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight, faEdit, faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { convertDisclosureToFormValues, getDisclosure } from "../../api";
+import { Spinner } from "baseui/spinner";
 import DataText from "../common/DataText";
-import {canViewAlerts} from "../../pages/AlertEventPage";
+import { canViewAlerts } from "../../pages/AlertEventPage";
 import Button from "../common/Button";
-import {useNavigate} from 'react-router-dom'
-import {SIZE as ButtonSize} from "baseui/button";
+import { useNavigate } from 'react-router-dom'
+import { SIZE as ButtonSize } from "baseui/button";
 import ModalThirdParty from "./ModalThirdPartyForm";
-import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
-import {Paragraph2, ParagraphSmall} from "baseui/typography";
-import {StyledLink} from "baseui/link";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
+import { ParagraphMedium, ParagraphSmall } from "baseui/typography";
+import { StyledLink } from "baseui/link";
 import LinkListProcess from "./components/LinkListProcess";
-import {codelist, ListName} from "../../service/Codelist";
-import {LegalBasisView} from "../common/LegalBasis";
-import {shortenLinksInText} from "../../util/helper-functions";
-import {user} from "../../service/User";
+import { codelist, ListName } from "../../service/Codelist";
+import { LegalBasisView } from "../common/LegalBasis";
+import { shortenLinksInText } from "../../util/helper-functions";
+import { user } from "../../service/User";
 import LinkListInformationType from "./components/LinkListInformationType";
-import {lastModifiedDate} from "../../util/date-formatter";
+import { lastModifiedDate } from "../../util/date-formatter";
 
 
 type AccordionDisclosureProps = {
@@ -38,7 +38,7 @@ type AccordionDisclosureProps = {
   expand?: string
 };
 
-type Alerts = {[k: string]: DisclosureAlert}
+type Alerts = { [k: string]: DisclosureAlert }
 
 const showAbroad = (abroad: DisclosureAbroad) => {
   if (abroad.abroad === true) {
@@ -49,18 +49,18 @@ const showAbroad = (abroad: DisclosureAbroad) => {
             {shortenLinksInText(abroad.refToAgreement)}
           </Block>
         </DataText>
-        {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
+        {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea} />}
       </>
     } else {
       return <>
-        <DataText label={intl.deliverAbroad} children={intl.yes}/>
-        {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea}/>}
+        <DataText label={intl.deliverAbroad} children={intl.yes} />
+        {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea} />}
       </>
     }
   } else if (abroad.abroad === false) {
-    return <DataText label={intl.deliverAbroad} text={intl.no}/>
+    return <DataText label={intl.deliverAbroad} text={intl.no} />
   } else {
-    return <DataText label={intl.deliverAbroad} text={intl.unclarified}/>
+    return <DataText label={intl.deliverAbroad} text={intl.unclarified} />
   }
 }
 
@@ -73,7 +73,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   const [hasAlert, setHasAlert] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<React.Key[]>(props.expand ? [props.expand] : [])
 
-  const {disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal} = props
+  const { disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal } = props
 
   useEffect(() => {
     props.expand && renewDisclosureDetails(props.expand)
@@ -105,7 +105,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
             <Panel
               title={
                 <Block display={"flex"} width={"100%"}>
-                  <Block><FontAwesomeIcon icon={faChevronRight}/></Block>
+                  <Block><FontAwesomeIcon icon={faChevronRight} /></Block>
                   <Block marginLeft={"5px"}>{d.name}</Block>
                   <Block marginLeft={"auto"}>
                     <div onClick={(e) => {
@@ -114,16 +114,16 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                       <>{d.id === expanded[0] ? editable &&
                         <>
                           {selectedDisclosure && hasAlert && canViewAlerts() &&
-                          <Button
-                            kind={'outline'}
-                            size={ButtonSize.compact}
-                            icon={faExclamationCircle}
-                            marginRight
-                            tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
-                            onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
-                          >
-                            {intl.alerts}
-                          </Button>
+                            <Button
+                              kind={'outline'}
+                              size={ButtonSize.compact}
+                              icon={faExclamationCircle}
+                              marginRight
+                              tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                              onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                            >
+                              {intl.alerts}
+                            </Button>
                           }
                           {user.isLoggedIn() && (
                             <>
@@ -171,15 +171,15 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                 }
               }}
             >
-              {isLoading ? <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block> :
+              {isLoading ? <Block padding={theme.sizing.scale400}><Spinner $size={theme.sizing.scale1200} /></Block> :
                 <Block $style={{
                   outline: `4px ${theme.colors.primary200} solid`
                 }}>
                   <Block padding={theme.sizing.scale800}>
                     <Block width='100%'>
-                      <DataText label={intl.disclosureName} text={selectedDisclosure?.name}/>
-                      <DataText label={intl.disclosurePurpose} text={selectedDisclosure?.recipientPurpose}/>
-                      <DataText label={intl.additionalDescription} text={selectedDisclosure?.description}/>
+                      <DataText label={intl.disclosureName} text={selectedDisclosure?.name} />
+                      <DataText label={intl.disclosurePurpose} text={selectedDisclosure?.recipientPurpose} />
+                      <DataText label={intl.additionalDescription} text={selectedDisclosure?.description} />
 
                       <DataText
                         label={intl.relatedProcesses}
@@ -198,7 +198,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                         children={
                           selectedDisclosure?.documentId ?
                             <StyledLink href={`/document/${selectedDisclosure?.documentId}`}
-                                        target="_blank" rel="noopener noreferrer">
+                              target="_blank" rel="noopener noreferrer">
                               {selectedDisclosure?.document?.name}
                             </StyledLink>
                             : <>{intl.emptyMessage}</>
@@ -208,15 +208,15 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                       {selectedDisclosure?.legalBases.length ?
                         <DataText label={intl.legalBasis} text={""}>
                           {selectedDisclosure
-                          .legalBases
-                          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code))
-                          .localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+                            .legalBases
+                            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code))
+                              .localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
                             .map((legalBasis, index) =>
-                              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+                              <Block key={index}><LegalBasisView legalBasis={legalBasis} /></Block>
                             )}
                         </DataText> :
                         <>
-                          <DataText label={intl.legalBasis} text={intl.emptyMessage}/>
+                          <DataText label={intl.legalBasis} text={intl.emptyMessage} />
                         </>
                       }
                     </Block>
@@ -225,7 +225,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                   <Block display='flex' justifyContent='flex-end' marginBottom={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
                     <ParagraphSmall>
                       {selectedDisclosure &&
-                      <i>{intl.formatString(intl.lastModified, selectedDisclosure?.changeStamp?.lastModifiedBy, lastModifiedDate(selectedDisclosure?.changeStamp?.lastModifiedDate))}</i>
+                        <i>{intl.formatString(intl.lastModified, selectedDisclosure?.changeStamp?.lastModifiedBy, lastModifiedDate(selectedDisclosure?.changeStamp?.lastModifiedDate))}</i>
                       }
                     </ParagraphSmall>
                   </Block>
@@ -262,12 +262,11 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
-          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
-            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</Paragraph2>
+            <ParagraphMedium>{intl.confirmDeletePolicyText} {selectedDisclosure?.name}</ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>
@@ -283,8 +282,15 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                 {intl.abort}
               </Button>
               <Button onClick={() => {
-                if (selectedDisclosure)
-                  submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+                if (selectedDisclosure && submitDeleteDisclosure) {
+                  submitDeleteDisclosure(selectedDisclosure).then((res) => {
+                    if (res) {
+                      setShowDeleteModal(false)
+                    } else {
+                      setShowDeleteModal(true)
+                    }
+                  })
+                }
               }}
               >{intl.delete}</Button>
             </Block>

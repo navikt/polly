@@ -1,6 +1,6 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
 import {intl, theme} from '../../../util'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import {Block} from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
@@ -24,18 +24,17 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
       onClose={onClose}
       isOpen={isOpen}
       animate
-      unstable_ModalBackdropScroll={true}
       size='default'
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
-        <Paragraph2>{intl.deleteProcessText}</Paragraph2>
-        {!process.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {process.name}</Paragraph2>}
+        <ParagraphMedium>{intl.deleteProcessText}</ParagraphMedium>
+        {!process.policies.length && <ParagraphMedium>{intl.confirmDeleteProcessText} {process.name}</ParagraphMedium>}
         {!!process.policies.length &&
-        <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</Paragraph2>}
+        <ParagraphMedium>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</ParagraphMedium>}
 
         {!!disclosures.length &&
-        <Paragraph2>{intl.deleteProcessDisclosureError}</Paragraph2>}
+        <ParagraphMedium>{intl.deleteProcessDisclosureError}</ParagraphMedium>}
       </ModalBody>
 
       <ModalFooter>

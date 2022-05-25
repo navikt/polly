@@ -9,7 +9,7 @@ import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
 import TextWithLabel from "../common/TextWithLabel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {H4, ParagraphSmall} from "baseui/typography";
+import {HeadingMedium, ParagraphSmall} from "baseui/typography";
 import {user} from "../../service/User";
 import {Spinner} from "../common/Spinner";
 import {boolToText} from "../common/Radio";
@@ -108,7 +108,7 @@ const ProcessorView = () => {
   return (
     <>
       <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
-        <H4 marginTop="0">{currentProcessor?.name}</H4>
+        <HeadingMedium marginTop="0">{currentProcessor?.name}</HeadingMedium>
         <Block marginTop={'auto'}>
           {hasAccess() && (
             <>

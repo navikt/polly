@@ -11,7 +11,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {Heading, HeadingLevel} from 'baseui/heading'
 import {useQueryParam} from '../../util/hooks'
-import {Paragraph1} from 'baseui/typography'
+import {ParagraphLarge} from 'baseui/typography'
 import {toggleOverride} from '../common/Accordion'
 
 type InformationTypeAccordionProps = {
@@ -98,11 +98,11 @@ const ListCategoryInformationtype = ({categoryUsages}: InformationTypeAccordionP
 
   return (
     <>
-      {categoryNotInUse && <Paragraph1 marginBottom={theme.sizing.scale1200}>
+      {categoryNotInUse && <ParagraphLarge marginBottom={theme.sizing.scale1200}>
         <FontAwesomeIcon icon={faExclamationTriangle} color={theme.colors.negative400}/>
         <Block marginRight={theme.sizing.scale200} display='inline'/>
         {intl.formatString(intl.categoryNotInUse, codelist.getShortname(ListName.CATEGORY, category!))}
-      </Paragraph1>}
+      </ParagraphLarge>}
 
       <Block>
         <HeadingLevel>

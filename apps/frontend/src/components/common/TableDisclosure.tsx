@@ -9,7 +9,7 @@ import RouteLink from './RouteLink'
 import {KIND, SIZE} from 'baseui/button'
 import {faEdit, faExclamationCircle, faTrash} from '@fortawesome/free-solid-svg-icons'
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import {Block} from 'baseui/block'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 import {convertDisclosureToFormValues} from '../../api'
@@ -101,12 +101,11 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
-          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
-            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure && selectedDisclosure.recipient.code}</Paragraph2>
+            <ParagraphMedium>{intl.confirmDeletePolicyText} {selectedDisclosure && selectedDisclosure.recipient.code}</ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>
@@ -120,9 +119,16 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                 {intl.abort}
               </Button>
               <Button onClick={() => {
-                if (selectedDisclosure)
-                  submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
-              }}
+                if (selectedDisclosure && submitDeleteDisclosure) {
+                  submitDeleteDisclosure(selectedDisclosure).then((res) => {
+                    if (res) {
+                      setShowDeleteModal(false)
+                    } else {
+                      setShowDeleteModal(true)
+                    }
+                  })
+                }
+                }}
               >{intl.delete}</Button>
             </Block>
           </ModalFooter>

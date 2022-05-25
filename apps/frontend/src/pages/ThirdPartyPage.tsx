@@ -6,12 +6,12 @@ import {codelist, ListName} from '../service/Codelist'
 import {Plus} from 'baseui/icon'
 import {Block} from 'baseui/block'
 import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure} from '../api'
-import {H5, Paragraph2} from 'baseui/typography'
+import {HeadingMedium, ParagraphMedium} from 'baseui/typography'
 import {Button, KIND} from 'baseui/button'
 import {user} from '../service/User'
 import {Disclosure, DisclosureFormValues, DpProcess, InformationType} from '../constants'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import {Spinner} from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import ProcessList from '../components/Process'
 import {Section} from './ProcessPage'
@@ -118,13 +118,13 @@ const ThirdPartyPage = () => {
 
   return (
     <>
-      {isLoading && <StyledSpinnerNext/>}
+      {isLoading && <Spinner/>}
 
       {!isLoading && codelist && (
         <>
           {params.thirdPartyCode && <Block marginBottom="3rem">
-            <H5>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</H5>
-            <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</Paragraph2>
+            <HeadingMedium>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</HeadingMedium>
+            <ParagraphMedium>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</ParagraphMedium>
           </Block>}
 
 
@@ -143,7 +143,7 @@ const ThirdPartyPage = () => {
                 {user.canWrite() &&
                   <Button
                     size="compact"
-                    kind={KIND.minimal}
+                    kind={KIND.tertiary}
                     onClick={() => setShowCreateModal(true)}
                     startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
                   >

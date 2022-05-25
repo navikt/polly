@@ -9,7 +9,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faSort, faSortDown, faSortUp} from '@fortawesome/free-solid-svg-icons'
 import {Block} from 'baseui/block'
 import {paddingAll} from './Style'
-import {Label2} from 'baseui/typography'
+import {LabelMedium} from 'baseui/typography'
 
 type TableProps = {
   backgroundColor?: string,
@@ -79,7 +79,7 @@ export const Table = (props: TableProps) => {
         <StyledBody>
           {props.children}
           {(!props.children || (Array.isArray(props.children) && !props.children.length))
-          && <Label2 margin="1rem">{props.emptyText}</Label2>}
+          && <LabelMedium margin="1rem">{props.emptyText}</LabelMedium>}
         </StyledBody>
       </StyleTable>
     </TableContext.Provider>

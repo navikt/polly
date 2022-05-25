@@ -16,7 +16,7 @@ import {codelist, ListName} from '../../../service/Codelist'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faMinusCircle} from '@fortawesome/free-solid-svg-icons'
 import {Sensitivity} from '../../InformationType/Sensitivity'
-import {Paragraph3} from 'baseui/typography'
+import {ParagraphSmall} from 'baseui/typography'
 import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 import {Spinner} from '../../common/Spinner'
 import {disableEnter} from "../../../util/helper-functions";
@@ -124,7 +124,6 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
       onClose={onCloseModal} isOpen={props.isOpen}
       animate
       size={SIZE.auto}
-      unstable_ModalBackdropScroll={true}
       role={ROLE.dialog}
     >
       {loading && <Spinner/>}
@@ -189,7 +188,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
 
                   {!!formik.values.document &&
                   <>
-                    <Paragraph3>{formik.values.document.description}</Paragraph3>
+                    <ParagraphSmall>{formik.values.document.description}</ParagraphSmall>
                     <Block {...rowBlockProps}>
                       <ModalLabel label={intl.informationTypes}/>
                       <FieldArray name="informationTypes"
@@ -204,7 +203,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
               <ModalFooter>
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{props.error && <p>{props.error}</p>}</Block>
-                  <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
+                  <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>{intl.abort}</Button>
                   <ModalButton type="submit">{intl.add}</ModalButton>
                 </Block>
               </ModalFooter>

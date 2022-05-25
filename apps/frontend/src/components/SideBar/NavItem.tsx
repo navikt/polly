@@ -1,7 +1,7 @@
 import * as React from 'react'
 import RouteLink from '../common/RouteLink'
 import {Block} from 'baseui/block'
-import {Paragraph2} from 'baseui/typography'
+import {ParagraphMedium} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
 import {useLocation} from 'react-router-dom'
@@ -23,9 +23,9 @@ const NavItem = (props: NavItemProps) => (
           size="lg"/>
       </Block>
       {!!props.tooltip ? (<CustomizedStatefulTooltip content={props.tooltip} ignoreBoundary={false}>
-          <Paragraph2 color="white">{props.text}</Paragraph2>
+          <ParagraphMedium color="white">{props.text}</ParagraphMedium>
         </CustomizedStatefulTooltip>) :
-        <Paragraph2 color="white">{props.text}</Paragraph2>
+        <ParagraphMedium color="white">{props.text}</ParagraphMedium>
       }
     </Block>
   </RouteLink>

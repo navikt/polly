@@ -65,7 +65,6 @@ const overrides: ThemeOverride = {
     inputFill: primitives.primary50,
     inputFillActive: primitives.primary150,
     inputEnhancerFill: primitives.primary100,
-    borderFocus: primitives.primary150, // same as inputFillActive to hide
 
     tabBarFill: colors.white
   },
