@@ -119,9 +119,16 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                 {intl.abort}
               </Button>
               <Button onClick={() => {
-                if (selectedDisclosure)
-                  submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
-              }}
+                if (selectedDisclosure && submitDeleteDisclosure) {
+                  submitDeleteDisclosure(selectedDisclosure).then((res) => {
+                    if (res) {
+                      setShowDeleteModal(false)
+                    } else {
+                      setShowDeleteModal(true)
+                    }
+                  })
+                }
+                }}
               >{intl.delete}</Button>
             </Block>
           </ModalFooter>
