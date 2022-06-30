@@ -7,7 +7,7 @@ import {faHistory} from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import Button from '../common/Button'
 
-export const AuditButton = (props: { id: string, auditId?: string, kind?: KIND[keyof KIND], marginLeft?: boolean, marginRight?: boolean, children?: any }) => {
+export const AuditButton = (props: { id: string, auditId?: string, kind?: typeof KIND[keyof typeof KIND], marginLeft?: boolean, marginRight?: boolean, children?: any }) => {
   return user.isAdmin() ?
     <RouteLink href={`/admin/audit/${props.id}` + (props.auditId ? `/${props.auditId}` : '')}>
       {props.children ? props.children :

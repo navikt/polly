@@ -11,10 +11,10 @@ import CustomizedStatefulTooltip from "../CustomizedStatefulTooltip";
 
 
 interface ButtonProps {
-  kind?: KIND[keyof KIND] | 'outline'
+  kind?: typeof KIND[keyof typeof KIND] | 'outline'
   type?: 'submit' | 'reset' | 'button'
-  size?: SIZE[keyof SIZE]
-  shape?: SHAPE[keyof SHAPE]
+  size?: typeof SIZE[keyof typeof SIZE]
+  shape?: typeof SHAPE[keyof typeof SHAPE]
   icon?: IconDefinition
   iconEnd?: IconDefinition
   inline?: boolean
