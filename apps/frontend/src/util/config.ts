@@ -8,7 +8,7 @@ export const datajegerSlackLink = `slack://channel?team=${navSlackTeamId}&id=${b
 export const documentationLink = 'https://navikt.github.io/naka/behandlingskatalog'
 export const helpLink = 'https://navno.sharepoint.com/sites/intranett-personvern'
 
-export const termUrl = (termId: string) => `https://data.adeo.no/begrep/${termId}`
+export const termUrl = (termId: string) => `https://begrepskatalog.intern.nav.no/begrep/${termId}`
 export const slackRedirectUrl = (c: string) => `https://slack.com/app_redirect?team=${navSlackTeamId}&channel=${c.toLowerCase()}`
 
 export const teamLink = (teamId: string) => `${env.teamKatBaseUrl}team/${teamId}`
