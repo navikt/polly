@@ -35,3 +35,8 @@ Swagger-dokumentasjon av tjenestene er tilgjenglig på http://localhost:8080/swa
 * Docx4j (export til word/excel)
 * Freemarker (epost maler)
 * Testcontainers
+
+## Henvendelser
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub polly.
+### For NAV-ansatte
+Interne henvendelser kan sendes via Slack i kanalen #behandlingskatalogen
