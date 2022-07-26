@@ -29,7 +29,7 @@ const renderTextWithLabel = (label: string, text: string) => (
 )
 
 const DocumentPage = () => {
-  const params = useParams<{id?: string}>()
+  const params = useParams<{ id?: string }>()
   const navigate = useNavigate()
 
   const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>()
@@ -51,11 +51,11 @@ const DocumentPage = () => {
   const handleDelete = () => {
     if (documentId) {
       deleteDocument(documentId)
-      .then(() => {
-        setCurrentDocument(undefined)
-        setDeleteModalVisibility(false)
-        navigate('/document')
-      }).catch((e) => {
+        .then(() => {
+          setCurrentDocument(undefined)
+          setDeleteModalVisibility(false)
+          navigate('/document')
+        }).catch((e) => {
         setErrorMessage(e.message)
       })
     }
@@ -156,21 +156,23 @@ const DocumentPage = () => {
                   <DocumentMetadata document={currentDocument}/>
                 </Block>
               </Tab>
-              {documentUsages && documentUsages.length > 0 && (
-                <Tab key={'containsProcesses'} title={intl.containsProcesses} overrides={tabOverride}>
-                  <Block>
-                    <DocumentProcessesTable documentUsages={documentUsages}/>
-                  </Block>
-                </Tab>
-              )}
+              <>
+              {(documentUsages && documentUsages.length > 0) &&
+                  <Tab key={'containsProcesses'} title={intl.containsProcesses} overrides={tabOverride}>
+                    <Block>
+                      <DocumentProcessesTable documentUsages={documentUsages}/>
+                    </Block>
+                  </Tab>
+              }
+              </>
             </CustomizedTabs>
           )
         }
 
         {errorMessage &&
-        <Notification kind="negative">
-          {errorMessage}
-        </Notification>
+          <Notification kind="negative">
+            {errorMessage}
+          </Notification>
         }
       </>
 

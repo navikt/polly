@@ -25,7 +25,7 @@ type HeadProps<K extends keyof T, T> = {
   tableState?: TableState<T, K>
   $style?: StyleObject
   small?: boolean
-  sort?: [string, { column: string, dir: SORT_DIRECTION }, (column: K) => void]
+  sort?: [string, { column: string, dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }, (column: K) => void]
 }
 
 type RowProps = {
@@ -105,7 +105,7 @@ export const Row = (props: RowProps) => {
   return <StyleRow>{props.children}</StyleRow>
 }
 
-const SortDirectionIcon = (props: { direction: SORT_DIRECTION | null }) => {
+const SortDirectionIcon = (props: { direction: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC | null }) => {
   switch (props?.direction) {
     case SORT_DIRECTION.ASC:
       return <FontAwesomeIcon icon={faSortDown}/>

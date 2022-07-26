@@ -178,7 +178,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                                  labelKey="name"
                                />
                                {!formik.values.document && defaultDoc &&
-                               <Button type="button" kind="secondary" size="compact" $style={{marginLeft: '.5rem'}}
+                               <Button type="button" kind="secondary" size="compact" style={{marginLeft: '.5rem'}}
                                        onClick={() => selectDocument(defaultDoc, true)}
                                >{intl.includeDefaultDocument}</Button>}
                              </>

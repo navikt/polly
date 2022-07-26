@@ -49,7 +49,7 @@ const rowBlockProps: BlockProps = {
   marginTop: '1rem',
 }
 
-const panelOverrides: PanelOverrides<any> = {
+const panelOverrides: PanelOverrides = {
   Header: {
     style: {
       paddingLeft: '0'

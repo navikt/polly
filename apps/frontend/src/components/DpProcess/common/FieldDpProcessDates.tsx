@@ -19,7 +19,7 @@ interface DateModalProps {
   showLabels?: boolean;
 }
 
-function dateToDateString(date: Date | Date[]) {
+function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | null | undefined) {
   if (!date) return undefined
   const moment1 = moment(date as Date)
   return moment1.format(moment.HTML5_FMT.DATE)

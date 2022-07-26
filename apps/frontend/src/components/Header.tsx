@@ -2,7 +2,7 @@ import * as React from 'react'
 import {ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList,} from 'baseui/header-navigation'
 import {Button} from 'baseui/button'
 import {Block, BlockProps} from 'baseui/block'
-import {useNavigate, useLocation} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import {intl, theme} from '../util'
 import {user} from '../service/User'
 import {StyledLink} from 'baseui/link'
@@ -51,7 +51,7 @@ const LoggedInHeader = () => {
 const LoginButton = () => {
   return (
     <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
-      <Button $style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
+      <Button style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
         {intl.login}
       </Button>
     </StyledLink>

@@ -10,7 +10,7 @@ type TableConfig<T, K extends keyof T> = {
 
 type TableData<T, K extends keyof T> = {
     sortColumn?: K
-    sortDirection?: SORT_DIRECTION
+    sortDirection?: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC
     direction: ColumnDirection<T>
     data: Array<T>
 }
@@ -22,10 +22,10 @@ export type ColumnCompares<T> = {
 }
 
 export type ColumnDirection<T> = {
-    [P in keyof T]-?: SORT_DIRECTION | null
+    [P in keyof T]-?: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC | null
 }
 
-const newSort = <T, K extends keyof T>(newColumn?: K, columnPrevious?: K, directionPrevious?: SORT_DIRECTION) => {
+const newSort = <T, K extends keyof T>(newColumn?: K, columnPrevious?: K, directionPrevious?: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC) => {
     const newDirection = columnPrevious && newColumn === columnPrevious && directionPrevious === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC
     return {newDirection, newColumn}
 }
@@ -41,7 +41,7 @@ const getSortFunction = <T, K extends keyof T>(sortColumn: K, useDefaultStringCo
     return sorting[sortColumn]
 }
 
-const toDirection = <T, K extends keyof T>(direction: SORT_DIRECTION, column?: K): ColumnDirection<T> => {
+const toDirection = <T, K extends keyof T>(direction: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC, column?: K): ColumnDirection<T> => {
     const newDirection: any = {}
     newDirection[column] = direction
     return newDirection
