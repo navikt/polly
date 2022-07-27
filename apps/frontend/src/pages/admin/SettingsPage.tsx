@@ -42,6 +42,7 @@ export const SettingsPage = () => {
 
   return (
     <Block>
+      <>
       <HeadingMedium>{intl.settings}</HeadingMedium>
       {loading ? <Spinner $size={40}/> :
         error || !settings ? {error} :
@@ -57,6 +58,7 @@ export const SettingsPage = () => {
               <Button type="button" onClick={save}>{intl.save}</Button>
             </Block>
           </Block>}
+      </>
     </Block>
   )
 }
