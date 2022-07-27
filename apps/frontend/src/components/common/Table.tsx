@@ -79,7 +79,7 @@ export const Table = (props: TableProps) => {
         <StyledBody>
           {props.children}
           {(!props.children || (Array.isArray(props.children) && !props.children.length))
-          && <LabelMedium margin="1rem">{props.emptyText}</LabelMedium>}
+            && <LabelMedium margin="1rem">{props.emptyText}</LabelMedium>}
         </StyledBody>
       </StyleTable>
     </TableContext.Provider>
@@ -125,7 +125,7 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
   const styleOvveride = {...widthStyle, ...props.$style}
   if (!tableState || !column) {
     return (
-      <PlainHeadCell style={styleOvveride}>
+      <PlainHeadCell $style={styleOvveride}>
         {title}
       </PlainHeadCell>
     )
@@ -160,9 +160,7 @@ export const Cell = (props: {
 }) => {
   const widthStyle = props.small ? {maxWidth: '15%'} : {}
   return (
-    <StyledCell style={
-      {...props.$style, ...widthStyle}
-    }>
+    <StyledCell $style={{...props.$style, ...widthStyle}}>
       {props.children}
     </StyledCell>
   )
