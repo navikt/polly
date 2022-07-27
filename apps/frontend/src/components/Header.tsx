@@ -150,10 +150,14 @@ interface HeaderProps {
   setLang: (lang: string) => void
 }
 
+const headerNavigationOverrides = {
+  overrides:{Root: {style: {paddingBottom: 0, borderBottomStyle: 'none'}}}
+}
+
 const Header = (props: HeaderProps) => {
   return (
     <Block paddingRight={"30px"} paddingLeft={"30px"}>
-      <HeaderNavigation overrides={{Root: {style: {paddingBottom: 0, borderBottomStyle: 'none'}}}}>
+      <HeaderNavigation {...headerNavigationOverrides}>
         <NavigationList $align={ALIGN.left}>
           <NavigationItem $style={{paddingLeft: 0}}>
             <MainSearch/>

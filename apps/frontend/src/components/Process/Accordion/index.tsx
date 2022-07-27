@@ -80,7 +80,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowCreatePolicyModal(true)}
-      startEnhancer={() => <Block display='flex' justifyContent='center' marginRight={theme.sizing.scale100}><Plus size={22} /></Block>}
+      startEnhancer={<Block display='flex' justifyContent='center' marginRight={theme.sizing.scale100}><Plus size={22} /></Block>}
     >
       {intl.informationType}
     </Button>
@@ -92,7 +92,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowAddDocumentModal(true)}
-      startEnhancer={() => <Block display='flex' justifyContent='center' marginRight={theme.sizing.scale100}><Plus size={22} /></Block>}
+      startEnhancer={<Block display='flex' justifyContent='center' marginRight={theme.sizing.scale100}><Plus size={22} /></Block>}
     >
       {intl.document}
     </Button>
