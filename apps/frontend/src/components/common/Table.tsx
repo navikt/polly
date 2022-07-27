@@ -25,7 +25,7 @@ type HeadProps<K extends keyof T, T> = {
   tableState?: TableState<T, K>
   $style?: StyleObject
   small?: boolean
-  sort?: [string, { column: string, dir: SORT_DIRECTION }, (column: K) => void]
+  sort?: [string, { column: string, dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }, (column: K) => void]
 }
 
 type RowProps = {
@@ -79,7 +79,7 @@ export const Table = (props: TableProps) => {
         <StyledBody>
           {props.children}
           {(!props.children || (Array.isArray(props.children) && !props.children.length))
-          && <LabelMedium margin="1rem">{props.emptyText}</LabelMedium>}
+            && <LabelMedium margin="1rem">{props.emptyText}</LabelMedium>}
         </StyledBody>
       </StyleTable>
     </TableContext.Provider>
@@ -105,7 +105,7 @@ export const Row = (props: RowProps) => {
   return <StyleRow>{props.children}</StyleRow>
 }
 
-const SortDirectionIcon = (props: { direction: SORT_DIRECTION | null }) => {
+const SortDirectionIcon = (props: { direction: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC | null }) => {
   switch (props?.direction) {
     case SORT_DIRECTION.ASC:
       return <FontAwesomeIcon icon={faSortDown}/>
@@ -125,7 +125,7 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
   const styleOvveride = {...widthStyle, ...props.$style}
   if (!tableState || !column) {
     return (
-      <PlainHeadCell style={styleOvveride}>
+      <PlainHeadCell $style={styleOvveride}>
         {title}
       </PlainHeadCell>
     )
@@ -160,9 +160,7 @@ export const Cell = (props: {
 }) => {
   const widthStyle = props.small ? {maxWidth: '15%'} : {}
   return (
-    <StyledCell style={
-      {...props.$style, ...widthStyle}
-    }>
+    <StyledCell $style={{...props.$style, ...widthStyle}}>
       {props.children}
     </StyledCell>
   )

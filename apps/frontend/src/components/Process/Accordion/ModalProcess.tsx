@@ -68,7 +68,7 @@ type ModalProcessProps = {
   onClose: () => void
 }
 
-const panelOverrides: PanelOverrides<any> = {
+const panelOverrides: PanelOverrides = {
   Header: {
     style: {
       paddingLeft: '0'

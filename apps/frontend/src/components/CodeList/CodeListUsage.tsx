@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Block} from 'baseui/block'
 import {LabelMedium, LabelXSmall} from 'baseui/typography'
 import {Select, Value} from 'baseui/select'
@@ -85,7 +85,7 @@ const UsageTable = (props: {usage: CodeUsage}) => {
 export const Usage = (props: {usage?: CodeUsage, refresh: () => void}) => {
   const [showReplace, setShowReplace] = useState(false)
   const [newValue, setNewValue] = useState<Value>([])
-  const ref = useRef<HTMLElement>()
+  const ref = React.createRef<HTMLDivElement>()
 
   const {usage, refresh} = props
 

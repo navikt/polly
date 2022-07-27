@@ -1,7 +1,7 @@
 import React from "react";
 import {PLACEMENT, StatefulTooltip, StatefulTooltipProps} from "baseui/tooltip";
 
-const CustomizedStatefulTooltip = (props: StatefulTooltipProps) => {
+const CustomizedStatefulTooltip = (props: Partial<StatefulTooltipProps>) => {
   return (
     <StatefulTooltip
       {...props}

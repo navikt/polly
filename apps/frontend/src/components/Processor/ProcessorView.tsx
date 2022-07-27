@@ -24,7 +24,8 @@ import RelatedProcessesTable from "./components/RelatedProcessesTable";
 
 const blockProps: BlockProps = {
   font: "ParagraphMedium",
-  $style: {whiteSpace: 'pre-wrap', ...marginZero},
+  whiteSpace:"pre-wrap",
+  ...marginZero,
   display: "flex"
 }
 const ProcessorView = () => {

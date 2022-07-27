@@ -32,7 +32,7 @@ type State = {
   processId?: string,
   informationTypeId?: string,
   disclosureId?: string,
-  sort: {column: SortCol, dir: SORT_DIRECTION}
+  sort: {column: SortCol, dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC}
 }
 
 type AlertObjectType = 'informationtype' | 'process' | 'disclosure'
@@ -44,7 +44,7 @@ type Action =
   {type: 'EVENT_TYPE', value?: AlertEventType} |
   {type: 'EVENT_LEVEL', value?: AlertEventLevel} |
   {type: 'OBJECT_FILTER', objectType?: AlertObjectType, id?: string} |
-  {type: 'SORT', column: SortCol, dir: SORT_DIRECTION}
+  {type: 'SORT', column: SortCol, dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC}
 
 const clampPage = (state: State, page: number, limit: number): number => {
   if (page < 1 || page > state.events.pages) {

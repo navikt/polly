@@ -1,16 +1,16 @@
-import { Block, BlockProps } from 'baseui/block'
-import { Button } from 'baseui/button'
-import { Field, FieldProps } from 'formik'
-import { Datepicker } from 'baseui/datepicker'
+import {Block, BlockProps} from 'baseui/block'
+import {Button} from 'baseui/button'
+import {Field, FieldProps} from 'formik'
+import {Datepicker} from 'baseui/datepicker'
 import moment from 'moment'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendar, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCalendar, faTimesCircle} from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 
-import { intl } from '../../util'
-import { ProcessFormValues } from '../../constants'
-import { Error, ModalLabel } from '../common/ModalSchema'
-import { padding } from '../common/Style'
+import {intl} from '../../util'
+import {ProcessFormValues} from '../../constants'
+import {Error, ModalLabel} from '../common/ModalSchema'
+import {padding} from '../common/Style'
 
 interface DateModalProps {
   showDates: boolean;
@@ -18,7 +18,7 @@ interface DateModalProps {
   showLabels?: boolean;
 }
 
-function dateToDateString(date: Date | Date[]) {
+function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | null | undefined) {
   if (!date) return undefined
   const moment1 = moment(date as Date)
   return moment1.format(moment.HTML5_FMT.DATE)

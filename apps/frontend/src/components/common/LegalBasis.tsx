@@ -65,7 +65,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
 }
 
 export const LegalBasesNotClarified = (props: {alert?: PolicyAlert}) => {
-  const color = theme.colors.red100
+  const color = theme.colors.negative100
   const warningIcon = <span><FontAwesomeIcon icon={faExclamation} color={color}/>&nbsp;</span>
   return (
     <Block color={color}>

@@ -43,7 +43,7 @@ const modalHeaderProps: BlockProps = {
   marginBottom: '2rem'
 }
 
-const panelOverrides: PanelOverrides<any> = {
+const panelOverrides: PanelOverrides = {
   Header: {
     style: {
       paddingLeft: '0'

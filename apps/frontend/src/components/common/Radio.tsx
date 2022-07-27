@@ -1,7 +1,6 @@
 import {intl} from "../../util"
 import {Radio, RadioGroup} from "baseui/radio"
 import * as React from "react"
-import {JustifyContent} from "baseui/block";
 
 const YES = "YES", NO = "NO", UNCLARIFIED = "UNCLARIFIED"
 const boolToRadio = (bool?: boolean) => bool === undefined ? UNCLARIFIED : bool ? YES : NO
@@ -15,7 +14,7 @@ type radioBoolProps = {
   omitUndefined?: boolean,
   firstButtonLabel?: string,
   secondButtonLabel?: string,
-  justifyContent?: JustifyContent;
+  justifyContent?: string;
 }
 
 export const RadioBoolButton = (props: radioBoolProps) =>
