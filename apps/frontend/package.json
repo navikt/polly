@@ -84,7 +84,7 @@
     "@types/styletron-engine-atomic": "^1.1.0",
     "@types/styletron-react": "^5.0.2",
     "@types/styletron-standard": "^2.0.1",
-    "@types/yup": "^0.29.13",
+    "@types/yup": "^0.32.0",
     "encoding": "^0.1.13",
     "http-proxy-middleware": "^2.0.0",
     "jest": "^28.1.0",
