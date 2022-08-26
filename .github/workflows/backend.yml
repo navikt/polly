@@ -49,7 +49,6 @@ jobs:
         with:
           push: true
           tags: ${{env.IMAGE}}
-          context: .
 
   deploy-preprod:
     name: Backend - deploy Dev FSS
