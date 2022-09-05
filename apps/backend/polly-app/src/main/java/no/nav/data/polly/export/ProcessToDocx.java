@@ -1,5 +1,6 @@
 package no.nav.data.polly.export;
 
+import com.nimbusds.oauth2.sdk.util.date.SimpleDate;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.data.common.exceptions.ValidationException;
@@ -61,12 +62,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -101,7 +104,10 @@ public class ProcessToDocx {
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
         var doc = new DocumentBuilder();
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
         doc.addTitle("Behandling: " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
+        doc.addText("Eksportert " + formatter.format(date));
         doc.generate(process);
         return doc.build();
     }
@@ -224,7 +230,13 @@ public class ProcessToDocx {
 
             if (!data.toPeriod().isDefault()) {
                 addHeading4("Gyldighetsperiode for behandlingen");
-                addText(data.getStart().format(df), " - ", data.getEnd().format(df));
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+                if(simpleDateFormat.format(data.getEnd()) == "9999") {
+                    addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
+                } else {
+                    addText(data.getStart().format(df), " - ", data.getEnd().format(df));
+                }
+
             }
 
             addHeading4("Personkategorier oppsummert");
@@ -259,7 +271,7 @@ public class ProcessToDocx {
             addHeading2("Sist endret");
             ChangeStampResponse changeStamp = process.convertChangeStampResponse();
             addTexts(
-                    text("Av: ", changeStamp.getLastModifiedBy()),
+                   /* text("Av: ", changeStamp.getLastModifiedBy()),*/
                     text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
         }
