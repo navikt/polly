@@ -433,7 +433,7 @@ public class ProcessToDocx {
                                 Optional.ofNullable(pd.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
                         : text("");
 
-                addHeading5("\t \\uD801\\" + pd.getName());
+                addHeading4("•" + pd.getName());
                 if (documentAccess.equals(DocumentAccess.INTERNAL)) {
                     addTexts(
                             text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
