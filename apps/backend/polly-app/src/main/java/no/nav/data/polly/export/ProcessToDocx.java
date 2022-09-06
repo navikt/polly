@@ -108,7 +108,6 @@ public class ProcessToDocx {
         SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
         doc.addTitle("Behandling: " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
         doc.addText("Eksportert " + formatter.format(date));
-        doc.generate(process);
         doc.generate(process, documentAccess);
         return doc.build();
     }
