@@ -1,6 +1,5 @@
 package no.nav.data.polly.export;
 
-import com.nimbusds.oauth2.sdk.util.date.SimpleDate;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.data.common.exceptions.ValidationException;
@@ -231,7 +230,7 @@ public class ProcessToDocx {
             if (!data.toPeriod().isDefault()) {
                 addHeading4("Gyldighetsperiode for behandlingen");
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
-                if(simpleDateFormat.format(data.getEnd()) == "9999") {
+                if (simpleDateFormat.format(data.getEnd()).equals("9999")) {
                     addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
                 } else {
                     addText(data.getStart().format(df), " - ", data.getEnd().format(df));
@@ -271,7 +270,7 @@ public class ProcessToDocx {
             addHeading2("Sist endret");
             ChangeStampResponse changeStamp = process.convertChangeStampResponse();
             addTexts(
-                   /* text("Av: ", changeStamp.getLastModifiedBy()),*/
+                    /* text("Av: ", changeStamp.getLastModifiedBy()),*/
                     text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
         }
@@ -674,7 +673,7 @@ public class ProcessToDocx {
 
     private static String processStatusText(ProcessData data) {
         return switch (data.getStatus()) {
-            case COMPLETED -> "Godkjent";
+            case COMPLETED -> "Ferdig dokumentert";
             case IN_PROGRESS -> "Under arbeid";
             case NEEDS_REVISION -> "Trenger revidering";
         };
