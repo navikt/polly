@@ -433,7 +433,7 @@ public class ProcessToDocx {
                                 Optional.ofNullable(pd.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
                         : text("");
 
-                addHeading4(pd.getName());
+                addHeading5(pd.getName());
                 if (documentAccess.equals(DocumentAccess.INTERNAL)) {
                     addTexts(
                             text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
@@ -493,7 +493,6 @@ public class ProcessToDocx {
             P p = main.addStyledParagraphOfText(HEADING_5, text);
             ((R) p.getContent().get(0)).setRPr(createRpr());
         }
-
 
         private Text text(String... values) {
             List<String> strings = filter(Arrays.asList(values), Objects::nonNull);
