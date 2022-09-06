@@ -260,7 +260,7 @@ public class ProcessToDocx {
 
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
-            dataProcessing(process.getData().getDataProcessing(), processors);
+            dataProcessing(process.getData().getDataProcessing(), processors,documentAccess);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
 
@@ -406,11 +406,12 @@ public class ProcessToDocx {
             );
         }
 
-        private void dataProcessing(DataProcessing data, List<Processor> processors) {
+        private void dataProcessing(DataProcessing data, List<Processor> processors, DocumentAccess documentAccess) {
             if (data == null) {
                 return;
             }
             addHeading4("Databehandlere");
+
             addTexts(
                     text("Databehandler benyttes: ", boolToText(data.getDataProcessor()))
             );
@@ -433,15 +434,17 @@ public class ProcessToDocx {
                         : text("");
 
                 addHeading5(pd.getName());
-                addTexts(
-                        text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
-                        text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
-                        text("Avtaleforvaltere: ", String.join(", ", convert(pd.getOperationalContractManagers(), navn))),
-                        text("Notat: ", nullToEmpty(pd.getNote())),
-                        text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
-                        transferGrounds,
-                        text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
-                );
+                if (documentAccess.equals(DocumentAccess.INTERNAL)) {
+                    addTexts(
+                            text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
+                            text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
+                            text("Avtaleforvaltere: ", String.join(", ", convert(pd.getOperationalContractManagers(), navn))),
+                            text("Notat: ", nullToEmpty(pd.getNote())),
+                            text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
+                            transferGrounds,
+                            text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
+                    );
+                }
             });
         }
 
