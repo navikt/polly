@@ -230,12 +230,11 @@ public class ProcessToDocx {
             if (!data.toPeriod().isDefault()) {
                 addHeading4("Gyldighetsperiode for behandlingen");
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
-                if (simpleDateFormat.format(data.getEnd()).equals("9999")) {
+                if (data.getEnd().getYear() == 9999) {
                     addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
                 } else {
                     addText(data.getStart().format(df), " - ", data.getEnd().format(df));
                 }
-
             }
 
             addHeading4("Personkategorier oppsummert");
