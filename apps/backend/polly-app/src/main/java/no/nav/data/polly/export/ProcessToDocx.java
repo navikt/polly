@@ -229,14 +229,13 @@ public class ProcessToDocx {
             addHeading4("Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
 
-//            if (!data.toPeriod().isDefault()) {
+            if (!data.toPeriod().isDefault()) {
                 addHeading4("Gyldighetsperiode for behandlingen");
-                if ( data.getEnd().getYear() == 9999) {
-                    addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
-                } else {
-                    addText(data.getStart().format(df), " - ", data.getEnd().format(df));
-                }
-//            }
+                addText(data.getStart().format(df), " - ", data.getEnd().format(df));
+            } else {
+                addHeading4("Gyldighetsperiode for behandlingen");
+                addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
+            }
 
             addHeading4("Personkategorier oppsummert");
             var categories = process.getPolicies().stream()
@@ -261,7 +260,7 @@ public class ProcessToDocx {
 
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
-            dataProcessing(process.getData().getDataProcessing(), processors,documentAccess);
+            dataProcessing(process.getData().getDataProcessing(), processors, documentAccess);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
 
