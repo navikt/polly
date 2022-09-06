@@ -8,6 +8,7 @@ import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.commoncode.CommonCodeService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.export.domain.DocumentAccess;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
@@ -94,7 +95,7 @@ public class DocxTest {
     @Test
     void createDocForProcess() {
         mockAlert(process);
-        var docx = processToDocx.generateDocForProcess(process);
+        var docx = processToDocx.generateDocForProcess(process, DocumentAccess.INTERNAL);
         assertThat(docx).isNotNull();
         write(docx);
     }
@@ -104,7 +105,7 @@ public class DocxTest {
         List<Process> processes = List.of(createProcess(), createProcess(), createProcess());
         processes.forEach(this::mockAlert);
         when(processRepository.findByPurpose("AAP")).thenReturn(processes);
-        var docx = processToDocx.generateDocFor(ListName.PURPOSE, "AAP");
+        var docx = processToDocx.generateDocFor(ListName.PURPOSE, "AAP",DocumentAccess.INTERNAL);
         assertThat(docx).isNotNull();
         write(docx);
     }
@@ -118,7 +119,7 @@ public class DocxTest {
         req.format();
 
         Process process = new Process().convertFromRequest(req);
-        var docx = processToDocx.generateDocForProcess(process);
+        var docx = processToDocx.generateDocForProcess(process,DocumentAccess.INTERNAL);
         assertThat(docx).isNotNull();
     }
 
@@ -126,7 +127,7 @@ public class DocxTest {
     void createDocForProductTeam() {
         List<Process> processes = List.of(createProcess(), createProcess(), createProcess());
         processes.forEach(this::mockAlert);
-        var docx = processToDocx.generateDocForProcessList(processes, "Product Team");
+        var docx = processToDocx.generateDocForProcessList(processes, "Product Team",DocumentAccess.INTERNAL);
         assertThat(docx).isNotNull();
         write(docx);
     }
