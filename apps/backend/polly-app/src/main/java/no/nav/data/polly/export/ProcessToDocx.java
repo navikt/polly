@@ -13,6 +13,7 @@ import no.nav.data.polly.codelist.commoncode.CommonCodeService;
 import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.export.domain.DocumentAccess;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
@@ -101,17 +102,18 @@ public class ProcessToDocx {
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
 
     @SneakyThrows
-    public byte[] generateDocForProcess(Process process) {
+    public byte[] generateDocForProcess(Process process, DocumentAccess documentAccess) {
         var doc = new DocumentBuilder();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
         doc.addTitle("Behandling: " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
         doc.addText("Eksportert " + formatter.format(date));
         doc.generate(process);
+        doc.generate(process, documentAccess);
         return doc.build();
     }
 
-    public byte[] generateDocForProcessList(List<Process> processes, String title) {
+    public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
         List<Process> processList = new ArrayList<>(processes);
         Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
                 .thenComparing(p -> p.getData().getName());
@@ -125,13 +127,13 @@ public class ProcessToDocx {
             if (i != processes.size() - 1) {
                 doc.pageBreak();
             }
-            doc.generate(processes.get(i));
+            doc.generate(processes.get(i),documentAccess);
         }
 
         return doc.build();
     }
 
-    public byte[] generateDocFor(ListName list, String code) {
+    public byte[] generateDocFor(ListName list, String code, DocumentAccess documentAccess) {
         List<Process> processes;
         String title;
         switch (list) {
@@ -169,7 +171,7 @@ public class ProcessToDocx {
             if (i != processes.size() - 1) {
                 doc.pageBreak();
             }
-            doc.generate(processes.get(i));
+            doc.generate(processes.get(i), documentAccess);
         }
 
         return doc.build();
@@ -196,7 +198,7 @@ public class ProcessToDocx {
             addFooter();
         }
 
-        public void generate(Process process) {
+        public void generate(Process process,DocumentAccess documentAccess) {
             ProcessData data = process.getData();
             String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
@@ -205,7 +207,7 @@ public class ProcessToDocx {
             addBookmark(header, process.getId().toString());
             addText(periodText(process.getData().toPeriod()));
 
-            addHeading4("Behandlingsnummer");
+            addHeading4("Behandlingsnummer " + documentAccess.name());
             addText(Integer.toString(process.getData().getNumber()));
 
             data.getPurposes().forEach(purpose -> {

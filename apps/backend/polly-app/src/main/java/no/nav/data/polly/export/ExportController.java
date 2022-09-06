@@ -12,6 +12,7 @@ import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.export.domain.DocumentAccess;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.teams.TeamService;
@@ -65,7 +66,8 @@ public class ExportController {
             @RequestParam(name = "system", required = false) String system,
             @RequestParam(name = "purpose", required = false) String purpose,
             @RequestParam(name = "productArea", required = false) String productArea,
-            @RequestParam(name = "productTeam", required = false) String productTeam
+            @RequestParam(name = "productTeam", required = false) String productTeam,
+            @RequestParam(name = "documentAccess", required = false, defaultValue = "INTERNAL") DocumentAccess documentAccess
     ) {
         byte[] doc;
         String filename;
@@ -75,7 +77,7 @@ public class ExportController {
                 throw new NotFoundException("Couldn't find process " + processId);
             }
             Process p = process.get();
-            doc = processToDocx.generateDocForProcess(p);
+            doc = processToDocx.generateDocForProcess(p,documentAccess);
             filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
         } else if (productArea != null) {
             var teams = teamService.getTeamsForProductArea(productArea);
@@ -83,14 +85,14 @@ public class ExportController {
             String productAreaName = productAreaData.isPresent() ? productAreaData.get().getName() : "";
 
             List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
-            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productAreaName));
+            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productAreaName),documentAccess);
             filename = "behandling_produktområde_" + productArea + ".docx";
         } else if (productTeam != null) {
             List<Process> processes = processRepository.findByProductTeam(productTeam);
             var productTeamData = teamService.getTeam(productTeam);
             String productTeamName = productTeamData.isPresent() ? productTeamData.get().getName() : "";
 
-            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeamName));
+            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeamName),documentAccess);
             filename = "behandling_team_" + productTeam + ".docx";
         } else {
             ListName list;
@@ -111,7 +113,7 @@ public class ExportController {
                 throw new ValidationException("No paramater given");
             }
             codelistService.validateListNameAndCode(list.name(), code);
-            doc = processToDocx.generateDocFor(list, code);
+            doc = processToDocx.generateDocFor(list, code,documentAccess);
             String depNameClean = cleanCodelistName(list, code);
             filename = "behandling_" + list.name().toLowerCase() + "_" + depNameClean + ".docx";
 
