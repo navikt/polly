@@ -2,6 +2,7 @@ package no.nav.data.polly.export;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
@@ -228,14 +229,14 @@ public class ProcessToDocx {
             addHeading4("Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
 
-            if (!data.toPeriod().isDefault()) {
+//            if (!data.toPeriod().isDefault()) {
                 addHeading4("Gyldighetsperiode for behandlingen");
-                if (data.getEnd().getYear() == 9999) {
+                if ( data.getEnd().getYear() == 9999) {
                     addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
                 } else {
                     addText(data.getStart().format(df), " - ", data.getEnd().format(df));
                 }
-            }
+//            }
 
             addHeading4("Personkategorier oppsummert");
             var categories = process.getPolicies().stream()
