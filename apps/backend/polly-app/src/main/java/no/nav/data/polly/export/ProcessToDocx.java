@@ -126,7 +126,7 @@ public class ProcessToDocx {
             if (i != processes.size() - 1) {
                 doc.pageBreak();
             }
-            doc.generate(processes.get(i),documentAccess);
+            doc.generate(processes.get(i), documentAccess);
         }
 
         return doc.build();
@@ -197,7 +197,7 @@ public class ProcessToDocx {
             addFooter();
         }
 
-        public void generate(Process process,DocumentAccess documentAccess) {
+        public void generate(Process process, DocumentAccess documentAccess) {
             ProcessData data = process.getData();
             String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
@@ -206,7 +206,7 @@ public class ProcessToDocx {
             addBookmark(header, process.getId().toString());
             addText(periodText(process.getData().toPeriod()));
 
-            addHeading4("Behandlingsnummer " + documentAccess.name());
+            addHeading4("Behandlingsnummer");
             addText(Integer.toString(process.getData().getNumber()));
 
             data.getPurposes().forEach(purpose -> {
@@ -230,7 +230,6 @@ public class ProcessToDocx {
 
             if (!data.toPeriod().isDefault()) {
                 addHeading4("Gyldighetsperiode for behandlingen");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
                 if (data.getEnd().getYear() == 9999) {
                     addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
                 } else {
@@ -248,7 +247,7 @@ public class ProcessToDocx {
                     .collect(Collectors.joining(", "));
             addText(categories);
 
-            organising(process.getData());
+            organising(process.getData(), documentAccess);
 
             addHeading4("System");
             addText(convert(data.getAffiliation().getProducts(), p -> shortName(ListName.SYSTEM, p)));
@@ -275,17 +274,16 @@ public class ProcessToDocx {
             );
         }
 
-        private void organising(ProcessData data) {
+        private void organising(ProcessData data, DocumentAccess documentAccess) {
             addHeading4("Organisering");
             var teamNames = data.getAffiliation().getProductTeams().stream()
                     .map(teamId -> Map.entry(teamId, teamService.getTeam(teamId)))
                     .map(t -> t.getValue().map(Team::getName).orElse(t.getKey()))
                     .collect(toList());
-
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
                     text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
-                    text("Produktteam (IT): ", String.join(", ", teamNames)),
+                    documentAccess.equals(DocumentAccess.INTERNAL) ? text("Produktteam (IT): ", String.join(", ", teamNames)) : text(""),
                     text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );
         }
