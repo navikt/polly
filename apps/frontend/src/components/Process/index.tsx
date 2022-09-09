@@ -268,6 +268,19 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     <>
       <Block display={'flex'} flexDirection={'row-reverse'} alignItems={'center'}>
         <Block>
+        <StyledLink
+            style={{textDecoration: 'none'}}
+            href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
+            <Button
+              kind={KIND.tertiary}
+              size={ButtonSize.compact}
+              icon={faFileWord}
+              tooltip={intl.export}
+              marginRight
+            >
+              {intl.export} Innsyn
+            </Button>
+          </StyledLink>
           <StyledLink
             style={{textDecoration: 'none'}}
             href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>

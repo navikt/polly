@@ -2,7 +2,6 @@ package no.nav.data.polly.export;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
@@ -115,10 +114,8 @@ public class ProcessToDocx {
     }
 
     public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
-        List<Process> processList = new ArrayList<>(processes.stream().filter(p->p.getData().getStatus()== ProcessStatus.COMPLETED).toList());
-        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
-                .thenComparing(p -> p.getData().getName());
-        processList.sort(comparator);
+        List<Process> processList = getProcesses(processes, documentAccess);
+
         var doc = new DocumentBuilder();
         doc.addTitle(title);
         doc.addHeading1(String.format(headingProcessList, processList.size()));
@@ -132,6 +129,21 @@ public class ProcessToDocx {
         }
 
         return doc.build();
+    }
+
+    private List<Process> getProcesses(List<Process> processes, DocumentAccess documentAccess) {
+        List<Process> processList;
+        if(documentAccess == DocumentAccess.EXTERNAL) {
+            processList = new ArrayList<>(processes.stream().filter(p -> p.getData().getStatus().equals(ProcessStatus.COMPLETED)).toList());
+        } else {
+            processList = new ArrayList<>(processes);
+        }
+
+        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
+                .thenComparing(p -> p.getData().getName());
+        processList.sort(comparator);
+
+        return processList;
     }
 
     public byte[] generateDocFor(ListName list, String code, DocumentAccess documentAccess) {
@@ -156,10 +168,9 @@ public class ProcessToDocx {
             }
             default -> throw new ValidationException("no list given");
         }
-        processes = new ArrayList<>(processes);
-        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
-                .thenComparing(p -> p.getData().getName());
-        processes.sort(comparator);
+
+        processes = getProcesses(processes, documentAccess);
+
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
