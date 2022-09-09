@@ -284,7 +284,7 @@ public class ProcessToDocx {
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
                     text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
                     documentAccess.equals(DocumentAccess.INTERNAL) ? text("Produktteam (IT): ", String.join(", ", teamNames)) : text(""),
-                    text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
+                    text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible().isEmpty() ? "Ingen" : data.getCommonExternalProcessResponsible()))
             );
         }
 
