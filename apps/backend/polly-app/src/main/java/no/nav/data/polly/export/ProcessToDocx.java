@@ -60,8 +60,10 @@ import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
 import org.docx4j.wml.Tr;
 import org.docx4j.wml.TrPr;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -115,10 +117,8 @@ public class ProcessToDocx {
     }
 
     public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
-        List<Process> processList = new ArrayList<>(processes.stream().filter(p->p.getData().getStatus()== ProcessStatus.COMPLETED).toList());
-        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
-                .thenComparing(p -> p.getData().getName());
-        processList.sort(comparator);
+        List<Process> processList = getExternalProcesses(processes, documentAccess);
+
         var doc = new DocumentBuilder();
         doc.addTitle(title);
         doc.addHeading1(String.format(headingProcessList, processList.size()));
@@ -132,6 +132,16 @@ public class ProcessToDocx {
         }
 
         return doc.build();
+    }
+
+    private List<Process> getExternalProcesses(List<Process> processes, DocumentAccess documentAccess) {
+        List<Process> processList;
+        if(documentAccess == DocumentAccess.EXTERNAL) {
+            processList = new ArrayList<>(processes.stream().filter(p -> p.getData().getStatus().equals(ProcessStatus.COMPLETED)).toList());
+        } else {
+            processList = new ArrayList<>(processes);
+        }
+        return processList;
     }
 
     public byte[] generateDocFor(ListName list, String code, DocumentAccess documentAccess) {
@@ -156,10 +166,8 @@ public class ProcessToDocx {
             }
             default -> throw new ValidationException("no list given");
         }
-        processes = new ArrayList<>(processes);
-        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
-                .thenComparing(p -> p.getData().getName());
-        processes.sort(comparator);
+
+        processes = getExternalProcesses(processes, documentAccess);
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
