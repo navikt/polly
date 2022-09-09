@@ -141,6 +141,11 @@ public class ProcessToDocx {
         } else {
             processList = new ArrayList<>(processes);
         }
+
+        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
+                .thenComparing(p -> p.getData().getName());
+        processList.sort(comparator);
+
         return processList;
     }
 
