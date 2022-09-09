@@ -13,11 +13,13 @@ import no.nav.data.polly.codelist.commoncode.CommonCodeService;
 import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.export.domain.DocumentAccess;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
+import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
@@ -61,12 +63,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -99,18 +103,19 @@ public class ProcessToDocx {
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
 
     @SneakyThrows
-    public byte[] generateDocForProcess(Process process) {
+    public byte[] generateDocForProcess(Process process, DocumentAccess documentAccess) {
         var doc = new DocumentBuilder();
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
         doc.addTitle("Behandling: " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
-        doc.generate(process);
+        doc.addText("Eksportert " + formatter.format(date));
+        doc.generate(process, documentAccess);
         return doc.build();
     }
 
-    public byte[] generateDocForProcessList(List<Process> processes, String title) {
-        List<Process> processList = new ArrayList<>(processes);
-        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
-                .thenComparing(p -> p.getData().getName());
-        processList.sort(comparator);
+    public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
+        List<Process> processList = getProcesses(processes, documentAccess);
+
         var doc = new DocumentBuilder();
         doc.addTitle(title);
         doc.addHeading1(String.format(headingProcessList, processList.size()));
@@ -120,13 +125,28 @@ public class ProcessToDocx {
             if (i != processes.size() - 1) {
                 doc.pageBreak();
             }
-            doc.generate(processes.get(i));
+            doc.generate(processes.get(i), documentAccess);
         }
 
         return doc.build();
     }
 
-    public byte[] generateDocFor(ListName list, String code) {
+    private List<Process> getProcesses(List<Process> processes, DocumentAccess documentAccess) {
+        List<Process> processList;
+        if(documentAccess == DocumentAccess.EXTERNAL) {
+            processList = new ArrayList<>(processes.stream().filter(p -> p.getData().getStatus().equals(ProcessStatus.COMPLETED)).toList());
+        } else {
+            processList = new ArrayList<>(processes);
+        }
+
+        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
+                .thenComparing(p -> p.getData().getName());
+        processList.sort(comparator);
+
+        return processList;
+    }
+
+    public byte[] generateDocFor(ListName list, String code, DocumentAccess documentAccess) {
         List<Process> processes;
         String title;
         switch (list) {
@@ -148,10 +168,9 @@ public class ProcessToDocx {
             }
             default -> throw new ValidationException("no list given");
         }
-        processes = new ArrayList<>(processes);
-        Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
-                .thenComparing(p -> p.getData().getName());
-        processes.sort(comparator);
+
+        processes = getProcesses(processes, documentAccess);
+
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
@@ -164,7 +183,7 @@ public class ProcessToDocx {
             if (i != processes.size() - 1) {
                 doc.pageBreak();
             }
-            doc.generate(processes.get(i));
+            doc.generate(processes.get(i), documentAccess);
         }
 
         return doc.build();
@@ -191,7 +210,7 @@ public class ProcessToDocx {
             addFooter();
         }
 
-        public void generate(Process process) {
+        public void generate(Process process, DocumentAccess documentAccess) {
             ProcessData data = process.getData();
             String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
@@ -225,6 +244,9 @@ public class ProcessToDocx {
             if (!data.toPeriod().isDefault()) {
                 addHeading4("Gyldighetsperiode for behandlingen");
                 addText(data.getStart().format(df), " - ", data.getEnd().format(df));
+            } else {
+                addHeading4("Gyldighetsperiode for behandlingen");
+                addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
             }
 
             addHeading4("Personkategorier oppsummert");
@@ -237,7 +259,7 @@ public class ProcessToDocx {
                     .collect(Collectors.joining(", "));
             addText(categories);
 
-            organising(process.getData());
+            organising(process.getData(), documentAccess);
 
             addHeading4("System");
             addText(convert(data.getAffiliation().getProducts(), p -> shortName(ListName.SYSTEM, p)));
@@ -250,7 +272,7 @@ public class ProcessToDocx {
 
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
-            dataProcessing(process.getData().getDataProcessing(), processors);
+            dataProcessing(process.getData().getDataProcessing(), processors, documentAccess);
             retention(process.getData().getRetention());
             dpia(process.getData().getDpia());
 
@@ -259,23 +281,22 @@ public class ProcessToDocx {
             addHeading2("Sist endret");
             ChangeStampResponse changeStamp = process.convertChangeStampResponse();
             addTexts(
-                    text("Av: ", changeStamp.getLastModifiedBy()),
+                    /* text("Av: ", changeStamp.getLastModifiedBy()),*/
                     text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
         }
 
-        private void organising(ProcessData data) {
+        private void organising(ProcessData data, DocumentAccess documentAccess) {
             addHeading4("Organisering");
             var teamNames = data.getAffiliation().getProductTeams().stream()
                     .map(teamId -> Map.entry(teamId, teamService.getTeam(teamId)))
                     .map(t -> t.getValue().map(Team::getName).orElse(t.getKey()))
                     .collect(toList());
-
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
                     text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
-                    text("Produktteam (IT): ", String.join(", ", teamNames)),
-                    text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
+                    documentAccess.equals(DocumentAccess.INTERNAL) ? text("Produktteam (IT): ", String.join(", ", teamNames)) : text(""),
+                    text("Felles behandlingsansvarlig: ", data.getCommonExternalProcessResponsible() == null ? "Ingen" : shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );
         }
 
@@ -397,11 +418,12 @@ public class ProcessToDocx {
             );
         }
 
-        private void dataProcessing(DataProcessing data, List<Processor> processors) {
+        private void dataProcessing(DataProcessing data, List<Processor> processors, DocumentAccess documentAccess) {
             if (data == null) {
                 return;
             }
             addHeading4("Databehandlere");
+
             addTexts(
                     text("Databehandler benyttes: ", boolToText(data.getDataProcessor()))
             );
@@ -423,16 +445,18 @@ public class ProcessToDocx {
                                 Optional.ofNullable(pd.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
                         : text("");
 
-                addHeading5(pd.getName());
-                addTexts(
-                        text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
-                        text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
-                        text("Avtaleforvaltere: ", String.join(", ", convert(pd.getOperationalContractManagers(), navn))),
-                        text("Notat: ", nullToEmpty(pd.getNote())),
-                        text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
-                        transferGrounds,
-                        text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
-                );
+                addHeading4(" • " + pd.getName());
+                if (documentAccess.equals(DocumentAccess.INTERNAL)) {
+                    addTexts(
+                            text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
+                            text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
+                            text("Avtaleforvaltere: ", String.join(", ", convert(pd.getOperationalContractManagers(), navn))),
+                            text("Notat: ", nullToEmpty(pd.getNote())),
+                            text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
+                            transferGrounds,
+                            text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
+                    );
+                }
             });
         }
 
@@ -481,7 +505,6 @@ public class ProcessToDocx {
             P p = main.addStyledParagraphOfText(HEADING_5, text);
             ((R) p.getContent().get(0)).setRPr(createRpr());
         }
-
 
         private Text text(String... values) {
             List<String> strings = filter(Arrays.asList(values), Objects::nonNull);
@@ -662,7 +685,7 @@ public class ProcessToDocx {
 
     private static String processStatusText(ProcessData data) {
         return switch (data.getStatus()) {
-            case COMPLETED -> "Godkjent";
+            case COMPLETED -> "Ferdig dokumentert";
             case IN_PROGRESS -> "Under arbeid";
             case NEEDS_REVISION -> "Trenger revidering";
         };

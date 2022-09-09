@@ -1,4 +1,4 @@
-import {ProcessShort} from '../../../constants'
+import {ProcessShort, ProcessStatus} from '../../../constants'
 import {Block} from 'baseui/block'
 import {LabelLarge} from 'baseui/typography'
 import {intl, theme} from '../../../util'
@@ -41,6 +41,24 @@ const AccordionTitle = (props: AccordionTitleProps) => {
       {expanded &&
       <>
         <AuditButton id={process.id} marginRight/>
+        <StyledLink
+          style={{textDecoration: 'none'}}
+          href={`${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`}>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faFileWord}
+            tooltip={intl.export}
+            marginRight
+            disabled={process.status !== ProcessStatus.COMPLETED}
+          >
+            {intl.export} Innsyn
+          </Button>
+        </StyledLink>
+      </>
+      }
+      {expanded &&
+      <>
         <StyledLink
           style={{textDecoration: 'none'}}
           href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
