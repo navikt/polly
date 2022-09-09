@@ -20,6 +20,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
+import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
@@ -114,7 +115,7 @@ public class ProcessToDocx {
     }
 
     public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
-        List<Process> processList = new ArrayList<>(processes);
+        List<Process> processList = new ArrayList<>(processes.stream().filter(p->p.getData().getStatus()== ProcessStatus.COMPLETED).toList());
         Comparator<Process> comparator = Comparator.<Process, String>comparing(p -> p.getData().getPurposes().stream().sorted().collect(Collectors.joining(".")))
                 .thenComparing(p -> p.getData().getName());
         processList.sort(comparator);

@@ -14,6 +14,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.export.domain.DocumentAccess;
 import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
@@ -76,7 +77,12 @@ public class ExportController {
             if (process.isEmpty()) {
                 throw new NotFoundException("Couldn't find process " + processId);
             }
-            Process p = process.get();
+            Process p;
+            if(documentAccess==DocumentAccess.INTERNAL || (documentAccess==DocumentAccess.EXTERNAL && process.get().getData().getStatus()== ProcessStatus.COMPLETED)){
+                p=process.get();
+            } else{
+                throw new NotFoundException("The process is not completed therefore it can not be exported");
+            }
             doc = processToDocx.generateDocForProcess(p,documentAccess);
             filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
         } else if (productArea != null) {
