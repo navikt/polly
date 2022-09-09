@@ -2,7 +2,6 @@ package no.nav.data.polly.export;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
@@ -60,10 +59,8 @@ import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
 import org.docx4j.wml.Tr;
 import org.docx4j.wml.TrPr;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -117,7 +114,7 @@ public class ProcessToDocx {
     }
 
     public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
-        List<Process> processList = getExternalProcesses(processes, documentAccess);
+        List<Process> processList = getProcesses(processes, documentAccess);
 
         var doc = new DocumentBuilder();
         doc.addTitle(title);
@@ -134,7 +131,7 @@ public class ProcessToDocx {
         return doc.build();
     }
 
-    private List<Process> getExternalProcesses(List<Process> processes, DocumentAccess documentAccess) {
+    private List<Process> getProcesses(List<Process> processes, DocumentAccess documentAccess) {
         List<Process> processList;
         if(documentAccess == DocumentAccess.EXTERNAL) {
             processList = new ArrayList<>(processes.stream().filter(p -> p.getData().getStatus().equals(ProcessStatus.COMPLETED)).toList());
@@ -172,7 +169,8 @@ public class ProcessToDocx {
             default -> throw new ValidationException("no list given");
         }
 
-        processes = getExternalProcesses(processes, documentAccess);
+        processes = getProcesses(processes, documentAccess);
+
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
