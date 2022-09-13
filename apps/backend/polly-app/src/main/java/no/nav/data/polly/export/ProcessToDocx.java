@@ -115,9 +115,12 @@ public class ProcessToDocx {
 
     public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
         List<Process> processList = getProcesses(processes, documentAccess);
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
 
         var doc = new DocumentBuilder();
         doc.addTitle(title);
+        doc.addText("Eksportert " + formatter.format(date));
         doc.addHeading1(String.format(headingProcessList, processList.size()));
         doc.addToc(processes);
 
@@ -148,6 +151,9 @@ public class ProcessToDocx {
 
     public byte[] generateDocFor(ListName list, String code, DocumentAccess documentAccess) {
         List<Process> processes;
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
+
         String title;
         switch (list) {
             case DEPARTMENT -> {
@@ -174,6 +180,7 @@ public class ProcessToDocx {
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
+        doc.addText("Eksportert " + formatter.format(date));
         doc.addText(codelist.getDescription());
 
         doc.addHeading1(String.format(headingProcessList, processes.size()));
@@ -273,8 +280,8 @@ public class ProcessToDocx {
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors, documentAccess);
-            retention(process.getData().getRetention());
-            dpia(process.getData().getDpia());
+            retention(process.getData().getRetention(), documentAccess);
+            dpia(process.getData().getDpia(), documentAccess);
 
             policies(process);
 
@@ -403,7 +410,7 @@ public class ProcessToDocx {
             }
         }
 
-        private void dpia(Dpia data) {
+        private void dpia(Dpia data, DocumentAccess documentAccess) {
             if (data == null) {
                 return;
             }
@@ -412,9 +419,9 @@ public class ProcessToDocx {
             addTexts(
                     text(boolToText(data.getNeedForDpia())),
                     text("Begrunnelse: ", data.getGrounds()),
-                    text("Risiko eier: ", riskOwner,
-                            StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),
-                    text("PVK referanse: ", data.getRefToDpia())
+                    /*text("Risiko eier: ", riskOwner,
+                            StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),*/
+                    documentAccess.equals(DocumentAccess.INTERNAL) ? text("PVK referanse: ", data.getRefToDpia()) : null
             );
         }
 
@@ -460,13 +467,13 @@ public class ProcessToDocx {
             });
         }
 
-        private void retention(Retention retention) {
+        private void retention(Retention retention, DocumentAccess documentAccess) {
             if (retention == null) {
                 return;
             }
             addHeading4("Lagringstid");
             var ret1 = text("Omfattes av virksomhetens bevarings- og kassasjonsplan: ", boolToText(retention.getRetentionPlan()));
-            var ret3 = text("Begrunnelse: ", retention.getRetentionDescription());
+            var ret3 = documentAccess.equals(DocumentAccess.INTERNAL) ? text("Begrunnelse: ", retention.getRetentionDescription()) : null;
 
             boolean retentionDuration = retention.getRetentionMonths() != null && retention.getRetentionMonths() != 0;
             boolean years = retentionDuration && retention.getRetentionMonths() >= 12;
