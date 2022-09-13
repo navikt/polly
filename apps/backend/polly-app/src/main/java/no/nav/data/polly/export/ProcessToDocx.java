@@ -248,12 +248,12 @@ public class ProcessToDocx {
             addHeading4("Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
 
-            if (!data.toPeriod().isDefault()) {
-                addHeading4("Gyldighetsperiode for behandlingen");
-                addText(data.getStart().format(df), " - ", data.getEnd().format(df));
-            } else {
-                addHeading4("Gyldighetsperiode for behandlingen");
+
+            addHeading4("Gyldighetsperiode for behandlingen");
+            if (data.getEnd().format(df).contains("9999")) {
                 addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
+            } else {
+                addText(data.getStart().format(df), " - ", data.getEnd().format(df));
             }
 
             addHeading4("Personkategorier oppsummert");
@@ -419,8 +419,7 @@ public class ProcessToDocx {
             addTexts(
                     text(boolToText(data.getNeedForDpia())),
                     text("Begrunnelse: ", data.getGrounds()),
-                    /*text("Risiko eier: ", riskOwner,
-                            StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),*/
+                    //text("Risiko eier: ", riskOwner, StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),
                     documentAccess.equals(DocumentAccess.INTERNAL) ? text("PVK referanse: ", data.getRefToDpia()) : null
             );
         }
