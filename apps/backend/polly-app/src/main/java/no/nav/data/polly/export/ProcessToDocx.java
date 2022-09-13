@@ -91,8 +91,8 @@ import static org.docx4j.com.google.common.base.Strings.nullToEmpty;
 public class ProcessToDocx {
 
     private static final ObjectFactory fac = Context.getWmlObjectFactory();
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).localizedBy(Locale.forLanguageTag("nb"));
-    private static final DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).localizedBy(Locale.forLanguageTag("nb"));
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.MEDIUM).localizedBy(Locale.forLanguageTag("nb"));
+    private static final DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).localizedBy(Locale.forLanguageTag("nb"));
 
     private final AlertService alertService;
     private final ResourceService resourceService;
@@ -224,7 +224,7 @@ public class ProcessToDocx {
             var header = addHeading1(purposeNames + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
 
             addBookmark(header, process.getId().toString());
-            addText(periodText(process.getData().toPeriod()));
+            //addText(periodText(process.getData().toPeriod()));
 
             addHeading4("Behandlingsnummer");
             addText(Integer.toString(process.getData().getNumber()));
