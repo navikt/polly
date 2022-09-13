@@ -451,8 +451,8 @@ public class ProcessToDocx {
                                 Optional.ofNullable(pd.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
                         : text("");
 
-                addHeading4(" • " + pd.getName());
                 if (documentAccess.equals(DocumentAccess.INTERNAL)) {
+                    addHeading4(" • " + pd.getName());
                     addTexts(
                             text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
                             text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
@@ -462,6 +462,8 @@ public class ProcessToDocx {
                             transferGrounds,
                             text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
                     );
+                } else {
+                    addText(" • " + pd.getName());
                 }
             });
         }
