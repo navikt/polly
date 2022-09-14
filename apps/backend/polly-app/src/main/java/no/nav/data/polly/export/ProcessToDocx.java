@@ -436,8 +436,6 @@ public class ProcessToDocx {
                         addText(noDpiaReasonToString(noDpiaReason));
                     });
                 }
-            } else {
-                addText("Begrunnelse: ", data.getGrounds());
             }
             addTexts(
                     //text("Risiko eier: ", riskOwner, StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),
