@@ -23,6 +23,7 @@ import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
+import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
@@ -416,12 +417,30 @@ public class ProcessToDocx {
             }
             var riskOwner = Optional.ofNullable(data.getRiskOwner()).flatMap(resourceService::getResource).map(Resource::getFullName).orElse(data.getRiskOwner());
             addHeading4("Er det behov for personvernkonsekvensvurdering (PVK)?");
+            addText(boolToText(data.getNeedForDpia()));
+            if (boolToText(data.getNeedForDpia()).equals("Nei")) {
+                addText("Begrunnelse");
+                data.getNoDpiaReasons().forEach(noDpiaReason -> {
+                    addText(noDpiaReasonToString(noDpiaReason));
+                });
+            } else {
+                addText("Begrunnelse: ", data.getGrounds());
+            }
             addTexts(
-                    text(boolToText(data.getNeedForDpia())),
-                    text("Begrunnelse: ", data.getGrounds()),
                     //text("Risiko eier: ", riskOwner, StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),
                     documentAccess.equals(DocumentAccess.INTERNAL) ? text("PVK referanse: ", data.getRefToDpia()) : null
             );
+        }
+
+        private String noDpiaReasonToString(NoDpiaReason noDpiaReason){
+            return switch (noDpiaReason) {
+                case NO_SPECIAL_CATEGORY_PI -> "Ingen særlige kategorier personopplysninger behandles";
+                case SMALL_SCALE -> "Behandlingen skjer ikke i stor skala (få personopplysninger eller registrerte)";
+                case NO_DATASET_CONSOLIDATION -> "Ingen sammenstilling av datasett på tvers av formål";
+                case NO_NEW_TECH -> "Ingen bruk av teknologi på nye måter eller ny teknologi";
+                case NO_PROFILING_OR_AUTOMATION -> "Ingen bruk av profilering eller automatisering";
+                case OTHER -> "Annet";
+            };
         }
 
         private void dataProcessing(DataProcessing data, List<Processor> processors, DocumentAccess documentAccess) {
