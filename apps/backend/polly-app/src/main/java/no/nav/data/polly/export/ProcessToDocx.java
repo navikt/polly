@@ -419,7 +419,7 @@ public class ProcessToDocx {
             addHeading4("Er det behov for personvernkonsekvensvurdering (PVK)?");
             addText(boolToText(data.getNeedForDpia()));
             if (boolToText(data.getNeedForDpia()).equals("Nei")) {
-                addText("Begrunnelse");
+                addText("Begrunnelse: ");
                 data.getNoDpiaReasons().forEach(noDpiaReason -> {
                     addText(noDpiaReasonToString(noDpiaReason));
                 });
@@ -434,12 +434,12 @@ public class ProcessToDocx {
 
         private String noDpiaReasonToString(NoDpiaReason noDpiaReason){
             return switch (noDpiaReason) {
-                case NO_SPECIAL_CATEGORY_PI -> "Ingen særlige kategorier personopplysninger behandles";
-                case SMALL_SCALE -> "Behandlingen skjer ikke i stor skala (få personopplysninger eller registrerte)";
-                case NO_DATASET_CONSOLIDATION -> "Ingen sammenstilling av datasett på tvers av formål";
-                case NO_NEW_TECH -> "Ingen bruk av teknologi på nye måter eller ny teknologi";
-                case NO_PROFILING_OR_AUTOMATION -> "Ingen bruk av profilering eller automatisering";
-                case OTHER -> "Annet";
+                case NO_SPECIAL_CATEGORY_PI -> " • Ingen særlige kategorier personopplysninger behandles";
+                case SMALL_SCALE -> " • Behandlingen skjer ikke i stor skala (få personopplysninger eller registrerte)";
+                case NO_DATASET_CONSOLIDATION -> " • Ingen sammenstilling av datasett på tvers av formål";
+                case NO_NEW_TECH -> " • Ingen bruk av teknologi på nye måter eller ny teknologi";
+                case NO_PROFILING_OR_AUTOMATION -> " • Ingen bruk av profilering eller automatisering";
+                case OTHER -> " • Annet";
             };
         }
 
