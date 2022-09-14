@@ -102,6 +102,7 @@ public class ProcessToDocx {
     private final ProcessorRepository processorRepository;
     private final CommonCodeService commonCodeService;
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
+    private static final String headingExternalProcessList = "Dokumentet inneholder følgende ferdigstilte behandlinger (%s)";
 
     @SneakyThrows
     public byte[] generateDocForProcess(Process process, DocumentAccess documentAccess) {
@@ -122,7 +123,13 @@ public class ProcessToDocx {
         var doc = new DocumentBuilder();
         doc.addTitle(title);
         doc.addText("Eksportert " + formatter.format(date));
-        doc.addHeading1(String.format(headingProcessList, processList.size()));
+
+        if(documentAccess.equals(DocumentAccess.INTERNAL)){
+            doc.addHeading1(String.format(headingProcessList, processList.size()));
+        }else {
+            doc.addHeading1(String.format(headingExternalProcessList, processList.size()));
+        }
+
         doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {
@@ -184,7 +191,11 @@ public class ProcessToDocx {
         doc.addText("Eksportert " + formatter.format(date));
         doc.addText(codelist.getDescription());
 
-        doc.addHeading1(String.format(headingProcessList, processes.size()));
+        if(documentAccess.equals(DocumentAccess.INTERNAL)){
+            doc.addHeading1(String.format(headingProcessList, processes.size()));
+        }else {
+            doc.addHeading1(String.format(headingExternalProcessList, processes.size()));
+        }
         doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {
