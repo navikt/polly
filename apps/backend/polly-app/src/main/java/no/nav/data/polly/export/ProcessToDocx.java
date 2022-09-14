@@ -431,9 +431,11 @@ public class ProcessToDocx {
             addText(boolToText(data.getNeedForDpia()));
             if (boolToText(data.getNeedForDpia()).equals("Nei")) {
                 addText("Begrunnelse: ");
-                data.getNoDpiaReasons().forEach(noDpiaReason -> {
-                    addText(noDpiaReasonToString(noDpiaReason));
-                });
+                if(!data.getNoDpiaReasons().isEmpty()) {
+                    data.getNoDpiaReasons().forEach(noDpiaReason -> {
+                        addText(noDpiaReasonToString(noDpiaReason));
+                    });
+                }
             } else {
                 addText("Begrunnelse: ", data.getGrounds());
             }
