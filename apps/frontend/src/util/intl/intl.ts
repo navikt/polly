@@ -391,6 +391,9 @@ export interface IStrings {
   editInformationTypes: string;
   update: string;
   export: string;
+  exportInternal: string;
+  exportExternal: string;
+  exportHeader: string;
   sources: string;
   categories: string;
   keywords: string;

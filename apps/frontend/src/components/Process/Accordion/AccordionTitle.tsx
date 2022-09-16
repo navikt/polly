@@ -11,6 +11,7 @@ import {env} from '../../../util/env'
 import Button from '../../common/Button'
 import {SIZE as ButtonSize} from 'baseui/button'
 import * as React from 'react'
+import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 
 type AccordionTitleProps = {
   process: ProcessShort,
@@ -24,7 +25,9 @@ type AccordionTitleProps = {
 export const InformationTypeRef = React.createRef<HTMLDivElement>();
 
 const AccordionTitle = (props: AccordionTitleProps) => {
-  const {process, expanded, hasAccess} = props
+  const { process, expanded, hasAccess } = props
+  const [isExportModalOpen, setIsExportModalOpen] = React.useState<boolean>(false)
+
   return <>
     <Block ref={props.forwardRef}>
       <LabelLarge color={theme.colors.primary}>
@@ -41,6 +44,45 @@ const AccordionTitle = (props: AccordionTitleProps) => {
       {expanded &&
       <>
         <AuditButton id={process.id} marginRight/>
+        <Button
+            onClick={() => setIsExportModalOpen(true)}
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faFileWord}
+            tooltip={intl.export}
+            marginRight
+          >
+            {intl.export}
+          </Button>
+      </>
+      }
+
+      <Modal
+        closeable
+        animate
+        autoFocus
+        size={SIZE.auto}
+        role={ROLE.dialog}
+        isOpen={isExportModalOpen}
+        onClose={()=> setIsExportModalOpen(false)}
+      >
+        <ModalHeader>
+          {intl.exportHeader}
+        </ModalHeader>
+        <ModalBody>
+        <StyledLink
+          style={{textDecoration: 'none'}}
+          href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faFileWord}
+            tooltip={intl.export}
+            marginRight
+          >
+            {intl.exportInternal}
+          </Button>
+        </StyledLink>
         <StyledLink
           style={{textDecoration: 'none'}}
           href={`${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`}>
@@ -52,28 +94,13 @@ const AccordionTitle = (props: AccordionTitleProps) => {
             marginRight
             disabled={process.status !== ProcessStatus.COMPLETED}
           >
-            {intl.export} Innsyn
+            {intl.exportExternal}
+
           </Button>
         </StyledLink>
-      </>
-      }
-      {expanded &&
-      <>
-        <StyledLink
-          style={{textDecoration: 'none'}}
-          href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
-          <Button
-            kind={'outline'}
-            size={ButtonSize.compact}
-            icon={faFileWord}
-            tooltip={intl.export}
-            marginRight
-          >
-            {intl.export}
-          </Button>
-        </StyledLink>
-      </>
-      }
+        </ModalBody>
+      </Modal>
+  
       {hasAccess && expanded && (
         <>
           <Button

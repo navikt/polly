@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 
 import {Block} from 'baseui/block'
 import {HeadingXLarge, LabelMedium} from 'baseui/typography'
-import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {KIND, SIZE as ButtonSize, SIZE} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus} from '../../constants'
 import {intl, theme, useAwait} from '../../util'
 import {user} from '../../service/User'
@@ -34,6 +34,7 @@ import Button from '../common/Button'
 import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
 import {useLocation, useNavigate} from 'react-router-dom'
+import { Modal, ModalBody, ModalHeader, ROLE, SIZE as ModalSize } from 'baseui/modal'
 
 type ProcessListProps = {
   section: Section
@@ -63,6 +64,8 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
   const [codelistLoading, setCodelistLoading] = React.useState(true)
   const navigate = useNavigate()
   const [exportHref, setExportHref] = React.useState<string>("")
+  const [isExportModalOpen, setIsExportModalOpen] = React.useState<boolean>(false)
+  
   useAwait(codelist.wait(), setCodelistLoading)
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
@@ -268,32 +271,16 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
     <>
       <Block display={'flex'} flexDirection={'row-reverse'} alignItems={'center'}>
         <Block>
-        <StyledLink
-            style={{textDecoration: 'none'}}
-            href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
-            <Button
-              kind={KIND.tertiary}
-              size={ButtonSize.compact}
-              icon={faFileWord}
-              tooltip={intl.export}
-              marginRight
-            >
-              {intl.export} Innsyn
-            </Button>
-          </StyledLink>
-          <StyledLink
-            style={{textDecoration: 'none'}}
-            href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
-            <Button
-              kind={KIND.tertiary}
-              size={ButtonSize.compact}
-              icon={faFileWord}
-              tooltip={intl.export}
-              marginRight
-            >
-              {intl.export}
-            </Button>
-          </StyledLink>
+        <Button
+            onClick={() => setIsExportModalOpen(true)}
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faFileWord}
+            tooltip={intl.export}
+            marginRight
+          >
+            {intl.export}
+          </Button>
           {isEditable && hasAccess() && (
             <Button
               size={ButtonSize.compact}
@@ -305,6 +292,48 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
             </Button>
           )}
         </Block>
+        <Modal
+        closeable
+        animate
+        autoFocus
+        size={ModalSize.auto}
+        role={ROLE.dialog}
+        isOpen={isExportModalOpen}
+        onClose={()=> setIsExportModalOpen(false)}
+      >
+        <ModalHeader>
+          {intl.exportHeader}
+        </ModalHeader>
+        <ModalBody>
+        <StyledLink
+          style={{textDecoration: 'none'}}
+          href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faFileWord}
+            tooltip={intl.export}
+            marginRight
+          >
+            {intl.exportInternal}
+          </Button>
+        </StyledLink>
+        <StyledLink
+          style={{textDecoration: 'none'}}
+          href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faFileWord}
+            tooltip={intl.export}
+            marginRight
+          >
+            {intl.exportExternal}
+
+          </Button>
+        </StyledLink>
+        </ModalBody>
+      </Modal>
         <Block width={'25%'}>
           <StatefulSelect
             backspaceRemoves={false}
