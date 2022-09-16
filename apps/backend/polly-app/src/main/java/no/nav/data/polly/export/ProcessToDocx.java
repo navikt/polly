@@ -23,6 +23,7 @@ import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
+import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
@@ -91,8 +92,8 @@ import static org.docx4j.com.google.common.base.Strings.nullToEmpty;
 public class ProcessToDocx {
 
     private static final ObjectFactory fac = Context.getWmlObjectFactory();
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).localizedBy(Locale.forLanguageTag("nb"));
-    private static final DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).localizedBy(Locale.forLanguageTag("nb"));
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.MEDIUM).localizedBy(Locale.forLanguageTag("nb"));
+    private static final DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).localizedBy(Locale.forLanguageTag("nb"));
 
     private final AlertService alertService;
     private final ResourceService resourceService;
@@ -101,6 +102,7 @@ public class ProcessToDocx {
     private final ProcessorRepository processorRepository;
     private final CommonCodeService commonCodeService;
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
+    private static final String headingExternalProcessList = "Dokumentet inneholder følgende ferdigstilte behandlinger (%s)";
 
     @SneakyThrows
     public byte[] generateDocForProcess(Process process, DocumentAccess documentAccess) {
@@ -115,10 +117,19 @@ public class ProcessToDocx {
 
     public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
         List<Process> processList = getProcesses(processes, documentAccess);
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
 
         var doc = new DocumentBuilder();
         doc.addTitle(title);
-        doc.addHeading1(String.format(headingProcessList, processList.size()));
+        doc.addText("Eksportert " + formatter.format(date));
+
+        if(documentAccess.equals(DocumentAccess.INTERNAL)){
+            doc.addHeading1(String.format(headingProcessList, processList.size()));
+        }else {
+            doc.addHeading1(String.format(headingExternalProcessList, processList.size()));
+        }
+
         doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {
@@ -148,6 +159,9 @@ public class ProcessToDocx {
 
     public byte[] generateDocFor(ListName list, String code, DocumentAccess documentAccess) {
         List<Process> processes;
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
+
         String title;
         switch (list) {
             case DEPARTMENT -> {
@@ -174,9 +188,14 @@ public class ProcessToDocx {
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
+        doc.addText("Eksportert " + formatter.format(date));
         doc.addText(codelist.getDescription());
 
-        doc.addHeading1(String.format(headingProcessList, processes.size()));
+        if(documentAccess.equals(DocumentAccess.INTERNAL)){
+            doc.addHeading1(String.format(headingProcessList, processes.size()));
+        }else {
+            doc.addHeading1(String.format(headingExternalProcessList, processes.size()));
+        }
         doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {
@@ -217,7 +236,7 @@ public class ProcessToDocx {
             var header = addHeading1(purposeNames + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
 
             addBookmark(header, process.getId().toString());
-            addText(periodText(process.getData().toPeriod()));
+            //addText(periodText(process.getData().toPeriod()));
 
             addHeading4("Behandlingsnummer");
             addText(Integer.toString(process.getData().getNumber()));
@@ -241,12 +260,12 @@ public class ProcessToDocx {
             addHeading4("Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
 
-            if (!data.toPeriod().isDefault()) {
-                addHeading4("Gyldighetsperiode for behandlingen");
-                addText(data.getStart().format(df), " - ", data.getEnd().format(df));
-            } else {
-                addHeading4("Gyldighetsperiode for behandlingen");
+
+            addHeading4("Gyldighetsperiode for behandlingen");
+            if (data.getEnd().format(df).contains("9999")) {
                 addText(data.getStart().format(df), " - ", "(ingen sluttdato satt)");
+            } else {
+                addText(data.getStart().format(df), " - ", data.getEnd().format(df));
             }
 
             addHeading4("Personkategorier oppsummert");
@@ -273,8 +292,8 @@ public class ProcessToDocx {
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors, documentAccess);
-            retention(process.getData().getRetention());
-            dpia(process.getData().getDpia());
+            retention(process.getData().getRetention(), documentAccess);
+            dpia(process.getData().getDpia(), documentAccess);
 
             policies(process);
 
@@ -403,19 +422,36 @@ public class ProcessToDocx {
             }
         }
 
-        private void dpia(Dpia data) {
+        private void dpia(Dpia data, DocumentAccess documentAccess) {
             if (data == null) {
                 return;
             }
             var riskOwner = Optional.ofNullable(data.getRiskOwner()).flatMap(resourceService::getResource).map(Resource::getFullName).orElse(data.getRiskOwner());
             addHeading4("Er det behov for personvernkonsekvensvurdering (PVK)?");
+            addText(boolToText(data.getNeedForDpia()));
+            if (boolToText(data.getNeedForDpia()).equals("Nei")) {
+                addText("Begrunnelse: ");
+                if(data.getNoDpiaReasons() != null) {
+                    data.getNoDpiaReasons().forEach(noDpiaReason -> {
+                        addText(noDpiaReasonToString(noDpiaReason));
+                    });
+                }
+            }
             addTexts(
-                    text(boolToText(data.getNeedForDpia())),
-                    text("Begrunnelse: ", data.getGrounds()),
-                    text("Risiko eier: ", riskOwner,
-                            StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),
-                    text("PVK referanse: ", data.getRefToDpia())
+                    //text("Risiko eier: ", riskOwner, StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),
+                    documentAccess.equals(DocumentAccess.INTERNAL) ? text("PVK referanse: ", data.getRefToDpia()) : null
             );
+        }
+
+        private String noDpiaReasonToString(NoDpiaReason noDpiaReason){
+            return switch (noDpiaReason) {
+                case NO_SPECIAL_CATEGORY_PI -> " • Ingen særlige kategorier personopplysninger behandles";
+                case SMALL_SCALE -> " • Behandlingen skjer ikke i stor skala (få personopplysninger eller registrerte)";
+                case NO_DATASET_CONSOLIDATION -> " • Ingen sammenstilling av datasett på tvers av formål";
+                case NO_NEW_TECH -> " • Ingen bruk av teknologi på nye måter eller ny teknologi";
+                case NO_PROFILING_OR_AUTOMATION -> " • Ingen bruk av profilering eller automatisering";
+                case OTHER -> " • Annet";
+            };
         }
 
         private void dataProcessing(DataProcessing data, List<Processor> processors, DocumentAccess documentAccess) {
@@ -445,8 +481,8 @@ public class ProcessToDocx {
                                 Optional.ofNullable(pd.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
                         : text("");
 
-                addHeading4(" • " + pd.getName());
                 if (documentAccess.equals(DocumentAccess.INTERNAL)) {
+                    addHeading4(" • " + pd.getName());
                     addTexts(
                             text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
                             text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
@@ -456,17 +492,19 @@ public class ProcessToDocx {
                             transferGrounds,
                             text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
                     );
+                } else {
+                    addText(" • " + pd.getName());
                 }
             });
         }
 
-        private void retention(Retention retention) {
+        private void retention(Retention retention, DocumentAccess documentAccess) {
             if (retention == null) {
                 return;
             }
             addHeading4("Lagringstid");
             var ret1 = text("Omfattes av virksomhetens bevarings- og kassasjonsplan: ", boolToText(retention.getRetentionPlan()));
-            var ret3 = text("Begrunnelse: ", retention.getRetentionDescription());
+            var ret3 = documentAccess.equals(DocumentAccess.INTERNAL) ? text("Begrunnelse: ", retention.getRetentionDescription()) : null;
 
             boolean retentionDuration = retention.getRetentionMonths() != null && retention.getRetentionMonths() != 0;
             boolean years = retentionDuration && retention.getRetentionMonths() >= 12;
