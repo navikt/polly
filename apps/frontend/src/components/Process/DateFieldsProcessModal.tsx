@@ -27,7 +27,7 @@ function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | nu
 }
 
 const LabelWithTooltip = (props: {text: string; tooltip: string}) => (
-  <CustomizedStatefulTooltip>
+  <CustomizedStatefulTooltip content={props.tooltip}>
     <Block display='flex'>
       {props.text}
       <FontAwesomeIcon
