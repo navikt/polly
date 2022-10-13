@@ -291,7 +291,7 @@ export const legalBasisSchema: () => yup.SchemaOf<LegalBasisFormValues> = () => 
 
 export const codeListSchema: () => yup.SchemaOf<Code> = () => yup.object({
   list: yup.mixed().required(intl.required),
-  code: yup.string().required(intl.required),
+  code: yup.string().matches(/^[A-Z_]+$/, "Der er ikke tilatt med små bokstaver, mellomrom, æ, ø og å i code.").required(intl.required),
   shortName: yup.string().required(intl.required),
   description: yup.string().required(intl.required),
   invalidCode: yup.boolean()
