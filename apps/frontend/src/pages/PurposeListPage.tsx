@@ -54,7 +54,7 @@ export const PurposeListPage = () => {
                 size={ButtonSize.compact}
                 kind={'outline'}
                 onClick={() => setShowCreateProcessModal(true)}
-                startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
+                startEnhancer={<Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
               >
                 {intl.processingActivitiesNew}
               </Button>

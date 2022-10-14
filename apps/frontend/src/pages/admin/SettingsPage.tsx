@@ -29,7 +29,7 @@ export const SettingsPage = () => {
       setLoading(true)
       try {
         setSettings(await writeSettings(settings))
-      } catch (e:any) {
+      } catch (e: any) {
         setError(e)
       }
       setLoading(false)
@@ -42,21 +42,23 @@ export const SettingsPage = () => {
 
   return (
     <Block>
-      <HeadingMedium>{intl.settings}</HeadingMedium>
-      {loading ? <Spinner $size={40}/> :
-        error || !settings ? {error} :
-          <Block>
-            <DefaultProcessDocument
-              documentId={settings.defaultProcessDocument}
-              setDocumentId={defaultProcessDocument => setSettings({...settings, defaultProcessDocument})}
-            />
-            <FrontpageMessage message={settings?.frontpageMessage} setMessage={frontpageMessage => setSettings({...settings, frontpageMessage})}/>
+      <>
+        <HeadingMedium>{intl.settings}</HeadingMedium>
+        {loading ? <Spinner $size={40}/> :
+          error || !settings ? {error} :
+            <Block>
+              <DefaultProcessDocument
+                documentId={settings.defaultProcessDocument}
+                setDocumentId={defaultProcessDocument => setSettings({...settings, defaultProcessDocument})}
+              />
+              <FrontpageMessage message={settings?.frontpageMessage} setMessage={frontpageMessage => setSettings({...settings, frontpageMessage})}/>
 
-            <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
-              <Button type="button" kind="secondary" onClick={load}>{intl.abort}</Button>
-              <Button type="button" onClick={save}>{intl.save}</Button>
-            </Block>
-          </Block>}
+              <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
+                <Button type="button" kind="secondary" onClick={load}>{intl.abort}</Button>
+                <Button type="button" onClick={save}>{intl.save}</Button>
+              </Block>
+            </Block>}
+      </>
     </Block>
   )
 }
