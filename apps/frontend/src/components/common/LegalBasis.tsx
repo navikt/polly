@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faEdit, faExclamation, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {faCircleExclamation, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import {ARTWORK_SIZES, ListItem} from 'baseui/list'
 import {Block} from 'baseui/block'
 import {Button} from 'baseui/button'
@@ -65,13 +65,13 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
 }
 
 export const LegalBasesNotClarified = (props: {alert?: PolicyAlert}) => {
-  const color = theme.colors.negative100
-  const warningIcon = <span><FontAwesomeIcon icon={faExclamation} color={color}/>&nbsp;</span>
+  const color = theme.colors.negative300
+  const warningIcon = <span><FontAwesomeIcon icon={faCircleExclamation} color={color}/>&nbsp;</span>
   return (
     <Block color={color}>
       <Block>
         {props.alert?.missingLegalBasis &&
-        <CustomizedStatefulTooltip content={intl.unknownLegalBasisHelpText}><span>{warningIcon} {intl.MISSING_LEGAL_BASIS}</span></CustomizedStatefulTooltip>}
+          <CustomizedStatefulTooltip content={intl.unknownLegalBasisHelpText}><span>{warningIcon} {intl.MISSING_LEGAL_BASIS}</span></CustomizedStatefulTooltip>}
       </Block>
       <Block>
         {props.alert?.excessInfo && <CustomizedStatefulTooltip content={intl.excessInfoHelpText}><span>{warningIcon} {intl.EXCESS_INFO}</span></CustomizedStatefulTooltip>}
