@@ -97,10 +97,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.google.cloud</groupId>
-                <artifactId>google-cloud-bigquery</artifactId>
-            </dependency>
-            <dependency>
                 <groupId>com.microsoft.graph</groupId>
                 <artifactId>microsoft-graph</artifactId>
                 <version>${microsoft-graph.version}</version>
