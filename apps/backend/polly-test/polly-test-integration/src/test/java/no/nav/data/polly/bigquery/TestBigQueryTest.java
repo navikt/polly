@@ -12,6 +12,7 @@ class TestBigQueryTest extends IntegrationTestBase {
 
     @Test
     public void test(){
+        System.out.println(getClass().getClassLoader().getResource("teamdatajegerne-prod-c8b1-ff4f59e3edd0.json").getPath());
         testBigQuery.queryBigquery(testBigQuery.query);
         System.out.println(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
 //        assertEquals(testBigQuery.getDatasetName(),"Etterlevelse_Publisering");
