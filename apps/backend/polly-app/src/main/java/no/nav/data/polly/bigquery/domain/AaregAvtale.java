@@ -5,9 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.bigquery.dto.AaregAvtalerResponse;
+import no.nav.data.polly.bigquery.dto.AaregAvtaleResponse;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -30,8 +29,8 @@ public class AaregAvtale {
     private Boolean hendelser;
 
 
-    public AaregAvtalerResponse toResponse() {
-        return AaregAvtalerResponse.builder()
+    public AaregAvtaleResponse toResponse() {
+        return AaregAvtaleResponse.builder()
                 .avtalenummer(avtalenummer)
                 .organisasjonsnummer(organisasjonsnummer)
                 .virksomhet(virksomhet)
