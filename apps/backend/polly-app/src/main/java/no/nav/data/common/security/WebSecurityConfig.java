@@ -49,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/processor/**",
                 "/dpprocess/**",
                 "/term/**",
+                "/aaregavtale/**",
                 "/team/**",
                 "/disclosure/**",
                 "/document/**",
