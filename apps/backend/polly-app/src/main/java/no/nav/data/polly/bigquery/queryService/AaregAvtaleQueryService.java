@@ -34,7 +34,7 @@ public class AaregAvtaleQueryService {
 
     public AaregAvtale getByAvtaleId(String id) {
 
-        String avtaleByIdQuery = "SELECT * FROM `"  + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer = @avtalenummer";
+        String avtaleByIdQuery = "SELECT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer = UPPER(@avtalenummer)";
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
@@ -43,30 +43,52 @@ public class AaregAvtaleQueryService {
                     .newBuilder(avtaleByIdQuery)
                     .addNamedParameter("avtalenummer", QueryParameterValue.string(id))
                     .build();
-
-            TableResult results = bigquery.query(queryConfig);
-            Schema schema = results.getSchema();
-            results
-                    .iterateAll()
-                    .forEach(row -> {
-                        Map<String, String> mappedBiqQueryTable = new HashMap<>();
-                        for(Field field : schema.getFields()) {
-                            mappedBiqQueryTable.put(field.getName(), (String) row.get(field.getName()).getValue());
-                        }
-                        ObjectMapper mapper = new ObjectMapper();
-                        aaregAvtaleList.add(mapper.convertValue(mappedBiqQueryTable, AaregAvtale.class));
-                    });
-
-            log.info("Query performed successfully.");
+            aaregAvtaleList = performQuery(bigquery, queryConfig);
         } catch (BigQueryException | InterruptedException e) {
             log.error("Query not performed \n" + e);
         }
 
-        if(aaregAvtaleList.size() >0) {
+        if (aaregAvtaleList.size() > 0) {
             return aaregAvtaleList.get(0);
-        }
-        else {
+        } else {
             return null;
         }
+    }
+
+    public List<AaregAvtale> searchAaregAvtale(String searchParam) {
+
+        String avtaleByIdQuery = "SELECT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer LIKE UPPER(@searchParam) OR UPPER(virksomhet) LIKE UPPER(@searchParam)";
+
+        List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
+        try {
+            BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+            QueryJobConfiguration queryConfig = QueryJobConfiguration
+                    .newBuilder(avtaleByIdQuery)
+                    .addNamedParameter("searchParam", QueryParameterValue.string("%" + searchParam + "%"))
+                    .build();
+            aaregAvtaleList = performQuery(bigquery, queryConfig);
+        } catch (BigQueryException | InterruptedException e) {
+            log.error("Query not performed \n" + e);
+        }
+
+        return aaregAvtaleList;
+    }
+
+    private List<AaregAvtale> performQuery(BigQuery bigQuery, QueryJobConfiguration queryConfig) throws InterruptedException {
+        List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
+        TableResult results = bigQuery.query(queryConfig);
+        Schema schema = results.getSchema();
+        results
+                .iterateAll()
+                .forEach(row -> {
+                    Map<String, String> mappedBiqQueryTable = new HashMap<>();
+                    for (Field field : schema.getFields()) {
+                        mappedBiqQueryTable.put(field.getName(), (String) row.get(field.getName()).getValue());
+                    }
+                    ObjectMapper mapper = new ObjectMapper();
+                    aaregAvtaleList.add(mapper.convertValue(mappedBiqQueryTable, AaregAvtale.class));
+                });
+        log.info("Query performed successfully.");
+        return aaregAvtaleList;
     }
 }
