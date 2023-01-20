@@ -4,10 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.bigquery.domain.AaregAvtale;
 import no.nav.data.polly.bigquery.dto.AaregAvtaleResponse;
-import no.nav.data.polly.term.domain.PollyTerm;
-import no.nav.data.polly.term.dto.TermResponse;
+import no.nav.data.polly.bigquery.queryService.AaregAvtaleQueryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +21,11 @@ import java.util.Optional;
 @Tag(name = "Aareg", description = "REST API for AAREG avtale")
 public class AaregAvtaleController {
     private final AaregAvtaleService aaregAvtaleService;
+    private final AaregAvtaleQueryService aaregAvtaleQueryService;
 
-    public AaregAvtaleController(AaregAvtaleService aaregAvtaleService) {
+    public AaregAvtaleController(AaregAvtaleService aaregAvtaleService, AaregAvtaleQueryService aaregAvtaleQueryService) {
         this.aaregAvtaleService = aaregAvtaleService;
+        this.aaregAvtaleQueryService = aaregAvtaleQueryService;
     }
 
     @Operation(summary = "Get AAREG avtale")
@@ -33,7 +33,7 @@ public class AaregAvtaleController {
     @GetMapping("/{id}")
     public ResponseEntity<AaregAvtaleResponse> findForId(@PathVariable String id) {
         log.info("Received request for AAREG avtale with the id={}", id);
-        Optional<AaregAvtaleResponse> aaregAvtaleResponse = aaregAvtaleService.getAaregAvtale(id).map(AaregAvtale::toResponse);
+        Optional<AaregAvtaleResponse> aaregAvtaleResponse = Optional.ofNullable(aaregAvtaleQueryService.getByAvtaleId(id).toResponse());
         if (aaregAvtaleResponse.isEmpty()) {
             log.info("Cannot find the AAREG avtale with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
