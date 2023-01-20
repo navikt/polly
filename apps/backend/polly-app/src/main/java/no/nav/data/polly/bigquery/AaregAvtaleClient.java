@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.MetricUtils;
+import no.nav.data.polly.bigquery.domain.AaregAvtale;
 import no.nav.data.polly.bigquery.domain.PollyAaregAvtale;
 import no.nav.data.polly.bigquery.queryService.AaregAvtaleQueryService;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static no.nav.data.common.utils.StreamUtils.safeStream;
 
@@ -52,9 +54,8 @@ public class AaregAvtaleClient implements AaregAvtaleService {
 
 
 
-    private List<PollyAaregAvtale> searchBigQuery(String searchTerm) {
-        List<PollyAaregAvtale> aaregAvtaleList = new ArrayList<>();
-        return aaregAvtaleList;
+    private List<PollyAaregAvtale> searchBigQuery(String searchParam) {
+        return aaregAvtaleQueryService.searchAaregAvtale(searchParam).stream().map(AaregAvtale::toPollyAaregAvtale).collect(Collectors.toList());
     }
 
     private PollyAaregAvtale getFromBigQuery(String avtaleId){

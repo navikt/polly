@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.bigquery.domain.PollyAaregAvtale;
 import no.nav.data.polly.bigquery.dto.AaregAvtaleResponse;
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.Comparator.comparing;
+import static no.nav.data.common.utils.StartsWithComparator.startsWith;
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
@@ -39,5 +46,21 @@ public class AaregAvtaleController {
         }
         log.info("Returned AAREG avtale");
         return new ResponseEntity<>(aaregAvtaleResponse.get(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search AAREG avtale")
+    @ApiResponse(description = "Search AAREG avtale")
+    @GetMapping("/search/{searchParam}")
+    public ResponseEntity<RestResponsePage<AaregAvtaleResponse>> searchAareg(@PathVariable String searchParam) {
+        log.info("Received request for AAREG avtale with the searchParam={}", searchParam);
+        if (searchParam.length() < 3) {
+            throw new ValidationException("Search parameter must be at least 3 characters");
+        }
+        List<PollyAaregAvtale> pollyAaregAvtaleList = aaregAvtaleService.searchAaregAvtale(searchParam);
+        log.info("Returned AAREG avtale");
+        pollyAaregAvtaleList.sort(comparing(paa->paa.getVirksomhet()+paa.getId(),startsWith(searchParam)));
+        log.info("Returned {} Aareg avtale", pollyAaregAvtaleList.size());
+
+        return new ResponseEntity<>(new RestResponsePage<>(convert(pollyAaregAvtaleList,PollyAaregAvtale::toResponse)), HttpStatus.OK);
     }
 }
