@@ -1,12 +1,12 @@
 package no.nav.data.polly.bigquery.queryService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.QueryJobConfiguration;
+import com.google.cloud.bigquery.QueryParameterValue;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.TableResult;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +32,8 @@ public class AaregAvtaleQueryService {
     @Value("${BIGQUERY_AAREG_TABLENAME}")
     private String tableName;
 
-    public String getByAvtaleIdQuery(String id) {
-        return "SECELT * FROM `"  + projectId + "." + datasetName + "." + tableName + "` WHERE avtalenummer = " + id;
+    public String getByAvtaleIdQuery() {
+        return "SELECT * FROM `"  + projectId + "." + datasetName + "." + tableName + "` WHERE avtalenummer = @avtalenummer";
     }
 
 
@@ -41,7 +41,10 @@ public class AaregAvtaleQueryService {
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
             BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-            QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(getByAvtaleIdQuery(id)).build();
+            QueryJobConfiguration queryConfig = QueryJobConfiguration
+                    .newBuilder(getByAvtaleIdQuery())
+                    .addNamedParameter("avtalenummer", QueryParameterValue.string(id))
+                    .build();
 
             TableResult results = bigquery.query(queryConfig);
             Schema schema = results.getSchema();
