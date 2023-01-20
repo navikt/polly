@@ -27,31 +27,25 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 
 @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonPropertyOrder({"id", "number", "name", "description", "additionalDescription", "purpose", "purposes", "affiliation",
-            "commonExternalProcessResponsible", "start", "end", "active",
-            "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status", "revisionText", "changeStamp",
-            "legalBases", "policies"})
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonPropertyOrder({"avtalenummer", "organisasjonsnummer", "virksomhet"})
 
-        public class AaregAvtalerResponse {
+public class AaregAvtalerResponse {
 
     private String avtalenummer;
     private String organisasjonsnummer;
     private String virksomhet;
-    private Boolean  integrert_oppslag_api;
+    private Boolean integrert_oppslag_api;
     private Boolean uttrekk;
-    private Boolean  web_oppslag;
+    private Boolean web_oppslag;
     private LocalDateTime opprettet;
     private String status;
     private String databehandler_navn;
     private String databehandler_organisasjonsnummer;
-    private String  virksomhetskategori;
-    private String  hjemmel_behandlingsgrunnlag_formal;
+    private String virksomhetskategori;
+    private String hjemmel_behandlingsgrunnlag_formal;
     private Boolean hendelser;
-
-}
-    }
 
 }
