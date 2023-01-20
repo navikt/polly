@@ -1,17 +1,19 @@
 package no.nav.data.polly.bigquery.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.bigquery.dto.AaregAvtaleResponse;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AaregAvtale {
-    private String avtalenummer;
+public class PollyAaregAvtale {
+    private String id;
     private String organisasjonsnummer;
     private String virksomhet;
     private Boolean integrert_oppslag_api;
@@ -26,15 +28,15 @@ public class AaregAvtale {
     private Boolean hendelser;
 
 
-    public PollyAaregAvtale toPollyAaregAvtale() {
-        return PollyAaregAvtale.builder()
-                .id(avtalenummer)
+    public AaregAvtaleResponse toResponse() {
+        return AaregAvtaleResponse.builder()
+                .avtalenummer(id)
                 .organisasjonsnummer(organisasjonsnummer)
                 .virksomhet(virksomhet)
                 .integrert_oppslag_api(integrert_oppslag_api)
                 .uttrekk(uttrekk)
                 .web_oppslag(web_oppslag)
-                .opprettet(opprettet)
+                .opprettet(LocalDateTime.parse(opprettet))
                 .status(status)
                 .databehandler_navn(databehandler_navn)
                 .databehandler_organisasjonsnummer(databehandler_organisasjonsnummer)

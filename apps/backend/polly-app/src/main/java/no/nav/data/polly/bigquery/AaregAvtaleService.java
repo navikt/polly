@@ -1,13 +1,13 @@
 package no.nav.data.polly.bigquery;
 
-import no.nav.data.polly.bigquery.domain.AaregAvtale;
+import no.nav.data.polly.bigquery.domain.PollyAaregAvtale;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AaregAvtaleService {
 
-    List<AaregAvtale> searchAaregAvtale(String searchString);
+    List<PollyAaregAvtale> searchAaregAvtale(String searchString);
 
-    Optional<AaregAvtale> getAaregAvtale(String avtaleId);
+    Optional<PollyAaregAvtale> getAaregAvtale(String avtaleId);
 }

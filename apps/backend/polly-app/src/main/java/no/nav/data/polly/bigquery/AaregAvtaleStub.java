@@ -1,6 +1,6 @@
 package no.nav.data.polly.bigquery;
 
-import no.nav.data.polly.bigquery.domain.AaregAvtale;
+import no.nav.data.polly.bigquery.domain.PollyAaregAvtale;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +11,12 @@ import java.util.Optional;
 @ConditionalOnMissingBean(AaregAvtaleService.class)
 public class AaregAvtaleStub implements AaregAvtaleService{
     @Override
-    public List<AaregAvtale> searchAaregAvtale(String searchString) {
+    public List<PollyAaregAvtale> searchAaregAvtale(String searchString) {
         return List.of();
     }
 
     @Override
-    public Optional<AaregAvtale> getAaregAvtale(String avtaleId) {
+    public Optional<PollyAaregAvtale> getAaregAvtale(String avtaleId) {
         return Optional.empty();
     }
 }

@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.MetricUtils;
-import no.nav.data.polly.bigquery.domain.AaregAvtale;
+import no.nav.data.polly.bigquery.domain.PollyAaregAvtale;
 import no.nav.data.polly.bigquery.queryService.AaregAvtaleQueryService;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +21,8 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 public class AaregAvtaleClient implements AaregAvtaleService {
 
     private final AaregAvtaleQueryService aaregAvtaleQueryService;
-    private final LoadingCache<String, List<AaregAvtale>> aaregAvtaleSearchCache;
-    private final LoadingCache<String, AaregAvtale> aaregAvtaleCache;
+    private final LoadingCache<String, List<PollyAaregAvtale>> aaregAvtaleSearchCache;
+    private final LoadingCache<String, PollyAaregAvtale> aaregAvtaleCache;
 
 
     public AaregAvtaleClient(AaregAvtaleQueryService aaregAvtaleQueryService) {
@@ -39,25 +39,25 @@ public class AaregAvtaleClient implements AaregAvtaleService {
     }
 
     @Override
-    public List<AaregAvtale> searchAaregAvtale(String searchString) {
-        List<AaregAvtale> aaregAvtaleList = aaregAvtaleSearchCache.get(searchString);
+    public List<PollyAaregAvtale> searchAaregAvtale(String searchString) {
+        List<PollyAaregAvtale> aaregAvtaleList = aaregAvtaleSearchCache.get(searchString);
         return safeStream(aaregAvtaleList).toList();
     }
 
     @Override
-    public Optional<AaregAvtale> getAaregAvtale(String avtaleId) {
-        AaregAvtale aaregAvtale = aaregAvtaleCache.get(avtaleId);
+    public Optional<PollyAaregAvtale> getAaregAvtale(String avtaleId) {
+        PollyAaregAvtale aaregAvtale = aaregAvtaleCache.get(avtaleId);
         return Optional.ofNullable(aaregAvtale);
     }
 
 
 
-    private List<AaregAvtale> searchBigQuery(String searchTerm) {
-        List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
+    private List<PollyAaregAvtale> searchBigQuery(String searchTerm) {
+        List<PollyAaregAvtale> aaregAvtaleList = new ArrayList<>();
         return aaregAvtaleList;
     }
 
-    private AaregAvtale getFromBigQuery(String avtaleId){
-        return aaregAvtaleQueryService.getByAvtaleId(avtaleId);
+    private PollyAaregAvtale getFromBigQuery(String avtaleId){
+        return aaregAvtaleQueryService.getByAvtaleId(avtaleId).toPollyAaregAvtale();
     }
 }
