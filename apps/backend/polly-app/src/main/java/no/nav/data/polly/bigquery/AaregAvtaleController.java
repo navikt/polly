@@ -20,6 +20,7 @@ import java.util.Optional;
 @RequestMapping("/aaregavtale")
 @Tag(name = "Aareg", description = "REST API for AAREG avtale")
 public class AaregAvtaleController {
+
     private final AaregAvtaleService aaregAvtaleService;
 
     public AaregAvtaleController(AaregAvtaleService aaregAvtaleService) {

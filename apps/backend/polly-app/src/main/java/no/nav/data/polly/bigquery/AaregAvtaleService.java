@@ -8,6 +8,5 @@ import java.util.Optional;
 public interface AaregAvtaleService {
 
     List<PollyAaregAvtale> searchAaregAvtale(String searchString);
-
     Optional<PollyAaregAvtale> getAaregAvtale(String avtaleId);
 }

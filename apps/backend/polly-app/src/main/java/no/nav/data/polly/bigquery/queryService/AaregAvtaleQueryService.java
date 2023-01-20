@@ -24,25 +24,23 @@ import java.util.Map;
 public class AaregAvtaleQueryService {
 
     @Value("${BIGQUERY_AAREG_PROJECTID}")
-    private String projectId;
+    private String PROJECT_ID;
 
     @Value("${BIGQUERY_AAREG_DATASETNAME}")
-    private String datasetName;
+    private String DATASET_NAME;
 
     @Value("${BIGQUERY_AAREG_TABLENAME}")
-    private String tableName;
-
-    public String getByAvtaleIdQuery() {
-        return "SELECT * FROM `"  + projectId + "." + datasetName + "." + tableName + "` WHERE avtalenummer = @avtalenummer";
-    }
-
+    private String TANLE_NAME;
 
     public AaregAvtale getByAvtaleId(String id) {
+
+        String avtaleByIdQuery = "SELECT * FROM `"  + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer = @avtalenummer";
+
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
             BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
             QueryJobConfiguration queryConfig = QueryJobConfiguration
-                    .newBuilder(getByAvtaleIdQuery())
+                    .newBuilder(avtaleByIdQuery)
                     .addNamedParameter("avtalenummer", QueryParameterValue.string(id))
                     .build();
 
@@ -61,7 +59,7 @@ public class AaregAvtaleQueryService {
 
             log.info("Query performed successfully.");
         } catch (BigQueryException | InterruptedException e) {
-            log.error("Query not performed \n" + e.toString());
+            log.error("Query not performed \n" + e);
         }
 
         if(aaregAvtaleList.size() >0) {
