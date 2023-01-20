@@ -23,10 +23,10 @@ import java.util.Map;
 @Component
 public class AaregAvtaleQueryService {
 
-    @Value("${BIGQUERY_AAREG_DATASETNAME}")
+    @Value("${BIGQUERY_AAREG_PROJECTID}")
     private String projectId;
 
-    @Value("${BIGQUERY_AAREG_PROJECTID}")
+    @Value("${BIGQUERY_AAREG_DATASETNAME}")
     private String datasetName;
 
     @Value("${BIGQUERY_AAREG_TABLENAME}")
