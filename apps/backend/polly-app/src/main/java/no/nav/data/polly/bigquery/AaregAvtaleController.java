@@ -58,7 +58,7 @@ public class AaregAvtaleController {
         }
         List<PollyAaregAvtale> pollyAaregAvtaleList = aaregAvtaleService.searchAaregAvtale(searchParam);
         log.info("Returned AAREG avtale");
-        pollyAaregAvtaleList.sort(comparing(paa->paa.getVirksomhet()+paa.getId(),startsWith(searchParam)));
+//        pollyAaregAvtaleList.sort(comparing(paa->paa.getVirksomhet()+paa.getId(),startsWith(searchParam)));
         log.info("Returned {} Aareg avtale", pollyAaregAvtaleList.size());
 
         return new ResponseEntity<>(new RestResponsePage<>(convert(pollyAaregAvtaleList,PollyAaregAvtale::toResponse)), HttpStatus.OK);
