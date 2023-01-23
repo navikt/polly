@@ -60,7 +60,6 @@ export const dataProcessorSchema: () => yup.SchemaOf<ProcessorFormValues> = () =
     contractOwner: yup.string(),
     operationalContractManagers: yup.array().of(yup.string().required()),
     note: yup.string(),
-    aaregContractIds: yup.array(),
     contract: yup.string(),
     outsideEU: yup.boolean(),
     transferGroundsOutsideEU: yup.string().test({
@@ -321,6 +320,7 @@ export const disclosureSchema: () => yup.SchemaOf<DisclosureFormValues> = () => 
   processIds: yup.array().of(yup.string().required()),
   documentId: yup.string(),
   informationTypes: yup.array().of(ignore().required()),
+  aaregContractIds: yup.array()
 })
 
 export const addDocumentToProcessSchema: () => yup.SchemaOf<AddDocumentToProcessFormValues> = () => yup.object({

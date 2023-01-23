@@ -516,6 +516,7 @@ export interface DisclosureFormValues {
   start?: string;
   processes: ProcessShort[];
   informationTypes?: InformationTypeShort[];
+  aaregContractIds?: string[];
   abroad: DisclosureAbroad;
   processIds: string[];
 }
@@ -539,6 +540,7 @@ export interface Disclosure extends IDurationed {
   processes: ProcessShort[]
   processIds: string[]
   informationTypes?: InformationTypeShort[]
+  aaregContractIds?: string[];
   informationTypeIds?: string[]
   abroad: DisclosureAbroad;
   changeStamp: ChangeStamp;
@@ -590,7 +592,6 @@ export interface Processor {
   contractOwner?: string;
   operationalContractManagers: string[];
   note?: string;
-  aaregContractIds?: string[];
   outsideEU?: boolean;
   transferGroundsOutsideEU?: Code;
   transferGroundsOutsideEUOther?: string;
@@ -605,7 +606,6 @@ export interface ProcessorFormValues {
   contractOwner?: string;
   operationalContractManagers: string[];
   note?: string;
-  aaregContractIds?: string[];
   outsideEU?: boolean;
   transferGroundsOutsideEU?: string;
   transferGroundsOutsideEUOther?: string;

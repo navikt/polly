@@ -55,7 +55,6 @@ export const convertProcessorToFormValues = (values?: Partial<Processor>): Proce
     contractOwner,
     operationalContractManagers,
     note,
-    aaregContractIds,
 
     outsideEU,
     transferGroundsOutsideEU,
@@ -70,7 +69,6 @@ export const convertProcessorToFormValues = (values?: Partial<Processor>): Proce
     contractOwner: contractOwner || '',
     operationalContractManagers: operationalContractManagers || [],
     note: note || '',
-    aaregContractIds: aaregContractIds || [],
 
     outsideEU: mapBool(outsideEU),
     transferGroundsOutsideEU: transferGroundsOutsideEU?.code || undefined,
@@ -94,7 +92,6 @@ export const convertFormValuesToProcessor = (values: ProcessorFormValues) => {
     contractOwner: values.contractOwner,
     operationalContractManagers: values.operationalContractManagers || [],
     note: values.note,
-    aaregContractIds: values.aaregContractIds || [],
     
     outsideEU: values.outsideEU,
     transferGroundsOutsideEU: values.transferGroundsOutsideEU,
