@@ -330,6 +330,7 @@ public abstract class IntegrationTestBase {
                 .operationalContractManager("A123456")
                 .operationalContractManager("A123457")
                 .note("note")
+                .aaregContractIds(List.of("AVT000101"))
 
                 .outsideEU(true)
                 .transferGroundsOutsideEU("OTHER")
