@@ -15,32 +15,31 @@ type SelectAARegAvtale = {
 const SelectAARegAvtale = (props: SelectAARegAvtale) => {
   const [aaregAvtaleSearchResult, setAaregAvtaleSearch, aaregAvtaleSearchLoading] = useAaregAvtaleSearch()
   const { formikBag } = props
-  const [aaregAvtaleValues, setAaregAvtaleValue] = React.useState<Option>(formikBag.values.aaregContractIds ? [{id: formikBag.values.aaregContractIds, label: formikBag.values.aaregContractIds}] : []);
 
+
+  //TODO UPDATE AAREG AVTALE API TO BE LIKE INFORMATIONTYPESAPI ALSO SELECTOR TO BE LIKE SELECTINFORMATIONTYPES
   return (<FieldArray
-    name="aaregContractIds"
+    name="aaregContracts"
     render={arrayHelpers => (
       <Block width="100%">
         <Block width="100%">
-          <Select
-            noResultsMsg={intl.emptyTable}
-            maxDropdownHeight="400px"
-            searchable={true}
-            type={TYPE.search}
-            options={aaregAvtaleSearchResult}
-            placeholder={intl.definitionWrite}
-            value={aaregAvtaleValues as Value}
-            onInputChange={event => setAaregAvtaleSearch(event.currentTarget.value)}
-            onChange={(params) => {
-              let aaregAvtale = params.value.length ? params.value[0] : undefined
-              setAaregAvtaleValue(aaregAvtale ? [aaregAvtale as Option] : [])
-              formikBag.setFieldValue('aaregContractIds', aaregAvtale ? aaregAvtale.id : undefined)
-            }}
-            error={!!formikBag.errors.aaregContractIds && !!formikBag.submitCount}
-            isLoading={aaregAvtaleSearchLoading}
-          />
+        <Select
+              options={aaregAvtaleSearchResult}
+              clearable
+              searchable={true}
+              noResultsMsg={intl.emptyTable}
+              type={TYPE.search}
+              maxDropdownHeight="400px"
+              placeholder={intl.aaregAvtale}
+              onInputChange={event => setAaregAvtaleSearch(event.currentTarget.value)}
+              labelKey="label"
+              onChange={({value}) => (
+                arrayHelpers.form.setFieldValue('aaregContracts',
+                  formikBag.values.informationTypes ? [...formikBag.values.informationTypes, ...value.map(v => v)] : value.map(v => v))
+              )}
+            />
         </Block>
-        
+        {formikBag.values.aaregContracts && <Block>{renderTagList(formikBag.values.aaregContracts.map(i => i.avtalenummer + ' - ' + i.virksomhet), arrayHelpers)}</Block>}
       </Block>
     )}
   />)
