@@ -25,7 +25,6 @@ public class ProcessorData {
     @Singular
     private List<String> operationalContractManagers;
     private String note;
-    private List<String> aaregContractIds;
     private Boolean outsideEU;
     private String transferGroundsOutsideEU;
     private String transferGroundsOutsideEUOther;

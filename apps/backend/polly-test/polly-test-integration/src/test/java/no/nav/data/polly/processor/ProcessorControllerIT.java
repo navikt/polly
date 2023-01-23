@@ -120,7 +120,6 @@ class ProcessorControllerIT extends IntegrationTestBase {
                 .operationalContractManager("A123456")
                 .operationalContractManager("A123457")
                 .note("note")
-                .aaregContractIds(List.of("AVT000101"))
 
                 .outsideEU(true)
                 .transferGroundsOutsideEU(CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))

@@ -29,7 +29,7 @@ public class ProcessorResponse {
     @Singular
     private List<String> operationalContractManagers;
     private String note;
-    private List<String> aaregContractIds;
+
     private Boolean outsideEU;
     @Schema(description = "Codelist TRANSFER_GROUNDS_OUTSIDE_EU")
     private CodelistResponse transferGroundsOutsideEU;
