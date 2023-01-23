@@ -23,13 +23,13 @@ import java.util.Map;
 @Component
 public class AaregAvtaleQueryService {
 
-    @Value("${BIGQUERY_AAREG_PROJECTID}")
+    @Value("${polly.aareg.projectId}")
     private String PROJECT_ID;
 
-    @Value("${BIGQUERY_AAREG_DATASETNAME}")
+    @Value("${polly.aareg.datasetName}")
     private String DATASET_NAME;
 
-    @Value("${BIGQUERY_AAREG_TABLENAME}")
+    @Value("${polly.aareg.tableName}")
     private String TANLE_NAME;
 
     public AaregAvtale getByAvtaleId(String id) {
