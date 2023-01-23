@@ -271,7 +271,6 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .start(LocalDate.now().toString())
                 .end(LocalDate.now().toString())
                 .legalBasis(createLegalBasisRequest())
-                .aaregContractIds(List.of("AVT000001"))
                 .abroad(DisclosureAbroadRequest.builder()
                         .abroad(true)
                         .country("DNK")
