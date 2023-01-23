@@ -206,6 +206,24 @@ export interface Retention {
   retentionDescription?: string;
 }
 
+export interface AaregAvtale {
+
+  avtalenummer: string;
+  organisasjonsnummer: string;
+  virksomhet: string;
+  integrert_oppslag_api: boolean;
+  uttrekk: boolean;
+  web_oppslag: boolean;
+  opprettet: string;
+  status: string;
+  databehandler_navn: string;
+  databehandler_organisasjonsnummer: string;
+  virksomhetskategori: string;
+  hjemmel_behandlingsgrunnlag_formal: string;
+  hendelser: boolean;
+
+}
+
 export interface DpRetention {
   retentionMonths?: number;
   retentionStart?: string;
