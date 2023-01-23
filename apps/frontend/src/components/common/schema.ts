@@ -320,6 +320,7 @@ export const disclosureSchema: () => yup.SchemaOf<DisclosureFormValues> = () => 
   processIds: yup.array().of(yup.string().required()),
   documentId: yup.string(),
   informationTypes: yup.array().of(ignore().required()),
+  aaregContracts: yup.array().of(ignore().required()),
   aaregContractIds: yup.array()
 })
 
