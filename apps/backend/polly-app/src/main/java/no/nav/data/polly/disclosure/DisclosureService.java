@@ -25,6 +25,7 @@ public class DisclosureService extends RequestValidator<DisclosureRequest> {
     private final ProcessRepository processRepository;
     private final AlertService alertService;
 
+
     public DisclosureService(DisclosureRepository repository, DocumentRepository documentRepository,
             InformationTypeRepository informationTypeRepository, ProcessRepository processRepository, AlertService alertService) {
         this.repository = repository;
@@ -32,6 +33,7 @@ public class DisclosureService extends RequestValidator<DisclosureRequest> {
         this.informationTypeRepository = informationTypeRepository;
         this.processRepository = processRepository;
         this.alertService = alertService;
+
     }
 
     @Transactional

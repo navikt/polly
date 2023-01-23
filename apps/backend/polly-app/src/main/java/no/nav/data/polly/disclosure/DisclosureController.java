@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
+import no.nav.data.polly.bigquery.AaregAvtaleClient;
+import no.nav.data.polly.bigquery.domain.PollyAaregAvtale;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
@@ -35,11 +37,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.validation.Valid;
 
 import static no.nav.data.common.utils.StreamUtils.contains;
 import static no.nav.data.common.utils.StreamUtils.convert;
@@ -59,6 +61,8 @@ public class DisclosureController {
     private final DocumentService documentService;
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
+
+    private final AaregAvtaleClient aaregAvtaleClient;
 
     @Operation(summary = "Get All Disclosures")
     @ApiResponse(description = "All Disclosures fetched")
@@ -180,6 +184,14 @@ public class DisclosureController {
         if (!response.getProcessIds().isEmpty()) {
             var processes = processRepository.findAllById(response.getProcessIds());
             response.setProcesses(convert(processes, Process::convertToShortResponse));
+        }
+        if(!response.getAaregContractIds().isEmpty()) {
+            List<PollyAaregAvtale> aaregContracts = new ArrayList<>();
+            response.getAaregContractIds().forEach(id -> {
+                var aaregContract = aaregAvtaleClient.getAaregAvtale(id);
+                aaregContract.ifPresent(aaregContracts::add);
+            });
+            response.setAaregContracts(convert(aaregContracts, PollyAaregAvtale::toResponse));
         }
         return response;
     }
