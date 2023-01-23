@@ -14,6 +14,7 @@ import enLocale from "date-fns/locale/en-GB";
 import taLocale from "date-fns/locale/ta";
 
 export interface IStrings {
+  aaregAvtale: string;
   informationType: string;
   informationTypes: string;
   informationTypeSearch: string;
