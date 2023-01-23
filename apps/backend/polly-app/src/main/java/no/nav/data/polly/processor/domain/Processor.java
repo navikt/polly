@@ -54,6 +54,7 @@ public class Processor extends Auditable {
                 .transferGroundsOutsideEUOther(data.getTransferGroundsOutsideEUOther())
                 .outsideEU(data.getOutsideEU())
                 .countries(data.getCountries())
+                .aaregContractIds(data.getAaregContractIds())
                 .changeStamp(convertChangeStampResponse())
                 .build();
     }
@@ -68,6 +69,7 @@ public class Processor extends Auditable {
         data.setContractOwner(request.getContractOwner());
         data.setOperationalContractManagers(copyOf(request.getOperationalContractManagers()));
         data.setNote(request.getNote());
+        data.setAaregContractIds(request.getAaregContractIds());
 
         data.setOutsideEU(request.getOutsideEU());
         data.setTransferGroundsOutsideEU(request.getTransferGroundsOutsideEU());

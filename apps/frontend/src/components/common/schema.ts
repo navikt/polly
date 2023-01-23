@@ -60,6 +60,7 @@ export const dataProcessorSchema: () => yup.SchemaOf<ProcessorFormValues> = () =
     contractOwner: yup.string(),
     operationalContractManagers: yup.array().of(yup.string().required()),
     note: yup.string(),
+    aaregContractIds: yup.array(),
     contract: yup.string(),
     outsideEU: yup.boolean(),
     transferGroundsOutsideEU: yup.string().test({

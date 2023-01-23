@@ -572,6 +572,7 @@ export interface Processor {
   contractOwner?: string;
   operationalContractManagers: string[];
   note?: string;
+  aaregContractIds?: string[];
   outsideEU?: boolean;
   transferGroundsOutsideEU?: Code;
   transferGroundsOutsideEUOther?: string;
@@ -586,6 +587,7 @@ export interface ProcessorFormValues {
   contractOwner?: string;
   operationalContractManagers: string[];
   note?: string;
+  aaregContractIds?: string[];
   outsideEU?: boolean;
   transferGroundsOutsideEU?: string;
   transferGroundsOutsideEUOther?: string;
