@@ -43,6 +43,7 @@ public class DisclosureResponse {
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     private DisclosureAbroadResponse abroad;
+    private List<String> aaregContractIds;
 
     private ChangeStampResponse changeStamp;
 
