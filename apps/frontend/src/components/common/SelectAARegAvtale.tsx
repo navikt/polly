@@ -35,7 +35,7 @@ const SelectAARegAvtale = (props: SelectAARegAvtale) => {
               labelKey="label"
               onChange={({value}) => (
                 arrayHelpers.form.setFieldValue('aaregContracts',
-                  formikBag.values.informationTypes ? [...formikBag.values.informationTypes, ...value.map(v => v)] : value.map(v => v))
+                  formikBag.values.aaregContracts ? [...formikBag.values.aaregContracts, ...value.map(v => v)] : value.map(v => v))
               )}
             />
         </Block>
