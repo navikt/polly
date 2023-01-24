@@ -97,6 +97,7 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     processes: disclosure.processes || [],
     informationTypes: disclosure.informationTypes || [],
     aaregContractIds: disclosure.aaregContractIds || [],
+    aaregContracts: disclosure.aaregContracts || [],
     abroad: {
       abroad: mapBool(disclosure.abroad.abroad),
       countries: disclosure.abroad.countries || [],
