@@ -72,7 +72,7 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     end: values.end,
     processIds: values.processIds.length > 0 ? values.processIds : values.processes.map(p => p.id) || [],
     informationTypeIds: values.informationTypes ? values.informationTypes.map(i => i.id) : [],
-    aaregContractIds: values.aaregContractIds || [],
+    aaregContractIds: values.aaregContracts ? values.aaregContracts.map(aaregContract => aaregContract.avtalenummer) : [],
     abroad: {
       abroad: mapBool(values.abroad.abroad),
       countries: values.abroad.countries,
