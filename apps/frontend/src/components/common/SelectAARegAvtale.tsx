@@ -1,8 +1,7 @@
 import { Block } from 'baseui/block'
-import { Select, TYPE, Option, Value } from 'baseui/select'
+import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FormikProps } from 'formik'
 import * as React from 'react'
-import { useInfoTypeSearch } from '../../api'
 import { useAaregAvtaleSearch } from '../../api/AaregAvtaleApi'
 import { DisclosureFormValues } from '../../constants'
 import { intl } from '../../util'
@@ -13,18 +12,18 @@ type SelectAARegAvtale = {
 }
 
 const SelectAARegAvtale = (props: SelectAARegAvtale) => {
-  const [aaregAvtaleSearchResult, setAaregAvtaleSearch, aaregAvtaleSearchLoading] = useAaregAvtaleSearch()
+  const [aaregAvtaleSearchResult, setAaregAvtaleSearch] = useAaregAvtaleSearch()
   const { formikBag } = props
 
-
-  //TODO UPDATE AAREG AVTALE API TO BE LIKE INFORMATIONTYPESAPI ALSO SELECTOR TO BE LIKE SELECTINFORMATIONTYPES
   return (<FieldArray
     name="aaregContracts"
     render={arrayHelpers => (
       <Block width="100%">
         <Block width="100%">
         <Select
-              options={aaregAvtaleSearchResult}
+              options={aaregAvtaleSearchResult.filter(i => !formikBag.values.aaregContracts?.map(value => value.avtalenummer).includes(i.avtalenummer)).map(aaregAvtale => {
+                return {id: aaregAvtale.avtalenummer, label: aaregAvtale.avtalenummer + ' - ' + aaregAvtale.virksomhet, ...aaregAvtale}
+              })}
               clearable
               searchable={true}
               noResultsMsg={intl.emptyTable}

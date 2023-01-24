@@ -16,17 +16,16 @@ export const searchAaregAvtale = async (searchParam: string) => {
 export const mapAaregAvtaleToOption = (aaregAvtale: AaregAvtale) => ({id: aaregAvtale.avtalenummer, label: aaregAvtale.avtalenummer + ' - ' + aaregAvtale.virksomhet})
 
 export const useAaregAvtaleSearch = () => {
-  const [aaregAvtaleSearch, setAaregAvtaleSearch] = useDebouncedState<string>('', 200);
-  const [searchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [aaregAvtaleSearch, setAaregAvtaleSearch] = useDebouncedState<string>('', 200)
+  const [searchResult, setInfoTypeSearchResult] = React.useState<Option[]>([])
+  const [loading, setLoading] = React.useState<boolean>(false)
 
   useEffect(() => {
     const search = async () => {
       if (aaregAvtaleSearch && aaregAvtaleSearch.length > 2) {
         setLoading(true)
         const res = await searchAaregAvtale(aaregAvtaleSearch)
-        let options: Option[] = res.content.map(mapAaregAvtaleToOption)
-        setInfoTypeSearchResult(options)
+        setInfoTypeSearchResult(res.content)
         setLoading(false)
       }
     }
