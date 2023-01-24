@@ -19,14 +19,14 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.domain.repo.ProcessVeryShort;
 import org.hibernate.annotations.Type;
 
-import java.util.List;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
@@ -87,7 +87,7 @@ public class Disclosure extends Auditable {
                 .processIds(copyOf(data.getProcessIds()))
                 .abroad(data.getAbroad().convertToResponse())
                 .changeStamp(convertChangeStampResponse())
-                .aaregContractIds(data.getAaregContractIds())
+                .aaregContractIds(copyOf(data.getAaregContractIds()))
                 .build();
     }
 
