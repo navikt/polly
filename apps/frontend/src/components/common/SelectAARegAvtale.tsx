@@ -7,11 +7,11 @@ import { DisclosureFormValues } from '../../constants'
 import { intl } from '../../util'
 import { renderTagList } from './TagList'
 
-type SelectAARegAvtale = {
+type SelectAARegAvtaleProps = {
   formikBag: FormikProps<DisclosureFormValues>
 }
 
-const SelectAARegAvtale = (props: SelectAARegAvtale) => {
+const SelectAARegAvtale = (props: SelectAARegAvtaleProps) => {
   const [aaregAvtaleSearchResult, setAaregAvtaleSearch] = useAaregAvtaleSearch()
   const { formikBag } = props
 
