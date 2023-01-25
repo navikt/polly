@@ -2,7 +2,7 @@ import axios from 'axios'
 import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, ProcessStatusFilter, RecentEdits,} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
-import * as queryString from 'query-string'
+import queryString from 'query-string'
 import {mapBool} from "../util/helper-functions";
 import {useDebouncedState} from '../util'
 import {Dispatch, SetStateAction, useEffect, useState} from 'react'

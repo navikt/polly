@@ -3,7 +3,7 @@ import { InformationType, InformationtypeFormValues, InformationTypeShort, PageR
 import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
-import * as queryString from 'query-string'
+import queryString from 'query-string'
 
 export const getInformationTypes = async (page: number, limit: number) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`)).data

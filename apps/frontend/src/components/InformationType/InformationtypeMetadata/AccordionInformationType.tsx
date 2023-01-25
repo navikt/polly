@@ -12,7 +12,7 @@ import {Policy} from '../../../constants'
 import {paddingZero} from '../../common/Style'
 import {useQueryParam} from '../../../util/hooks'
 import {useLocation, useNavigate} from 'react-router-dom'
-import * as queryString from 'query-string'
+import queryString from 'query-string'
 import {toggleOverride} from '../../common/Accordion'
 
 const reducePolicyList = (list: Policy[]) => {
