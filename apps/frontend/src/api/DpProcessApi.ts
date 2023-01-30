@@ -67,6 +67,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
       subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
       products: affiliation?.products.map(p => p.code) || [],
+      disclosureDispatchers: affiliation?.disclosureDispatchers.map(d => d.code) || [],
     },
     art10: mapBool(art10),
     art9: mapBool(art9),

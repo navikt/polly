@@ -13,7 +13,8 @@ export const createProcess = (): ProcessFormValues => ({
   affiliation: {
     productTeams: [],
     products: [],
-    subDepartments: []
+    subDepartments: [],
+    disclosureDispatchers:[]
   },
   legalBases: new Array<LegalBasisFormValues>(),
   legalBasesOpen: false,

@@ -10,7 +10,8 @@ const createDp: () => DpProcessFormValues = () => ({
     department: '',
     productTeams: [],
     products: [],
-    subDepartments: []
+    subDepartments: [],
+    disclosureDispatchers:[]
   },
   retention: {
     retentionMonths: 2,
