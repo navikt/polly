@@ -24,5 +24,8 @@ public class AffiliationResponse {
     private List<String> productTeams;
     @Singular
     private List<CodelistResponse> products;
+    @Singular
+    private List<CodelistResponse> disclosureDispatchers;
+
 
 }

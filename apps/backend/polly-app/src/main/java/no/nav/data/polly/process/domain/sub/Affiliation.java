@@ -25,6 +25,7 @@ public class Affiliation {
     private List<String> subDepartments;
     private List<String> productTeams;
     private List<String> products;
+    private List<String> disclosureDispatchers;
 
     public static Affiliation convertAffiliation(AffiliationRequest request) {
         if (request == null) {
@@ -35,6 +36,7 @@ public class Affiliation {
                 .subDepartments(copyOf(request.getSubDepartments()))
                 .productTeams(copyOf(request.getProductTeams()))
                 .products(copyOf(request.getProducts()))
+                .disclosureDispatchers(copyOf(request.getDisclosureDispatchers()))
                 .build();
     }
 
@@ -44,6 +46,7 @@ public class Affiliation {
                 .subDepartments(getSubDepartmentCodeResponses())
                 .productTeams(nullToEmptyList(getProductTeams()))
                 .products(getProductCodeResponses())
+                .disclosureDispatchers(getDisclosureDispatcherCodeResponses())
                 .build();
     }
 
@@ -58,5 +61,10 @@ public class Affiliation {
     public List<CodelistResponse> getProductCodeResponses() {
         return CodelistService.getCodelistResponseList(ListName.SYSTEM, getProducts());
     }
+
+    public List<CodelistResponse> getDisclosureDispatcherCodeResponses() {
+        return CodelistService.getCodelistResponseList(ListName.SYSTEM, getDisclosureDispatchers());
+    }
+
 
 }
