@@ -106,6 +106,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
       products: affiliation?.products.map(p => p.code) || [],
+      disclosureDispatchers: affiliation?.disclosureDispatchers.map(d => d.code) || [],
     },
     commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
     legalBases: convertLegalBasesToFormValues(legalBases),

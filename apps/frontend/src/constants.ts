@@ -170,6 +170,7 @@ export interface AffiliationFormValues {
   subDepartments: string[];
   productTeams: string[];
   products: string[];
+  disclosureDispatchers: string[];
 }
 
 export interface Affiliation {
@@ -177,6 +178,7 @@ export interface Affiliation {
   subDepartments: Code[];
   productTeams: string[];
   products: Code[];
+  disclosureDispatchers: Code[];
 }
 
 export interface Dpia {
