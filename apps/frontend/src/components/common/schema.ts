@@ -124,6 +124,7 @@ export const processSchema: () => yup.SchemaOf<ProcessFormValues> = () => yup.ob
     subDepartments: yup.array().of(yup.string().required()).required(),
     productTeams: yup.array().of(yup.string().required()).required(),
     products: yup.array().of(yup.string().required()).required(),
+    disclosureDispatchers: yup.array().of(yup.string().required()).required()
   }),
   commonExternalProcessResponsible: yup.string(),
   legalBases: yup.array().of(legalBasisSchema().required()),
@@ -157,6 +158,7 @@ const affiliationSchema: () => yup.SchemaOf<AffiliationFormValues> = () => yup.o
   subDepartments: yup.array().of(yup.string().required()).required(),
   productTeams: yup.array().of(yup.string().required()).required(),
   products: yup.array().of(yup.string().required()).required(),
+  disclosureDispatchers: yup.array().of(yup.string().required()).required(),
 })
 
 export const dpProcessSchema: () => yup.SchemaOf<DpProcessFormValues> = () => yup.object({
