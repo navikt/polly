@@ -44,9 +44,6 @@ public class DisclosureResponse {
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     private DisclosureAbroadResponse abroad;
-    private List<String> aaregContractIds;
-    private List<AaregAvtaleResponse> aaregContracts;
-
     private ChangeStampResponse changeStamp;
 
     public boolean isActive() {

@@ -90,7 +90,6 @@ class DisclosureControllerIT extends IntegrationTestBase {
                         .build())
                 .informationTypeIds(List.of())
                 .processIds(List.of())
-                .aaregContractIds(List.of())
                 .abroad(DisclosureAbroadResponse.builder()
                         .abroad(true)
                         .country("DNK")

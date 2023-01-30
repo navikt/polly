@@ -19,7 +19,6 @@ import SelectProcess from '../common/SelectProcess';
 import SelectInformationTypes from '../common/SelectInformationTypes';
 import BoolField from "../Process/common/BoolField";
 import {renderTagList} from "../common/TagList";
-import SelectAARegAvtale from '../common/SelectAARegAvtale';
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -185,13 +184,6 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                   <ModalLabel label={intl.informationTypes}/>
                   <Block width="100%">
                     <SelectInformationTypes formikBag={formikBag}/>
-                  </Block>
-                </Block>
-
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.aaregAvtale}/>
-                  <Block width="100%">
-                    <SelectAARegAvtale formikBag={formikBag} />
                   </Block>
                 </Block>
 

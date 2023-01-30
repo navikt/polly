@@ -72,7 +72,6 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     end: values.end,
     processIds: values.processIds.length > 0 ? values.processIds : values.processes.map(p => p.id) || [],
     informationTypeIds: values.informationTypes ? values.informationTypes.map(i => i.id) : [],
-    aaregContractIds: values.aaregContracts ? values.aaregContracts.map(aaregContract => aaregContract.avtalenummer) : [],
     abroad: {
       abroad: mapBool(values.abroad.abroad),
       countries: values.abroad.countries,
@@ -96,8 +95,6 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     end: disclosure.end || undefined,
     processes: disclosure.processes || [],
     informationTypes: disclosure.informationTypes || [],
-    aaregContractIds: disclosure.aaregContractIds || [],
-    aaregContracts: disclosure.aaregContracts || [],
     abroad: {
       abroad: mapBool(disclosure.abroad.abroad),
       countries: disclosure.abroad.countries || [],

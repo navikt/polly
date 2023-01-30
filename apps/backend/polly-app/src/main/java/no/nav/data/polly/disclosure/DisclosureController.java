@@ -62,8 +62,6 @@ public class DisclosureController {
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
 
-    private final AaregAvtaleClient aaregAvtaleClient;
-
     @Operation(summary = "Get All Disclosures")
     @ApiResponse(description = "All Disclosures fetched")
     @GetMapping
@@ -184,14 +182,6 @@ public class DisclosureController {
         if (!response.getProcessIds().isEmpty()) {
             var processes = processRepository.findAllById(response.getProcessIds());
             response.setProcesses(convert(processes, Process::convertToShortResponse));
-        }
-        if(!response.getAaregContractIds().isEmpty()) {
-            List<PollyAaregAvtale> aaregContracts = new ArrayList<>();
-            response.getAaregContractIds().forEach(id -> {
-                var aaregContract = aaregAvtaleClient.getAaregAvtale(id);
-                aaregContract.ifPresent(aaregContracts::add);
-            });
-            response.setAaregContracts(convert(aaregContracts, PollyAaregAvtale::toResponse));
         }
         return response;
     }

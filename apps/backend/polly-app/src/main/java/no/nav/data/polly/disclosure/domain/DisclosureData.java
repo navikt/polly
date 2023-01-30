@@ -31,7 +31,6 @@ public class DisclosureData {
     private UUID documentId;
     private List<UUID> processIds;
     private List<UUID> informationTypeIds;
-    private List<String> aaregContractIds;
 
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
