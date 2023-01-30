@@ -221,18 +221,6 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                       }
                     </Block>
                     {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
-                    <DataText
-                        label={intl.aaregAvtale}
-                      >
-                      {selectedDisclosure?.aaregContracts ? selectedDisclosure.aaregContracts.map(aaregAvtale => {
-                        return (
-                          <Block>
-                            {aaregAvtale.avtalenummer + ' - ' + aaregAvtale.virksomhet}
-                          </Block>
-                        )
-                      })
-                        : <>{intl.emptyMessage}</>}
-                      </DataText>
                   </Block>
                   <Block display='flex' justifyContent='flex-end' marginBottom={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
                     <ParagraphSmall>
