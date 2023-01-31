@@ -32,7 +32,7 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     @Query(value = """
             select cast(process_id as text) as id, 
-             data->>'name' as name, data->>'number' as number, data->>'purposes' as purposesJsonArray 
+             data->>'name' as name, data->>'number' as number, data->>'purposes' as purposesJsonArray, data->>'affiliation' as affiliationJson
              from process where process_id in ?1
             """, nativeQuery = true)
     List<ProcessVeryShort> findSummaryById(List<UUID> uuids);

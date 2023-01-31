@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Disclosure, DisclosureFormValues, PageResponse} from '../constants'
+import {Affiliation, Disclosure, DisclosureFormValues, PageResponse} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 import {mapBool} from '../util/helper-functions'
@@ -131,4 +131,5 @@ export interface DisclosureSummary {
   recipient: Code;
   processes: {id: string, name: string, number: number, purposes: Code[]}[]
   legalBases: number
+  affiliation: Affiliation
 }
