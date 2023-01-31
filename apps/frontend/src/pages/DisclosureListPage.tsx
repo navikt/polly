@@ -96,7 +96,7 @@ export const DisclosureListPage = () => {
           </ButtonGroup>
         </Block>
       </Block>
-      <Block display="flex" width="100%">
+      <Block display="flex" width="100%" marginBottom="12px">
         <Block display="flex" flex="1">
           <SearchProcess setSelectedProcess={setSelectedProcess}/>
         </Block>
