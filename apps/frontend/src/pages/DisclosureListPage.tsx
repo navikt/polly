@@ -10,11 +10,12 @@ import {useNavigate} from 'react-router-dom'
 import {lowerFirst} from 'lodash'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import {ObjectLink} from '../components/common/RouteLink'
-import {Disclosure, DisclosureFormValues, ObjectType} from '../constants'
+import {Disclosure, DisclosureFormValues, ObjectType, Process} from '../constants'
 import {ListName} from '../service/Codelist'
 import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
 import {user} from "../service/User";
 import {Plus} from "baseui/icon";
+import SearchProcess from "../components/common/SearchProcess";
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -26,6 +27,7 @@ export const DisclosureListPage = () => {
   const [newDisclosure, setNewDisclosure] = React.useState<Disclosure>()
   const [error, setError] = React.useState<string>()
   const [disclosures, setDisclosures] = useState<DisclosureSummary[]>([])
+  const [selectedProcess, setSelectedProcess] = useState<Process>()
   const [table, sortColumn] = useTable<DisclosureSummary, keyof DisclosureSummary>(disclosures, {
     sorting: {
       name: (a, b) => a.name.localeCompare(b.name),
@@ -55,18 +57,18 @@ export const DisclosureListPage = () => {
 
   useEffect(() => {
     (async () => {
-      const all = await getAll(getDisclosureSummaries)()
+      const all = selectedProcess ? (await getAll(getDisclosureSummaries)()).filter(d => d.processes.find(p => p.id === selectedProcess.id)) : await getAll(getDisclosureSummaries)()
       if (filter === FilterType.emptylegalbases) setDisclosures(all.filter(d => !d.legalBases))
       else if (filter === FilterType.legalbases) setDisclosures(all.filter(d => !!d.legalBases))
       else setDisclosures(all)
     })()
-  }, [filter, newDisclosure])
+  }, [filter, newDisclosure, selectedProcess])
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
       setNewDisclosure(await createDisclosure(disclosure))
       setShowCreateModal(false)
-    } catch (err:any) {
+    } catch (err: any) {
       setShowCreateModal(true)
       setError(err.message)
     }
@@ -82,29 +84,34 @@ export const DisclosureListPage = () => {
             selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2}
             mode='radio' shape='pill'
           >
-            <BButton onClick={() => navigate("/disclosure",{
-              replace:true
+            <BButton onClick={() => navigate("/disclosure", {
+              replace: true
             })}>{intl.all}</BButton>
-            <BButton onClick={() => navigate("/disclosure?filter=legalbases",{
-              replace:true
+            <BButton onClick={() => navigate("/disclosure?filter=legalbases", {
+              replace: true
             })}>{intl.filled}</BButton>
-            <BButton onClick={() => navigate("/disclosure?filter=emptylegalbases",{
-              replace:true
+            <BButton onClick={() => navigate("/disclosure?filter=emptylegalbases", {
+              replace: true
             })}>{intl.incomplete}</BButton>
           </ButtonGroup>
         </Block>
       </Block>
-      <Block display="flex" justifyContent="flex-end">
-        {user.canWrite() &&
-        <Button
-          size="compact"
-          kind={KIND.tertiary}
-          onClick={() => setShowCreateModal(true)}
-          startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-        >
-          {intl.createNew}
-        </Button>
-        }
+      <Block display="flex" width="100%">
+        <Block display="flex" flex="1">
+          <SearchProcess setSelectedProcess={setSelectedProcess}/>
+        </Block>
+        <Block display="flex" flex="1" justifyContent="flex-end">
+          {user.canWrite() &&
+            <Button
+              size="compact"
+              kind={KIND.tertiary}
+              onClick={() => setShowCreateModal(true)}
+              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+            >
+              {intl.createNew}
+            </Button>
+          }
+        </Block>
       </Block>
       <Table emptyText={intl.disclosures}
              headers={
