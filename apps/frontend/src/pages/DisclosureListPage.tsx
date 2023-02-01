@@ -1,20 +1,20 @@
-import React, {useEffect, useState} from 'react'
-import {HeadingLarge, LabelMedium} from 'baseui/typography'
-import {intl, theme} from '../util'
-import {createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries} from '../api'
-import {useQueryParam, useTable} from '../util/hooks'
-import {Block} from 'baseui/block'
-import {Button, Button as BButton, KIND} from 'baseui/button'
-import {ButtonGroup} from 'baseui/button-group'
-import {useNavigate} from 'react-router-dom'
-import {lowerFirst} from 'lodash'
-import {Cell, HeadCell, Row, Table} from '../components/common/Table'
-import {ObjectLink} from '../components/common/RouteLink'
-import {Disclosure, DisclosureFormValues, ObjectType, Process} from '../constants'
-import {ListName} from '../service/Codelist'
+import React, { useEffect, useState } from 'react'
+import { HeadingLarge, LabelMedium } from 'baseui/typography'
+import { intl, theme } from '../util'
+import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
+import { useQueryParam, useTable } from '../util/hooks'
+import { Block } from 'baseui/block'
+import { Button, Button as BButton, KIND } from 'baseui/button'
+import { ButtonGroup } from 'baseui/button-group'
+import { useNavigate } from 'react-router-dom'
+import { lowerFirst } from 'lodash'
+import { Cell, HeadCell, Row, Table } from '../components/common/Table'
+import { ObjectLink } from '../components/common/RouteLink'
+import { Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
+import { ListName } from '../service/Codelist'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import {user} from '../service/User'
-import {Plus} from 'baseui/icon'
+import { user } from '../service/User'
+import { Plus } from 'baseui/icon'
 import SearchProcess from '../components/common/SearchProcess'
 
 enum FilterType {
@@ -37,7 +37,8 @@ export const DisclosureListPage = () => {
     },
     initialSortColumn: 'name'
   })
-  const filter = useQueryParam<FilterType>('filter') 
+  const filter = useQueryParam<FilterType>('filter')
+  const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
 
   const initialFormValues: DisclosureFormValues = {
@@ -51,7 +52,7 @@ export const DisclosureListPage = () => {
     start: undefined,
     end: undefined,
     processes: [],
-    abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''},
+    abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
     processIds: []
   }
 
@@ -64,6 +65,19 @@ export const DisclosureListPage = () => {
     })()
   }, [filter, newDisclosure, selectedProcess])
 
+  useEffect(() => {
+    (async () => {
+      if (processFilter && processFilter.length >= 3) {
+        const process = (await getProcess(processFilter))
+        if(process) {
+          setSelectedProcess(process)
+        }
+      } else {
+        setSelectedProcess(undefined)
+      }
+    })()
+  }, [processFilter])
+
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
       setNewDisclosure(await createDisclosure(disclosure))
@@ -71,6 +85,14 @@ export const DisclosureListPage = () => {
     } catch (err: any) {
       setShowCreateModal(true)
       setError(err.message)
+    }
+  }
+
+  const handleFilterChange = (url: string) => {
+    if(processFilter) {
+      return url + '&process=' + processFilter
+    } else {
+      return url
     }
   }
 
@@ -84,13 +106,13 @@ export const DisclosureListPage = () => {
             selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2}
             mode='radio' shape='pill'
           >
-            <BButton onClick={() => navigate('/disclosure', {
+            <BButton onClick={() => navigate(handleFilterChange('/disclosure?'), {
               replace: true
             })}>{intl.all}</BButton>
-            <BButton onClick={() => navigate('/disclosure?filter=legalbases', {
+            <BButton onClick={() => navigate(handleFilterChange('/disclosure?filter=legalbases'), {
               replace: true
             })}>{intl.filled}</BButton>
-            <BButton onClick={() => navigate('/disclosure?filter=emptylegalbases', {
+            <BButton onClick={() => navigate(handleFilterChange('/disclosure?filter=emptylegalbases'), {
               replace: true
             })}>{intl.incomplete}</BButton>
           </ButtonGroup>
@@ -98,7 +120,7 @@ export const DisclosureListPage = () => {
       </Block>
       <Block display="flex" width="100%" marginBottom="12px">
         <Block display="flex" flex="1">
-          <SearchProcess setSelectedProcess={setSelectedProcess}/>
+          <SearchProcess selectedProcess={selectedProcess} setSelectedProcess={setSelectedProcess} />
         </Block>
         <Block display="flex" flex="1" justifyContent="flex-end">
           {user.canWrite() &&
@@ -106,7 +128,7 @@ export const DisclosureListPage = () => {
               size="compact"
               kind={KIND.tertiary}
               onClick={() => setShowCreateModal(true)}
-              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
             >
               {intl.createNew}
             </Button>
@@ -114,14 +136,14 @@ export const DisclosureListPage = () => {
         </Block>
       </Block>
       <Table emptyText={intl.disclosures}
-             headers={
-               <>
-                 <HeadCell title={intl.disclosureName} column='name' tableState={[table, sortColumn]}/>
-                 <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column='recipient' tableState={[table, sortColumn]}/>
-                 <HeadCell title={intl.relatedProcesses} column='processes' tableState={[table, sortColumn]}/>
-                 <HeadCell title={intl.legalBasesShort} column='legalBases' tableState={[table, sortColumn]}/>
-               </>
-             }>
+        headers={
+          <>
+            <HeadCell title={intl.disclosureName} column='name' tableState={[table, sortColumn]} />
+            <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column='recipient' tableState={[table, sortColumn]} />
+            <HeadCell title={intl.relatedProcesses} column='processes' tableState={[table, sortColumn]} />
+            <HeadCell title={intl.legalBasesShort} column='legalBases' tableState={[table, sortColumn]} />
+          </>
+        }>
         {table.data.map(d => (
           <Row key={d.id}>
             <Cell>

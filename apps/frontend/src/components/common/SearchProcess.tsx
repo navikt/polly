@@ -1,13 +1,14 @@
-import {Process} from "../../constants";
-import * as React from "react";
-import {Dispatch, SetStateAction} from "react";
-import {intl, useDebouncedState} from "../../util";
-import {getProcessesByPurpose, searchProcess} from "../../api";
-import {codelist, ListName} from "../../service/Codelist";
-import {Block} from "baseui/block";
-import {Select, TYPE} from "baseui/select";
+import { Process } from '../../constants'
+import * as React from 'react'
+import { Dispatch, SetStateAction } from 'react'
+import { intl, useDebouncedState } from '../../util'
+import { getProcessesByPurpose, searchProcess } from '../../api'
+import { codelist, ListName } from '../../service/Codelist'
+import { Block } from 'baseui/block'
+import { Select, TYPE, Value } from 'baseui/select'
 
 type SearchProcessProps = {
+  selectedProcess?: Process
   setSelectedProcess: Dispatch<SetStateAction<Process | undefined>>
 }
 
@@ -16,8 +17,7 @@ const SearchProcess = (
 ) => {
   const [processList, setProcessList] = React.useState<Process[]>([])
   const [search, setSearch] = useDebouncedState<string>('', 400)
-  const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [value, setValue] = React.useState<any>([]);
+  const [isLoading, setLoading] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     (async () => {
@@ -32,7 +32,7 @@ const SearchProcess = (
         res = [...res, ...(await Promise.all(processesPromise)).map(value => value.content).flatMap(value => value)]
         res = res
           .map((v: Process) => {
-            return {...v, namePurpose: (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name}
+            return { ...v, namePurpose: (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
           })
           .filter((p1, index, self) => index === self.findIndex((p2) => (
             p2.id === p1.id
@@ -56,10 +56,13 @@ const SearchProcess = (
         placeholder={intl.searchProcess}
         onInputChange={event => setSearch(event.currentTarget.value)}
         labelKey="namePurpose"
-        value={value}
+        value={
+          props.selectedProcess ?
+            [{ id: props.selectedProcess?.id, namePurpose: (props.selectedProcess?.purposes !== undefined ? props.selectedProcess?.purposes[0].shortName : '') + ': ' + props.selectedProcess?.name }]
+            : []
+        }
         onChange={(params) => {
           props.setSelectedProcess(params.value[0] as Process)
-          setValue(params.value)
         }}
       />
     </Block>
