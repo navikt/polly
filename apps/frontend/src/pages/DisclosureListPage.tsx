@@ -89,7 +89,7 @@ export const DisclosureListPage = () => {
   }
 
   const handleFilterChange = (url: string) => {
-    if(processFilter) {
+    if(selectedProcess) {
       return url + '&process=' + processFilter
     } else {
       return url
