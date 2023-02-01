@@ -12,10 +12,10 @@ import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import {ObjectLink} from '../components/common/RouteLink'
 import {Disclosure, DisclosureFormValues, ObjectType, Process} from '../constants'
 import {ListName} from '../service/Codelist'
-import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
-import {user} from "../service/User";
-import {Plus} from "baseui/icon";
-import SearchProcess from "../components/common/SearchProcess";
+import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
+import {user} from '../service/User'
+import {Plus} from 'baseui/icon'
+import SearchProcess from '../components/common/SearchProcess'
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -37,7 +37,7 @@ export const DisclosureListPage = () => {
     },
     initialSortColumn: 'name'
   })
-  const filter = useQueryParam<FilterType>('filter')
+  const filter = useQueryParam<FilterType>('filter') 
   const navigate = useNavigate()
 
   const initialFormValues: DisclosureFormValues = {
@@ -84,13 +84,13 @@ export const DisclosureListPage = () => {
             selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2}
             mode='radio' shape='pill'
           >
-            <BButton onClick={() => navigate("/disclosure", {
+            <BButton onClick={() => navigate('/disclosure', {
               replace: true
             })}>{intl.all}</BButton>
-            <BButton onClick={() => navigate("/disclosure?filter=legalbases", {
+            <BButton onClick={() => navigate('/disclosure?filter=legalbases', {
               replace: true
             })}>{intl.filled}</BButton>
-            <BButton onClick={() => navigate("/disclosure?filter=emptylegalbases", {
+            <BButton onClick={() => navigate('/disclosure?filter=emptylegalbases', {
               replace: true
             })}>{intl.incomplete}</BButton>
           </ButtonGroup>
