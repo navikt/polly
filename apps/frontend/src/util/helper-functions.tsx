@@ -4,6 +4,7 @@ import * as React from "react";
 import {KeyboardEvent} from "react";
 import {StatefulTooltip} from 'baseui/tooltip'
 import {lowerFirst} from 'lodash'
+import { Process } from "../constants";
 
 export const isLink = (text: string) => {
   const regex = /http[s]?:\/\/.*/gm
@@ -51,4 +52,9 @@ export const getNoDpiaLabel = (id: string) => {
     return intl.no_dpia_other
   }
   return ''
+}
+
+
+export const checkForAaregDispatcher = (process: Process) => {
+  return process.affiliation.disclosureDispatchers.find((d) => d.shortName === "Aa-reg")
 }
