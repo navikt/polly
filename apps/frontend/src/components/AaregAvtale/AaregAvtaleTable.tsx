@@ -1,6 +1,6 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SORT_DIRECTION } from 'baseui/table'
-import { AaregAvtale, PageResponse } from '../../constants'
+import { AaregAvtale } from '../../constants'
 import { Cell, HeadCell, Row, Table } from '../common/Table'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { StatefulMenu } from 'baseui/menu'
@@ -15,24 +15,42 @@ type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
 }
 
+export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]) => {
+  return aaregAvtaler.sort((a,b) => {
+    if(a.virksomhet > b.virksomhet) {
+      return 1
+    }
+    else if(a.virksomhet < b.virksomhet) {
+      return -1
+    }
+    else {
+      if(a.avtalenummer > b.avtalenummer){
+        return 1
+      }
+      else if(a.avtalenummer < b.avtalenummer){
+        return -1
+      }
+      else {
+        return 0
+      }
+    }
+  })
+}
+
 export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
-  const [pageLimit, setPageLimit] = useState(50)
+  const [pageLimit, setPageLimit] = useState(10)
   const [page, setPage] = useState(1)
   const [sortedAaregAvtale, setSortedAaregAvtale] = useState<AaregAvtale[]>([])
 
 
   useEffect(() => {
-    setSortedAaregAvtale(props.aaregAvtaler.sort((a, b) =>
-      a.avtalenummer > b.avtalenummer ? 1 : -1
-    ).slice(0, 50))
+    setSortedAaregAvtale(sortAaregAvtaleList(props.aaregAvtaler).slice(0, 10))
   }, [props.aaregAvtaler])
 
   useEffect(() => {
 
     setSortedAaregAvtale(
-      props.aaregAvtaler.sort((a, b) =>
-        a.avtalenummer > b.avtalenummer ? 1 : -1
-      ).slice((page - 1) * pageLimit, pageLimit * page)
+      sortAaregAvtaleList(props.aaregAvtaler).slice((page - 1) * pageLimit, pageLimit * page)
     )
   }, [pageLimit, page])
 
@@ -42,27 +60,22 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
         emptyText={intl.noAlertsAvailableInTable}
         headers={
           <>
-            <HeadCell title="avtalenummer" />
+            <HeadCell title="Navn" />
+            <HeadCell title="Avtalenummer" />
           </>
         }
       >
         {sortedAaregAvtale.map((avtale) =>
           <Row key={avtale.avtalenummer}>
             <Cell>
+              {avtale.virksomhet ?
+                <>{avtale.virksomhet}</>
+                : ''}
+            </Cell>
+
+            <Cell>
               {avtale.avtalenummer ?
                 <>{avtale.avtalenummer}</>
-                : ''}
-            </Cell>
-
-            <Cell>
-              {avtale ?
-                <></>
-                : ''}
-            </Cell>
-
-            <Cell>
-              {avtale ?
-                <></>
                 : ''}
             </Cell>
           </Row>)}
@@ -96,3 +109,5 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
     </>
   )
 }
+
+export default AaregAvtaleTable
