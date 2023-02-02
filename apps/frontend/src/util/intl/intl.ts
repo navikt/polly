@@ -60,6 +60,7 @@ export interface IStrings {
   disclosure: string;
   disclosures: string;
   dispatcher: string;
+  linkDisclosurePage: string;
   deleteProcessDisclosureError: string;
   editDisclosure: string;
   documents: string;
