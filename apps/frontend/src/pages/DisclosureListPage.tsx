@@ -10,14 +10,15 @@ import {useNavigate} from 'react-router-dom'
 import {lowerFirst} from 'lodash'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import {ObjectLink} from '../components/common/RouteLink'
-import {AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process} from '../constants'
+import {AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, PageResponse, Process} from '../constants'
 import {ListName} from '../service/Codelist'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import {user} from '../service/User'
 import {Plus} from 'baseui/icon'
 import SearchProcess from '../components/common/SearchProcess'
-import {checkForAaregDispatcher} from "../util/helper-functions";
-import {searchAaregAvtale} from "../api/AaregAvtaleApi";
+import {checkForAaregDispatcher} from '../util/helper-functions'
+import {searchAaregAvtale} from '../api/AaregAvtaleApi'
+import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -184,10 +185,8 @@ export const DisclosureListPage = () => {
         ))}
       </Table>
       {selectedProcess && checkForAaregDispatcher(selectedProcess) &&
-        <Block>
-          Tabell
-
-
+        <Block marginTop="12px">
+          <AaregAvtaleTable aaregAvtaler={aaregAvtaler}/>
         </Block>}
       <ModalThirdParty
         title={intl.createThirdPartyModalTitle}
