@@ -1,147 +1,97 @@
-import React, {useReducer} from 'react'
-import {SORT_DIRECTION} from "baseui/table";
-import {AaregAvtale} from "../../constants";
-import {HeadCell, Table} from '../common/Table';
-import {PLACEMENT, StatefulPopover} from "baseui/popover";
-import {StatefulMenu} from "baseui/menu";
-import {Block} from 'baseui/block';
-import {intl} from "../../util";
-import Button from "../common/Button";
-import {KIND} from "baseui/button";
-import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
-
-
-type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
-
-type State = {
-
-  page: number,
-  limit: number,
-  sort: { column: SortCol, dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
-}
-
-
-type Action =
-  { type: 'PAGE', value: number } |
-  { type: 'LIMIT', value: number } |
-  { type: 'SORT', column: SortCol, dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
+import React, { useEffect, useReducer, useState } from 'react'
+import { SORT_DIRECTION } from 'baseui/table'
+import { AaregAvtale, PageResponse } from '../../constants'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
+import { PLACEMENT, StatefulPopover } from 'baseui/popover'
+import { StatefulMenu } from 'baseui/menu'
+import { Block } from 'baseui/block'
+import { intl } from '../../util'
+import Button from '../common/Button'
+import { KIND } from 'baseui/button'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { Pagination } from 'baseui/pagination'
 
 type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
 }
 
-
-const clampPage = (state: State, page: number, limit: number): number => {
-  if (page < 1) {
-    return state.page
-  }
-  const maxPage = Math.ceil(1 / limit)
-  return page > maxPage ? maxPage : page
-}
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'PAGE':
-      return {...state, page: clampPage(state, action.value, state.limit)}
-    case 'LIMIT':
-      return {...state, limit: action.value, page: clampPage(state, state.page, action.value)}
-    case 'SORT':
-      return {...state, sort: {column: action.column, dir: action.dir}}
-  }
-}
-
 export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
+  const [pageLimit, setPageLimit] = useState(50)
+  const [page, setPage] = useState(1)
+  const [sortedAaregAvtale, setSortedAaregAvtale] = useState<AaregAvtale[]>([])
 
-  const [state, dispatch] = useReducer(reducer, {
-    // events: {content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0},
-    page: 1,
-    limit: 50,
-    sort: {column: 'TIME', dir: SORT_DIRECTION.DESC}
-  })
-  const setPage = (p: number) => dispatch({type: 'PAGE', value: p})
-  const setLimit = (l: number) => dispatch({type: 'LIMIT', value: l})
 
-  const setSort = (column: SortCol) => dispatch({
-    type: 'SORT', column, dir: state.sort.column !== column ? SORT_DIRECTION.ASC :
-      state.sort.dir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC
-  })
+  useEffect(() => {
+    setSortedAaregAvtale(props.aaregAvtaler.sort((a, b) =>
+      a.avtalenummer > b.avtalenummer ? 1 : -1
+    ).slice(0, 50))
+  }, [props.aaregAvtaler])
 
-  /*  useEffect(() => {
-      getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId)
-        .then(a => dispatch({type: 'EVENTS', value: a}))
-    }, [state.page, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId])
+  useEffect(() => {
 
-    useEffect(() => {
-      dispatch({type: 'OBJECT_FILTER', objectType, id})
-    }, [objectType, id])*/
-
+    setSortedAaregAvtale(
+      props.aaregAvtaler.sort((a, b) =>
+        a.avtalenummer > b.avtalenummer ? 1 : -1
+      ).slice((page - 1) * pageLimit, pageLimit * page)
+    )
+  }, [pageLimit, page])
 
   return (
     <>
-
       <Table
         emptyText={intl.noAlertsAvailableInTable}
         headers={
           <>
-            <HeadCell title={intl.process}/>
-            <HeadCell title={intl.informationType}/>
-            <HeadCell title={intl.disclosure}/>
-            <HeadCell title={intl.level + ' - ' + intl.type}/>
-            <HeadCell title={intl.time}/>
-            <HeadCell title={intl.user}/>
+            <HeadCell title="avtalenummer" />
           </>
         }
       >
-        {/*  {state.events.content.map(event =>
-          <Row key={event.id}>
+        {sortedAaregAvtale.map((avtale) =>
+          <Row key={avtale.avtalenummer}>
             <Cell>
-              {event.process ?
- <></>
+              {avtale.avtalenummer ?
+                <>{avtale.avtalenummer}</>
                 : ''}
             </Cell>
 
             <Cell>
-              {event.informationType ?
-  <></>
+              {avtale ?
+                <></>
                 : ''}
             </Cell>
 
             <Cell>
-              {event.disclosure ?
-<></>
+              {avtale ?
+                <></>
                 : ''}
             </Cell>
-
-
-            <Cell>{moment(event.changeStamp.lastModifiedDate).format('lll')}</Cell>
-            <Cell>{event.changeStamp.lastModifiedBy}</Cell>
-          </Row>)}*/}
+          </Row>)}
       </Table>
       <Block display="flex" justifyContent="space-between" marginTop="1rem">
         <StatefulPopover
           placement={PLACEMENT.bottom}
-          content={({close}) => (
+          content={({ close }) => (
             <StatefulMenu
-              items={[5, 10, 20, 50, 100].map(i => ({label: i,}))}
-              onItemSelect={({item}) => {
-                setLimit(item.label)
+              items={[5, 10, 20, 50, 100].map(i => ({ label: i, }))}
+              onItemSelect={({ item }) => {
+                setPageLimit(item.label)
                 close()
               }}
               overrides={{
                 List: {
-                  style: {height: '150px', width: '100px'},
+                  style: { height: '150px', width: '100px' },
                 },
               }}
             />
           )}>
-          <div><Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${state.limit} ${intl.rows}`}</Button></div>
+          <div><Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${pageLimit} ${intl.rows}`}</Button></div>
         </StatefulPopover>
-        {/*  <Pagination
-          currentPage={state.page}
-          numPages={state.events.pages}
+        <Pagination
+          currentPage={page}
+          numPages={Math.ceil(props.aaregAvtaler.length / pageLimit)}
           onPageChange={a => setPage(a.nextPage)}
-          labels={{nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton}}
-        />*/}
+          labels={{ nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton }}
+        />
       </Block>
     </>
   )
