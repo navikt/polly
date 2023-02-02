@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { HeadingLarge, LabelMedium } from 'baseui/typography'
-import { intl, theme } from '../util'
-import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
-import { useQueryParam, useTable } from '../util/hooks'
-import { Block } from 'baseui/block'
-import { Button, Button as BButton, KIND } from 'baseui/button'
-import { ButtonGroup } from 'baseui/button-group'
-import { useNavigate } from 'react-router-dom'
-import { lowerFirst } from 'lodash'
-import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { ObjectLink } from '../components/common/RouteLink'
-import { Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
-import { ListName } from '../service/Codelist'
+import React, {useEffect, useState} from 'react'
+import {HeadingLarge, LabelMedium} from 'baseui/typography'
+import {intl, theme} from '../util'
+import {createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess} from '../api'
+import {useQueryParam, useTable} from '../util/hooks'
+import {Block} from 'baseui/block'
+import {Button, Button as BButton, KIND} from 'baseui/button'
+import {ButtonGroup} from 'baseui/button-group'
+import {useNavigate} from 'react-router-dom'
+import {lowerFirst} from 'lodash'
+import {Cell, HeadCell, Row, Table} from '../components/common/Table'
+import {ObjectLink} from '../components/common/RouteLink'
+import {AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process} from '../constants'
+import {ListName} from '../service/Codelist'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import { user } from '../service/User'
-import { Plus } from 'baseui/icon'
+import {user} from '../service/User'
+import {Plus} from 'baseui/icon'
 import SearchProcess from '../components/common/SearchProcess'
+import {checkForAaregDispatcher} from "../util/helper-functions";
+import {searchAaregAvtale} from "../api/AaregAvtaleApi";
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -37,6 +39,7 @@ export const DisclosureListPage = () => {
     },
     initialSortColumn: 'name'
   })
+  const [aaregAvtaler, setAaregAvtaler] = useState<AaregAvtale[]>([])
   const filter = useQueryParam<FilterType>('filter')
   const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
@@ -69,7 +72,7 @@ export const DisclosureListPage = () => {
     (async () => {
       if (processFilter && processFilter.length >= 3) {
         const process = (await getProcess(processFilter))
-        if(process) {
+        if (process) {
           setSelectedProcess(process)
         }
       } else {
@@ -77,6 +80,15 @@ export const DisclosureListPage = () => {
       }
     })()
   }, [processFilter])
+
+  useEffect(() => {
+    (async () => {
+      if (selectedProcess && checkForAaregDispatcher(selectedProcess)) {
+        const res = await searchAaregAvtale('avt')
+        setAaregAvtaler(res.content)
+      }
+    })()
+  }, [selectedProcess])
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
@@ -171,6 +183,12 @@ export const DisclosureListPage = () => {
           </Row>
         ))}
       </Table>
+      {selectedProcess && checkForAaregDispatcher(selectedProcess) &&
+        <Block>
+          Tabell
+
+
+        </Block>}
       <ModalThirdParty
         title={intl.createThirdPartyModalTitle}
         isOpen={showCreateModal}
