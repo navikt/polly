@@ -232,7 +232,7 @@ const ProcessData = (props: {process: Process, disclosures: Disclosure[]}) => {
 
       {props.process.affiliation.disclosureDispatchers.length !== 0 && 
       <DataText label={intl.dispatcher} text={""}>
-        <DotTags list={ListName.SYSTEM} codes={process.affiliation.disclosureDispatchers} linkCodelist/>
+        <DotTags list={ListName.SYSTEM} codes={process.affiliation.disclosureDispatchers} />
       </DataText>
       }
 
