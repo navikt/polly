@@ -59,7 +59,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
 
   return (
     <>
-      <HeadingLarge>{intl.aaregAvtale}</HeadingLarge>
+      <HeadingLarge>{intl.aaregContracts}</HeadingLarge>
       <StatelessAccordion expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}>
         {sortedAaregAvtale && sortedAaregAvtale.map(a => {
           return (
