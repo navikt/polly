@@ -60,25 +60,44 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
   return (
     <>
       <HeadingLarge>{intl.aaregContracts}</HeadingLarge>
-      <StatelessAccordion expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}>
+      <StatelessAccordion
+        onChange={({ expanded }) => { setSelectedAaregAvtale(expanded[0] as string) }}
+        expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
+      >
         {sortedAaregAvtale && sortedAaregAvtale.map(a => {
           return (
-            <Panel key={a.avtalenummer} title={a.avtalenummer} overrides={{
-              ToggleIcon: {
-                component: () => null
-              },
-              Content: {
-                style: {
-                  backgroundColor: theme.colors.white,
-                  // Outline width
-                  paddingTop: '4px',
-                  paddingBottom: '4px',
-                  paddingLeft: '4px',
-                  paddingRight: '4px',
-                }
+            <Panel
+              key={a.avtalenummer}
+              title={
+                <Block width="100%">
+                  {a.virksomhet}
+                  <Block display="flex">
+                    {a.avtalenummer}
+                  </Block>
+                </Block>
               }
-            }}>
-              {a.avtalenummer}
+              overrides={{
+                ToggleIcon: {
+                  component: () => null
+                },
+                Content: {
+                  style: {
+                    backgroundColor: theme.colors.white,
+                    // Outline width
+                    paddingTop: '4px',
+                    paddingBottom: '4px',
+                    paddingLeft: '4px',
+                    paddingRight: '4px',
+                  }
+                }
+              }}>
+              <Block $style={{
+                outline: `4px ${theme.colors.primary200} solid`
+              }}>
+                <Block paddingBottom={theme.sizing.scale800} paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
+                  {a.avtalenummer}
+                </Block>
+              </Block>
             </Panel>
           )
         })}
