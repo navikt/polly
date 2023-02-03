@@ -8,14 +8,33 @@ import { NavigableItem } from '../../constants'
 import RouteLink, { urlForObject } from './RouteLink'
 import { Markdown } from './Markdown'
 
-export const DotTag = (props: { children: ReactNode }) =>
-  <Block marginLeft={theme.sizing.scale100} marginRight={theme.sizing.scale100} display='flex' alignItems='center'>
-    <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
-    <Block display='inline' marginRight={theme.sizing.scale100} />
-    <Block $style={{ whiteSpace: 'nowrap' }}>
-      {props.children}
+export const DotTag = (props: { children: ReactNode, wrapText?: boolean }) => {
+
+  if (props.wrapText) {
+    return (
+      <Block marginLeft={theme.sizing.scale100} marginRight={theme.sizing.scale100} display='flex' alignItems='center'>
+        <Block $style={{ whiteSpace: 'normal' }} display="flex">
+          <Block marginRight={theme.sizing.scale100} marginTop="-3px">
+            <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
+          </Block>
+          <Block>
+            {props.children}
+          </Block>
+        </Block>
+      </Block>
+    )
+  }
+
+  return (
+    <Block marginLeft={theme.sizing.scale100} marginRight={theme.sizing.scale100} display='flex' alignItems='center'>
+      <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
+      <Block display='inline' marginRight={theme.sizing.scale100} />
+      <Block $style={{ whiteSpace: 'nowrap' }}>
+        {props.children}
+      </Block>
     </Block>
-  </Block>
+  )
+}
 
 const Content = (props: { item: string, list?: ListName, linkCodelist?: boolean, markdown?: boolean }) => {
   const { item, list, linkCodelist, markdown } = props
@@ -39,6 +58,7 @@ type DotTagsParams = {
   markdown?: boolean
   list?: ListName
   noFlex?: boolean
+  wrapText?: boolean
 }
 
 export const DotTags = (props: DotTagsParams) => {
@@ -64,7 +84,7 @@ export const DotTags = (props: DotTagsParams) => {
       {items.map((item, i) => (
         <Block key={i} marginRight={i < items.length && !commaSeparator ? theme.sizing.scale200 : 0}>
 
-          <DotTag> <Content {...props} item={item} /> </DotTag>
+          <DotTag wrapText={props.wrapText}> <Content {...props} item={item} /> </DotTag>
         </Block>
       ))}
     </Block>

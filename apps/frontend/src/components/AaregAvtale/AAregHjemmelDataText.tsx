@@ -18,13 +18,13 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
   return (
     <Block>
       <DataText label={intl.purposeForProcess}>
-        <DotTags noFlex items={purposeList} />
+        <DotTags wrapText noFlex items={purposeList} />
       </DataText>
       <DataText label={intl.authorityAndGroundsForDelivery}>
-        <DotTags noFlex items={authoryList} />
+        <DotTags wrapText noFlex items={authoryList} />
       </DataText>
       <DataText label={intl.consumerAuthorityForProcess}>
-        <DotTags noFlex items={processorList} />
+        <DotTags wrapText noFlex items={processorList} />
       </DataText>
     </Block>
   )
