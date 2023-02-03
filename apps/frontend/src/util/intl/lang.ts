@@ -2,6 +2,7 @@ import {IStrings} from "./intl";
 
 export const no: IStrings = {
   aaregAvtale: "AAReg Avtale",
+  aaregAvtaleContractNumber: "Avtalenummer",
   informationType: "Opplysningstype",
   informationTypes: "Opplysningstyper",
   informationTypeSearch: "Søk opplysningstyper",
@@ -487,6 +488,7 @@ export const no: IStrings = {
   noDisclosuresToThirdPartyAvailableInTable: "Ingen utlevering",
   noRetrievedFromThirdPartyAvailableInTable: "Ingen innhentinger fra ekstern part",
   noAlertsAvailableInTable: "Ingen varsler",
+  noAaregAvtaleAvailableInTable: "Ingen AA-Reg avtale",
   deliverAbroad: "Utleveres personopplysningene til utlandet?",
   socialSecurityAgreement: "Oppgi referanse til trygdeavtale",
   socialSecurityArea: "Trygdeområde",
@@ -529,6 +531,7 @@ export const no: IStrings = {
 
 export const en: IStrings = {
   aaregAvtale: "AAReg Contract",
+  aaregAvtaleContractNumber: "Contract number",
   informationType: "Information type",
   informationTypes: "Information types",
   informationTypeSearch: "Information type search",
@@ -1013,6 +1016,7 @@ export const en: IStrings = {
   noDisclosuresToThirdPartyAvailableInTable: "No disclosure to third parties",
   noRetrievedFromThirdPartyAvailableInTable: "No retrieved from thirdParty",
   noAlertsAvailableInTable: "No alerts",
+  noAaregAvtaleAvailableInTable: "Ingen AA-Reg contracts",
   socialSecurityArea: "Social security area",
   deliverAbroad: "Is the personal information disclosed abroad?",
   socialSecurityAgreement: "Provide reference to social security agreement",

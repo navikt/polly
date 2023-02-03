@@ -15,6 +15,7 @@ import taLocale from "date-fns/locale/ta";
 
 export interface IStrings {
   aaregAvtale: string;
+  aaregAvtaleContractNumber: string;
   informationType: string;
   informationTypes: string;
   informationTypeSearch: string;
@@ -528,7 +529,7 @@ export interface IStrings {
   noDisclosuresToThirdPartyAvailableInTable: string;
   noRetrievedFromThirdPartyAvailableInTable: string;
   noAlertsAvailableInTable: string;
-
+  noAaregAvtaleAvailableInTable: string,
 }
 
 // Remember import moment locales up top
