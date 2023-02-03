@@ -57,13 +57,13 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
 
   return (
     <>
-     <HeadingLarge>{intl.aaregAvtale}</HeadingLarge>
+     <HeadingLarge>{intl.aaregContracts}</HeadingLarge>
       <Table
-        emptyText={intl.noAaregAvtaleAvailableInTable}
+        emptyText={intl.noAaregContractsAvailableInTable}
         headers={
           <>
             <HeadCell title={intl.name} />
-            <HeadCell title={intl.aaregAvtaleContractNumber} />
+            <HeadCell title={intl.aaregContractNumber} />
           </>
         }
       >
