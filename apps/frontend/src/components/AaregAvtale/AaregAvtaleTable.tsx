@@ -82,7 +82,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
 
           return (
             <Panel
-              key={a.avtalenummer + a.organisasjonsnummer}
+              key={a.avtalenummer}
               title={
                 <Block width="100%">
                   <Block>{a.virksomhet} - {a.avtalenummer}</Block>
