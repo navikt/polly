@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {AaregAvtale} from '../../constants'
 import {PLACEMENT, StatefulPopover} from 'baseui/popover'
 import {StatefulMenu} from 'baseui/menu'
-import {Block} from 'baseui/block'
+import {Block, BlockComponentType} from 'baseui/block'
 import {intl, theme} from '../../util'
 import Button from '../common/Button'
 import {KIND} from 'baseui/button'
@@ -15,6 +15,8 @@ import DataText from "../common/DataText";
 type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
 }
+
+const marginBottom = "1rem"
 
 export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]) => {
   return aaregAvtaler.sort((a, b) => {
@@ -94,11 +96,20 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                   paddingRight={theme.sizing.scale800}
                   paddingTop={theme.sizing.scale800}
                 >
-                  <LabelLarge marginBottom={"1rem"}>Konsument</LabelLarge>
+                  <LabelLarge marginBottom={marginBottom}>{intl.consumer}</LabelLarge>
                   <DataText label={intl.name} text={a.virksomhet || ''}/>
                   <DataText label={intl.organisationNumber} text={a.organisasjonsnummer || ''}/>
-                  <LabelLarge marginBottom={"1rem"}>Avtale</LabelLarge>
-                  <DataText label={intl.aaregContractNumber} text={a.avtalenummer || ''}/>
+                  <LabelLarge marginBottom={marginBottom}>{intl.contractAareg}</LabelLarge>
+                  <DataText label={intl.aaregContractNumber} text={a.avtalenummer || ''} />
+                  <DataText label={intl.createdDate} text={a.opprettet} />
+                  <LabelLarge marginBottom={marginBottom}>{intl.accessType}</LabelLarge>
+                  <DataText label={intl.API} text={a.integrert_oppslag_api.toString() || ''} />
+                  <DataText label={intl.extract} text={a.uttrekk.toString() || ''} />
+                  <DataText label={intl.webLookup} text={a.web_oppslag.toString() || ''} />
+                  <DataText label={intl.incidents} text={a.hendelser.toString() || ''} />
+                  <LabelLarge marginBottom={marginBottom}>{intl.processor}</LabelLarge>
+                  <DataText label={intl.organisationNumber} text={a.databehandler_organisasjonsnummer || ''} />
+                  <DataText label={intl.name} text={a.databehandler_navn || ''} />
                 </Block>
               </Block>
             </Panel>
