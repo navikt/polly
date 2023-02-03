@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { AaregAvtale } from '../../constants'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulMenu } from 'baseui/menu'
-import { Block, BlockComponentType } from 'baseui/block'
-import { intl, theme } from '../../util'
+import React, {useEffect, useState} from 'react'
+import {AaregAvtale} from '../../constants'
+import {PLACEMENT, StatefulPopover} from 'baseui/popover'
+import {StatefulMenu} from 'baseui/menu'
+import {Block} from 'baseui/block'
+import {intl, theme} from '../../util'
 import Button from '../common/Button'
-import { KIND } from 'baseui/button'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { Pagination } from 'baseui/pagination'
-import { HeadingLarge, LabelLarge } from 'baseui/typography'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
+import {KIND} from 'baseui/button'
+import {faChevronDown} from '@fortawesome/free-solid-svg-icons'
+import {Pagination} from 'baseui/pagination'
+import {HeadingLarge, LabelLarge} from 'baseui/typography'
+import {Panel, StatelessAccordion} from 'baseui/accordion'
 import DataText from "../common/DataText";
 import AAregHjemmelDataText from './AAregHjemmelDataText'
 
@@ -20,9 +20,9 @@ type AaregAvtaleTableProps = {
 const marginBottom = "1rem"
 const marginTop = "2rem"
 
-const CustomPanelLabel = ({ text }: { text: any }) => {
+const CustomPanelLabel = ({text}: { text: any }) => {
   return (
-    <Block width="100%" marginBottom={marginBottom} $style={{ boderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'grey' }}>
+    <Block width="100%" marginBottom={marginBottom} $style={{boderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'grey'}}>
       <LabelLarge marginTop={marginTop}>{text}</LabelLarge>
     </Block>
   )
@@ -68,17 +68,12 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
     <>
       <HeadingLarge>{intl.aaregContracts}</HeadingLarge>
       <StatelessAccordion
-        onChange={({ expanded }) => {
+        onChange={({expanded}) => {
           setSelectedAaregAvtale(expanded[0] as string)
         }}
         expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
       >
         {sortedAaregAvtale && sortedAaregAvtale.map(a => {
-
-
-          if (a.avtalenummer === "AVT-000216") {
-            console.log(a.hjemmel_behandlingsgrunnlag_formal)
-          }
 
           return (
             <Panel
@@ -112,27 +107,27 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                   paddingRight={theme.sizing.scale800}
                   paddingTop={theme.sizing.scale800}
                 >
-                  <CustomPanelLabel text={intl.consumer} />
-                  <DataText label={intl.name} text={a.virksomhet || intl.emptyMessage} />
-                  <DataText label={intl.organisationNumber} text={a.organisasjonsnummer || intl.emptyMessage} />
+                  <CustomPanelLabel text={intl.consumer}/>
+                  <DataText label={intl.name} text={a.virksomhet || intl.emptyMessage}/>
+                  <DataText label={intl.organisationNumber} text={a.organisasjonsnummer || intl.emptyMessage}/>
 
-                  <CustomPanelLabel text={intl.contractAareg} />
-                  <DataText label={intl.aaregContractNumber} text={a.avtalenummer || intl.emptyMessage} />
-                  <DataText label={intl.createdDate} text={a.opprettet || intl.emptyMessage} />
+                  <CustomPanelLabel text={intl.contractAareg}/>
+                  <DataText label={intl.aaregContractNumber} text={a.avtalenummer || intl.emptyMessage}/>
+                  <DataText label={intl.createdDate} text={a.opprettet || intl.emptyMessage}/>
 
-                  <CustomPanelLabel text={intl.purposeAuthorityLegalBasis} />
+                  <CustomPanelLabel text={intl.purposeAuthorityLegalBasis}/>
 
-                  <AAregHjemmelDataText data={a.hjemmel_behandlingsgrunnlag_formal} />
+                  <AAregHjemmelDataText data={a.hjemmel_behandlingsgrunnlag_formal}/>
 
-                  <CustomPanelLabel text={intl.accessType} />
-                  <DataText label={intl.API} text={a.integrert_oppslag_api.toString() || ''} />
-                  <DataText label={intl.extract} text={a.uttrekk.toString() || ''} />
-                  <DataText label={intl.webLookup} text={a.web_oppslag.toString() || ''} />
-                  <DataText label={intl.incidents} text={a.hendelser.toString() || ''} />
+                  <CustomPanelLabel text={intl.accessType}/>
+                  <DataText label={intl.API} text={a.integrert_oppslag_api.toString() || ''}/>
+                  <DataText label={intl.extract} text={a.uttrekk.toString() || ''}/>
+                  <DataText label={intl.webLookup} text={a.web_oppslag.toString() || ''}/>
+                  <DataText label={intl.incidents} text={a.hendelser.toString() || ''}/>
 
-                  <CustomPanelLabel text={intl.processor} />
-                  <DataText label={intl.organisationNumber} text={a.databehandler_organisasjonsnummer || ''} />
-                  <DataText label={intl.name} text={a.databehandler_navn || intl.emptyMessage} />
+                  <CustomPanelLabel text={intl.processor}/>
+                  <DataText label={intl.organisationNumber} text={a.databehandler_organisasjonsnummer || ''}/>
+                  <DataText label={intl.name} text={a.databehandler_navn || intl.emptyMessage}/>
                 </Block>
               </Block>
             </Panel>
@@ -143,16 +138,16 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
       <Block display="flex" justifyContent="space-between" marginTop="1rem">
         <StatefulPopover
           placement={PLACEMENT.bottom}
-          content={({ close }) => (
+          content={({close}) => (
             <StatefulMenu
-              items={[5, 10, 20, 50, 100].map(i => ({ label: i, }))}
-              onItemSelect={({ item }) => {
+              items={[5, 10, 20, 50, 100].map(i => ({label: i,}))}
+              onItemSelect={({item}) => {
                 setPageLimit(item.label)
                 close()
               }}
               overrides={{
                 List: {
-                  style: { height: '150px', width: '100px' },
+                  style: {height: '150px', width: '100px'},
                 },
               }}
             />
@@ -163,7 +158,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
           currentPage={page}
           numPages={Math.ceil(props.aaregAvtaler.length / pageLimit)}
           onPageChange={a => setPage(a.nextPage)}
-          labels={{ nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton }}
+          labels={{nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton}}
         />
       </Block>
     </>
