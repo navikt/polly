@@ -5,30 +5,31 @@ import { Cell, HeadCell, Row, Table } from '../common/Table'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { StatefulMenu } from 'baseui/menu'
 import { Block } from 'baseui/block'
-import { intl } from '../../util'
+import { intl, theme } from '../../util'
 import Button from '../common/Button'
 import { KIND } from 'baseui/button'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { Pagination } from 'baseui/pagination'
 import { HeadingLarge } from 'baseui/typography'
+import { Accordion, Panel, StatelessAccordion } from 'baseui/accordion'
 
 type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
 }
 
 export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]) => {
-  return aaregAvtaler.sort((a,b) => {
-    if(a.virksomhet > b.virksomhet) {
+  return aaregAvtaler.sort((a, b) => {
+    if (a.virksomhet > b.virksomhet) {
       return 1
     }
-    else if(a.virksomhet < b.virksomhet) {
+    else if (a.virksomhet < b.virksomhet) {
       return -1
     }
     else {
-      if(a.avtalenummer > b.avtalenummer){
+      if (a.avtalenummer > b.avtalenummer) {
         return 1
       }
-      else if(a.avtalenummer < b.avtalenummer){
+      else if (a.avtalenummer < b.avtalenummer) {
         return -1
       }
       else {
@@ -42,6 +43,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
   const [pageLimit, setPageLimit] = useState(10)
   const [page, setPage] = useState(1)
   const [sortedAaregAvtale, setSortedAaregAvtale] = useState<AaregAvtale[]>([])
+  const [selectedAaregAvtale, setSelectedAaregAvtale] = useState<string>()
 
 
   useEffect(() => {
@@ -57,31 +59,31 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
 
   return (
     <>
-     <HeadingLarge>{intl.aaregAvtale}</HeadingLarge>
-      <Table
-        emptyText={intl.noAaregAvtaleAvailableInTable}
-        headers={
-          <>
-            <HeadCell title={intl.name} />
-            <HeadCell title={intl.aaregAvtaleContractNumber} />
-          </>
-        }
-      >
-        {sortedAaregAvtale.map((avtale) =>
-          <Row key={avtale.avtalenummer}>
-            <Cell>
-              {avtale.virksomhet ?
-                <>{avtale.virksomhet}</>
-                : ''}
-            </Cell>
+      <HeadingLarge>{intl.aaregAvtale}</HeadingLarge>
+      <StatelessAccordion expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}>
+        {sortedAaregAvtale && sortedAaregAvtale.map(a => {
+          return (
+            <Panel key={a.avtalenummer} title={a.avtalenummer} overrides={{
+              ToggleIcon: {
+                component: () => null
+              },
+              Content: {
+                style: {
+                  backgroundColor: theme.colors.white,
+                  // Outline width
+                  paddingTop: '4px',
+                  paddingBottom: '4px',
+                  paddingLeft: '4px',
+                  paddingRight: '4px',
+                }
+              }
+            }}>
+              {a.avtalenummer}
+            </Panel>
+          )
+        })}
+      </StatelessAccordion>
 
-            <Cell>
-              {avtale.avtalenummer ?
-                <>{avtale.avtalenummer}</>
-                : ''}
-            </Cell>
-          </Row>)}
-      </Table>
       <Block display="flex" justifyContent="space-between" marginTop="1rem">
         <StatefulPopover
           placement={PLACEMENT.bottom}
