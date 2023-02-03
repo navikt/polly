@@ -1,7 +1,7 @@
 import {IStrings} from "./intl";
 
 export const no: IStrings = {
-  aaregAvtale: "AAReg Avtale",
+  aaregAvtale: "AA-Reg Avtale",
   aaregAvtaleContractNumber: "Avtalenummer",
   informationType: "Opplysningstype",
   informationTypes: "Opplysningstyper",
@@ -530,7 +530,7 @@ export const no: IStrings = {
 };
 
 export const en: IStrings = {
-  aaregAvtale: "AAReg Contract",
+  aaregAvtale: "AA-Reg Contract",
   aaregAvtaleContractNumber: "Contract number",
   informationType: "Information type",
   informationTypes: "Information types",

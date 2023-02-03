@@ -10,6 +10,7 @@ import Button from '../common/Button'
 import { KIND } from 'baseui/button'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { Pagination } from 'baseui/pagination'
+import { HeadingLarge } from 'baseui/typography'
 
 type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
@@ -56,12 +57,13 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
 
   return (
     <>
+     <HeadingLarge>{intl.aaregAvtale}</HeadingLarge>
       <Table
-        emptyText={intl.noAlertsAvailableInTable}
+        emptyText={intl.noAaregAvtaleAvailableInTable}
         headers={
           <>
-            <HeadCell title="Navn" />
-            <HeadCell title="Avtalenummer" />
+            <HeadCell title={intl.name} />
+            <HeadCell title={intl.aaregAvtaleContractNumber} />
           </>
         }
       >
