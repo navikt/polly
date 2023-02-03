@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { SORT_DIRECTION } from 'baseui/table'
-import { AaregAvtale } from '../../constants'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulMenu } from 'baseui/menu'
-import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
+import React, {useEffect, useState} from 'react'
+import {AaregAvtale} from '../../constants'
+import {PLACEMENT, StatefulPopover} from 'baseui/popover'
+import {StatefulMenu} from 'baseui/menu'
+import {Block} from 'baseui/block'
+import {intl, theme} from '../../util'
 import Button from '../common/Button'
-import { KIND } from 'baseui/button'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { Pagination } from 'baseui/pagination'
-import { HeadingLarge } from 'baseui/typography'
-import { Accordion, Panel, StatelessAccordion } from 'baseui/accordion'
+import {KIND} from 'baseui/button'
+import {faChevronDown} from '@fortawesome/free-solid-svg-icons'
+import {Pagination} from 'baseui/pagination'
+import {HeadingLarge, LabelLarge} from 'baseui/typography'
+import {Panel, StatelessAccordion} from 'baseui/accordion'
+import DataText from "../common/DataText";
 
 type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
@@ -21,18 +20,14 @@ export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]) => {
   return aaregAvtaler.sort((a, b) => {
     if (a.virksomhet > b.virksomhet) {
       return 1
-    }
-    else if (a.virksomhet < b.virksomhet) {
+    } else if (a.virksomhet < b.virksomhet) {
       return -1
-    }
-    else {
+    } else {
       if (a.avtalenummer > b.avtalenummer) {
         return 1
-      }
-      else if (a.avtalenummer < b.avtalenummer) {
+      } else if (a.avtalenummer < b.avtalenummer) {
         return -1
-      }
-      else {
+      } else {
         return 0
       }
     }
@@ -61,7 +56,9 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
     <>
       <HeadingLarge>{intl.aaregContracts}</HeadingLarge>
       <StatelessAccordion
-        onChange={({ expanded }) => { setSelectedAaregAvtale(expanded[0] as string) }}
+        onChange={({expanded}) => {
+          setSelectedAaregAvtale(expanded[0] as string)
+        }}
         expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
       >
         {sortedAaregAvtale && sortedAaregAvtale.map(a => {
@@ -70,10 +67,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
               key={a.avtalenummer}
               title={
                 <Block width="100%">
-                  {a.virksomhet}
-                  <Block display="flex">
-                    {a.avtalenummer}
-                  </Block>
+                  <Block>{a.virksomhet} - {a.avtalenummer}</Block>
                 </Block>
               }
               overrides={{
@@ -94,8 +88,17 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
               <Block $style={{
                 outline: `4px ${theme.colors.primary200} solid`
               }}>
-                <Block paddingBottom={theme.sizing.scale800} paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
-                  {a.avtalenummer}
+                <Block
+                  paddingBottom={theme.sizing.scale800}
+                  paddingLeft={theme.sizing.scale800}
+                  paddingRight={theme.sizing.scale800}
+                  paddingTop={theme.sizing.scale800}
+                >
+                  <LabelLarge marginBottom={"1rem"}>Konsument</LabelLarge>
+                  <DataText label={intl.name} text={a.virksomhet || ''}/>
+                  <DataText label={intl.organisationNumber} text={a.organisasjonsnummer || ''}/>
+                  <LabelLarge marginBottom={"1rem"}>Avtale</LabelLarge>
+                  <DataText label={intl.aaregContractNumber} text={a.avtalenummer || ''}/>
                 </Block>
               </Block>
             </Panel>
@@ -106,16 +109,16 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
       <Block display="flex" justifyContent="space-between" marginTop="1rem">
         <StatefulPopover
           placement={PLACEMENT.bottom}
-          content={({ close }) => (
+          content={({close}) => (
             <StatefulMenu
-              items={[5, 10, 20, 50, 100].map(i => ({ label: i, }))}
-              onItemSelect={({ item }) => {
+              items={[5, 10, 20, 50, 100].map(i => ({label: i,}))}
+              onItemSelect={({item}) => {
                 setPageLimit(item.label)
                 close()
               }}
               overrides={{
                 List: {
-                  style: { height: '150px', width: '100px' },
+                  style: {height: '150px', width: '100px'},
                 },
               }}
             />
@@ -126,7 +129,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
           currentPage={page}
           numPages={Math.ceil(props.aaregAvtaler.length / pageLimit)}
           onPageChange={a => setPage(a.nextPage)}
-          labels={{ nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton }}
+          labels={{nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton}}
         />
       </Block>
     </>

@@ -18,7 +18,19 @@ export interface IStrings {
   aaregContracts: string;
   organisationNumber: string;
   aaregContractNumber: string;
-  
+  createdDate: string;
+  accessType:string;
+  API: string;
+  extract: string;
+  webLookup: string;
+  incidents: string;
+  consumer: string;
+  contractAareg: string;
+  purposeForProcess: string;
+  authorityAndGroundsForDelivery: string;
+  consumerAuthorityForProcess: string;
+  purposeAuthorityLegalBasis: string;
+
   informationType: string;
   informationTypes: string;
   informationTypeSearch: string;
