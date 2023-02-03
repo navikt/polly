@@ -74,7 +74,6 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
         expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
       >
         {sortedAaregAvtale && sortedAaregAvtale.map(a => {
-
           return (
             <Panel
               key={a.avtalenummer}

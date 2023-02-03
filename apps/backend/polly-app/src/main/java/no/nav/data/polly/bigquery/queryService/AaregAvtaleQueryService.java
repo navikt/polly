@@ -57,7 +57,7 @@ public class AaregAvtaleQueryService {
 
     public List<AaregAvtale> searchAaregAvtale(String searchParam) {
 
-        String avtaleByIdQuery = "SELECT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer LIKE UPPER(@searchParam) OR UPPER(virksomhet) LIKE UPPER(@searchParam)";
+        String avtaleByIdQuery = "SELECT DISTINCT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer LIKE UPPER(@searchParam) OR UPPER(virksomhet) LIKE UPPER(@searchParam)";
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
