@@ -1,21 +1,24 @@
-import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from "react-localization";
-import * as React from "react";
-import {useEffect} from "react";
-import {useForceUpdate} from "../hooks";
-import {en, no, ta} from "./lang";
+import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from 'react-localization'
+import * as React from 'react'
+import {useEffect} from 'react'
+import {useForceUpdate} from '../hooks'
+import {en, no, ta} from './lang'
 
-import * as moment from "moment";
-import "moment/locale/nb";
-import "moment/locale/ta";
+import * as moment from 'moment'
+import 'moment/locale/nb'
+import 'moment/locale/ta'
 
-import Locale from "date-fns";
-import nbLocale from "date-fns/locale/nb";
-import enLocale from "date-fns/locale/en-GB";
-import taLocale from "date-fns/locale/ta";
+import Locale from 'date-fns'
+import nbLocale from 'date-fns/locale/nb'
+import enLocale from 'date-fns/locale/en-GB'
+import taLocale from 'date-fns/locale/ta'
 
 export interface IStrings {
-  aaregAvtale: string;
-  aaregAvtaleContractNumber: string;
+  //aareg avtale
+  aaregContracts: string;
+  organisationNumber: string;
+  aaregContractNumber: string;
+  
   informationType: string;
   informationTypes: string;
   informationTypeSearch: string;
@@ -529,23 +532,23 @@ export interface IStrings {
   noDisclosuresToThirdPartyAvailableInTable: string;
   noRetrievedFromThirdPartyAvailableInTable: string;
   noAlertsAvailableInTable: string;
-  noAaregAvtaleAvailableInTable: string,
+  noAaregContractsAvailableInTable: string,
 }
 
 // Remember import moment locales up top
 export const langs: Langs = {
-  nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no, dateLocale: nbLocale},
-  en: {flag: "gb", name: "English", langCode: "en", texts: en, dateLocale: enLocale},
-};
-
-if (window.location.hostname.indexOf("local") >= 0) {
-  langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta, dateLocale: taLocale};
+  nb: {flag: 'no', name: 'Norsk', langCode: 'nb', texts: no, dateLocale: nbLocale},
+  en: {flag: 'gb', name: 'English', langCode: 'en', texts: en, dateLocale: enLocale},
 }
 
-export const langsArray: Lang[] = Object.keys(langs).map((lang) => langs[lang]);
+if (window.location.hostname.indexOf('local') >= 0) {
+  langs['ta'] = {flag: ['lk', 'in'][Math.floor(Math.random() * 2)], name: 'தமிழ்', langCode: 'ta', texts: ta, dateLocale: taLocale}
+}
+
+export const langsArray: Lang[] = Object.keys(langs).map((lang) => langs[lang])
 
 // Controls starting language as well as fallback language if a text is missing in chosen language
-const defaultLang = langs.nb;
+const defaultLang = langs.nb
 
 type IIntl = LocalizedStringsMethods & IStrings;
 
@@ -553,12 +556,12 @@ interface LocalizedStringsFactory {
   new<T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
 }
 
-const strings: IntlLangs = {};
+const strings: IntlLangs = {}
 
-Object.keys(langs).forEach((lang) => (strings[lang] = langs[lang].texts));
+Object.keys(langs).forEach((lang) => (strings[lang] = langs[lang].texts))
 
-export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, {customLanguageInterface: () => defaultLang.langCode});
-export const currentLang = () => langs[intl.getLanguage()];
+export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, {customLanguageInterface: () => defaultLang.langCode})
+export const currentLang = () => langs[intl.getLanguage()]
 
 interface IntlLangs {
   [lang: string]: IStrings;
@@ -578,29 +581,29 @@ interface Langs {
 
 // hooks
 
-const localStorageAvailable = storageAvailable();
+const localStorageAvailable = storageAvailable()
 
 export const useLang = () => {
-  const [lang, setLang] = React.useState<string>(((localStorageAvailable && localStorage.getItem("polly-lang")) as string) || defaultLang.langCode);
-  const update = useForceUpdate();
+  const [lang, setLang] = React.useState<string>(((localStorageAvailable && localStorage.getItem('polly-lang')) as string) || defaultLang.langCode)
+  const update = useForceUpdate()
   useEffect(() => {
-    intl.setLanguage(lang);
-    let momentlocale = moment.locale(lang);
-    if (lang !== momentlocale) console.warn("moment locale missing", lang);
-    localStorageAvailable && localStorage.setItem("polly-lang", lang);
-    update();
-  }, [lang]);
+    intl.setLanguage(lang)
+    let momentlocale = moment.locale(lang)
+    if (lang !== momentlocale) console.warn('moment locale missing', lang)
+    localStorageAvailable && localStorage.setItem('polly-lang', lang)
+    update()
+  }, [lang])
 
-  return setLang;
-};
+  return setLang
+}
 
 function storageAvailable() {
   try {
-    let key = "ptab";
-    localStorage.setItem(key, key);
-    localStorage.removeItem(key);
-    return true;
+    let key = 'ptab'
+    localStorage.setItem(key, key)
+    localStorage.removeItem(key)
+    return true
   } catch (e:any) {
-    return false;
+    return false
   }
 }
