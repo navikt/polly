@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { AaregAvtale } from '../../constants'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulMenu } from 'baseui/menu'
-import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
+import React, {useEffect, useState} from 'react'
+import {AaregAvtale} from '../../constants'
+import {PLACEMENT, StatefulPopover} from 'baseui/popover'
+import {StatefulMenu} from 'baseui/menu'
+import {Block} from 'baseui/block'
+import {intl, theme} from '../../util'
 import Button from '../common/Button'
-import { KIND } from 'baseui/button'
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { Pagination } from 'baseui/pagination'
-import { HeadingLarge, LabelLarge } from 'baseui/typography'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
+import {KIND} from 'baseui/button'
+import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import {Pagination} from 'baseui/pagination'
+import {HeadingLarge, LabelLarge} from 'baseui/typography'
+import {Panel, StatelessAccordion} from 'baseui/accordion'
 import DataText from "../common/DataText";
 import AAregHjemmelDataText from './AAregHjemmelDataText'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
@@ -132,7 +132,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                   <DataText label={intl.incidents} text={a.hendelser.toString() || ''} />
 
                   <CustomPanelLabel text={intl.processor} />
-                  <DataText label={intl.organisationNumber} text={a.databehandler_organisasjonsnummer || ''} />
+                  <DataText label={intl.organisationNumber} text={a.databehandler_organisasjonsnummer || intl.emptyMessage} />
                   <DataText label={intl.name} text={a.databehandler_navn || intl.emptyMessage} />
                 </Block>
               </Block>
