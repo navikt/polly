@@ -23,7 +23,7 @@ const marginTop = "2rem"
 
 const CustomPanelLabel = ({text}: { text: any }) => {
   return (
-    <Block width="100%" marginBottom={marginBottom} $style={{boderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'grey'}}>
+    <Block width="100%" marginBottom={marginBottom} $style={{boderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: '#AFAFAF'}}>
       <LabelLarge marginTop={marginTop}>{text}</LabelLarge>
     </Block>
   )
