@@ -1,45 +1,45 @@
-import { useTable } from "../../util/hooks";
-import { Cell, HeadCell, Row, Table } from "../common/Table";
-import { intl } from "../../util";
-import { DpProcess, dpProcessSort, DpProcessWithEmail } from "../../constants";
-import RouteLink from "../common/RouteLink";
-import { useEffect, useState } from "react";
-import { getResourceById } from "../../api";
-import { StyledLink } from "baseui/link";
+import { useTable } from '../../util/hooks'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
+import { intl } from '../../util'
+import { DpProcess, dpProcessSort, DpProcessWithEmail } from '../../constants'
+import RouteLink from '../common/RouteLink'
+import { useEffect, useState } from 'react'
+import { getResourceById } from '../../api'
+import { StyledLink } from 'baseui/link'
 
 type DpProcessTableProps = {
-  dpProcesses: DpProcess[];
-};
+  dpProcesses: DpProcess[]
+}
 
 const DpProcessTable = (props: DpProcessTableProps) => {
-  const [dpProcessesWithEmail, setDpProcessesWithEmail] = useState<DpProcessWithEmail[]>(props.dpProcesses);
+  const [dpProcessesWithEmail, setDpProcessesWithEmail] = useState<DpProcessWithEmail[]>(props.dpProcesses)
   const [table, sortColumn] = useTable<DpProcessWithEmail, keyof DpProcessWithEmail>(dpProcessesWithEmail, {
     sorting: dpProcessSort,
-    initialSortColumn: "name",
-  });
+    initialSortColumn: 'name',
+  })
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (props.dpProcesses) {
-        const newDpProcessesList: DpProcessWithEmail[] = [];
+        const newDpProcessesList: DpProcessWithEmail[] = []
         await Promise.all(
           props.dpProcesses.map(async (dpp) => {
-            const userIdent = dpp.changeStamp.lastModifiedBy.split(" ")[0];
-            if (userIdent !== "migration") {
+            const userIdent = dpp.changeStamp.lastModifiedBy.split(' ')[0]
+            if (userIdent !== 'migration') {
               await getResourceById(userIdent).then((res) => {
                 newDpProcessesList.push({
                   ...dpp,
                   lastModifiedEmail: res.email,
-                });
-              });
+                })
+              })
             } else {
-              newDpProcessesList.push({ ...dpp });
+              newDpProcessesList.push({ ...dpp })
             }
-          })
-        ).then(() => setDpProcessesWithEmail(newDpProcessesList));
+          }),
+        ).then(() => setDpProcessesWithEmail(newDpProcessesList))
       }
-    })();
-  }, [props.dpProcesses]);
+    })()
+  }, [props.dpProcesses])
 
   return (
     <>
@@ -56,21 +56,23 @@ const DpProcessTable = (props: DpProcessTableProps) => {
         {table.data.map((process, index) => (
           <Row key={index}>
             <Cell>
-              <RouteLink href={`/dpprocess/${process.id}`} style={{ textDecoration: "none" }}>
+              <RouteLink href={`/dpprocess/${process.id}`} style={{ textDecoration: 'none' }}>
                 {process.name}
               </RouteLink>
             </Cell>
             <Cell>
-              <RouteLink href={`/thirdparty/${process.externalProcessResponsible?.code}`} style={{ textDecoration: "none" }}>
+              <RouteLink href={`/thirdparty/${process.externalProcessResponsible?.code}`} style={{ textDecoration: 'none' }}>
                 {process.externalProcessResponsible?.shortName}
               </RouteLink>
             </Cell>
-            <Cell><StyledLink href={'mailto: ' + process.lastModifiedEmail}>{process.lastModifiedEmail}</StyledLink></Cell>
+            <Cell>
+              <StyledLink href={'mailto: ' + process.lastModifiedEmail}>{process.lastModifiedEmail}</StyledLink>
+            </Cell>
           </Row>
         ))}
       </Table>
     </>
-  );
-};
+  )
+}
 
-export default DpProcessTable;
+export default DpProcessTable

@@ -1,17 +1,17 @@
-import {Cell, HeadCell, Row, Table} from "../../common/Table";
-import {intl, theme} from "../../../util";
-import {Process, processSort} from "../../../constants";
-import React from "react";
-import {Block} from "baseui/block";
-import RouteLink from "../../common/RouteLink";
-import {useTable} from "../../../util/hooks";
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import { intl, theme } from '../../../util'
+import { Process, processSort } from '../../../constants'
+import React from 'react'
+import { Block } from 'baseui/block'
+import RouteLink from '../../common/RouteLink'
+import { useTable } from '../../../util/hooks'
 
 type RelatedProcessesTableProps = {
   relatedProcesses: Process[]
 }
 
-const RelatedProcessesTable = ({relatedProcesses}: RelatedProcessesTableProps) => {
-  const [table, sortColumn] = useTable<Process, keyof Process>(relatedProcesses, {sorting: processSort, initialSortColumn: 'name'})
+const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps) => {
+  const [table, sortColumn] = useTable<Process, keyof Process>(relatedProcesses, { sorting: processSort, initialSortColumn: 'name' })
   return (
     <>
       <Table
@@ -19,39 +19,36 @@ const RelatedProcessesTable = ({relatedProcesses}: RelatedProcessesTableProps) =
         backgroundColor={theme.colors.primary100}
         headers={
           <>
-            <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]} $style={{maxWidth:'25%'}}/>
-            <HeadCell title={intl.process} column={'name'} tableState={[table, sortColumn]} $style={{maxWidth:'25%'}}/>
-            <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]} $style={{maxWidth:'25%'}}/>
-            <HeadCell title={intl.system} $style={{maxWidth:'25%'}}/>
+            <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
+            <HeadCell title={intl.process} column={'name'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
+            <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
+            <HeadCell title={intl.system} $style={{ maxWidth: '25%' }} />
           </>
-        }>
+        }
+      >
         {table.data.map((row: Process, index: number) => {
           return (
             <React.Fragment key={index}>
               <Row>
                 <Block display="flex" width="100%" justifyContent="space-between">
-                  <Cell $style={{maxWidth:'25%'}}>
-                    <RouteLink href={`/process/purpose/${row.purposes[0].code}`}>
-                      {row.purposes[0].shortName}
-                    </RouteLink>
+                  <Cell $style={{ maxWidth: '25%' }}>
+                    <RouteLink href={`/process/purpose/${row.purposes[0].code}`}>{row.purposes[0].shortName}</RouteLink>
                   </Cell>
-                  <Cell $style={{maxWidth:'25%'}}>
+                  <Cell $style={{ maxWidth: '25%' }}>
                     <RouteLink href={`/process/${row.id}`} width="25%">
                       {row.name}
                     </RouteLink>
                   </Cell>
-                  <Cell $style={{maxWidth:'25%'}}>
+                  <Cell $style={{ maxWidth: '25%' }}>
                     <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>{row.affiliation.department?.shortName}</RouteLink>
                   </Cell>
-                  <Cell $style={{maxWidth:'25%'}}>
+                  <Cell $style={{ maxWidth: '25%' }}>
                     <Block>
-                    {
-                      row.affiliation.products.map(s => (
-                        <Block marginRight={"10%"}>
-                        <RouteLink href={`/process/system/${s.code}`}>{s.shortName}</RouteLink>
+                      {row.affiliation.products.map((s) => (
+                        <Block marginRight={'10%'}>
+                          <RouteLink href={`/process/system/${s.code}`}>{s.shortName}</RouteLink>
                         </Block>
-                      ))
-                    }
+                      ))}
                     </Block>
                   </Cell>
                 </Block>

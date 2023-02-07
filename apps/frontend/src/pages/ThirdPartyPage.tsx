@@ -1,28 +1,28 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {intl, theme} from '../util'
-import {useParams} from 'react-router-dom'
-import {codelist, ListName} from '../service/Codelist'
-import {Plus} from 'baseui/icon'
-import {Block} from 'baseui/block'
-import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure} from '../api'
-import {HeadingMedium, ParagraphMedium} from 'baseui/typography'
-import {Button, KIND} from 'baseui/button'
-import {user} from '../service/User'
-import {Disclosure, DisclosureFormValues, DpProcess, InformationType} from '../constants'
+import { useEffect, useState } from 'react'
+import { intl, theme } from '../util'
+import { useParams } from 'react-router-dom'
+import { codelist, ListName } from '../service/Codelist'
+import { Plus } from 'baseui/icon'
+import { Block } from 'baseui/block'
+import { createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure } from '../api'
+import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
+import { Button, KIND } from 'baseui/button'
+import { user } from '../service/User'
+import { Disclosure, DisclosureFormValues, DpProcess, InformationType } from '../constants'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import {Spinner} from 'baseui/spinner'
+import { Spinner } from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import ProcessList from '../components/Process'
-import {Section} from './ProcessPage'
-import {getAllDpProcesses} from "../api/DpProcessApi";
-import ThirdPartiesDpProcessTable from "../components/common/ThirdPartiesDpProcessTable";
+import { Section } from './ProcessPage'
+import { getAllDpProcesses } from '../api/DpProcessApi'
+import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
-import {Accordion, Panel} from 'baseui/accordion'
-import {toggleOverride} from '../components/common/Accordion'
+import { Accordion, Panel } from 'baseui/accordion'
+import { toggleOverride } from '../components/common/Accordion'
 
 export type PathParams = {
-  thirdPartyCode: string,
+  thirdPartyCode: string
   section: 'disclosure' | 'dpprocess' | 'informationtype' | 'process' | undefined
   id?: string
 }
@@ -38,23 +38,20 @@ const ThirdPartyPage = () => {
   const [processListCount, setProcessListCount] = React.useState<number>(0)
 
   useEffect(() => {
-    (async () => {
-      let dps: DpProcess[] = await getAllDpProcesses();
+    ;(async () => {
+      let dps: DpProcess[] = await getAllDpProcesses()
       if (dps) {
-        setDpProcesses(dps.filter(dp => dp.externalProcessResponsible?.code === params.thirdPartyCode))
+        setDpProcesses(dps.filter((dp) => dp.externalProcessResponsible?.code === params.thirdPartyCode))
       }
     })()
   }, [])
-
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
       let createdDisclosure = await createDisclosure(disclosure)
 
-      if (!disclosureList || disclosureList.length < 1)
-        setDisclosureList([createdDisclosure])
-      else if (disclosureList && createdDisclosure)
-        setDisclosureList([...disclosureList, createdDisclosure])
+      if (!disclosureList || disclosureList.length < 1) setDisclosureList([createdDisclosure])
+      else if (disclosureList && createdDisclosure) setDisclosureList([...disclosureList, createdDisclosure])
 
       setShowCreateModal(false)
     } catch (err: any) {
@@ -73,7 +70,6 @@ const ThirdPartyPage = () => {
       return false
     }
   }
-
 
   const handleDeleteDisclosure = async (disclosure: Disclosure) => {
     if (!disclosure) return false
@@ -99,34 +95,34 @@ const ThirdPartyPage = () => {
     start: undefined,
     end: undefined,
     processes: [],
-    abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''},
-    processIds: []
+    abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
+    processIds: [],
   }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       setIsLoading(true)
       await codelist.wait()
       if (params.thirdPartyCode) {
         setDisclosureList(await getDisclosuresByRecipient(params.thirdPartyCode))
-        setInformationTypeList((await getInformationTypesBy({source: params.thirdPartyCode})).content)
+        setInformationTypeList((await getInformationTypesBy({ source: params.thirdPartyCode })).content)
       }
       setIsLoading(false)
     })()
   }, [params.thirdPartyCode])
 
-
   return (
     <>
-      {isLoading && <Spinner/>}
+      {isLoading && <Spinner />}
 
       {!isLoading && codelist && (
         <>
-          {params.thirdPartyCode && <Block marginBottom="3rem">
-            <HeadingMedium>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</HeadingMedium>
-            <ParagraphMedium>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</ParagraphMedium>
-          </Block>}
-
+          {params.thirdPartyCode && (
+            <Block marginBottom="3rem">
+              <HeadingMedium>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</HeadingMedium>
+              <ParagraphMedium>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</ParagraphMedium>
+            </Block>
+          )}
 
           <Accordion
             renderAll
@@ -134,22 +130,28 @@ const ThirdPartyPage = () => {
               Content: {
                 style: (p) => ({
                   backgroundColor: theme.colors.white,
-                })
+                }),
               },
               ToggleIcon: toggleOverride,
-            }} initialState={{expanded: params.section ? [params.section] : []}}>
-            <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`} key='disclosure'>
+            }}
+            initialState={{ expanded: params.section ? [params.section] : [] }}
+          >
+            <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`} key="disclosure">
               <Block display="flex" justifyContent="flex-end">
-                {user.canWrite() &&
+                {user.canWrite() && (
                   <Button
                     size="compact"
                     kind={KIND.tertiary}
                     onClick={() => setShowCreateModal(true)}
-                    startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+                    startEnhancer={() => (
+                      <Block display="flex" justifyContent="center">
+                        <Plus size={22} />
+                      </Block>
+                    )}
                   >
                     {intl.createNew}
                   </Button>
-                }
+                )}
               </Block>
               <AccordionDisclosure
                 disclosureList={disclosureList}
@@ -163,29 +165,32 @@ const ThirdPartyPage = () => {
               />
             </Panel>
 
-            <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`} key='informationtype'>
-              <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
+            <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`} key="informationtype">
+              <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true} />
             </Panel>
 
-            {params.thirdPartyCode && <Panel key='dpprocess'
-                                             title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}>
-              <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []}/>
-            </Panel>}
+            {params.thirdPartyCode && (
+              <Panel
+                key="dpprocess"
+                title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}
+              >
+                <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []} />
+              </Panel>
+            )}
 
-            <Panel key='process'
-                   title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
-              {params.thirdPartyCode && <ProcessList
-                section={Section.thirdparty}
-                code={params.thirdPartyCode}
-                listName={ListName.THIRD_PARTY}
-                isEditable={false}
-                hideTitle
-                getCount={setProcessListCount}
-              />}
+            <Panel key="process" title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
+              {params.thirdPartyCode && (
+                <ProcessList
+                  section={Section.thirdparty}
+                  code={params.thirdPartyCode}
+                  listName={ListName.THIRD_PARTY}
+                  isEditable={false}
+                  hideTitle
+                  getCount={setProcessListCount}
+                />
+              )}
             </Panel>
-
           </Accordion>
-
 
           <ModalThirdParty
             title={intl.createThirdPartyModalTitle}
@@ -199,7 +204,6 @@ const ThirdPartyPage = () => {
             errorOnCreate={error}
             disableRecipientField={true}
           />
-
         </>
       )}
     </>

@@ -1,32 +1,32 @@
-import React, {useEffect} from 'react'
-import {getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, getProcessByStateAndStatusForProductArea} from '../../api'
-import {ProcessField, ProcessShort, ProcessState, ProcessStatusFilter} from '../../constants'
-import {useParams} from 'react-router-dom'
-import {HeadingLarge} from 'baseui/typography'
-import {intl} from '../../util'
-import {SimpleProcessTable} from '../Process/SimpleProcessTable'
-import {useQueryParam} from '../../util/hooks'
-import {Spinner} from '../common/Spinner'
+import React, { useEffect } from 'react'
+import { getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, getProcessByStateAndStatusForProductArea } from '../../api'
+import { ProcessField, ProcessShort, ProcessState, ProcessStatusFilter } from '../../constants'
+import { useParams } from 'react-router-dom'
+import { HeadingLarge } from 'baseui/typography'
+import { intl } from '../../util'
+import { SimpleProcessTable } from '../Process/SimpleProcessTable'
+import { useQueryParam } from '../../util/hooks'
+import { Spinner } from '../common/Spinner'
 
-type PathProps =  {
-  filterName: ProcessField,
-  filterValue: ProcessState,
-  filterStatus: ProcessStatusFilter,
+type PathProps = {
+  filterName: ProcessField
+  filterValue: ProcessState
+  filterStatus: ProcessStatusFilter
 }
 
 const PurposeTable = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [filtered, setFiltered] = React.useState<ProcessShort[]>([])
   const [title, setTitle] = React.useState('')
-  const {filterName, filterValue, filterStatus} = useParams<PathProps>()
+  const { filterName, filterValue, filterStatus } = useParams<PathProps>()
   const department = useQueryParam('department')
   const productareaId = useQueryParam('productarea')
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       setLoading(true)
       changeTitle()
-      if(filterName && filterValue){
+      if (filterName && filterValue) {
         if (department) {
           let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
           setFiltered(res)
@@ -70,7 +70,7 @@ const PurposeTable = () => {
       setTitle(`${intl.processor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle(intl.navResponsible)
-    } else if(filterName  === ProcessField.DPIA_REFERENCE_MISSING){
+    } else if (filterName === ProcessField.DPIA_REFERENCE_MISSING) {
       setTitle(intl.missingPVK)
     }
   }
@@ -78,8 +78,8 @@ const PurposeTable = () => {
   return (
     <>
       <HeadingLarge>{title}</HeadingLarge>
-      {loading && <Spinner size='80px'/>}
-      {!loading && <SimpleProcessTable processes={filtered} title={title} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR}/>}
+      {loading && <Spinner size="80px" />}
+      {!loading && <SimpleProcessTable processes={filtered} title={title} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR} />}
     </>
   )
 }

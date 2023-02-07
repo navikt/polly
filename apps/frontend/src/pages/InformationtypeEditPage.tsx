@@ -1,20 +1,20 @@
 import * as React from 'react'
 
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
-import {InformationType, InformationtypeFormValues} from '../constants'
-import {codelist} from '../service/Codelist'
-import {intl} from '../util'
-import {getInformationType, mapInfoTypeToFormVals, updateInformationType} from '../api'
-import {useNavigate, useParams} from 'react-router-dom'
-import {HeadingMedium} from 'baseui/typography'
-import {Spinner} from 'baseui/spinner'
+import { InformationType, InformationtypeFormValues } from '../constants'
+import { codelist } from '../service/Codelist'
+import { intl } from '../util'
+import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api'
+import { useNavigate, useParams } from 'react-router-dom'
+import { HeadingMedium } from 'baseui/typography'
+import { Spinner } from 'baseui/spinner'
 
 const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = React.useState(true)
   const [error, setError] = React.useState(null)
   const [errorSubmit, setErrorSubmit] = React.useState(null)
   const [informationtype, setInformationType] = React.useState<InformationType>()
-  const params = useParams<{id: string}>()
+  const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
   const handleAxiosError = (error: any) => {
@@ -31,12 +31,12 @@ const InformationtypeEditPage = () => {
   const handleSubmit = async (values: InformationtypeFormValues) => {
     if (!values) return
     setErrorSubmit(null)
-    let body = {...values}
+    let body = { ...values }
 
     try {
       await updateInformationType(body)
       navigate(`/informationtype/${params.id}`)
-    } catch (e:any) {
+    } catch (e: any) {
       setErrorSubmit(e.message)
     }
   }
@@ -45,11 +45,11 @@ const InformationtypeEditPage = () => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        if(params.id) {
+        if (params.id) {
           const infoType = await getInformationType(params.id)
           setInformationType(infoType)
         }
-      } catch (e:any) {
+      } catch (e: any) {
         handleAxiosError(e)
       }
       await codelist.wait()
@@ -61,18 +61,14 @@ const InformationtypeEditPage = () => {
   return (
     <React.Fragment>
       {isLoading ? (
-        <Spinner $size={30}/>
+        <Spinner $size={30} />
       ) : (
         <React.Fragment>
           <HeadingMedium>{intl.edit}</HeadingMedium>
 
           {!error && informationtype ? (
             <React.Fragment>
-              <InformationtypeForm
-                formInitialValues={mapInfoTypeToFormVals(informationtype)}
-                isEdit
-                submit={handleSubmit}
-              />
+              <InformationtypeForm formInitialValues={mapInfoTypeToFormVals(informationtype)} isEdit submit={handleSubmit} />
               {errorSubmit && <p>{errorSubmit}</p>}
             </React.Fragment>
           ) : (

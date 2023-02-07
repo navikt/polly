@@ -1,21 +1,20 @@
-import {Block} from 'baseui/block'
-import React, {useEffect, useState} from 'react'
-import {intl, useDebouncedState} from '../../util'
-import {Input} from 'baseui/input'
+import { Block } from 'baseui/block'
+import React, { useEffect, useState } from 'react'
+import { intl, useDebouncedState } from '../../util'
+import { Input } from 'baseui/input'
 import _ from 'lodash'
-import {AuditView} from '../../components/audit/AuditView'
-import {AuditLabel as Label} from '../../components/audit/AuditComponents'
-import {getAuditLog} from '../../api/AuditApi'
-import {AuditLog} from '../../constants'
-import {AuditRecentTable} from '../../components/audit/AuditRecentTable'
-import {HeadingMedium, ParagraphMedium} from 'baseui/typography'
-import {useNavigate, useParams} from 'react-router-dom'
+import { AuditView } from '../../components/audit/AuditView'
+import { AuditLabel as Label } from '../../components/audit/AuditComponents'
+import { getAuditLog } from '../../api/AuditApi'
+import { AuditLog } from '../../constants'
+import { AuditRecentTable } from '../../components/audit/AuditRecentTable'
+import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const format = (id: string) => _.trim(id, '"')
 
-
 export const AuditPage = () => {
-  const params = useParams<{id?: string, auditId?: string}>()
+  const params = useParams<{ id?: string; auditId?: string }>()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
@@ -23,7 +22,7 @@ export const AuditPage = () => {
   const [idSearch, setIdInput, idInput] = useDebouncedState(params.id || '', 400)
 
   const lookupVersion = (id?: string) => {
-    (async () => {
+    ;(async () => {
       if (id === auditLog?.id) {
         return
       }
@@ -40,7 +39,7 @@ export const AuditPage = () => {
         if (log.audits.length && id !== params.id) {
           navigate(`/admin/audit/${id}`)
         }
-      } catch (e:any) {
+      } catch (e: any) {
         setError(e)
       }
       setLoading(false)
@@ -55,17 +54,19 @@ export const AuditPage = () => {
       <HeadingMedium>{intl.audit}</HeadingMedium>
       <Block marginBottom="1rem">
         <Label label={intl.searchId}>
-          <Input size="compact" value={idInput}
-                 overrides={{Input: {style: {width: '300px'}}}}
-                 placeholder={intl.id}
-                 onChange={e => setIdInput(format((e.target as HTMLInputElement).value))}
+          <Input
+            size="compact"
+            value={idInput}
+            overrides={{ Input: { style: { width: '300px' } } }}
+            placeholder={intl.id}
+            onChange={(e) => setIdInput(format((e.target as HTMLInputElement).value))}
           />
         </Label>
       </Block>
 
       {error && <ParagraphMedium>{_.escape(error)}</ParagraphMedium>}
-      {idInput && <AuditView auditLog={auditLog} auditId={params.auditId} loading={loading} viewId={lookupVersion}/>}
-      <AuditRecentTable show={!idInput}/>
+      {idInput && <AuditView auditLog={auditLog} auditId={params.auditId} loading={loading} viewId={lookupVersion} />}
+      <AuditRecentTable show={!idInput} />
     </>
   )
 }

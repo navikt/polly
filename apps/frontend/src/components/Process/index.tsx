@@ -1,14 +1,14 @@
-import * as React from "react";
-import { useEffect } from "react";
+import * as React from 'react'
+import { useEffect } from 'react'
 
-import { Block } from "baseui/block";
-import { HeadingXLarge, LabelMedium } from "baseui/typography";
-import { KIND, SIZE as ButtonSize, SIZE } from "baseui/button";
-import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from "../../constants";
-import { intl, theme, useAwait } from "../../util";
-import { user } from "../../service/User";
-import ModalProcess from "./Accordion/ModalProcess";
-import AccordionProcess from "./Accordion";
+import { Block } from 'baseui/block'
+import { HeadingXLarge, LabelMedium } from 'baseui/typography'
+import { KIND, SIZE as ButtonSize, SIZE } from 'baseui/button'
+import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
+import { intl, theme, useAwait } from '../../util'
+import { user } from '../../service/User'
+import ModalProcess from './Accordion/ModalProcess'
+import AccordionProcess from './Accordion'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,
@@ -24,224 +24,224 @@ import {
   updateDisclosure,
   updatePolicy,
   updateProcess,
-} from "../../api";
-import { Spinner } from "baseui/spinner";
-import { Code, codelist, ListName } from "../../service/Codelist";
-import { StyledLink } from "baseui/link";
-import { env } from "../../util/env";
-import { faFileWord, faPlus } from "@fortawesome/free-solid-svg-icons";
-import Button from "../common/Button";
-import { StatefulSelect } from "baseui/select";
-import { genProcessPath, Section } from "../../pages/ProcessPage";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Modal, ModalBody, ModalHeader, ROLE, SIZE as ModalSize } from "baseui/modal";
+} from '../../api'
+import { Spinner } from 'baseui/spinner'
+import { Code, codelist, ListName } from '../../service/Codelist'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../util/env'
+import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
+import Button from '../common/Button'
+import { StatefulSelect } from 'baseui/select'
+import { genProcessPath, Section } from '../../pages/ProcessPage'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Modal, ModalBody, ModalHeader, ROLE, SIZE as ModalSize } from 'baseui/modal'
 
 type ProcessListProps = {
-  section: Section;
-  filter?: ProcessStatus;
-  processId?: string;
-  titleOverride?: string;
-  hideTitle?: boolean;
-  code: string;
-  listName?: ListName;
-  moveScroll?: Function;
-  isEditable: boolean;
-  getCount?: (i: number) => void;
-};
+  section: Section
+  filter?: ProcessStatus
+  processId?: string
+  titleOverride?: string
+  hideTitle?: boolean
+  code: string
+  listName?: ListName
+  moveScroll?: Function
+  isEditable: boolean
+  getCount?: (i: number) => void
+}
 
-const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()));
+const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
 const ProcessList = ({ code, listName, filter, processId, section, moveScroll, titleOverride, hideTitle, isEditable, getCount }: ProcessListProps) => {
-  const [processList, setProcessList] = React.useState<ProcessShort[]>([]);
-  const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>();
-  const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false);
-  const [errorProcessModal, setErrorProcessModal] = React.useState<string>("");
-  const [errorPolicyModal, setErrorPolicyModal] = React.useState(null);
-  const [errorDocumentModal, setErrorDocumentModal] = React.useState(null);
-  const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true);
-  const [isLoadingProcess, setIsLoadingProcess] = React.useState(true);
-  const current_location = useLocation();
-  const [codelistLoading, setCodelistLoading] = React.useState(true);
-  const navigate = useNavigate();
-  const [exportHref, setExportHref] = React.useState<string>("");
-  const [isExportModalOpen, setIsExportModalOpen] = React.useState<boolean>(false);
+  const [processList, setProcessList] = React.useState<ProcessShort[]>([])
+  const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
+  const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
+  const [errorProcessModal, setErrorProcessModal] = React.useState<string>('')
+  const [errorPolicyModal, setErrorPolicyModal] = React.useState(null)
+  const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
+  const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
+  const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
+  const current_location = useLocation()
+  const [codelistLoading, setCodelistLoading] = React.useState(true)
+  const navigate = useNavigate()
+  const [exportHref, setExportHref] = React.useState<string>('')
+  const [isExportModalOpen, setIsExportModalOpen] = React.useState<boolean>(false)
 
-  useAwait(codelist.wait(), setCodelistLoading);
+  useAwait(codelist.wait(), setCodelistLoading)
 
-  useEffect(() => getCount && getCount(processList.length), [processList.length]);
-
-  useEffect(() => {
-    processId && getProcessById(processId);
-  }, [processId]);
+  useEffect(() => getCount && getCount(processList.length), [processList.length])
 
   useEffect(() => {
-    (async () => {
-      setIsLoadingProcessList(true);
-      await getProcessList();
-      setIsLoadingProcessList(false);
-      if (moveScroll) moveScroll();
-    })();
-    const pathName = current_location.pathname.split("/")[1];
-    if (pathName === "productarea") {
-      setExportHref(`${env.pollyBaseUrl}/export/process?productArea=${code}`);
-    } else if (pathName === "team") {
-      setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`);
+    processId && getProcessById(processId)
+  }, [processId])
+
+  useEffect(() => {
+    ;(async () => {
+      setIsLoadingProcessList(true)
+      await getProcessList()
+      setIsLoadingProcessList(false)
+      if (moveScroll) moveScroll()
+    })()
+    const pathName = current_location.pathname.split('/')[1]
+    if (pathName === 'productarea') {
+      setExportHref(`${env.pollyBaseUrl}/export/process?productArea=${code}`)
+    } else if (pathName === 'team') {
+      setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
     }
-  }, [code, filter]);
+  }, [code, filter])
 
   const handleChangePanel = (process?: Partial<Process>) => {
     if (process?.id !== currentProcess?.id) {
-      navigate(genProcessPath(section, code, process, filter));
+      navigate(genProcessPath(section, code, process, filter))
     }
     // reuse method to reload a process
     else if (process?.id) {
-      getProcessById(process.id).catch(setErrorProcessModal);
-      navigate(genProcessPath(section, code, process, filter));
+      getProcessById(process.id).catch(setErrorProcessModal)
+      navigate(genProcessPath(section, code, process, filter))
     }
-  };
+  }
 
-  const hasAccess = () => user.canWrite();
+  const hasAccess = () => user.canWrite()
 
   const listNameToUrl = () =>
     listName &&
     (
       {
-        DEPARTMENT: "department",
-        SUB_DEPARTMENT: "subDepartment",
-        PURPOSE: "purpose",
-        SYSTEM: "system",
-        DATA_PROCESSOR: "processor",
-        THIRD_PARTY: "thirdparty",
+        DEPARTMENT: 'department',
+        SUB_DEPARTMENT: 'subDepartment',
+        PURPOSE: 'purpose',
+        SYSTEM: 'system',
+        DATA_PROCESSOR: 'processor',
+        THIRD_PARTY: 'thirdparty',
       } as { [l: string]: string }
-    )[listName];
+    )[listName]
 
   const getProcessList = async () => {
     try {
-      let list: ProcessShort[];
+      let list: ProcessShort[]
 
-      if (current_location.pathname.includes("team")) {
-        let res = await getProcessesFor({ productTeam: code });
-        res.content ? (list = res.content as ProcessShort[]) : (list = []);
-      } else if (current_location.pathname.includes("productarea")) {
-        let res = await getProcessesFor({ productArea: code });
-        res.content ? (list = res.content as ProcessShort[]) : (list = []);
+      if (current_location.pathname.includes('team')) {
+        let res = await getProcessesFor({ productTeam: code })
+        res.content ? (list = res.content as ProcessShort[]) : (list = [])
+      } else if (current_location.pathname.includes('productarea')) {
+        let res = await getProcessesFor({ productArea: code })
+        res.content ? (list = res.content as ProcessShort[]) : (list = [])
       } else {
-        list = (await getCodelistUsage(listName as ListName, code)).processes;
+        list = (await getCodelistUsage(listName as ListName, code)).processes
       }
-      setProcessList(sortProcess(list).filter((p) => !filter || p.status === filter));
+      setProcessList(sortProcess(list).filter((p) => !filter || p.status === filter))
     } catch (err: any) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const getProcessById = async (id: string) => {
     try {
-      setIsLoadingProcess(true);
-      setCurrentProcess(await getProcess(id));
+      setIsLoadingProcess(true)
+      setCurrentProcess(await getProcess(id))
     } catch (err: any) {
-      console.log(err);
+      console.log(err)
     }
-    setIsLoadingProcess(false);
-  };
+    setIsLoadingProcess(false)
+  }
 
   const handleCreateProcess = async (process: ProcessFormValues) => {
-    if (!process) return;
+    if (!process) return
     try {
-      const newProcess = await createProcess(process);
-      setProcessList(sortProcess([...processList, newProcess]));
-      setErrorProcessModal("");
-      setShowCreateProcessModal(false);
-      setCurrentProcess(newProcess);
+      const newProcess = await createProcess(process)
+      setProcessList(sortProcess([...processList, newProcess]))
+      setErrorProcessModal('')
+      setShowCreateProcessModal(false)
+      setCurrentProcess(newProcess)
       // todo uh multipurpose url....
-      navigate(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true));
+      navigate(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
       process.disclosures.forEach((d) => {
-        updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id ? newProcess.id : ""] }));
-      });
+        updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id ? newProcess.id : ''] }))
+      })
     } catch (err: any) {
-      if (err.response.data.message.includes("already exists")) {
-        setErrorProcessModal("Behandlingen eksisterer allerede.");
-        return;
+      if (err.response.data.message.includes('already exists')) {
+        setErrorProcessModal('Behandlingen eksisterer allerede.')
+        return
       }
-      setErrorProcessModal(err.response.data.message);
+      setErrorProcessModal(err.response.data.message)
     }
-  };
+  }
 
   const handleEditProcess = async (values: ProcessFormValues) => {
     try {
-      const updatedProcess = await updateProcess(values);
-      const disclosures = await getDisclosuresByProcessId(updatedProcess.id);
-      const removedDisclosures = disclosures.filter((d) => !values.disclosures.map((value) => value.id).includes(d.id));
-      const addedDisclosures = values.disclosures.filter((d) => !disclosures.map((value) => value.id).includes(d.id));
-      removedDisclosures.forEach((d) => updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds.filter((p) => p !== updatedProcess.id)] })));
-      addedDisclosures.forEach((d) => updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, updatedProcess.id] })));
-      setCurrentProcess(updatedProcess);
-      setProcessList(sortProcess([...processList.filter((p) => p.id !== updatedProcess.id), updatedProcess]));
-      handleChangePanel(updatedProcess);
-      return true;
+      const updatedProcess = await updateProcess(values)
+      const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
+      const removedDisclosures = disclosures.filter((d) => !values.disclosures.map((value) => value.id).includes(d.id))
+      const addedDisclosures = values.disclosures.filter((d) => !disclosures.map((value) => value.id).includes(d.id))
+      removedDisclosures.forEach((d) => updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds.filter((p) => p !== updatedProcess.id)] })))
+      addedDisclosures.forEach((d) => updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, updatedProcess.id] })))
+      setCurrentProcess(updatedProcess)
+      setProcessList(sortProcess([...processList.filter((p) => p.id !== updatedProcess.id), updatedProcess]))
+      handleChangePanel(updatedProcess)
+      return true
     } catch (err: any) {
-      console.log(err);
-      return false;
+      console.log(err)
+      return false
     }
-  };
+  }
   const handleDeleteProcess = async (process: Process) => {
     try {
-      await deleteProcess(process.id);
-      setProcessList(sortProcess(processList.filter((p: ProcessShort) => p.id !== process.id)));
-      setErrorProcessModal("");
-      return true;
+      await deleteProcess(process.id)
+      setProcessList(sortProcess(processList.filter((p: ProcessShort) => p.id !== process.id)))
+      setErrorProcessModal('')
+      return true
     } catch (err: any) {
-      if (err.response.data.message.includes("disclosure(s)")) {
-        setErrorProcessModal(intl.deleteProcessDisclosureError);
-        return false;
+      if (err.response.data.message.includes('disclosure(s)')) {
+        setErrorProcessModal(intl.deleteProcessDisclosureError)
+        return false
       }
-      setErrorProcessModal(err.response.data.message);
-      return false;
+      setErrorProcessModal(err.response.data.message)
+      return false
     }
-  };
+  }
 
   const handleCreatePolicy = async (values: PolicyFormValues) => {
-    if (!values || !currentProcess) return false;
+    if (!values || !currentProcess) return false
 
     try {
-      const policy = await createPolicy(values);
-      await getProcessById(policy.process.id);
-      setErrorPolicyModal(null);
-      return true;
+      const policy = await createPolicy(values)
+      await getProcessById(policy.process.id)
+      setErrorPolicyModal(null)
+      return true
     } catch (err: any) {
-      setErrorPolicyModal(err.message);
-      return false;
+      setErrorPolicyModal(err.message)
+      return false
     }
-  };
+  }
   const handleEditPolicy = async (values: PolicyFormValues) => {
     try {
-      const policy = await updatePolicy(values);
+      const policy = await updatePolicy(values)
       if (currentProcess) {
         setCurrentProcess({
           ...currentProcess,
           policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id), policy],
-        });
-        setErrorPolicyModal(null);
+        })
+        setErrorPolicyModal(null)
       }
-      return true;
+      return true
     } catch (err: any) {
-      setErrorPolicyModal(err.message);
-      return false;
+      setErrorPolicyModal(err.message)
+      return false
     }
-  };
+  }
   const handleDeletePolicy = async (policy?: Policy) => {
-    if (!policy) return false;
+    if (!policy) return false
     try {
-      await deletePolicy(policy.id);
+      await deletePolicy(policy.id)
       if (currentProcess) {
-        setCurrentProcess({ ...currentProcess, policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id)] });
-        setErrorPolicyModal(null);
+        setCurrentProcess({ ...currentProcess, policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id)] })
+        setErrorPolicyModal(null)
       }
-      return true;
+      return true
     } catch (err: any) {
-      setErrorPolicyModal(err.message);
-      return false;
+      setErrorPolicyModal(err.message)
+      return false
     }
-  };
+  }
 
   const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
     try {
@@ -255,21 +255,21 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
         documentIds: !formValues.linkDocumentToPolicies ? [] : [formValues.document!.id],
         otherPolicies: [],
-      }));
-      await createPolicies(policies);
-      await getProcessById(formValues.process.id);
+      }))
+      await createPolicies(policies)
+      await getProcessById(formValues.process.id)
     } catch (e: any) {
-      setErrorDocumentModal(e.message);
-      return false;
+      setErrorDocumentModal(e.message)
+      return false
     }
-    return true;
-  };
+    return true
+  }
 
   return (
     <>
-      <Block display={"flex"} flexDirection={"row-reverse"} alignItems={"center"}>
+      <Block display={'flex'} flexDirection={'row-reverse'} alignItems={'center'}>
         <Block>
-          <Button onClick={() => setIsExportModalOpen(true)} kind={"outline"} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
+          <Button onClick={() => setIsExportModalOpen(true)} kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
             {intl.export}
           </Button>
           {isEditable && hasAccess() && (
@@ -281,19 +281,19 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
         <Modal closeable animate autoFocus size={ModalSize.auto} role={ROLE.dialog} isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)}>
           <ModalHeader>{intl.exportHeader}</ModalHeader>
           <ModalBody>
-            <StyledLink style={{ textDecoration: "none" }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
-              <Button kind={"outline"} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
+            <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
+              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
                 {intl.exportInternal}
               </Button>
             </StyledLink>
-            <StyledLink style={{ textDecoration: "none" }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
-              <Button kind={"outline"} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
+            <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
+              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
                 {intl.exportExternal}
               </Button>
             </StyledLink>
           </ModalBody>
         </Modal>
-        <Block width={"25%"}>
+        <Block width={'25%'}>
           <StatefulSelect
             backspaceRemoves={false}
             clearable={false}
@@ -312,7 +312,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
           />
         </Block>
         <Block>
-          <LabelMedium color={theme.colors.primary} marginRight={"1rem"}>
+          <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
             {intl.filter}
           </LabelMedium>
         </Block>
@@ -366,7 +366,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default ProcessList;
+export default ProcessList

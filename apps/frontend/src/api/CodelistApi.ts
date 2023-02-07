@@ -1,7 +1,7 @@
-import axios from "axios"
-import {AllCodelists, Code, CountryCode, ListName} from "../service/Codelist"
-import {CategoryUsage, CodeUsage} from "../constants"
-import {env} from "../util/env"
+import axios from 'axios'
+import { AllCodelists, Code, CountryCode, ListName } from '../service/Codelist'
+import { CategoryUsage, CodeUsage } from '../constants'
+import { env } from '../util/env'
 
 // refresh will force backend to re-read codelists from db, due to caching and multibackend
 export const getAllCodelists = async (refresh?: boolean) => await axios.get<AllCodelists>(`${env.pollyBaseUrl}/codelist?refresh=${refresh ? 'true' : 'false'}`)
@@ -15,7 +15,7 @@ export const getCodelistUsage = async (listname: ListName, code: string) => {
 }
 
 export const replaceCodelistUsage = async (listname: ListName, oldCode: string, newCode: string) => {
-  return (await axios.post<CodeUsage>(`${env.pollyBaseUrl}/codelist/usage/replace`, {list: listname, oldCode, newCode})).data
+  return (await axios.post<CodeUsage>(`${env.pollyBaseUrl}/codelist/usage/replace`, { list: listname, oldCode, newCode })).data
 }
 
 export const createCodelist = async (code: Code) => {

@@ -22,19 +22,19 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
   const [subDataProcessors, setSubDataProcessors] = React.useState(new Map<string, string>())
 
   React.useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (props.initialValues.subDataProcessing.processors.length > 0) {
         const res = await getProcessorsByIds(props.initialValues.subDataProcessing.processors)
         const newProcs = new Map<string, string>()
-        res.forEach(d => newProcs.set(d.id, d.name))
+        res.forEach((d) => newProcs.set(d.id, d.name))
         setSubDataProcessors(newProcs)
       }
     })()
   }, [])
 
   React.useEffect(() => {
-    (async () => {
-      const res = (await getAll(getProcessorsByPageAndPageSize)())
+    ;(async () => {
+      const res = await getAll(getProcessorsByPageAndPageSize)()
       if (res) {
         setProcessorList(res)
       }
@@ -45,23 +45,27 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
     <>
       <Block {...rowBlockProps} marginTop={0}>
         <ModalLabel label={intl.isSubDataProcessorUsed} tooltip={intl.isSubDataProcessorUsedDpProcessHelpText} />
-        <BoolField fieldName='subDataProcessing.dataProcessor'
-          value={formikBag.values.subDataProcessing.dataProcessor} />
+        <BoolField fieldName="subDataProcessing.dataProcessor" value={formikBag.values.subDataProcessing.dataProcessor} />
       </Block>
 
-      {formikBag.values.subDataProcessing.dataProcessor && <>
-        <Block {...rowBlockProps}>
-          <ModalLabel label={intl.processor} />
-          <FieldDpDataProcessors formikBag={formikBag} subDataProcessors={subDataProcessors} options={processorList.map(p => {
-            return {
-              id: p.id,
-              label: p.name
-            }
-          })}
-          />
-        </Block>
-        <Error fieldName='subDataProcessing.procesors' />
-      </>}
+      {formikBag.values.subDataProcessing.dataProcessor && (
+        <>
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.processor} />
+            <FieldDpDataProcessors
+              formikBag={formikBag}
+              subDataProcessors={subDataProcessors}
+              options={processorList.map((p) => {
+                return {
+                  id: p.id,
+                  label: p.name,
+                }
+              })}
+            />
+          </Block>
+          <Error fieldName="subDataProcessing.procesors" />
+        </>
+      )}
     </>
   )
 }

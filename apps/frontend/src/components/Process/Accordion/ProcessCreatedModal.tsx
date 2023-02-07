@@ -1,13 +1,12 @@
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {intl} from '../../../util'
-import {Block} from 'baseui/block'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { intl } from '../../../util'
+import { Block } from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
-import {useNavigate, useLocation} from 'react-router-dom'
-import {ParagraphMedium} from 'baseui/typography'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { ParagraphMedium } from 'baseui/typography'
 
-
-export const ProcessCreatedModal = (props: {openAddPolicy: () => void, openAddDocument: () => void}) => {
+export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddDocument: () => void }) => {
   const history = useNavigate()
   const location = useLocation()
   const closeModal = () => history(location.pathname)
@@ -19,19 +18,33 @@ export const ProcessCreatedModal = (props: {openAddPolicy: () => void, openAddDo
         <ParagraphMedium>{intl.doYouWantToAddPolicies}</ParagraphMedium>
       </ModalBody>
       <ModalFooter>
-        <Block display='flex' justifyContent='flex-end'>
-          <Button size='compact' kind='tertiary' marginRight onClick={closeModal}>{intl.no}</Button>
-          <Button size='compact' kind='primary' marginRight onClick={() => {
-            closeModal()
-            props.openAddPolicy()
-          }}>{intl.addPolicies}</Button>
-          <Button size='compact' kind='primary' onClick={() => {
-            closeModal()
-            props.openAddDocument()
-          }}>{intl.addDefaultDocument}</Button>
+        <Block display="flex" justifyContent="flex-end">
+          <Button size="compact" kind="tertiary" marginRight onClick={closeModal}>
+            {intl.no}
+          </Button>
+          <Button
+            size="compact"
+            kind="primary"
+            marginRight
+            onClick={() => {
+              closeModal()
+              props.openAddPolicy()
+            }}
+          >
+            {intl.addPolicies}
+          </Button>
+          <Button
+            size="compact"
+            kind="primary"
+            onClick={() => {
+              closeModal()
+              props.openAddDocument()
+            }}
+          >
+            {intl.addDefaultDocument}
+          </Button>
         </Block>
       </ModalFooter>
-
     </Modal>
   )
 }

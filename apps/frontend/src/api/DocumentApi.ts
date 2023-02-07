@@ -1,9 +1,9 @@
-import {default as React, Dispatch, SetStateAction, useEffect} from "react"
-import axios from "axios"
-import {Document, DocumentFormValues, DocumentInformationTypes, PageResponse} from "../constants"
-import {env} from "../util/env"
-import {getSettings} from "./SettingsApi"
-import {useDebouncedState} from "../util"
+import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
+import axios from 'axios'
+import { Document, DocumentFormValues, DocumentInformationTypes, PageResponse } from '../constants'
+import { env } from '../util/env'
+import { getSettings } from './SettingsApi'
+import { useDebouncedState } from '../util'
 
 export const getDocument = async (documentId: string) => {
   return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
@@ -44,19 +44,22 @@ const mapFormValuesToDocument = (document: DocumentFormValues) => ({
   id: document.id ? document.id : undefined,
   name: document.name,
   description: document.description,
-  informationTypes: document.informationTypes.map(it => ({
-    informationTypeId: it.informationTypeId,
-    subjectCategories: it.subjectCategories.map(sc => sc.code)
-  } as DocumentInformationTypes))
+  informationTypes: document.informationTypes.map(
+    (it) =>
+      ({
+        informationTypeId: it.informationTypeId,
+        subjectCategories: it.subjectCategories.map((sc) => sc.code),
+      } as DocumentInformationTypes),
+  ),
 })
 
 export const useDocumentSearch = () => {
-  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 200);
-  const [documentSearchResult, setDocumentSearchResult] = React.useState<Document[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 200)
+  const [documentSearchResult, setDocumentSearchResult] = React.useState<Document[]>([])
+  const [loading, setLoading] = React.useState<boolean>(false)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (documentSearch && documentSearch.length > 2) {
         setLoading(true)
         setDocumentSearchResult((await searchDocuments(documentSearch)).content)

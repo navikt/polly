@@ -1,32 +1,32 @@
 import * as React from 'react'
-import {useEffect} from 'react'
-import {Panel, StatelessAccordion} from 'baseui/accordion'
-import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {Spinner} from 'baseui/spinner'
-import {Block} from 'baseui/block'
-import {LabelMedium} from 'baseui/typography'
-import {intl, theme} from '../../../util'
-import {user} from '../../../service/User'
-import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../../constants'
+import { useEffect } from 'react'
+import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { Spinner } from 'baseui/spinner'
+import { Block } from 'baseui/block'
+import { LabelMedium } from 'baseui/typography'
+import { intl, theme } from '../../../util'
+import { user } from '../../../service/User'
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import {convertProcessToFormValues, getDisclosuresByProcessId, getResourceById} from '../../../api'
-import {PathParams} from '../../../pages/ProcessPage'
-import {AddDocumentModal} from './AddDocumentModal'
+import { convertProcessToFormValues, getDisclosuresByProcessId, getResourceById } from '../../../api'
+import { PathParams } from '../../../pages/ProcessPage'
+import { AddDocumentModal } from './AddDocumentModal'
 import Button from '../../common/Button'
-import AccordionTitle, {InformationTypeRef} from './AccordionTitle'
+import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import ProcessData from './ProcessData'
-import {lastModifiedDate} from '../../../util/date-formatter'
-import {faExclamationCircle, faGavel} from '@fortawesome/free-solid-svg-icons'
-import {canViewAlerts} from '../../../pages/AlertEventPage'
-import {DeleteProcessModal} from './DeleteProcessModal'
-import {ProcessCreatedModal} from './ProcessCreatedModal'
-import {useNavigate, useParams} from 'react-router-dom'
-import {AddBatchInformationTypesModal} from './AddBatchInformationTypesModal'
-import {Modal, ModalBody, SIZE} from 'baseui/modal'
-import {RequestRevisionPage} from '../../../pages/admin/RequestRevisionPage'
+import { lastModifiedDate } from '../../../util/date-formatter'
+import { faExclamationCircle, faGavel } from '@fortawesome/free-solid-svg-icons'
+import { canViewAlerts } from '../../../pages/AlertEventPage'
+import { DeleteProcessModal } from './DeleteProcessModal'
+import { ProcessCreatedModal } from './ProcessCreatedModal'
+import { useNavigate, useParams } from 'react-router-dom'
+import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
+import { Modal, ModalBody, SIZE } from 'baseui/modal'
+import { RequestRevisionPage } from '../../../pages/admin/RequestRevisionPage'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -56,7 +56,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
     submitEditPolicy,
     errorProcessModal,
     errorPolicyModal,
-    submitDeletePolicy
+    submitDeletePolicy,
   } = props
 
   const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
@@ -80,7 +80,11 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowCreatePolicyModal(true)}
-      startEnhancer={<Block display='flex' justifyContent='center' marginRight={theme.sizing.scale100}><Plus size={22} /></Block>}
+      startEnhancer={
+        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+          <Plus size={22} />
+        </Block>
+      }
     >
       {intl.informationType}
     </Button>
@@ -92,27 +96,31 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowAddDocumentModal(true)}
-      startEnhancer={<Block display='flex' justifyContent='center' marginRight={theme.sizing.scale100}><Plus size={22} /></Block>}
+      startEnhancer={
+        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+          <Plus size={22} />
+        </Block>
+      }
     >
       {intl.document}
     </Button>
   )
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (params.processId) {
         setDisclosures(await getDisclosuresByProcessId(params.processId))
       }
     })()
-    params.processId && !isLoading && setTimeout(() => {
-      purposeRef.current && window.scrollTo({ top: purposeRef.current.offsetTop - 40 })
-    }, 200)
-
+    params.processId &&
+      !isLoading &&
+      setTimeout(() => {
+        purposeRef.current && window.scrollTo({ top: purposeRef.current.offsetTop - 40 })
+      }, 200)
   }, [isLoading])
 
-
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (currentProcess) {
         const userIdent = currentProcess.changeStamp.lastModifiedBy.split(' ')[0]
         await getResourceById(userIdent)
@@ -129,21 +137,20 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   return (
     <Block>
-      <StatelessAccordion
-        onChange={({ expanded }) => onChangeProcess(expanded.length ? expanded[0] as string : undefined)}
-        expanded={params.processId ? [params.processId] : []}
-      >
+      <StatelessAccordion onChange={({ expanded }) => onChangeProcess(expanded.length ? (expanded[0] as string) : undefined)} expanded={params.processId ? [params.processId] : []}>
         {props.processList &&
-          props
-            .processList
+          props.processList
             .sort((a, b) => a.purposes[0].shortName.localeCompare(b.purposes[0].shortName))
             .map((p: ProcessShort) => {
               const expanded = params.processId === p.id
               return (
                 <Panel
                   title={
-                    <AccordionTitle process={p} expanded={expanded}
-                      hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
+                    <AccordionTitle
+                      process={p}
+                      expanded={expanded}
+                      hasAccess={hasAccess()}
+                      editProcess={() => setShowEditProcessModal(true)}
                       deleteProcess={() => setShowDeleteModal(true)}
                       forwardRef={expanded ? purposeRef : undefined}
                     />
@@ -151,7 +158,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                   key={p.id}
                   overrides={{
                     ToggleIcon: {
-                      component: () => null
+                      component: () => null,
                     },
                     Content: {
                       style: {
@@ -161,43 +168,59 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                         paddingBottom: '4px',
                         paddingLeft: '4px',
                         paddingRight: '4px',
-                      }
-                    }
+                      },
+                    },
                   }}
                 >
-                  {isLoading && <Block padding={theme.sizing.scale400}><Spinner $size={theme.sizing.scale1200} /></Block>}
+                  {isLoading && (
+                    <Block padding={theme.sizing.scale400}>
+                      <Spinner $size={theme.sizing.scale1200} />
+                    </Block>
+                  )}
 
                   {!isLoading && currentProcess && (
-                    <Block $style={{
-                      outline: `4px ${theme.colors.primary200} solid`
-                    }}>
-
+                    <Block
+                      $style={{
+                        outline: `4px ${theme.colors.primary200} solid`,
+                      }}
+                    >
                       <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
                         <ProcessData process={currentProcess} disclosures={disclosures} />
 
                         <Block>
-                          <Block display='flex' justifyContent='flex-end'>
-                            <span><i>{intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>, {lastModifiedDate(currentProcess.changeStamp.lastModifiedDate)}</i></span>
+                          <Block display="flex" justifyContent="flex-end">
+                            <span>
+                              <i>
+                                {intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>,{' '}
+                                {lastModifiedDate(currentProcess.changeStamp.lastModifiedDate)}
+                              </i>
+                            </span>
                           </Block>
                         </Block>
-                        <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='space-between'>
-                          <Block display='flex'>
-                            {canViewAlerts() && <Block marginRight='auto'>
-                              <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                                onClick={() => history(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
-                            </Block>}
-                            {(user.isAdmin() || user.isSuper()) && <Block marginRight='auto'>
-                              <Button type='button' kind='tertiary' size='compact' icon={faGavel}
-                                onClick={() => setShowRevisionModal(true)}>{intl.newRevision}</Button>
-                            </Block>}
+                        <Block display="flex" paddingTop={theme.sizing.scale800} width="100%" justifyContent="space-between">
+                          <Block display="flex">
+                            {canViewAlerts() && (
+                              <Block marginRight="auto">
+                                <Button type="button" kind="tertiary" size="compact" icon={faExclamationCircle} onClick={() => history(`/alert/events/process/${p.id}`)}>
+                                  {intl.alerts}
+                                </Button>
+                              </Block>
+                            )}
+                            {(user.isAdmin() || user.isSuper()) && (
+                              <Block marginRight="auto">
+                                <Button type="button" kind="tertiary" size="compact" icon={faGavel} onClick={() => setShowRevisionModal(true)}>
+                                  {intl.newRevision}
+                                </Button>
+                              </Block>
+                            )}
                           </Block>
-                          {hasAccess() &&
+                          {hasAccess() && (
                             <Block>
                               <div ref={InformationTypeRef} />
                               {renderAddDocumentButton()}
                               {renderCreatePolicyButton()}
                             </Block>
-                          }
+                          )}
                         </Block>
                       </Block>
 
@@ -215,9 +238,13 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               )
             })}
       </StatelessAccordion>
-      {!props.processList.length && <LabelMedium margin='1rem'>{intl.emptyTable} {intl.processes}</LabelMedium>}
+      {!props.processList.length && (
+        <LabelMedium margin="1rem">
+          {intl.emptyTable} {intl.processes}
+        </LabelMedium>
+      )}
 
-      {!!currentProcess &&
+      {!!currentProcess && (
         <>
           <ModalProcess
             key={currentProcess.id}
@@ -225,7 +252,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             onClose={() => setShowEditProcessModal(false)}
             isOpen={showEditProcessModal}
             submit={async (values: ProcessFormValues) => {
-              await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
+              ;(await submitEditProcess(values)) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
             }}
             errorOnCreate={errorProcessModal}
             isEdit={true}
@@ -238,7 +265,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               informationType: undefined,
               legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
               process: currentProcess,
-              purposes: currentProcess.purposes.map(p => p.code),
+              purposes: currentProcess.purposes.map((p) => p.code),
               subjectCategories: [],
               legalBases: [],
               documentIds: [],
@@ -248,7 +275,9 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             onClose={() => setShowCreatePolicyModal(false)}
             isOpen={showCreatePolicyModal}
             submit={(values: PolicyFormValues) => {
-              submitCreatePolicy(values).then(() => setShowCreatePolicyModal(false)).catch(() => setShowCreatePolicyModal(true))
+              submitCreatePolicy(values)
+                .then(() => setShowCreatePolicyModal(false))
+                .catch(() => setShowCreatePolicyModal(true))
             }}
             addBatch={() => {
               setShowCreatePolicyModal(false)
@@ -277,7 +306,8 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             error={props.errorDocumentModal}
           />
 
-          <DeleteProcessModal onClose={() => setShowDeleteModal(false)}
+          <DeleteProcessModal
+            onClose={() => setShowDeleteModal(false)}
             isOpen={showDeleteModal}
             errorProcessModal={errorProcessModal}
             submitDeleteProcess={submitDeleteProcess}
@@ -285,11 +315,13 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             disclosures={disclosures}
           />
 
-          <ProcessCreatedModal openAddPolicy={() => setShowCreatePolicyModal(true)}
+          <ProcessCreatedModal
+            openAddPolicy={() => setShowCreatePolicyModal(true)}
             openAddDocument={() => {
               setAddDefaultDocument(true)
               setShowAddDocumentModal(true)
-            }} />
+            }}
+          />
 
           <Modal
             isOpen={showRevisionModal}
@@ -298,17 +330,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             onClose={closeRevision}
           >
             <ModalBody>
-              <Block width='600px'>
-                <RequestRevisionPage
-                  processId={currentProcess.id}
-                  close={closeRevision}
-                />
+              <Block width="600px">
+                <RequestRevisionPage processId={currentProcess.id} close={closeRevision} />
               </Block>
             </ModalBody>
           </Modal>
-        </>}
+        </>
+      )}
     </Block>
-
   )
 }
 

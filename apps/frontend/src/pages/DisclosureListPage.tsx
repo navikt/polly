@@ -1,28 +1,28 @@
-import React, {useEffect, useState} from 'react'
-import {HeadingLarge, LabelMedium} from 'baseui/typography'
-import {intl, theme} from '../util'
-import {createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess} from '../api'
-import {useQueryParam, useTable} from '../util/hooks'
-import {Block} from 'baseui/block'
-import {Button, Button as BButton, KIND} from 'baseui/button'
-import {ButtonGroup} from 'baseui/button-group'
-import {useNavigate} from 'react-router-dom'
-import {lowerFirst} from 'lodash'
-import {Cell, HeadCell, Row, Table} from '../components/common/Table'
-import {ObjectLink} from '../components/common/RouteLink'
-import {AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process} from '../constants'
-import {ListName} from '../service/Codelist'
+import React, { useEffect, useState } from 'react'
+import { HeadingLarge, LabelMedium } from 'baseui/typography'
+import { intl, theme } from '../util'
+import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
+import { useQueryParam, useTable } from '../util/hooks'
+import { Block } from 'baseui/block'
+import { Button, Button as BButton, KIND } from 'baseui/button'
+import { ButtonGroup } from 'baseui/button-group'
+import { useNavigate } from 'react-router-dom'
+import { lowerFirst } from 'lodash'
+import { Cell, HeadCell, Row, Table } from '../components/common/Table'
+import { ObjectLink } from '../components/common/RouteLink'
+import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
+import { ListName } from '../service/Codelist'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import {user} from '../service/User'
-import {Plus} from 'baseui/icon'
+import { user } from '../service/User'
+import { Plus } from 'baseui/icon'
 import SearchProcess from '../components/common/SearchProcess'
-import {checkForAaregDispatcher} from '../util/helper-functions'
-import {searchAaregAvtale} from '../api/AaregAvtaleApi'
+import { checkForAaregDispatcher } from '../util/helper-functions'
+import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
 
 enum FilterType {
   legalbases = 'legalbases',
-  emptylegalbases = 'emptylegalbases'
+  emptylegalbases = 'emptylegalbases',
 }
 
 export const DisclosureListPage = () => {
@@ -36,9 +36,9 @@ export const DisclosureListPage = () => {
       name: (a, b) => a.name.localeCompare(b.name),
       legalBases: (a, b) => a.legalBases - b.legalBases,
       recipient: (a, b) => a.recipient.shortName.localeCompare(b.recipient.shortName),
-      processes: (a, b) => a.processes.length - b.processes.length
+      processes: (a, b) => a.processes.length - b.processes.length,
     },
-    initialSortColumn: 'name'
+    initialSortColumn: 'name',
   })
   const [aaregAvtaler, setAaregAvtaler] = useState<AaregAvtale[]>([])
   const filter = useQueryParam<FilterType>('filter')
@@ -57,22 +57,24 @@ export const DisclosureListPage = () => {
     end: undefined,
     processes: [],
     abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
-    processIds: []
+    processIds: [],
   }
 
   useEffect(() => {
-    (async () => {
-      const all = selectedProcess ? (await getAll(getDisclosureSummaries)()).filter(d => d.processes.find(p => p.id === selectedProcess.id)) : await getAll(getDisclosureSummaries)()
-      if (filter === FilterType.emptylegalbases) setDisclosures(all.filter(d => !d.legalBases))
-      else if (filter === FilterType.legalbases) setDisclosures(all.filter(d => !!d.legalBases))
+    ;(async () => {
+      const all = selectedProcess
+        ? (await getAll(getDisclosureSummaries)()).filter((d) => d.processes.find((p) => p.id === selectedProcess.id))
+        : await getAll(getDisclosureSummaries)()
+      if (filter === FilterType.emptylegalbases) setDisclosures(all.filter((d) => !d.legalBases))
+      else if (filter === FilterType.legalbases) setDisclosures(all.filter((d) => !!d.legalBases))
       else setDisclosures(all)
     })()
   }, [filter, newDisclosure, selectedProcess])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (processFilter && processFilter.length >= 3) {
-        const process = (await getProcess(processFilter))
+        const process = await getProcess(processFilter)
         if (process) {
           setSelectedProcess(process)
         }
@@ -83,7 +85,7 @@ export const DisclosureListPage = () => {
   }, [processFilter])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (selectedProcess && checkForAaregDispatcher(selectedProcess)) {
         const res = await searchAaregAvtale('avt')
         setAaregAvtaler(res.content)
@@ -102,7 +104,7 @@ export const DisclosureListPage = () => {
   }
 
   const handleFilterChange = (url: string) => {
-    if(selectedProcess) {
+    if (selectedProcess) {
       return url + '&process=' + processFilter
     } else {
       return url
@@ -111,23 +113,40 @@ export const DisclosureListPage = () => {
 
   return (
     <>
-      <Block display='flex' justifyContent='space-between' alignItems='center'>
+      <Block display="flex" justifyContent="space-between" alignItems="center">
         <HeadingLarge>{intl.disclosures}</HeadingLarge>
         <Block>
-          <LabelMedium marginBottom={theme.sizing.scale600}>{intl.filter} {lowerFirst(intl.legalBasisShort)}</LabelMedium>
-          <ButtonGroup
-            selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2}
-            mode='radio' shape='pill'
-          >
-            <BButton onClick={() => navigate(handleFilterChange('/disclosure?'), {
-              replace: true
-            })}>{intl.all}</BButton>
-            <BButton onClick={() => navigate(handleFilterChange('/disclosure?filter=legalbases'), {
-              replace: true
-            })}>{intl.filled}</BButton>
-            <BButton onClick={() => navigate(handleFilterChange('/disclosure?filter=emptylegalbases'), {
-              replace: true
-            })}>{intl.incomplete}</BButton>
+          <LabelMedium marginBottom={theme.sizing.scale600}>
+            {intl.filter} {lowerFirst(intl.legalBasisShort)}
+          </LabelMedium>
+          <ButtonGroup selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2} mode="radio" shape="pill">
+            <BButton
+              onClick={() =>
+                navigate(handleFilterChange('/disclosure?'), {
+                  replace: true,
+                })
+              }
+            >
+              {intl.all}
+            </BButton>
+            <BButton
+              onClick={() =>
+                navigate(handleFilterChange('/disclosure?filter=legalbases'), {
+                  replace: true,
+                })
+              }
+            >
+              {intl.filled}
+            </BButton>
+            <BButton
+              onClick={() =>
+                navigate(handleFilterChange('/disclosure?filter=emptylegalbases'), {
+                  replace: true,
+                })
+              }
+            >
+              {intl.incomplete}
+            </BButton>
           </ButtonGroup>
         </Block>
       </Block>
@@ -136,28 +155,34 @@ export const DisclosureListPage = () => {
           <SearchProcess selectedProcess={selectedProcess} setSelectedProcess={setSelectedProcess} />
         </Block>
         <Block display="flex" flex="1" justifyContent="flex-end">
-          {user.canWrite() &&
+          {user.canWrite() && (
             <Button
               size="compact"
               kind={KIND.tertiary}
               onClick={() => setShowCreateModal(true)}
-              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+              startEnhancer={() => (
+                <Block display="flex" justifyContent="center">
+                  <Plus size={22} />
+                </Block>
+              )}
             >
               {intl.createNew}
             </Button>
-          }
+          )}
         </Block>
       </Block>
-      <Table emptyText={intl.disclosures}
+      <Table
+        emptyText={intl.disclosures}
         headers={
           <>
-            <HeadCell title={intl.disclosureName} column='name' tableState={[table, sortColumn]} />
-            <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column='recipient' tableState={[table, sortColumn]} />
-            <HeadCell title={intl.relatedProcesses} column='processes' tableState={[table, sortColumn]} />
-            <HeadCell title={intl.legalBasesShort} column='legalBases' tableState={[table, sortColumn]} />
+            <HeadCell title={intl.disclosureName} column="name" tableState={[table, sortColumn]} />
+            <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column="recipient" tableState={[table, sortColumn]} />
+            <HeadCell title={intl.relatedProcesses} column="processes" tableState={[table, sortColumn]} />
+            <HeadCell title={intl.legalBasesShort} column="legalBases" tableState={[table, sortColumn]} />
           </>
-        }>
-        {table.data.map(d => (
+        }
+      >
+        {table.data.map((d) => (
           <Row key={d.id}>
             <Cell>
               <ObjectLink id={d.id} type={ObjectType.DISCLOSURE}>
@@ -170,24 +195,25 @@ export const DisclosureListPage = () => {
               </ObjectLink>
             </Cell>
             <Cell>
-              <Block display='flex' flexDirection='column'>
-                {d.processes.map(p =>
+              <Block display="flex" flexDirection="column">
+                {d.processes.map((p) => (
                   <Block key={p.id} marginRight={theme.sizing.scale400}>
                     <ObjectLink id={p.id} type={ObjectType.PROCESS}>
-                      {p.purposes.map(pu => pu.shortName).join(', ')}: {p.name}
+                      {p.purposes.map((pu) => pu.shortName).join(', ')}: {p.name}
                     </ObjectLink>
                   </Block>
-                )}
+                ))}
               </Block>
             </Cell>
             <Cell>{d.legalBases ? intl.yes : intl.no}</Cell>
           </Row>
         ))}
       </Table>
-      {selectedProcess && checkForAaregDispatcher(selectedProcess) &&
+      {selectedProcess && checkForAaregDispatcher(selectedProcess) && (
         <Block marginTop="12px">
-          <AaregAvtaleTable aaregAvtaler={aaregAvtaler}/>
-        </Block>}
+          <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
+        </Block>
+      )}
       <ModalThirdParty
         title={intl.createThirdPartyModalTitle}
         isOpen={showCreateModal}

@@ -10,9 +10,9 @@ type AAregHjemmelDataTextProps = {
 export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
   const rawData = props.data ? prepareString(props.data).split('\n') : []
 
-  const purposeList = rawData.filter(d => d.match('Formål:')).map(a => a.replace('Formål:', ''))
-  const authoryList = rawData.filter(d => d.match('Hjemmel:')).map(a => a.replace('Hjemmel:', ''))
-  const processorList = rawData.filter(d => d.match('Behandlingsgrunnlag:')).map(a => a.replace('Behandlingsgrunnlag:', ''))
+  const purposeList = rawData.filter((d) => d.match('Formål:')).map((a) => a.replace('Formål:', ''))
+  const authoryList = rawData.filter((d) => d.match('Hjemmel:')).map((a) => a.replace('Hjemmel:', ''))
+  const processorList = rawData.filter((d) => d.match('Behandlingsgrunnlag:')).map((a) => a.replace('Behandlingsgrunnlag:', ''))
 
   return (
     <Block>
@@ -37,7 +37,6 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
             <Cell>
               <Block>{processorList[i]}</Block>
             </Cell>
-
           </Row>
         ))}
       </Table>

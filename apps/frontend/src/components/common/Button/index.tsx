@@ -1,20 +1,19 @@
 import * as React from 'react'
-import {ReactNode} from 'react'
-import {Button as BaseUIButton, KIND, SHAPE, SIZE} from 'baseui/button'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {IconDefinition} from '@fortawesome/fontawesome-svg-core'
-import {theme} from '../../../util'
-import {Override} from 'baseui/overrides'
-import {StyleObject} from 'styletron-react'
-import {Block} from 'baseui/block'
-import CustomizedStatefulTooltip from "../CustomizedStatefulTooltip";
-
+import { ReactNode } from 'react'
+import { Button as BaseUIButton, KIND, SHAPE, SIZE } from 'baseui/button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+import { theme } from '../../../util'
+import { Override } from 'baseui/overrides'
+import { StyleObject } from 'styletron-react'
+import { Block } from 'baseui/block'
+import CustomizedStatefulTooltip from '../CustomizedStatefulTooltip'
 
 interface ButtonProps {
-  kind?: typeof KIND[keyof typeof KIND] | 'outline'
+  kind?: (typeof KIND)[keyof typeof KIND] | 'outline'
   type?: 'submit' | 'reset' | 'button'
-  size?: typeof SIZE[keyof typeof SIZE]
-  shape?: typeof SHAPE[keyof typeof SHAPE]
+  size?: (typeof SIZE)[keyof typeof SIZE]
+  shape?: (typeof SHAPE)[keyof typeof SHAPE]
   icon?: IconDefinition
   iconEnd?: IconDefinition
   inline?: boolean
@@ -33,11 +32,7 @@ interface TooltipProps {
   children: React.ReactElement
 }
 
-const Tooltip = (props: TooltipProps) => (
-  props.tooltip ?
-    <CustomizedStatefulTooltip content={props.tooltip}>{props.children}</CustomizedStatefulTooltip>
-    : props.children
-)
+const Tooltip = (props: TooltipProps) => (props.tooltip ? <CustomizedStatefulTooltip content={props.tooltip}>{props.children}</CustomizedStatefulTooltip> : props.children)
 
 const outlineWidth = '2px'
 const outlineStyle = 'solid'
@@ -52,8 +47,8 @@ const outlineOverride: Override<any> = {
     borderLeftStyle: outlineStyle,
     borderRightStyle: outlineStyle,
     borderTopStyle: outlineStyle,
-    borderBottomStyle: outlineStyle
-  }
+    borderBottomStyle: outlineStyle,
+  },
 }
 
 const Button = (props: ButtonProps) => {
@@ -61,23 +56,30 @@ const Button = (props: ButtonProps) => {
   const overrides: Override<any> = {
     style: {
       ...(props.kind === 'outline' ? outlineOverride.style : {}),
-      ...(props.inline ? {paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100} : {}),
-      ...(props.$style || {})
-    }
+      ...(props.inline ? { paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100 } : {}),
+      ...(props.$style || {}),
+    },
   }
   return (
     <>
-      <Block display='inline' marginLeft={props.marginLeft ? theme.sizing.scale400 : 0}/>
+      <Block display="inline" marginLeft={props.marginLeft ? theme.sizing.scale400 : 0} />
       <Tooltip tooltip={props.tooltip}>
-        <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
-                      startEnhancer={props.startEnhancer} disabled={props.disabled} type={props.type}
+        <BaseUIButton
+          kind={baseuiKind}
+          size={props.size}
+          shape={props.shape}
+          onClick={() => props.onClick?.()}
+          overrides={{ BaseButton: overrides }}
+          startEnhancer={props.startEnhancer}
+          disabled={props.disabled}
+          type={props.type}
         >
-          {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: props.children ? '.5rem' : undefined}}/>}
+          {props.icon && <FontAwesomeIcon icon={props.icon} style={{ marginRight: props.children ? '.5rem' : undefined }} />}
           {props.children}
-          {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} style={{marginLeft: props.children ? '.5rem' : undefined}}/>}
+          {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} style={{ marginLeft: props.children ? '.5rem' : undefined }} />}
         </BaseUIButton>
       </Tooltip>
-      <Block display='inline' marginRight={props.marginRight ? theme.sizing.scale400 : 0}/>
+      <Block display="inline" marginRight={props.marginRight ? theme.sizing.scale400 : 0} />
     </>
   )
 }

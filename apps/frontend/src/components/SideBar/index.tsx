@@ -9,27 +9,28 @@ import { StyledLink } from 'baseui/link'
 import NavItem from './NavItem'
 import { canViewAlerts } from '../../pages/AlertEventPage'
 import { datajegerSlackLink, documentationLink, helpLink } from '../../util/config'
-import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
+import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 
 const sideBarProps: BlockProps = {
   height: '100%',
   width: '240px',
   backgroundColor: theme.colors.primaryA,
-  display: "flex",
-  flexDirection: "column"
+  display: 'flex',
+  flexDirection: 'column',
 }
 
 const items: BlockProps = {
   marginLeft: '1rem',
-  paddingLeft: '1rem'
+  paddingLeft: '1rem',
 }
 
 const Brand = () => (
-
-  <Block display="flex" flexDirection='column' padding="1rem">
+  <Block display="flex" flexDirection="column" padding="1rem">
     <StyledLink style={{ textDecoration: 'none', textAlign: 'center' }} href="/">
-      <img alt='logo' src={BKLogo} />
-      <LabelLarge $style={{ fontSize: '130%' }} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</LabelLarge>
+      <img alt="logo" src={BKLogo} />
+      <LabelLarge $style={{ fontSize: '130%' }} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">
+        Behandlingskatalog
+      </LabelLarge>
     </StyledLink>
   </Block>
 )
@@ -37,7 +38,7 @@ const Brand = () => (
 const SideBar = () => {
   return (
     <Block {...sideBarProps} overrides={{ Block: { props: { role: 'navigation' } } }} height="100%">
-      <Block height="100%" position="fixed" display="flex" style={{flexDirection: 'column'}}>
+      <Block height="100%" position="fixed" display="flex" style={{ flexDirection: 'column' }}>
         <Brand />
         <Block {...items} top={'150px'} flex="1">
           <NavItem to="/process" text={intl.processes} tooltip={intl.processSideMenuHelpText} />
@@ -51,10 +52,10 @@ const SideBar = () => {
           <NavItem to="/dashboard" text={intl.dashboard} tooltip={intl.dashboardSideMenuHelpText} />
           {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
         </Block>
-        <Block maxWidth={"240px"} marginTop="25px">
+        <Block maxWidth={'240px'} marginTop="25px">
           <Block display="flex" justifyContent="center">
             <Block paddingBottom={theme.sizing.scale600} width="40%">
-              <img src={NavLogo} alt='NAV logo' width="100%" />
+              <img src={NavLogo} alt="NAV logo" width="100%" />
             </Block>
           </Block>
 

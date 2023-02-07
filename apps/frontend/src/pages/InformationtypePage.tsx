@@ -1,25 +1,25 @@
 import * as React from 'react'
-import {useEffect} from 'react'
-import {Block} from 'baseui/block'
-import {faPlusCircle} from '@fortawesome/free-solid-svg-icons'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {useNavigate, useParams} from 'react-router-dom'
-import {HeadingMedium} from 'baseui/typography'
+import { useEffect } from 'react'
+import { Block } from 'baseui/block'
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useNavigate, useParams } from 'react-router-dom'
+import { HeadingMedium } from 'baseui/typography'
 
-import {InformationtypeMetadata} from '../components/InformationType/InformationtypeMetadata/'
-import {intl, theme} from '../util'
-import {CodeUsage, Disclosure, Document, InformationType, Policy} from '../constants'
-import {ListName} from '../service/Codelist'
-import {user} from '../service/User'
-import {getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType,} from '../api'
+import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/'
+import { intl, theme } from '../util'
+import { CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
+import { ListName } from '../service/Codelist'
+import { user } from '../service/User'
+import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../api'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
-import {Spinner} from '../components/common/Spinner'
+import { Spinner } from '../components/common/Spinner'
 
-export type PurposeMap = {[purpose: string]: Policy[]}
+export type PurposeMap = { [purpose: string]: Policy[] }
 
 const InformationtypePage = () => {
-  const params = useParams<{id?: string}>()
+  const params = useParams<{ id?: string }>()
   const navigate = useNavigate()
 
   const [error, setError] = React.useState(null)
@@ -31,7 +31,7 @@ const InformationtypePage = () => {
   const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       let response = await getCodelistUsageByListName(ListName.CATEGORY)
       setCategoryUsages(response.codesInUse)
     })()
@@ -40,7 +40,7 @@ const InformationtypePage = () => {
   useEffect(() => setInformationTypeId(params.id), [params.id])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (!informationTypeId) {
         return
       }
@@ -49,7 +49,7 @@ const InformationtypePage = () => {
         setPolicies((await getPoliciesForInformationType(informationTypeId)).content)
         setDisclosures(await getDisclosuresByInformationTypeId(informationTypeId))
         setDocuments((await getDocumentsForInformationType(informationTypeId)).content)
-      } catch (err:any) {
+      } catch (err: any) {
         setError(err.message)
       }
 
@@ -58,35 +58,31 @@ const InformationtypePage = () => {
   }, [informationTypeId])
 
   if (informationTypeId) {
-    return <>
-      {!informationtype && <Spinner size={theme.sizing.scale1200}/>}
-      {!error && informationtype && (
-        <InformationtypeMetadata
-          informationtype={informationtype}
-          policies={policies}
-          disclosures={disclosures}
-          documents={documents}
-        />
-      )}
+    return (
+      <>
+        {!informationtype && <Spinner size={theme.sizing.scale1200} />}
+        {!error && informationtype && <InformationtypeMetadata informationtype={informationtype} policies={policies} disclosures={disclosures} documents={documents} />}
 
-      {error && (<p>{error}</p>)}
-    </>
+        {error && <p>{error}</p>}
+      </>
+    )
   }
 
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <HeadingMedium marginTop='0'>{intl.informationTypes}</HeadingMedium>
+        <HeadingMedium marginTop="0">{intl.informationTypes}</HeadingMedium>
         <Block>
-          {user.canWrite() &&
-          <Button kind="outline" onClick={() => navigate('/informationtype/create')}>
-            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
-          </Button>
-          }
+          {user.canWrite() && (
+            <Button kind="outline" onClick={() => navigate('/informationtype/create')}>
+              <FontAwesomeIcon icon={faPlusCircle} />
+              &nbsp;{intl.createNew}
+            </Button>
+          )}
         </Block>
       </Block>
-      {!categoryUsages && <Spinner size={theme.sizing.scale1200}/>}
-      {categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages}/>}
+      {!categoryUsages && <Spinner size={theme.sizing.scale1200} />}
+      {categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages} />}
     </>
   )
 }

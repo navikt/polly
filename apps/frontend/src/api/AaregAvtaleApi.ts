@@ -1,9 +1,9 @@
-import axios from "axios"
-import {AaregAvtale, PageResponse} from "../constants"
-import {default as React, Dispatch, SetStateAction, useEffect} from "react"
-import {useDebouncedState} from "../util"
-import {Option} from "baseui/select"
-import {env} from "../util/env"
+import axios from 'axios'
+import { AaregAvtale, PageResponse } from '../constants'
+import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
+import { useDebouncedState } from '../util'
+import { Option } from 'baseui/select'
+import { env } from '../util/env'
 
 export const getAaregAvtale = async (avtalenummer: string) => {
   return (await axios.get<AaregAvtale>(`${env.pollyBaseUrl}/aaregavtale/${avtalenummer}`)).data
@@ -13,7 +13,7 @@ export const searchAaregAvtale = async (searchParam: string) => {
   return (await axios.get<PageResponse<AaregAvtale>>(`${env.pollyBaseUrl}/aaregavtale/search/${searchParam}`)).data
 }
 
-export const mapAaregAvtaleToOption = (aaregAvtale: AaregAvtale) => ({id: aaregAvtale.avtalenummer, label: aaregAvtale.avtalenummer + ' - ' + aaregAvtale.virksomhet})
+export const mapAaregAvtaleToOption = (aaregAvtale: AaregAvtale) => ({ id: aaregAvtale.avtalenummer, label: aaregAvtale.avtalenummer + ' - ' + aaregAvtale.virksomhet })
 
 export const useAaregAvtaleSearch = () => {
   const [aaregAvtaleSearch, setAaregAvtaleSearch] = useDebouncedState<string>('', 200)

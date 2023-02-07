@@ -1,5 +1,4 @@
-import {ObjectSchema} from 'yup'
-
+import { ObjectSchema } from 'yup'
 
 declare global {
   namespace jest {

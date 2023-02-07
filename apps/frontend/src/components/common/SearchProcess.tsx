@@ -12,31 +12,27 @@ type SearchProcessProps = {
   setSelectedProcess: Dispatch<SetStateAction<Process | undefined>>
 }
 
-const SearchProcess = (
-  props: SearchProcessProps
-) => {
+const SearchProcess = (props: SearchProcessProps) => {
   const [processList, setProcessList] = React.useState<Process[]>([])
   const [search, setSearch] = useDebouncedState<string>('', 400)
   const [isLoading, setLoading] = React.useState<boolean>(false)
 
   React.useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (search && search.length > 2) {
         setLoading(true)
         let res = (await searchProcess(search)).content
-        const purposes = codelist.getCodes(ListName.PURPOSE).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+        const purposes = codelist.getCodes(ListName.PURPOSE).filter((c) => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
         const processesPromise: Promise<any>[] = []
         for (let i = 0; i < purposes.length; i++) {
           processesPromise.push(getProcessesByPurpose(purposes[i].code))
         }
-        res = [...res, ...(await Promise.all(processesPromise)).map(value => value.content).flatMap(value => value)]
+        res = [...res, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
         res = res
           .map((v: Process) => {
             return { ...v, namePurpose: (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
           })
-          .filter((p1, index, self) => index === self.findIndex((p2) => (
-            p2.id === p1.id
-          )))
+          .filter((p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
         setProcessList(res)
         setLoading(false)
       }
@@ -54,11 +50,16 @@ const SearchProcess = (
         type={TYPE.search}
         maxDropdownHeight="400px"
         placeholder={intl.searchProcess}
-        onInputChange={event => setSearch(event.currentTarget.value)}
+        onInputChange={(event) => setSearch(event.currentTarget.value)}
         labelKey="namePurpose"
         value={
-          props.selectedProcess ?
-            [{ id: props.selectedProcess?.id, namePurpose: (props.selectedProcess?.purposes !== undefined ? props.selectedProcess?.purposes[0].shortName : '') + ': ' + props.selectedProcess?.name }]
+          props.selectedProcess
+            ? [
+                {
+                  id: props.selectedProcess?.id,
+                  namePurpose: (props.selectedProcess?.purposes !== undefined ? props.selectedProcess?.purposes[0].shortName : '') + ': ' + props.selectedProcess?.name,
+                },
+              ]
             : []
         }
         onChange={(params) => {

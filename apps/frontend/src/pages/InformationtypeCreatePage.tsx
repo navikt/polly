@@ -1,15 +1,15 @@
 import * as React from 'react'
 
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
-import {codelist} from '../service/Codelist'
-import {InformationtypeFormValues} from '../constants'
-import {intl, useAwait} from '../util'
-import {user} from '../service/User'
+import { codelist } from '../service/Codelist'
+import { InformationtypeFormValues } from '../constants'
+import { intl, useAwait } from '../util'
+import { user } from '../service/User'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
-import {createInformationType, mapInfoTypeToFormVals} from '../api'
-import {useNavigate} from 'react-router-dom'
-import {HeadingMedium} from 'baseui/typography'
-import {Spinner} from 'baseui/spinner'
+import { createInformationType, mapInfoTypeToFormVals } from '../api'
+import { useNavigate } from 'react-router-dom'
+import { HeadingMedium } from 'baseui/typography'
+import { Spinner } from 'baseui/spinner'
 
 const InformationtypeCreatePage = () => {
   const [isLoading, setLoading] = React.useState(true)
@@ -23,7 +23,7 @@ const InformationtypeCreatePage = () => {
     try {
       const infoType = await createInformationType(values)
       navigate(`/informationtype/${infoType.id}`)
-    } catch (err:any) {
+    } catch (err: any) {
       setErrorSubmit(err.message)
     }
   }
@@ -34,31 +34,27 @@ const InformationtypeCreatePage = () => {
 
   return (
     <React.Fragment>
-      {!hasAccess() ? (<ErrorNotAllowed/>)
-        : (
-          <>
-            {isLoading ? (
-              <Spinner $size={30}/>
-            ) : (
-              <>
-                <HeadingMedium>{intl.informationTypeCreate}</HeadingMedium>
-                {codelist ? (
-                  <>
-                    <InformationtypeForm
-                      formInitialValues={mapInfoTypeToFormVals({})}
-                      submit={handleSubmit}
-                      isEdit={false}
-                    />
-                    {errorSubmit && <p>{errorSubmit}</p>}
-                  </>
-                ) : (
-                  <p>Feil i henting av codelist</p>
-                )}
-              </>
-            )}
-          </>
-        )
-      }
+      {!hasAccess() ? (
+        <ErrorNotAllowed />
+      ) : (
+        <>
+          {isLoading ? (
+            <Spinner $size={30} />
+          ) : (
+            <>
+              <HeadingMedium>{intl.informationTypeCreate}</HeadingMedium>
+              {codelist ? (
+                <>
+                  <InformationtypeForm formInitialValues={mapInfoTypeToFormVals({})} submit={handleSubmit} isEdit={false} />
+                  {errorSubmit && <p>{errorSubmit}</p>}
+                </>
+              ) : (
+                <p>Feil i henting av codelist</p>
+              )}
+            </>
+          )}
+        </>
+      )}
     </React.Fragment>
   )
 }

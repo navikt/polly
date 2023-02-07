@@ -1,11 +1,10 @@
-import axios from "axios"
-import {PageResponse, Processor, ProcessorFormValues} from "../constants"
-import {env} from "../util/env"
-import {mapBool} from "../util/helper-functions";
-import {useDebouncedState} from "../util";
-import {default as React, Dispatch, SetStateAction, useEffect} from "react";
-import {Option} from "baseui/select";
-
+import axios from 'axios'
+import { PageResponse, Processor, ProcessorFormValues } from '../constants'
+import { env } from '../util/env'
+import { mapBool } from '../util/helper-functions'
+import { useDebouncedState } from '../util'
+import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
+import { Option } from 'baseui/select'
 
 export const getProcessor = async (processorId: string) => {
   return (await axios.get<Processor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
@@ -16,7 +15,7 @@ export const getProcessorsByIds = async (ids: string[]) => {
   for (const id of ids) {
     processesPromise.push(getProcessor(id))
   }
-  return processesPromise.length > 0 ? (await Promise.all(processesPromise)) : []
+  return processesPromise.length > 0 ? await Promise.all(processesPromise) : []
 }
 
 export const getProcessorsByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
@@ -38,9 +37,7 @@ export const searchProcessor = async (name: string) => {
 
 export const updateProcessor = async (processor: ProcessorFormValues) => {
   let body = convertFormValuesToProcessor(processor)
-  return (
-    await axios.put<Processor>(`${env.pollyBaseUrl}/processor/${body.id}`, body)
-  ).data
+  return (await axios.put<Processor>(`${env.pollyBaseUrl}/processor/${body.id}`, body)).data
 }
 
 export const deleteProcessor = async (processorId: string) => {
@@ -59,8 +56,8 @@ export const convertProcessorToFormValues = (values?: Partial<Processor>): Proce
     outsideEU,
     transferGroundsOutsideEU,
     transferGroundsOutsideEUOther,
-    countries
-  } = (values || {})
+    countries,
+  } = values || {}
 
   return {
     id: id || '',
@@ -80,7 +77,7 @@ export const convertProcessorToFormValues = (values?: Partial<Processor>): Proce
 export const convertProcessorToOption = (processor: Processor) => {
   return {
     id: processor.id,
-    label: processor.name
+    label: processor.name,
   }
 }
 
@@ -92,7 +89,7 @@ export const convertFormValuesToProcessor = (values: ProcessorFormValues) => {
     contractOwner: values.contractOwner,
     operationalContractManagers: values.operationalContractManagers || [],
     note: values.note,
-    
+
     outsideEU: values.outsideEU,
     transferGroundsOutsideEU: values.transferGroundsOutsideEU,
     transferGroundsOutsideEUOther: values.transferGroundsOutsideEUOther,
@@ -106,7 +103,7 @@ export const useProcessorSearch = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (processorSearch && processorSearch.length > 2) {
         setLoading(true)
         setProcessorSearchResult((await searchProcessor(processorSearch)).content.map(convertProcessorToOption))

@@ -1,25 +1,24 @@
-import React, {useEffect} from 'react'
-import {useNavigate, useParams} from 'react-router-dom'
-import {intl} from '../util'
-import {Block} from 'baseui/block'
-import {deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor} from '../api'
-import {Document, Process} from '../constants'
+import React, { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { intl } from '../util'
+import { Block } from 'baseui/block'
+import { deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor } from '../api'
+import { Document, Process } from '../constants'
 import DocumentMetadata from '../components/document/DocumentMetadata'
-import {user} from '../service/User'
-import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
-import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
+import { user } from '../service/User'
+import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
-import {Notification} from 'baseui/notification'
-import {HeadingMedium, LabelMedium, ParagraphMedium} from 'baseui/typography'
+import { Notification } from 'baseui/notification'
+import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import {Tab} from 'baseui/tabs'
-import {CustomizedTabs} from '../components/common/CustomizedTabs'
+import { Tab } from 'baseui/tabs'
+import { CustomizedTabs } from '../components/common/CustomizedTabs'
 import Button from '../components/common/Button'
-import {AuditButton} from '../components/audit/AuditButton'
-import {SIZE as ButtonSize} from 'baseui/button'
-import {tabOverride} from '../components/common/Style'
+import { AuditButton } from '../components/audit/AuditButton'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { tabOverride } from '../components/common/Style'
 import AlphabeticList from '../components/common/AlphabeticList'
-
 
 const renderTextWithLabel = (label: string, text: string) => (
   <Block marginTop="scale1000">
@@ -43,7 +42,7 @@ const DocumentPage = () => {
   useEffect(() => setDocumentId(params.id), [params.id])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       setDocuments(await getAll(getDocumentByPageAndPageSize)())
     })()
   }, [])
@@ -55,18 +54,19 @@ const DocumentPage = () => {
           setCurrentDocument(undefined)
           setDeleteModalVisibility(false)
           navigate('/document')
-        }).catch((e) => {
-        setErrorMessage(e.message)
-      })
+        })
+        .catch((e) => {
+          setErrorMessage(e.message)
+        })
     }
   }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       setErrorMessage('')
       if (documentId) {
         const res = await getDocument(documentId)
-        setDocumentUsages((await getProcessesFor({documentId})).content)
+        setDocumentUsages((await getProcessesFor({ documentId })).content)
         setCurrentDocument(res)
         if (params.id !== documentId) navigate(`/document/${documentId}`)
       } else {
@@ -85,95 +85,68 @@ const DocumentPage = () => {
         <Block display="flex" flexDirection="row-reverse" marginTop="10px">
           {user.canWrite() && (
             <Block>
-              {currentDocument && <AuditButton id={currentDocument.id}/>}
+              {currentDocument && <AuditButton id={currentDocument.id} />}
 
               {currentDocument && (
-                <Button
-                  tooltip={intl.delete}
-                  icon={faTrash}
-                  kind="outline"
-                  size={ButtonSize.compact}
-                  onClick={() => setDeleteModalVisibility(true)}
-                  marginLeft
-                >
+                <Button tooltip={intl.delete} icon={faTrash} kind="outline" size={ButtonSize.compact} onClick={() => setDeleteModalVisibility(true)} marginLeft>
                   {intl.delete}
                 </Button>
               )}
 
               {currentDocument && (
-                <Button
-                  tooltip={intl.edit}
-                  icon={faEdit}
-                  kind="outline"
-                  size={ButtonSize.compact}
-                  onClick={() => navigate(`/document/${currentDocument.id}/edit`)}
-                  marginLeft
-                >
+                <Button tooltip={intl.edit} icon={faEdit} kind="outline" size={ButtonSize.compact} onClick={() => navigate(`/document/${currentDocument.id}/edit`)} marginLeft>
                   {intl.edit}
                 </Button>
               )}
 
-              <Button
-                kind='outline'
-                size={ButtonSize.compact}
-                icon={faPlusCircle}
-                tooltip={intl.createNew}
-                onClick={() => navigate('/document/create')}
-                marginLeft
-              >
+              <Button kind="outline" size={ButtonSize.compact} icon={faPlusCircle} tooltip={intl.createNew} onClick={() => navigate('/document/create')} marginLeft>
                 {intl.createNew}
               </Button>
             </Block>
           )}
         </Block>
-        {!currentDocument && <AlphabeticList items={documents.map(d => ({id: d.id, label: d.name}))} baseUrl={'/document/'}/>}
-        {
-          currentDocument && (
-            <Block overrides={{
+        {!currentDocument && <AlphabeticList items={documents.map((d) => ({ id: d.id, label: d.name }))} baseUrl={'/document/'} />}
+        {currentDocument && (
+          <Block
+            overrides={{
               Block: {
                 style: {
                   padding: '5px',
                   marginTop: '5px',
-                }
-              }
-            }}>
-              {renderTextWithLabel(intl.name, currentDocument.name)}
-              {renderTextWithLabel(intl.description, currentDocument.description)}
-            </Block>
-          )
-        }
+                },
+              },
+            }}
+          >
+            {renderTextWithLabel(intl.name, currentDocument.name)}
+            {renderTextWithLabel(intl.description, currentDocument.description)}
+          </Block>
+        )}
 
-        {
-          currentDocument && (
-            <CustomizedTabs
-              onChange={({activeKey}) => {
-                setActiveKey(activeKey)
-              }}
-              activeKey={activeKey}
-            >
-              <Tab key={'containsInformationType'} title={intl.containsInformationType} overrides={tabOverride}>
-                <Block>
-                  <DocumentMetadata document={currentDocument}/>
-                </Block>
-              </Tab>
-              <>
-              {(documentUsages && documentUsages.length > 0) &&
-                  <Tab key={'containsProcesses'} title={intl.containsProcesses} overrides={tabOverride}>
-                    <Block>
-                      <DocumentProcessesTable documentUsages={documentUsages}/>
-                    </Block>
-                  </Tab>
-              }
-              </>
-            </CustomizedTabs>
-          )
-        }
+        {currentDocument && (
+          <CustomizedTabs
+            onChange={({ activeKey }) => {
+              setActiveKey(activeKey)
+            }}
+            activeKey={activeKey}
+          >
+            <Tab key={'containsInformationType'} title={intl.containsInformationType} overrides={tabOverride}>
+              <Block>
+                <DocumentMetadata document={currentDocument} />
+              </Block>
+            </Tab>
+            <>
+              {documentUsages && documentUsages.length > 0 && (
+                <Tab key={'containsProcesses'} title={intl.containsProcesses} overrides={tabOverride}>
+                  <Block>
+                    <DocumentProcessesTable documentUsages={documentUsages} />
+                  </Block>
+                </Tab>
+              )}
+            </>
+          </CustomizedTabs>
+        )}
 
-        {errorMessage &&
-          <Notification kind="negative">
-            {errorMessage}
-          </Notification>
-        }
+        {errorMessage && <Notification kind="negative">{errorMessage}</Notification>}
       </>
 
       <DeleteDocumentModal

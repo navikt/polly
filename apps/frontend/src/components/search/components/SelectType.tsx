@@ -1,32 +1,24 @@
-import {SearchType} from "../../../constants";
-import {Block} from "baseui/block";
-import {intl, theme} from "../../../util";
-import {RadioGroup} from "baseui/radio";
-import {SmallRadio} from "./SmallRadio";
-import {default as React} from "react";
+import { SearchType } from '../../../constants'
+import { Block } from 'baseui/block'
+import { intl, theme } from '../../../util'
+import { RadioGroup } from 'baseui/radio'
+import { SmallRadio } from './SmallRadio'
+import { default as React } from 'react'
 
-export const SelectType = (props: {type: SearchType, setType: (type: SearchType) => void}) =>
+export const SelectType = (props: { type: SearchType; setType: (type: SearchType) => void }) => (
   <Block
-    font='ParagraphSmall'
-    position='absolute'
-    marginTop='-4px'
+    font="ParagraphSmall"
+    position="absolute"
+    marginTop="-4px"
     backgroundColor={theme.colors.primary50}
-    width='40vw'
+    width="40vw"
     $style={{
       borderBottomLeftRadius: '8px',
       borderBottomRightRadius: '8px',
-    }}>
-    <Block
-      marginLeft='3px'
-      marginRight='3px'
-      marginBottom='3px'
-    >
-      <RadioGroup
-        onChange={e => props.setType(e.target.value as SearchType)}
-        align='horizontal'
-        value={props.type}
-
-      >
+    }}
+  >
+    <Block marginLeft="3px" marginRight="3px" marginBottom="3px">
+      <RadioGroup onChange={(e) => props.setType(e.target.value as SearchType)} align="horizontal" value={props.type}>
         {SmallRadio('all', intl.all)}
         {SmallRadio('informationType', intl.informationType)}
         {SmallRadio('purpose', intl.purpose)}
@@ -44,3 +36,4 @@ export const SelectType = (props: {type: SearchType, setType: (type: SearchType)
       </RadioGroup>
     </Block>
   </Block>
+)

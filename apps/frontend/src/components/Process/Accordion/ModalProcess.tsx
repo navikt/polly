@@ -1,78 +1,78 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Button, KIND } from "baseui/button";
-import { Error, ModalLabel } from "../../common/ModalSchema";
-import { Disclosure, ProcessFormValues, Processor, ProcessStatus } from "../../../constants";
-import { intl, theme } from "../../../util";
-import { processSchema } from "../../common/schema";
-import { Panel, PanelOverrides, StatelessAccordion } from "baseui/accordion";
-import CustomizedModalBlock from "../../common/CustomizedModalBlock";
-import { DateFieldsProcessModal } from "../DateFieldsProcessModal";
-import FieldName from "../common/FieldName";
-import FieldPurpose from "../common/FieldPurpose";
-import FieldDescription from "../common/FieldDescription";
-import FieldDepartment from "../common/FieldDepartment";
-import FieldSubDepartments from "../../common/FieldSubDepartments";
-import FieldProductTeam from "../../common/form/FieldProductTeam";
-import FieldProduct from "../../common/FieldProduct";
-import BoolField from "../common/BoolField";
-import RetentionItems from "../common/RetentionItems";
-import { ALIGN, Radio, RadioGroup } from "baseui/radio";
-import DpiaItems from "../common/DpiaItems";
-import FieldRiskOwner from "../common/FieldRiskOwner";
-import FieldInput from "../common/FieldInput";
-import FieldCommonExternalProcessResponsible from "../common/FieldCommonExternalProcessResponsible";
-import { RadioBoolButton } from "../../common/Radio";
-import { env } from "../../../util/env";
-import { writeLog } from "../../../api/LogApi";
-import FieldLegalBasis from "../common/FieldLegalBasis";
-import PanelTitle from "../common/PanelTitle";
-import FieldAdditionalDescription from "../common/FieldAdditionalDescription";
-import { Select, Value } from "baseui/select";
-import { getAll, getDisclosuresByRecipient } from "../../../api";
-import { renderTagList } from "../../common/TagList";
-import { codelist, ListName } from "../../../service/Codelist";
-import { disableEnter } from "../../../util/helper-functions";
-import { FlexGridItem } from "baseui/flex-grid";
-import { getProcessorsByIds, getProcessorsByPageAndPageSize } from "../../../api/ProcessorApi";
-import FieldDataProcessors from "../common/FieldDataProcessors";
-import FieldDispatcher from "../../common/FieldDispatcher";
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik'
+import { Block, BlockProps } from 'baseui/block'
+import { Button, KIND } from 'baseui/button'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { Disclosure, ProcessFormValues, Processor, ProcessStatus } from '../../../constants'
+import { intl, theme } from '../../../util'
+import { processSchema } from '../../common/schema'
+import { Panel, PanelOverrides, StatelessAccordion } from 'baseui/accordion'
+import CustomizedModalBlock from '../../common/CustomizedModalBlock'
+import { DateFieldsProcessModal } from '../DateFieldsProcessModal'
+import FieldName from '../common/FieldName'
+import FieldPurpose from '../common/FieldPurpose'
+import FieldDescription from '../common/FieldDescription'
+import FieldDepartment from '../common/FieldDepartment'
+import FieldSubDepartments from '../../common/FieldSubDepartments'
+import FieldProductTeam from '../../common/form/FieldProductTeam'
+import FieldProduct from '../../common/FieldProduct'
+import BoolField from '../common/BoolField'
+import RetentionItems from '../common/RetentionItems'
+import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
+import DpiaItems from '../common/DpiaItems'
+import FieldRiskOwner from '../common/FieldRiskOwner'
+import FieldInput from '../common/FieldInput'
+import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternalProcessResponsible'
+import { RadioBoolButton } from '../../common/Radio'
+import { env } from '../../../util/env'
+import { writeLog } from '../../../api/LogApi'
+import FieldLegalBasis from '../common/FieldLegalBasis'
+import PanelTitle from '../common/PanelTitle'
+import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
+import { Select, Value } from 'baseui/select'
+import { getAll, getDisclosuresByRecipient } from '../../../api'
+import { renderTagList } from '../../common/TagList'
+import { codelist, ListName } from '../../../service/Codelist'
+import { disableEnter } from '../../../util/helper-functions'
+import { FlexGridItem } from 'baseui/flex-grid'
+import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
+import FieldDataProcessors from '../common/FieldDataProcessors'
+import FieldDispatcher from '../../common/FieldDispatcher'
 
 const modalHeaderProps: BlockProps = {
-  display: "flex",
-  justifyContent: "center",
-  marginBottom: "2rem",
-};
+  display: 'flex',
+  justifyContent: 'center',
+  marginBottom: '2rem',
+}
 
 const modalBlockProps: BlockProps = {
-  width: "960px",
-  paddingRight: "2rem",
-  paddingLeft: "2rem",
-};
+  width: '960px',
+  paddingRight: '2rem',
+  paddingLeft: '2rem',
+}
 
 const rowBlockProps: BlockProps = {
-  display: "flex",
-  width: "100%",
-  marginTop: "1rem",
-};
+  display: 'flex',
+  width: '100%',
+  marginTop: '1rem',
+}
 
 type ModalProcessProps = {
-  title: string;
-  isOpen: boolean;
-  isEdit?: boolean;
-  initialValues: ProcessFormValues;
-  errorOnCreate: any | undefined;
-  submit: (process: ProcessFormValues) => void;
-  onClose: () => void;
-};
+  title: string
+  isOpen: boolean
+  isEdit?: boolean
+  initialValues: ProcessFormValues
+  errorOnCreate: any | undefined
+  submit: (process: ProcessFormValues) => void
+  onClose: () => void
+}
 
 const panelOverrides: PanelOverrides = {
   Header: {
     style: {
-      paddingLeft: "0",
+      paddingLeft: '0',
     },
   },
   Content: {
@@ -83,51 +83,51 @@ const panelOverrides: PanelOverrides = {
   ToggleIcon: {
     component: () => null,
   },
-};
+}
 
 const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {
-  const [expanded, setExpanded] = useState<React.Key[]>([]);
-  const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible);
+  const [expanded, setExpanded] = useState<React.Key[]>([])
+  const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
 
-  const [dataProcessors, setDataProcessors] = useState(new Map<string, string>());
-  const [thirdParty, setThirdParty] = useState<Value>([]);
-  const [disclosures, setDisclosures] = useState<Disclosure[]>([]);
-  const [processorList, setProcessorList] = useState<Processor[]>([]);
+  const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
+  const [thirdParty, setThirdParty] = useState<Value>([])
+  const [disclosures, setDisclosures] = useState<Disclosure[]>([])
+  const [processorList, setProcessorList] = useState<Processor[]>([])
 
   const expand = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
-      setExpanded([panelKey]);
+      setExpanded([panelKey])
     }
-  };
+  }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (initialValues.dataProcessing.processors?.length > 0) {
-        const res = await getProcessorsByIds(initialValues.dataProcessing.processors);
-        const newProcs = new Map<string, string>();
-        res.forEach((d) => newProcs.set(d.id, d.name));
-        setDataProcessors(newProcs);
+        const res = await getProcessorsByIds(initialValues.dataProcessing.processors)
+        const newProcs = new Map<string, string>()
+        res.forEach((d) => newProcs.set(d.id, d.name))
+        setDataProcessors(newProcs)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (thirdParty.length > 0 && thirdParty[0].id) {
-        const res = await getDisclosuresByRecipient(thirdParty[0].id.toString());
-        setDisclosures(res);
+        const res = await getDisclosuresByRecipient(thirdParty[0].id.toString())
+        setDisclosures(res)
       }
-    })();
-  }, [thirdParty]);
+    })()
+  }, [thirdParty])
 
   useEffect(() => {
-    (async () => {
-      const res = await getAll(getProcessorsByPageAndPageSize)();
+    ;(async () => {
+      const res = await getAll(getProcessorsByPageAndPageSize)()
       if (res) {
-        setProcessorList(res);
+        setProcessorList(res)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
@@ -135,15 +135,15 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            submit(values);
+            submit(values)
           }}
           validationSchema={processSchema()}
           render={(formikBag: FormikProps<ProcessFormValues>) => {
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
-              console.log(formikBag.errors);
-              writeLog("warn", "submit process", JSON.stringify(formikBag.errors));
+              console.log(formikBag.errors)
+              writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
               if (formikBag.errors.legalBasesOpen) {
-                expand("legalBasis");
+                expand('legalBasis')
               }
             }
             return (
@@ -226,7 +226,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                       <Field
                         name="status"
                         render={({ form }: FieldProps<ProcessFormValues>) => (
-                          <RadioGroup value={formikBag.values.status} align={ALIGN.horizontal} onChange={(e) => form.setFieldValue("status", (e.target as HTMLInputElement).value)}>
+                          <RadioGroup value={formikBag.values.status} align={ALIGN.horizontal} onChange={(e) => form.setFieldValue('status', (e.target as HTMLInputElement).value)}>
                             <Radio value={ProcessStatus.COMPLETED}>{intl.completedProcesses}</Radio>
                             <Radio value={ProcessStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
                             {initialValues.status === ProcessStatus.NEEDS_REVISION && <Radio value={ProcessStatus.NEEDS_REVISION}>{intl.needsRevision}</Radio>}
@@ -240,7 +240,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                     overrides={{
                       Root: {
                         style: {
-                          marginTop: "25px",
+                          marginTop: '25px',
                         },
                       },
                     }}
@@ -249,7 +249,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                   >
                     <Panel
                       key="organizing"
-                      title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={expanded.indexOf("organizing") >= 0} />} />}
+                      title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={expanded.indexOf('organizing') >= 0} />} />}
                       overrides={{ ...panelOverrides }}
                     >
                       <Block display="flex" width="100%" justifyContent="space-between">
@@ -295,23 +295,23 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                       </Block>
                     </Panel>
 
-                    <Panel key="legalBasis" title={<PanelTitle title={intl.legalBasis} expanded={expanded.indexOf("legalBasis") >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel key="legalBasis" title={<PanelTitle title={intl.legalBasis} expanded={expanded.indexOf('legalBasis') >= 0} />} overrides={{ ...panelOverrides }}>
                       <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
                       <Error fieldName="legalBasesOpen" fullWidth={true} />
                     </Panel>
 
-                    <Panel key="automation" title={<PanelTitle title={intl.automation} expanded={expanded.indexOf("automation") >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel key="automation" title={<PanelTitle title={intl.automation} expanded={expanded.indexOf('automation') >= 0} />} overrides={{ ...panelOverrides }}>
                       <Block {...rowBlockProps}>
                         <ModalLabel label={intl.isAutomationNeeded} tooltip={intl.processAutomationHelpText} fullwidth={true} />
-                        <BoolField fieldName="automaticProcessing" value={formikBag.values.automaticProcessing} justifyContent={"flex-end"} />
+                        <BoolField fieldName="automaticProcessing" value={formikBag.values.automaticProcessing} justifyContent={'flex-end'} />
                       </Block>
                       <Block {...rowBlockProps}>
                         <ModalLabel label={intl.isProfilingUsed} tooltip={intl.profilingHelpText} />
-                        <BoolField fieldName="profiling" value={formikBag.values.profiling} justifyContent={"flex-end"} />
+                        <BoolField fieldName="profiling" value={formikBag.values.profiling} justifyContent={'flex-end'} />
                       </Block>
                     </Panel>
 
-                    <Panel key="dataProcessor" title={<PanelTitle title={intl.processor} expanded={expanded.indexOf("dataProcessor") >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel key="dataProcessor" title={<PanelTitle title={intl.processor} expanded={expanded.indexOf('dataProcessor') >= 0} />} overrides={{ ...panelOverrides }}>
                       <Block {...rowBlockProps} marginTop={0}>
                         <ModalLabel label={intl.isProcessorUsed} tooltip={intl.processorHelpText} />
                         <BoolField fieldName="dataProcessing.dataProcessor" value={formikBag.values.dataProcessing.dataProcessor} />
@@ -328,7 +328,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                 return {
                                   id: p.id,
                                   label: p.name,
-                                };
+                                }
                               })}
                             />
                           </Block>
@@ -337,28 +337,28 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                         </>
                       )}
                     </Panel>
-                    <Panel key="retention" title={<PanelTitle title={intl.retention} expanded={expanded.indexOf("retention") >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel key="retention" title={<PanelTitle title={intl.retention} expanded={expanded.indexOf('retention') >= 0} />} overrides={{ ...panelOverrides }}>
                       <RetentionItems formikBag={formikBag} />
                     </Panel>
 
-                    <Panel key="dpia" title={<PanelTitle title={intl.pvkRequired} expanded={expanded.indexOf("dpia") >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel key="dpia" title={<PanelTitle title={intl.pvkRequired} expanded={expanded.indexOf('dpia') >= 0} />} overrides={{ ...panelOverrides }}>
                       <DpiaItems formikBag={formikBag} />
                     </Panel>
-                    <Panel key="disclosure" title={<PanelTitle title={intl.disclosure} expanded={expanded.indexOf("disclosure") >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel key="disclosure" title={<PanelTitle title={intl.disclosure} expanded={expanded.indexOf('disclosure') >= 0} />} overrides={{ ...panelOverrides }}>
                       <CustomizedModalBlock first>
-                        <ModalLabel label={intl.dispatcher}/>
+                        <ModalLabel label={intl.dispatcher} />
                         <FieldDispatcher formikBag={formikBag} />
                       </CustomizedModalBlock>
 
-                      <Block width="100%" marginBottom={"5px"} display="flex">
+                      <Block width="100%" marginBottom={'5px'} display="flex">
                         <ModalLabel label={intl.recipient} />
                         <Select
                           value={thirdParty}
-                          options={codelist.getParsedOptions(ListName.THIRD_PARTY).filter((thirdParty) => thirdParty.id != "NAV")}
+                          options={codelist.getParsedOptions(ListName.THIRD_PARTY).filter((thirdParty) => thirdParty.id != 'NAV')}
                           onChange={({ value }) => {
-                            setThirdParty(value);
+                            setThirdParty(value)
                           }}
-                          overrides={{ Placeholder: { style: { color: "black" } } }}
+                          overrides={{ Placeholder: { style: { color: 'black' } } }}
                         />
                       </Block>
 
@@ -375,16 +375,16 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     noResultsMsg={intl.notFoundDisclosure}
                                     options={disclosures.filter((d) => !formikBag.values.disclosures.map((v) => v.id).includes(d.id))}
                                     onChange={(params) => {
-                                      arrayHelpers.form.setFieldValue("disclosures", [...formikBag.values.disclosures, ...params.value.map((v) => v)]);
+                                      arrayHelpers.form.setFieldValue('disclosures', [...formikBag.values.disclosures, ...params.value.map((v) => v)])
                                     }}
                                     labelKey="name"
                                     valueKey="id"
-                                    overrides={{ Placeholder: { style: { color: "black" } } }}
+                                    overrides={{ Placeholder: { style: { color: 'black' } } }}
                                   />
                                   <Block>
                                     {renderTagList(
-                                      formikBag.values.disclosures.map((d) => d.recipient.shortName + ":" + d.name),
-                                      arrayHelpers
+                                      formikBag.values.disclosures.map((d) => d.recipient.shortName + ':' + d.name),
+                                      arrayHelpers,
                                     )}
                                   </Block>
                                 </Block>
@@ -411,12 +411,12 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                   </Block>
                 </ModalFooter>
               </Form>
-            );
+            )
           }}
         />
       </Block>
     </Modal>
-  );
-};
+  )
+}
 
-export default ModalProcess;
+export default ModalProcess

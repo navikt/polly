@@ -1,8 +1,8 @@
 import '../config/schemaValidator'
-import {policySchema} from '../../components/common/schema'
-import {LegalBasesUse, Policy, PolicyFormValues, Process} from '../../constants'
-import {addCode} from '../config/codelist'
-import {ListName, SensitivityLevel} from '../../service/Codelist'
+import { policySchema } from '../../components/common/schema'
+import { LegalBasesUse, Policy, PolicyFormValues, Process } from '../../constants'
+import { addCode } from '../config/codelist'
+import { ListName, SensitivityLevel } from '../../service/Codelist'
 
 const senCode = addCode(ListName.SENSITIVITY, SensitivityLevel.ART6)
 const senCode9 = addCode(ListName.SENSITIVITY, SensitivityLevel.ART9)
@@ -22,32 +22,32 @@ const otherPolicy: Policy = {
   informationType: {
     id: 'it_id2',
     name: 'name',
-    sensitivity: senCode
+    sensitivity: senCode,
   },
   documentIds: [],
   legalBases: [],
   purposes: [purposeCode],
-  legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS
+  legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
 }
 
 const createPolicy: () => PolicyFormValues = () => ({
   informationType: {
     id: 'it_id',
     name: 'name',
-    sensitivity: senCode
+    sensitivity: senCode,
   },
   subjectCategories: [subCode.code],
   legalBasesUse: LegalBasesUse.DEDICATED_LEGAL_BASES,
   legalBasesOpen: false,
-  legalBases: [{gdpr: gdprCode.code}],
+  legalBases: [{ gdpr: gdprCode.code }],
   process: {
     id: 'proc_id',
     name: 'name',
-    legalBases: [{gdpr: gdprCode}]
+    legalBases: [{ gdpr: gdprCode }],
   },
   purposes: ['PURPOSE2'],
-  otherPolicies: [{...otherPolicy}],
-  documentIds: []
+  otherPolicies: [{ ...otherPolicy }],
+  documentIds: [],
 })
 
 test('Policy ok', () => {
@@ -57,7 +57,7 @@ test('Policy ok', () => {
 test('Policy ok UNRESOLVED', () => {
   const policy = createPolicy()
   policy.legalBases = []
-  policy.process = {...policy.process, legalBases: []}
+  policy.process = { ...policy.process, legalBases: [] }
   policy.legalBasesUse = LegalBasesUse.UNRESOLVED
   expect(policy).toBeSchema(schema)
 })
@@ -65,7 +65,7 @@ test('Policy ok UNRESOLVED', () => {
 test('Policy ok EXCESS_INFO', () => {
   const policy = createPolicy()
   policy.legalBases = []
-  policy.process = {...policy.process, legalBases: []}
+  policy.process = { ...policy.process, legalBases: [] }
   policy.legalBasesUse = LegalBasesUse.EXCESS_INFO
   expect(policy).toBeSchema(schema)
 })
@@ -78,7 +78,7 @@ test('Policy missingLegalBasisForDedicated', () => {
 
 test('Policy missingArt6LegalBasisForInfoType', () => {
   const policy = createPolicy()
-  policy.process = {...policy.process, legalBases: []}
+  policy.process = { ...policy.process, legalBases: [] }
   policy.legalBases = []
   policy.legalBasesUse = LegalBasesUse.INHERITED_FROM_PROCESS
   expect(policy).toBeSchemaErrorAt(schema, 'informationType', 'krever et behandlingsgrunnlag med artikkel 6')
@@ -86,24 +86,24 @@ test('Policy missingArt6LegalBasisForInfoType', () => {
 
 test('Policy missingArt9LegalBasisForSensitiveInfoType', () => {
   const policy = createPolicy()
-  policy.informationType = {...policy.informationType!, sensitivity: senCode9}
+  policy.informationType = { ...policy.informationType!, sensitivity: senCode9 }
   policy.legalBasesUse = LegalBasesUse.INHERITED_FROM_PROCESS
   expect(policy).toBeSchemaErrorAt(schema, 'informationType', 'krever et behandlingsgrunnlag med artikkel 9')
   policy.legalBasesUse = LegalBasesUse.DEDICATED_LEGAL_BASES
   expect(policy).toBeSchemaErrorAt(schema, 'informationType', 'krever et behandlingsgrunnlag med artikkel 9')
 
   // covered
-  policy.legalBases = [{gdpr: gdprCode9.code}]
+  policy.legalBases = [{ gdpr: gdprCode9.code }]
   expect(policy).toBeSchema(schema)
   // covered by process
   policy.legalBases = createPolicy().legalBases
   policy.legalBasesUse = LegalBasesUse.INHERITED_FROM_PROCESS
-  policy.process = {...policy.process, legalBases: [{gdpr: gdprCode9}]}
+  policy.process = { ...policy.process, legalBases: [{ gdpr: gdprCode9 }] }
   expect(policy).toBeSchema(schema)
 })
 
 test('Policy informationType-SubjectCategory combo already exists', () => {
   const policy = createPolicy()
-  policy.informationType = {...otherPolicy.informationType}
-  expect(policy).toBeSchemaErrorAt(schema, 'subjectCategories', 'Behandlingen inneholder allerede personkategorien \'PERSON name\' for opplysningstype \'name\'')
+  policy.informationType = { ...otherPolicy.informationType }
+  expect(policy).toBeSchemaErrorAt(schema, 'subjectCategories', "Behandlingen inneholder allerede personkategorien 'PERSON name' for opplysningstype 'name'")
 })

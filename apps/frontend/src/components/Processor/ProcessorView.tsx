@@ -1,32 +1,32 @@
-import React, {useEffect, useState} from 'react'
-import {useNavigate, useParams} from "react-router-dom";
-import {Process, Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
-import {convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor} from "../../api/ProcessorApi";
-import {getProcessesByProcessor, getResourceById, getResourcesByIds} from "../../api";
-import {Block, BlockProps} from "baseui/block";
-import {intl, theme} from "../../util";
-import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
-import TextWithLabel from "../common/TextWithLabel";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {HeadingMedium, ParagraphSmall} from "baseui/typography";
-import {user} from "../../service/User";
-import {Spinner} from "../common/Spinner";
-import {boolToText} from "../common/Radio";
-import {codelist} from "../../service/Codelist";
-import {marginZero} from "../common/Style";
-import Button from "../common/Button";
-import ProcessorModal from "./ProcessorModal";
-import {DeleteProcessorModal} from "./DeleteProcessorModal";
-import {shortenLinksInText} from "../../util/helper-functions";
-import {lastModifiedDate} from "../../util/date-formatter";
-import RelatedProcessesTable from "./components/RelatedProcessesTable";
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { Process, Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
+import { convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor } from '../../api/ProcessorApi'
+import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api'
+import { Block, BlockProps } from 'baseui/block'
+import { intl, theme } from '../../util'
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
+import TextWithLabel from '../common/TextWithLabel'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
+import { user } from '../../service/User'
+import { Spinner } from '../common/Spinner'
+import { boolToText } from '../common/Radio'
+import { codelist } from '../../service/Codelist'
+import { marginZero } from '../common/Style'
+import Button from '../common/Button'
+import ProcessorModal from './ProcessorModal'
+import { DeleteProcessorModal } from './DeleteProcessorModal'
+import { shortenLinksInText } from '../../util/helper-functions'
+import { lastModifiedDate } from '../../util/date-formatter'
+import RelatedProcessesTable from './components/RelatedProcessesTable'
 
 const blockProps: BlockProps = {
-  font: "ParagraphMedium",
-  whiteSpace:"pre-wrap",
+  font: 'ParagraphMedium',
+  whiteSpace: 'pre-wrap',
   ...marginZero,
-  display: "flex"
+  display: 'flex',
 }
 const ProcessorView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -44,7 +44,7 @@ const ProcessorView = () => {
   const dividerDistance = theme.sizing.scale2400
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (params.id && showDeleteProcessorModal === true) {
         let res = await getProcessesByProcessor(params.id)
         setUsageCount(res.numberOfElements)
@@ -55,14 +55,14 @@ const ProcessorView = () => {
   const handleEditDataProcessor = (processor: ProcessorFormValues) => {
     if (!processor) return
     try {
-      (async () => {
+      ;(async () => {
         const newDataProcessor = await updateProcessor(processor)
         setIsLoading(true)
         setCurrentProcessor(await getProcessor(newDataProcessor.id))
         setIsLoading(false)
       })()
       setShowEditProcessorModal(false)
-    } catch (err:any) {
+    } catch (err: any) {
       setModalErrorMessage(err.response.data.message)
     }
   }
@@ -70,9 +70,9 @@ const ProcessorView = () => {
   const handleDeleteDataProcessor = async (processor: Processor) => {
     try {
       await deleteProcessor(processor.id)
-      navigate("/processor/")
+      navigate('/processor/')
       return true
-    } catch (err:any) {
+    } catch (err: any) {
       setModalErrorMessage(err.response.data.message)
       setShowDeleteProcessorModal(true)
       return false
@@ -80,7 +80,7 @@ const ProcessorView = () => {
   }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (params.id) {
         setIsLoading(true)
         setCurrentProcessor(await getProcessor(params.id))
@@ -91,7 +91,7 @@ const ProcessorView = () => {
   }, [])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (currentProcessor?.contractOwner) {
         setIsLoading(true)
         setContractOwner(await getResourceById(currentProcessor?.contractOwner))
@@ -105,7 +105,6 @@ const ProcessorView = () => {
     })()
   }, [currentProcessor])
 
-
   return (
     <>
       <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
@@ -113,11 +112,9 @@ const ProcessorView = () => {
         <Block marginTop={'auto'}>
           {hasAccess() && (
             <>
-              <Button
-                kind="outline"
-                onClick={() => setShowEditProcessorModal(true)}
-              >
-                <FontAwesomeIcon icon={faEdit}/>&nbsp;{intl.edit}
+              <Button kind="outline" onClick={() => setShowEditProcessorModal(true)}>
+                <FontAwesomeIcon icon={faEdit} />
+                &nbsp;{intl.edit}
               </Button>
               <Button
                 kind="outline"
@@ -126,76 +123,82 @@ const ProcessorView = () => {
                 }}
                 marginLeft={true}
               >
-                <FontAwesomeIcon icon={faTrash}/>&nbsp;{intl.delete}
+                <FontAwesomeIcon icon={faTrash} />
+                &nbsp;{intl.delete}
               </Button>
             </>
           )}
         </Block>
       </Block>
-      {
-        !isLoading ? (currentProcessor &&
+      {!isLoading ? (
+        currentProcessor && (
           <>
             <Block display="flex" marginBottom="1rem">
               <Block width="40%" paddingRight={dividerDistance}>
                 <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.contract} text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : intl.notFilled}/>
+                    <TextWithLabel label={intl.contract} text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : intl.notFilled} />
                   </FlexGridItem>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled}/>
+                    <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled} />
                   </FlexGridItem>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.operationalContractManagers}
-                                   text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map(r => r.fullName).join(", ") : intl.notFilled}/>
+                    <TextWithLabel
+                      label={intl.operationalContractManagers}
+                      text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map((r) => r.fullName).join(', ') : intl.notFilled}
+                    />
                   </FlexGridItem>
                 </FlexGrid>
               </Block>
-              <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
+              <Block width="60%" paddingLeft={dividerDistance} $style={{ borderLeft: `1px solid ${theme.colors.mono600}` }}>
                 <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled}/>
+                    <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled} />
                   </FlexGridItem>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.isDataProcessedOutsideEUEEA} text={""}>
+                    <TextWithLabel label={intl.isDataProcessedOutsideEUEEA} text={''}>
                       <Block {...blockProps}>
                         {currentProcessor?.outsideEU === null && intl.unclarified}
                         {currentProcessor.outsideEU === false && intl.no}
                       </Block>
                       <>
-                        {currentProcessor.outsideEU &&
-                        <Block>
-                          <Block {...blockProps}>
-                            <span>{boolToText(currentProcessor.outsideEU)}</span>
+                        {currentProcessor.outsideEU && (
+                          <Block>
+                            <Block {...blockProps}>
+                              <span>{boolToText(currentProcessor.outsideEU)}</span>
+                            </Block>
                           </Block>
-                        </Block>
-                        }
-                        {
-                          currentProcessor.outsideEU &&
+                        )}
+                        {currentProcessor.outsideEU && (
                           <>
-                            <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={""}>
+                            <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={''}>
                               <Block {...blockProps}>
                                 {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
                                 {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
-                                {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther &&
-                                <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>}
+                                {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther && (
+                                  <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>
+                                )}
                               </Block>
                             </TextWithLabel>
-                            {currentProcessor.countries && !!currentProcessor?.countries.length && <TextWithLabel label={intl.countries} text={""}>
-                              <Block {...blockProps}>
-                                <span>{currentProcessor.countries.map(c => codelist.countryName(c)).join(', ')}</span>
-                              </Block>
-                            </TextWithLabel>}
+                            {currentProcessor.countries && !!currentProcessor?.countries.length && (
+                              <TextWithLabel label={intl.countries} text={''}>
+                                <Block {...blockProps}>
+                                  <span>{currentProcessor.countries.map((c) => codelist.countryName(c)).join(', ')}</span>
+                                </Block>
+                              </TextWithLabel>
+                            )}
                           </>
-
-                        }
+                        )}
                       </>
                     </TextWithLabel>
                   </FlexGridItem>
                 </FlexGrid>
-                <Block display='flex' justifyContent='flex-end'>
-                  {currentProcessor.changeStamp &&
-                  <ParagraphSmall><i>{intl.formatString(intl.lastModified, currentProcessor.changeStamp.lastModifiedBy, lastModifiedDate(currentProcessor.changeStamp.lastModifiedDate))}</i></ParagraphSmall>
-                  }
+                <Block display="flex" justifyContent="flex-end">
+                  {currentProcessor.changeStamp && (
+                    <ParagraphSmall>
+                      <i>{intl.formatString(intl.lastModified, currentProcessor.changeStamp.lastModifiedBy, lastModifiedDate(currentProcessor.changeStamp.lastModifiedDate))}</i>
+                    </ParagraphSmall>
+                  )}
                 </Block>
                 <ProcessorModal
                   title={intl.processor}
@@ -216,11 +219,13 @@ const ProcessorView = () => {
               </Block>
             </Block>
             <Block>
-              <RelatedProcessesTable relatedProcesses={relatedProcesses}/>
+              <RelatedProcessesTable relatedProcesses={relatedProcesses} />
             </Block>
           </>
-        ) : <Spinner size={theme.sizing.scale1200}/>
-      }
+        )
+      ) : (
+        <Spinner size={theme.sizing.scale1200} />
+      )}
     </>
   )
 }

@@ -1,4 +1,4 @@
-import {utils, writeFile} from 'xlsx'
+import { utils, writeFile } from 'xlsx'
 import { intl } from '.'
 import { processStatusText } from '../components/Process/Accordion/ProcessData'
 import { ProcessShortWithEmail } from '../constants'
@@ -9,7 +9,7 @@ export const handleExcelExport = (processes: ProcessShortWithEmail[], fileName: 
   const workSheetData: any[] = []
 
   processes.forEach((p) => {
-    const newProcessObject: any= {}
+    const newProcessObject: any = {}
 
     newProcessObject[`${intl.process}`] = p.purposes[0].shortName + ': ' + p.name
     newProcessObject[`${intl.department}`] = p.affiliation.department?.shortName
@@ -21,7 +21,7 @@ export const handleExcelExport = (processes: ProcessShortWithEmail[], fileName: 
     workSheetData.push(newProcessObject)
   })
 
-  workSheetData.sort((a, b) => a.name > b.name ? 1 : -1)
+  workSheetData.sort((a, b) => (a.name > b.name ? 1 : -1))
 
   utils.book_append_sheet(newWorkBook, utils.json_to_sheet(workSheetData))
   writeFile(newWorkBook, fileName + '.xlsx')

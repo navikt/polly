@@ -1,36 +1,47 @@
 import axios from 'axios'
-import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, ProcessStatusFilter, RecentEdits,} from '../constants'
-import {env} from '../util/env'
-import {convertLegalBasesToFormValues} from './PolicyApi'
+import { PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, ProcessStatusFilter, RecentEdits } from '../constants'
+import { env } from '../util/env'
+import { convertLegalBasesToFormValues } from './PolicyApi'
 import queryString from 'query-string'
-import {mapBool} from "../util/helper-functions";
-import {useDebouncedState} from '../util'
-import {Dispatch, SetStateAction, useEffect, useState} from 'react'
+import { mapBool } from '../util/helper-functions'
+import { useDebouncedState } from '../util'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
-  data.policies.forEach(p => p.process = {...data, policies: []})
+  data.policies.forEach((p) => (p.process = { ...data, policies: [] }))
   return data
 }
 
-export const getProcessByStateAndStatus = async (processField: ProcessField,
-                                                 processState: ProcessState,
-                                                 processStatus: ProcessStatusFilter = ProcessStatusFilter.All) => {
-  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}`)).data.content
+export const getProcessByStateAndStatus = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter = ProcessStatusFilter.All) => {
+  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}`))
+    .data.content
 }
 
-export const getProcessByStateAndStatusForProductArea = async (processField: ProcessField,
-                                                               processState: ProcessState,
-                                                               processStatus: ProcessStatusFilter = ProcessStatusFilter.All,
-                                                               productreaId: string) => {
-  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&productAreaId=${productreaId}`)).data.content
+export const getProcessByStateAndStatusForProductArea = async (
+  processField: ProcessField,
+  processState: ProcessState,
+  processStatus: ProcessStatusFilter = ProcessStatusFilter.All,
+  productreaId: string,
+) => {
+  return (
+    await axios.get<PageResponse<ProcessShort>>(
+      `${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&productAreaId=${productreaId}`,
+    )
+  ).data.content
 }
 
-export const getProcessByStateAndStatusForDepartment = async (processField: ProcessField,
-                                                              processState: ProcessState,
-                                                              processStatus: ProcessStatusFilter = ProcessStatusFilter.All,
-                                                              departmentCode: string) => {
-  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&department=${departmentCode}`)).data.content
+export const getProcessByStateAndStatusForDepartment = async (
+  processField: ProcessField,
+  processState: ProcessState,
+  processStatus: ProcessStatusFilter = ProcessStatusFilter.All,
+  departmentCode: string,
+) => {
+  return (
+    await axios.get<PageResponse<ProcessShort>>(
+      `${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&department=${departmentCode}`,
+    )
+  ).data.content
 }
 
 export const searchProcess = async (text: string) => {
@@ -45,8 +56,8 @@ export const getProcessesByProcessor = async (processorId: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?pageNumber=0&pageSize=200&processorId=${processorId}`)).data
 }
 
-export const getProcessesFor = async (params: {productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string}) => {
-  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, {skipNull: true})}&pageSize=250`)).data
+export const getProcessesFor = async (params: { productTeam?: string; productArea?: string; documentId?: string; gdprArticle?: string; nationalLaw?: string }) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, { skipNull: true })}&pageSize=250`)).data
 }
 
 export const getProcessPurposeCount = async (query: 'purpose' | 'department' | 'subDepartment' | 'team') => {
@@ -65,15 +76,15 @@ export const deleteProcess = async (processId: string) => {
 export const updateProcess = async (process: ProcessFormValues) => {
   let body = convertFormValuesToProcess(process)
   const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
-  data.policies.forEach(p => p.process = {...data, policies: []})
+  data.policies.forEach((p) => (p.process = { ...data, policies: [] }))
   return data
 }
 
-export const getRecentEditedProcesses = async ()=>{
+export const getRecentEditedProcesses = async () => {
   return (await axios.get<PageResponse<RecentEdits>>(`${env.pollyBaseUrl}/process/myedits`)).data.content
 }
 
-export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = process => {
+export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = (process) => {
   const {
     id,
     purposes,
@@ -91,8 +102,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     dataProcessing,
     retention,
     dpia,
-    status
-  } = (process || {})
+    status,
+  } = process || {}
 
   return {
     legalBasesOpen: false,
@@ -100,13 +111,13 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     name: name || '',
     description: description || '',
     additionalDescription: additionalDescription || '',
-    purposes: purposes?.map(p => p.code) || [],
+    purposes: purposes?.map((p) => p.code) || [],
     affiliation: {
       department: affiliation?.department?.code || '',
-      subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
+      subDepartments: affiliation?.subDepartments.map((sd) => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
-      products: affiliation?.products.map(p => p.code) || [],
-      disclosureDispatchers: affiliation?.disclosureDispatchers.map(d => d.code) || [],
+      products: affiliation?.products.map((p) => p.code) || [],
+      disclosureDispatchers: affiliation?.disclosureDispatchers.map((d) => d.code) || [],
     },
     commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
     legalBases: convertLegalBasesToFormValues(legalBases),
@@ -117,13 +128,13 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     profiling: process ? mapBool(profiling) : false,
     dataProcessing: {
       dataProcessor: mapBool(dataProcessing?.dataProcessor),
-      processors: dataProcessing?.processors || []
+      processors: dataProcessing?.processors || [],
     },
     retention: {
       retentionPlan: mapBool(retention?.retentionPlan),
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
-      retentionDescription: retention?.retentionDescription || ''
+      retentionDescription: retention?.retentionDescription || '',
     },
     status: status || ProcessStatus.IN_PROGRESS,
     dpia: {
@@ -133,9 +144,9 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       refToDpia: dpia?.refToDpia || '',
       riskOwner: dpia?.riskOwner || '',
       riskOwnerFunction: dpia?.riskOwnerFunction || '',
-      noDpiaReasons: dpia?.noDpiaReasons || []
+      noDpiaReasons: dpia?.noDpiaReasons || [],
     },
-    disclosures: []
+    disclosures: [],
   }
 }
 
@@ -156,29 +167,29 @@ export const convertFormValuesToProcess = (values: ProcessFormValues) => {
     profiling: values.profiling,
     dataProcessing: {
       dataProcessor: values.dataProcessing.dataProcessor,
-      processors: values.dataProcessing.processors || []
+      processors: values.dataProcessing.processors || [],
     },
     retention: values.retention,
     status: values.status,
     dpia: {
-      grounds: values.dpia?.needForDpia ? '' : (values.dpia.noDpiaReasons || []).filter(r => r === "OTHER").length > 0 ? values.dpia?.grounds : '',
+      grounds: values.dpia?.needForDpia ? '' : (values.dpia.noDpiaReasons || []).filter((r) => r === 'OTHER').length > 0 ? values.dpia?.grounds : '',
       needForDpia: values.dpia.needForDpia,
       refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : '',
       processImplemented: values.dpia?.processImplemented,
       riskOwner: values.dpia?.riskOwner,
       riskOwnerFunction: values.dpia?.riskOwnerFunction,
       noDpiaReasons: values.dpia.noDpiaReasons || [],
-    }
+    },
   }
 }
 
 export const useProcessSearch = () => {
-  const [processSearch, setProcessSearch] = useDebouncedState<string>('', 200);
-  const [processSearchResult, setProcessSearchResult] = useState<Process[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [processSearch, setProcessSearch] = useDebouncedState<string>('', 200)
+  const [processSearchResult, setProcessSearchResult] = useState<Process[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (processSearch && processSearch.length > 2) {
         setLoading(true)
         setProcessSearchResult((await searchProcess(processSearch)).content)

@@ -1,4 +1,4 @@
-import {IStrings} from './intl'
+import { IStrings } from './intl'
 
 export const no: IStrings = {
   //aareg avtaler
@@ -42,7 +42,7 @@ export const no: IStrings = {
   legalBasesShort: 'Behandlingsgrunnlag',
   subjectCategories: 'Personkategori',
   summarySubjectCategories: 'Personkategorier oppsummert',
-  processContainsSubjectCategory: 'Behandlingen inneholder allerede personkategorien \'{0}\' for opplysningstype \'{1}\'',
+  processContainsSubjectCategory: "Behandlingen inneholder allerede personkategorien '{0}' for opplysningstype '{1}'",
   nationalLaw: 'Nasjonal lov',
   gdprArticle: 'GDPR artikkel',
   orgMaster: 'Master i NAV',
@@ -273,7 +273,8 @@ export const no: IStrings = {
   externalProcessResponsibleDpProcessHelpText: 'Oppgi navn på den behandlingsansvarlige virksomheten.',
   descriptionDpProcessHelpText: 'Beskriv behandlingen NAV gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger.',
   purposeDpProcessHelpText: 'Beskriv formålet med å bruke personopplysninger i denne behandlingen.',
-  article9DpProcessHelpText: 'Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning.',
+  article9DpProcessHelpText:
+    'Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning.',
   isSubDataProcessorUsedDpProcessHelpText: 'En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler.',
   retentionMonthsDpProcessHelpText: 'Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige.',
 
@@ -325,7 +326,8 @@ export const no: IStrings = {
   groups: 'Grupper',
   description: 'Beskrivelse',
   additionalDescription: 'Ytterligere beskrivelse',
-  additionalDescriptionHelpText: 'Personvernrelevant informasjon som ikke passer inn i andre felt kan beskrives her. Eksempelvis om man i behandlingen får uønskede personopplysninger gjennom et fritekstfelt o.l.',
+  additionalDescriptionHelpText:
+    'Personvernrelevant informasjon som ikke passer inn i andre felt kan beskrives her. Eksempelvis om man i behandlingen får uønskede personopplysninger gjennom et fritekstfelt o.l.',
   usefulInformation: 'Nyttig å vite om opplysningstypen',
   disclosureName: 'Navn på utlevering',
   document: 'Dokument',
@@ -467,7 +469,8 @@ export const no: IStrings = {
     'Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.',
   retentionDescriptionHelpText:
     'Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.',
-  retentionNeedsHelpText: 'Det er hvor lenge NAV har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket.',
+  retentionNeedsHelpText:
+    'Det er hvor lenge NAV har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket.',
   processSideMenuHelpText: 'En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon',
   informationTypeSideMenuHelpText: 'Personopplysninger som f.eks. kjønn, sivilstand, pensjonsopptjening.',
   documentSideMenuHelpText: 'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.',
@@ -511,8 +514,10 @@ export const no: IStrings = {
   socialSecurityArea: 'Trygdeområde',
 
   disclosureNameTooltip: 'Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap.',
-  disclosurePurposeTooltip: 'Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.',
-  disclosureDescriptionTooltip: 'Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.',
+  disclosurePurposeTooltip:
+    'Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.',
+  disclosureDescriptionTooltip:
+    'Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.',
   disclosureDocumentTooltip: 'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.',
 
   shortcutSubtitleProcess: 'Se og endre behandlinger',
@@ -542,8 +547,7 @@ export const no: IStrings = {
   isDataProcessedOutsideEUEEAHelpTextDP: 'Angi om databehandler overfører/behandler personopplysninger i land utenfor EU/EØS.',
   canNotDeleteProcessorParagraph1: 'Kan ikke slette databehandleren {0} da den er',
   canNotDeleteProcessorParagraph2: 'knyttet til {0} behandling(er)',
-  deleteProcessDisclosureError: 'Du kan ikke slette behandlinger med eksisterende utleveringer.'
-
+  deleteProcessDisclosureError: 'Du kan ikke slette behandlinger med eksisterende utleveringer.',
 }
 
 export const en: IStrings = {
@@ -560,13 +564,11 @@ export const en: IStrings = {
   consumer: 'Consumer',
   contractAareg: 'Contract',
   purposeForProcess: 'Purpose for process',
-  authorityAndGroundsForDelivery: 'NAV\'s authority for disclosure',
-  consumerAuthorityForProcess: 'Consumer\'s authority for process',
+  authorityAndGroundsForDelivery: "NAV's authority for disclosure",
+  consumerAuthorityForProcess: "Consumer's authority for process",
   purposeAuthorityLegalBasis: 'Purpose, authority and legal basis',
   available: 'Available',
   unavailable: 'Unavailable',
-
-
 
   informationType: 'Information type',
   informationTypes: 'Information types',
@@ -594,7 +596,7 @@ export const en: IStrings = {
   gdprArticle: 'GDPR Article',
   subjectCategories: 'Subject categories',
   summarySubjectCategories: 'Summary subject categories',
-  processContainsSubjectCategory: 'The process already contains subject category \'{0}\' for information type \'{1}\'',
+  processContainsSubjectCategory: "The process already contains subject category '{0}' for information type '{1}'",
   productTeam: 'Team',
   productTeamFromTK: 'Team (lookup in in Team Catalog)',
   productTeamFromTKHelpText: 'Specify which teams are responsible for managing IT systems.',
@@ -627,7 +629,7 @@ export const en: IStrings = {
   filterPieChartsByStatus: 'Filter diagrams by status',
   processActivity: 'Process activity',
   aboutUs: 'About process catalog',
-  includeConservationPlan: 'Is NAV\'s conservation and disposal decision covered?',
+  includeConservationPlan: "Is NAV's conservation and disposal decision covered?",
   unclarified: 'Unclarified',
   unknown: 'Unknown',
   notFilled: 'Not filled',
@@ -639,7 +641,7 @@ export const en: IStrings = {
   profiling: 'Profiling',
   isProfilingUsed: 'Is profiling used?',
   profilingExtra:
-    'By profiling we mean that personal data is processed automatically in order to analyze or predict something about the preferences, abilities or needs of an individual. Analyzing personal data is done to predict something about an individual, e.g. the person\'s preferences, abilities or needs.',
+    "By profiling we mean that personal data is processed automatically in order to analyze or predict something about the preferences, abilities or needs of an individual. Analyzing personal data is done to predict something about an individual, e.g. the person's preferences, abilities or needs.",
   processor: 'Processor',
   processors: 'Processors',
   dpProcessDataProcessor: 'Processor agreement with data controller',
@@ -672,22 +674,22 @@ export const en: IStrings = {
   retained: 'Retained',
   retention: 'Retention needs',
   processWithIncompleteRetention: 'Process with incompleted retention: ',
-  retentionPlan: 'Is the area covered by the agency\'s disposal and conservation decision?',
-  retentionPlanYes: 'Covered by the NAV\'s disposal and conservation decision',
-  retentionPlanNo: 'Not covered by the NAV\'s disposal and conservation decision',
-  retentionPlanUnclarified: 'Unclarified whether covered by the NAV\'s disposal and conservation decision',
+  retentionPlan: "Is the area covered by the agency's disposal and conservation decision?",
+  retentionPlanYes: "Covered by the NAV's disposal and conservation decision",
+  retentionPlanNo: "Not covered by the NAV's disposal and conservation decision",
+  retentionPlanUnclarified: "Unclarified whether covered by the NAV's disposal and conservation decision",
   retentionMonths: 'Retention needs for NAV',
   retentionStart: 'Retention needs are calculated from the following time or event',
   retentionDescription: 'Retention grounds',
   retentionDescriptionPlaceHolder: '(i.e. link to Websak, Confluence etc.)',
   retentionReference: 'Ref. to relevant documentation',
-  retentionPieChartTitle: 'Includes NAV\'s disposal and conservation decision',
+  retentionPieChartTitle: "Includes NAV's disposal and conservation decision",
   years: 'years',
   months: 'months',
   lastEvents: 'Last events',
   userLastChanges: 'My last changes',
   help: 'Help',
-  helpTooltip: 'On the hub\'s privacy pages you will find information to help you fill it out.',
+  helpTooltip: "On the hub's privacy pages you will find information to help you fill it out.",
   navResponsible: 'Processes which NAV is jointly responsible for processing with an external party',
   exceptionalUsage: 'Exceptional usage',
   overallPurpose: 'Overall purpose',
@@ -696,10 +698,10 @@ export const en: IStrings = {
   containsProcesses: 'Used in information type(s)',
   loggedInStatus: 'You are logged in and can',
   notLoggedInStatus: 'You are not logged in but you can still',
-  couldntLoad: 'Couldn\'t load the page',
-  couldntLoadTerm: 'Couldn\'t load the term',
+  couldntLoad: "Couldn't load the page",
+  couldntLoadTerm: "Couldn't load the term",
   noTerm: 'No term given',
-  couldntLoadTeam: 'Couldn\'t load the team',
+  couldntLoadTeam: "Couldn't load the team",
   informationTypeCreate: 'Create new information type',
   informationTypeExists: 'Information type exists already',
   documentExists: 'Document with the same name already exists',
@@ -757,7 +759,7 @@ export const en: IStrings = {
   legalBasesProcess: 'Use legal bases from process',
   legalBasesUndecided: 'Undecided',
   legalBasesOwn: 'Use explicit legal bases',
-  notAllowedMessage: 'You don\'t have access to this page',
+  notAllowedMessage: "You don't have access to this page",
   confirmDeleteHeader: 'Confirm delete',
   confirmDeletePolicyText: 'Please confirm deleting the policy for',
   deleteProcessText: 'Are you sure you want to delete the process? If the process has been discontinued, it should instead be marked with the end date of the process.',
@@ -766,9 +768,9 @@ export const en: IStrings = {
   confirmDeleteProcessorText: 'Please confirm deleting the processor ',
   confirmDeleteDocumentText: 'Please confirm deleting the document ',
   confirmDeleteDpProcess: 'Please confirm deleting the document data process',
-  cannotDeleteProcess: 'Can\'t delete the process {0} as it contains {1} information type(s)',
+  cannotDeleteProcess: "Can't delete the process {0} as it contains {1} information type(s)",
   confirmDeleteInformationTypeText: 'Please confirm deleting the of information type ',
-  cannotDeleteInformationTypes: 'Can\'t delete the information type {0} as it is',
+  cannotDeleteInformationTypes: "Can't delete the information type {0} as it is",
   informationTypeHasPolicies: ' connected to {0} process(es)',
   informationTypeHasDocuments: ' connected to {0} document(s)',
   startIllustration: 'Process illustration',
@@ -785,7 +787,7 @@ export const en: IStrings = {
   newValue: 'New Value',
   replace: 'Replace',
   replaceAllUse: 'Replace all use',
-  recipientPurpose: 'Recipient\'s purpose',
+  recipientPurpose: "Recipient's purpose",
   legalBasisComplete: 'Close legal basis editor before saving',
   validityOfProcess: 'Validity of process',
   validityOfPolicy: 'Validity of policy',
@@ -797,7 +799,7 @@ export const en: IStrings = {
   addCollectionOfInformationTypes: 'Add a collection of information types',
   emptyTable: 'No',
   emptyMessage: 'Not filled',
-  pageNotFound: 'Oops 404! Couldn\'t find that page',
+  pageNotFound: "Oops 404! Couldn't find that page",
   createDocument: 'Create document',
   searchDocumentPlaceholder: 'Search documents',
   eventType: 'Event type',
@@ -815,7 +817,7 @@ export const en: IStrings = {
   notInProduction: 'Not in production',
   isDpiaRequired: 'Is DPIA required?',
   dpiaNeeded: 'Need for DPIA',
-  dpiaHelpText: 'It is necessary for DPIA assessment if there is probable that the process will entail a high risk of the data\'s rights and freedoms.',
+  dpiaHelpText: "It is necessary for DPIA assessment if there is probable that the process will entail a high risk of the data's rights and freedoms.",
   lastModified: 'Last modified by {0}, {1}',
   completeness: 'Completeness',
   overview: 'Overview',
@@ -834,8 +836,9 @@ export const en: IStrings = {
   externalProcessResponsibleDpProcessHelpText: 'State the name of the party responsible for this process',
   descriptionDpProcessHelpText: 'Describe the processes NAV does on behalf of the process responsible party, i.e. collecting and storing personal information',
   purposeDpProcessHelpText: 'Describe the purpose of using personal information in this process',
-  article9DpProcessHelpText: 'With special categories of personal information means information about health, ethnic origin, politics, religion and philosophical beliefs, trade union membership, genetics and biometrics, sexual relations and orientation.',
-  isSubDataProcessorUsedDpProcessHelpText: 'A sub processor is a party that processes personal data on NAV\'s behalf when NAV itself acts as the processor',
+  article9DpProcessHelpText:
+    'With special categories of personal information means information about health, ethnic origin, politics, religion and philosophical beliefs, trade union membership, genetics and biometrics, sexual relations and orientation.',
+  isSubDataProcessorUsedDpProcessHelpText: "A sub processor is a party that processes personal data on NAV's behalf when NAV itself acts as the processor",
   retentionMonthsDpProcessHelpText: 'Specify the retention time NAV is obliged to comply. The retention time must be specified in the processor agreement',
 
   READ: 'Read',
@@ -887,7 +890,8 @@ export const en: IStrings = {
   groups: 'Groups',
   description: 'Description',
   additionalDescription: 'Additional description',
-  additionalDescriptionHelpText: 'Privacy-relevant information that does not fit into other fields can be described here. For example, if you receive unwanted personal information in the process through a free text field etc.',
+  additionalDescriptionHelpText:
+    'Privacy-relevant information that does not fit into other fields can be described here. For example, if you receive unwanted personal information in the process through a free text field etc.',
   usefulInformation: 'Useful information about information type',
   disclosureName: 'Disclosure name',
   document: 'Document',
@@ -1006,15 +1010,16 @@ export const en: IStrings = {
     'Used to indicate that this process uses all information type. Therefore, it is only used exceptionally for some special processes such as. access to Personal Data Act.',
   processAutomationHelpText: 'Fully automated process means process leads to an individual decision or decision without human involvement',
   profilingHelpText: 'By profiling is meant to derive new characteristics, inclinations or needs of a user after comparison with other users in similar circumstances',
-  processorHelpText: 'A processor is a business that processes personal data on NAV\'s behalf.',
-  processorAgreementHelpText: 'Provide reference (i.e. case number) to the contract\'s storage location.',
+  processorHelpText: "A processor is a business that processes personal data on NAV's behalf.",
+  processorAgreementHelpText: "Provide reference (i.e. case number) to the contract's storage location.",
   processorOutsideEUExtraHelpText: 'Specify whether personal data is processed outside the EU / EEA area by the processor or any sub-processors.',
   legalBasisHelpText: 'Provide the legal basis used to process personal data.',
   retentionHelpText:
     'Specify when retention time starts to run. The calculation of retention period starts from this point. I.e. the retention time for information used in many HR processes start from the end of employment or from start of employment. ',
   retentionDescriptionHelpText:
     'Reasons why we need to keep personal data in stated storage time. I.e. the need may be because we need to be able to defend ourselves against future legal claims. ',
-  retentionNeedsHelpText: 'How long does NAV need access to the data. When that time is reached, the information must either be discarded or made ready for submission to Arkivverket',
+  retentionNeedsHelpText:
+    'How long does NAV need access to the data. When that time is reached, the information must either be discarded or made ready for submission to Arkivverket',
   processSideMenuHelpText: 'An activity that you do on personal data to achieve a purpose. Eg on processing: Case management of retirement pension',
   informationTypeSideMenuHelpText: 'Personal information such as gender, marital status, pension benefits.',
   documentSideMenuHelpText: 'A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.',
@@ -1058,8 +1063,10 @@ export const en: IStrings = {
   socialSecurityAgreement: 'Provide reference to social security agreement',
 
   disclosureNameTooltip: 'A short name that describe what the disclosure is about. Example: Disclosure of sickness and disability information from NAV to an insurance company',
-  disclosurePurposeTooltip: 'Describe the purpose of the disclosure to the recipient. Example: The purpose is to help insurance companies to receive information from NAV that is necessary to process an insurance case',
-  disclosureDescriptionTooltip: 'Relevant information that does not fit into other fields can be described here. For example, what type of information is provided, regularity or similar.',
+  disclosurePurposeTooltip:
+    'Describe the purpose of the disclosure to the recipient. Example: The purpose is to help insurance companies to receive information from NAV that is necessary to process an insurance case',
+  disclosureDescriptionTooltip:
+    'Relevant information that does not fit into other fields can be described here. For example, what type of information is provided, regularity or similar.',
   disclosureDocumentTooltip: 'A collection of information types. Sick leave and income statement are examples of documents that contain several types of information.',
 
   shortcutSubtitleProcess: 'See and edit processes',
@@ -1089,7 +1096,7 @@ export const en: IStrings = {
   isDataProcessedOutsideEUEEAHelpTextDP: 'Indicate whether the data processor transfers/processes personal data in countries outside the EU/EEA.',
   canNotDeleteProcessorParagraph1: 'Can not delete processor {0} because it is',
   canNotDeleteProcessorParagraph2: 'used in {0} processes',
-  deleteProcessDisclosureError: 'You can not delete a process with disclosures.'
+  deleteProcessDisclosureError: 'You can not delete a process with disclosures.',
 }
 
 export const ta = {

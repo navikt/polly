@@ -1,11 +1,10 @@
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {intl, theme} from '../../../util'
-import {ParagraphMedium} from 'baseui/typography'
-import {Block} from 'baseui/block'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { intl, theme } from '../../../util'
+import { ParagraphMedium } from 'baseui/typography'
+import { Block } from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
-import {Disclosure, Process} from '../../../constants'
-
+import { Disclosure, Process } from '../../../constants'
 
 interface DeleteProcessProps {
   onClose: () => void
@@ -17,41 +16,36 @@ interface DeleteProcessProps {
 }
 
 export const DeleteProcessModal = (props: DeleteProcessProps) => {
-  const {process, onClose, isOpen, submitDeleteProcess, errorProcessModal,disclosures} = props
+  const { process, onClose, isOpen, submitDeleteProcess, errorProcessModal, disclosures } = props
 
   return (
-    <Modal
-      onClose={onClose}
-      isOpen={isOpen}
-      animate
-      size='default'
-    >
+    <Modal onClose={onClose} isOpen={isOpen} animate size="default">
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
         <ParagraphMedium>{intl.deleteProcessText}</ParagraphMedium>
-        {!process.policies.length && <ParagraphMedium>{intl.confirmDeleteProcessText} {process.name}</ParagraphMedium>}
-        {!!process.policies.length &&
-        <ParagraphMedium>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</ParagraphMedium>}
+        {!process.policies.length && (
+          <ParagraphMedium>
+            {intl.confirmDeleteProcessText} {process.name}
+          </ParagraphMedium>
+        )}
+        {!!process.policies.length && <ParagraphMedium>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</ParagraphMedium>}
 
-        {!!disclosures.length &&
-        <ParagraphMedium>{intl.deleteProcessDisclosureError}</ParagraphMedium>}
+        {!!disclosures.length && <ParagraphMedium>{intl.deleteProcessDisclosureError}</ParagraphMedium>}
       </ModalBody>
 
       <ModalFooter>
-        <Block display='flex' justifyContent='flex-end'>
-          <Block alignSelf='flex-end'>{errorProcessModal &&
-          <p>{errorProcessModal}</p>}</Block>
-          <Button
-            kind='secondary'
-            onClick={onClose}
-          >
+        <Block display="flex" justifyContent="flex-end">
+          <Block alignSelf="flex-end">{errorProcessModal && <p>{errorProcessModal}</p>}</Block>
+          <Button kind="secondary" onClick={onClose}>
             {intl.abort}
           </Button>
-          <Block display='inline' marginRight={theme.sizing.scale500}/>
-          <Button onClick={() => {
-            submitDeleteProcess(process).then(onClose)
-          }}
-                  disabled={!!process.policies.length || !!disclosures.length}>
+          <Block display="inline" marginRight={theme.sizing.scale500} />
+          <Button
+            onClick={() => {
+              submitDeleteProcess(process).then(onClose)
+            }}
+            disabled={!!process.policies.length || !!disclosures.length}
+          >
             {intl.delete}
           </Button>
         </Block>
