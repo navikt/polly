@@ -30,6 +30,8 @@ export interface IStrings {
   authorityAndGroundsForDelivery: string;
   consumerAuthorityForProcess: string;
   purposeAuthorityLegalBasis: string;
+  available: string;
+  unavailable: string;
 
   informationType: string;
   informationTypes: string;

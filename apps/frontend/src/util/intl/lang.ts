@@ -17,6 +17,8 @@ export const no: IStrings = {
   authorityAndGroundsForDelivery: 'NAVs hjemmel for utlevering',
   consumerAuthorityForProcess: 'Konsumentens hjemmel for behandlingen',
   purposeAuthorityLegalBasis: 'Formål, Hjemmel og Behandlingsgrunnlag',
+  available: 'Tilgjengelig',
+  unavailable: 'Ikke tilgjengelig',
 
   informationType: 'Opplysningstype',
   informationTypes: 'Opplysningstyper',
@@ -561,6 +563,9 @@ export const en: IStrings = {
   authorityAndGroundsForDelivery: 'NAV\'s authority for disclosure',
   consumerAuthorityForProcess: 'Consumer\'s authority for process',
   purposeAuthorityLegalBasis: 'Purpose, authority and legal basis',
+  available: 'Available',
+  unavailable: 'Unavailable',
+
 
 
   informationType: 'Information type',
