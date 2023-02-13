@@ -26,13 +26,13 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
           </>
         }
       >
-        {authoryList.map((a, i) => (
+        {purposeList.map((a, i) => (
           <Row key={a + '_' + i}>
             <Cell>
               <Block>{a}</Block>
             </Cell>
             <Cell>
-              <Block>{purposeList[i]}</Block>
+              <Block>{authoryList[i]}</Block>
             </Cell>
             <Cell>
               <Block>{processorList[i]}</Block>
