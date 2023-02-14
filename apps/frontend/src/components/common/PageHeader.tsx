@@ -1,35 +1,35 @@
-import {Block} from 'baseui/block'
-import {HeadingXXLarge, LabelLarge} from 'baseui/typography'
-import {intl, theme} from '../../util'
-import {Markdown} from './Markdown'
+import { Block } from 'baseui/block'
+import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
+import { intl, theme } from '../../util'
+import { Markdown } from './Markdown'
 import * as React from 'react'
-import {useEffect} from 'react'
-import {codelist} from '../../service/Codelist'
-import {listNameForSection, Section} from '../../pages/ProcessPage'
-import {ProductArea, Team} from '../../constants'
-import {getProductArea, getTeam} from '../../api'
-import {Spinner} from './Spinner'
-import {productAreaLink, teamLink} from '../../util/config'
-import {StyledLink} from 'baseui/link'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons'
-import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip"
-import {lowerFirst} from 'lodash'
+import { useEffect } from 'react'
+import { codelist } from '../../service/Codelist'
+import { listNameForSection, Section } from '../../pages/ProcessPage'
+import { ProductArea, Team } from '../../constants'
+import { getProductArea, getTeam } from '../../api'
+import { Spinner } from './Spinner'
+import { productAreaLink, teamLink } from '../../util/config'
+import { StyledLink } from 'baseui/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
+import { lowerFirst } from 'lodash'
 
-export const PageHeader = (props: {section: Section, code: string}) => {
+export const PageHeader = (props: { section: Section; code: string }) => {
   const [isLoading, setLoading] = React.useState(false)
   const [team, setTeam] = React.useState<Team>()
   const [productArea, setProductArea] = React.useState<ProductArea>()
-  const {code, section} = props
+  const { code, section } = props
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       setLoading(true)
       if (section === 'team') {
-        setTeam((await getTeam(code)))
+        setTeam(await getTeam(code))
       }
       if (section === 'productarea') {
-        setProductArea((await getProductArea(code)))
+        setProductArea(await getProductArea(code))
       }
       setLoading(false)
     })()
@@ -81,10 +81,12 @@ export const PageHeader = (props: {section: Section, code: string}) => {
     if (!url) return null
     return (
       <>
-        <Block marginRight={theme.sizing.scale1200}/>
+        <Block marginRight={theme.sizing.scale1200} />
         <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
           <CustomizedStatefulTooltip content={intl.goToSite}>
-            <span><FontAwesomeIcon icon={faExternalLinkAlt} size='lg'/></span>
+            <span>
+              <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
+            </span>
           </CustomizedStatefulTooltip>
         </StyledLink>
       </>
@@ -93,19 +95,20 @@ export const PageHeader = (props: {section: Section, code: string}) => {
 
   return (
     <>
-      {isLoading && <Spinner size={theme.sizing.scale2400}/>}
-      {!isLoading &&
-      <>
-        <Block marginBottom="3rem" display='flex' alignItems='center'>
-          <HeadingXXLarge>{getTitle()}</HeadingXXLarge>
-          {externalLink()}
-        </Block>
+      {isLoading && <Spinner size={theme.sizing.scale2400} />}
+      {!isLoading && (
+        <>
+          <Block marginBottom="3rem" display="flex" alignItems="center">
+            <HeadingXXLarge>{getTitle()}</HeadingXXLarge>
+            {externalLink()}
+          </Block>
 
-        <Block marginBottom='scale1000'>
-          <LabelLarge marginBottom={theme.sizing.scale600}>{metadataTitle()}</LabelLarge>
-          <Markdown source={getDescription()}/>
-        </Block>
-      </>}
+          <Block marginBottom="scale1000">
+            <LabelLarge marginBottom={theme.sizing.scale600}>{metadataTitle()}</LabelLarge>
+            <Markdown source={getDescription()} />
+          </Block>
+        </>
+      )}
     </>
   )
 }

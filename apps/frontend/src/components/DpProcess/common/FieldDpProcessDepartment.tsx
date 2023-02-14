@@ -1,25 +1,31 @@
-import * as React from "react";
-import {Select, Value} from "baseui/select";
-import {codelist, ListName} from "../../../service/Codelist";
-import {Field, FieldProps} from "formik";
-import {DpProcessFormValues} from "../../../constants";
-import {Block} from "baseui/block";
+import * as React from 'react'
+import { Select, Value } from 'baseui/select'
+import { codelist, ListName } from '../../../service/Codelist'
+import { Field, FieldProps } from 'formik'
+import { DpProcessFormValues } from '../../../constants'
+import { Block } from 'baseui/block'
 
 const FieldDpProcessDepartment = (props: { department?: string }) => {
-  const {department} = props
-  const [value, setValue] = React.useState<Value>(department ? [{
-    id: department,
-    label: codelist.getShortname(ListName.DEPARTMENT, department)
-  }] : [])
+  const { department } = props
+  const [value, setValue] = React.useState<Value>(
+    department
+      ? [
+          {
+            id: department,
+            label: codelist.getShortname(ListName.DEPARTMENT, department),
+          },
+        ]
+      : [],
+  )
 
   return (
     <Field
-      name='affiliation.department'
-      render={({form}: FieldProps<DpProcessFormValues>) => (
+      name="affiliation.department"
+      render={({ form }: FieldProps<DpProcessFormValues>) => (
         <Block width={'100%'}>
           <Select
             options={codelist.getParsedOptions(ListName.DEPARTMENT)}
-            onChange={({value}) => {
+            onChange={({ value }) => {
               setValue(value)
               form.setFieldValue('affiliation.department', value.length > 0 ? value[0].id : '')
             }}

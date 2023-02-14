@@ -1,23 +1,23 @@
 import * as React from 'react'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCircleExclamation, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
-import {ARTWORK_SIZES, ListItem} from 'baseui/list'
-import {Block} from 'baseui/block'
-import {Button} from 'baseui/button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleExclamation, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { ARTWORK_SIZES, ListItem } from 'baseui/list'
+import { Block } from 'baseui/block'
+import { Button } from 'baseui/button'
 
-import {LegalBasis, LegalBasisFormValues, PolicyAlert} from '../../constants'
-import {codelist, ListName, SensitivityLevel} from '../../service/Codelist'
-import {processString} from '../../util/string-processor'
-import {intl, theme} from '../../util'
-import {StyledLink} from 'baseui/link'
-import {env} from '../../util/env'
-import {ParagraphMedium} from 'baseui/typography'
-import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
+import { LegalBasis, LegalBasisFormValues, PolicyAlert } from '../../constants'
+import { codelist, ListName, SensitivityLevel } from '../../service/Codelist'
+import { processString } from '../../util/string-processor'
+import { intl, theme } from '../../util'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../util/env'
+import { ParagraphMedium } from 'baseui/typography'
+import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
-export const LegalBasisView = (props: {legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues}) => {
+export const LegalBasisView = (props: { legalBasis?: LegalBasis; legalBasisForm?: LegalBasisFormValues }) => {
   const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
   if (!input) return null
-  const {description} = input
+  const { description } = input
   const gdpr = props.legalBasis ? props.legalBasis.gdpr.code : props.legalBasisForm!.gdpr
   const nationalLaw = props.legalBasis ? props.legalBasis?.nationalLaw?.code : props.legalBasisForm!.nationalLaw
 
@@ -28,12 +28,14 @@ export const LegalBasisView = (props: {legalBasis?: LegalBasis, legalBasisForm?:
 
   return (
     <span>
-       {gdprDisplay}{(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay} {descriptionText}
+      {gdprDisplay}
+      {(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay} {descriptionText}
     </span>
   )
 }
 
-const lovdataBase = (nationalLaw: string) => (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) + codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
+const lovdataBase = (nationalLaw: string) =>
+  (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) + codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
 
 const legalBasisLinkProcessor = (law: string, text?: string) => {
   const lawCode = codelist.getDescription(ListName.NATIONAL_LAW, law)
@@ -45,126 +47,157 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
     {
       // Replace '§§ 10 og 4' > '§§ 10 og §§§ 4', so that our rewriter picks up the 2nd part
       regex: /§§\s*(\d+(-\d+)?)\s*og\s*(\d+(-\d+)?)/gi,
-      fn: (key: string, result: string[]) => `§§ ${result[1]} og §§§ ${result[3]}`
-    }, {
+      fn: (key: string, result: string[]) => `§§ ${result[1]} og §§§ ${result[3]}`,
+    },
+    {
       // tripe '§§§' is hidden, used as a trick in combination with rule 1 above
       regex: /§(§§)?(§)?\s*(\d+(-\d+)?)/g,
-      fn: (key: string, result: string[]) =>
+      fn: (key: string, result: string[]) => (
         <StyledLink key={key} href={`${lovdataBase(law)}/§${result[3]}`} target="_blank" rel="noopener noreferrer">
-          {(!result[1] && !result[2]) && '§'} {result[2] && '§§'} {result[3]}
+          {!result[1] && !result[2] && '§'} {result[2] && '§§'} {result[3]}
         </StyledLink>
-    }, {
+      ),
+    },
+    {
       regex: /kap(ittel)?\s*(\d+)/gi,
-      fn: (key: string, result: string[]) =>
-        <StyledLink key={key} href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`} target="_blank"
-                    rel="noopener noreferrer">
+      fn: (key: string, result: string[]) => (
+        <StyledLink key={key} href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
           Kapittel {result[2]}
         </StyledLink>
-    }
+      ),
+    },
   ])(text)
 }
 
-export const LegalBasesNotClarified = (props: {alert?: PolicyAlert}) => {
+export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
   const color = theme.colors.negative300
-  const warningIcon = <span><FontAwesomeIcon icon={faCircleExclamation} color={color}/>&nbsp;</span>
+  const warningIcon = (
+    <span>
+      <FontAwesomeIcon icon={faCircleExclamation} color={color} />
+      &nbsp;
+    </span>
+  )
   return (
     <Block color={color}>
       <Block>
-        {props.alert?.missingLegalBasis &&
-          <CustomizedStatefulTooltip content={intl.unknownLegalBasisHelpText}><span>{warningIcon} {intl.MISSING_LEGAL_BASIS}</span></CustomizedStatefulTooltip>}
+        {props.alert?.missingLegalBasis && (
+          <CustomizedStatefulTooltip content={intl.unknownLegalBasisHelpText}>
+            <span>
+              {warningIcon} {intl.MISSING_LEGAL_BASIS}
+            </span>
+          </CustomizedStatefulTooltip>
+        )}
       </Block>
       <Block>
-        {props.alert?.excessInfo && <CustomizedStatefulTooltip content={intl.excessInfoHelpText}><span>{warningIcon} {intl.EXCESS_INFO}</span></CustomizedStatefulTooltip>}
+        {props.alert?.excessInfo && (
+          <CustomizedStatefulTooltip content={intl.excessInfoHelpText}>
+            <span>
+              {warningIcon} {intl.EXCESS_INFO}
+            </span>
+          </CustomizedStatefulTooltip>
+        )}
       </Block>
       <Block>
-        {props.alert?.missingArt6 &&
-        <CustomizedStatefulTooltip content={intl.withoutArticle6LegalBasisHelpText}><span>{warningIcon} {intl.MISSING_ARTICLE_6}</span></CustomizedStatefulTooltip>}
+        {props.alert?.missingArt6 && (
+          <CustomizedStatefulTooltip content={intl.withoutArticle6LegalBasisHelpText}>
+            <span>
+              {warningIcon} {intl.MISSING_ARTICLE_6}
+            </span>
+          </CustomizedStatefulTooltip>
+        )}
       </Block>
       <Block>
-        {props.alert?.missingArt9 &&
-        <CustomizedStatefulTooltip content={intl.withoutArticle9LegalBasisHelpText}><span>{warningIcon} {intl.MISSING_ARTICLE_9}</span></CustomizedStatefulTooltip>}
+        {props.alert?.missingArt9 && (
+          <CustomizedStatefulTooltip content={intl.withoutArticle9LegalBasisHelpText}>
+            <span>
+              {warningIcon} {intl.MISSING_ARTICLE_9}
+            </span>
+          </CustomizedStatefulTooltip>
+        )}
       </Block>
     </Block>
   )
 }
 
 const isLegalBasisFilteredBySensitivity = (legalBasis: LegalBasisFormValues, sensitivityLevel?: SensitivityLevel) => {
-  return (sensitivityLevel === SensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
+  return (
+    (sensitivityLevel === SensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
     (sensitivityLevel === SensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr)) ||
     !sensitivityLevel
+  )
 }
 
-export const ListLegalBases = (
-  props: {
-    legalBases?: LegalBasisFormValues[],
-    onRemove: (index: number) => void,
-    onEdit: (index: number) => void
-    sensitivityLevel?: SensitivityLevel.ART6 | SensitivityLevel.ART9
-  },) => {
-  const {legalBases, onRemove, onEdit, sensitivityLevel} = props
+export const ListLegalBases = (props: {
+  legalBases?: LegalBasisFormValues[]
+  onRemove: (index: number) => void
+  onEdit: (index: number) => void
+  sensitivityLevel?: SensitivityLevel.ART6 | SensitivityLevel.ART9
+}) => {
+  const { legalBases, onRemove, onEdit, sensitivityLevel } = props
   if (!legalBases) return null
   return (
     <React.Fragment>
       {legalBases
-      .filter(l => isLegalBasisFilteredBySensitivity(l, sensitivityLevel))
-      .map((legalBasis: LegalBasisFormValues, i: number) => (
-        <ListItem
-          artworkSize={ARTWORK_SIZES.SMALL}
-          overrides={{
-            Content: {
-              style: {
-                height: 'auto'
-              }
-            },
-            EndEnhancerContainer: {},
-            Root: {},
-            ArtworkContainer: {}
-          }}
-          endEnhancer={
-            () =>
+        .filter((l) => isLegalBasisFilteredBySensitivity(l, sensitivityLevel))
+        .map((legalBasis: LegalBasisFormValues, i: number) => (
+          <ListItem
+            artworkSize={ARTWORK_SIZES.SMALL}
+            overrides={{
+              Content: {
+                style: {
+                  height: 'auto',
+                },
+              },
+              EndEnhancerContainer: {},
+              Root: {},
+              ArtworkContainer: {},
+            }}
+            endEnhancer={() => (
               <Block minWidth="100px">
                 <Button
                   type="button"
                   kind="tertiary"
                   size="compact"
                   onClick={() => {
-                    onEdit(legalBases?.findIndex(l => l.key === legalBasis.key))
+                    onEdit(legalBases?.findIndex((l) => l.key === legalBasis.key))
                   }}
                 >
-                  <FontAwesomeIcon icon={faEdit}/>
+                  <FontAwesomeIcon icon={faEdit} />
                 </Button>
                 <Button
                   type="button"
                   kind="tertiary"
                   size="compact"
                   onClick={() => {
-                    onRemove(legalBases?.findIndex(l => l.key === legalBasis.key))
+                    onRemove(legalBases?.findIndex((l) => l.key === legalBasis.key))
                   }}
                 >
-                  <FontAwesomeIcon icon={faTrash}/>
+                  <FontAwesomeIcon icon={faTrash} />
                 </Button>
               </Block>
-          }
-          sublist
-          key={i}
-        >
-          <ParagraphMedium $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
-            <LegalBasisView legalBasisForm={legalBasis}/>
-          </ParagraphMedium>
-        </ListItem>
-      ))}
+            )}
+            sublist
+            key={i}
+          >
+            <ParagraphMedium $style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}>
+              <LegalBasisView legalBasisForm={legalBasis} />
+            </ParagraphMedium>
+          </ListItem>
+        ))}
     </React.Fragment>
   )
 }
 
-export const ListLegalBasesInTable = (props: {legalBases: LegalBasis[]}) => {
-  const {legalBases} = props
+export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
+  const { legalBases } = props
   return (
     <Block>
-      <ul style={{listStyle: 'none', paddingInlineStart: 0, marginTop: 0, marginBottom: 0}}>
+      <ul style={{ listStyle: 'none', paddingInlineStart: 0, marginTop: 0, marginBottom: 0 }}>
         {legalBases.map((legalBasis, i) => (
           <Block marginBottom="8px" key={i}>
-            <li><LegalBasisView legalBasis={legalBasis}/></li>
+            <li>
+              <LegalBasisView legalBasis={legalBasis} />
+            </li>
           </Block>
         ))}
       </ul>

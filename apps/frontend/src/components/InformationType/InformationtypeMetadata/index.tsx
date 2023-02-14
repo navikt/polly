@@ -24,9 +24,9 @@ import { Spinner } from '../../common/Spinner'
 import { useQueryParam } from '../../../util/hooks'
 
 interface InformationtypeMetadataProps {
-  informationtype: InformationType;
-  policies?: Policy[];
-  disclosures?: Disclosure[],
+  informationtype: InformationType
+  policies?: Policy[]
+  disclosures?: Disclosure[]
   documents?: Document[]
 }
 
@@ -36,37 +36,29 @@ const Purposes = ({ policies }: { policies: Policy[] }) => {
   return (
     <Block>
       <Block display="flex" justifyContent="flex-end">
-        <Button onClick={() => setAccordion(!accordion)}
+        <Button
+          onClick={() => setAccordion(!accordion)}
           size="compact"
           shape="pill"
-          kind='outline'
+          kind="outline"
           $style={{
             position: 'relative',
             marginTop: `-${theme.sizing.scale1200}`,
             marginLeft: `-${theme.sizing.scale400}`,
             right: theme.sizing.scale600,
-            bottom: theme.sizing.scale600
+            bottom: theme.sizing.scale600,
           }}
         >
           {accordion ? intl.showAll : intl.groupByProcessingActivities}
         </Button>
       </Block>
-      {accordion ?
-        <AccordionInformationType policies={policies} />
-        : <InformationtypePolicyTable policies={policies} showPurpose={true} />}
+      {accordion ? <AccordionInformationType policies={policies} /> : <InformationtypePolicyTable policies={policies} showPurpose={true} />}
     </Block>
   )
 }
 
 const Disclosures = ({ disclosures }: { disclosures: Disclosure[] }) => {
-  return (
-    <TableDisclosure
-      list={disclosures}
-      showRecipient
-      editable={false}
-      onCloseModal={() => console.log('skal fjerrens også!')}
-    />
-  )
+  return <TableDisclosure list={disclosures} showRecipient editable={false} onCloseModal={() => console.log('skal fjerrens også!')} />
 }
 
 export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
@@ -78,27 +70,31 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
         <>
           <Block display="flex" justifyContent="space-between">
             <HeadingMedium marginTop="0">{props.informationtype.name}</HeadingMedium>
-            {user.canWrite() && (
-              <InformationTypeBannerButtons id={props.informationtype.id} />
-            )}
+            {user.canWrite() && <InformationTypeBannerButtons id={props.informationtype.id} />}
           </Block>
 
           <Metadata informationtype={props.informationtype} />
 
-          <Block display='flex' justifyContent='flex-end' marginBottom={theme.sizing.scale600}>
-            {canViewAlerts() && <Block marginRight='auto'>
-              <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                onClick={() => navigate(`/alert/events/informationtype/${props.informationtype.id}`)}>{intl.alerts}</Button>
-            </Block>}
+          <Block display="flex" justifyContent="flex-end" marginBottom={theme.sizing.scale600}>
+            {canViewAlerts() && (
+              <Block marginRight="auto">
+                <Button
+                  type="button"
+                  kind="tertiary"
+                  size="compact"
+                  icon={faExclamationCircle}
+                  onClick={() => navigate(`/alert/events/informationtype/${props.informationtype.id}`)}
+                >
+                  {intl.alerts}
+                </Button>
+              </Block>
+            )}
             <ParagraphSmall>
               <i>{intl.formatString(intl.lastModified, props.informationtype.changeStamp.lastModifiedBy, lastModifiedDate(props.informationtype.changeStamp.lastModifiedDate))}</i>
             </ParagraphSmall>
           </Block>
 
-          <CustomizedTabs
-            activeKey={activeTab}
-            onChange={args => setActiveTab(args.activeKey as string)}
-          >
+          <CustomizedTabs activeKey={activeTab} onChange={(args) => setActiveTab(args.activeKey as string)}>
             <Tab key="purposes" title={intl.processingActivityUse} overrides={tabOverride}>
               {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
               {props.policies && <Purposes policies={props.policies} />}

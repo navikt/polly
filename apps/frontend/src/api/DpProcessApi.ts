@@ -1,15 +1,14 @@
-import axios from "axios";
-import {DpProcess, DpProcessFormValues, PageResponse, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../constants";
-import {env} from "../util/env";
-import {mapBool} from "../util/helper-functions";
+import axios from 'axios'
+import { DpProcess, DpProcessFormValues, PageResponse, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../constants'
+import { env } from '../util/env'
+import { mapBool } from '../util/helper-functions'
 
 export const getAllDpProcesses = async () => {
   const PAGE_SIZE = 100
   const firstPage = await getDpProcessByPageAndSize(0, PAGE_SIZE)
   if (firstPage.pages === 1) {
     return firstPage.content.length > 0 ? [...firstPage.content] : []
-  }
-  else {
+  } else {
     let AllDpProcesses: DpProcess[] = [...firstPage.content]
     for (let currentPage = 1; currentPage < firstPage.pages; currentPage++) {
       AllDpProcesses = [...AllDpProcesses, ...(await getDpProcessByPageAndSize(currentPage, PAGE_SIZE)).content]
@@ -58,15 +57,16 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     purposeDescription,
     retention,
     start,
-    subDataProcessing
-  } = (dpProcess || {})
+    subDataProcessing,
+  } = dpProcess || {}
 
   return {
     affiliation: {
       department: affiliation?.department?.code || '',
-      subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
+      subDepartments: affiliation?.subDepartments.map((sd) => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
-      products: affiliation?.products.map(p => p.code) || [],
+      products: affiliation?.products.map((p) => p.code) || [],
+      disclosureDispatchers: affiliation?.disclosureDispatchers.map((d) => d.code) || [],
     },
     art10: mapBool(art10),
     art9: mapBool(art9),
@@ -76,7 +76,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     externalProcessResponsible: (externalProcessResponsible && externalProcessResponsible.code) || undefined,
     subDataProcessing: {
       dataProcessor: mapBool(subDataProcessing?.dataProcessor),
-      processors: subDataProcessing?.processors || []
+      processors: subDataProcessing?.processors || [],
     },
     id: id,
     name: name || '',
@@ -85,12 +85,11 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
     },
-    start: start || env.defaultStartDate
+    start: start || env.defaultStartDate,
   }
 }
 
 export const fromValuesToDpProcess = (values: DpProcessFormValues) => {
-
   return {
     affiliation: values.affiliation,
     art10: values.art10,
@@ -101,12 +100,12 @@ export const fromValuesToDpProcess = (values: DpProcessFormValues) => {
     externalProcessResponsible: values.externalProcessResponsible ? values.externalProcessResponsible : undefined,
     subDataProcessing: {
       dataProcessor: values.subDataProcessing.dataProcessor,
-      processors: values.subDataProcessing.processors || []
+      processors: values.subDataProcessing.processors || [],
     },
     id: values.id,
     name: values.name || '',
     purposeDescription: values.purposeDescription,
     retention: values.retention,
-    start: values.start
+    start: values.start,
   }
 }

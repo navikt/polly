@@ -1,5 +1,5 @@
-import React from "react";
-import {PLACEMENT, StatefulTooltip, StatefulTooltipProps} from "baseui/tooltip";
+import React from 'react'
+import { PLACEMENT, StatefulTooltip, StatefulTooltipProps } from 'baseui/tooltip'
 
 const CustomizedStatefulTooltip = (props: Partial<StatefulTooltipProps>) => {
   return (
@@ -12,9 +12,9 @@ const CustomizedStatefulTooltip = (props: Partial<StatefulTooltipProps>) => {
         Body: {
           style: {
             maxWidth: '25%',
-            wordBreak: 'break-word'
-          }
-        }
+            wordBreak: 'break-word',
+          },
+        },
       }}
     >
       {props.children}

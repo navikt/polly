@@ -1,7 +1,7 @@
-import {default as React, ReactNode} from 'react'
-import {Block} from 'baseui/block'
-import {intl, theme} from '../../util'
-import {LabelMedium, ParagraphMedium} from 'baseui/typography'
+import { default as React, ReactNode } from 'react'
+import { Block } from 'baseui/block'
+import { intl, theme } from '../../util'
+import { LabelMedium, ParagraphMedium } from 'baseui/typography'
 
 type DataTextProps = {
   label?: string
@@ -14,20 +14,18 @@ const DataText = (props: DataTextProps) => {
   if (props.hideComponent) return null
   const texts = typeof props.text === 'string' ? [props.text] : !!props.text || props.children ? props.text : [intl.notFilled]
   return (
-    <Block display='flex' alignContent='flex-start' marginBottom='1rem' width='100%'>
-      <Block width='40%' paddingRight={theme.sizing.scale400} maxWidth='300px'>
+    <Block display="flex" alignContent="flex-start" marginBottom="1rem" width="100%">
+      <Block width="40%" paddingRight={theme.sizing.scale400} maxWidth="300px">
         <LabelMedium>{props.label}</LabelMedium>
       </Block>
-      <Block width='60%'>
-        {texts && texts.map((text, index) =>
-          <ParagraphMedium marginTop='0' marginBottom='0' key={index}>
-            {text}
-          </ParagraphMedium>
-        )}
-        {props.children &&
-        <Block font='ParagraphMedium'>
-          {props.children}
-        </Block>}
+      <Block width="60%">
+        {texts &&
+          texts.map((text, index) => (
+            <ParagraphMedium marginTop="0" marginBottom="0" key={index}>
+              {text}
+            </ParagraphMedium>
+          ))}
+        {props.children && <Block font="ParagraphMedium">{props.children}</Block>}
       </Block>
     </Block>
   )

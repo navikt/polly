@@ -3,7 +3,7 @@ import { InformationType, InformationtypeFormValues, InformationTypeShort, PageR
 import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
-import * as queryString from 'query-string'
+import queryString from 'query-string'
 
 export const getInformationTypes = async (page: number, limit: number) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`)).data
@@ -13,7 +13,7 @@ export const getInformationTypesShort = async () => {
   return (await axios.get<PageResponse<InformationTypeShort>>(`${env.pollyBaseUrl}/informationtype/short`)).data.content
 }
 
-export const getInformationTypesBy = async (params: { source?: string, orgMaster?: string, productTeam?: string, productArea?: string }) => {
+export const getInformationTypesBy = async (params: { source?: string; orgMaster?: string; productTeam?: string; productArea?: string }) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?${queryString.stringify(params, { skipNull: true })}`)).data
 }
 
@@ -63,11 +63,11 @@ export const mapInfoTypeToFormVals = (data: Partial<InformationType>): Informati
     name: data.name || '',
     term: data.term || '',
     sensitivity: data.sensitivity?.code || '',
-    categories: data?.categories?.map(c => c.code) || [],
-    sources: data?.sources?.map(c => c.code) || [],
+    categories: data?.categories?.map((c) => c.code) || [],
+    sources: data?.sources?.map((c) => c.code) || [],
     productTeams: data.productTeams || [],
     keywords: data.keywords || [],
     description: data.description || '',
-    orgMaster: data.orgMaster?.code || ''
+    orgMaster: data.orgMaster?.code || '',
   }
 }

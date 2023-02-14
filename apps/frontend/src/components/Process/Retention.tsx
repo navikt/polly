@@ -1,11 +1,10 @@
-import { Retention } from "../../constants"
-import { intl } from "../../util"
-import _ from "lodash"
-import * as React from "react"
-
+import { Retention } from '../../constants'
+import { intl } from '../../util'
+import _ from 'lodash'
+import * as React from 'react'
 
 export const RetentionView = (props: { retention?: Retention }) => {
-  const {retention} = props;
+  const { retention } = props
   const retentionYears = Math.floor((retention?.retentionMonths || 0) / 12)
   const retentionMonths = (retention?.retentionMonths || 0) - retentionYears * 12
   const retainedYearsOrMonths = !!retentionYears || !!retentionMonths

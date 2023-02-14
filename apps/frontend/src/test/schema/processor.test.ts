@@ -1,12 +1,12 @@
-import {dataProcessorSchema} from '../../components/common/schema'
-import {ProcessorFormValues} from '../../constants'
+import { dataProcessorSchema } from '../../components/common/schema'
+import { ProcessorFormValues } from '../../constants'
 import '../config/schemaValidator'
 
 const schema = dataProcessorSchema()
 const createProcessor = (): ProcessorFormValues => ({
   name: 'name',
   countries: [],
-  operationalContractManagers: []
+  operationalContractManagers: [],
 })
 
 test('processor ok', () => {

@@ -7,14 +7,14 @@ import { Block } from 'baseui/block'
 import { getResourceById, useTeamResourceSearch } from '../../../api'
 
 const FieldRiskOwner = (props: { riskOwner?: string }) => {
-  const {riskOwner} = props
+  const { riskOwner } = props
   const [value, setValue] = React.useState<Value>()
   const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] = useTeamResourceSearch()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (riskOwner) {
-        setValue([{id: riskOwner, label: (await getResourceById(riskOwner)).fullName}])
+        setValue([{ id: riskOwner, label: (await getResourceById(riskOwner)).fullName }])
       } else {
         setValue([])
       }
@@ -23,16 +23,16 @@ const FieldRiskOwner = (props: { riskOwner?: string }) => {
 
   return (
     <Field
-      name='dpia.riskOwner'
-      render={({form, field}: FieldProps<ProcessFormValues>) => (
+      name="dpia.riskOwner"
+      render={({ form, field }: FieldProps<ProcessFormValues>) => (
         <Block width={'100%'}>
           <Select
             options={teamResourceSearchResult}
-            onChange={({value}) => {
+            onChange={({ value }) => {
               setValue(value)
               form.setFieldValue('dpia.riskOwner', value && value.length > 0 ? value[0].id : '')
             }}
-            onInputChange={event => setTeamResourceSearch(event.currentTarget.value)}
+            onInputChange={(event) => setTeamResourceSearch(event.currentTarget.value)}
             value={value}
             isLoading={teamResourceSearchLoading}
           />

@@ -4,7 +4,6 @@ import { Block } from 'baseui/block'
 import { ParagraphLarge } from 'baseui/typography'
 import { Spinner } from 'baseui/icon'
 
-
 import Root from './components/Root'
 import ProcessPage from './pages/ProcessPage'
 import InformationtypeCreatePage from './pages/InformationtypeCreatePage'
@@ -29,14 +28,14 @@ import { SystemPage } from './pages/SystemPage'
 import { TeamPage } from './pages/TeamPage'
 import { ProductAreaPage } from './pages/ProductAreaPage'
 import { LegalPage } from './pages/LegalPage'
-import DpProcessPage from "./pages/DpProcessPage";
-import DpProcessView from "./components/DpProcess/DpProcessView";
+import DpProcessPage from './pages/DpProcessPage'
+import DpProcessView from './components/DpProcess/DpProcessView'
 import { RequestRevisionPage } from './pages/admin/RequestRevisionPage'
 import { MailLogPage } from './pages/admin/MailLogPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DisclosureListPage } from './pages/DisclosureListPage'
-import ProcessorListPage from "./pages/ProcessorListPage";
-import ProcessorView from "./components/Processor/ProcessorView";
+import ProcessorListPage from './pages/ProcessorListPage'
+import ProcessorView from './components/Processor/ProcessorView'
 
 export const processPath = '/process/:section/:code/:processId'
 export const processPathNoId = '/process/:section/:code/'
@@ -53,12 +52,11 @@ const AppRoutes = (): JSX.Element => (
       <Route path="/thirdparty/:thirdPartyCode/:section/" element={<ThirdPartyMetadataPage />} caseSensitive={true} />
       <Route path="/thirdparty/:thirdPartyCode/" element={<ThirdPartyMetadataPage />} caseSensitive={true} />
 
-
       <Route path="/system" element={<SystemListPage />} caseSensitive={true} />
       <Route path="/system/:systemCode" element={<SystemPage />} caseSensitive={true} />
 
       <Route path="/team/:teamId" element={<TeamPage />} caseSensitive={true} />
-      
+
       <Route path="/productarea/:productAreaId" element={<ProductAreaPage />} caseSensitive={true} />
       <Route path="/process" element={<PurposeListPage />} caseSensitive={true} />
 
@@ -112,7 +110,9 @@ const AppRoutes = (): JSX.Element => (
 
 const NotFound = () => (
   <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale4800}>
-    <ParagraphLarge>{intl.pageNotFound} - {useLocation().pathname}</ParagraphLarge>
+    <ParagraphLarge>
+      {intl.pageNotFound} - {useLocation().pathname}
+    </ParagraphLarge>
     <img src={notFound} alt={intl.pageNotFound} style={{ maxWidth: '65%' }} />
   </Block>
 )
@@ -140,7 +140,7 @@ const Redirect = ({ to }: { to: (id: string) => Promise<string> }) => {
 
   React.useEffect(() => {
     if (id) {
-      (async () => {
+      ;(async () => {
         to(id).then((url) => {
           setUrl(url)
         })

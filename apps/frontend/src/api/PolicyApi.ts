@@ -1,8 +1,8 @@
 import axios from 'axios'
-import {LegalBasesUse, LegalBasis, PageResponse, Policy, PolicyFormValues} from '../constants'
-import {Code} from '../service/Codelist'
-import {env} from '../util/env'
-import shortid from "shortid";
+import { LegalBasesUse, LegalBasis, PageResponse, Policy, PolicyFormValues } from '../constants'
+import { Code } from '../service/Codelist'
+import { env } from '../util/env'
+import shortid from 'shortid'
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {
   return (await axios.get<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy/?informationTypeId=${informationTypeId}`)).data
@@ -40,27 +40,27 @@ export const mapPolicyFromForm = (values: PolicyFormValues) => {
     process: undefined,
     processId: values.process.id,
     legalBases: values.legalBasesUse !== LegalBasesUse.DEDICATED_LEGAL_BASES ? [] : values.legalBases,
-    legalBasesUse: values.legalBasesUse
+    legalBasesUse: values.legalBasesUse,
   }
 }
 
-export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) => (legalBases || [])
-.map((legalBasis) => ({
-  gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-  nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-  description: legalBasis.description || undefined,
-  key: shortid.generate()
-}))
+export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) =>
+  (legalBases || []).map((legalBasis) => ({
+    gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
+    nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
+    description: legalBasis.description || undefined,
+    key: shortid.generate(),
+  }))
 
 export const convertPolicyToFormValues = (policy: Policy, otherPolicies: Policy[]): PolicyFormValues => ({
   legalBasesOpen: false,
   id: policy.id,
   process: policy.process,
-  purposes: policy.purposes.map(p => p.code),
+  purposes: policy.purposes.map((p) => p.code),
   informationType: policy.informationType,
   subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
   legalBasesUse: policy.legalBasesUse,
   legalBases: convertLegalBasesToFormValues(policy.legalBases),
   documentIds: policy.documentIds || [],
-  otherPolicies
+  otherPolicies,
 })

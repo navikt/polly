@@ -10,16 +10,17 @@ const createDp: () => DpProcessFormValues = () => ({
     department: '',
     productTeams: [],
     products: [],
-    subDepartments: []
+    subDepartments: [],
+    disclosureDispatchers: [],
   },
   retention: {
     retentionMonths: 2,
-    retentionStart: 'august'
+    retentionStart: 'august',
   },
   subDataProcessing: {
     dataProcessor: true,
     processors: [],
-  }
+  },
 })
 
 test('dpProcess ok', () => {

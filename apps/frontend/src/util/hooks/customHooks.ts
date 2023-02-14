@@ -1,10 +1,7 @@
-import React, {Dispatch, RefObject, SetStateAction, useEffect, useState} from 'react'
-import {useLocation} from 'react-router-dom'
+import React, { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
-export function useDebouncedState<T>(
-  initialValue: T,
-  delay: number
-): [T, Dispatch<SetStateAction<T>>, T] {
+export function useDebouncedState<T>(initialValue: T, delay: number): [T, Dispatch<SetStateAction<T>>, T] {
   const [value, setValue] = useState<T>(initialValue)
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
@@ -32,14 +29,13 @@ export function useUpdateOnChange(value: any) {
   useEffect(() => {
     update()
   }, [value])
-
 }
 
 export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<boolean>>) {
   const update = useForceUpdate()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       setLoading && setLoading(true)
       await p
       update()
@@ -48,13 +44,14 @@ export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<
   }, [])
 }
 
-type Refs<T> = {[id: string]: RefObject<T>}
+type Refs<T> = { [id: string]: RefObject<T> }
 
 export function useRefs<T>(ids: string[]) {
-  const refs: Refs<T> = ids.reduce((acc, value) => {
-    acc[value] = React.createRef()
-    return acc
-  }, {} as Refs<T>) || {}
+  const refs: Refs<T> =
+    ids.reduce((acc, value) => {
+      acc[value] = React.createRef()
+      return acc
+    }, {} as Refs<T>) || {}
 
   return refs
 }
@@ -64,5 +61,5 @@ export function useQuery() {
 }
 
 export function useQueryParam<T extends string>(queryParam: string) {
-  return useQuery().get(queryParam) as T || undefined
+  return (useQuery().get(queryParam) as T) || undefined
 }

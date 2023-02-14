@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment'
 import { currentLang } from './intl/intl'
 
 export const lastModifiedDate = (lastModifiedDateString: string) => {

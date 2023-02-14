@@ -1,11 +1,11 @@
-import {Block} from 'baseui/block'
-import {Card, CardOverrides} from 'baseui/card'
-import {ParagraphLarge, ParagraphMedium} from 'baseui/typography'
+import { Block } from 'baseui/block'
+import { Card, CardOverrides } from 'baseui/card'
+import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
 import * as React from 'react'
-import {intl, theme} from '../../util'
-import {primitives} from '../../util/theme'
+import { intl, theme } from '../../util'
+import { primitives } from '../../util/theme'
 import RouteLink from '../common/RouteLink'
-import {borderColor, marginAll} from '../common/Style'
+import { borderColor, marginAll } from '../common/Style'
 
 const cardOverrides = (hover: boolean) => {
   return {
@@ -16,27 +16,29 @@ const cardOverrides = (hover: boolean) => {
           height: '150px',
           margin: theme.sizing.scale200,
         }
-        return hover ? {
-          ...base,
-          ...borderColor(primitives.primary500),
-          boxShadow: '0px 4px 2px -1px rgba(0,0,0,0.7);'
-        } : base
-      }
+        return hover
+          ? {
+              ...base,
+              ...borderColor(primitives.primary500),
+              boxShadow: '0px 4px 2px -1px rgba(0,0,0,0.7);',
+            }
+          : base
+      },
     },
     Body: {
       style: () => {
         return {
-          marginBottom: 0
+          marginBottom: 0,
         }
-      }
+      },
     },
     Contents: {
       style: () => {
         return {
           ...marginAll(theme.sizing.scale600),
         }
-      }
-    }
+      },
+    },
   } as CardOverrides
 }
 
@@ -55,17 +57,23 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
         <Card overrides={cardOverrides(hover)}>
           <Block>
             <Block display="flex" justifyContent="center">
-              <ParagraphLarge marginTop={theme.sizing.scale300} marginBottom={theme.sizing.scale200} $style={{
-                wordBreak: 'break-word',
-                color: hover ? primitives.primary300 : undefined,
-                textDecoration: 'underline',
-                fontSize: '130%',
-                fontWeight: 'bolder'
-              }}>{props.title}</ParagraphLarge>
+              <ParagraphLarge
+                marginTop={theme.sizing.scale300}
+                marginBottom={theme.sizing.scale200}
+                $style={{
+                  wordBreak: 'break-word',
+                  color: hover ? primitives.primary300 : undefined,
+                  textDecoration: 'underline',
+                  fontSize: '130%',
+                  fontWeight: 'bolder',
+                }}
+              >
+                {props.title}
+              </ParagraphLarge>
             </Block>
 
             <Block display="flex" justifyContent="center" width="100%">
-                <ParagraphMedium>{props.subtitle}</ParagraphMedium>
+              <ParagraphMedium>{props.subtitle}</ParagraphMedium>
             </Block>
           </Block>
         </Card>
@@ -75,13 +83,12 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
 }
 
 const ShortcutNav = () => {
-
   return (
     <Block display="flex" justifyContent="space-between" flexWrap>
-     <ShortcutCard title={intl.processes} subtitle={intl.shortcutSubtitleProcess}  to="/process"/>
-     <ShortcutCard title={intl.informationTypes} subtitle={intl.shortcutSubtitleInformationtype} to="/informationtype" />
-     <ShortcutCard title={intl.thirdParties} subtitle={intl.shortcutSubtitleThirdParty} to="/thirdparty" />
-     <ShortcutCard title={intl.dashboard} subtitle={intl.shortcutSubtitleDashboard}  to="/dashboard" />
+      <ShortcutCard title={intl.processes} subtitle={intl.shortcutSubtitleProcess} to="/process" />
+      <ShortcutCard title={intl.informationTypes} subtitle={intl.shortcutSubtitleInformationtype} to="/informationtype" />
+      <ShortcutCard title={intl.thirdParties} subtitle={intl.shortcutSubtitleThirdParty} to="/thirdparty" />
+      <ShortcutCard title={intl.dashboard} subtitle={intl.shortcutSubtitleDashboard} to="/dashboard" />
     </Block>
   )
 }

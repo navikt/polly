@@ -1,7 +1,7 @@
-import {createTheme, lightThemePrimitives} from 'baseui'
-import {colors} from 'baseui/tokens'
-import {Theme, ThemePrimitives} from 'baseui/theme'
-import {RecursivePartial} from '../constants'
+import { createTheme, lightThemePrimitives } from 'baseui'
+import { colors } from 'baseui/tokens'
+import { Theme, ThemePrimitives } from 'baseui/theme'
+import { RecursivePartial } from '../constants'
 
 export const primitives: ThemePrimitives & { primary150: string } = {
   ...lightThemePrimitives,
@@ -25,7 +25,7 @@ export const chartColor = {
 
   lightGreen: '#C9EA95',
   orange: '#FFAB66',
-  darkGreen: '#408DA0'
+  darkGreen: '#408DA0',
 }
 
 export const searchResultColor = {
@@ -57,7 +57,7 @@ interface Colors {
   inputEnhancerFill?: string
 }
 
-type ThemeOverride = RecursivePartial<Theme> & { borders: Partial<Borders>, colors: Colors }
+type ThemeOverride = RecursivePartial<Theme> & { borders: Partial<Borders>; colors: Colors }
 
 const overrides: ThemeOverride = {
   colors: {
@@ -66,29 +66,29 @@ const overrides: ThemeOverride = {
     inputFillActive: primitives.primary150,
     inputEnhancerFill: primitives.primary100,
 
-    tabBarFill: colors.white
+    tabBarFill: colors.white,
   },
   borders: {
     buttonBorderRadius: '4px',
-    inputBorderRadius: '8px'
+    inputBorderRadius: '8px',
   },
   typography: {
     // Increase weight 500->600 on bold texts
-    font150: {fontWeight: 600},
-    font250: {fontWeight: 600},
-    font350: {fontWeight: 600},
-    font450: {fontWeight: 600},
-    font550: {fontWeight: 600},
-    font650: {fontWeight: 600},
-    font750: {fontWeight: 600},
-    font850: {fontWeight: 600},
-    font950: {fontWeight: 600},
-    font1050: {fontWeight: 600},
-    font1150: {fontWeight: 600},
-    font1250: {fontWeight: 600},
-    font1350: {fontWeight: 600},
-    font1450: {fontWeight: 600}
-  }
+    font150: { fontWeight: 600 },
+    font250: { fontWeight: 600 },
+    font350: { fontWeight: 600 },
+    font450: { fontWeight: 600 },
+    font550: { fontWeight: 600 },
+    font650: { fontWeight: 600 },
+    font750: { fontWeight: 600 },
+    font850: { fontWeight: 600 },
+    font950: { fontWeight: 600 },
+    font1050: { fontWeight: 600 },
+    font1150: { fontWeight: 600 },
+    font1250: { fontWeight: 600 },
+    font1350: { fontWeight: 600 },
+    font1450: { fontWeight: 600 },
+  },
 }
 
 const breakpoints: any = {
@@ -96,18 +96,17 @@ const breakpoints: any = {
   medium: 1240,
   large: 1449,
   extra_large: 1450,
-};
+}
 
 const ResponsiveTheme = Object.keys(breakpoints).reduce(
   (acc: any, key: any) => {
-    acc.mediaQuery[key] = `@media screen and (min-width: ${breakpoints[key]}px)`;
-    return acc;
+    acc.mediaQuery[key] = `@media screen and (min-width: ${breakpoints[key]}px)`
+    return acc
   },
   {
     breakpoints,
     mediaQuery: {},
-  }
-);
+  },
+)
 
-export const theme = createTheme(primitives, {...overrides, ...ResponsiveTheme})
-
+export const theme = createTheme(primitives, { ...overrides, ...ResponsiveTheme })

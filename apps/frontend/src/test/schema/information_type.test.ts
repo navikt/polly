@@ -1,5 +1,5 @@
-import {infoTypeSchema} from '../../components/common/schema'
-import {InformationtypeFormValues} from '../../constants'
+import { infoTypeSchema } from '../../components/common/schema'
+import { InformationtypeFormValues } from '../../constants'
 import '../config/schemaValidator'
 
 const schema = infoTypeSchema()
@@ -10,7 +10,7 @@ const createInfoType: () => InformationtypeFormValues = () => ({
   categories: ['CAT'],
   keywords: [],
   productTeams: [],
-  sources: []
+  sources: [],
 })
 
 test('informationType ok', () => {
@@ -24,6 +24,6 @@ test('informationType req sensitivty', () => {
 })
 
 test('informationType req category', () => {
-  const it = {...createInfoType(), categories: []}
+  const it = { ...createInfoType(), categories: [] }
   expect(it).toBeSchemaErrorAt(schema, 'categories', 'påkrevd')
 })

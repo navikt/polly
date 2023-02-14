@@ -1,6 +1,6 @@
-import axios from "axios"
-import { Settings } from "../constants"
-import { env } from "../util/env"
+import axios from 'axios'
+import { Settings } from '../constants'
+import { env } from '../util/env'
 
 export const getSettings = async () => {
   return (await axios.get<Settings>(`${env.pollyBaseUrl}/settings`)).data

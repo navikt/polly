@@ -1,7 +1,7 @@
-import axios from "axios"
-import {AuditAction, AuditItem, AuditLog, Event, ObjectType, PageResponse} from "../constants"
-import moment from "moment";
-import {env} from "../util/env"
+import axios from 'axios'
+import { AuditAction, AuditItem, AuditLog, Event, ObjectType, PageResponse } from '../constants'
+import moment from 'moment'
+import { env } from '../util/env'
 
 export const getAuditLog = async (id: string) => {
   const auditLog = (await axios.get<AuditLog>(`${env.pollyBaseUrl}/audit/log/${id}`)).data
@@ -14,7 +14,5 @@ export const getAudits = async (page: number, count: number, table?: ObjectType)
 }
 
 export const getEvents = async (page: number, count: number, table: ObjectType, action?: AuditAction) => {
-  return (await axios.get<PageResponse<Event>>(`${env.pollyBaseUrl}/event/?pageNumber=${page}&pageSize=${count}&table=${table}`
-      + (action ? `&action=${action}` : ''))
-  ).data
+  return (await axios.get<PageResponse<Event>>(`${env.pollyBaseUrl}/event/?pageNumber=${page}&pageSize=${count}&table=${table}` + (action ? `&action=${action}` : ''))).data
 }

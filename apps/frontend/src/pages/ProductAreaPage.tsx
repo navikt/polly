@@ -1,27 +1,27 @@
-import {useParams} from 'react-router-dom'
-import React, {useEffect} from 'react'
+import { useParams } from 'react-router-dom'
+import React, { useEffect } from 'react'
 import ProcessList from '../components/Process'
-import {Section} from './ProcessPage'
-import {PageHeader} from '../components/common/PageHeader'
-import {InfoTypeTable} from '../components/InformationType/InfoTypeTableSimple'
-import {intl} from '../util'
-import {getDashboard, getInformationTypesBy} from '../api'
-import {ProcessStatusFilter, ProductAreaDashCount} from '../constants'
+import { Section } from './ProcessPage'
+import { PageHeader } from '../components/common/PageHeader'
+import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
+import { intl } from '../util'
+import { getDashboard, getInformationTypesBy } from '../api'
+import { ProcessStatusFilter, ProductAreaDashCount } from '../constants'
 import Charts from '../components/Charts/Charts'
-import {Block} from 'baseui/block'
-import {HeadingSmall} from 'baseui/typography'
+import { Block } from 'baseui/block'
+import { HeadingSmall } from 'baseui/typography'
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = React.useState(true)
   const [chartData, setChartData] = React.useState<ProductAreaDashCount>()
-  const {productAreaId} = useParams<{ productAreaId: string }>()
+  const { productAreaId } = useParams<{ productAreaId: string }>()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       setIsLoading(true)
       const response = await getDashboard(ProcessStatusFilter.All)
 
-      if (response) setChartData(response.productAreas.find(p => p.productAreaId === productAreaId))
+      if (response) setChartData(response.productAreas.find((p) => p.productAreaId === productAreaId))
 
       setIsLoading(false)
     })()
@@ -29,18 +29,19 @@ export const ProductAreaPage = () => {
 
   return (
     <>
-      {productAreaId && <>
-        <PageHeader section={Section.productarea} code={productAreaId}/>
-        <ProcessList section={Section.productarea} code={productAreaId} isEditable={false}/>
-      </>}
+      {productAreaId && (
+        <>
+          <PageHeader section={Section.productarea} code={productAreaId} />
+          <ProcessList section={Section.productarea} code={productAreaId} isEditable={false} />
+        </>
+      )}
 
-      <InfoTypeTable title={intl.informationTypes}
-                     getInfoTypes={async () => (await getInformationTypesBy({productArea: productAreaId})).content}/>
+      <InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productArea: productAreaId })).content} />
 
       {!isLoading && chartData && (
         <Block marginBottom="240px">
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId}/>
+          <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId} />
         </Block>
       )}
     </>

@@ -1,114 +1,108 @@
-import * as React from "react";
-import {useEffect} from "react";
-import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps} from "formik";
-import {LabelMedium} from "baseui/typography";
-import {Input} from "baseui/input";
-import {Block, BlockProps} from "baseui/block";
-import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
-import {Textarea} from "baseui/textarea";
-import {Button, SHAPE} from "baseui/button";
-import {Plus} from "baseui/icon";
-import {Option, Select, TYPE, Value} from "baseui/select";
+import * as React from 'react'
+import { useEffect } from 'react'
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
+import { LabelMedium } from 'baseui/typography'
+import { Input } from 'baseui/input'
+import { Block, BlockProps } from 'baseui/block'
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
+import { Textarea } from 'baseui/textarea'
+import { Button, SHAPE } from 'baseui/button'
+import { Plus } from 'baseui/icon'
+import { Option, Select, TYPE, Value } from 'baseui/select'
 
-import {codelist, ListName} from "../../service/Codelist";
-import {InformationtypeFormValues} from "../../constants";
-import {intl} from "../../util"
-import {getTerm, mapTermToOption, searchInformationType, useTermSearch} from "../../api"
-import {infoTypeSchema} from "../common/schema"
-import {renderTagList} from "../common/TagList"
-import {Error} from "../common/ModalSchema"
+import { codelist, ListName } from '../../service/Codelist'
+import { InformationtypeFormValues } from '../../constants'
+import { intl } from '../../util'
+import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
+import { infoTypeSchema } from '../common/schema'
+import { renderTagList } from '../common/TagList'
+import { Error } from '../common/ModalSchema'
 import FieldProductTeam from '../common/form/FieldProductTeam'
-import {disableEnter} from "../../util/helper-functions";
+import { disableEnter } from '../../util/helper-functions'
 
 const labelProps: BlockProps = {
-  marginBottom: "8px",
-  alignSelf: "center"
-};
+  marginBottom: '8px',
+  alignSelf: 'center',
+}
 
 type FormProps = {
-  formInitialValues: InformationtypeFormValues;
-  submit: (infoType: InformationtypeFormValues) => Promise<void>;
-  isEdit: boolean;
-};
+  formInitialValues: InformationtypeFormValues
+  submit: (infoType: InformationtypeFormValues) => Promise<void>
+  isEdit: boolean
+}
 
-const InformationtypeForm = ({
-                               formInitialValues,
-                               submit,
-                               isEdit
-                             }: FormProps) => {
+const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) => {
   const initialValueSensitivity = () => {
     if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
-    return [{
-      id: formInitialValues.sensitivity,
-      label: codelist.getShortname(ListName.SENSITIVITY, formInitialValues.sensitivity)
-    }]
+    return [
+      {
+        id: formInitialValues.sensitivity,
+        label: codelist.getShortname(ListName.SENSITIVITY, formInitialValues.sensitivity),
+      },
+    ]
   }
   const initialValueMaster = () => {
     if (!formInitialValues.orgMaster || !codelist) return []
-    return [{
-      id: formInitialValues.orgMaster,
-      label: codelist.getShortname(ListName.SYSTEM, formInitialValues.orgMaster)
-    }]
+    return [
+      {
+        id: formInitialValues.orgMaster,
+        label: codelist.getShortname(ListName.SYSTEM, formInitialValues.orgMaster),
+      },
+    ]
   }
   const initialValueTerm = async () => {
     if (!formInitialValues.term || !codelist) return []
     return [mapTermToOption(await getTerm(formInitialValues.term))]
   }
-  const keywordsRef = React.useRef<HTMLInputElement>(null);
+  const keywordsRef = React.useRef<HTMLInputElement>(null)
 
   const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
-  const [sensitivityValue, setSensitivityValue] = React.useState<Option>(initialValueSensitivity());
-  const [termValue, setTermValue] = React.useState<Option>(formInitialValues.term ? [{id: formInitialValues.term, label: formInitialValues.term}] : []);
-  const [masterValue, setMasterValue] = React.useState<Option>(initialValueMaster());
-  const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
+  const [sensitivityValue, setSensitivityValue] = React.useState<Option>(initialValueSensitivity())
+  const [termValue, setTermValue] = React.useState<Option>(formInitialValues.term ? [{ id: formInitialValues.term, label: formInitialValues.term }] : [])
+  const [masterValue, setMasterValue] = React.useState<Option>(initialValueMaster())
+  const [currentKeywordValue, setCurrentKeywordValue] = React.useState('')
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
         setTermValue(await initialValueTerm())
       } catch (e: any) {
-        console.error("failed to get term", e)
+        console.error('failed to get term', e)
       }
     })()
   }, [formInitialValues.term])
 
   const getParsedOptions = (listName: ListName, values: string[]) => {
-    if (!codelist) return [];
+    if (!codelist) return []
 
     let parsedOptions = codelist.getParsedOptions(listName)
 
     if (!values) {
       return parsedOptions
     } else {
-      return parsedOptions.filter(option =>
-        values.includes(option.id) ? null : option.id
-      );
+      return parsedOptions.filter((option) => (values.includes(option.id) ? null : option.id))
     }
-  };
+  }
 
   const onAddKeyword = (arrayHelpers: FieldArrayRenderProps) => {
     if (!currentKeywordValue) {
       return
     }
     arrayHelpers.push(currentKeywordValue)
-    setCurrentKeywordValue("")
+    setCurrentKeywordValue('')
     if (keywordsRef && keywordsRef.current) {
       keywordsRef.current.focus()
     }
   }
 
-  const onSubmit = async (
-    values: InformationtypeFormValues,
-    actions: FormikHelpers<InformationtypeFormValues>
-  ) => {
-    const searchResults = (await searchInformationType(values.name!))
-      .content.filter(it => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
+  const onSubmit = async (values: InformationtypeFormValues, actions: FormikHelpers<InformationtypeFormValues>) => {
+    const searchResults = (await searchInformationType(values.name!)).content.filter((it) => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
     if (searchResults.length > 0) {
       actions.setFieldError('name', intl.informationTypeExists)
     } else {
-      submit(values);
-      actions.setSubmitting(false);
+      submit(values)
+      actions.setSubmitting(false)
     }
   }
   return (
@@ -120,34 +114,26 @@ const InformationtypeForm = ({
         onSubmit={onSubmit}
         render={(formikBag: FormikProps<InformationtypeFormValues>) => (
           <Form onKeyDown={disableEnter}>
-            <FlexGrid
-              flexGridColumnCount={2}
-              flexGridColumnGap="scale1000"
-              flexGridRowGap="scale1000"
-            >
+            <FlexGrid flexGridColumnCount={2} flexGridColumnGap="scale1000" flexGridRowGap="scale1000">
               <FlexGridItem>
                 <Field
                   name="name"
-                  render={({form, field}: FieldProps) => (
+                  render={({ form, field }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.name}</LabelMedium>
                       </Block>
-                      <Input
-                        {...field}
-                        placeholder={intl.nameWrite}
-                        error={!!form.errors.name && !!form.submitCount}
-                      />
+                      <Input {...field} placeholder={intl.nameWrite} error={!!form.errors.name && !!form.submitCount} />
                     </Block>
                   )}
                 />
-                <Error fieldName="name" fullWidth/>
+                <Error fieldName="name" fullWidth />
               </FlexGridItem>
 
               <FlexGridItem>
                 <Field
                   name="orgMaster"
-                  render={({form}: FieldProps<InformationtypeFormValues>) => (
+                  render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block marginBottom="1em">
                       <Block {...labelProps}>
                         <LabelMedium>{intl.orgMaster}</LabelMedium>
@@ -167,13 +153,13 @@ const InformationtypeForm = ({
                     </Block>
                   )}
                 />
-                <Error fieldName="orgMaster" fullWidth/>
+                <Error fieldName="orgMaster" fullWidth />
               </FlexGridItem>
 
               <FlexGridItem>
                 <Field
                   name="term"
-                  render={({form}: FieldProps<InformationtypeFormValues>) => (
+                  render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.termEditHeader}</LabelMedium>
@@ -186,7 +172,7 @@ const InformationtypeForm = ({
                         options={termSearchResult}
                         placeholder={intl.definitionWrite}
                         value={termValue as Value}
-                        onInputChange={event => setTermSearch(event.currentTarget.value)}
+                        onInputChange={(event) => setTermSearch(event.currentTarget.value)}
                         onChange={(params) => {
                           let term = params.value.length ? params.value[0] : undefined
                           setTermValue(term ? [term as Option] : [])
@@ -198,13 +184,13 @@ const InformationtypeForm = ({
                     </Block>
                   )}
                 />
-                <Error fieldName="term" fullWidth/>
+                <Error fieldName="term" fullWidth />
               </FlexGridItem>
 
               <FlexGridItem>
                 <FieldArray
                   name="sources"
-                  render={arrayHelpers => (
+                  render={(arrayHelpers) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>Kilder</LabelMedium>
@@ -213,8 +199,8 @@ const InformationtypeForm = ({
                         options={getParsedOptions(ListName.THIRD_PARTY, formikBag.values.sources)}
                         placeholder={intl.sourcesWrite}
                         maxDropdownHeight="300px"
-                        onChange={({option}) => {
-                          arrayHelpers.push(option ? option.id : null);
+                        onChange={({ option }) => {
+                          arrayHelpers.push(option ? option.id : null)
                         }}
                         error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
                       />
@@ -222,13 +208,13 @@ const InformationtypeForm = ({
                     </Block>
                   )}
                 />
-                <Error fieldName="sources" fullWidth/>
+                <Error fieldName="sources" fullWidth />
               </FlexGridItem>
 
               <FlexGridItem>
                 <FieldArray
                   name="keywords"
-                  render={arrayHelpers => (
+                  render={(arrayHelpers) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.searchWords}</LabelMedium>
@@ -237,12 +223,7 @@ const InformationtypeForm = ({
                         type="text"
                         placeholder={intl.searchWordsWrite}
                         value={currentKeywordValue}
-                        onChange={event =>
-                          setCurrentKeywordValue(
-                            event.currentTarget
-                              .value
-                          )
-                        }
+                        onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
                         onBlur={() => onAddKeyword(arrayHelpers)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') onAddKeyword(arrayHelpers)
@@ -250,13 +231,10 @@ const InformationtypeForm = ({
                         inputRef={keywordsRef}
                         overrides={{
                           After: () => (
-                            <Button
-                              type="button"
-                              shape={SHAPE.square}
-                            >
-                              <Plus/>
+                            <Button type="button" shape={SHAPE.square}>
+                              <Plus />
                             </Button>
-                          )
+                          ),
                         }}
                         error={!!arrayHelpers.form.errors.keywords && !!arrayHelpers.form.submitCount}
                       />
@@ -264,7 +242,7 @@ const InformationtypeForm = ({
                     </Block>
                   )}
                 />
-                <Error fieldName="keywords" fullWidth/>
+                <Error fieldName="keywords" fullWidth />
               </FlexGridItem>
 
               <FlexGridItem>
@@ -272,14 +250,14 @@ const InformationtypeForm = ({
                   <Block {...labelProps}>
                     <LabelMedium>{intl.productTeam}</LabelMedium>
                   </Block>
-                  <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName='productTeams'/>
+                  <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName="productTeams" />
                 </Block>
               </FlexGridItem>
 
               <FlexGridItem>
                 <FieldArray
                   name="categories"
-                  render={arrayHelpers => (
+                  render={(arrayHelpers) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.categories}</LabelMedium>
@@ -288,12 +266,8 @@ const InformationtypeForm = ({
                         options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
                         placeholder={intl.categoriesWrite}
                         maxDropdownHeight="300px"
-                        onChange={({option}) => {
-                          arrayHelpers.push(
-                            option
-                              ? option.id
-                              : null
-                          );
+                        onChange={({ option }) => {
+                          arrayHelpers.push(option ? option.id : null)
                         }}
                         error={!!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount}
                       />
@@ -301,25 +275,24 @@ const InformationtypeForm = ({
                     </Block>
                   )}
                 />
-                <Error fieldName="categories" fullWidth/>
+                <Error fieldName="categories" fullWidth />
               </FlexGridItem>
 
               <FlexGridItem>
                 <Field
                   name="description"
-                  render={({
-                             field, form
-                           }: FieldProps) => (
+                  render={({ field, form }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.usefulInformation}</LabelMedium>
                       </Block>
-                      <Textarea onKeyDown={e => {
-                        if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
-                      }}
-                                {...field}
-                                placeholder={intl.descriptionWrite}
-                                rows={5}
+                      <Textarea
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
+                        }}
+                        {...field}
+                        placeholder={intl.descriptionWrite}
+                        rows={5}
                       />
                     </Block>
                   )}
@@ -329,7 +302,7 @@ const InformationtypeForm = ({
               <FlexGridItem>
                 <Field
                   name="sensitivity"
-                  render={({form}: FieldProps<InformationtypeFormValues>) => (
+                  render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.sensitivity}</LabelMedium>
@@ -338,7 +311,7 @@ const InformationtypeForm = ({
                       <Select
                         options={codelist.getParsedOptions(ListName.SENSITIVITY).filter((s) => !s.label.includes('Ikke'))}
                         value={sensitivityValue as Value}
-                        placeholder={formikBag.values.sensitivity ? "" : intl.sensitivitySelect}
+                        placeholder={formikBag.values.sensitivity ? '' : intl.sensitivitySelect}
                         onChange={(params) => {
                           let sensitivity = params.value.length ? params.value[0] : undefined
                           setSensitivityValue(sensitivity as Option)
@@ -349,9 +322,8 @@ const InformationtypeForm = ({
                     </Block>
                   )}
                 />
-                <Error fieldName="sensitivity" fullWidth/>
+                <Error fieldName="sensitivity" fullWidth />
               </FlexGridItem>
-
             </FlexGrid>
 
             <Block display="flex" marginTop="2rem" justifyContent="flex-end">
@@ -360,14 +332,14 @@ const InformationtypeForm = ({
                 kind="secondary"
                 overrides={{
                   BaseButton: {
-                    style: ({$theme}:any) => {
+                    style: ({ $theme }: any) => {
                       return {
-                        alignContent: "center",
-                        paddingRight: "4rem",
-                        paddingLeft: "4rem"
-                      };
-                    }
-                  }
+                        alignContent: 'center',
+                        paddingRight: '4rem',
+                        paddingLeft: '4rem',
+                      }
+                    },
+                  },
                 }}
                 onClick={() => window.history.back()}
               >
@@ -377,17 +349,16 @@ const InformationtypeForm = ({
                 type="submit"
                 overrides={{
                   BaseButton: {
-                    style: ({$theme}: any) => {
+                    style: ({ $theme }: any) => {
                       return {
-                        alignContent: "center",
-                        marginLeft: "1rem",
-                        paddingRight: "4rem",
-                        paddingLeft: "4rem"
-                      };
-                    }
-                  }
+                        alignContent: 'center',
+                        marginLeft: '1rem',
+                        paddingRight: '4rem',
+                        paddingLeft: '4rem',
+                      }
+                    },
+                  },
                 }}
-
               >
                 {intl.save}
               </Button>
@@ -396,7 +367,7 @@ const InformationtypeForm = ({
         )}
       />
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default InformationtypeForm;
+export default InformationtypeForm

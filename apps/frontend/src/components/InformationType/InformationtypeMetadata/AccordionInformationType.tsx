@@ -1,23 +1,23 @@
 import * as React from 'react'
-import {Accordion, Panel} from 'baseui/accordion'
-import {ParagraphMedium} from 'baseui/typography'
+import { Accordion, Panel } from 'baseui/accordion'
+import { ParagraphMedium } from 'baseui/typography'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faUsersCog} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUsersCog } from '@fortawesome/free-solid-svg-icons'
 
-import {codelist, ListName} from '../../../service/Codelist'
-import {intl} from '../../../util'
-import {PurposeMap} from '../../../pages/InformationtypePage'
-import {Policy} from '../../../constants'
-import {paddingZero} from '../../common/Style'
-import {useQueryParam} from '../../../util/hooks'
-import {useLocation, useNavigate} from 'react-router-dom'
-import * as queryString from 'query-string'
-import {toggleOverride} from '../../common/Accordion'
+import { codelist, ListName } from '../../../service/Codelist'
+import { intl } from '../../../util'
+import { PurposeMap } from '../../../pages/InformationtypePage'
+import { Policy } from '../../../constants'
+import { paddingZero } from '../../common/Style'
+import { useQueryParam } from '../../../util/hooks'
+import { useLocation, useNavigate } from 'react-router-dom'
+import queryString from 'query-string'
+import { toggleOverride } from '../../common/Accordion'
 
 const reducePolicyList = (list: Policy[]) => {
   return list.reduce((acc: PurposeMap, curr) => {
-    curr.purposes.forEach(purpose => {
+    curr.purposes.forEach((purpose) => {
       if (!acc[purpose.code]) {
         acc[purpose.code] = [curr]
       } else {
@@ -34,7 +34,7 @@ export interface AccordionInformationtypeProps {
 }
 
 const AccordionInformationType = (props: AccordionInformationtypeProps) => {
-  const {policies} = props
+  const { policies } = props
   const selectedPurpose = useQueryParam('purpose')
   const navigate = useNavigate()
   const location = useLocation()
@@ -42,26 +42,33 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
   if (!codelist.isLoaded()) return <ParagraphMedium>{intl.couldntLoad}</ParagraphMedium>
 
   const purposeMap = reducePolicyList(policies)
-  const getPolicylistForPurpose = (purpose: string) => !purposeMap[purpose] ? [] : purposeMap[purpose]
+  const getPolicylistForPurpose = (purpose: string) => (!purposeMap[purpose] ? [] : purposeMap[purpose])
 
   return (
-    <Accordion initialState={{expanded: selectedPurpose ? [selectedPurpose] : []}}
-               onChange={key => {
-                 let pathname = location.pathname
-                 let purpose = key.expanded[0]
-                 navigate(pathname + '?' + queryString.stringify({purpose}, {skipNull: true}))
-               }}>
+    <Accordion
+      initialState={{ expanded: selectedPurpose ? [selectedPurpose] : [] }}
+      onChange={(key) => {
+        let pathname = location.pathname
+        let purpose = key.expanded[0]
+        navigate(pathname + '?' + queryString.stringify({ purpose }, { skipNull: true }))
+      }}
+    >
       {Object.keys(purposeMap).map((key) => (
-        <Panel title={<span><FontAwesomeIcon icon={faUsersCog}/> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}
-               overrides={{
-                 ToggleIcon: toggleOverride,
-                 Content: {style: paddingZero}
-               }}
+        <Panel
+          title={
+            <span>
+              <FontAwesomeIcon icon={faUsersCog} /> {codelist.getShortname(ListName.PURPOSE, key)}
+            </span>
+          }
+          key={key}
+          overrides={{
+            ToggleIcon: toggleOverride,
+            Content: { style: paddingZero },
+          }}
         >
-          <InformationtypePolicyTable policies={getPolicylistForPurpose(key)} showPurpose={false}/>
+          <InformationtypePolicyTable policies={getPolicylistForPurpose(key)} showPurpose={false} />
         </Panel>
       ))}
-
     </Accordion>
   )
 }

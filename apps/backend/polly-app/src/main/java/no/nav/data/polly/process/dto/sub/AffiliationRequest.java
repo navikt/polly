@@ -35,6 +35,9 @@ public class AffiliationRequest implements Validated {
     @Singular
     @Schema(description = "Codelist SYSTEM")
     private List<String> products;
+    @Singular
+    @Schema(description = "Codelist SYSTEM")
+    private List<String> disclosureDispatchers;
 
     @Override
     public void format() {
@@ -42,6 +45,7 @@ public class AffiliationRequest implements Validated {
         setSubDepartments(formatListToUppercase(getSubDepartments()));
         setProductTeams(formatList(getProductTeams()));
         setProducts(formatListToUppercase(getProducts()));
+        setDisclosureDispatchers(formatListToUppercase(getDisclosureDispatchers()));
     }
 
     @Override

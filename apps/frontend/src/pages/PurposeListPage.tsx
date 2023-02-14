@@ -1,24 +1,23 @@
-import {intl, theme} from '../util'
-import {HeadingXXLarge, LabelLarge} from 'baseui/typography'
+import { intl, theme } from '../util'
+import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import React from 'react'
-import {Block} from 'baseui/block'
-import {SIZE as ButtonSize} from 'baseui/button'
-import {Plus} from 'baseui/icon'
-import {user} from '../service/User'
+import { Block } from 'baseui/block'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { Plus } from 'baseui/icon'
+import { user } from '../service/User'
 import ModalProcess from '../components/Process/Accordion/ModalProcess'
-import {ProcessFormValues} from '../constants'
-import {convertDisclosureToFormValues, convertProcessToFormValues, createProcess, updateDisclosure} from '../api'
-import {useNavigate} from 'react-router-dom'
-import {genProcessPath, Section} from './ProcessPage'
-import Button from "../components/common/Button";
-import {PurposeList} from './ListSearchPage'
+import { ProcessFormValues } from '../constants'
+import { convertDisclosureToFormValues, convertProcessToFormValues, createProcess, updateDisclosure } from '../api'
+import { useNavigate } from 'react-router-dom'
+import { genProcessPath, Section } from './ProcessPage'
+import Button from '../components/common/Button'
+import { PurposeList } from './ListSearchPage'
 
 export const PurposeListPage = () => {
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
   const [errorProcessModal, setErrorProcessModal] = React.useState(null)
-
 
   const handleCreateProcess = async (process: ProcessFormValues) => {
     if (!process) return
@@ -28,18 +27,16 @@ export const PurposeListPage = () => {
       setShowCreateProcessModal(false)
       // todo multipurpose url
       navigate(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
-      process.disclosures.forEach(d=>{
-        updateDisclosure(convertDisclosureToFormValues(
-          {...d,processIds:[...d.processIds,newProcess.id]}
-        ))
+      process.disclosures.forEach((d) => {
+        updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id] }))
       })
-    } catch (err:any) {
+    } catch (err: any) {
       setErrorProcessModal(err.message)
     }
   }
 
   return (
-    <Block overrides={{Block: {props: {role: 'main'}}}}>
+    <Block overrides={{ Block: { props: { role: 'main' } } }}>
       <>
         <HeadingXXLarge>{intl.processingActivities}</HeadingXXLarge>
 
@@ -54,7 +51,11 @@ export const PurposeListPage = () => {
                 size={ButtonSize.compact}
                 kind={'outline'}
                 onClick={() => setShowCreateProcessModal(true)}
-                startEnhancer={<Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
+                startEnhancer={
+                  <Block display="flex" justifyContent="center">
+                    <Plus size={22} />
+                  </Block>
+                }
               >
                 {intl.processingActivitiesNew}
               </Button>
@@ -62,7 +63,7 @@ export const PurposeListPage = () => {
           </Block>
         </Block>
 
-        <Block marginBottom={theme.sizing.scale800}/>
+        <Block marginBottom={theme.sizing.scale800} />
 
         <ModalProcess
           title={intl.processingActivitiesNew}
@@ -73,7 +74,7 @@ export const PurposeListPage = () => {
           isEdit={false}
           initialValues={convertProcessToFormValues()}
         />
-        <PurposeList/>
+        <PurposeList />
       </>
     </Block>
   )

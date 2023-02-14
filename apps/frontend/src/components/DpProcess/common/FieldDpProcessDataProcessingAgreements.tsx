@@ -1,12 +1,12 @@
-import {FieldArray, FieldArrayRenderProps, FormikProps} from "formik";
-import {DpProcessFormValues} from "../../../constants";
-import * as React from "react";
-import {Block} from "baseui/block";
-import {Input} from "baseui/input";
-import {intl} from "../../../util";
-import {Button, SHAPE} from "baseui/button";
-import {Plus} from "baseui/icon";
-import {renderTagList} from "../../common/TagList";
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { DpProcessFormValues } from '../../../constants'
+import * as React from 'react'
+import { Block } from 'baseui/block'
+import { Input } from 'baseui/input'
+import { intl } from '../../../util'
+import { Button, SHAPE } from 'baseui/button'
+import { Plus } from 'baseui/icon'
+import { renderTagList } from '../../common/TagList'
 
 const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<DpProcessFormValues> }) => {
   const [currentKeywordValue, setCurrentKeywordValue] = React.useState('')
@@ -23,15 +23,15 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
 
   return (
     <FieldArray
-      name='dataProcessingAgreements'
-      render={arrayHelpers => (
-        <Block width='100%'>
+      name="dataProcessingAgreements"
+      render={(arrayHelpers) => (
+        <Block width="100%">
           <Input
-            type='text'
-            size='compact'
+            type="text"
+            size="compact"
             placeholder={intl.processorAgreementPlaceholder}
             value={currentKeywordValue}
-            onChange={event => setCurrentKeywordValue(event.currentTarget.value)}
+            onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') onAddAgreement(arrayHelpers)
             }}
@@ -39,14 +39,10 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
             inputRef={agreementRef}
             overrides={{
               After: () => (
-                <Button
-                  type='button'
-                  size='compact'
-                  shape={SHAPE.square}
-                >
-                  <Plus/>
+                <Button type="button" size="compact" shape={SHAPE.square}>
+                  <Plus />
                 </Button>
-              )
+              ),
             }}
           />
           {renderTagList(props.formikBag.values.dataProcessingAgreements, arrayHelpers)}

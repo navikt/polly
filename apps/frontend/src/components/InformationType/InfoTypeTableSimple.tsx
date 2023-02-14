@@ -1,42 +1,40 @@
-import {InformationType, informationTypeSort} from '../../constants'
-import {useTable} from '../../util/hooks'
-import {Block} from 'baseui/block'
-import {intl, theme} from '../../util'
-import {HeadingSmall} from 'baseui/typography'
-import {Cell, HeadCell, Row, Table} from '../common/Table'
+import { InformationType, informationTypeSort } from '../../constants'
+import { useTable } from '../../util/hooks'
+import { Block } from 'baseui/block'
+import { intl, theme } from '../../util'
+import { HeadingSmall } from 'baseui/typography'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
 import RouteLink from '../common/RouteLink'
-import {Sensitivity} from './Sensitivity'
-import {DotTags} from '../common/DotTag'
-import {ListName} from '../../service/Codelist'
-import React, {useEffect, useState} from 'react'
-import {Spinner} from '../common/Spinner'
-
+import { Sensitivity } from './Sensitivity'
+import { DotTags } from '../common/DotTag'
+import { ListName } from '../../service/Codelist'
+import React, { useEffect, useState } from 'react'
+import { Spinner } from '../common/Spinner'
 
 type TableProps = {
   title: string
   informationTypes?: InformationType[]
   getInfoTypes?: () => Promise<InformationType[]>
 }
-export const InfoTypeTable = ({informationTypes, getInfoTypes, title}: TableProps) => {
+export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TableProps) => {
   const [informationTypeList, setInformationTypeList] = useState<InformationType[]>(informationTypes || [])
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
 
   const [table, sortColumn] = useTable<InformationType, keyof InformationType>(informationTypeList, {
     sorting: informationTypeSort,
-    initialSortColumn: 'name'
+    initialSortColumn: 'name',
   })
 
   useEffect(() => {
     if (!getInfoTypes) return
-    (async () => {
+    ;(async () => {
       setIsLoading(true)
       setInformationTypeList(await getInfoTypes())
       setIsLoading(false)
     })()
   }, [getInfoTypes])
 
-  if (isLoading)
-    return <Spinner size={theme.sizing.scale1200}/>
+  if (isLoading) return <Spinner size={theme.sizing.scale1200} />
 
   return (
     <Block marginBottom={theme.sizing.scale1200}>
@@ -46,9 +44,9 @@ export const InfoTypeTable = ({informationTypes, getInfoTypes, title}: TableProp
         emptyText={intl.noInformationTypesAvailableInTable}
         headers={
           <>
-            <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.sources} column={'sources'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]} />
+            <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]} />
+            <HeadCell title={intl.sources} column={'sources'} tableState={[table, sortColumn]} />
           </>
         }
       >
@@ -56,14 +54,12 @@ export const InfoTypeTable = ({informationTypes, getInfoTypes, title}: TableProp
           <Row key={index}>
             <Cell>
               <RouteLink href={`/informationtype/${row.id}`}>
-                <Sensitivity sensitivity={row.sensitivity}/> {row.name}
+                <Sensitivity sensitivity={row.sensitivity} /> {row.name}
               </RouteLink>
             </Cell>
+            <Cell>{row.description}</Cell>
             <Cell>
-              {row.description}
-            </Cell>
-            <Cell>
-              <DotTags list={ListName.THIRD_PARTY} codes={row.sources} linkCodelist commaSeparator/>
+              <DotTags list={ListName.THIRD_PARTY} codes={row.sources} linkCodelist commaSeparator />
             </Cell>
           </Row>
         ))}

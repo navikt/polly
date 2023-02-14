@@ -1,25 +1,28 @@
-import {intl} from "./intl/intl";
-import {StyledLink} from "baseui/link";
-import * as React from "react";
-import {KeyboardEvent} from "react";
-import {StatefulTooltip} from 'baseui/tooltip'
-import {lowerFirst} from 'lodash'
+import { intl } from './intl/intl'
+import { StyledLink } from 'baseui/link'
+import * as React from 'react'
+import { KeyboardEvent } from 'react'
+import { StatefulTooltip } from 'baseui/tooltip'
+import { lowerFirst } from 'lodash'
+import { Process } from '../constants'
 
 export const isLink = (text: string) => {
   const regex = /http[s]?:\/\/.*/gm
-  if(!regex.test(text)){
+  if (!regex.test(text)) {
     return false
   }
-  return true;
+  return true
 }
 
 export const shortenLinksInText = (text: string) => {
-  return text.split(" ").map((word, index) => {
+  return text.split(' ').map((word, index) => {
     if (isLink(word)) {
       return (
         <span key={index}>
           <StatefulTooltip content={word}>
-            <StyledLink href={word} target="_blank" rel="noopener noreferrer">{index === 0 ? intl.seeExternalLink : lowerFirst(intl.seeExternalLink)}</StyledLink>
+            <StyledLink href={word} target="_blank" rel="noopener noreferrer">
+              {index === 0 ? intl.seeExternalLink : lowerFirst(intl.seeExternalLink)}
+            </StyledLink>
           </StatefulTooltip>
           &nbsp;
         </span>
@@ -30,7 +33,7 @@ export const shortenLinksInText = (text: string) => {
   })
 }
 
-export const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
+export const mapBool = (b?: boolean) => (b === true ? true : b === false ? false : undefined)
 
 export const disableEnter = (e: KeyboardEvent) => {
   if (e.key === 'Enter') e.preventDefault()
@@ -51,4 +54,8 @@ export const getNoDpiaLabel = (id: string) => {
     return intl.no_dpia_other
   }
   return ''
+}
+
+export const checkForAaregDispatcher = (process: Process) => {
+  return process.affiliation.disclosureDispatchers.find((d) => d.shortName === 'Aa-reg')
 }

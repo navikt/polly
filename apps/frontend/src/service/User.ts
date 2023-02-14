@@ -1,42 +1,42 @@
-import {AxiosResponse} from "axios";
-import {UserInfo} from "../constants"
-import {intl} from "../util"
-import {getUserInfo} from "../api"
+import { AxiosResponse } from 'axios'
+import { UserInfo } from '../constants'
+import { intl } from '../util'
+import { getUserInfo } from '../api'
 
 export enum Group {
-  READ = "READ",
-  WRITE = "WRITE",
-  SUPER = "SUPER",
-  ADMIN = "ADMIN"
+  READ = 'READ',
+  WRITE = 'WRITE',
+  SUPER = 'SUPER',
+  ADMIN = 'ADMIN',
 }
 
 class UserService {
-  loaded = false;
-  userInfo: UserInfo = {loggedIn: false, groups: []};
-  error?: string;
-  promise: Promise<any>;
+  loaded = false
+  userInfo: UserInfo = { loggedIn: false, groups: [] }
+  error?: string
+  promise: Promise<any>
 
   constructor() {
-    this.promise = this.fetchData();
+    this.promise = this.fetchData()
   }
 
   private fetchData = async () => {
     return getUserInfo()
-    .then(this.handleGetResponse)
-    .catch(err => {
-      this.error = err.message
-      this.loaded = true
-    });
-  };
+      .then(this.handleGetResponse)
+      .catch((err) => {
+        this.error = err.message
+        this.loaded = true
+      })
+  }
 
   handleGetResponse = (response: AxiosResponse<UserInfo>) => {
-    if (typeof response.data === "object" && response.data !== null) {
+    if (typeof response.data === 'object' && response.data !== null) {
       this.userInfo = response.data
     } else {
       this.error = response.data
     }
     this.loaded = true
-  };
+  }
 
   isLoggedIn(): boolean {
     return this.userInfo.loggedIn
@@ -67,7 +67,7 @@ class UserService {
   }
 
   public getGroupsHumanReadable(): string[] {
-    return this.userInfo.groups.map(group => (intl as any)[group] || group)
+    return this.userInfo.groups.map((group) => (intl as any)[group] || group)
   }
 
   public hasGroup(group: string): boolean {
@@ -99,5 +99,4 @@ class UserService {
   }
 }
 
-export const user = new UserService();
-
+export const user = new UserService()

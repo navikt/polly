@@ -5,11 +5,8 @@ import { useInfoTypeSearch } from '../../../api'
 import { intl } from '../../../util'
 import { PLACEMENT } from 'baseui/popover'
 
-const FieldInformationType = (props: {
-  documentInformationType: DocumentInfoTypeUse,
-  handleChange: Function
-}) => {
-  const {documentInformationType, handleChange} = props
+const FieldInformationType = (props: { documentInformationType: DocumentInfoTypeUse; handleChange: Function }) => {
+  const { documentInformationType, handleChange } = props
   const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch()
 
   const [selectedInformationType, setSelectedInformationType] = React.useState<InformationTypeShort>(documentInformationType.informationType)
@@ -28,17 +25,17 @@ const FieldInformationType = (props: {
           props: {
             Body: {
               placement: PLACEMENT.bottom,
-            }
-          }
-        }
+            },
+          },
+        },
       }}
       value={selectedInformationType as any}
-      onInputChange={event => setSearchKeyword(event.currentTarget.value)}
+      onInputChange={(event) => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
         setSelectedInformationType(params.value[0] as InformationTypeShort)
-        handleChange({...documentInformationType, informationTypeId: !params.value[0] ? '' : params.value[0].id})
+        handleChange({ ...documentInformationType, informationTypeId: !params.value[0] ? '' : params.value[0].id })
       }}
-      filterOptions={options => options}
+      filterOptions={(options) => options}
       labelKey="name"
     />
   )

@@ -28,6 +28,7 @@ public class ProcessorRequest implements RequestElement {
     private String name;
     private String contract;
     private String contractOwner;
+
     @Singular
     private List<String> operationalContractManagers;
     private String note;
@@ -54,7 +55,6 @@ public class ProcessorRequest implements RequestElement {
         setContractOwner(trimToNull(contractOwner));
         setOperationalContractManagers(formatList(operationalContractManagers));
         setNote(trimToNull(note));
-
         if (!Boolean.TRUE.equals(getOutsideEU())) {
             setTransferGroundsOutsideEU(null);
             setTransferGroundsOutsideEUOther(null);

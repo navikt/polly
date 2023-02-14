@@ -1,18 +1,18 @@
 import axios from 'axios'
-import {Disclosure, DisclosureFormValues, PageResponse} from '../constants'
-import {env} from '../util/env'
-import {convertLegalBasesToFormValues} from './PolicyApi'
-import {mapBool} from '../util/helper-functions'
-import {Code} from '../service/Codelist'
-import {useDebouncedState} from "../util";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import { Affiliation, Disclosure, DisclosureFormValues, PageResponse } from '../constants'
+import { env } from '../util/env'
+import { convertLegalBasesToFormValues } from './PolicyApi'
+import { mapBool } from '../util/helper-functions'
+import { Code } from '../service/Codelist'
+import { useDebouncedState } from '../util'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content;
-};
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content
+}
 
 export const getDisclosure = async (disclosureId: string) => {
-  return (await axios.get<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data;
+  return (await axios.get<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
 }
 
 export const getDisclosuresByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
@@ -50,9 +50,7 @@ export const createDisclosure = async (disclosure: DisclosureFormValues) => {
 
 export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
   let body = convertFormValuesToDisclosure(disclosure)
-  return (
-    await axios.put<Disclosure>(`${env.pollyBaseUrl}/disclosure/${body.id}`, body)
-  ).data
+  return (await axios.put<Disclosure>(`${env.pollyBaseUrl}/disclosure/${body.id}`, body)).data
 }
 
 export const deleteDisclosure = async (disclosureId: string) => {
@@ -70,14 +68,14 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
     end: values.end,
-    processIds: values.processIds.length > 0 ? values.processIds : values.processes.map(p => p.id) || [],
-    informationTypeIds: values.informationTypes ? values.informationTypes.map(i => i.id) : [],
+    processIds: values.processIds.length > 0 ? values.processIds : values.processes.map((p) => p.id) || [],
+    informationTypeIds: values.informationTypes ? values.informationTypes.map((i) => i.id) : [],
     abroad: {
       abroad: mapBool(values.abroad.abroad),
       countries: values.abroad.countries,
       refToAgreement: values.abroad.refToAgreement,
-      businessArea: values.abroad.businessArea
-    }
+      businessArea: values.abroad.businessArea,
+    },
   }
 }
 
@@ -99,19 +97,19 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
       abroad: mapBool(disclosure.abroad.abroad),
       countries: disclosure.abroad.countries || [],
       refToAgreement: disclosure.abroad.refToAgreement || '',
-      businessArea: disclosure.abroad.businessArea || ''
+      businessArea: disclosure.abroad.businessArea || '',
     },
-    processIds: disclosure.processIds || []
+    processIds: disclosure.processIds || [],
   }
 }
 
 export const useDisclosureSearch = () => {
-  const [disclosureSearch, setDisclosureSearch] = useDebouncedState<string>('', 200);
-  const [disclosureSearchResult, setDisclosureSearchResult] = useState<Disclosure[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [disclosureSearch, setDisclosureSearch] = useDebouncedState<string>('', 200)
+  const [disclosureSearchResult, setDisclosureSearchResult] = useState<Disclosure[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (disclosureSearch && disclosureSearch.length > 2) {
         setLoading(true)
         setDisclosureSearchResult((await searchDisclosure(disclosureSearch)).content)
@@ -126,9 +124,10 @@ export const useDisclosureSearch = () => {
 }
 
 export interface DisclosureSummary {
-  id: string;
-  name: string;
-  recipient: Code;
-  processes: {id: string, name: string, number: number, purposes: Code[]}[]
+  id: string
+  name: string
+  recipient: Code
+  processes: { id: string; name: string; number: number; purposes: Code[] }[]
   legalBases: number
+  affiliation: Affiliation
 }
