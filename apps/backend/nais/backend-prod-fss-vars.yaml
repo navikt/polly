@@ -1,5 +1,6 @@
 ingresses:
   - https://polly.nais.adeo.no
   - https://polly.prod-fss-pub.nais.io
+  - https://polly.intern.nav.no
 replies:
   - https://behandlingskatalog.nais.adeo.no/oauth2/callback
