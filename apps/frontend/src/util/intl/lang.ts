@@ -2,7 +2,7 @@ import { IStrings } from './intl'
 
 export const no: IStrings = {
   //aareg avtaler
-  aaregContracts: 'AA-Reg Avtaler',
+  aaregContracts: 'Utleveringsavtaler i Aa-registeret',
   organisationNumber: 'Organisasjonsnummer',
   aaregContractNumber: 'Avtalenummer',
   createdDate: 'Dato opprettet',
@@ -552,7 +552,7 @@ export const no: IStrings = {
 
 export const en: IStrings = {
   //aareg avtale
-  aaregContracts: 'AA-Reg Contracts',
+  aaregContracts: 'Disclosure contracts from Aa-registry',
   organisationNumber: 'Organisation number',
   aaregContractNumber: 'Contract number',
   createdDate: 'Created date',
