@@ -160,7 +160,7 @@ export const DisclosureListPage = () => {
             <Button
               size='compact'
               onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}
-            > {showAaregAvtaleTable ? 'Skjul ' : 'Vis '} Aa-reg avtaler</Button>
+            > {showAaregAvtaleTable ? intl.hideAaregTable : intl.showAaregTable}</Button>
           </Block>
         </Block>
         <Block display="flex" flex="1" justifyContent="flex-end">

@@ -18,6 +18,8 @@ export interface IStrings {
   aaregContracts: string
   organisationNumber: string
   aaregContractNumber: string
+  showAaregTable: string
+  hideAaregTable: string
   createdDate: string
   accessType: string
   API: string
