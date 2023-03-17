@@ -41,6 +41,7 @@ export const DisclosureListPage = () => {
     initialSortColumn: 'name',
   })
   const [aaregAvtaler, setAaregAvtaler] = useState<AaregAvtale[]>([])
+  const [showAaregAvtaleTable, setShowAaregAvtaleTable] = useState<boolean>(false)
   const filter = useQueryParam<FilterType>('filter')
   const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
@@ -61,7 +62,7 @@ export const DisclosureListPage = () => {
   }
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       const all = selectedProcess
         ? (await getAll(getDisclosureSummaries)()).filter((d) => d.processes.find((p) => p.id === selectedProcess.id))
         : await getAll(getDisclosureSummaries)()
@@ -72,7 +73,7 @@ export const DisclosureListPage = () => {
   }, [filter, newDisclosure, selectedProcess])
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       if (processFilter && processFilter.length >= 3) {
         const process = await getProcess(processFilter)
         if (process) {
@@ -85,13 +86,13 @@ export const DisclosureListPage = () => {
   }, [processFilter])
 
   useEffect(() => {
-    ;(async () => {
-      if (selectedProcess && checkForAaregDispatcher(selectedProcess)) {
+    ; (async () => {
+      if ((selectedProcess && checkForAaregDispatcher(selectedProcess)) || showAaregAvtaleTable) {
         const res = await searchAaregAvtale('avt')
         setAaregAvtaler(res.content)
       }
     })()
-  }, [selectedProcess])
+  }, [selectedProcess, showAaregAvtaleTable])
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
@@ -152,7 +153,15 @@ export const DisclosureListPage = () => {
       </Block>
       <Block display="flex" width="100%" marginBottom="12px">
         <Block display="flex" flex="1">
-          <SearchProcess selectedProcess={selectedProcess} setSelectedProcess={setSelectedProcess} />
+          <Block display="flex" flex="1">
+            <SearchProcess selectedProcess={selectedProcess} setSelectedProcess={setSelectedProcess} />
+          </Block>
+          <Block marginLeft="8px" display="flex">
+            <Button
+              size='compact'
+              onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}
+            > {showAaregAvtaleTable ? 'Skjul ' : 'Vis '} Aa-reg avtaler</Button>
+          </Block>
         </Block>
         <Block display="flex" flex="1" justifyContent="flex-end">
           {user.canWrite() && (
@@ -171,7 +180,7 @@ export const DisclosureListPage = () => {
           )}
         </Block>
       </Block>
-      <Table
+      {!showAaregAvtaleTable && <Table
         emptyText={intl.disclosures}
         headers={
           <>
@@ -208,8 +217,8 @@ export const DisclosureListPage = () => {
             <Cell>{d.legalBases ? intl.yes : intl.no}</Cell>
           </Row>
         ))}
-      </Table>
-      {selectedProcess && checkForAaregDispatcher(selectedProcess) && (
+      </Table>}
+      {(selectedProcess && checkForAaregDispatcher(selectedProcess) || showAaregAvtaleTable) && (
         <Block marginTop="12px">
           <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
         </Block>
