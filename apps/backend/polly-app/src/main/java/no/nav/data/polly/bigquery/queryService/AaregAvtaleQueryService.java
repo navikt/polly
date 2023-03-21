@@ -30,11 +30,11 @@ public class AaregAvtaleQueryService {
     private String DATASET_NAME;
 
     @Value("${polly.aareg.tableName}")
-    private String TANLE_NAME;
+    private String TABLE_NAME;
 
     public AaregAvtale getByAvtaleId(String id) {
 
-        String avtaleByIdQuery = "SELECT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer = UPPER(@avtalenummer)";
+        String avtaleByIdQuery = "SELECT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TABLE_NAME + "` WHERE avtalenummer = UPPER(@avtalenummer)";
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
@@ -57,7 +57,7 @@ public class AaregAvtaleQueryService {
 
     public List<AaregAvtale> searchAaregAvtale(String searchParam) {
 
-        String avtaleByIdQuery = "SELECT DISTINCT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TANLE_NAME + "` WHERE avtalenummer LIKE UPPER(@searchParam) OR UPPER(virksomhet) LIKE UPPER(@searchParam)";
+        String avtaleByIdQuery = "SELECT DISTINCT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TABLE_NAME + "` WHERE avtalenummer LIKE UPPER(@searchParam) OR UPPER(virksomhet) LIKE UPPER(@searchParam)";
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
