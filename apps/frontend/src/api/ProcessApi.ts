@@ -46,7 +46,7 @@ export const getProcessByStateAndStatusForDepartment = async (
 
 export const searchProcess = async (text: string) => {
   let editedText = text
-  if(text.toLowerCase().match(/b[0-9]+/)) {
+  if (text.toLowerCase().match(/b[0-9]+/)) {
     editedText = text.substring(1)
   }
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${editedText}`)).data

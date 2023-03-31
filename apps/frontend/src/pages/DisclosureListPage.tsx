@@ -62,7 +62,7 @@ export const DisclosureListPage = () => {
   }
 
   useEffect(() => {
-    ; (async () => {
+    ;(async () => {
       const all = selectedProcess
         ? (await getAll(getDisclosureSummaries)()).filter((d) => d.processes.find((p) => p.id === selectedProcess.id))
         : await getAll(getDisclosureSummaries)()
@@ -73,7 +73,7 @@ export const DisclosureListPage = () => {
   }, [filter, newDisclosure, selectedProcess])
 
   useEffect(() => {
-    ; (async () => {
+    ;(async () => {
       if (processFilter && processFilter.length >= 3) {
         const process = await getProcess(processFilter)
         if (process) {
@@ -86,7 +86,7 @@ export const DisclosureListPage = () => {
   }, [processFilter])
 
   useEffect(() => {
-    ; (async () => {
+    ;(async () => {
       if ((selectedProcess && checkForAaregDispatcher(selectedProcess)) || showAaregAvtaleTable) {
         const res = await searchAaregAvtale('avt')
         setAaregAvtaler(res.content)
@@ -157,10 +157,10 @@ export const DisclosureListPage = () => {
             <SearchProcess selectedProcess={selectedProcess} setSelectedProcess={setSelectedProcess} />
           </Block>
           <Block marginLeft="8px" display="flex">
-            <Button
-              size='compact'
-              onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}
-            > {showAaregAvtaleTable ? intl.hideAaregTable : intl.showAaregTable}</Button>
+            <Button size="compact" onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}>
+              {' '}
+              {showAaregAvtaleTable ? intl.hideAaregTable : intl.showAaregTable}
+            </Button>
           </Block>
         </Block>
         <Block display="flex" flex="1" justifyContent="flex-end">
@@ -180,45 +180,47 @@ export const DisclosureListPage = () => {
           )}
         </Block>
       </Block>
-      {!showAaregAvtaleTable && <Table
-        emptyText={intl.disclosures}
-        headers={
-          <>
-            <HeadCell title={intl.disclosureName} column="name" tableState={[table, sortColumn]} />
-            <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column="recipient" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.relatedProcesses} column="processes" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.legalBasesShort} column="legalBases" tableState={[table, sortColumn]} />
-          </>
-        }
-      >
-        {table.data.map((d) => (
-          <Row key={d.id}>
-            <Cell>
-              <ObjectLink id={d.id} type={ObjectType.DISCLOSURE}>
-                {d.name}
-              </ObjectLink>
-            </Cell>
-            <Cell>
-              <ObjectLink id={d.recipient.code} type={ListName.THIRD_PARTY}>
-                {d.recipient.shortName}
-              </ObjectLink>
-            </Cell>
-            <Cell>
-              <Block display="flex" flexDirection="column">
-                {d.processes.map((p) => (
-                  <Block key={p.id} marginRight={theme.sizing.scale400}>
-                    <ObjectLink id={p.id} type={ObjectType.PROCESS}>
-                      {p.purposes.map((pu) => pu.shortName).join(', ')}: {p.name}
-                    </ObjectLink>
-                  </Block>
-                ))}
-              </Block>
-            </Cell>
-            <Cell>{d.legalBases ? intl.yes : intl.no}</Cell>
-          </Row>
-        ))}
-      </Table>}
-      {(selectedProcess && checkForAaregDispatcher(selectedProcess) || showAaregAvtaleTable) && (
+      {!showAaregAvtaleTable && (
+        <Table
+          emptyText={intl.disclosures}
+          headers={
+            <>
+              <HeadCell title={intl.disclosureName} column="name" tableState={[table, sortColumn]} />
+              <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column="recipient" tableState={[table, sortColumn]} />
+              <HeadCell title={intl.relatedProcesses} column="processes" tableState={[table, sortColumn]} />
+              <HeadCell title={intl.legalBasesShort} column="legalBases" tableState={[table, sortColumn]} />
+            </>
+          }
+        >
+          {table.data.map((d) => (
+            <Row key={d.id}>
+              <Cell>
+                <ObjectLink id={d.id} type={ObjectType.DISCLOSURE}>
+                  {d.name}
+                </ObjectLink>
+              </Cell>
+              <Cell>
+                <ObjectLink id={d.recipient.code} type={ListName.THIRD_PARTY}>
+                  {d.recipient.shortName}
+                </ObjectLink>
+              </Cell>
+              <Cell>
+                <Block display="flex" flexDirection="column">
+                  {d.processes.map((p) => (
+                    <Block key={p.id} marginRight={theme.sizing.scale400}>
+                      <ObjectLink id={p.id} type={ObjectType.PROCESS}>
+                        {p.purposes.map((pu) => pu.shortName).join(', ')}: {p.name}
+                      </ObjectLink>
+                    </Block>
+                  ))}
+                </Block>
+              </Cell>
+              <Cell>{d.legalBases ? intl.yes : intl.no}</Cell>
+            </Row>
+          ))}
+        </Table>
+      )}
+      {((selectedProcess && checkForAaregDispatcher(selectedProcess)) || showAaregAvtaleTable) && (
         <Block marginTop="12px">
           <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
         </Block>

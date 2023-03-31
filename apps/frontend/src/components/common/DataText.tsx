@@ -22,7 +22,7 @@ const DataText = (props: DataTextProps) => {
       <Block width="60%">
         {texts &&
           texts.map((text, index) => (
-            <ParagraphMedium marginTop="0" marginBottom="0" key={index} $style={{wordBreak: 'break-word'}}>
+            <ParagraphMedium marginTop="0" marginBottom="0" key={index} $style={{ wordBreak: 'break-word' }}>
               {text}
             </ParagraphMedium>
           ))}
