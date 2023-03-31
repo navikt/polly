@@ -2,6 +2,7 @@ import { default as React, ReactNode } from 'react'
 import { Block } from 'baseui/block'
 import { intl, theme } from '../../util'
 import { LabelMedium, ParagraphMedium } from 'baseui/typography'
+import { all } from 'axios'
 
 type DataTextProps = {
   label?: string
@@ -21,7 +22,7 @@ const DataText = (props: DataTextProps) => {
       <Block width="60%">
         {texts &&
           texts.map((text, index) => (
-            <ParagraphMedium marginTop="0" marginBottom="0" key={index}>
+            <ParagraphMedium marginTop="0" marginBottom="0" key={index} $style={{wordBreak: 'break-word'}}>
               {text}
             </ParagraphMedium>
           ))}
