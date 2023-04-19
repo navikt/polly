@@ -94,7 +94,8 @@ public class InformationTypeController {
             @RequestParam(required = false) String orgMaster,
             @RequestParam(required = false) String term,
             @RequestParam(required = false) String productArea,
-            @RequestParam(required = false) String productTeam
+            @RequestParam(required = false) String productTeam,
+            @RequestParam(required = false) String sensitivity
     ) {
         log.info("Received request for all InformationTypes source={} term={}", source, term);
         List<InformationType> infoTypes = null;
@@ -109,6 +110,8 @@ public class InformationTypeController {
         } else if (productArea != null) {
             var teams = teamService.getTeamsForProductArea(productArea);
             infoTypes = repository.findByProductTeams((convert(teams, Team::getId)));
+        } else if(sensitivity != null){
+            infoTypes = repository.findBySensitivity(sensitivity);
         }
         if (infoTypes != null) {
             var sorted = new ArrayList<>(infoTypes);
