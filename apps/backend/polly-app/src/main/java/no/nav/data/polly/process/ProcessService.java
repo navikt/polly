@@ -15,6 +15,9 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
@@ -58,6 +61,10 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final CodeUsageService codeUsageService;
     private final TemplateService templateService;
     private final EmailService emailService;
+    private final InformationTypeRepository informationTypeRepository;
+    private final PolicyRepository policyRepository;
+
+
 
     @Transactional
     public Process save(Process process) {
@@ -106,6 +113,18 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
             all = filter(all, lawIds::contains);
         }
         return processRepository.findAllById(all);
+    }
+
+    public List<Process> fetchAllProcessesByInformationTypeSensitivity(String sensitivity) {
+        List<InformationType> informationTypes = informationTypeRepository.findBySensitivity(sensitivity);
+        List<Process> processes = new ArrayList<>();
+        informationTypes.stream().forEach(it->{
+            var policies = policyRepository.findByInformationTypeId(it.getId());
+            policies.stream().forEach(policy -> {
+                processes.add(policy.getProcess());
+            });
+        });
+        return processes;
     }
 
     private List<UUID> getAllProcessIds(CodeUsageResponse usage) {

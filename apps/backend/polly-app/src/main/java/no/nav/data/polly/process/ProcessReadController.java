@@ -129,6 +129,17 @@ public class ProcessReadController {
         return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 
+    @Operation(summary = "Get All Processes by information type sensitivity")
+    @ApiResponse(description = "Get All Processes by information type sensitivity")
+    @GetMapping("/sensitivity")
+    public ResponseEntity<RestResponsePage<ProcessResponse>> getProcessesByInformationTypeSensitivity(
+            PageParameters pageParameters,
+            @RequestParam String sensitivity
+    ) {
+            var processes = processService.fetchAllProcessesByInformationTypeSensitivity(sensitivity);
+            return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
+    }
+
     @Operation(summary = "Get Processes for Purpose")
     @ApiResponse(description = "Processes fetched")
     @GetMapping("/purpose/{purpose}")
