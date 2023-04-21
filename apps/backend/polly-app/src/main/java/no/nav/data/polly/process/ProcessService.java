@@ -38,7 +38,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
@@ -124,7 +123,8 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 processes.add(policy.getProcess());
             });
         });
-        return processes.stream().distinct().collect(Collectors.toList());
+//        return processes.stream().distinct().collect(Collectors.toList());
+        return processes;
     }
 
     private List<UUID> getAllProcessIds(CodeUsageResponse usage) {
