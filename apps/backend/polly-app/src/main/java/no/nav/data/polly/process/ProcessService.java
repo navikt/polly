@@ -16,7 +16,6 @@ import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
-import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessStatus;
@@ -39,6 +38,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
@@ -116,15 +116,15 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     }
 
     public List<Process> fetchAllProcessesByInformationTypeSensitivity(String sensitivity) {
-        List<InformationType> informationTypes = informationTypeRepository.findBySensitivity(sensitivity);
+        CodeUsageResponse codeUsageResponse = codeUsageService.findCodeUsage(ListName.SENSITIVITY,sensitivity);
         List<Process> processes = new ArrayList<>();
-        informationTypes.stream().forEach(it->{
-            var policies = policyRepository.findByInformationTypeId(it.getId());
-            policies.stream().forEach(policy -> {
+        codeUsageResponse.getInformationTypes().forEach(it->{
+            var policies = policyRepository.findByInformationTypeId(it.getIdAsUUID());
+            policies.forEach(policy -> {
                 processes.add(policy.getProcess());
             });
         });
-        return processes;
+        return processes.stream().distinct().collect(Collectors.toList());
     }
 
     private List<UUID> getAllProcessIds(CodeUsageResponse usage) {
