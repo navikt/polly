@@ -76,6 +76,8 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
       refToAgreement: values.abroad.refToAgreement,
       businessArea: values.abroad.businessArea,
     },
+    agreementReference: values.agreementReference,
+    thirdCountryReceiver: mapBool(values.thirdCountryReceiver)
   }
 }
 
@@ -100,6 +102,8 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
       businessArea: disclosure.abroad.businessArea || '',
     },
     processIds: disclosure.processIds || [],
+    agreementReference: disclosure.agreementReference || '',
+    thirdCountryReceiver: mapBool(disclosure.thirdCountryReceiver)
   }
 }
 

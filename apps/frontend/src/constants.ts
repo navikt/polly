@@ -517,6 +517,8 @@ export interface DisclosureFormValues {
   processes: ProcessShort[]
   informationTypes?: InformationTypeShort[]
   abroad: DisclosureAbroad
+  agreementReference?: string
+  thirdCountryReceiver?: boolean
   processIds: string[]
 }
 
@@ -541,6 +543,9 @@ export interface Disclosure extends IDurationed {
   informationTypes?: InformationTypeShort[]
   informationTypeIds?: string[]
   abroad: DisclosureAbroad
+  agreementReference?: string
+  thirdCountryReceiver?: boolean
+
   changeStamp: ChangeStamp
 }
 
@@ -549,6 +554,7 @@ export interface DocumentFormValues {
   name: string
   description: string
   informationTypes: DocumentInfoTypeUse[]
+  dataAccessClass?: Code
 }
 
 export interface Document {
@@ -556,6 +562,7 @@ export interface Document {
   name: string
   description: string
   informationTypes: DocumentInfoTypeUse[]
+  dataAccessClass: Code
 }
 
 export interface DocumentInfoTypeUse {
