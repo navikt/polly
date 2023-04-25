@@ -202,6 +202,7 @@ export const createDocumentSchema: () => yup.SchemaOf<CreateDocumentFormValues> 
   yup.object({
     name: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
+    dataAccessClass: yup.string(),
     informationTypes: yup
       .array()
       .of(
@@ -211,7 +212,7 @@ export const createDocumentSchema: () => yup.SchemaOf<CreateDocumentFormValues> 
           subjectCategories: yup.array().of(yup.string().required()).min(1, intl.required),
         }),
       )
-      .min(1, intl.required),
+      .min(1, intl.required)
   })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {

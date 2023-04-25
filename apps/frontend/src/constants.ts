@@ -581,7 +581,8 @@ export interface AddDocumentToProcessFormValues {
 export interface CreateDocumentFormValues {
   name: string
   description: string
-  informationTypes: DocumentInformationTypes[]
+  informationTypes: DocumentInformationTypes[],
+  dataAccessClass?: string
 }
 
 export interface DocumentInformationTypes {

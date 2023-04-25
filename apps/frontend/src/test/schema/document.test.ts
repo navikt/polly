@@ -7,6 +7,7 @@ import { ListName } from '../../service/Codelist'
 const senCode = addCode(ListName.SENSITIVITY, 'SEN')
 const subCode = addCode(ListName.SUBJECT_CATEGORY, 'SUB')
 const purposeCode = addCode(ListName.PURPOSE, 'PURPOSE')
+const dataAccessClassCode = addCode(ListName.DATA_ACCESS_CLASS, 'ACCESS')
 
 const schema = createDocumentSchema()
 const createDocument: () => CreateDocumentFormValues = () => ({
@@ -18,6 +19,7 @@ const createDocument: () => CreateDocumentFormValues = () => ({
       informationTypeId: 'id',
     },
   ],
+  dataAccessClass: 'ACCESS'
 })
 
 test('CreateDocument ok', () => {
@@ -45,6 +47,7 @@ const addDocumentData: () => AddDocumentToProcessFormValues = () => ({
     name: 'name',
     description: 'desc',
     informationTypes: [],
+    dataAccessClass: dataAccessClassCode
   },
   informationTypes: [
     {
