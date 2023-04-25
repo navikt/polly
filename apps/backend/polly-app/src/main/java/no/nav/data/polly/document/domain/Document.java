@@ -17,13 +17,13 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.hibernate.annotations.Type;
 
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 
@@ -55,6 +55,7 @@ public class Document extends Auditable {
         }
         data.setDescription(request.getDescription());
         data.setName(request.getName());
+        data.setDataAccessClass(request.getDataAccessClass());
         data.setInformationTypes(convert(request.getInformationTypes(), DocumentData.InformationTypeUse::convertFromRequest));
         return this;
     }
@@ -65,6 +66,7 @@ public class Document extends Auditable {
                 .name(data.getName())
                 .description(data.getDescription())
                 .informationTypes(convert(data.getInformationTypes(), Document::convertToInfoTypeUseResponse))
+                .dataAccessClass(CodelistService.getCodelistResponse(ListName.DATA_ACCESS_CLASS,data.getDataAccessClass()))
                 .build();
     }
 

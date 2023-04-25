@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,5 +23,6 @@ public class DocumentResponse {
     private String description;
     @Singular
     private List<DocumentInfoTypeUseResponse> informationTypes;
+    private CodelistResponse dataAccessClass;
 
 }

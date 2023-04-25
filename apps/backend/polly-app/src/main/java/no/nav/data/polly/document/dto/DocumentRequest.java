@@ -25,6 +25,7 @@ public class DocumentRequest implements RequestElement {
     private String name;
     private String description;
     private List<DocumentInfoTypeUseRequest> informationTypes;
+    private String dataAccessClass;
 
     private boolean update;
     private int requestIndex;

@@ -12,4 +12,5 @@ public enum ListName {
     SUB_DEPARTMENT,
     SYSTEM,
     TRANSFER_GROUNDS_OUTSIDE_EU,
+    DATA_ACCESS_CLASS
 }
