@@ -10,4 +10,7 @@ public interface DocumentRepository extends JpaRepository<Document, UUID>, Docum
 
     @Query(value = "select * from document where data ->>'name' ilike %?1%", nativeQuery = true)
     List<Document> findByNameLike(String name);
+
+    @Query(value = "select * from document where data ->> 'dataAccessClass' = ?1", nativeQuery = true)
+    List<Document> findByDataAccessClass(String dataAccessClass);
 }

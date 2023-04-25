@@ -232,6 +232,8 @@ public class CodeUsageService {
     private List<UsedInInstance> findDocuments(ListName listName, String code) {
         if (listName == ListName.SUBJECT_CATEGORY) {
             return documentRepository.findBySubjectCategory(code).stream().map(Document::getInstanceIdentification).collect(toList());
+        } else if(listName == ListName.DATA_ACCESS_CLASS) {
+            return documentRepository.findByDataAccessClass(code).stream().map(Document::getInstanceIdentification).collect(toList());
         }
         return List.of();
     }

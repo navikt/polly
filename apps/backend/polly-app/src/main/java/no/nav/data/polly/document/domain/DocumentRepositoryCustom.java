@@ -9,4 +9,5 @@ public interface DocumentRepositoryCustom {
 
     List<Document> findBySubjectCategory(String subjectCategory);
 
+
 }
