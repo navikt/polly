@@ -51,6 +51,8 @@ public class DisclosureRequest implements RequestElement {
     private List<String> processIds;
     private List<String> informationTypeIds;
     private DisclosureAbroadRequest abroad;
+    private Boolean thirdCountryReceiver;
+    private String agreementReference;
 
     private boolean update;
     private int requestIndex;
@@ -69,6 +71,7 @@ public class DisclosureRequest implements RequestElement {
         setDocumentId(trimToNull(getDocumentId()));
         setProcessIds(formatList(getProcessIds()));
         setInformationTypeIds(formatList(getInformationTypeIds()));
+        setAgreementReference(trimToNull(getAgreementReference()));
     }
 
     @Override

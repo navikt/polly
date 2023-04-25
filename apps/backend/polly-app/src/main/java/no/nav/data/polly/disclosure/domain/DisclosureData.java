@@ -26,6 +26,7 @@ public class DisclosureData {
     private String recipientPurpose;
     @NotNull
     private LocalDate start;
+    private String agreementReference;
     @NotNull
     private LocalDate end;
     private UUID documentId;
@@ -35,6 +36,7 @@ public class DisclosureData {
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
     private DisclosureAbroad abroad;
+    private Boolean thirdCountryReceiver;
 
     public DisclosureAbroad getAbroad() {
         return abroad == null ? new DisclosureAbroad() : abroad;

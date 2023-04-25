@@ -45,6 +45,8 @@ public class DisclosureResponse {
     private List<LegalBasisResponse> legalBases;
     private DisclosureAbroadResponse abroad;
     private ChangeStampResponse changeStamp;
+    private Boolean thirdCountryReceiver;
+    private String agreementReference;
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
