@@ -367,6 +367,8 @@ export const disclosureSchema: () => yup.SchemaOf<DisclosureFormValues> = () =>
     informationTypes: yup.array().of(ignore().required()),
     aaregContracts: yup.array().of(ignore().required()),
     aaregContractIds: yup.array(),
+    agreementReference: yup.string(),
+    thirdCountryReceiver: yup.boolean()
   })
 
 export const addDocumentToProcessSchema: () => yup.SchemaOf<AddDocumentToProcessFormValues> = () =>
