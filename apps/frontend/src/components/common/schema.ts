@@ -202,7 +202,7 @@ export const createDocumentSchema: () => yup.SchemaOf<CreateDocumentFormValues> 
   yup.object({
     name: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
-    dataAccessClass: yup.string(),
+    dataAccessClass: yup.string().required(intl.required),
     informationTypes: yup
       .array()
       .of(
