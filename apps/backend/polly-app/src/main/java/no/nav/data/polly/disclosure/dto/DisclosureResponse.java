@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.DateUtil;
-import no.nav.data.polly.bigquery.dto.AaregAvtaleResponse;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
@@ -46,7 +45,7 @@ public class DisclosureResponse {
     private DisclosureAbroadResponse abroad;
     private ChangeStampResponse changeStamp;
     private Boolean thirdCountryReceiver;
-    private String agreementReference;
+    private String administrationArchiveCaseNumber;
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
