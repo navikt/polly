@@ -91,7 +91,7 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     document: disclosure.document ? {
       name: disclosure.document.name,
       description: disclosure.document.description,
-      dataAccessClass: disclosure.document.dataAccessClass.code || '',
+      dataAccessClass: disclosure.document.dataAccessClass ? disclosure.document.dataAccessClass.code : '',
       informationTypes: disclosure.document.informationTypes
     } : undefined,
     legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),
