@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { Affiliation, Disclosure, DisclosureFormValues, PageResponse } from '../constants'
-import { env } from '../util/env'
-import { convertLegalBasesToFormValues } from './PolicyApi'
-import { mapBool } from '../util/helper-functions'
-import { Code } from '../service/Codelist'
-import { useDebouncedState } from '../util'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {Affiliation, Disclosure, DisclosureFormValues, PageResponse} from '../constants'
+import {env} from '../util/env'
+import {convertLegalBasesToFormValues} from './PolicyApi'
+import {mapBool} from '../util/helper-functions'
+import {Code} from '../service/Codelist'
+import {useDebouncedState} from '../util'
+import {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content
@@ -76,7 +76,7 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
       refToAgreement: values.abroad.refToAgreement,
       businessArea: values.abroad.businessArea,
     },
-    agreementReference: values.agreementReference,
+    administrationArchiveCaseNumber: values.administrationArchiveCaseNumber,
     thirdCountryReceiver: mapBool(values.thirdCountryReceiver)
   }
 }
@@ -107,7 +107,7 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
       businessArea: disclosure.abroad.businessArea || '',
     },
     processIds: disclosure.processIds || [],
-    agreementReference: disclosure.agreementReference || '',
+    administrationArchiveCaseNumber: disclosure.administrationArchiveCaseNumber || '',
     thirdCountryReceiver: mapBool(disclosure.thirdCountryReceiver)
   }
 }
