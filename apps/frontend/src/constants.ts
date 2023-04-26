@@ -554,7 +554,7 @@ export interface DocumentFormValues {
   name: string
   description: string
   informationTypes: DocumentInfoTypeUse[]
-  dataAccessClass?: Code
+  dataAccessClass?: string
 }
 
 export interface Document {

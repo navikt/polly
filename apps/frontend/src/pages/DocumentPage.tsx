@@ -119,6 +119,7 @@ const DocumentPage = () => {
           >
             {renderTextWithLabel(intl.name, currentDocument.name)}
             {renderTextWithLabel(intl.description, currentDocument.description)}
+            {renderTextWithLabel(intl.dataAccessClass, currentDocument.dataAccessClass?currentDocument.dataAccessClass.shortName : intl.emptyMessage)}
           </Block>
         )}
 

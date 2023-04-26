@@ -51,7 +51,7 @@ const mapFormValuesToDocument = (document: DocumentFormValues) => ({
         subjectCategories: it.subjectCategories.map((sc) => sc.code),
       } as DocumentInformationTypes),
   ),
-  dataAccessClass: document.dataAccessClass?.code
+  dataAccessClass: document.dataAccessClass
 })
 
 export const useDocumentSearch = () => {

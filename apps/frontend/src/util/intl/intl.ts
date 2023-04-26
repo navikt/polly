@@ -84,6 +84,8 @@ export interface IStrings {
   deleteProcessDisclosureError: string
   editDisclosure: string
   documents: string
+  dataAccessClass: string
+  dataAccessClassSelect: string
   thirdParty: string
   policy: string
   usage: string
