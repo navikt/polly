@@ -1,4 +1,4 @@
-import { IStrings } from './intl'
+import {IStrings} from './intl'
 
 export const no: IStrings = {
   //aareg avtaler
@@ -552,6 +552,7 @@ export const no: IStrings = {
   canNotDeleteProcessorParagraph1: 'Kan ikke slette databehandleren {0} da den er',
   canNotDeleteProcessorParagraph2: 'knyttet til {0} behandling(er)',
   deleteProcessDisclosureError: 'Du kan ikke slette behandlinger med eksisterende utleveringer.',
+  administrationArchiveCaseNumber: 'Saksnummer i adminstrativt arkiv'
 }
 
 export const en: IStrings = {
@@ -1105,6 +1106,7 @@ export const en: IStrings = {
   canNotDeleteProcessorParagraph1: 'Can not delete processor {0} because it is',
   canNotDeleteProcessorParagraph2: 'used in {0} processes',
   deleteProcessDisclosureError: 'You can not delete a process with disclosures.',
+  administrationArchiveCaseNumber:'Administration Archive Case Number'
 }
 
 export const ta = {

@@ -87,7 +87,7 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     recipient: disclosure.recipient.code || '',
     name: disclosure.name || '',
     recipientPurpose: disclosure ? disclosure.recipientPurpose : '',
-    description: disclosure ? disclosure.description : '',
+    description: disclosure.description || '',
     document: disclosure.document ? {
       name: disclosure.document.name,
       description: disclosure.document.description,
