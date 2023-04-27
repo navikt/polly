@@ -7,7 +7,7 @@ import { Textarea } from 'baseui/textarea'
 import { DocumentFormValues } from '../../../constants'
 import InformationTypesTable from './InformationTypesTable'
 import { Field, FieldArray, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
-import { Error } from '../../common/ModalSchema'
+import { Error, ModalLabel } from '../../common/ModalSchema'
 import { user } from '../../../service/User'
 import { createDocumentSchema } from '../../common/schema'
 import { Notification } from 'baseui/notification'
@@ -16,6 +16,9 @@ import Button from '../../common/Button'
 import { disableEnter } from '../../../util/helper-functions'
 import { Select, Value, Option } from 'baseui/select'
 import { ListName, codelist } from '../../../service/Codelist'
+import { StyledLink } from 'baseui/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 
 const rowBlockProps: BlockProps = {
   width: '50%',
@@ -44,7 +47,7 @@ const DocumentForm = (props: DocumentFormProps) => {
 
   const [isLoading, setLoading] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState()
-  const [dataAccessClass, setDataAccessClass] = React.useState <Option> (initialValueDataAccessClass())
+  const [dataAccessClass, setDataAccessClass] = React.useState<Option>(initialValueDataAccessClass())
 
   const { initialValues, handleSubmit } = props
   const hasAccess = () => user.canWrite()
@@ -66,7 +69,7 @@ const DocumentForm = (props: DocumentFormProps) => {
   if (!hasAccess() || isLoading) {
     return null
   }
-  
+
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={createDocumentSchema()}>
       {(formikProps: FormikProps<DocumentFormValues>) => (
@@ -90,7 +93,19 @@ const DocumentForm = (props: DocumentFormProps) => {
               render={({ form }: FieldProps<DocumentFormValues>) => (
                 <Block>
                   <Block {...labelProps}>
-                    <LabelMedium>{intl.dataAccessClass}</LabelMedium>
+                    <ModalLabel
+                      label={intl.dataAccessClass}
+                      tooltip={
+                        <Block>
+                          {intl.moreInfo + ' '}
+                          <StyledLink target="_blank" rel="noopener noreferrer" href={'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'}>
+                            {intl.here  + ' '}
+                            <span>
+                              <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
+                            </span>
+                          </StyledLink>
+                        </Block>
+                      } />
                   </Block>
 
                   <Select

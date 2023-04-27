@@ -362,6 +362,8 @@ export interface IStrings {
   shortcutSubtitleDashboard: string
   canNotDeleteProcessorParagraph1: string
   canNotDeleteProcessorParagraph2: string
+  moreInfo: string
+  here: string
 
   // groups
   READ: string
