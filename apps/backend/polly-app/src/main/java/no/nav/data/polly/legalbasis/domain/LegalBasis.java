@@ -1,5 +1,6 @@
 package no.nav.data.polly.legalbasis.domain;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,6 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.io.Serializable;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder

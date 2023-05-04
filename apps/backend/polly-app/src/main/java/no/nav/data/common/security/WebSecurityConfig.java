@@ -4,15 +4,18 @@ import no.nav.data.common.security.azure.AADStatelessAuthenticationFilter;
 import no.nav.data.common.security.dto.AppRole;
 import no.nav.data.common.web.UserFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@Configuration
+@EnableMethodSecurity(jsr250Enabled = true,prePostEnabled = true)
+public class WebSecurityConfig {
 
     private final UserFilter userFilter = new UserFilter();
 
@@ -21,15 +24,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     private SecurityProperties securityProperties;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .logout().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         addFilters(http);
 
         if (securityProperties == null || !securityProperties.isEnabled()) {
-            return;
+            return http.build();
         }
 
         allowAll(http,
@@ -70,32 +73,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/process/revision/**"
         );
 
-        http.authorizeRequests().antMatchers("/logout").authenticated();
-        http.authorizeRequests().anyRequest().hasRole(AppRole.WRITE.name());
+        http.authorizeHttpRequests().requestMatchers("/logout").authenticated();
+        http.authorizeHttpRequests().anyRequest().hasRole(AppRole.WRITE.name());
+        return http.build();
     }
 
     private void adminOnly(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeRequests().antMatchers(path).hasRole(AppRole.ADMIN.name());
+            http.authorizeHttpRequests().requestMatchers(path).hasRole(AppRole.ADMIN.name());
         }
     }
 
     private void adminOrSuperOnly(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeRequests().antMatchers(path).hasAnyRole(AppRole.ADMIN.name(), AppRole.SUPER.name());
+            http.authorizeHttpRequests().requestMatchers(path).hasAnyRole(AppRole.ADMIN.name(), AppRole.SUPER.name());
         }
     }
 
     private void allowAll(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeRequests().antMatchers(path).permitAll();
+            http.authorizeHttpRequests().requestMatchers(path).permitAll();
         }
     }
 
     private void allowGetAndOptions(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeRequests().antMatchers(HttpMethod.GET, path).permitAll();
-            http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, path).permitAll();
+            http.authorizeHttpRequests().requestMatchers(HttpMethod.GET, path).permitAll();
+            http.authorizeHttpRequests().requestMatchers(HttpMethod.OPTIONS, path).permitAll();
         }
     }
 

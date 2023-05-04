@@ -1,5 +1,6 @@
 package no.nav.data.polly.process.dpprocess.domain;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -11,7 +12,6 @@ import no.nav.data.polly.process.dpprocess.domain.sub.DpRetention;
 
 import java.time.LocalDate;
 import java.util.List;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder

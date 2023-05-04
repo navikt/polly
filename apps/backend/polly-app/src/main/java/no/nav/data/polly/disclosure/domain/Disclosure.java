@@ -1,5 +1,14 @@
 package no.nav.data.polly.disclosure.domain;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,12 +28,6 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.domain.repo.ProcessVeryShort;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,14 +45,14 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 public class Disclosure extends Auditable {
 
     @Id
-    @Type(type = "pg-uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "DISCLOSURE_ID")
     private UUID id;
 
     @Valid
     @NotNull
     @Builder.Default
-    @Type(type = "jsonb")
+    @Type(value = JsonBinaryType.class)
     @Column(name = "DATA", nullable = false)
     private DisclosureData data = new DisclosureData();
 

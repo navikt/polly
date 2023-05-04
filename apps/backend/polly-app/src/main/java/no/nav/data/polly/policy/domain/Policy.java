@@ -1,5 +1,17 @@
 package no.nav.data.polly.policy.domain;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,15 +35,6 @@ import org.hibernate.annotations.Type;
 
 import java.util.List;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.codelist.CodelistService.getCodelistResponseList;
@@ -47,14 +50,14 @@ import static no.nav.data.polly.codelist.CodelistService.getCodelistResponseList
 public class Policy extends Auditable {
 
     @Id
-    @Type(type = "pg-uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "POLICY_ID")
     private UUID id;
 
     @Valid
     @NotNull
     @Default
-    @Type(type = "jsonb")
+    @Type(value = JsonBinaryType.class)
     @Column(name = "DATA", nullable = false)
     private PolicyData data = new PolicyData();
 

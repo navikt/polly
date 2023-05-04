@@ -1,6 +1,7 @@
 package no.nav.data.common.jpa;
 
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.AppStarter;
 import no.nav.data.common.auditing.AuditVersionListener;
@@ -23,7 +24,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
-import javax.persistence.EntityManagerFactory;
 
 import static no.nav.data.common.utils.MdcUtils.wrapAsync;
 

@@ -1,5 +1,15 @@
 package no.nav.data.polly.informationtype.domain;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,13 +30,6 @@ import org.hibernate.annotations.Type;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 
@@ -41,14 +44,14 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 public class InformationType extends Auditable {
 
     @Id
-    @Type(type = "pg-uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
     private UUID id;
 
     @Builder.Default
     @Valid
     @NotNull
-    @Type(type = "jsonb")
+    @Type(JsonBinaryType.class)
     @Column(name = "DATA")
     private InformationTypeData data = new InformationTypeData();
 
