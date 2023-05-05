@@ -23,21 +23,25 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <exclusions>
+<!--                <exclusion>-->
+<!--                    <groupId>org.osgi</groupId>-->
+<!--                    <artifactId>org.osgi.core</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>io.github.classgraph</groupId>-->
+<!--                    <artifactId>classgraph</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.jboss.logging</groupId>-->
+<!--                    <artifactId>jboss-logging-annotations</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.jboss.logging</groupId>-->
+<!--                    <artifactId>jboss-logging-processor</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
-                    <groupId>org.osgi</groupId>
-                    <artifactId>org.osgi.core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.github.classgraph</groupId>
-                    <artifactId>classgraph</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jboss.logging</groupId>
-                    <artifactId>jboss-logging-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jboss.logging</groupId>
-                    <artifactId>jboss-logging-processor</artifactId>
+                    <groupId>org.hibernate.orm</groupId>
+                    <artifactId>hibernate-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -87,22 +91,22 @@
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-60</artifactId>
             <version>${hibernate-types-60.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-            </exclusions>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>javax.xml.bind</groupId>-->
+<!--                    <artifactId>jaxb-api</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
 
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <exclusions>
-                <exclusion>
-                    <groupId>com.google.errorprone</groupId>
-                    <artifactId>error_prone_annotations</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>com.google.errorprone</groupId>-->
+<!--                    <artifactId>error_prone_annotations</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.checkerframework</groupId>
                     <artifactId>checker-qual</artifactId>
@@ -119,12 +123,12 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.prometheus</groupId>
-                    <artifactId>simpleclient_common</artifactId>
-                </exclusion>
-            </exclusions>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>io.prometheus</groupId>-->
+<!--                    <artifactId>simpleclient_common</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
         <dependency>
             <groupId>io.prometheus</groupId>
@@ -206,7 +210,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.6.14.Final</version>
+            <version>6.1.0.Final</version>
         </dependency>
     </dependencies>
 

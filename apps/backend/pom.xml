@@ -29,7 +29,7 @@
         <simpleclient.version>0.16.0</simpleclient.version>
         <nav-vault-jdbc.version>1.3.10</nav-vault-jdbc.version>
         <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
-        <docx4j.version>11.3.2</docx4j.version>
+        <docx4j.version>11.4.9</docx4j.version>
 
         <microsoft-graph.version>5.56.0</microsoft-graph.version>
         <msal4j.version>1.13.8</msal4j.version>
@@ -43,7 +43,7 @@
         <stax2-api.version>4.2.1</stax2-api.version>
 
         <!-- Test -->
-        <testcontainers.version>1.17.6</testcontainers.version>
+        <testcontainers.version>1.18.0</testcontainers.version>
         <wiremock.version>2.27.2</wiremock.version>
     </properties>
 
@@ -100,17 +100,17 @@
                 <groupId>com.microsoft.graph</groupId>
                 <artifactId>microsoft-graph</artifactId>
                 <version>${microsoft-graph.version}</version>
-                <exclusions>
-                    <!-- dependency used for intellij plugins... includes old unsecure transitive dependencies -->
-                    <exclusion>
-                        <groupId>org.linguafranca.pwdb</groupId>
-                        <artifactId>KeePassJava2</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>io.netty</groupId>
-                        <artifactId>netty-tcnative-boringssl-static</artifactId>
-                    </exclusion>
-                </exclusions>
+<!--                <exclusions>-->
+<!--                    &lt;!&ndash; dependency used for intellij plugins... includes old unsecure transitive dependencies &ndash;&gt;-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.linguafranca.pwdb</groupId>-->
+<!--                        <artifactId>KeePassJava2</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>io.netty</groupId>-->
+<!--                        <artifactId>netty-tcnative-boringssl-static</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>

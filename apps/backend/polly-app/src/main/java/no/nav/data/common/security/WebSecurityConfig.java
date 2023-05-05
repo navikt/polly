@@ -14,21 +14,26 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity(jsr250Enabled = true,prePostEnabled = true)
+@EnableMethodSecurity(jsr250Enabled = true)
 public class WebSecurityConfig {
 
     private final UserFilter userFilter = new UserFilter();
 
-    @Autowired(required = false)
     private AADStatelessAuthenticationFilter aadAuthFilter;
-    @Autowired(required = false)
     private SecurityProperties securityProperties;
+
+    @Autowired
+    public WebSecurityConfig(AADStatelessAuthenticationFilter aadAuthFilter, SecurityProperties securityProperties) {
+        this.aadAuthFilter = aadAuthFilter;
+        this.securityProperties = securityProperties;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .logout().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         addFilters(http);
 
         if (securityProperties == null || !securityProperties.isEnabled()) {
