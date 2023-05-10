@@ -33,7 +33,6 @@ import java.util.UUID;
 public class GenericStorage extends Auditable {
 
     @Id
-
     @Column(name = "ID")
     private UUID id;
 

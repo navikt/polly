@@ -43,7 +43,6 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 public class Disclosure extends Auditable {
 
     @Id
-
     @Column(name = "DISCLOSURE_ID")
     private UUID id;
 

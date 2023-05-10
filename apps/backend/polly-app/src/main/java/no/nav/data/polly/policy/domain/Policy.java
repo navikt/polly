@@ -48,7 +48,6 @@ import static no.nav.data.polly.codelist.CodelistService.getCodelistResponseList
 public class Policy extends Auditable {
 
     @Id
-
     @Column(name = "POLICY_ID")
     private UUID id;
 

@@ -42,7 +42,6 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 public class InformationType extends Auditable {
 
     @Id
-
     @Column(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
     private UUID id;
 

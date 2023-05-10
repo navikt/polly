@@ -42,7 +42,6 @@ import java.util.stream.StreamSupport;
 public class AuditVersion {
 
     @Id
-
     @Column(name = "AUDIT_ID")
     @Builder.Default
     private UUID id = UUID.randomUUID();

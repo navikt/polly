@@ -32,7 +32,6 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 public class Processor extends Auditable {
 
     @Id
-
     @Column(name = "PROCESSOR_ID")
     private UUID id;
 

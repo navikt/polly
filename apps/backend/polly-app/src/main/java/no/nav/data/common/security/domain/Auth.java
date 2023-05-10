@@ -24,7 +24,6 @@ import java.util.UUID;
 public class Auth {
 
     @Id
-
     @Column(name = "ID")
     private UUID id;
 

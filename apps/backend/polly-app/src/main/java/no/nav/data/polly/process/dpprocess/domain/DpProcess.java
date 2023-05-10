@@ -39,7 +39,6 @@ import static no.nav.data.polly.process.dpprocess.domain.sub.DpRetention.convert
 public class DpProcess extends Auditable {
 
     @Id
-
     @Column(name = "DP_PROCESS_ID")
     private UUID id;
 

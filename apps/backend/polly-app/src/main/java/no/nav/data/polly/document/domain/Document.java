@@ -39,7 +39,6 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 public class Document extends Auditable {
 
     @Id
-
     @Column(name = "DOCUMENT_ID")
     private UUID id;
 
