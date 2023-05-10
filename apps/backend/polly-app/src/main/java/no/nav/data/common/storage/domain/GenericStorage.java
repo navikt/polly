@@ -6,8 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +33,7 @@ import java.util.UUID;
 public class GenericStorage extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     @Column(name = "ID")
     private UUID id;
 

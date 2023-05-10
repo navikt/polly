@@ -3,8 +3,6 @@ package no.nav.data.polly.processor.domain;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
@@ -34,7 +32,7 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 public class Processor extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     @Column(name = "PROCESSOR_ID")
     private UUID id;
 

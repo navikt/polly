@@ -3,8 +3,6 @@ package no.nav.data.polly.process.dpprocess.domain;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
@@ -41,7 +39,7 @@ import static no.nav.data.polly.process.dpprocess.domain.sub.DpRetention.convert
 public class DpProcess extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     @Column(name = "DP_PROCESS_ID")
     private UUID id;
 

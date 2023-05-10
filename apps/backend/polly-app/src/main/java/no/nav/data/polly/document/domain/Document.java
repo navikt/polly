@@ -3,8 +3,6 @@ package no.nav.data.polly.document.domain;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
@@ -41,7 +39,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 public class Document extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     @Column(name = "DOCUMENT_ID")
     private UUID id;
 

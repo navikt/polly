@@ -2,8 +2,6 @@ package no.nav.data.common.security.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -26,7 +24,7 @@ import java.util.UUID;
 public class Auth {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     @Column(name = "ID")
     private UUID id;
 
