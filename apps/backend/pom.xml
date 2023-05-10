@@ -30,6 +30,8 @@
         <nav-vault-jdbc.version>1.3.10</nav-vault-jdbc.version>
         <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
         <docx4j.version>11.4.9</docx4j.version>
+        <google-cloud-bigquery.version>2.25.0</google-cloud-bigquery.version>
+        <hibernate-core.version>6.1.0.Final</hibernate-core.version>
 
         <microsoft-graph.version>5.56.0</microsoft-graph.version>
         <msal4j.version>1.13.8</msal4j.version>
@@ -100,17 +102,6 @@
                 <groupId>com.microsoft.graph</groupId>
                 <artifactId>microsoft-graph</artifactId>
                 <version>${microsoft-graph.version}</version>
-<!--                <exclusions>-->
-<!--                    &lt;!&ndash; dependency used for intellij plugins... includes old unsecure transitive dependencies &ndash;&gt;-->
-<!--                    <exclusion>-->
-<!--                        <groupId>org.linguafranca.pwdb</groupId>-->
-<!--                        <artifactId>KeePassJava2</artifactId>-->
-<!--                    </exclusion>-->
-<!--                    <exclusion>-->
-<!--                        <groupId>io.netty</groupId>-->
-<!--                        <artifactId>netty-tcnative-boringssl-static</artifactId>-->
-<!--                    </exclusion>-->
-<!--                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
