@@ -25,6 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.get;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DisclosureControllerIT extends IntegrationTestBase {
 
@@ -243,10 +245,13 @@ class DisclosureControllerIT extends IntegrationTestBase {
         DisclosureRequest request2 = buildDisclosure();
         request2.setId(id);
         request2.setRecipient("error");
-        var errorResp = restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
-        assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorResp.getBody()).isNotNull();
-        assertThat(errorResp.getBody()).contains("fieldIsInvalidCodelist -- recipient: ERROR code not found in codelist THIRD_PARTY");
+
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
+        });
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(exception.getMessage()).isNotNull();
+        assertThat(exception.getMessage()).contains("fieldIsInvalidCodelist -- recipient: ERROR code not found in codelist THIRD_PARTY");
     }
 
     private void assertDisclosures(ResponseEntity<DisclosurePage> resp, int i) {

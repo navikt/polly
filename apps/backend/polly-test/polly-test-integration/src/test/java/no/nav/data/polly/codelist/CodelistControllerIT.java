@@ -19,6 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
 import static no.nav.data.polly.codelist.CodelistUtils.createNrOfCodelistRequests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CodelistControllerIT extends IntegrationTestBase {
@@ -178,22 +180,26 @@ class CodelistControllerIT extends IntegrationTestBase {
         void shouldInvalidateWrongListname() {
             List<CodelistRequest> requests = List.of(createCodelistRequest("PROVENAANCE"));
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    "/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+            HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+                restTemplate.exchange(
+                        "/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+            });
 
-            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(responseEntity.getBody()).contains("PROVENAANCE was invalid for type ListName");
+            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(exception.getMessage()).contains("PROVENAANCE was invalid for type ListName");
         }
+
 
         @ParameterizedTest
         @ValueSource(strings = {"GDPR_ARTICLE", "SENSITIVITY"})
         void shouldInvalidateCreatingImmutableCodelist(String testValue) {
             List<CodelistRequest> requests = List.of(createCodelistRequest(testValue));
+            HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+                restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+            });
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
-
-            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(responseEntity.getBody()).contains(String.format(ERROR_IMMUTABLE_CODELIST, testValue));
+            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(exception.getMessage()).contains(String.format(ERROR_IMMUTABLE_CODELIST, testValue));
         }
     }
 
@@ -264,6 +270,7 @@ class CodelistControllerIT extends IntegrationTestBase {
         void shouldInvalidateDeletingGDPR_ARTICLE(String input) {
             saveCodelist(createCodelist(ListName.valueOf(input), "DELETE"));
             String url = String.format("/codelist/%s/DELETE", input);
+
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
