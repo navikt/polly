@@ -14,6 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.DELETE;
 
@@ -87,7 +89,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         void get() {
             createInformationTypeTestData(30);
 
-            ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/", InformationTypePage.class);
+            ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype", InformationTypePage.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);
@@ -177,10 +179,12 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void createInvalidInformationType() {
         List<InformationTypeRequest> requests = List.of(createRequest("createName"), createRequest("createName"));
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+        var exception = assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+        });
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("DuplicatedIdentifyingFields");
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(exception.getMessage()).contains("DuplicatedIdentifyingFields");
         assertThat(informationTypeRepository.count()).isZero();
     }
 
@@ -268,16 +272,23 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         InformationType informationType = createAndSaveInformationType();
 
         var policy = createAndSavePolicy(PURPOSE_CODE1, informationType);
-        var resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("used by 1 policie(s)");
+
+        var exception = assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
+        });
+        
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(exception.getMessage()).contains("used by 1 policie(s)");
 
         policyRepository.delete(policy);
 
         var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
-        resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("used by 1 document(s)");
+
+        exception = assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
+        });
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(exception.getMessage()).contains("used by 1 document(s)");
 
         documentRepository.delete(doc);
 

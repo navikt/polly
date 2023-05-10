@@ -202,12 +202,16 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     @Test
     void createDisclosureValidationError() {
-        ResponseEntity<String> resp = restTemplate
-                .postForEntity("/disclosure", DisclosureRequest.builder().description("newdisclosure").recipient("SKATT").recipientPurpose("AAP")
-                        .legalBasis(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build())
-                        .build(), String.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
+
+        var exception = assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate
+                    .postForEntity("/disclosure", DisclosureRequest.builder().description("newdisclosure").recipient("SKATT").recipientPurpose("AAP")
+                            .legalBasis(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build())
+                            .build(), String.class);
+        });
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(exception.getMessage()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
     }
 
     @Test

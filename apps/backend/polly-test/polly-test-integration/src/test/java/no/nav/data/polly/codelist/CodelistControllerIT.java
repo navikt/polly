@@ -271,10 +271,12 @@ class CodelistControllerIT extends IntegrationTestBase {
             saveCodelist(createCodelist(ListName.valueOf(input), "DELETE"));
             String url = String.format("/codelist/%s/DELETE", input);
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+            var exception = assertThrows(HttpClientErrorException.class, () -> {
+                restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+            });
 
-            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(responseEntity.getBody()).contains(String.format(ERROR_IMMUTABLE_CODELIST, input));
+            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(exception.getMessage()).contains(String.format(ERROR_IMMUTABLE_CODELIST, input));
         }
 
         @Test
@@ -283,10 +285,13 @@ class CodelistControllerIT extends IntegrationTestBase {
             informationTypeRepository.save(createInformationType("infoType", "POL", "TPS", "PERSONALIA", "DELETE_CODE"));
             assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist/THIRD_PARTY/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
-            assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.CONFLICT.value());
-            assertThat(responseEntity.getBody()).contains("The code DELETE_CODE in list THIRD_PARTY cannot be erased.");
+            var exception = assertThrows(HttpClientErrorException.class, () -> {
+                restTemplate.exchange("/codelist/THIRD_PARTY/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+            });
+
+            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+            assertThat(exception.getMessage()).contains("The code DELETE_CODE in list THIRD_PARTY cannot be erased.");
             assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
         }
 
