@@ -25,7 +25,7 @@ export const getAlertEvents = async (
 ) => {
   return (
     await axios.get<PageResponse<AlertEvent>>(
-      `${env.pollyBaseUrl}/alert/events/?pageNumber=${page}&pageSize=${count}` +
+      `${env.pollyBaseUrl}/alert/events?pageNumber=${page}&pageSize=${count}` +
         (type ? `&type=${type}` : '') +
         (level ? `&level=${level}` : '') +
         (processId ? `&processId=${processId}` : '') +

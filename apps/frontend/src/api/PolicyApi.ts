@@ -5,7 +5,7 @@ import { env } from '../util/env'
 import shortid from 'shortid'
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {
-  return (await axios.get<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy/?informationTypeId=${informationTypeId}`)).data
+  return (await axios.get<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy?informationTypeId=${informationTypeId}`)).data
 }
 
 export const getPolicy = async (policyId: string) => {

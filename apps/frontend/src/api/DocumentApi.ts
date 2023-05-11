@@ -19,7 +19,7 @@ export const getDefaultProcessDocument = async () => {
 }
 
 export const getDocumentsForInformationType = async (informationTypeId: string) => {
-  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document/?informationTypeId=${informationTypeId}`)).data
+  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document?informationTypeId=${informationTypeId}`)).data
 }
 
 export const searchDocuments = async (name: string) => {

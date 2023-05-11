@@ -10,9 +10,9 @@ export const getAuditLog = async (id: string) => {
 }
 
 export const getAudits = async (page: number, count: number, table?: ObjectType) => {
-  return (await axios.get<PageResponse<AuditItem>>(`${env.pollyBaseUrl}/audit/?pageNumber=${page}&pageSize=${count}` + (table ? `&table=${table}` : ''))).data
+  return (await axios.get<PageResponse<AuditItem>>(`${env.pollyBaseUrl}/audit?pageNumber=${page}&pageSize=${count}` + (table ? `&table=${table}` : ''))).data
 }
 
 export const getEvents = async (page: number, count: number, table: ObjectType, action?: AuditAction) => {
-  return (await axios.get<PageResponse<Event>>(`${env.pollyBaseUrl}/event/?pageNumber=${page}&pageSize=${count}&table=${table}` + (action ? `&action=${action}` : ''))).data
+  return (await axios.get<PageResponse<Event>>(`${env.pollyBaseUrl}/event?pageNumber=${page}&pageSize=${count}&table=${table}` + (action ? `&action=${action}` : ''))).data
 }

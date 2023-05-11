@@ -24,19 +24,19 @@ export const getDisclosureSummaries = async () => {
 }
 
 export const getDisclosuresWithEmptyLegalBases = async () => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/?emptyLegalBases=true`)).data.content
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?emptyLegalBases=true`)).data.content
 }
 
 export const getDisclosuresByRecipient = async (recipient: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/?recipient=${recipient}`)).data.content
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?recipient=${recipient}`)).data.content
 }
 
 export const getDisclosuresByProcessId = async (processId: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/?processId=${processId}`)).data.content
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?processId=${processId}`)).data.content
 }
 
 export const getDisclosuresByInformationTypeId = async (informationTypeId: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/?informationTypeId=${informationTypeId}`)).data.content
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?informationTypeId=${informationTypeId}`)).data.content
 }
 
 export const searchDisclosure = async (text: string) => {
