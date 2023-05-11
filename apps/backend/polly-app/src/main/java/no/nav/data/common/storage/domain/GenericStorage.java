@@ -1,6 +1,14 @@
 package no.nav.data.common.storage.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,13 +22,6 @@ import org.hibernate.annotations.Type;
 import org.springframework.util.Assert;
 
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -32,7 +33,6 @@ import javax.validation.constraints.NotNull;
 public class GenericStorage extends Auditable {
 
     @Id
-    @Type(type = "pg-uuid")
     @Column(name = "ID")
     private UUID id;
 
@@ -41,7 +41,7 @@ public class GenericStorage extends Auditable {
     @Column(name = "TYPE", nullable = false)
     private StorageType type;
 
-    @Type(type = "jsonb")
+    @Type(value = JsonBinaryType.class)
     @Column(name = "DATA", nullable = false)
     private JsonNode data;
 

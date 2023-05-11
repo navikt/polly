@@ -2,6 +2,7 @@ package no.nav.data.polly.informationtype.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,6 @@ import no.nav.data.polly.informationtype.domain.InformationTypeData;
 
 import java.util.List;
 import java.util.UUID;
-import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 

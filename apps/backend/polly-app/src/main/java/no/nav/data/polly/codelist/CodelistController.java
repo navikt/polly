@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.codelist.commoncode.CommonCodeService;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
 
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 

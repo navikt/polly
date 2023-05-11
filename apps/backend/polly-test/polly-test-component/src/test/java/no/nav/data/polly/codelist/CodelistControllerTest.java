@@ -23,6 +23,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CodelistControllerTest {
 
     @Autowired
+    private WebApplicationContext applicationContext;
     private MockMvc mvc;
 
     @MockBean
@@ -59,6 +62,7 @@ class CodelistControllerTest {
 
     @BeforeEach
     void setUp() {
+        mvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();
         CodelistStub.initializeCodelist();
     }
 

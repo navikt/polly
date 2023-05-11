@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SettingsControllerIT extends IntegrationTestBase {
 
@@ -46,9 +48,13 @@ public class SettingsControllerIT extends IntegrationTestBase {
     @Test
     void validateDefaultProcessDocumentExists() {
         Settings settings = Settings.builder().defaultProcessDocument("d7fc29f4-c006-49ce-9f38-75c82c4bcc98").build();
-        ResponseEntity<String> resp = restTemplate.postForEntity("/settings", settings, String.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("Can't find document d7fc29f4-c006-49ce-9f38-75c82c4bcc98");
+
+        var exception = assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate.postForEntity("/settings", settings, String.class);
+        });
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(exception.getMessage()).contains("Can't find document d7fc29f4-c006-49ce-9f38-75c82c4bcc98");
     }
 
     private void assertGetSettings(Settings settings) {

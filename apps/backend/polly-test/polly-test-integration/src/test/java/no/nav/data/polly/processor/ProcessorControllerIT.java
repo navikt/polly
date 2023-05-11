@@ -12,10 +12,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProcessorControllerIT extends IntegrationTestBase {
 
@@ -102,7 +104,10 @@ class ProcessorControllerIT extends IntegrationTestBase {
         process.getData().getDataProcessing().setProcessors(List.of(p.getId()));
         processRepository.save(process);
 
-        restTemplate.delete("/processor/{id}", PROCESSOR_ID1);
+        assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate.delete("/processor/{id}", PROCESSOR_ID1);
+        });
+
         assertThat(processorRepository.count()).isOne();
     }
 

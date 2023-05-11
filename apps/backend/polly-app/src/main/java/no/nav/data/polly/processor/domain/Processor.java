@@ -1,5 +1,12 @@
 package no.nav.data.polly.processor.domain;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +19,6 @@ import no.nav.data.polly.processor.dto.ProcessorResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 
@@ -31,14 +32,13 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 public class Processor extends Auditable {
 
     @Id
-    @Type(type = "pg-uuid")
     @Column(name = "PROCESSOR_ID")
     private UUID id;
 
     @Valid
     @Builder.Default
     @NotNull
-    @Type(type = "jsonb")
+    @Type(value = JsonBinaryType.class)
     @Column(name = "DATA", nullable = false)
     private ProcessorData data = new ProcessorData();
 

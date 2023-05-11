@@ -20,12 +20,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Objects;
 
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeUsageControllerIT extends IntegrationTestBase {
 
@@ -127,7 +129,10 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         @CsvSource({"PURPOSE,NOT_FOUND", "DEPARTMENT,NOT_FOUND", "NATIONAL_LAW,NOT_FOUND", "SUBJECT_CATEGORY,NOT_FOUND", "SENSITIVITY,NOT_FOUND",
                 "TRANSFER_GROUNDS_OUTSIDE_EU,NOT_FOUND"})
         void shouldNotFindCodeUsage(String list, String code) {
-            assertThat(HttpStatus.NOT_FOUND).isEqualTo(getForListAndCode(list, code).getStatusCode());
+            var exception = assertThrows(HttpClientErrorException.class, () -> {
+                getForListAndCode(list, code);
+            });
+            assertThat(HttpStatus.NOT_FOUND).isEqualTo(exception.getStatusCode());
         }
 
         @ParameterizedTest

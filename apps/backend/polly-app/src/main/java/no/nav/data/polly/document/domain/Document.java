@@ -1,5 +1,12 @@
 package no.nav.data.polly.document.domain;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,12 +24,6 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
@@ -38,14 +39,13 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 public class Document extends Auditable {
 
     @Id
-    @Type(type = "pg-uuid")
     @Column(name = "DOCUMENT_ID")
     private UUID id;
 
     @Valid
     @NotNull
     @Builder.Default
-    @Type(type = "jsonb")
+    @Type(value = JsonBinaryType.class)
     @Column(name = "DATA", nullable = false)
     private DocumentData data = new DocumentData();
 

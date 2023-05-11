@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ResourceIT extends IntegrationTestBase {
 
@@ -29,8 +31,10 @@ public class ResourceIT extends IntegrationTestBase {
 
     @Test
     void getTeamNotFound() {
-        ResponseEntity<Resource> resource = restTemplate.getForEntity("/team/resource/{ident}", Resource.class, "A999999");
-        assertThat(resource.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restTemplate.getForEntity("/team/resource/{ident}", Resource.class, "A999999");
+        });
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
