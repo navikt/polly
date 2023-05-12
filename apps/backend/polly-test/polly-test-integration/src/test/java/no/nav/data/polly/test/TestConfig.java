@@ -16,7 +16,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,7 +38,8 @@ public class TestConfig {
         return (args) -> {
             testRestTemplate.getRestTemplate().setRequestFactory(new BufferingClientHttpRequestFactory(testRestTemplate.getRestTemplate().getRequestFactory()));
             testRestTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
-                public void handleError(ClientHttpResponse response, HttpStatus statusCode) {
+                @Override
+                public void handleError(ClientHttpResponse response) {
                     log.error(new String(getResponseBody(response), Optional.ofNullable(getCharset(response)).orElse(Charset.defaultCharset())));
                 }
             });

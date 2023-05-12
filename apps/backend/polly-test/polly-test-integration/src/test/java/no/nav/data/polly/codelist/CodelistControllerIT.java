@@ -19,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -31,7 +30,6 @@ import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
 import static no.nav.data.polly.codelist.CodelistUtils.createNrOfCodelistRequests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CodelistControllerIT extends IntegrationTestBase {
@@ -180,13 +178,10 @@ class CodelistControllerIT extends IntegrationTestBase {
         void shouldInvalidateWrongListname() {
             List<CodelistRequest> requests = List.of(createCodelistRequest("PROVENAANCE"));
 
-            HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-                restTemplate.exchange(
-                        "/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
-            });
+            var resp = restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 
-            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(exception.getMessage()).contains("PROVENAANCE was invalid for type ListName");
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(resp.getBody()).contains("PROVENAANCE was invalid for type ListName");
         }
 
 
@@ -194,12 +189,10 @@ class CodelistControllerIT extends IntegrationTestBase {
         @ValueSource(strings = {"GDPR_ARTICLE", "SENSITIVITY"})
         void shouldInvalidateCreatingImmutableCodelist(String testValue) {
             List<CodelistRequest> requests = List.of(createCodelistRequest(testValue));
-            HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-                restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
-            });
+            var resp = restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 
-            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(exception.getMessage()).contains(String.format(ERROR_IMMUTABLE_CODELIST, testValue));
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(resp.getBody()).contains(String.format(ERROR_IMMUTABLE_CODELIST, testValue));
         }
     }
 
@@ -271,12 +264,10 @@ class CodelistControllerIT extends IntegrationTestBase {
             saveCodelist(createCodelist(ListName.valueOf(input), "DELETE"));
             String url = String.format("/codelist/%s/DELETE", input);
 
-            var exception = assertThrows(HttpClientErrorException.class, () -> {
-                restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
-            });
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
-            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            assertThat(exception.getMessage()).contains(String.format(ERROR_IMMUTABLE_CODELIST, input));
+            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(responseEntity.getBody()).contains(String.format(ERROR_IMMUTABLE_CODELIST, input));
         }
 
         @Test
@@ -286,12 +277,10 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
 
 
-            var exception = assertThrows(HttpClientErrorException.class, () -> {
-                restTemplate.exchange("/codelist/THIRD_PARTY/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
-            });
+            var resp = restTemplate.exchange("/codelist/THIRD_PARTY/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
-            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-            assertThat(exception.getMessage()).contains("The code DELETE_CODE in list THIRD_PARTY cannot be erased.");
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+            assertThat(resp.getBody()).contains("The code DELETE_CODE in list THIRD_PARTY cannot be erased.");
             assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
         }
 
