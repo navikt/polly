@@ -72,9 +72,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-60</artifactId>
-            <version>${hibernate-types-60.version}</version>
+            <groupId>io.hypersistence</groupId>
+            <artifactId>hypersistence-utils-hibernate-60</artifactId>
+            <version>${hypersistence-utils-hibernate-60.version}</version>
         </dependency>
 
         <dependency>
