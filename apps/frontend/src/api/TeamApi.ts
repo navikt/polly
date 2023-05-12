@@ -21,7 +21,7 @@ export const searchTeam = async (teamSearch: string) => {
 }
 
 export const getAllProductAreas = async () => {
-  return (await axios.get<PageResponse<ProductArea>>(`${env.pollyBaseUrl}/team/productarea/`)).data.content
+  return (await axios.get<PageResponse<ProductArea>>(`${env.pollyBaseUrl}/team/productarea`)).data.content
 }
 
 export const getProductArea = async (paId: string) => {
