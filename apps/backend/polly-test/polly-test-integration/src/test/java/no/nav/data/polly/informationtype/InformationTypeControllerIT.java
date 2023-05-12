@@ -14,7 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.DELETE;
 
@@ -179,12 +177,10 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void createInvalidInformationType() {
         List<InformationTypeRequest> requests = List.of(createRequest("createName"), createRequest("createName"));
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
-        });
+        var resp = restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("DuplicatedIdentifyingFields");
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("DuplicatedIdentifyingFields");
         assertThat(informationTypeRepository.count()).isZero();
     }
 
@@ -273,22 +269,18 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         var policy = createAndSavePolicy(PURPOSE_CODE1, informationType);
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
-        });
-        
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("used by 1 policie(s)");
+        var resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 policie(s)");
 
         policyRepository.delete(policy);
 
         var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
 
-        exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
-        });
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("used by 1 document(s)");
+        resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 document(s)");
 
         documentRepository.delete(doc);
 

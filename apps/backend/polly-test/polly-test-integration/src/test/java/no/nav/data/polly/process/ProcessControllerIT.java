@@ -35,14 +35,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProcessControllerIT extends IntegrationTestBase {
 
@@ -314,14 +312,12 @@ class ProcessControllerIT extends IntegrationTestBase {
 
     @Test
     void createProcessValidationError() {
-        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate
+        var resp = restTemplate
                     .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP")
                             .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build()))
                             .build(), String.class);
-        });
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
     }
 
     @Test
@@ -330,11 +326,9 @@ class ProcessControllerIT extends IntegrationTestBase {
         ResponseEntity<ProcessResponse> resp = restTemplate.postForEntity("/process", request, ProcessResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.postForEntity("/process", request, String.class);
-        });
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("nameAndPurposeExists");
+        var response = restTemplate.postForEntity("/process", request, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).contains("nameAndPurposeExists");
     }
 
     @Test

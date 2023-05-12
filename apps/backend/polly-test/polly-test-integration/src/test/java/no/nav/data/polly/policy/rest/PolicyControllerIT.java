@@ -19,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -33,7 +32,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PolicyControllerIT extends IntegrationTestBase {
 
@@ -66,14 +64,12 @@ class PolicyControllerIT extends IntegrationTestBase {
     void createPolicyThrowNullableValidationException() {
         List<PolicyRequest> requestList = List.of(PolicyRequest.builder().build());
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
-        });
-        
-        assertThat(exception.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(exception.getMessage(), containsString("purposes was null or missing"));
-        assertThat(exception.getMessage(), containsString("informationTypeId was null or missing"));
-        assertThat(exception.getMessage(), containsString("processId was null or missing"));
+        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
+
+        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getBody(), containsString("purposes was null or missing"));
+        assertThat(resp.getBody(), containsString("informationTypeId was null or missing"));
+        assertThat(resp.getBody(), containsString("processId was null or missing"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -82,13 +78,11 @@ class PolicyControllerIT extends IntegrationTestBase {
         InformationType informationType = createAndSaveInformationType();
         List<PolicyRequest> requestList = Arrays.asList(createPolicyRequest(informationType), createPolicyRequest(informationType));
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(
+        var resp = restTemplate.exchange(
                     POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
-        });
 
-        assertThat(exception.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(exception.getMessage(),
+        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getBody(),
                 containsString(
                         "[InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 Process: 60db8589-f383-4405-82f1-148b0333899b SubjectCategory: BRUKER] is not unique because it is already used in this request (see request nr: 1 and 2)"));
     }
@@ -100,11 +94,9 @@ class PolicyControllerIT extends IntegrationTestBase {
                 .exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(createPolicyRequest(informationType))), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(createPolicyRequest(informationType))), String.class);
-        });
+        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(createPolicyRequest(informationType))), String.class);
 
-        assertThat(exception.getMessage(), containsString(
+        assertThat(resp.getBody(), containsString(
                 "[InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 Process: 60db8589-f383-4405-82f1-148b0333899b SubjectCategory: BRUKER] is not unique because it is already used in this process (see request nr: 1)"));
     }
 
@@ -115,15 +107,13 @@ class PolicyControllerIT extends IntegrationTestBase {
                 .processId("17942455-4e86-4315-a7b2-872accd9c856")
                 .informationTypeId("b7a86238-c6ca-4e5e-9233-9089d162400c").build());
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
-        });
-        
-        assertThat(exception.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(exception.getMessage(), containsString("purposes[0]: NOTFOUND code not found in codelist PURPOSE"));
-        assertThat(exception.getMessage(), containsString("An InformationType with id b7a86238-c6ca-4e5e-9233-9089d162400c does not exist"));
-        assertThat(exception.getMessage(), containsString("A Process with id 17942455-4e86-4315-a7b2-872accd9c856 does not exist"));
-        assertThat(exception.getMessage(), containsString("subjectCategories[0]: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
+        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
+
+        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getBody(), containsString("purposes[0]: NOTFOUND code not found in codelist PURPOSE"));
+        assertThat(resp.getBody(), containsString("An InformationType with id b7a86238-c6ca-4e5e-9233-9089d162400c does not exist"));
+        assertThat(resp.getBody(), containsString("A Process with id 17942455-4e86-4315-a7b2-872accd9c856 does not exist"));
+        assertThat(resp.getBody(), containsString("subjectCategories[0]: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -146,12 +136,10 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void getNotExistingPolicy() {
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.getForEntity(POLICY_REST_ENDPOINT + "/1-1-1-1-1",
+        var resp = restTemplate.getForEntity(POLICY_REST_ENDPOINT + "/1-1-1-1-1",
                     PolicyResponse.class);
-        });
 
-        assertThat(exception.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
     @Test
@@ -186,13 +174,11 @@ class PolicyControllerIT extends IntegrationTestBase {
         request.setId(createEntity.getBody().getContent().get(0).getId().toString());
         request.setInformationTypeId(null);
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(
+        var resp = restTemplate.exchange(
                     POLICY_REST_ENDPOINT + "/" + request.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
-        });
 
-        assertThat(exception.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(exception.getMessage(), containsString("informationTypeId was null or missing"));
+        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getBody(), containsString("informationTypeId was null or missing"));
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -240,15 +226,13 @@ class PolicyControllerIT extends IntegrationTestBase {
         requestList.get(2).setId(createEntity.getBody().getContent().get(2).getId().toString());
 
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
-        });
-        
-        assertThat(exception.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(exception.getMessage(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
-        assertThat(exception.getMessage(), containsString(postadressId + "/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
+        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
+
+        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getBody(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
+        assertThat(resp.getBody(), containsString(postadressId + "/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
         // No error reported regarding Arbeidsforhold/TEST1
-        assertFalse(exception.getMessage().contains("Arbeidsforhold/TEST1"));
+        assertFalse(resp.getBody().contains("Arbeidsforhold/TEST1"));
         assertThat(policyRepository.count(), is(3L));
     }
 
@@ -257,11 +241,9 @@ class PolicyControllerIT extends IntegrationTestBase {
         PolicyRequest request = createPolicyRequest(createAndSaveInformationType());
         request.setId("1-1-1-1-1");
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(POLICY_REST_ENDPOINT + "/1-1-1-1-1", HttpMethod.PUT, new HttpEntity<>(request), Policy.class);
-        });
-        
-        assertThat(exception.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT + "/1-1-1-1-1", HttpMethod.PUT, new HttpEntity<>(request), Policy.class);
+
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
     @Test
@@ -282,11 +264,9 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void deleteNotExistingPolicy() {
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange(
+        var resp = restTemplate.exchange(
                     POLICY_REST_ENDPOINT + "/1-1-1-1-1", HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
-        });
-        assertThat(exception.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
     @Test

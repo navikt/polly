@@ -17,14 +17,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.DELETE;
 
@@ -106,12 +104,10 @@ class DocumentControllerIT extends IntegrationTestBase {
     @Test
     void createDocumentValidationError() {
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.postForEntity("/document", DocumentRequest.builder().description("newdocument").build(), String.class);
-        });
+        var resp = restTemplate.postForEntity("/document", DocumentRequest.builder().description("newdocument").build(), String.class);
 
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("fieldIsNullOrMissing -- name was null or missing");
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
     }
 
     @Test
@@ -155,13 +151,11 @@ class DocumentControllerIT extends IntegrationTestBase {
         request2.setId(id);
         request2.setName(null);
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
-        });
+        var response = restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
 
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).isNotNull();
-        assertThat(exception.getMessage()).contains("fieldIsNullOrMissing -- name was null or missing");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
     }
 
     @Test
@@ -174,22 +168,18 @@ class DocumentControllerIT extends IntegrationTestBase {
         policy.getData().getDocumentIds().add(doc.getId());
         policyRepository.save(policy);
 
-        var exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
-        });
+        var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
 
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("used by 1 policie(s)");
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 policie(s)");
         policyRepository.delete(policy);
 
         disclosure.getData().setDocumentId(doc.getId());
         disclosureRepository.save(disclosure);
-        exception = assertThrows(HttpClientErrorException.class, () -> {
-            restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
-        });
+        resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
 
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).contains("used by 1 disclosure(s)");
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 disclosure(s)");
         disclosureRepository.delete(disclosure);
 
         assertThat(restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId()).getStatusCode()).isEqualTo(HttpStatus.OK);
