@@ -132,14 +132,14 @@ export interface InformationtypeFormValues {
 export interface PolicyFormValues {
   id?: string
   purposes: string[]
-  // informationType?: InformationTypeShort
-  //process: { id: string; name: string; legalBases: LegalBasis[] }
+  informationType?: InformationTypeShort
+  process: { id?: string; name?: string; legalBases?: LegalBasis[] }
   subjectCategories: string[]
-  // legalBasesUse: LegalBasesUse
+  legalBasesUse: LegalBasesUse
   legalBases: Array<LegalBasisFormValues>
   legalBasesOpen: boolean
   documentIds: string[]
-  // otherPolicies: Policy[]
+  otherPolicies?: Policy[]
 }
 
 export interface ProcessFormValues {
@@ -275,7 +275,7 @@ export interface Policy {
 
 export const policySort: ColumnCompares<Policy> = {
   purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), intl.getLanguage()),
-  informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
+  informationType: (a, b) => a.informationType.name?.localeCompare(b.informationType.name || '') || 0,
   process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
   subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length,
@@ -298,7 +298,7 @@ export const informationTypeSort: ColumnCompares<InformationType> = {
 }
 
 export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
-  informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
+  informationType: (a, b) => a.informationType.name?.localeCompare(b.informationType.name || '') || 0,
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
@@ -317,9 +317,9 @@ export const dpProcessSort: ColumnCompares<DpProcess> = {
 }
 
 export interface InformationTypeShort {
-  id: string
-  name: string
-  // sensitivity: Code
+  id?: string
+  name?: string
+  sensitivity?: Code
 }
 
 export interface ProcessShort {
