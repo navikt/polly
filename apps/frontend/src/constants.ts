@@ -132,14 +132,14 @@ export interface InformationtypeFormValues {
 export interface PolicyFormValues {
   id?: string
   purposes: string[]
-  informationType?: InformationTypeShort
-  process: { id: string; name: string; legalBases: LegalBasis[] }
+  // informationType?: InformationTypeShort
+  //process: { id: string; name: string; legalBases: LegalBasis[] }
   subjectCategories: string[]
-  legalBasesUse: LegalBasesUse
+  // legalBasesUse: LegalBasesUse
   legalBases: Array<LegalBasisFormValues>
   legalBasesOpen: boolean
   documentIds: string[]
-  otherPolicies: Policy[]
+  // otherPolicies: Policy[]
 }
 
 export interface ProcessFormValues {
@@ -319,7 +319,7 @@ export const dpProcessSort: ColumnCompares<DpProcess> = {
 export interface InformationTypeShort {
   id: string
   name: string
-  sensitivity: Code
+  // sensitivity: Code
 }
 
 export interface ProcessShort {

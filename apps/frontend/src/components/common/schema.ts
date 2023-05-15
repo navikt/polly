@@ -3,7 +3,8 @@ import {
   AddDocumentToProcessFormValues,
   AffiliationFormValues,
   CreateDocumentFormValues,
-  DataProcessingFormValues, Disclosure,
+  DataProcessingFormValues,
+  Disclosure,
   DisclosureAbroad,
   DisclosureFormValues,
   DocumentInfoTypeUse,
@@ -257,28 +258,28 @@ const subjectCategoryExistsGen = (otherPolicies: Policy[], informationType: Info
   return errors.length ? context.createError({path, message: errors.join(', ')}) : true
 }
 
-export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
+export const policySchema: () => yup.ObjectSchema<PolicyFormValues> = () =>
   yup.object({
-    informationType: yup
-      .object()
-      .shape({})
-      .required(intl.required)
-      .test({
-        name: 'policyHasArt9',
-        message: intl.requiredGdprArt9,
-        test: function (informationType: InformationTypeShort) {
-          const {parent} = this
-          return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
-        },
-      })
-      .test({
-        name: 'policyHasArt6',
-        message: intl.requiredGdprArt6,
-        test: function () {
-          const {parent} = this
-          return !missingArt6LegalBasisForInfoType(parent)
-        },
-      }),
+    // informationType: yup
+    //   .object()
+    //   .shape({})
+    //   .required(intl.required)
+    //   .test({
+    //     name: 'policyHasArt9',
+    //     message: intl.requiredGdprArt9,
+    //     test: function (informationType: InformationTypeShort) {
+    //       const {parent} = this
+    //       return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+    //     },
+    //   })
+    //   .test({
+    //     name: 'policyHasArt6',
+    //     message: intl.requiredGdprArt6,
+    //     test: function () {
+    //       const {parent} = this
+    //       return !missingArt6LegalBasisForInfoType(parent)
+    //     },
+    //   }),
     subjectCategories: yup
       .array()
       .of(yup.string().required())
@@ -292,25 +293,25 @@ export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
           return subjectCategoryExists(path, parent, context)
         },
       }),
-    legalBasesUse: yup
-      .mixed()
-      .oneOf(Object.values(LegalBasesUse))
-      .required(intl.required)
-      .test({
-        name: 'policyHasLegalBasisIfDedicated',
-        message: intl.requiredLegalBasisForDedicated,
-        test: function () {
-          const {parent} = this
-          return !missingLegalBasisForDedicated(parent)
-        },
-      }),
+    // legalBasesUse: yup
+    //   .mixed()
+    //   .oneOf(Object.values(LegalBasesUse))
+    //   .required(intl.required)
+    //   .test({
+    //     name: 'policyHasLegalBasisIfDedicated',
+    //     message: intl.requiredLegalBasisForDedicated,
+    //     test: function () {
+    //       const {parent} = this
+    //       return !missingLegalBasisForDedicated(parent)
+    //     },
+    //   }),
     legalBases: yup.array().of(legalBasisSchema().required()).required(),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete).required(),
-    process: yup.object<any>({}),
+    // process: yup.object<any>({}),
     purposes: yup.array().of(yup.string().required()).required(),
     id: yup.string(),
     documentIds: yup.array().of(yup.string().required()).required(),
-    otherPolicies: yup.array(), // only used for validations
+    // otherPolicies: yup.array(), // only used for validations
   })
 
 export const legalBasisSchema: () => yup.ObjectSchema<LegalBasisFormValues> = () =>
