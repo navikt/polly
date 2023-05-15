@@ -122,11 +122,11 @@ export interface InformationtypeFormValues {
   name?: string
   description?: string
   orgMaster?: string
-  productTeams: string[]
+  productTeams?: string[]
   sensitivity?: string
-  categories: string[]
-  sources: string[]
-  keywords: string[]
+  categories?: string[]
+  sources?: string[]
+  keywords?: string[]
 }
 
 export interface PolicyFormValues {
@@ -144,13 +144,13 @@ export interface PolicyFormValues {
 
 export interface ProcessFormValues {
   id?: string
-  purposes: string[]
+  purposes?: string[]
   name?: string
   description?: string
   additionalDescription?: string
   affiliation: AffiliationFormValues
   commonExternalProcessResponsible?: string
-  legalBases: Array<LegalBasisFormValues>
+  legalBases?: Array<LegalBasisFormValues>
   legalBasesOpen: boolean
   end?: string
   start?: string
@@ -162,7 +162,7 @@ export interface ProcessFormValues {
   profiling?: boolean
   dataProcessing: DataProcessingFormValues
   retention: Retention
-  disclosures: Disclosure[]
+  disclosures?: Disclosure[]
 }
 
 export interface AffiliationFormValues {
@@ -193,7 +193,7 @@ export interface Dpia {
 
 export interface DataProcessingFormValues {
   dataProcessor?: boolean
-  processors: string[]
+  processors?: string[]
 }
 
 export interface DataProcessing {
@@ -581,14 +581,14 @@ export interface AddDocumentToProcessFormValues {
 export interface CreateDocumentFormValues {
   name: string
   description: string
-  informationTypes: DocumentInformationTypes[],
+  informationTypes?: DocumentInformationTypes[],
   dataAccessClass?: string
 }
 
 export interface DocumentInformationTypes {
   id?: string
-  informationTypeId: string
-  subjectCategories: string[]
+  informationTypeId?: string
+  subjectCategories?: string[]
 }
 
 export interface Processor {
@@ -610,12 +610,12 @@ export interface ProcessorFormValues {
   name: string
   contract?: string
   contractOwner?: string
-  operationalContractManagers: string[]
+  operationalContractManagers?: string[]
   note?: string
   outsideEU?: boolean
   transferGroundsOutsideEU?: string
   transferGroundsOutsideEUOther?: string
-  countries: string[]
+  countries?: string[]
 }
 
 export interface AuditItem {

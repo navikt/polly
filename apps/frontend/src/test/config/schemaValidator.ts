@@ -1,5 +1,4 @@
-import { ObjectSchema, ValidationError } from 'yup'
-import { ObjectShape } from 'yup/lib/object'
+import { ObjectSchema, ValidationError, ObjectShape } from 'yup'
 
 expect.extend({
   toBeSchema: <R extends ObjectShape>(obj: R, schema: ObjectSchema<R>) => {

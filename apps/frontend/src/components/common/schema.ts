@@ -3,7 +3,7 @@ import {
   AddDocumentToProcessFormValues,
   AffiliationFormValues,
   CreateDocumentFormValues,
-  DataProcessingFormValues,
+  DataProcessingFormValues, Disclosure,
   DisclosureAbroad,
   DisclosureFormValues,
   DocumentInfoTypeUse,
@@ -27,11 +27,11 @@ const max = 150
 
 const maxError = () => intl.formatString(intl.maxChars, max) as string
 
-function ignore<T>(): yup.SchemaOf<T> {
-  return yup.object() as any as yup.SchemaOf<T>
+function ignore<T>(): yup.Schema<T> {
+  return yup.object() as any as yup.Schema<T>
 }
 
-export const infoTypeSchema: () => yup.SchemaOf<InformationtypeFormValues> = () =>
+export const infoTypeSchema: () => yup.ObjectSchema<InformationtypeFormValues> = () =>
   yup.object({
     id: yup.string(),
     name: yup.string().required(intl.required).max(max, maxError()),
@@ -45,19 +45,19 @@ export const infoTypeSchema: () => yup.SchemaOf<InformationtypeFormValues> = () 
     description: yup.string(),
   })
 
-const dataProcessingSchema: () => yup.SchemaOf<DataProcessingFormValues> = () =>
+const dataProcessingSchema: () => yup.ObjectSchema<DataProcessingFormValues> = () =>
   yup.object({
     dataProcessor: yup.boolean(),
     processors: yup.array().of(yup.string().required()),
   })
 
-const dpDataProcessingSchema: () => yup.SchemaOf<DataProcessingFormValues> = () =>
+const dpDataProcessingSchema: () => yup.ObjectSchema<DataProcessingFormValues> = () =>
   yup.object({
     dataProcessor: yup.boolean(),
     processors: yup.array().of(yup.string().required()),
   })
 
-export const dataProcessorSchema: () => yup.SchemaOf<ProcessorFormValues> = () =>
+export const dataProcessorSchema: () => yup.ObjectSchema<ProcessorFormValues> = () =>
   yup.object({
     id: yup.string(),
     name: yup.string().max(max, maxError()).required(intl.required),
@@ -70,7 +70,7 @@ export const dataProcessorSchema: () => yup.SchemaOf<ProcessorFormValues> = () =
       name: 'transferGrounds',
       message: intl.required,
       test: function () {
-        const { parent } = this
+        const {parent} = this
         return !transferGroundsOutsideEUMissing(parent)
       },
     }),
@@ -78,7 +78,7 @@ export const dataProcessorSchema: () => yup.SchemaOf<ProcessorFormValues> = () =
       name: 'transferGroundsOther',
       message: intl.required,
       test: function () {
-        const { parent } = this
+        const {parent} = this
         return !transferGroundsOutsideEUOtherMissing(parent)
       },
     }),
@@ -88,7 +88,7 @@ export const dataProcessorSchema: () => yup.SchemaOf<ProcessorFormValues> = () =
       .test({
         name: 'transferCountries',
         test: function () {
-          const { parent } = this
+          const {parent} = this
           const error = transferCountriesMissing(parent)
           if (!error) return true
           return this.createError({
@@ -104,17 +104,16 @@ const transferGroundsOutsideEUMissing = (values: ProcessorFormValues) => {
 }
 
 const transferCountriesMissing = (values: ProcessorFormValues) => {
-  return !!values.outsideEU && !values.countries.length
+  return !!values.outsideEU && !values.countries?.length
 }
 
 const transferGroundsOutsideEUOtherMissing = (values: ProcessorFormValues) => {
   return values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && !values.transferGroundsOutsideEUOther
 }
 
-export const processSchema: () => yup.SchemaOf<ProcessFormValues> = () =>
+export const processSchema: () => yup.ObjectSchema<ProcessFormValues> = () =>
   yup.object({
     id: yup.string(),
-    usesAllInformationTypes: yup.boolean(),
     name: yup.string().max(max, maxError()).required(intl.required),
     purposes: yup
       .array()
@@ -140,9 +139,10 @@ export const processSchema: () => yup.SchemaOf<ProcessFormValues> = () =>
     commonExternalProcessResponsible: yup.string(),
     legalBases: yup.array().of(legalBasisSchema().required()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete).required(),
-    start: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
-    end: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
+    start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+    end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     automaticProcessing: yup.boolean(),
+    usesAllInformationTypes: yup.boolean(),
     profiling: yup.boolean(),
     dataProcessing: dataProcessingSchema(),
     retention: yup.object({
@@ -151,7 +151,7 @@ export const processSchema: () => yup.SchemaOf<ProcessFormValues> = () =>
       retentionStart: yup.string(),
       retentionDescription: yup.string(),
     }),
-    status: yup.mixed().oneOf(Object.values(ProcessStatus)),
+    status: yup.mixed<ProcessStatus>().oneOf(Object.values(ProcessStatus)),
     dpia: yup.object({
       grounds: yup.string(),
       needForDpia: yup.boolean(),
@@ -161,10 +161,10 @@ export const processSchema: () => yup.SchemaOf<ProcessFormValues> = () =>
       riskOwnerFunction: yup.string(),
       noDpiaReasons: yup.array().of(yup.string().required()).required(),
     }),
-    disclosures: yup.array().of(yup.object<any>({}).required()),
+    disclosures: yup.array<Disclosure>().required(),
   })
 
-const affiliationSchema: () => yup.SchemaOf<AffiliationFormValues> = () =>
+const affiliationSchema: () => yup.ObjectSchema<AffiliationFormValues> = () =>
   yup.object({
     department: yup.string(),
     subDepartments: yup.array().of(yup.string().required()).required(),
@@ -173,7 +173,7 @@ const affiliationSchema: () => yup.SchemaOf<AffiliationFormValues> = () =>
     disclosureDispatchers: yup.array().of(yup.string().required()).required(),
   })
 
-export const dpProcessSchema: () => yup.SchemaOf<DpProcessFormValues> = () =>
+export const dpProcessSchema: () => yup.ObjectSchema<DpProcessFormValues> = () =>
   yup.object({
     affiliation: affiliationSchema().required(),
 
@@ -183,7 +183,7 @@ export const dpProcessSchema: () => yup.SchemaOf<DpProcessFormValues> = () =>
     dataProcessingAgreements: yup.array().of(yup.string().required()).required(),
 
     description: yup.string(),
-    end: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
+    end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     externalProcessResponsible: yup.string(),
 
     id: yup.string(),
@@ -194,11 +194,11 @@ export const dpProcessSchema: () => yup.SchemaOf<DpProcessFormValues> = () =>
       retentionStart: yup.string(),
     }),
 
-    start: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
+    start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     subDataProcessing: dpDataProcessingSchema(),
   })
 
-export const createDocumentSchema: () => yup.SchemaOf<CreateDocumentFormValues> = () =>
+export const createDocumentSchema: () => yup.ObjectSchema<CreateDocumentFormValues> = () =>
   yup.object({
     name: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
@@ -254,7 +254,7 @@ const subjectCategoryExistsGen = (otherPolicies: Policy[], informationType: Info
   const errors = matchingIdents
     .map((ident) => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
     .map((category) => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name) as string)
-  return errors.length ? context.createError({ path, message: errors.join(', ') }) : true
+  return errors.length ? context.createError({path, message: errors.join(', ')}) : true
 }
 
 export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
@@ -267,7 +267,7 @@ export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
         name: 'policyHasArt9',
         message: intl.requiredGdprArt9,
         test: function (informationType: InformationTypeShort) {
-          const { parent } = this
+          const {parent} = this
           return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
         },
       })
@@ -275,7 +275,7 @@ export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
         name: 'policyHasArt6',
         message: intl.requiredGdprArt6,
         test: function () {
-          const { parent } = this
+          const {parent} = this
           return !missingArt6LegalBasisForInfoType(parent)
         },
       }),
@@ -288,7 +288,7 @@ export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
         name: 'duplicateSubjectCategory',
         message: 'placeholder',
         test: function (val, context) {
-          const { parent, path } = this
+          const {parent, path} = this
           return subjectCategoryExists(path, parent, context)
         },
       }),
@@ -300,7 +300,7 @@ export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
         name: 'policyHasLegalBasisIfDedicated',
         message: intl.requiredLegalBasisForDedicated,
         test: function () {
-          const { parent } = this
+          const {parent} = this
           return !missingLegalBasisForDedicated(parent)
         },
       }),
@@ -313,25 +313,25 @@ export const policySchema: () => yup.SchemaOf<PolicyFormValues> = () =>
     otherPolicies: yup.array(), // only used for validations
   })
 
-export const legalBasisSchema: () => yup.SchemaOf<LegalBasisFormValues> = () =>
+export const legalBasisSchema: () => yup.ObjectSchema<LegalBasisFormValues> = () =>
   yup.object({
     gdpr: yup.string().required(intl.required),
     nationalLaw: yup.string().when('gdpr', {
-      is: (gdprCode?: string) => codelist.requiresNationalLaw(gdprCode),
-      then: yup.string().required(intl.requiredNationalLaw),
-      otherwise: yup.string(),
+      is: true,
+      then: () => yup.string().required(intl.requiredNationalLaw),
+      otherwise: () => yup.string(),
     }),
     description: yup.string().when('gdpr', {
-      is: (gdprCode?: string) => codelist.requiresDescription(gdprCode),
-      then: yup.string().required(intl.requiredDescription),
-      otherwise: yup.string(),
+      is: (gdpr?: string) => codelist.requiresDescription(gdpr),
+      then: () => yup.string().required(intl.requiredDescription),
+      otherwise: () => yup.string(),
     }),
     key: yup.string(),
   })
 
-export const codeListSchema: () => yup.SchemaOf<Code> = () =>
+export const codeListSchema: () => yup.ObjectSchema<Code> = () =>
   yup.object({
-    list: yup.mixed().required(intl.required),
+    list: yup.mixed<ListName>().required(intl.required),
     code: yup
       .string()
       .matches(/^[A-Z_]+$/, 'Der er ikke tilatt med små bokstaver, mellomrom, æ, ø og å i code.')
@@ -359,8 +359,8 @@ export const disclosureSchema: () => yup.SchemaOf<DisclosureFormValues> = () =>
     document: ignore().nullable(),
     legalBases: yup.array().of(legalBasisSchema().required()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete).required(),
-    start: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
-    end: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
+    start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+    end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     processes: yup.array().of(ignore().required()),
     abroad: disclosureAbroadSchema().required(),
     processIds: yup.array().of(yup.string().required()),
@@ -398,7 +398,7 @@ export const addBatchInfoTypesToProcessSchema: (otherPolicies: Policy[]) => yup.
             name: 'duplicateSubjectCategory',
             message: 'placeholder',
             test: function (informationTypeUse: DocumentInfoTypeUse, context: yup.TestContext<any>) {
-              const { path } = this
+              const {path} = this
               return subjectCategoryExistsBatch(path, otherPolicies, informationTypeUse, context)
             },
           }),
