@@ -122,35 +122,35 @@ export interface InformationtypeFormValues {
   name?: string
   description?: string
   orgMaster?: string
-  productTeams?: string[]
+  productTeams: string[]
   sensitivity?: string
-  categories?: string[]
-  sources?: string[]
-  keywords?: string[]
+  categories: string[]
+  sources: string[]
+  keywords: string[]
 }
 
 export interface PolicyFormValues {
   id?: string
   purposes: string[]
   informationType?: InformationTypeShort
-  process: { id?: string; name?: string; legalBases?: LegalBasis[] }
+  process: { id: string; name: string; legalBases: LegalBasis[] }
   subjectCategories: string[]
   legalBasesUse: LegalBasesUse
   legalBases: Array<LegalBasisFormValues>
   legalBasesOpen: boolean
   documentIds: string[]
-  otherPolicies?: Policy[]
+  otherPolicies: Policy[]
 }
 
 export interface ProcessFormValues {
   id?: string
-  purposes?: string[]
+  purposes: string[]
   name?: string
   description?: string
   additionalDescription?: string
   affiliation: AffiliationFormValues
   commonExternalProcessResponsible?: string
-  legalBases?: Array<LegalBasisFormValues>
+  legalBases: Array<LegalBasisFormValues>
   legalBasesOpen: boolean
   end?: string
   start?: string
@@ -162,7 +162,7 @@ export interface ProcessFormValues {
   profiling?: boolean
   dataProcessing: DataProcessingFormValues
   retention: Retention
-  disclosures?: Disclosure[]
+  disclosures: Disclosure[]
 }
 
 export interface AffiliationFormValues {
@@ -193,7 +193,7 @@ export interface Dpia {
 
 export interface DataProcessingFormValues {
   dataProcessor?: boolean
-  processors?: string[]
+  processors: string[]
 }
 
 export interface DataProcessing {
@@ -275,7 +275,7 @@ export interface Policy {
 
 export const policySort: ColumnCompares<Policy> = {
   purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), intl.getLanguage()),
-  informationType: (a, b) => a.informationType.name?.localeCompare(b.informationType.name || '') || 0,
+  informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
   subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length,
@@ -298,7 +298,7 @@ export const informationTypeSort: ColumnCompares<InformationType> = {
 }
 
 export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
-  informationType: (a, b) => a.informationType.name?.localeCompare(b.informationType.name || '') || 0,
+  informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
@@ -317,9 +317,9 @@ export const dpProcessSort: ColumnCompares<DpProcess> = {
 }
 
 export interface InformationTypeShort {
-  id?: string
-  name?: string
-  sensitivity?: Code
+  id: string
+  name: string
+  sensitivity: Code
 }
 
 export interface ProcessShort {
@@ -581,14 +581,14 @@ export interface AddDocumentToProcessFormValues {
 export interface CreateDocumentFormValues {
   name: string
   description: string
-  informationTypes?: DocumentInformationTypes[],
+  informationTypes: DocumentInformationTypes[],
   dataAccessClass?: string
 }
 
 export interface DocumentInformationTypes {
   id?: string
-  informationTypeId?: string
-  subjectCategories?: string[]
+  informationTypeId: string
+  subjectCategories: string[]
 }
 
 export interface Processor {
@@ -610,12 +610,12 @@ export interface ProcessorFormValues {
   name: string
   contract?: string
   contractOwner?: string
-  operationalContractManagers?: string[]
+  operationalContractManagers: string[]
   note?: string
   outsideEU?: boolean
   transferGroundsOutsideEU?: string
   transferGroundsOutsideEUOther?: string
-  countries?: string[]
+  countries: string[]
 }
 
 export interface AuditItem {
