@@ -2,7 +2,7 @@ import * as yup from 'yup'
 import {
   AddDocumentToProcessFormValues,
   AffiliationFormValues,
-  CreateDocumentFormValues,
+  CreateDocumentFormValues, CustomizedProcess,
   DataProcessingFormValues,
   Disclosure,
   DisclosureAbroad,
@@ -381,11 +381,7 @@ export const addDocumentToProcessSchema: () => yup.ObjectSchema<AddDocumentToPro
   yup.object({
     document: yup.mixed<any>().required(intl.required),
     informationTypes: yup.array<any>().required().min(1, intl.required),
-    process: yup.object({
-      id: yup.string().default(''),
-      name: yup.string().default(''),
-      purposes: yup.array<Code>().default([] as Code[])
-    }).required(intl.required),
+    process: yup.mixed<CustomizedProcess>().required(intl.required),
     linkDocumentToPolicies: yup.boolean().required()
   })
 
@@ -415,10 +411,6 @@ export const addBatchInfoTypesToProcessSchema: (otherPolicies: Policy[]) => yup.
       .min(1, intl.required)
       .required(intl.required),
     linkDocumentToPolicies: yup.boolean().default(false).oneOf([false]),
-    process: yup.object({
-      id: yup.string().required(),
-      name: yup.string().required(),
-      purposes: yup.array<Code>().required()
-    }).required(intl.required),
+    process: yup.mixed<CustomizedProcess>().required(intl.required),
     document: ignore().nullable(),
   })

@@ -575,7 +575,13 @@ export interface AddDocumentToProcessFormValues {
   document?: Document
   informationTypes: DocumentInfoTypeUse[]
   linkDocumentToPolicies: boolean
-  process: { id: string; name: string; purposes: Code[] }
+  process: CustomizedProcess
+}
+
+export interface CustomizedProcess {
+  id: string;
+  name: string;
+  purposes: Code[]
 }
 
 export interface CreateDocumentFormValues {
