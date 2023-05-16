@@ -39,10 +39,10 @@ export const infoTypeSchema: () => yup.ObjectSchema<InformationtypeFormValues> =
     name: yup.string().required(intl.required).max(max, maxError()),
     term: yup.string(),
     sensitivity: yup.string().required(intl.required),
-    categories: yup.array().of(yup.string().required()).min(1, intl.required),
-    sources: yup.array().of(yup.string().required()),
-    productTeams: yup.array().of(yup.string().required()),
-    keywords: yup.array().of(yup.string().required()),
+    categories: yup.array().of(yup.string().required()).min(1, intl.required).required(),
+    sources: yup.array().of(yup.string().required()).required(),
+    productTeams: yup.array().of(yup.string().required()).required(),
+    keywords: yup.array().of(yup.string().required()).required(),
     orgMaster: yup.string(),
     description: yup.string(),
   })
@@ -50,13 +50,13 @@ export const infoTypeSchema: () => yup.ObjectSchema<InformationtypeFormValues> =
 const dataProcessingSchema: () => yup.ObjectSchema<DataProcessingFormValues> = () =>
   yup.object({
     dataProcessor: yup.boolean(),
-    processors: yup.array().of(yup.string().required()),
+    processors: yup.array().of(yup.string().required()).required(),
   })
 
 const dpDataProcessingSchema: () => yup.ObjectSchema<DataProcessingFormValues> = () =>
   yup.object({
     dataProcessor: yup.boolean(),
-    processors: yup.array().of(yup.string().required()),
+    processors: yup.array().of(yup.string().required()).required(),
   })
 
 export const dataProcessorSchema: () => yup.ObjectSchema<ProcessorFormValues> = () =>
@@ -64,7 +64,7 @@ export const dataProcessorSchema: () => yup.ObjectSchema<ProcessorFormValues> = 
     id: yup.string(),
     name: yup.string().max(max, maxError()).required(intl.required),
     contractOwner: yup.string(),
-    operationalContractManagers: yup.array().of(yup.string().required()),
+    operationalContractManagers: yup.array().of(yup.string().required()).required(),
     note: yup.string(),
     contract: yup.string(),
     outsideEU: yup.boolean(),
@@ -86,7 +86,7 @@ export const dataProcessorSchema: () => yup.ObjectSchema<ProcessorFormValues> = 
     }),
     countries: yup
       .array()
-      .of(yup.string().required())
+      .of(yup.string().required()).required()
       .test({
         name: 'transferCountries',
         test: function () {
@@ -128,7 +128,7 @@ export const processSchema: () => yup.ObjectSchema<ProcessFormValues> = () =>
           )
           .required(),
       )
-      .min(1, intl.required),
+      .min(1, intl.required).required(),
     description: yup.string(),
     additionalDescription: yup.string(),
     affiliation: yup.object({
@@ -139,7 +139,7 @@ export const processSchema: () => yup.ObjectSchema<ProcessFormValues> = () =>
       disclosureDispatchers: yup.array().of(yup.string().required()).required(),
     }),
     commonExternalProcessResponsible: yup.string(),
-    legalBases: yup.array().of(legalBasisSchema().required()),
+    legalBases: yup.array().of(legalBasisSchema().required()).required(),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete).required(),
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
@@ -211,10 +211,10 @@ export const createDocumentSchema: () => yup.ObjectSchema<CreateDocumentFormValu
         yup.object({
           id: yup.string(),
           informationTypeId: yup.string().required(intl.required),
-          subjectCategories: yup.array().of(yup.string().required()).min(1, intl.required),
+          subjectCategories: yup.array().of(yup.string().required()).min(1, intl.required).required(),
         }),
       )
-      .min(1, intl.required)
+      .min(1, intl.required).required()
   })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
@@ -359,7 +359,7 @@ export const disclosureSchema: () => yup.ObjectSchema<DisclosureFormValues> = ()
     description: yup.string(),
     documentId: yup.string(),
     document: ignore().nullable(),
-    legalBases: yup.array().of(legalBasisSchema().required()),
+    legalBases: yup.array().of(legalBasisSchema().required()).required(),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete).required(),
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),

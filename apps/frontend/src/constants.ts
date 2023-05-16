@@ -133,13 +133,13 @@ export interface PolicyFormValues {
   id?: string
   purposes: string[]
   informationType?: InformationTypeShort
-  process: { id: string; name: string; legalBases: LegalBasis[] }
-  subjectCategories: string[]
-  legalBasesUse: LegalBasesUse
-  legalBases: Array<LegalBasisFormValues>
-  legalBasesOpen: boolean
-  documentIds: string[]
-  otherPolicies: Policy[]
+  // process: { id: string; name: string; legalBases: LegalBasis[] }
+  // subjectCategories: string[]
+  // legalBasesUse: LegalBasesUse
+  // legalBases: Array<LegalBasisFormValues>
+  // legalBasesOpen: boolean
+  // documentIds: string[]
+  // otherPolicies: Policy[]
 }
 
 export interface ProcessFormValues {
