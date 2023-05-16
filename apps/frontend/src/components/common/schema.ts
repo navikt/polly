@@ -322,7 +322,7 @@ export const legalBasisSchema: () => yup.ObjectSchema<LegalBasisFormValues> = ()
   yup.object({
     gdpr: yup.string().required(intl.required),
     nationalLaw: yup.string().when('gdpr', {
-      is: true,
+      is: (gdpr?: string) => codelist.requiresNationalLaw(gdpr),
       then: () => yup.string().required(intl.requiredNationalLaw),
       otherwise: () => yup.string(),
     }),
