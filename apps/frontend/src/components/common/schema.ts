@@ -370,7 +370,7 @@ export const disclosureSchema: () => yup.ObjectSchema<DisclosureFormValues> = ()
     processes: yup.array<any>().required(),
     abroad: disclosureAbroadSchema().required(),
     processIds: yup.array<String>().required(),
-    informationTypes: yup.array<any>().required(),
+    informationTypes: yup.array<InformationTypeShort>(),
     aaregContracts: yup.array().of(ignore().required()),
     aaregContractIds: yup.array(),
     administrationArchiveCaseNumber: yup.string(),
@@ -382,9 +382,9 @@ export const addDocumentToProcessSchema: () => yup.ObjectSchema<AddDocumentToPro
     document: yup.mixed<any>().required(intl.required),
     informationTypes: yup.array<any>().required().min(1, intl.required),
     process: yup.object({
-      id: yup.string().required(),
-      name: yup.string().required(),
-      purposes: yup.array<Code>().required()
+      id: yup.string().default(''),
+      name: yup.string().default(''),
+      purposes: yup.array<Code>().default([] as Code[])
     }).required(intl.required),
     linkDocumentToPolicies: yup.boolean().required()
   })
@@ -414,7 +414,7 @@ export const addBatchInfoTypesToProcessSchema: (otherPolicies: Policy[]) => yup.
       )
       .min(1, intl.required)
       .required(intl.required),
-    linkDocumentToPolicies: yup.boolean().default(false),
+    linkDocumentToPolicies: yup.boolean().default(false).oneOf([false]),
     process: yup.object({
       id: yup.string().required(),
       name: yup.string().required(),
