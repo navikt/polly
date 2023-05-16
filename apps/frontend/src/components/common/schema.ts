@@ -11,7 +11,7 @@ import {
   DpProcessFormValues,
   InformationtypeFormValues,
   InformationTypeShort,
-  LegalBasesUse,
+  LegalBasesUse, LegalBasis,
   LegalBasisFormValues,
   Policy,
   PolicyFormValues,
@@ -307,7 +307,11 @@ export const policySchema: () => yup.ObjectSchema<PolicyFormValues> = () =>
       }),
     legalBases: yup.array().of(legalBasisSchema().required()).required(),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete).required(),
-    process: yup.object(),
+    process: yup.object({
+      id: yup.string().required(),
+      name: yup.string().required(),
+      legalBases: yup.array<LegalBasis>().required()
+    }),
     purposes: yup.array().of(yup.string().required()).required(),
     id: yup.string(),
     documentIds: yup.array().of(yup.string().required()).required(),
@@ -377,7 +381,11 @@ export const addDocumentToProcessSchema: () => yup.ObjectSchema<AddDocumentToPro
   yup.object({
     document: yup.mixed<any>().required(intl.required),
     informationTypes: yup.array<any>().required().min(1, intl.required),
-    process: yup.mixed<any>().required(intl.required),
+    process: yup.object({
+      id: yup.string().required(),
+      name: yup.string().required(),
+      purposes: yup.array<Code>().required()
+    }).required(intl.required),
     linkDocumentToPolicies: yup.boolean().required()
   })
 
@@ -407,6 +415,10 @@ export const addBatchInfoTypesToProcessSchema: (otherPolicies: Policy[]) => yup.
       .min(1, intl.required)
       .required(intl.required),
     linkDocumentToPolicies: yup.boolean().default(false),
-    process: yup.mixed<any>().required(intl.required),
+    process: yup.object({
+      id: yup.string().required(),
+      name: yup.string().required(),
+      purposes: yup.array<Code>().required()
+    }).required(intl.required),
     document: ignore().nullable(),
   })
