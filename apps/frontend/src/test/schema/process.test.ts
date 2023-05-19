@@ -43,6 +43,16 @@ test('Process purposes required', () => {
   expect(process).toBeSchemaErrorAt(schema, 'purposes')
 })
 
+test('Process status needs to be a type ProcessStatus', () => {
+  const process = { ...createProcess(), status: "" }
+  expect(process).toBeSchemaErrorAt(schema, 'status')
+})
+
+test('Process disclosures required', () => {
+  const process = { ...createProcess(), disclosures: "" }
+  expect(process).toBeSchemaErrorAt(schema, 'disclosures')
+})
+
 test('Process legalBasis', () => {
   let process = { ...createProcess(), legalBases: [{ gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: '', nationalLaw: '' }] }
   expect(process).toBeSchemaErrorAt(schema, 'legalBases[0].description')
