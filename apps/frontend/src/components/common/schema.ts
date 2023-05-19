@@ -255,7 +255,7 @@ const subjectCategoryExistsGen = (informationType: InformationTypeShort, subject
   const matchingIdents = subjectCategories.map((c) => informationType?.id + '.' + c).filter((policyIdent) => existingPolicyIdents.indexOf(policyIdent) >= 0)
   const errors = matchingIdents
     .map((ident) => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
-    .map((category) => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name || '') as string)
+    .map((category) => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name) as string)
   return errors.length ? context.createError({path, message: errors.join(', ')}) : true
 }
 
