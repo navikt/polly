@@ -55,6 +55,11 @@ public class ProcessWriteController {
     @PostMapping
     public ResponseEntity<ProcessResponse> createProcesses(@RequestBody ProcessRequest request) {
         log.info("Received requests to create Process");
+
+        if(request.getName().equals("Test")) {
+            throw new RuntimeException("ERRORRRRRRRR!!!!!!!");
+        }
+
         service.validateRequest(request, false);
 
         request.setNewProcessNumber(repository.nextProcessNumber());
