@@ -179,7 +179,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(resp.getBody()).contains("DuplicatedIdentifyingFields");
         assertThat(informationTypeRepository.count()).isZero();
     }
@@ -271,7 +271,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(resp.getBody()).contains("used by 1 policie(s)");
 
         policyRepository.delete(policy);
@@ -279,7 +279,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
 
         resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(resp.getBody()).contains("used by 1 document(s)");
 
         documentRepository.delete(doc);

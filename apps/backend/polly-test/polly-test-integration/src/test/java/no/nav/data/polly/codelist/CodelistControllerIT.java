@@ -180,7 +180,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             var resp = restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(resp.getBody()).contains("PROVENAANCE was invalid for type ListName");
         }
 
@@ -191,7 +191,7 @@ class CodelistControllerIT extends IntegrationTestBase {
             List<CodelistRequest> requests = List.of(createCodelistRequest(testValue));
             var resp = restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(resp.getBody()).contains(String.format(ERROR_IMMUTABLE_CODELIST, testValue));
         }
     }

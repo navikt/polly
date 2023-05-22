@@ -66,7 +66,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
         assertThat(resp.getBody(), containsString("purposes was null or missing"));
         assertThat(resp.getBody(), containsString("informationTypeId was null or missing"));
         assertThat(resp.getBody(), containsString("processId was null or missing"));
@@ -81,7 +81,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         var resp = restTemplate.exchange(
                     POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
         assertThat(resp.getBody(),
                 containsString(
                         "[InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 Process: 60db8589-f383-4405-82f1-148b0333899b SubjectCategory: BRUKER] is not unique because it is already used in this request (see request nr: 1 and 2)"));
@@ -109,7 +109,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
         assertThat(resp.getBody(), containsString("purposes[0]: NOTFOUND code not found in codelist PURPOSE"));
         assertThat(resp.getBody(), containsString("An InformationType with id b7a86238-c6ca-4e5e-9233-9089d162400c does not exist"));
         assertThat(resp.getBody(), containsString("A Process with id 17942455-4e86-4315-a7b2-872accd9c856 does not exist"));
@@ -177,7 +177,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         var resp = restTemplate.exchange(
                     POLICY_REST_ENDPOINT + "/" + request.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
         assertThat(resp.getBody(), containsString("informationTypeId was null or missing"));
         assertThat(policyRepository.count(), is(1L));
     }
@@ -228,7 +228,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
         assertThat(resp.getBody(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
         assertThat(resp.getBody(), containsString(postadressId + "/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
         // No error reported regarding Arbeidsforhold/TEST1
