@@ -49,7 +49,7 @@ public class SettingsControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.postForEntity("/settings", settings, String.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(resp.getBody()).contains("Can't find document d7fc29f4-c006-49ce-9f38-75c82c4bcc98");
     }
 
