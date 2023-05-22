@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,6 +51,7 @@ public class ProcessWriteController {
         this.teamService = teamService;
     }
 
+    @ExceptionHandler(ValidationException.class)
     @Operation(summary = "Create Processes")
     @ApiResponse(responseCode = "201", description = "Processes to be created successfully accepted")
     @PostMapping
@@ -62,6 +64,7 @@ public class ProcessWriteController {
         return new ResponseEntity<>(process.convertToResponseWithPolicies(), HttpStatus.CREATED);
     }
 
+    @ExceptionHandler(ValidationException.class)
     @Operation(summary = "Update Process")
     @ApiResponse(description = "Process updated")
     @PutMapping("/{id}")
