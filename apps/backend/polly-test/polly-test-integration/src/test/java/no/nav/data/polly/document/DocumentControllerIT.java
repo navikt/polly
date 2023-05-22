@@ -106,7 +106,7 @@ class DocumentControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.postForEntity("/document", DocumentRequest.builder().description("newdocument").build(), String.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(resp.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
     }
 
@@ -153,7 +153,7 @@ class DocumentControllerIT extends IntegrationTestBase {
 
         var response = restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
     }
@@ -170,7 +170,7 @@ class DocumentControllerIT extends IntegrationTestBase {
 
         var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(resp.getBody()).contains("used by 1 policie(s)");
         policyRepository.delete(policy);
 
@@ -178,7 +178,7 @@ class DocumentControllerIT extends IntegrationTestBase {
         disclosureRepository.save(disclosure);
         resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(resp.getBody()).contains("used by 1 disclosure(s)");
         disclosureRepository.delete(disclosure);
 

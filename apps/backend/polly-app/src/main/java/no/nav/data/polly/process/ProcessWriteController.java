@@ -73,7 +73,7 @@ public class ProcessWriteController {
         Optional<Process> fromRepository = repository.findById(id);
         if (fromRepository.isEmpty()) {
             log.info("Cannot find Process with id={}", id);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         service.validateRequest(request, true);
         return ResponseEntity.ok(service.update(request).convertToResponseWithPolicies());
@@ -88,7 +88,7 @@ public class ProcessWriteController {
         Optional<Process> fromRepository = repository.findById(id);
         if (fromRepository.isEmpty()) {
             log.info("Cannot find Process with id={}", id);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         service.deleteById(id);
         log.info("Process with id={} deleted", id);

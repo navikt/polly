@@ -316,7 +316,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                     .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP")
                             .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build()))
                             .build(), String.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
     }
 
@@ -327,7 +327,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         var response = restTemplate.postForEntity("/process", request, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).contains("nameAndPurposeExists");
     }
 
