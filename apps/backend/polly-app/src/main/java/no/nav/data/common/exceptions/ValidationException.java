@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ValidationException extends RuntimeException {
 
     private final List<ValidationError> validationErrors;
