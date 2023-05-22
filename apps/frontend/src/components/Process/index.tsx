@@ -158,7 +158,9 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
         updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id ? newProcess.id : ''] }))
       })
     } catch (err: any) {
-      if (err.response.data.message.includes('already exists')) {
+      console.log(err);
+      
+      if (err.response.data.message && err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
         return
       }
