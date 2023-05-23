@@ -348,7 +348,10 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       {!codelistLoading && (
         <ModalProcess
           title={intl.processingActivitiesNew}
-          onClose={() => setShowCreateProcessModal(false)}
+          onClose={() => {
+            setErrorProcessModal('')
+            setShowCreateProcessModal(false)
+          }}
           isOpen={showCreateProcessModal}
           submit={(values: ProcessFormValues) => handleCreateProcess(values)}
           errorOnCreate={errorProcessModal}
