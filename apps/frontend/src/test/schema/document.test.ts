@@ -19,7 +19,7 @@ const createDocument: () => CreateDocumentFormValues = () => ({
       informationTypeId: 'id',
     },
   ],
-  dataAccessClass: 'ACCESS'
+  dataAccessClass: 'ACCESS',
 })
 
 test('CreateDocument ok', () => {
@@ -47,7 +47,7 @@ const addDocumentData: () => AddDocumentToProcessFormValues = () => ({
     name: 'name',
     description: 'desc',
     informationTypes: [],
-    dataAccessClass: dataAccessClassCode
+    dataAccessClass: dataAccessClassCode,
   },
   informationTypes: [
     {

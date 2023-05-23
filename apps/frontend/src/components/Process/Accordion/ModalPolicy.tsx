@@ -131,7 +131,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
             submit(values)
             onClose()
           }}
-          >
+        >
           {(formikBag: FormikProps<PolicyFormValues>) => {
             return (
               <Form onKeyDown={disableEnter}>

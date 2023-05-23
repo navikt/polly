@@ -1,6 +1,6 @@
-import {Code, codelist, ListName} from './service/Codelist'
-import {ColumnCompares} from './util/hooks'
-import {intl} from './util'
+import { Code, codelist, ListName } from './service/Codelist'
+import { ColumnCompares } from './util/hooks'
+import { intl } from './util'
 
 export enum LegalBasesUse {
   INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
@@ -579,15 +579,15 @@ export interface AddDocumentToProcessFormValues {
 }
 
 export interface CustomizedProcess {
-  id: string;
-  name: string;
+  id: string
+  name: string
   purposes: Code[]
 }
 
 export interface CreateDocumentFormValues {
   name: string
   description: string
-  informationTypes: DocumentInformationTypes[],
+  informationTypes: DocumentInformationTypes[]
   dataAccessClass?: string
 }
 

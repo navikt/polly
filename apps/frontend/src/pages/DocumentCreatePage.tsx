@@ -14,7 +14,7 @@ let initialCreateDocumentFormValues: DocumentFormValues = {
 }
 
 export const convertDocumentToFormRequest = (values: DocumentFormValues) => {
-  let newValue = { ...values, dataAccessClass: values.dataAccessClass}
+  let newValue = { ...values, dataAccessClass: values.dataAccessClass }
 
   newValue.informationTypes.forEach((it) => {
     let subCatList: any = []

@@ -1,25 +1,25 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {intl, theme} from '../util'
-import {useParams} from 'react-router-dom'
-import {codelist, ListName} from '../service/Codelist'
-import {Plus} from 'baseui/icon'
-import {Block} from 'baseui/block'
-import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure} from '../api'
-import {HeadingMedium, ParagraphMedium} from 'baseui/typography'
-import {Button, KIND} from 'baseui/button'
-import {user} from '../service/User'
-import {Disclosure, DisclosureFormValues, DpProcess, InformationType} from '../constants'
+import { useEffect, useState } from 'react'
+import { intl, theme } from '../util'
+import { useParams } from 'react-router-dom'
+import { codelist, ListName } from '../service/Codelist'
+import { Plus } from 'baseui/icon'
+import { Block } from 'baseui/block'
+import { createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure } from '../api'
+import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
+import { Button, KIND } from 'baseui/button'
+import { user } from '../service/User'
+import { Disclosure, DisclosureFormValues, DpProcess, InformationType } from '../constants'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import {Spinner} from 'baseui/spinner'
+import { Spinner } from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import ProcessList from '../components/Process'
-import {Section} from './ProcessPage'
-import {getAllDpProcesses} from '../api/DpProcessApi'
+import { Section } from './ProcessPage'
+import { getAllDpProcesses } from '../api/DpProcessApi'
 import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
-import {Accordion, Panel} from 'baseui/accordion'
-import {toggleOverride} from '../components/common/Accordion'
+import { Accordion, Panel } from 'baseui/accordion'
+import { toggleOverride } from '../components/common/Accordion'
 
 export type PathParams = {
   thirdPartyCode: string
@@ -95,9 +95,9 @@ const ThirdPartyPage = () => {
     start: undefined,
     end: undefined,
     processes: [],
-    abroad: {abroad: false, countries: [], refToAgreement: '', businessArea: ''},
+    abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
     processIds: [],
-    administrationArchiveCaseNumber: ''
+    administrationArchiveCaseNumber: '',
   }
 
   useEffect(() => {
@@ -106,7 +106,7 @@ const ThirdPartyPage = () => {
       await codelist.wait()
       if (params.thirdPartyCode) {
         setDisclosureList(await getDisclosuresByRecipient(params.thirdPartyCode))
-        setInformationTypeList((await getInformationTypesBy({source: params.thirdPartyCode})).content)
+        setInformationTypeList((await getInformationTypesBy({ source: params.thirdPartyCode })).content)
       }
       setIsLoading(false)
     })()
@@ -114,7 +114,7 @@ const ThirdPartyPage = () => {
 
   return (
     <>
-      {isLoading && <Spinner/>}
+      {isLoading && <Spinner />}
 
       {!isLoading && codelist && (
         <>
@@ -135,7 +135,7 @@ const ThirdPartyPage = () => {
               },
               ToggleIcon: toggleOverride,
             }}
-            initialState={{expanded: params.section ? [params.section] : []}}
+            initialState={{ expanded: params.section ? [params.section] : [] }}
           >
             <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`} key="disclosure">
               <Block display="flex" justifyContent="flex-end">
@@ -146,7 +146,7 @@ const ThirdPartyPage = () => {
                     onClick={() => setShowCreateModal(true)}
                     startEnhancer={() => (
                       <Block display="flex" justifyContent="center">
-                        <Plus size={22}/>
+                        <Plus size={22} />
                       </Block>
                     )}
                   >
@@ -167,7 +167,7 @@ const ThirdPartyPage = () => {
             </Panel>
 
             <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`} key="informationtype">
-              <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
+              <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true} />
             </Panel>
 
             {params.thirdPartyCode && (
@@ -175,7 +175,7 @@ const ThirdPartyPage = () => {
                 key="dpprocess"
                 title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}
               >
-                <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []}/>
+                <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []} />
               </Panel>
             )}
 

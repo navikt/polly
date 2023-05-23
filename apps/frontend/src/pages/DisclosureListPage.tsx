@@ -1,24 +1,24 @@
-import React, {useEffect, useState} from 'react'
-import {HeadingLarge, LabelMedium} from 'baseui/typography'
-import {intl, theme} from '../util'
-import {createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess} from '../api'
-import {useQueryParam, useTable} from '../util/hooks'
-import {Block} from 'baseui/block'
-import {Button, Button as BButton, KIND} from 'baseui/button'
-import {ButtonGroup} from 'baseui/button-group'
-import {useNavigate} from 'react-router-dom'
-import {lowerFirst} from 'lodash'
-import {Cell, HeadCell, Row, Table} from '../components/common/Table'
-import {ObjectLink} from '../components/common/RouteLink'
-import {AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process} from '../constants'
-import {ListName} from '../service/Codelist'
+import React, { useEffect, useState } from 'react'
+import { HeadingLarge, LabelMedium } from 'baseui/typography'
+import { intl, theme } from '../util'
+import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
+import { useQueryParam, useTable } from '../util/hooks'
+import { Block } from 'baseui/block'
+import { Button, Button as BButton, KIND } from 'baseui/button'
+import { ButtonGroup } from 'baseui/button-group'
+import { useNavigate } from 'react-router-dom'
+import { lowerFirst } from 'lodash'
+import { Cell, HeadCell, Row, Table } from '../components/common/Table'
+import { ObjectLink } from '../components/common/RouteLink'
+import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
+import { ListName } from '../service/Codelist'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import {user} from '../service/User'
-import {Plus} from 'baseui/icon'
+import { user } from '../service/User'
+import { Plus } from 'baseui/icon'
 import SearchProcess from '../components/common/SearchProcess'
-import {checkForAaregDispatcher} from '../util/helper-functions'
-import {searchAaregAvtale} from '../api/AaregAvtaleApi'
-import {AaregAvtaleTable} from '../components/AaregAvtale/AaregAvtaleTable'
+import { checkForAaregDispatcher } from '../util/helper-functions'
+import { searchAaregAvtale } from '../api/AaregAvtaleApi'
+import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -59,7 +59,7 @@ export const DisclosureListPage = () => {
     processes: [],
     abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
     processIds: [],
-    administrationArchiveCaseNumber:''
+    administrationArchiveCaseNumber: '',
   }
 
   useEffect(() => {

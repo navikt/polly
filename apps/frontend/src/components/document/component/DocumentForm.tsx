@@ -99,13 +99,14 @@ const DocumentForm = (props: DocumentFormProps) => {
                         <Block>
                           {intl.moreInfo + ' '}
                           <StyledLink target="_blank" rel="noopener noreferrer" href={'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'}>
-                            {intl.here  + ' '}
+                            {intl.here + ' '}
                             <span>
                               <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
                             </span>
                           </StyledLink>
                         </Block>
-                      } />
+                      }
+                    />
                   </Block>
 
                   <Select

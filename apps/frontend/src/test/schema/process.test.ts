@@ -44,12 +44,12 @@ test('Process purposes required', () => {
 })
 
 test('Process status needs to be a type ProcessStatus', () => {
-  const process = { ...createProcess(), status: "" }
+  const process = { ...createProcess(), status: '' }
   expect(process).toBeSchemaErrorAt(schema, 'status')
 })
 
 test('Process disclosures required', () => {
-  const process = { ...createProcess(), disclosures: "" }
+  const process = { ...createProcess(), disclosures: '' }
   expect(process).toBeSchemaErrorAt(schema, 'disclosures')
 })
 
