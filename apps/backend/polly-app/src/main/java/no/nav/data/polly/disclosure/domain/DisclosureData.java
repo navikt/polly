@@ -34,6 +34,7 @@ public class DisclosureData {
     private List<UUID> informationTypeIds;
 
     @Valid
+    @Builder.Default
     private List<LegalBasis> legalBases = new ArrayList<>();
     private DisclosureAbroad abroad;
     private Boolean thirdCountryReceiver;
