@@ -24,9 +24,13 @@ public class InformationTypeData {
     private String description;
     private String sensitivity;
     private String orgMaster;
+    @Builder.Default
     private List<String> productTeams = new ArrayList<>();
+    @Builder.Default
     private List<String> categories = new ArrayList<>();
+    @Builder.Default
     private List<String> sources = new ArrayList<>();
+    @Builder.Default
     private List<String> keywords = new ArrayList<>();
 
     // Søkefelt
