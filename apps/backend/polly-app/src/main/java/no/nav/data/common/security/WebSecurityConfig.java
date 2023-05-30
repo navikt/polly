@@ -80,33 +80,33 @@ public class WebSecurityConfig {
                 "/process/revision/**"
         );
 
-        http.authorizeHttpRequests().requestMatchers("/logout").authenticated();
-        http.authorizeHttpRequests().anyRequest().hasRole(AppRole.WRITE.name());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/logout").authenticated());
+        http.authorizeHttpRequests(auth -> auth.anyRequest().hasRole(AppRole.WRITE.name()));
         return http.build();
     }
 
     private void adminOnly(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeHttpRequests().requestMatchers(path).hasRole(AppRole.ADMIN.name());
+            http.authorizeHttpRequests(auth -> auth.requestMatchers(path).hasRole(AppRole.ADMIN.name()));
         }
     }
 
     private void adminOrSuperOnly(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeHttpRequests().requestMatchers(path).hasAnyRole(AppRole.ADMIN.name(), AppRole.SUPER.name());
+            http.authorizeHttpRequests(auth -> auth.requestMatchers(path).hasAnyRole(AppRole.ADMIN.name(), AppRole.SUPER.name()));
         }
     }
 
     private void allowAll(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeHttpRequests().requestMatchers(path).permitAll();
+            http.authorizeHttpRequests(auth -> auth.requestMatchers(path).permitAll());
         }
     }
 
     private void allowGetAndOptions(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeHttpRequests().requestMatchers(HttpMethod.GET, path).permitAll();
-            http.authorizeHttpRequests().requestMatchers(HttpMethod.OPTIONS, path).permitAll();
+            http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.GET, path).permitAll());
+            http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS, path).permitAll());
         }
     }
 
