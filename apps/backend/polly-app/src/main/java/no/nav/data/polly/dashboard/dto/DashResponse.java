@@ -19,15 +19,21 @@ import java.util.Map;
 @NoArgsConstructor
 public class DashResponse {
 
+    @Builder.Default
     private DashCount all = new DashCount();
+    @Builder.Default
     private List<DashCount> departments = new ArrayList<>();
+    @Builder.Default
     private List<DashCount> productAreas = new ArrayList<>();
 
     @JsonIgnore
+    @Builder.Default
     private Map<String, DashCount> dashDepartmentMap = new HashMap<>();
     @JsonIgnore
+    @Builder.Default
     private Map<String, DashCount> dashTeamMap = new HashMap<>();
     @JsonIgnore
+    @Builder.Default
     private Map<String, DashCount> dashProductAreaMap = new HashMap<>();
 
     public DashCount department(String department) {
@@ -80,12 +86,17 @@ public class DashResponse {
 
         private long processesUsingAllInfoTypes;
 
+        @Builder.Default
         private Counter dpia = new Counter();
         private long dpiaReferenceMissing;
+        @Builder.Default
         private Counter profiling = new Counter();
+        @Builder.Default
         private Counter automation = new Counter();
+        @Builder.Default
         private Counter retention = new Counter();
         private long retentionDataIncomplete;
+        @Builder.Default
         private Counter dataProcessor = new Counter();
         private long commonExternalProcessResponsible;
 
