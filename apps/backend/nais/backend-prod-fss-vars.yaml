@@ -4,3 +4,4 @@ ingresses:
   - https://polly.intern.nav.no
 replies:
   - https://behandlingskatalog.nais.adeo.no/oauth2/callback
+appname: polly

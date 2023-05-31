@@ -16,6 +16,10 @@ spec:
       claims:
         extra:
           - NAVident
+        groups:
+        {{#each group id as |asuregroupid|}}
+          - {{asuregroupid}}
+        {{/each}}
       replyURLs:
       {{#each replies as |url|}}
          - {{url}}
@@ -44,11 +48,27 @@ spec:
     initialDelay: 10
     periodSeconds: 5
     failureThreshold: 30
-  vault:
-    enabled: true
   prometheus:
     enabled: true
     path: /internal/metrics
+
+  gcp:
+    sqlInstances:
+      - name:
+        type: POSTGRES_12
+        databases:
+          - name:
+            envVarPrefix:
+  accessPolicy:
+    inbound:
+      rules:
+        - application: behandlingskatalog-frontend
+        - application: etterlevelse-backend
+    outbound:
+      external:
+        - host: {{teamcat_ingress}}
+        - host: slack.com
+
   webproxy: true
   envFrom:
     - configmap: pollycfg

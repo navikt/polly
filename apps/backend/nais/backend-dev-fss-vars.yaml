@@ -9,3 +9,4 @@ replies:
   - https://polly.dev.adeo.no/oauth2/callback
   - http://localhost:8080/oauth2/callback
   - http://localhost:3000/oauth2/callback
+appname: polly
