@@ -24,6 +24,8 @@ spec:
       {{#each replies as |url|}}
          - {{url}}
       {{/each}}
+  tokenx:
+    enabled: true
   ingresses:
   {{#each ingresses as |url|}}
     - {{url}}
@@ -54,11 +56,11 @@ spec:
 
   gcp:
     sqlInstances:
-      - name:
+      - name: behandlingskatalog
         type: POSTGRES_12
         databases:
-          - name:
-            envVarPrefix:
+          - name: behandlingskatalogdb
+            envVarPrefix: DB
   accessPolicy:
     inbound:
       rules:
@@ -67,6 +69,8 @@ spec:
     outbound:
       external:
         - host: {{teamcat_ingress}}
+        - host: {{termcat_ingress}}
+        - host: kodeverk.nais.adeo.no
         - host: slack.com
 
   webproxy: true
