@@ -30,7 +30,7 @@
         <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
         <docx4j.version>11.4.9</docx4j.version>
         <google-cloud-bigquery.version>2.27.0</google-cloud-bigquery.version>
-        <hibernate-core.version>6.2.3.Final</hibernate-core.version>
+        <hibernate-core.version>6.2.4.Final</hibernate-core.version>
 
         <microsoft-graph.version>5.59.0</microsoft-graph.version>
         <msal4j.version>1.13.8</msal4j.version>
