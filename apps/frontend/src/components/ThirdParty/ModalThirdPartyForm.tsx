@@ -251,7 +251,14 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     },
                   }}
                 >
-                  <Panel title={<PanelTitle title={intl.legalBasisShort} expanded={isPanelExpanded} />} onChange={togglePanel} overrides={{ ...panelOverrides }}>
+                  <Panel 
+                  title={<PanelTitle title={intl.legalBasisShort} 
+                  expanded={isPanelExpanded} />} 
+                  onChange={() => {
+                    togglePanel()
+                    formikBag.setFieldValue('legalBasesOpen', !isPanelExpanded)
+                  }} 
+                  overrides={{ ...panelOverrides }}>
                     <Block marginTop={'1rem'}>
                       <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
                     </Block>
