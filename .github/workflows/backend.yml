@@ -67,6 +67,21 @@ jobs:
           VARS: apps/backend/nais/backend-dev-fss-vars.yaml
           ENVIRONMENT: dev-fss:teamdatajegerne:polly-backend
 
+  deploy-preprod-GCP:
+    name: Backend - deploy Dev GCP
+    needs: build
+    if: github.ref == 'refs/heads/gcp2023'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: apps/backend/nais/backend-gcp.yaml
+          VARS: apps/backend/nais/backend-dev-gcp-vars.yaml
+          ENVIRONMENT: dev-gcp:teamdatajegerne:behandlingskatalog-backend
+          
   deploy-prod:
     name: Backend - deploy Prod FSS
     needs: build
