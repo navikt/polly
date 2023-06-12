@@ -30,7 +30,6 @@ import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessStatusFilter;
 import no.nav.data.polly.teams.TeamService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -174,7 +173,7 @@ public class DashboardController {
         }
     }
 
-    @Scheduled(initialDelayString = "PT2M", fixedRateString = "PT30S")
+//    @Scheduled(initialDelayString = "PT2M", fixedRateString = "PT30S")
     public void warmup() {
         Arrays.stream(ProcessStatusFilter.values()).forEach(this::getDashboardData);
     }
