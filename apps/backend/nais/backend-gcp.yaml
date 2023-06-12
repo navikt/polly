@@ -77,5 +77,3 @@ spec:
     - configmap: pollycfg
     - secret: polly-enckey
     - secret: polly-mail-pwd
-  filesFrom:
-    - secret: polly-aareg-integration-key
