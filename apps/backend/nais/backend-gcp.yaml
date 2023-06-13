@@ -16,8 +16,8 @@ spec:
         extra:
           - NAVident
         groups:
-        {{#each group id as |asuregroupid|}}
-          - {{asuregroupid}}
+        {{#each asuregroupid as |groupid|}}
+          - {{groupid}}
         {{/each}}
       replyURLs:
       {{#each replies as |url|}}
@@ -36,7 +36,7 @@ spec:
   resources:
     limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 1024Mi
     requests:
       memory: 512Mi
   liveness:
