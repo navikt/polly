@@ -27,7 +27,7 @@ const rowBlockProps: BlockProps = {
 
 const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
-    {(msg) => (
+    {(msg:any) => (
       <Block {...rowBlockProps} marginTop=".2rem">
         <Notification overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }} kind={NKIND.negative}>
           {msg}

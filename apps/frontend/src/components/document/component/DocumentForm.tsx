@@ -6,7 +6,7 @@ import { Input, SIZE } from 'baseui/input'
 import { Textarea } from 'baseui/textarea'
 import { DocumentFormValues } from '../../../constants'
 import InformationTypesTable from './InformationTypesTable'
-import { Field, FieldArray, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps} from 'formik'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { user } from '../../../service/User'
 import { createDocumentSchema } from '../../common/schema'
@@ -128,7 +128,7 @@ const DocumentForm = (props: DocumentFormProps) => {
 
           <Block marginTop="3rem">
             <LabelMedium marginBottom="2rem">{intl.informationtypesUsedInDocument}</LabelMedium>
-            <FieldArray name="informationTypes" render={(arrayHelpers) => <InformationTypesTable arrayHelpers={arrayHelpers} />} />
+            <FieldArray name="informationTypes" render={(arrayHelpers: FieldArrayRenderProps) => <InformationTypesTable arrayHelpers={arrayHelpers} />} />
           </Block>
           <Block display="flex" justifyContent="flex-end" marginTop="10px">
             {errorMessage && (

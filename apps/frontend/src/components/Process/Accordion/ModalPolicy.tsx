@@ -157,7 +157,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                     <ModalLabel label={intl.subjectCategories} />
                     <FieldArray
                       name="subjectCategories"
-                      render={(arrayHelpers) => (
+                      render={(arrayHelpers: FieldArrayRenderProps) => (
                         <Block width="100%">
                           <Select
                             options={codelist.getParsedOptionsFilterOutSelected(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories)}
@@ -179,7 +179,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                       <ModalLabel label={intl.documents} />
                       <FieldArray
                         name="documentIds"
-                        render={(arrayHelpers) => (
+                        render={(arrayHelpers: FieldArrayRenderProps) => (
                           <Block width="100%">
                             {renderTagList(
                               formikBag.values.documentIds.map((id) => docs[id].name),

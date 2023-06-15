@@ -11,7 +11,7 @@ import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 export const Error = (props: { fieldName: string; fullWidth?: boolean }) => (
   <ErrorMessage name={props.fieldName}>
-    {(msg) => (
+    {(msg:any) => (
       <Block display="flex" width="100%" marginTop=".2rem">
         {!props.fullWidth && <ModalLabel />}
         <Block width="100%">

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Select } from 'baseui/select'
 import { codelist, ListName } from '../../service/Codelist'
-import { FieldArray, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
 import { DpProcessFormValues, ProcessFormValues } from '../../constants'
 import { Block } from 'baseui/block'
 import { renderTagList } from './TagList'
@@ -10,7 +10,7 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
   return (
     <FieldArray
       name="affiliation.subDepartments"
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: FieldArrayRenderProps) => (
         <Block width="100%">
           <Block width="100%">
             <Select

@@ -6,7 +6,7 @@ import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
 import { SensitivityLevel } from '../../../service/Codelist'
 import { Plus } from 'baseui/icon'
 import { ListLegalBases } from '../../common/LegalBasis'
-import { FieldArray, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
 import { DisclosureFormValues, LegalBasisFormValues, PolicyFormValues, ProcessFormValues } from '../../../constants'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 
@@ -32,7 +32,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
   return (
     <FieldArray
       name="legalBases"
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
           {formikBag.values.legalBasesOpen ? (
             <CardLegalBasis

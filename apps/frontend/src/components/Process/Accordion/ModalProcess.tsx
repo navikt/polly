@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik'
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps} from 'formik'
 import { Block, BlockProps } from 'baseui/block'
 import { Button, KIND } from 'baseui/button'
 import { Error, ModalLabel } from '../../common/ModalSchema'
@@ -364,7 +364,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
                       <FieldArray
                         name="disclosures"
-                        render={(arrayHelpers) => (
+                        render={(arrayHelpers: FieldArrayRenderProps) => (
                           <>
                             <Block width="100%">
                               <Block width="100%" display="flex">

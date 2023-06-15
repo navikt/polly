@@ -24,7 +24,7 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
   return (
     <FieldArray
       name="dataProcessingAgreements"
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: FieldArrayRenderProps) => (
         <Block width="100%">
           <Input
             type="text"

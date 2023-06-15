@@ -3,7 +3,7 @@ import { DisclosureFormValues, Process } from '../../constants'
 import { intl, useDebouncedState } from '../../util'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { Select, TYPE } from 'baseui/select'
-import { FieldArray, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
 import { Block } from 'baseui/block'
 import { renderTagList } from './TagList'
 import { codelist, ListName } from '../../service/Codelist'
@@ -49,7 +49,7 @@ const SelectProcess = (props: SelectProcessProps) => {
   return (
     <FieldArray
       name="processes"
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: FieldArrayRenderProps) => (
         <Block width="100%">
           <Block width="100%">
             <Select

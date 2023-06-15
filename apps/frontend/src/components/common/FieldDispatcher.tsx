@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Select } from 'baseui/select'
 import { codelist, ListName } from '../../service/Codelist'
-import { FieldArray, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
 import { DpProcessFormValues, ProcessFormValues } from '../../constants'
 import { renderTagList } from './TagList'
 import { Block } from 'baseui/block'
@@ -14,7 +14,7 @@ const FieldDispatcher = (props: fieldDispatcherProps) => {
   return (
     <FieldArray
       name="affiliation.disclosureDispatchers"
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
           <Block width="100%">
             <Block width="100%">

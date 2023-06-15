@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Select } from 'baseui/select'
 import { codelist } from '../../../service/Codelist'
-import { FieldArray, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
 import { ProcessorFormValues } from '../../../constants'
 import { Block } from 'baseui/block'
 import { renderTagList } from '../../common/TagList'
@@ -11,7 +11,7 @@ const FieldCountries = (props: { formikBag: FormikProps<ProcessorFormValues> }) 
 
   return (
     <FieldArray name="countries">
-      {(arrayHelpers) => (
+      {(arrayHelpers: FieldArrayRenderProps) => (
         <Block width="100%">
           <Block width="100%">
             <Select

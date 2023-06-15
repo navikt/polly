@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { Option, Select, Value } from 'baseui/select'
 import { getTeam, mapTeamToOption, useTeamSearch } from '../../../api'
-import { FieldArray } from 'formik'
+import {FieldArray, FieldArrayRenderProps} from 'formik'
 import { Block } from 'baseui/block'
 import { renderTagList } from '../TagList'
 import { Error } from '../ModalSchema'
@@ -33,7 +33,7 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
     <>
       <FieldArray
         name={fieldName}
-        render={(arrayHelpers) => (
+        render={(arrayHelpers: FieldArrayRenderProps) => (
           <Block width={'100%'}>
             <Block width={'100%'}>
               <Select

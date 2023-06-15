@@ -1,6 +1,6 @@
 import { Block } from 'baseui/block'
 import { Select, TYPE } from 'baseui/select'
-import { FieldArray, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
 import * as React from 'react'
 import { useInfoTypeSearch } from '../../api'
 import { DisclosureFormValues } from '../../constants'
@@ -18,7 +18,7 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
   return (
     <FieldArray
       name="informationTypes"
-      render={(arrayHelpers) => (
+      render={(arrayHelpers: FieldArrayRenderProps) => (
         <Block width="100%">
           <Block width="100%">
             <Select

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { FieldArray, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
 import { Block } from 'baseui/block'
 import { ProcessorFormValues } from '../../../constants'
 import { Select } from 'baseui/select'
@@ -27,7 +27,7 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
 
   return (
     <FieldArray name="operationalContractManagers">
-      {(arrayHelpers) => (
+      {(arrayHelpers: FieldArrayRenderProps) => (
         <>
           <Block width="100%">
             <Block width="100%">

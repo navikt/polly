@@ -190,7 +190,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               <FlexGridItem>
                 <FieldArray
                   name="sources"
-                  render={(arrayHelpers) => (
+                  render={(arrayHelpers: FieldArrayRenderProps) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>Kilder</LabelMedium>
@@ -214,7 +214,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               <FlexGridItem>
                 <FieldArray
                   name="keywords"
-                  render={(arrayHelpers) => (
+                  render={(arrayHelpers: FieldArrayRenderProps) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.searchWords}</LabelMedium>
@@ -257,7 +257,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               <FlexGridItem>
                 <FieldArray
                   name="categories"
-                  render={(arrayHelpers) => (
+                  render={(arrayHelpers: FieldArrayRenderProps) => (
                     <Block>
                       <Block {...labelProps}>
                         <LabelMedium>{intl.categories}</LabelMedium>

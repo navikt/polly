@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process } from '../../../constants'
 import { getInformationTypesBy } from '../../../api'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { FieldArray, Form, Formik, FormikProps } from 'formik'
+import {FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps} from 'formik'
 import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
 import { intl, theme } from '../../../util'
 import { Block, BlockProps } from 'baseui/block'
@@ -106,7 +106,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                 <Block {...modalBlockProps} marginTop={theme.sizing.scale200}>
                   <FieldArray
                     name="informationTypes"
-                    render={(informationTypesProps) => {
+                    render={(informationTypesProps: FieldArrayRenderProps) => {
                       const addable = infoTypes.filter((it) => !formik.values.informationTypes.find((it2) => it2.informationTypeId === it.id))
                       const added = formik.values.informationTypes
 
