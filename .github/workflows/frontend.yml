@@ -7,7 +7,7 @@ on:
       - "apps/frontend/**"
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}/pollyfront${{ github.ref == 'refs/heads/prod' }}:${{ github.sha }}
+  IMAGE: ghcr.io/${{ github.repository }}/behandlingskatalog-fontend${{ github.ref == 'refs/heads/prod' }}:${{ github.sha }}
 
 defaults:
   run:
@@ -60,7 +60,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gcp2023' 
         uses: docker/build-push-action@v4
         with:
           push: true
@@ -81,6 +81,21 @@ jobs:
           RESOURCE: apps/frontend/nais/frontend-fss.yaml
           VARS: apps/frontend/nais/frontend-dev-fss-vars.yaml
           ENVIRONMENT: dev-fss:teamdatajegerne:polly-frontend
+          
+  deploy-preprod-gcp:
+    name: Frontend - deploy Dev GCP
+    needs: build
+    if: github.ref == 'refs/heads/gcp2023'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: apps/frontend/nais/frontend-gcp.yaml
+          VARS: apps/frontend/nais/frontend-dev-gcp-vars.yaml
+          ENVIRONMENT: dev-fss:teamdatajegerne:behandlingskatalog-frontend
 
   deploy-prod:
     name: Frontend - deploy Prod FSS
