@@ -35,3 +35,9 @@ spec:
     initialDelay: 5
     periodSeconds: 5
     failureThreshold: 30
+
+  gcp:
+    accessPolicy:
+      outbound:
+        rules:
+          - application: behandlingskatalog-backend
