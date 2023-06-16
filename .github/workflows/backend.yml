@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gcp2023'
         uses: docker/build-push-action@v4
         with:
           push: true
