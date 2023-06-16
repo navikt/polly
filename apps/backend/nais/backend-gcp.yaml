@@ -16,7 +16,7 @@ spec:
         extra:
           - NAVident
         groups:
-        {{#each asuregroupid as |groupid|}}
+        {{#each azuregroupid as |groupid|}}
           - {{groupid}}
         {{/each}}
       replyURLs:
