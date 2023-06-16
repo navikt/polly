@@ -7,7 +7,7 @@ on:
       - 'apps/backend/**'
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}/polly:${{ github.sha }}
+  IMAGE: ghcr.io/${{ github.repository }}/behandlingskatalog-backend:${{ github.sha }}
 
 defaults:
   run:
