@@ -1,5 +1,9 @@
 server {
   listen       8080;
+  proxy_http_version 1.1;
+  proxy_set_header    Nav-Consumer-Id behandlingskatalog;
+  proxy_set_header    X-Real-IP $remote_addr;
+  proxy_redirect      off;
 
   location /isAlive {
     return 200 'OK';
@@ -24,27 +28,27 @@ server {
     proxy_set_header    Nav-Consumer-Id behandlingskatalog;
     proxy_redirect      off;
 
-    proxy_pass http://polly;
+    proxy_pass http://behandlingskatalog-backend;
   }
 
   location /login {
     proxy_set_header    Nav-Consumer-Id behandlingskatalog;
     proxy_redirect      off;
 
-    proxy_pass http://polly;
+    proxy_pass http://behandlingskatalog-backend;
   }
 
   location /oauth2 {
     proxy_set_header    Nav-Consumer-Id teamsfrontend;
     proxy_redirect      off;
 
-    proxy_pass http://polly;
+    proxy_pass http://behandlingskatalog-backend;
   }
 
   location /logout {
     proxy_set_header    Nav-Consumer-Id teamsfrontend;
     proxy_redirect      off;
 
-    proxy_pass http://polly;
+    proxy_pass http://behandlingskatalog-backend;
   }
 }
