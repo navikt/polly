@@ -17,7 +17,7 @@ spec:
           - NAVident
         groups:
         {{#each azuregroupid as |groupid|}}
-          - {{groupid}}
+          - id: {{groupid}}
         {{/each}}
       replyURLs:
       {{#each replies as |url|}}
