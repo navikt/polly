@@ -60,6 +60,9 @@ spec:
         databases:
           - name: behandlingskatalogdb
             envVarPrefix: DB
+        flags:
+          - name: max_connections
+            value: "50"
   accessPolicy:
     inbound:
       rules:
@@ -71,8 +74,6 @@ spec:
         - host: {{termcat_ingress}}
         - host: kodeverk.nais.adeo.no
         - host: slack.com
-
-  webproxy: true
   envFrom:
     - configmap: pollycfg
     - secret: polly-enckey
