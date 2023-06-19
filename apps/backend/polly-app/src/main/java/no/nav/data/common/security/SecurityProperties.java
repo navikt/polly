@@ -28,11 +28,11 @@ public class SecurityProperties {
     }
 
     public String findBaseUrl() {
-        return tryFind(getRedirectUris(), uri -> uri.contains("adeo.no")).orElse(getRedirectUris().get(0));
+        return tryFind(getRedirectUris(), uri -> uri.contains("nav.no")).orElse(getRedirectUris().get(0));
     }
 
     public boolean isDev() {
-        return env.equals("dev-fss");
+        return env.equals("dev-gcp");
     }
 
 }
