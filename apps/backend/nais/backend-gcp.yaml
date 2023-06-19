@@ -71,8 +71,6 @@ spec:
         - host: {{termcat_ingress}}
         - host: kodeverk.nais.adeo.no
         - host: slack.com
-
-  webproxy: true
   envFrom:
     - configmap: pollycfg
     - secret: polly-enckey
