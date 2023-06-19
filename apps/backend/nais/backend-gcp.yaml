@@ -60,6 +60,9 @@ spec:
         databases:
           - name: behandlingskatalogdb
             envVarPrefix: DB
+        flags:
+          - name: max_connections
+            value: "50"
   accessPolicy:
     inbound:
       rules:
