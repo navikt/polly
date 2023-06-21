@@ -60,32 +60,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gcp2023' 
+        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v4
         with:
           push: true
           tags: ${{env.IMAGE}}
           context: ./apps/frontend
-
-  deploy-preprod:
-    name: Frontend - deploy Dev FSS
-    needs: build
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/frontend/nais/frontend-fss.yaml
-          VARS: apps/frontend/nais/frontend-dev-fss-vars.yaml
-          ENVIRONMENT: dev-fss:teamdatajegerne:polly-frontend
           
   deploy-dev-gcp:
     name: Frontend - deploy Dev GCP
     needs: build
-    if: github.ref == 'refs/heads/gcp2023'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -97,25 +82,10 @@ jobs:
           VARS: apps/frontend/nais/frontend-dev-gcp-vars.yaml
           ENVIRONMENT: dev-gcp:teamdatajegerne:behandlingskatalog-frontend
 
-  deploy-prod:
-    name: Frontend - deploy Prod FSS
-    needs: build
-    if: github.ref == 'refs/heads/prod'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
-          RESOURCE: apps/frontend/nais/frontend-fss.yaml
-          VARS: apps/frontend/nais/frontend-prod-fss-vars.yaml
-          ENVIRONMENT: prod-fss:teamdatajegerne:polly-frontend
-
   deploy-prod-gcp:
     name: Frontend - deploy Prod GCP
     needs: build
-    if: github.ref == 'refs/heads/gcp2023'
+    if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

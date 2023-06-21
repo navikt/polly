@@ -45,32 +45,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gcp2023'
+        if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v4
         with:
           push: true
           tags: ${{env.IMAGE}}
           context: ./apps/backend
 
-  deploy-preprod:
-    name: Backend - deploy Dev FSS
-    needs: build
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/backend/nais/backend-fss.yaml
-          VARS: apps/backend/nais/backend-dev-fss-vars.yaml
-          ENVIRONMENT: dev-fss:teamdatajegerne:polly-backend
-
   deploy-dev-GCP:
     name: Backend - deploy Dev GCP
     needs: build
-    if: github.ref == 'refs/heads/gcp2023'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -85,7 +70,7 @@ jobs:
   deploy-prod-GCP:
     name: Backend - deploy Prod GCP
     needs: build
-    if: github.ref == 'refs/heads/gcp2023'
+    if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -96,18 +81,5 @@ jobs:
           RESOURCE: apps/backend/nais/behandlingskatalog-configmap-prod-gcp.yaml,apps/backend/nais/backend-gcp.yaml
           VARS: apps/backend/nais/backend-prod-gcp-vars.yaml
           ENVIRONMENT: prod-gcp:teamdatajegerne:behandlingskatalog-backend
-          
-  deploy-prod:
-    name: Backend - deploy Prod FSS
-    needs: build
-    if: github.ref == 'refs/heads/prod'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
-          RESOURCE: apps/backend/nais/backend-fss.yaml
-          VARS: apps/backend/nais/backend-prod-fss-vars.yaml
-          ENVIRONMENT: prod-fss:teamdatajegerne:polly-backend
+
+
