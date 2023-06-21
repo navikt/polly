@@ -3,6 +3,7 @@ teamcat_ingress: teamkatalog-api.prod-fss-pub.nais.io
 termcat_ingress: begrepskatalog-api.intern.nav.no
 ingresses:
   - https://behandlingskatalog-backend.intern.nav.no
+  - https://polly.intern.nav.no
 replies:
   - https://behandlingskatalog.intern.nav.no/oauth2/callback
   - https://behandlingskatalog-backend.intern.nav.no/oauth2/callback
