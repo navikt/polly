@@ -75,7 +75,7 @@ spec:
         - host: kodeverk.nais.adeo.no
         - host: slack.com
   envFrom:
-    - configmap: pollycfg
+    - configmap: behandlingskatalogcfg
     - secret: polly-enckey
     - secret: polly-mail-pwd
   filesFrom:
