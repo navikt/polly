@@ -26,7 +26,7 @@
         <hypersistence-utils-hibernate-60.version>3.4.3</hypersistence-utils-hibernate-60.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.1.0</springdoc-openapi-starter-webmvc-ui.version>
         <simpleclient.version>0.16.0</simpleclient.version>
-        <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <docx4j.version>11.4.9</docx4j.version>
         <google-cloud-bigquery.version>2.27.1</google-cloud-bigquery.version>
         <hibernate-core.version>6.2.5.Final</hibernate-core.version>
