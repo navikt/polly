@@ -82,7 +82,7 @@ jobs:
           VARS: apps/frontend/nais/frontend-dev-fss-vars.yaml
           ENVIRONMENT: dev-fss:teamdatajegerne:polly-frontend
           
-  deploy-preprod-gcp:
+  deploy-dev-gcp:
     name: Frontend - deploy Dev GCP
     needs: build
     if: github.ref == 'refs/heads/gcp2023'
@@ -95,7 +95,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: apps/frontend/nais/frontend-gcp.yaml
           VARS: apps/frontend/nais/frontend-dev-gcp-vars.yaml
-          ENVIRONMENT: dev-fss:teamdatajegerne:behandlingskatalog-frontend
+          ENVIRONMENT: dev-gcp:teamdatajegerne:behandlingskatalog-frontend
 
   deploy-prod:
     name: Frontend - deploy Prod FSS
@@ -111,3 +111,18 @@ jobs:
           RESOURCE: apps/frontend/nais/frontend-fss.yaml
           VARS: apps/frontend/nais/frontend-prod-fss-vars.yaml
           ENVIRONMENT: prod-fss:teamdatajegerne:polly-frontend
+
+  deploy-prod-gcp:
+    name: Frontend - deploy Prod GCP
+    needs: build
+    if: github.ref == 'refs/heads/gcp2023'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: apps/frontend/nais/frontend-gcp.yaml
+          VARS: apps/frontend/nais/frontend-prod-gcp-vars.yaml
+          ENVIRONMENT: prod-gcp:teamdatajegerne:behandlingskatalog-frontend
