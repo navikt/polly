@@ -9,12 +9,10 @@ data:
   BIGQUERY_AAREG_TABLENAME: aareg_avtaler_for_tilgang
   CLIENT_COMMON_CODE_NAV_URL: https://kodeverk.prod-fss-pub.nais.io/api
   CLIENT_TEAMCAT_URL: https://teamkatalog-api.prod-fss-pub.nais.io
-  CLIENT_TERM_CATALOG_URL: https://begrepskatalog-api.intern.nav.no/api/dcat
+  CLIENT_TERM_CATALOG_URL: https://begrepskatalog.intern.nav.no/api/dcat
   ENVIRONMENT_CLASS: prod
   GOOGLE_APPLICATION_CREDENTIALS: /var/run/secrets/polly_aareg_integration_key.json
-  POLLY_SECURITY_REDIRECT_URIS: https://behandlingskatalog.nais.adeo.no
-  SPRING_DATASOURCE_URL: jdbc:postgresql://A01DBVL009.adeo.no:5432/polly
-  SRV_DATA_CATALOG_POLICIES_FSS_USER: srvdata-catalog-po
+  POLLY_SECURITY_REDIRECT_URIS: https://behandlingskatalog.intern.nav.no
 kind: ConfigMap
 metadata:
   name: behandlingskatalogcfg
