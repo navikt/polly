@@ -7,7 +7,7 @@ on:
       - 'apps/backend/**'
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}/polly:${{ github.sha }}
+  IMAGE: ghcr.io/${{ github.repository }}/behandlingskatalog-backend:${{ github.sha }}
 
 defaults:
   run:
@@ -52,8 +52,8 @@ jobs:
           tags: ${{env.IMAGE}}
           context: ./apps/backend
 
-  deploy-preprod:
-    name: Backend - deploy Dev FSS
+  deploy-dev-GCP:
+    name: Backend - deploy Dev GCP
     needs: build
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -62,28 +62,13 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/backend/nais/backend-fss.yaml
-          VARS: apps/backend/nais/backend-dev-fss-vars.yaml
-          ENVIRONMENT: dev-fss:teamdatajegerne:polly-backend
-
-  deploy-preprod-GCP:
-    name: Backend - deploy Dev GCP
-    needs: build
-    if: github.ref == 'refs/heads/gcp2023'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/backend/nais/backend-gcp.yaml
+          RESOURCE: apps/backend/nais/behandlingskatalog-configmap-dev-gcp.yaml,apps/backend/nais/backend-gcp.yaml
           VARS: apps/backend/nais/backend-dev-gcp-vars.yaml
           ENVIRONMENT: dev-gcp:teamdatajegerne:behandlingskatalog-backend
-          
-  deploy-prod:
-    name: Backend - deploy Prod FSS
+
+  deploy-prod-GCP:
+    name: Backend - deploy Prod GCP
     needs: build
     if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
@@ -92,7 +77,9 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
-          RESOURCE: apps/backend/nais/backend-fss.yaml
-          VARS: apps/backend/nais/backend-prod-fss-vars.yaml
-          ENVIRONMENT: prod-fss:teamdatajegerne:polly-backend
+          CLUSTER: prod-gcp
+          RESOURCE: apps/backend/nais/behandlingskatalog-configmap-prod-gcp.yaml,apps/backend/nais/backend-gcp.yaml
+          VARS: apps/backend/nais/backend-prod-gcp-vars.yaml
+          ENVIRONMENT: prod-gcp:teamdatajegerne:behandlingskatalog-backend
+
+

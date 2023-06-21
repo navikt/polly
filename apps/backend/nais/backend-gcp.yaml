@@ -10,15 +10,14 @@ spec:
   port: 8080
   azure:
     application:
-      allowAllUsers: true
       enabled: true
       tenant: nav.no
       claims:
         extra:
           - NAVident
         groups:
-        {{#each group id as |asuregroupid|}}
-          - {{asuregroupid}}
+        {{#each azuregroupid as |groupid|}}
+          - id: {{groupid}}
         {{/each}}
       replyURLs:
       {{#each replies as |url|}}
@@ -61,6 +60,9 @@ spec:
         databases:
           - name: behandlingskatalogdb
             envVarPrefix: DB
+        flags:
+          - name: max_connections
+            value: "50"
   accessPolicy:
     inbound:
       rules:
@@ -72,10 +74,8 @@ spec:
         - host: {{termcat_ingress}}
         - host: kodeverk.nais.adeo.no
         - host: slack.com
-
-  webproxy: true
   envFrom:
-    - configmap: pollycfg
+    - configmap: behandlingskatalogcfg
     - secret: polly-enckey
     - secret: polly-mail-pwd
   filesFrom:
