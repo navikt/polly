@@ -68,6 +68,18 @@ spec:
       rules:
         - application: behandlingskatalog-frontend
         - application: etterlevelse-backend
+        - application: pdl-pip-sync
+          namespace: pdl
+          cluster: prod-fss
+        - application: pdl-pip-sync
+          namespace: pdl
+          cluster: dev-fss
+        - application: pdl-pip-sync-q0
+          namespace: pdl
+          cluster: dev-fss
+        - application: pdl-pip-sync-q1
+          namespace: pdl
+          cluster: dev-fss
     outbound:
       external:
         - host: {{teamcat_ingress}}
