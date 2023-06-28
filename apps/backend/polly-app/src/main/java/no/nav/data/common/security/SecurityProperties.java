@@ -1,6 +1,7 @@
 package no.nav.data.common.security;
 
 import lombok.Data;
+import no.nav.data.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +29,11 @@ public class SecurityProperties {
     }
 
     public String findBaseUrl() {
-        return tryFind(getRedirectUris(), uri -> uri.contains("nav.no")).orElse(getRedirectUris().get(0));
+        return tryFind(getRedirectUris(), uri -> uri.contains(Constants.PREF_DOMAIN)).orElse(getRedirectUris().get(0));
     }
 
     public boolean isDev() {
-        return env.equals("dev-gcp");
+        return env.equals(Constants.DEV_ENV);
     }
 
 }
