@@ -51,6 +51,7 @@ const SideBar = () => {
           <NavItem to="/processor" text={intl.processors} tooltip={intl.processorSideMenuHelpText} />
           <NavItem to="/dashboard" text={intl.dashboard} tooltip={intl.dashboardSideMenuHelpText} />
           {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
+          <NavItem to="//navikt.github.io/naka/behandlingskatalog" text={intl.supervisor} tooltip={intl.aboutUs} />
         </Block>
         <Block maxWidth={'240px'} marginTop="25px">
           <Block display="flex" justifyContent="center">
@@ -70,11 +71,6 @@ const SideBar = () => {
             <Block display="flex" justifyContent="center" alignItems="center">
               <img src={SlackLogo} width="60px" alt="slack logo" />
               <ParagraphXSmall color={theme.colors.white}>#behandlingskatalogen</ParagraphXSmall>
-            </Block>
-          </a>
-          <a href={documentationLink} style={{ textDecoration: 'none' }} target="_blank">
-            <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
-              <ParagraphXSmall color={theme.colors.white}>{intl.aboutUs}</ParagraphXSmall>
             </Block>
           </a>
         </Block>

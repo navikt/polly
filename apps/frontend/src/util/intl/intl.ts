@@ -553,6 +553,7 @@ export interface IStrings {
   noAlertsAvailableInTable: string
   noAaregContractsAvailableInTable: string
   administrationArchiveCaseNumber: string
+  supervisor: string
 }
 
 // Remember import moment locales up top
