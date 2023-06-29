@@ -555,7 +555,8 @@ export const no: IStrings = {
   administrationArchiveCaseNumber: 'Saksnummer i adminstrativt arkiv',
   moreInfo: 'Mer informasjon finner du',
   here: 'her',
-  supervisor: 'Veileder'
+  supervisor: 'Veileder',
+  omBehandlingskatalog: 'Veileder til Behandlingskatalogen'
 }
 
 export const en: IStrings = {
@@ -1112,7 +1113,8 @@ export const en: IStrings = {
   administrationArchiveCaseNumber: 'Administration Archive Case Number',
   moreInfo: 'You can find more information',
   here: 'here',
-  supervisor: 'Supervisor'
+  supervisor: 'Supervisor',
+  omBehandlingskatalog: 'Veileder til Behandlingskatalogen'
 }
 
 export const ta = {

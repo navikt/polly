@@ -554,6 +554,7 @@ export interface IStrings {
   noAaregContractsAvailableInTable: string
   administrationArchiveCaseNumber: string
   supervisor: string
+  omBehandlingskatalog: string
 }
 
 // Remember import moment locales up top

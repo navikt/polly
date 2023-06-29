@@ -51,7 +51,7 @@ const SideBar = () => {
           <NavItem to="/processor" text={intl.processors} tooltip={intl.processorSideMenuHelpText} />
           <NavItem to="/dashboard" text={intl.dashboard} tooltip={intl.dashboardSideMenuHelpText} />
           {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
-          <NavItem to="//navikt.github.io/naka/behandlingskatalog" text={intl.supervisor} tooltip={intl.aboutUs} />
+          <NavItem to="//navikt.github.io/naka/behandlingskatalog" text={intl.supervisor} tooltip={intl.omBehandlingskatalog} />
         </Block>
         <Block maxWidth={'240px'} marginTop="25px">
           <Block display="flex" justifyContent="center">
