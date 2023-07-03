@@ -59,6 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -67,6 +68,13 @@ jobs:
           VARS: apps/backend/nais/backend-dev-gcp-vars.yaml
           ENVIRONMENT: dev-gcp:teamdatajegerne:behandlingskatalog-backend
 
+      - name: deploy alerts to dev-gcp
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: apps/backend/nais/alerts.yaml
+
   deploy-prod-GCP:
     name: Backend - deploy Prod GCP
     needs: build
@@ -74,6 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -81,5 +90,12 @@ jobs:
           RESOURCE: apps/backend/nais/behandlingskatalog-configmap-prod-gcp.yaml,apps/backend/nais/backend-gcp.yaml
           VARS: apps/backend/nais/backend-prod-gcp-vars.yaml
           ENVIRONMENT: prod-gcp:teamdatajegerne:behandlingskatalog-backend
+
+      - name: deploy alerts to prod-gcp
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: apps/backend/nais/alerts.yaml
 
 

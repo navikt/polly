@@ -1,0 +1,47 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: behandlingskatalog-alerts
+  namespace: teamdatajegerne
+  labels:
+    team: teamdatajegerne
+spec:
+  groups:
+    - name: behandlingskatalog-system-alerts
+      rules:
+        - alert: Behandlingskatalog-backend pod nede
+          expr: count(kube_pod_container_status_running{container="behandlingskatalog-backend", namespace="teamdatajegerne"}) < 2
+          for: 2m
+          annotations:
+            consequence: Application is unavailable
+            action: "Sjekk kubectl eller grafana for pod status, og sjekk logs for feilmeldinger."
+            summary: |-
+              Behandlingskatalog backend har mindre en 2 pods som er live.
+          labels:
+            namespace: teamdatajegerne
+            severity: critical
+
+        - alert: Høy cpu bruk
+          expr: (sum(irate (container_cpu_usage_seconds_total{container="behandlingskatalog-backend"}[1m])) * 1000) > 980
+          for: 3m
+          annotations:
+            consequence: Application is experiencing high traffic
+            action: "Sjekk grafana og logene til app {{ $labels.log_app }} i namespace {{ $labels.log_namespace }}."
+            summary: |-
+              App {{ $labels.app }} har høy cpu bruk i namespace {{ $labels.kubernetes_namespace }}
+          labels:
+            namespace: teamdatajegerne
+            severity: warning
+
+        - alert: Høy error rate
+          expr: sum(increase(logback_events_total{app="behandlingskatalog-backend", level="error"} [1m])) > 50
+          for: 3m
+          annotations:
+            consequence: Application is experiencing high error rate
+            action: "Sjekk logs i kibana til app {{ $labels.log_app }} i namespace {{ $labels.log_namespace }}. Mulig connection error fra katalogene."
+            summary: |-
+              App {{ $labels.app }} har høy error  rate i namespace {{ $labels.kubernetes_namespace }}
+          labels:
+            namespace: teamdatajegerne
+            severity: critical
+
