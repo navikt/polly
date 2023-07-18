@@ -9,7 +9,7 @@ spec:
   groups:
     - name: behandlingskatalog-system-alerts
       rules:
-        - alert: Behandlingskatalog-backend pod nede
+        - alert: Behandlingskatalog-backend har mindre to poder nede
           expr: count(kube_pod_container_status_running{container="behandlingskatalog-backend", namespace="teamdatajegerne"}) < 2
           for: 2m
           annotations:
@@ -20,6 +20,19 @@ spec:
           labels:
             namespace: teamdatajegerne
             severity: critical
+
+        - alert: Behandlingskatalog-backend pod nede
+          expr: count(up{app="behandlingskatalog-backend"}) < 3
+          for: 2m
+          annotations:
+            consequence: Application is unavailable
+            action: "Sjekk kubectl eller grafana for pod status, og sjekk logs for feilmeldinger."
+            summary: |-
+              Behandlingskatalog backend har mindre en 2 pods som er live.
+          labels:
+            namespace: teamdatajegerne
+            severity: critical
+
 
         - alert: Høy cpu bruk
           expr: (sum(irate (container_cpu_usage_seconds_total{container="behandlingskatalog-backend"}[1m])) * 1000) > 980
