@@ -23,7 +23,7 @@ spec:
 
         - alert: Behandlingskatalog-backend alle pod nede
           expr: kube_deployment_status_replicas_available{namespace="teamdatajegerne", deployment="behandlingskatalog-backend"} == 0
-          for: 5m
+          for: 1m
           annotations:
             consequence: Application is unavailable
             action: "Sjekk kubectl eller grafana for pod status, og sjekk logs for feilmeldinger."
