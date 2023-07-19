@@ -21,6 +21,18 @@ spec:
             namespace: teamdatajegerne
             severity: critical
 
+        - alert: Behandlingskatalog-backend alle pod nede
+          expr: kube_deployment_status_replicas_available{namespace="teamdatajegerne", deployment="behandlingskatalog-backend"} == 0
+          for: 5m
+          annotations:
+            consequence: Application is unavailable
+            action: "Sjekk kubectl eller grafana for pod status, og sjekk logs for feilmeldinger."
+            summary: |-
+              Behandlingskatalog backend har 0 pods som er live.
+          labels:
+            namespace: teamdatajegerne
+            severity: critical
+
         - alert: Høy cpu bruk
           expr: (sum(irate (container_cpu_usage_seconds_total{container="behandlingskatalog-backend"}[1m])) * 1000) > 980
           for: 3m
