@@ -21,7 +21,7 @@ spec:
             namespace: teamdatajegerne
             severity: critical
 
-        - alert: Behandlingskatalog-backend alle pod nede
+        - alert: Behandlingskatalog-backend alle poder nede
           expr: kube_deployment_status_replicas_available{namespace="teamdatajegerne", deployment="behandlingskatalog-backend"} == 0
           for: 1m
           annotations:
