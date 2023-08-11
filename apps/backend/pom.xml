@@ -32,7 +32,7 @@
         <hibernate-core.version>6.2.7.Final</hibernate-core.version>
 
         <microsoft-graph.version>5.66.0</microsoft-graph.version>
-        <msal4j.version>1.13.9</msal4j.version>
+        <msal4j.version>1.13.10</msal4j.version>
 
         <!-- transitive versions -->
         <commons-compress.version>1.23.0</commons-compress.version>
