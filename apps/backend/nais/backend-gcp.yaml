@@ -71,15 +71,9 @@ spec:
         - application: pdl-pip-sync
           namespace: pdl
           cluster: prod-fss
-        - application: pdl-pip-sync
+        - application: pdl-behandlingskatalog-proxy
           namespace: pdl
-          cluster: dev-fss
-        - application: pdl-pip-sync-q0
-          namespace: pdl
-          cluster: dev-fss
-        - application: pdl-pip-sync-q1
-          namespace: pdl
-          cluster: dev-fss
+          cluster: prod-gcp
     outbound:
       external:
         - host: {{teamcat_ingress}}
