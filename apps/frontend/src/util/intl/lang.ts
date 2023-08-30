@@ -556,7 +556,7 @@ export const no: IStrings = {
   moreInfo: 'Mer informasjon finner du',
   here: 'her',
   supervisor: 'Veileder',
-  omBehandlingskatalog: 'Veileder til Behandlingskatalogen'
+  omBehandlingskatalog: 'Veileder til Behandlingskatalogen',
 }
 
 export const en: IStrings = {
@@ -1114,7 +1114,7 @@ export const en: IStrings = {
   moreInfo: 'You can find more information',
   here: 'here',
   supervisor: 'Supervisor',
-  omBehandlingskatalog: 'Veileder til Behandlingskatalogen'
+  omBehandlingskatalog: 'Veileder til Behandlingskatalogen',
 }
 
 export const ta = {

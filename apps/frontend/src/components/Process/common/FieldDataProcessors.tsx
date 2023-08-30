@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { Block } from 'baseui/block'
 import { ProcessFormValues } from '../../../constants'
 import { Option, Select } from 'baseui/select'

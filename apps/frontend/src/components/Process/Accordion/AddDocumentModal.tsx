@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process } from '../../../constants'
 import { Block, BlockProps } from 'baseui/block'
-import {ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps} from 'formik'
+import { ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
 import { intl, useDebouncedState } from '../../../util'
 import { addDocumentToProcessSchema } from '../../common/schema'
 import { Error, ModalLabel } from '../../common/ModalSchema'
@@ -203,7 +203,9 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                           <ModalLabel label={intl.informationTypes} />
                           <FieldArray
                             name="informationTypes"
-                            render={(arrayHelpers: FieldArrayRenderProps) => <ListInformationTypes informationTypes={formik.values.informationTypes} formik={formik} arrayHelpers={arrayHelpers} />}
+                            render={(arrayHelpers: FieldArrayRenderProps) => (
+                              <ListInformationTypes informationTypes={formik.values.informationTypes} formik={formik} arrayHelpers={arrayHelpers} />
+                            )}
                           />
                         </Block>
                       </>

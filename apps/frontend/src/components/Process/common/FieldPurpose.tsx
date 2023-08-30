@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Select } from 'baseui/select'
 import { codelist, ListName } from '../../../service/Codelist'
-import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { ProcessFormValues } from '../../../constants'
 import { Block } from 'baseui/block'
 

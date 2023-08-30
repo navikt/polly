@@ -1,6 +1,6 @@
 import { Block } from 'baseui/block'
 import { Select, TYPE } from 'baseui/select'
-import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import * as React from 'react'
 import { useInfoTypeSearch } from '../../api'
 import { DisclosureFormValues } from '../../constants'

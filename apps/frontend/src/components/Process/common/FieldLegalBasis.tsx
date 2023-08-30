@@ -6,7 +6,7 @@ import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
 import { SensitivityLevel } from '../../../service/Codelist'
 import { Plus } from 'baseui/icon'
 import { ListLegalBases } from '../../common/LegalBasis'
-import {FieldArray, FieldArrayRenderProps, FormikProps} from 'formik'
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { DisclosureFormValues, LegalBasisFormValues, PolicyFormValues, ProcessFormValues } from '../../../constants'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 
