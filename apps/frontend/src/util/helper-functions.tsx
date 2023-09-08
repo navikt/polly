@@ -15,7 +15,7 @@ export const isLink = (text: string) => {
 }
 
 export const shortenLinksInText = (text: string) => {
-  return text.split(' ').map((word, index) => {
+  return text.split(/\s+/).map((word, index) => {
     if (isLink(word)) {
       return (
         <span key={index}>
