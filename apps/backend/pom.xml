@@ -31,7 +31,7 @@
         <google-cloud-bigquery.version>2.31.2</google-cloud-bigquery.version>
         <hibernate-core.version>6.2.7.Final</hibernate-core.version>
 
-        <microsoft-graph.version>5.68.0</microsoft-graph.version>
+        <microsoft-graph.version>5.69.0</microsoft-graph.version>
         <msal4j.version>1.13.10</msal4j.version>
 
         <!-- transitive versions -->
