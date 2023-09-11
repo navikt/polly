@@ -14,7 +14,7 @@ const convertToDocumentFormValues = (document: Document) => {
     id: document.id,
     name: document.name,
     description: document.description,
-    dataAccessClass: document.dataAccessClass.code,
+    dataAccessClass: document.dataAccessClass?.code || '',
     informationTypes: document.informationTypes.map((it) => {
       return {
         id: shortid.generate(),
