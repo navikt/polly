@@ -20,8 +20,6 @@ const DescriptionData = (props: { termId?: string; description?: string; keyword
   const [term, setTerm] = useState(props.termId)
   const [termError, setTermError] = useState(false)
 
-
-
   useEffect(() => {
     ;(async () => {
       if (props.termId) {
