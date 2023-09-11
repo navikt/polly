@@ -20,6 +20,8 @@ const DescriptionData = (props: { termId?: string; description?: string; keyword
   const [term, setTerm] = useState(props.termId)
   const [termError, setTermError] = useState(false)
 
+
+
   useEffect(() => {
     ;(async () => {
       if (props.termId) {
@@ -30,6 +32,8 @@ const DescriptionData = (props: { termId?: string; description?: string; keyword
           console.error('couldnt find term', e)
           setTermError(true)
         }
+      } else {
+        setTerm('')
       }
     })()
   }, [props.termId])
