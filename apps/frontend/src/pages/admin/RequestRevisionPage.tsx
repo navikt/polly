@@ -125,8 +125,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
           validationSchema={schema()}
           onSubmit={save}
         >
-          <>
-            {({ values, setFieldValue }: FormikProps<ProcessRevisionRequest>) => (
+            {(formikBag) => (
               <Form>
                 {!modalView && (
                   <Block {...rowBlockProps}>
@@ -134,7 +133,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                     <Field name="processSelection">
                       {() => {
                         const button = (s: ProcessSelection, text: string = intl.all) => {
-                          const onClick = () => setFieldValue('processSelection', s)
+                          const onClick = () => formikBag.setFieldValue('processSelection', s)
                           return (
                             <BButton type="button" onClick={onClick}>
                               {text}
@@ -143,7 +142,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                         }
                         return (
                           <Block>
-                            <ButtonGroup selected={Object.values(ProcessSelection).indexOf(values.processSelection)}>
+                            <ButtonGroup selected={Object.values(ProcessSelection).indexOf(formikBag.values.processSelection)}>
                               {button(ProcessSelection.ONE, intl.one)}
                               {button(ProcessSelection.ALL, intl.all)}
                               {button(ProcessSelection.DEPARTMENT, intl.department)}
@@ -160,12 +159,12 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                 {!modalView && (
                   <Block {...rowBlockProps}>
                     <ModalLabel label={intl.completedOnly} />
-                    <Field name="completedOnly">{() => <RadioBoolButton setValue={(b) => setFieldValue('completedOnly', b)} value={values.completedOnly} omitUndefined />}</Field>
+                    <Field name="completedOnly">{() => <RadioBoolButton setValue={(b) => formikBag.setFieldValue('completedOnly', b)} value={formikBag.values.completedOnly} omitUndefined />}</Field>
                   </Block>
                 )}
                 <Error fieldName="completedOnly" fullWidth />
 
-                {values.processSelection === ProcessSelection.ONE && !modalView && (
+                {formikBag.values.processSelection === ProcessSelection.ONE && !modalView && (
                   <Block {...rowBlockProps}>
                     <ModalLabel label={intl.process} />
                     <Select
@@ -176,10 +175,10 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                       type={TYPE.search}
                       options={processSearchResult}
                       placeholder={intl.search}
-                      value={processSearchResult.filter((r) => r.id === values.processId)}
+                      value={processSearchResult.filter((r) => r.id === formikBag.values.processId)}
                       onInputChange={(event) => setProcessSearch(event.currentTarget.value)}
                       onChange={(params) => {
-                        setFieldValue('processId', !params.value[0] ? '' : params.value[0].id)
+                        formikBag.setFieldValue('processId', !params.value[0] ? '' : params.value[0].id)
                       }}
                       filterOptions={(o) => o}
                       labelKey="name"
@@ -189,21 +188,21 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                 )}
                 <Error fieldName="processId" fullWidth />
 
-                {values.processSelection === ProcessSelection.DEPARTMENT && (
+                {formikBag.values.processSelection === ProcessSelection.DEPARTMENT && (
                   <Block {...rowBlockProps}>
                     <ModalLabel label={intl.department} />
                     <Block width="100%">
-                      <Combobox mapOptionToString={(o) => o.label} options={departments} value={values.department!} onChange={(code) => setFieldValue('department', code)} />
+                      <Combobox mapOptionToString={(o) => o.label} options={departments} value={formikBag.values.department!} onChange={(code) => formikBag.setFieldValue('department', code)} />
                     </Block>
                   </Block>
                 )}
                 <Error fieldName="department" fullWidth />
 
-                {values.processSelection === ProcessSelection.PRODUCT_AREA && (
+                {formikBag.values.processSelection === ProcessSelection.PRODUCT_AREA && (
                   <Block {...rowBlockProps}>
                     <ModalLabel label={intl.productArea} />
                     <Block width="100%">
-                      <Combobox mapOptionToString={(o) => o.name} options={areas} value={values.productAreaId!} onChange={(code) => setFieldValue('productAreaId', code)} />
+                      <Combobox mapOptionToString={(o) => o.name} options={areas} value={formikBag.values.productAreaId!} onChange={(code) => formikBag.setFieldValue('productAreaId', code)} />
                     </Block>
                   </Block>
                 )}
@@ -225,7 +224,6 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                 </Block>
               </Form>
             )}
-          </>
         </Formik>
       )}
     </Block>
