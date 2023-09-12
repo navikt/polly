@@ -40,7 +40,7 @@ const getCodelistByListnameAndType = (search: string, list: ListName, typeName: 
           sortKey: c.shortName,
           label: <SearchLabel name={c.shortName} type={typeName} />,
           type: list,
-        } as SearchItem),
+        }) as SearchItem,
     )
 }
 

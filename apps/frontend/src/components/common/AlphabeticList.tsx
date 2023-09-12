@@ -11,11 +11,14 @@ type Opt = { id: string; label: string }
 const AlphabeticList = (props: { items: Opt[]; baseUrl: string }) => {
   const items = props.items
     .sort((a, b) => a.label.localeCompare(b.label))
-    .reduce((acc, cur) => {
-      const letter = cur.label.toUpperCase()[0]
-      acc[letter] = [...(acc[letter] || []), cur]
-      return acc
-    }, {} as { [letter: string]: Opt[] })
+    .reduce(
+      (acc, cur) => {
+        const letter = cur.label.toUpperCase()[0]
+        acc[letter] = [...(acc[letter] || []), cur]
+        return acc
+      },
+      {} as { [letter: string]: Opt[] },
+    )
   return (
     <>
       {Object.keys(items).map((letter) => (

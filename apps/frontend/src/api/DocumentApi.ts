@@ -49,7 +49,7 @@ const mapFormValuesToDocument = (document: DocumentFormValues) => ({
       ({
         informationTypeId: it.informationTypeId,
         subjectCategories: it.subjectCategories.map((sc) => sc.code),
-      } as DocumentInformationTypes),
+      }) as DocumentInformationTypes,
   ),
   dataAccessClass: document.dataAccessClass,
 })
