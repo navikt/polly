@@ -1,6 +1,6 @@
-import { Code, codelist, ListName } from './service/Codelist'
-import { ColumnCompares } from './util/hooks'
-import { intl } from './util'
+import {Code, codelist, ListName} from './service/Codelist'
+import {ColumnCompares} from './util/hooks'
+import {intl} from './util'
 
 export enum LegalBasesUse {
   INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
@@ -520,6 +520,8 @@ export interface DisclosureFormValues {
   administrationArchiveCaseNumber?: string
   thirdCountryReceiver?: boolean
   processIds: string[]
+  assessedConfidentiality?: boolean
+  confidentialityDescription?: string
 }
 
 export interface DisclosureAbroad {
@@ -545,6 +547,8 @@ export interface Disclosure extends IDurationed {
   abroad: DisclosureAbroad
   administrationArchiveCaseNumber?: string
   thirdCountryReceiver?: boolean
+  assessedConfidentiality?: boolean
+  confidentialityDescription?: string
 
   changeStamp: ChangeStamp
 }

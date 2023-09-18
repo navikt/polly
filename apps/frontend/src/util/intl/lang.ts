@@ -1,4 +1,4 @@
-import { IStrings } from './intl'
+import {IStrings} from './intl'
 
 export const no: IStrings = {
   //aareg avtaler
@@ -557,6 +557,9 @@ export const no: IStrings = {
   here: 'her',
   supervisor: 'Veileder',
   omBehandlingskatalog: 'Veileder til Behandlingskatalogen',
+  confidentialityAssessment: 'Hjemmel for taushetsplikt er vurdert',
+  confidentialityDescriptionYes: 'Referanse til vurderingen',
+  confidentialityDescriptionNo: 'Begrunnelse'
 }
 
 export const en: IStrings = {
@@ -1114,7 +1117,10 @@ export const en: IStrings = {
   moreInfo: 'You can find more information',
   here: 'here',
   supervisor: 'Supervisor',
-  omBehandlingskatalog: 'Veileder til Behandlingskatalogen',
+  omBehandlingskatalog: 'Guide to the Behandling',
+  confidentialityAssessment: 'The legal basis for confidentiality has been assessed',
+  confidentialityDescriptionYes: 'Reference to assessment',
+  confidentialityDescriptionNo: 'Justification'
 }
 
 export const ta = {

@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { Affiliation, Disclosure, DisclosureFormValues, PageResponse } from '../constants'
-import { env } from '../util/env'
-import { convertLegalBasesToFormValues } from './PolicyApi'
-import { mapBool } from '../util/helper-functions'
-import { Code } from '../service/Codelist'
-import { useDebouncedState } from '../util'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {Affiliation, Disclosure, DisclosureFormValues, PageResponse} from '../constants'
+import {env} from '../util/env'
+import {convertLegalBasesToFormValues} from './PolicyApi'
+import {mapBool} from '../util/helper-functions'
+import {Code} from '../service/Codelist'
+import {useDebouncedState} from '../util'
+import {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content
@@ -78,6 +78,8 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     },
     administrationArchiveCaseNumber: values.administrationArchiveCaseNumber,
     thirdCountryReceiver: mapBool(values.thirdCountryReceiver),
+    assessedConfidentiality: mapBool(values.assessedConfidentiality),
+    confidentialityDescription: values.confidentialityDescription
   }
 }
 
@@ -90,11 +92,11 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     description: disclosure.description || '',
     document: disclosure.document
       ? {
-          name: disclosure.document.name,
-          description: disclosure.document.description,
-          dataAccessClass: disclosure.document.dataAccessClass ? disclosure.document.dataAccessClass.code : '',
-          informationTypes: disclosure.document.informationTypes,
-        }
+        name: disclosure.document.name,
+        description: disclosure.document.description,
+        dataAccessClass: disclosure.document.dataAccessClass ? disclosure.document.dataAccessClass.code : '',
+        informationTypes: disclosure.document.informationTypes,
+      }
       : undefined,
     legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),
     legalBasesOpen: false,
@@ -111,6 +113,8 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     processIds: disclosure.processIds || [],
     administrationArchiveCaseNumber: disclosure.administrationArchiveCaseNumber || '',
     thirdCountryReceiver: mapBool(disclosure.thirdCountryReceiver),
+    assessedConfidentiality: mapBool(disclosure.assessedConfidentiality),
+    confidentialityDescription: disclosure.confidentialityDescription || ''
   }
 }
 

@@ -22,9 +22,8 @@ import {
   ProcessStatus,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
-import { intl } from '../../util'
-import { Code, codelist, ListName } from '../../service/Codelist'
-import { ObjectSchema } from 'yup'
+import {intl} from '../../util'
+import {Code, codelist, ListName} from '../../service/Codelist'
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
@@ -380,6 +379,8 @@ export const disclosureSchema: () => yup.ObjectSchema<DisclosureFormValues> = ()
     aaregContractIds: yup.array(),
     administrationArchiveCaseNumber: yup.string(),
     thirdCountryReceiver: yup.boolean(),
+    assessedConfidentiality: yup.boolean().required(intl.required),
+    confidentialityDescription: yup.string().required(intl.required)
   })
 
 export const addDocumentToProcessSchema: () => yup.ObjectSchema<AddDocumentToProcessFormValues> = () =>
