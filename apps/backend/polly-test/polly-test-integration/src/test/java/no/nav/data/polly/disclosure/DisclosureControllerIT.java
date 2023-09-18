@@ -96,6 +96,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
                         .refToAgreement("abroadref")
                         .businessArea("Pesys")
                         .build())
+                .assessedConfidentiality(disclosureResponse.getAssessedConfidentiality())
+                .confidentialityDescription(disclosureResponse.getConfidentialityDescription())
                 .build());
     }
 
@@ -202,9 +204,9 @@ class DisclosureControllerIT extends IntegrationTestBase {
     void createDisclosureValidationError() {
 
         var resp = restTemplate
-                    .postForEntity("/disclosure", DisclosureRequest.builder().description("newdisclosure").recipient("SKATT").recipientPurpose("AAP")
-                            .legalBasis(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build())
-                            .build(), String.class);
+                .postForEntity("/disclosure", DisclosureRequest.builder().description("newdisclosure").recipient("SKATT").recipientPurpose("AAP")
+                        .legalBasis(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build())
+                        .build(), String.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
@@ -279,6 +281,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
                         .businessArea("Pesys")
                         .refToAgreement("abroadref")
                         .build())
+                .assessedConfidentiality(true)
+                .confidentialityDescription("Test Aheve")
                 .build();
     }
 

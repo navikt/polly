@@ -53,6 +53,8 @@ public class DisclosureRequest implements RequestElement {
     private DisclosureAbroadRequest abroad;
     private Boolean thirdCountryReceiver;
     private String administrationArchiveCaseNumber;
+    private Boolean assessedConfidentiality;
+    private String confidentialityDescription;
 
     private boolean update;
     private int requestIndex;
@@ -86,5 +88,6 @@ public class DisclosureRequest implements RequestElement {
         validator.checkUUID(Fields.documentId, documentId);
         getProcessIds().forEach(it -> validator.checkUUID(Fields.processIds, it));
         getInformationTypeIds().forEach(it -> validator.checkUUID(Fields.informationTypeIds, it));
+        validator.checkBlank(Fields.confidentialityDescription,confidentialityDescription);
     }
 }

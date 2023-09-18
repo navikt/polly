@@ -70,6 +70,8 @@ public class Disclosure extends Auditable {
         data.setAbroad(DisclosureAbroad.convertAbroad(request.getAbroad()));
         data.setAdministrationArchiveCaseNumber(request.getAdministrationArchiveCaseNumber());
         data.setThirdCountryReceiver(request.getThirdCountryReceiver());
+        data.setAssessedConfidentiality(request.getAssessedConfidentiality());
+        data.setConfidentialityDescription(request.getConfidentialityDescription());
         return this;
     }
 
@@ -89,6 +91,8 @@ public class Disclosure extends Auditable {
                 .abroad(data.getAbroad().convertToResponse())
                 .administrationArchiveCaseNumber(data.getAdministrationArchiveCaseNumber())
                 .thirdCountryReceiver(data.getThirdCountryReceiver())
+                .assessedConfidentiality(data.getAssessedConfidentiality())
+                .confidentialityDescription(data.getConfidentialityDescription())
                 .changeStamp(convertChangeStampResponse())
                 .build();
     }

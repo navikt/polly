@@ -37,6 +37,8 @@ public class DisclosureData {
     private List<LegalBasis> legalBases = new ArrayList<>();
     private DisclosureAbroad abroad;
     private Boolean thirdCountryReceiver;
+    private Boolean assessedConfidentiality;
+    private String confidentialityDescription;
 
     public DisclosureAbroad getAbroad() {
         return abroad == null ? new DisclosureAbroad() : abroad;
