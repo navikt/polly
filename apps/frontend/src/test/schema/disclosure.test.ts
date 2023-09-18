@@ -13,6 +13,8 @@ const disclosure: () => DisclosureFormValues = () => ({
   legalBasesOpen: false,
   processes: [],
   processIds: [],
+  assessedConfidentiality: false,
+  confidentialityDescription: 'test'
 })
 
 test('Disclosure ok', () => {
