@@ -107,6 +107,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           disclosureList
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((d: Disclosure) => {
+              console.log(d.assessedConfidentiality)
               return (
                 <Panel
                   title={
@@ -124,32 +125,32 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                           <>
                             {d.id === expanded[0]
                               ? editable && (
-                                  <>
-                                    {selectedDisclosure && hasAlert && canViewAlerts() && (
-                                      <Button
-                                        kind={'outline'}
-                                        size={ButtonSize.compact}
-                                        icon={faExclamationCircle}
-                                        marginRight
-                                        tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
-                                        onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
-                                      >
-                                        {intl.alerts}
+                                <>
+                                  {selectedDisclosure && hasAlert && canViewAlerts() && (
+                                    <Button
+                                      kind={'outline'}
+                                      size={ButtonSize.compact}
+                                      icon={faExclamationCircle}
+                                      marginRight
+                                      tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                                      onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                                    >
+                                      {intl.alerts}
+                                    </Button>
+                                  )}
+                                  {user.isLoggedIn() && (
+                                    <>
+                                      <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} tooltip={intl.edit} onClick={() => setShowEditModal(true)} marginRight>
+                                        {intl.edit}
                                       </Button>
-                                    )}
-                                    {user.isLoggedIn() && (
-                                      <>
-                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} tooltip={intl.edit} onClick={() => setShowEditModal(true)} marginRight>
-                                          {intl.edit}
-                                        </Button>
 
-                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} tooltip={intl.delete} onClick={() => setShowDeleteModal(true)}>
-                                          {intl.delete}
-                                        </Button>
-                                      </>
-                                    )}
-                                  </>
-                                )
+                                      <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} tooltip={intl.delete} onClick={() => setShowDeleteModal(true)}>
+                                        {intl.delete}
+                                      </Button>
+                                    </>
+                                  )}
+                                </>
+                              )
                               : ''}
                           </>
                         </div>
@@ -231,6 +232,21 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                           )}
                         </Block>
                         {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
+
+
+                        <Block>
+                          <DataText label={intl.confidentialityAssessment} text={d.assessedConfidentiality !== null ? d.assessedConfidentiality ? intl.yes : intl.no : intl.emptyMessage} />
+
+                          {
+                            d.assessedConfidentiality !== null && (
+                              <DataText label={d.assessedConfidentiality ? intl.confidentialityDescriptionYes : intl.confidentialityDescriptionNo} text="">
+                                {shortenLinksInText(d.confidentialityDescription ? d.confidentialityDescription : intl.emptyMessage)}
+                              </DataText>
+                            )
+                          }
+
+                        </Block>
+
                       </Block>
                       <Block display="flex" justifyContent="flex-end" marginBottom={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
                         <ParagraphSmall>
