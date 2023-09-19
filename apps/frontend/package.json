@@ -27,7 +27,7 @@
     "react-process-string": "^1.2.0",
     "react-router-dom": "^6.2.1",
     "rehype-raw": "^7.0.0",
-    "remark-gfm": "^3.0.0",
+    "remark-gfm": "^4.0.0",
     "shortid": "^2.2.16",
     "styletron-engine-atomic": "^1.5.0",
     "styletron-react": "^6.1.0",
