@@ -113,7 +113,6 @@ public class ProcessWriteController {
         };
 
         var lastModifiedByList = repository.getLastModifiedBy(ids);
-        log.debug("revision test: " + lastModifiedByList.stream().map(m->m.getId().toString()).toList());
         var lastModifiedBy = lastModifiedByList.stream().collect(Collectors.groupingBy(LastModified::getLastModifiedBy));
 
         lastModifiedBy.values()
