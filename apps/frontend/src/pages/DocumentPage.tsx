@@ -1,23 +1,23 @@
-import React, { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { intl } from '../util'
-import { Block } from 'baseui/block'
-import { deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor } from '../api'
-import { Document, Process } from '../constants'
+import React, {useEffect} from 'react'
+import {useNavigate, useParams} from 'react-router-dom'
+import {intl} from '../util'
+import {Block} from 'baseui/block'
+import {deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor} from '../api'
+import {Document, Process} from '../constants'
 import DocumentMetadata from '../components/document/DocumentMetadata'
-import { user } from '../service/User'
-import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import {user} from '../service/User'
+import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
-import { Notification } from 'baseui/notification'
-import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
+import {Notification} from 'baseui/notification'
+import {HeadingMedium, LabelMedium, ParagraphMedium} from 'baseui/typography'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import { Tab } from 'baseui/tabs'
-import { CustomizedTabs } from '../components/common/CustomizedTabs'
+import {Tab} from 'baseui/tabs'
+import {CustomizedTabs} from '../components/common/CustomizedTabs'
 import Button from '../components/common/Button'
-import { AuditButton } from '../components/audit/AuditButton'
-import { SIZE as ButtonSize } from 'baseui/button'
-import { tabOverride } from '../components/common/Style'
+import {AuditButton} from '../components/audit/AuditButton'
+import {SIZE as ButtonSize} from 'baseui/button'
+import {tabOverride} from '../components/common/Style'
 import AlphabeticList from '../components/common/AlphabeticList'
 
 const renderTextWithLabel = (label: string, text: string) => (
@@ -36,7 +36,7 @@ const DocumentPage = () => {
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false)
   const [documentUsages, setDocumentUsages] = React.useState<Process[]>()
   const [errorMessage, setErrorMessage] = React.useState<string>()
-  const [activeKey, setActiveKey] = React.useState<string | number>('containsInformationType')
+  const [activeKey, setActiveKey] = React.useState<string | number | bigint>('containsInformationType')
   const [documents, setDocuments] = React.useState<Document[]>([])
 
   useEffect(() => setDocumentId(params.id), [params.id])

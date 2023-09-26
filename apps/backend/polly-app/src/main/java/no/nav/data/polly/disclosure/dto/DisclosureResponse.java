@@ -46,6 +46,8 @@ public class DisclosureResponse {
     private ChangeStampResponse changeStamp;
     private Boolean thirdCountryReceiver;
     private String administrationArchiveCaseNumber;
+    private Boolean assessedConfidentiality;
+    private String confidentialityDescription;
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);

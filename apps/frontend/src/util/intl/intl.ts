@@ -1,8 +1,8 @@
-import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from 'react-localization'
+import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from 'react-localization'
 import * as React from 'react'
-import { useEffect } from 'react'
-import { useForceUpdate } from '../hooks'
-import { en, no, ta } from './lang'
+import {useEffect} from 'react'
+import {useForceUpdate} from '../hooks'
+import {en, no, ta} from './lang'
 
 import * as moment from 'moment'
 import 'moment/locale/nb'
@@ -555,6 +555,9 @@ export interface IStrings {
   administrationArchiveCaseNumber: string
   supervisor: string
   omBehandlingskatalog: string
+  confidentialityAssessment: string
+  confidentialityDescriptionYes: string
+  confidentialityDescriptionNo: string
 }
 
 // Remember import moment locales up top

@@ -146,7 +146,15 @@ public class AlertIT extends IntegrationTestBase {
     }
 
     private DisclosureRequest createDiscReq() {
-        return DisclosureRequest.builder().name("disc1").description("newdisclosure").recipient("SKATT").recipientPurpose("AAP").build();
+        return DisclosureRequest
+                .builder()
+                .name("disc1")
+                .description("newdisclosure")
+                .recipient("SKATT")
+                .recipientPurpose("AAP")
+                .confidentialityDescription("Test Aheve")
+                .assessedConfidentiality(true)
+                .build();
     }
 
     @Nested

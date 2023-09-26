@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.3</version>
+        <version>3.1.4</version>
     </parent>
 
     <groupId>no.nav.data</groupId>
@@ -23,14 +23,14 @@
     <properties>
         <java.version>17</java.version>
         <start-class>no.nav.data.AppStarter</start-class>
-        <hypersistence-utils-hibernate-60.version>3.5.2</hypersistence-utils-hibernate-60.version>
+        <hypersistence-utils-hibernate-60.version>3.5.3</hypersistence-utils-hibernate-60.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <simpleclient.version>0.16.0</simpleclient.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <docx4j.version>11.4.9</docx4j.version>
-        <google-cloud-bigquery.version>2.31.2</google-cloud-bigquery.version>
+        <google-cloud-bigquery.version>2.32.0</google-cloud-bigquery.version>
 
-        <microsoft-graph.version>5.70.0</microsoft-graph.version>
+        <microsoft-graph.version>5.71.0</microsoft-graph.version>
         <msal4j.version>1.13.10</msal4j.version>
 
         <!-- transitive versions -->
@@ -91,7 +91,7 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
-                <version>26.22.0</version>
+                <version>26.23.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

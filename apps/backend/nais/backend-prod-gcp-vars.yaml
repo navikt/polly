@@ -1,5 +1,5 @@
 appname: behandlingskatalog-backend
-teamcat_ingress: teamkatalog-api.prod-fss-pub.nais.io
+teamcat_ingress: teamkatalog-api.intern.nav.no
 termcat_ingress: begrepskatalog-api.intern.nav.no
 ingresses:
   - https://behandlingskatalog-backend.intern.nav.no
