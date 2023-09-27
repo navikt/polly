@@ -557,9 +557,9 @@ export const no: IStrings = {
   here: 'her',
   supervisor: 'Veileder',
   omBehandlingskatalog: 'Veileder til Behandlingskatalogen',
-  confidentialityAssessment: 'Hjemmel for taushetsplikt er vurdert',
-  confidentialityDescriptionYes: 'Referanse til vurderingen',
-  confidentialityDescriptionNo: 'Begrunnelse'
+  confidentialityAssessment: 'Hjemmel for unntak fra taushetsplikt er vurdert',
+  confidentialityDescriptionYes: 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen',
+  confidentialityDescriptionNo: 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'
 }
 
 export const en: IStrings = {
@@ -1118,9 +1118,9 @@ export const en: IStrings = {
   here: 'here',
   supervisor: 'Supervisor',
   omBehandlingskatalog: 'Guide to the Behandling',
-  confidentialityAssessment: 'The legal basis for confidentiality has been assessed',
-  confidentialityDescriptionYes: 'Reference to assessment',
-  confidentialityDescriptionNo: 'Justification'
+  confidentialityAssessment: 'Grounds for exemption from confidentiality have been assessed',
+  confidentialityDescriptionYes: 'Authority for exemption from confidentiality, and possibly reference to the assessment',
+  confidentialityDescriptionNo: 'Justification for the grounds for exceptions to the duty of confidentiality not being considered'
 }
 
 export const ta = {

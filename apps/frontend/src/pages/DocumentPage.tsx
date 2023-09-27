@@ -128,7 +128,7 @@ const DocumentPage = () => {
             onChange={({ activeKey }) => {
               setActiveKey(activeKey)
             }}
-            activeKey={activeKey}
+            activeKey={activeKey as React.Key}
           >
             <Tab key={'containsInformationType'} title={intl.containsInformationType} overrides={tabOverride}>
               <Block>
