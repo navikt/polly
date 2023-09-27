@@ -60,6 +60,8 @@ export const DisclosureListPage = () => {
     abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
     processIds: [],
     administrationArchiveCaseNumber: '',
+    assessedConfidentiality: undefined,
+    confidentialityDescription: undefined
   }
 
   useEffect(() => {
