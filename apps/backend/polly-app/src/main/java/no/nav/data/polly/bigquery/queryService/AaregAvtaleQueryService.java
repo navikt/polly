@@ -49,7 +49,7 @@ public class AaregAvtaleQueryService {
             log.error("Query not performed \n" + e);
         }
 
-        if (aaregAvtaleList.size() > 0) {
+        if (!aaregAvtaleList.isEmpty()) {
             return aaregAvtaleList.get(0);
         } else {
             return null;
