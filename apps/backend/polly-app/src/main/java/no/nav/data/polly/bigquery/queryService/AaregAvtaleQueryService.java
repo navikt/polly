@@ -38,7 +38,8 @@ public class AaregAvtaleQueryService {
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
-            BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+            BigQuery bigquery = BigQueryOptions.getDefaultInstance().toBuilder().setProjectId(PROJECT_ID).build().getService();
+
             QueryJobConfiguration queryConfig = QueryJobConfiguration
                     .newBuilder(avtaleByIdQuery)
                     .addNamedParameter("avtalenummer", QueryParameterValue.string(id))
@@ -61,7 +62,7 @@ public class AaregAvtaleQueryService {
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
-            BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+            BigQuery bigquery = BigQueryOptions.getDefaultInstance().toBuilder().setProjectId(PROJECT_ID).build().getService();
             QueryJobConfiguration queryConfig = QueryJobConfiguration
                     .newBuilder(avtaleByIdQuery)
                     .addNamedParameter("searchParam", QueryParameterValue.string("%" + searchParam + "%"))
