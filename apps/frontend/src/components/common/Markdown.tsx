@@ -20,7 +20,6 @@ export const Markdown = ({singleWord, escapeHtml = true, verbatim, source}: { so
       return <StyledLink href={href} target={"_blank"}>{children}</StyledLink>
     }
   }
-
   const htmlPlugins: any = escapeHtml ? [] : [rehypeRaw]
   return <ReactMarkdown children={source || ''} components={renderers} remarkPlugins={[remarkGfm]} rehypePlugins={htmlPlugins}/>
 }
