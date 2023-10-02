@@ -65,7 +65,7 @@ public class AaregAvtaleQueryService {
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
-            BigQuery bigquery = BigQueryOptions.getDefaultInstance().toBuilder().setProjectId(PROJECT_ID).build().getService();
+            BigQuery bigquery = BigQueryOptions.getDefaultInstance().toBuilder().setProjectId(AUTH_TEAM_PROJECT_ID).build().getService();
             QueryJobConfiguration queryConfig = QueryJobConfiguration
                     .newBuilder(avtaleByIdQuery)
                     .addNamedParameter("searchParam", QueryParameterValue.string("%" + searchParam + "%"))
