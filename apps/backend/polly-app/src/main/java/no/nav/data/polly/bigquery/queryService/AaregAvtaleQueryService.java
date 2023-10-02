@@ -32,13 +32,16 @@ public class AaregAvtaleQueryService {
     @Value("${polly.aareg.tableName}")
     private String TABLE_NAME;
 
+    @Value("${polly.aareg.bigquery.auth.projectId}")
+    private String AUTH_TEAM_PROJECT_ID;
+
     public AaregAvtale getByAvtaleId(String id) {
 
         String avtaleByIdQuery = "SELECT * FROM `" + PROJECT_ID + "." + DATASET_NAME + "." + TABLE_NAME + "` WHERE avtalenummer = UPPER(@avtalenummer)";
 
         List<AaregAvtale> aaregAvtaleList = new ArrayList<>();
         try {
-            BigQuery bigquery = BigQueryOptions.getDefaultInstance().toBuilder().setProjectId(PROJECT_ID).build().getService();
+            BigQuery bigquery = BigQueryOptions.getDefaultInstance().toBuilder().setProjectId(AUTH_TEAM_PROJECT_ID).build().getService();
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
                     .newBuilder(avtaleByIdQuery)
