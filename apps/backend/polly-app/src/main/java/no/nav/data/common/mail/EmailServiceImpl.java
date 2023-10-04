@@ -1,6 +1,5 @@
 package no.nav.data.common.mail;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.security.SecurityProperties;
 import no.nav.data.common.storage.StorageService;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
@@ -8,7 +7,6 @@ import no.nav.data.common.storage.domain.StorageType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -33,7 +31,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void scheduleMail(MailTask mailTask) {
-        log.debug("new mail task recived: " + mailTask.toString());
         storage.save(mailTask);
     }
 
