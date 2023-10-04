@@ -1,6 +1,5 @@
 package no.nav.data.common.mail;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.security.SecurityProperties;
 import no.nav.data.common.security.azure.support.MailLog;
 import no.nav.data.common.storage.StorageService;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -42,7 +40,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void scheduleMail(MailTask mailTask) {
-        log.debug("new mail task recived: " + mailTask.toString());
         storage.save(mailTask);
     }
 
