@@ -9,13 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.mail.EmailService;
 import no.nav.data.common.mail.MailTask;
 import no.nav.data.common.security.SecurityUtils;
-import no.nav.data.common.security.azure.support.MailLog;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -37,13 +34,5 @@ public class AppController {
                 .body("testbody")
                 .build());
         return ResponseEntity.ok("ok");
-    }
-
-    @Operation(summary = "get all mail")
-    @ApiResponses(value = {@ApiResponse(description = "mail")})
-    @GetMapping(value = "/mail/all")
-    public ResponseEntity<List<MailLog>> getAllMail() {
-        var email = emailService.getAllMail();
-        return ResponseEntity.ok(email);
     }
 }

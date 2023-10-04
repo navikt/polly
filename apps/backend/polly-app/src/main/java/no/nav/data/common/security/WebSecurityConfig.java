@@ -48,8 +48,7 @@ public class WebSecurityConfig {
                 "/userinfo",
                 "/internal/**",
                 "/swagger*/**",
-                "/process/shortbyid",
-                "/app/mail/**"
+                "/process/shortbyid"
         );
 
         allowGetAndOptions(http,
