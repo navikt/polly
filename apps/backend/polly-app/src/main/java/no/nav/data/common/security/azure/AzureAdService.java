@@ -25,18 +25,13 @@ public class AzureAdService implements EmailProvider {
 
     @Override
     public void sendMail(MailTask mailTask) {
-        try {
-            log.debug("sending mail: " + mailTask.toString());
-            getMailGraphClient().me()
-                    .sendMail(UserSendMailParameterSet.newBuilder()
-                            .withMessage(compose(mailTask.getTo(), mailTask.getSubject(), mailTask.getBody()))
-                            .withSaveToSentItems(false)
-                            .build())
-                    .buildRequest()
-                    .post();
-        } catch (Exception e) {
-            log.debug("mail sent error: " + e);
-        }
+        getMailGraphClient().me()
+                .sendMail(UserSendMailParameterSet.newBuilder()
+                        .withMessage(compose(mailTask.getTo(), mailTask.getSubject(), mailTask.getBody()))
+                        .withSaveToSentItems(false)
+                        .build())
+                .buildRequest()
+                .post();
 
         storage.save(mailTask.toMailLog());
     }
