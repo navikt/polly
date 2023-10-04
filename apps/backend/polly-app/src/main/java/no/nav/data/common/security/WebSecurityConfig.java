@@ -48,8 +48,7 @@ public class WebSecurityConfig {
                 "/userinfo",
                 "/internal/**",
                 "/swagger*/**",
-                "/process/shortbyid",
-                "/mail/**"
+                "/process/shortbyid"
         );
 
         allowGetAndOptions(http,
@@ -68,7 +67,8 @@ public class WebSecurityConfig {
                 "/event/**",
                 "/alert/**",
                 "/export/**",
-                "/dash/**"
+                "/dash/**",
+                "mail/**"
         );
 
         adminOnly(http,
