@@ -67,7 +67,8 @@ public class WebSecurityConfig {
                 "/event/**",
                 "/alert/**",
                 "/export/**",
-                "/dash/**"
+                "/dash/**",
+                "mail/**"
         );
 
         adminOnly(http,
