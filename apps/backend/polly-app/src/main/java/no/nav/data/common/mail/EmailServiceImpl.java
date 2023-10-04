@@ -1,14 +1,11 @@
 package no.nav.data.common.mail;
 
 import no.nav.data.common.security.SecurityProperties;
-import no.nav.data.common.security.azure.support.MailLog;
 import no.nav.data.common.storage.StorageService;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.storage.domain.StorageType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -30,12 +27,6 @@ public class EmailServiceImpl implements EmailService {
     public void sendMail(MailTask mailTask) {
         var toSend = securityProperties.isDev() ? mailTask.withSubject(mailTask.getSubject() + " [DEV]") : mailTask;
         emailProvider.sendMail(toSend);
-    }
-
-    @Override
-    public List<MailLog> getAllMail() {
-        var task = storageRepository.findAllByType(StorageType.MAIL_TASK);
-        return task.stream().map(m -> m.toMailLog()).toList();
     }
 
     @Override
