@@ -49,7 +49,7 @@ public class WebSecurityConfig {
                 "/internal/**",
                 "/swagger*/**",
                 "/process/shortbyid",
-                "/mail/**"
+                "/app/mail/**"
         );
 
         allowGetAndOptions(http,
