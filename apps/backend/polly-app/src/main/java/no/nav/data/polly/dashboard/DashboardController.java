@@ -7,11 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.storage.domain.GenericStorage;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertRepository;
-import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.dashboard.dto.DashResponse;
 import no.nav.data.polly.dashboard.dto.DashResponse.Counter;
 import no.nav.data.polly.dashboard.dto.DashResponse.DashCount;
@@ -43,9 +41,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static no.nav.data.common.jpa.RepoUtil.doPaged;
-import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.filter;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
 import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
@@ -76,18 +71,19 @@ public class DashboardController {
     }
 
     private DashResponse calcDash(ProcessStatusFilter filter) {
-        var dash = new DashResponse();
-        // init all departments and load teamId -> productArea mapping
-        CodelistService.getCodelist(ListName.DEPARTMENT).forEach(d -> dash.department(d.getCode()));
-        teamService.getAllTeams().forEach(t -> dash.registerTeam(t.getId(), t.getProductAreaId()));
-
-        doPaged(processRepository, 50, processes -> {
-            var alerts = convert(alertRepository.findByProcessIds(convert(processes, Process::getId)), GenericStorage::toAlertEvent);
-            processes.forEach(p -> calcDashForProcess(filter, dash, p, filter(alerts, a -> p.getId().equals(a.getProcessId()))));
-        });
-        doPaged(dpProcessRepository, 50, dpProcesses -> dpProcesses.forEach(dpp -> calcDashForDpProcess(dash, dpp)));
-        doPaged(disclosureRepository, 50, disclosures -> disclosures.forEach(disc -> calcDashForDisclosure(dash, disc)));
-        return dash;
+        throw new NotFoundException("Yo!");
+//        var dash = new DashResponse();
+//        // init all departments and load teamId -> productArea mapping
+//        CodelistService.getCodelist(ListName.DEPARTMENT).forEach(d -> dash.department(d.getCode()));
+//        teamService.getAllTeams().forEach(t -> dash.registerTeam(t.getId(), t.getProductAreaId()));
+//
+//        doPaged(processRepository, 50, processes -> {
+//            var alerts = convert(alertRepository.findByProcessIds(convert(processes, Process::getId)), GenericStorage::toAlertEvent);
+//            processes.forEach(p -> calcDashForProcess(filter, dash, p, filter(alerts, a -> p.getId().equals(a.getProcessId()))));
+//        });
+//        doPaged(dpProcessRepository, 50, dpProcesses -> dpProcesses.forEach(dpp -> calcDashForDpProcess(dash, dpp)));
+//        doPaged(disclosureRepository, 50, disclosures -> disclosures.forEach(disc -> calcDashForDisclosure(dash, disc)));
+//        return dash;
     }
 
     private void calcDashForProcess(ProcessStatusFilter filter, DashResponse dash, Process process, List<AlertEvent> alerts) {
