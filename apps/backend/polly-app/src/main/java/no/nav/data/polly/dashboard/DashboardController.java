@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertRepository;
@@ -43,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static no.nav.data.common.jpa.RepoUtil.doPaged;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.filter;
@@ -72,8 +72,7 @@ public class DashboardController {
     @ApiResponse(description = "Data fetched")
     @GetMapping
     public ResponseEntity<DashResponse> getDashboardData(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
-        throw new NotFoundException("Test");
-//        return ResponseEntity.ok(requireNonNull(dashDataCache.get(filter)));
+        return ResponseEntity.ok(requireNonNull(dashDataCache.get(filter)));
     }
 
     private DashResponse calcDash(ProcessStatusFilter filter) {
