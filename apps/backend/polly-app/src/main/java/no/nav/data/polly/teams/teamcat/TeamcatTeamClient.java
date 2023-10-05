@@ -2,6 +2,7 @@ package no.nav.data.polly.teams.teamcat;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.teams.TeamService;
@@ -26,6 +27,7 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Service
 @ConditionalOnProperty("client.teamcat-team.enabled")
+@Slf4j
 public class TeamcatTeamClient implements TeamService {
 
     private final RestTemplate restTemplate;
@@ -35,7 +37,7 @@ public class TeamcatTeamClient implements TeamService {
     private final LoadingCache<String, Map<String, ProductArea>> allPaCache;
 
     public TeamcatTeamClient(RestTemplate restTemplate,
-            TeamcatProperties properties) {
+                             TeamcatProperties properties) {
         this.restTemplate = restTemplate;
         this.properties = properties;
 
@@ -101,8 +103,13 @@ public class TeamcatTeamClient implements TeamService {
     }
 
     private Map<String, Team> getTeamsResponse() {
-        var response = restTemplate.getForEntity(properties.getTeamsUrl(), TeamPage.class);
-        List<TeamKatTeam> teams = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
+        List<TeamKatTeam> teams = List.of();
+        try {
+            var response = restTemplate.getForEntity(properties.getTeamsUrl(), TeamPage.class);
+            teams = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
+        } catch (Exception exception) {
+            log.error("Unable to connect to teamkatalog!");
+        }
         return safeStream(teams)
                 .map(TeamKatTeam::convertToTeam)
                 .collect(Collectors.toMap(Team::getId, Function.identity()));
