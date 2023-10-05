@@ -10,6 +10,7 @@ import no.nav.data.polly.teams.domain.ProductArea;
 import no.nav.data.polly.teams.domain.Team;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
@@ -107,8 +108,8 @@ public class TeamcatTeamClient implements TeamService {
         try {
             var response = restTemplate.getForEntity(properties.getTeamsUrl(), TeamPage.class);
             teams = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
-        } catch (Exception exception) {
-            log.error("Unable to connect to teamkatalog!");
+        } catch (RestClientException e) {
+            log.error("Unable to connect to teamkatalog , error: " + e);
         }
         return safeStream(teams)
                 .map(TeamKatTeam::convertToTeam)
