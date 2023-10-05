@@ -1,5 +1,5 @@
 appname: behandlingskatalog-backend
-teamcat_ingress: teamkatalog-api.intern.test.dev.nav.no
+teamcat_ingress: teamkatalog-api.intern.dev.nav.no
 termcat_ingress: begrepskatalog-api.intern.dev.nav.no
 ingresses:
   - https://behandlingskatalog-backend.intern.dev.nav.no
