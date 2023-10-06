@@ -74,6 +74,8 @@ spec:
         - application: pdl-behandlingskatalog-proxy
           namespace: pdl
           cluster: prod-gcp
+        - application: nada-backend
+          namespace: nada
     outbound:
       external:
         - host: {{teamcat_ingress}}
