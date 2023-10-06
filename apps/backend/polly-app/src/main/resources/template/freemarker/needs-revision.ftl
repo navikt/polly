@@ -22,8 +22,15 @@
 <p>${revisionText}</p>
 
 <br/>
-<p>Hva skjer videre? Ta stilling til revideringsgrunnlaget og vurder om behandlingen må endres. Dersom det er andre enn deg som bør oppdatere behandlingen, må du ta kontakt med
-  riktig person. Har du behov for bistand kan du kontakte oss på #behandlingskatalogen på Slack.</p>
+<p>
+  Hva skjer videre? Ta stilling til revideringsgrunnlaget og vurder om behandlingen må endres.
+  Når du har vurdert og eventuelt redigert behandlingen, må du registrere at den igjen er ferdig dokumentert.
+</p>
+<br/>
+  <p>
+    Dersom det er andre enn deg som bør oppdatere behandlingen, må du ta kontakt med
+    riktig person. Har du behov for bistand kan du kontakte oss på #behandlingskatalogen på Slack.
+  </p>
 
 <div style="margin-top: 50px;">
   <hr/>
