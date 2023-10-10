@@ -13,6 +13,7 @@ import { user } from './service/User'
 import { theme, useAwait } from './util'
 import { useLang } from './util/intl/intl'
 
+
 const engine = new Styletron()
 
 ampli.logEvent('visit_count_behandlingskatalog')

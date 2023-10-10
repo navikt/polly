@@ -25,10 +25,10 @@ const items: BlockProps = {
 }
 
 const Brand = () => (
-  <Block display="flex" flexDirection="column" padding="1rem">
-    <StyledLink style={{ textDecoration: 'none', textAlign: 'center' }} href="/">
+  <Block className="p-4">
+    <StyledLink className="no-underline flex flex-col items-center" href="/">
       <img alt="logo" src={BKLogo} />
-      <LabelLarge $style={{ fontSize: '130%' }} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">
+      <LabelLarge $style={{ fontSize: '115%' }} color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">
         Behandlingskatalog
       </LabelLarge>
     </StyledLink>
