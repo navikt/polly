@@ -144,28 +144,6 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     setIsLoadingProcess(false)
   }
 
-  const handleCreateProcess = async (process: ProcessFormValues) => {
-    if (!process) return
-    try {
-      const newProcess = await createProcess(process)
-      setProcessList(sortProcess([...processList, newProcess]))
-      setErrorProcessModal('')
-      setShowCreateProcessModal(false)
-      setCurrentProcess(newProcess)
-      // todo uh multipurpose url....
-      navigate(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
-      process.disclosures.forEach((d) => {
-        updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id ? newProcess.id : ''] }))
-      })
-    } catch (err: any) {
-      if (err.response.data.message && err.response.data.message.includes('already exists')) {
-        setErrorProcessModal('Behandlingen eksisterer allerede.')
-        return
-      }
-      setErrorProcessModal(err.response.data.message)
-    }
-  }
-
   const handleEditProcess = async (values: ProcessFormValues) => {
     try {
       const updatedProcess = await updateProcess(values)
@@ -273,7 +251,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
             {intl.export}
           </Button>
           {isEditable && hasAccess() && (
-            <Button size={ButtonSize.compact} kind={KIND.tertiary} icon={faPlus} onClick={() => setShowCreateProcessModal(true)}>
+            <Button size={ButtonSize.compact} kind={KIND.tertiary} icon={faPlus} onClick={() => navigate("/process/new")}>
               {intl.processingActivitiesNew}
             </Button>
           )}
@@ -343,29 +321,6 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
           errorProcessModal={errorProcessModal}
           errorPolicyModal={errorPolicyModal}
           errorDocumentModal={errorDocumentModal}
-        />
-      )}
-      {!codelistLoading && (
-        <ModalProcess
-          title={intl.processingActivitiesNew}
-          onClose={() => {
-            setErrorProcessModal('')
-            setShowCreateProcessModal(false)
-          }}
-          isOpen={showCreateProcessModal}
-          submit={(values: ProcessFormValues) => handleCreateProcess(values)}
-          errorOnCreate={errorProcessModal}
-          isEdit={false}
-          initialValues={convertProcessToFormValues({
-            purposes: section === Section.purpose ? [codelist.getCode(ListName.PURPOSE, code) as Code] : undefined,
-            affiliation: {
-              department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
-              subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],
-              products: section === Section.system ? [codelist.getCode(ListName.SYSTEM, code)!] : [],
-              productTeams: section === Section.team ? [code] : [],
-              disclosureDispatchers: section === Section.system ? [codelist.getCode(ListName.SYSTEM, code)!] : [],
-            },
-          })}
         />
       )}
     </>

@@ -324,7 +324,7 @@ export const no: IStrings = {
   hi: 'Hei',
   addNew: 'Legg til ny',
   createNew: 'Opprett ny',
-  name: 'Navn',
+  name: 'Tittel på behandlingen',
   email: 'Email',
   copied: 'Kopiert',
   groups: 'Grupper',
@@ -448,7 +448,7 @@ export const no: IStrings = {
   containsInformationType: 'Inneholder opplysningstyper',
   containsProcesses: 'Brukes i behandlinger',
   defaultProcessDocument: 'Dokument for standard informasjonstyper i behandling',
-  overallPurposeHelpText: 'Hva er det overordnede formålet med denne behandlingen? Velg blant predefinerte verdier',
+  overallPurposeHelpText: 'Hva er det overordnede formålet med denne behandlingen?',
   validityOfProcessHelpText:
     'Valgfritt. Hvis aktuelt angi perioden virksomheten har utført denne behandlingen. Kan stå tomt hvis usikkert, eller for løpende behandlinger som f.eks. saksbehandling av diverse ytelser.',
   organizingHelpText:

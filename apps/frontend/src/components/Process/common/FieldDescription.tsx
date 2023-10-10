@@ -1,14 +1,13 @@
 import { Field, FieldProps } from 'formik'
 import { ProcessFormValues } from '../../../constants'
-import { Textarea } from 'baseui/textarea'
-import { SIZE as InputSIZE } from 'baseui/input'
-import * as React from 'react'
+import { Textarea } from '@navikt/ds-react'
+import { intl } from '../../../util'
 
 const FieldDescription = () => (
   <Field
     name="description"
     render={({ field, form }: FieldProps<string, ProcessFormValues>) => (
-      <Textarea {...field} type="input" size={InputSIZE.default} error={!!form.errors.description && form.touched.description} />
+      <Textarea {...field} label={intl.purposeOfTheProcess} description={intl.processPurposeHelpText} error={!!form.errors.description && form.touched.description} />
     )}
   />
 )

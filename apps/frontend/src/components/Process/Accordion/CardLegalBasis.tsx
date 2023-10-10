@@ -1,23 +1,21 @@
 import * as React from 'react'
-import { Select, TYPE, Value } from 'baseui/select'
+import { TYPE, Value } from 'baseui/select'
 import { Block, BlockProps } from 'baseui/block'
-import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input'
-import { LabelMedium } from 'baseui/typography'
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
 import { codelist, ListName, SensitivityLevel } from '../../../service/Codelist'
-import { intl, theme } from '../../../util'
+import { intl } from '../../../util'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import { KIND as NKIND, Notification } from 'baseui/notification'
 import { LegalBasisFormValues } from '../../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationCircle, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { legalBasisSchema } from '../../common/schema'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
 import { paddingZero } from '../../common/Style'
 import shortid from 'shortid'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import { Label, Select } from "@navikt/ds-react"
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -39,14 +37,10 @@ const Error = (props: { fieldName: string }) => (
 
 const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => {
   return (
-    <Block display="flex">
-      <CustomizedStatefulTooltip content={sensitivityLevel === SensitivityLevel.ART6 ? intl.article6HelpText : intl.article9HelpText}>
-        <Block display="flex">
-          <LabelMedium>{text}</LabelMedium>
-          <FontAwesomeIcon style={{ marginLeft: '.25rem' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
-        </Block>
-      </CustomizedStatefulTooltip>
-    </Block>
+      <div className="navds-form-field navds-form-field--medium">
+        <Label className="navds-form-field__label navds-label">{text}</Label>
+        <div className="navds-form-field__description navds-body-short navds-body-short--medium">{sensitivityLevel === SensitivityLevel.ART6 ? intl.article6HelpText : intl.article9HelpText}</div>
+      </div>
   )
 }
 
@@ -87,7 +81,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
       initialValues={initialValues}
       render={(form: FormikProps<LegalBasisFormValues>) => {
         return (
-          <Card>
+          <div>
             {renderCardHeader(
               sensitivityLevel === SensitivityLevel.ART9 ? intl.cardHeaderArticle9 : intl.cardHeaderArticle6,
               sensitivityLevel === SensitivityLevel.ART9 ? SensitivityLevel.ART9 : SensitivityLevel.ART6,
@@ -96,20 +90,10 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
               <Field
                 name="gdpr"
                 render={() => (
-                  <Select
-                    autoFocus={true}
-                    options={getOptionsBySensitivityLevel()}
-                    placeholder={sensitivityLevel === SensitivityLevel.ART9 ? intl.placeHolderArticle9 : intl.placeHolderArticle6}
-                    maxDropdownHeight="300px"
-                    type={TYPE.search}
-                    onChange={({ value }) => {
-                      setGdpr(value)
-                      form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
-                    }}
-                    value={gdpr}
-                    error={!!form.errors.gdpr && !!form.submitCount}
-                    overrides={{ Placeholder: { style: { color: 'black' } } }}
-                  />
+                  <Select label="" error={!!form.errors.gdpr && !!form.submitCount}>
+                    <option value="">{sensitivityLevel === SensitivityLevel.ART9 ? intl.placeHolderArticle9 : intl.placeHolderArticle6}</option>
+                    {getOptionsBySensitivityLevel().map((o) => <option value={o.id}>{o.label}</option>)}
+                  </Select>
                 )}
               />
             </Block>
@@ -119,18 +103,10 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
               <Field
                 name="nationalLaw"
                 render={() => (
-                  <Select
-                    options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-                    placeholder={intl.nationalLawSelect}
-                    maxDropdownHeight="300px"
-                    type={TYPE.search}
-                    onChange={({ value }) => {
-                      setNationalLaw(value)
-                      form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
-                    }}
-                    value={nationalLaw}
-                    error={!!form.errors.nationalLaw && !!form.submitCount}
-                  />
+                  <Select label="" error={!!form.errors.nationalLaw && !!form.submitCount}>
+                    <option value="">{intl.nationalLawSelect}</option>
+                    {codelist.getParsedOptions(ListName.NATIONAL_LAW).map((o) => <option value={o.id}>{o.label}</option>)}
+                  </Select>
                 )}
               />
             </Block>
@@ -173,7 +149,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
                 </Block>
               </>
             )}
-          </Card>
+          </div>
         )
       }}
     />

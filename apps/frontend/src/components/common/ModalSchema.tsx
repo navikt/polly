@@ -6,19 +6,14 @@ import * as React from 'react'
 import { theme } from '../../util'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
-import { paddingZero } from './Style'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 export const Error = (props: { fieldName: string; fullWidth?: boolean }) => (
   <ErrorMessage name={props.fieldName}>
     {(msg: any) => (
-      <Block display="flex" width="100%" marginTop=".2rem">
+      <Block>
         {!props.fullWidth && <ModalLabel />}
-        <Block width="100%">
-          <Notification overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }} kind={NKIND.negative}>
-            {msg}
-          </Notification>
-        </Block>
+        <Notification kind={NKIND.negative}>{msg}</Notification>
       </Block>
     )}
   </ErrorMessage>

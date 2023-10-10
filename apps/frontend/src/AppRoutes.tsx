@@ -36,6 +36,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { DisclosureListPage } from './pages/DisclosureListPage'
 import ProcessorListPage from './pages/ProcessorListPage'
 import ProcessorView from './components/Processor/ProcessorView'
+import { NewProcessPage } from "./pages/NewProcessPage"
 
 export const processPath = '/process/:section/:code/:processId'
 export const processPathNoId = '/process/:section/:code/'
@@ -59,6 +60,7 @@ const AppRoutes = (): JSX.Element => (
 
       <Route path="/productarea/:productAreaId" element={<ProductAreaPage />} caseSensitive={true} />
       <Route path="/process" element={<PurposeListPage />} caseSensitive={true} />
+      <Route path="/process/new" element={<NewProcessPage />} caseSensitive={true} />
 
       <Route path={processPathNoId} element={<ProcessPage />} caseSensitive={true} />
       <Route path={processPath} element={<ProcessPage />} caseSensitive={true} />
