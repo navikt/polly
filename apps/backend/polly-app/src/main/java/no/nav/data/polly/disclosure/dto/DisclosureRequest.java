@@ -88,6 +88,5 @@ public class DisclosureRequest implements RequestElement {
         validator.checkUUID(Fields.documentId, documentId);
         getProcessIds().forEach(it -> validator.checkUUID(Fields.processIds, it));
         getInformationTypeIds().forEach(it -> validator.checkUUID(Fields.informationTypeIds, it));
-        validator.checkBlank(Fields.confidentialityDescription,confidentialityDescription);
     }
 }
