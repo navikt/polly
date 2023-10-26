@@ -24,7 +24,7 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where data ->> 'commonExternalProcessResponsible' = ?1", nativeQuery = true)
     List<Process> findByCommonExternalProcessResponsible(String thirdParty);
 
-    @Query(value = "select * from process where data ->> 'number' %?1%", nativeQuery = true)
+    @Query(value = "select * from process where data ->> 'number' like %?1%", nativeQuery = true)
     Optional<Process> findByProcessNumber(String number);
 
     @Query(value = "select * from process where data ->> 'name' ilike %?1%", nativeQuery = true)
