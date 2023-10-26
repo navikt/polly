@@ -76,7 +76,7 @@ public class ProcessReadController {
         log.info("Received request for Process with id/number={}", id);
         Optional<Process> process;
         if (StringUtils.isNumeric(id)) {
-            process = repository.findByProcessNumber(Integer.parseInt(id));
+            process = repository.findByProcessNumber(id);
         } else {
             process = repository.findById(UUID.fromString(id));
         }
@@ -188,8 +188,11 @@ public class ProcessReadController {
             throw new ValidationException("Search term must be at least 3 characters");
         }
         List<Process> processes = new ArrayList<>(repository.findByNameContaining(search));
+        if(search.toLowerCase().matches("b[0-9]+")){
+            repository.findByProcessNumber(search.substring(1)).ifPresent(processes::add);
+        }
         if (StringUtils.isNumeric(search)) {
-            repository.findByProcessNumber(Integer.parseInt(search)).ifPresent(processes::add);
+            repository.findByProcessNumber(search).ifPresent(processes::add);
         }
         if (includePurpose) {
             var purposes = filter(CodelistService.getCodelist(ListName.PURPOSE), c -> StringUtils.containsIgnoreCase(c.getShortName(), search));
