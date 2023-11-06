@@ -6,9 +6,12 @@ import { PageHeader } from '../components/common/PageHeader'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import { intl } from '../util'
 import { getInformationTypesBy } from '../api'
+import {ampli} from "../service/Amplitude";
 
 export const TeamPage = () => {
   const { teamId } = useParams<{ teamId: string }>()
+
+  ampli.logEvent("besøk", {side: 'Team'})
 
   return (
     <>

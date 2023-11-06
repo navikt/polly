@@ -12,12 +12,15 @@ import { useNavigate } from 'react-router-dom'
 import { genProcessPath, Section } from './ProcessPage'
 import Button from '../components/common/Button'
 import { PurposeList } from './ListSearchPage'
+import {ampli} from "../service/Amplitude";
 
 export const PurposeListPage = () => {
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
   const [errorProcessModal, setErrorProcessModal] = React.useState(null)
+
+  ampli.logEvent("besøk", {side: 'Behandlinger', type: 'Velg overordnet behandlingsaktivitet'})
 
   const handleCreateProcess = async (process: ProcessFormValues) => {
     if (!process) return

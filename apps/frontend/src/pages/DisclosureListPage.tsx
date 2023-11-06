@@ -19,6 +19,7 @@ import SearchProcess from '../components/common/SearchProcess'
 import { checkForAaregDispatcher } from '../util/helper-functions'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
+import {ampli} from "../service/Amplitude";
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -45,6 +46,8 @@ export const DisclosureListPage = () => {
   const filter = useQueryParam<FilterType>('filter')
   const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
+
+  ampli.logEvent("besøk", {side: 'Utleveringer'})
 
   const initialFormValues: DisclosureFormValues = {
     name: '',

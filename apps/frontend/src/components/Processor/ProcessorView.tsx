@@ -21,6 +21,7 @@ import { DeleteProcessorModal } from './DeleteProcessorModal'
 import { shortenLinksInText } from '../../util/helper-functions'
 import { lastModifiedDate } from '../../util/date-formatter'
 import RelatedProcessesTable from './components/RelatedProcessesTable'
+import {ampli} from "../../service/Amplitude";
 
 const blockProps: BlockProps = {
   font: 'ParagraphMedium',
@@ -38,6 +39,9 @@ const ProcessorView = () => {
   const [operationalContractManagers, setOperationalContractManagers] = useState<TeamResource[]>([])
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const [usageCount, setUsageCount] = useState<number>(0)
+
+  ampli.logEvent("besøk", {side: 'Databehandlere', type: 'view'})
+
   const hasAccess = () => user.canWrite()
   const navigate = useNavigate()
   const params = useParams<{ id?: string }>()

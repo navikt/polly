@@ -15,6 +15,7 @@ import { Block } from 'baseui/block/index'
 import { getDashboard } from '../api'
 import Charts from '../components/Charts/Charts'
 import { useLocation } from 'react-router-dom'
+import {ampli} from "../service/Amplitude";
 
 export enum Section {
   purpose = 'purpose',
@@ -49,6 +50,8 @@ const ProcessPage = () => {
   const params = useParams<PathParams>()
   const { section, code, processId } = params
   const location = useLocation()
+
+  ampli.logEvent("besøk", {side: 'Behandlinger'})
 
   const moveScroll = () => {
     window.scrollTo(0, localStorage.getItem('Yposition' + location.pathname) != null ? Number(localStorage.getItem('Yposition' + location.pathname)) + 200 : 0)

@@ -8,6 +8,7 @@ import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from
 import { useNavigate, useParams } from 'react-router-dom'
 import { HeadingMedium } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
+import {ampli} from "../service/Amplitude";
 
 const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = React.useState(true)
@@ -16,6 +17,8 @@ const InformationtypeEditPage = () => {
   const [informationtype, setInformationType] = React.useState<InformationType>()
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
+
+  ampli.logEvent("besøk", {side: 'Opplysningstyper', type: 'Rediger opplysningstype'})
 
   const handleAxiosError = (error: any) => {
     if (error.response) {

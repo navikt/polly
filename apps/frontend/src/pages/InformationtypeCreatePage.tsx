@@ -10,11 +10,14 @@ import { createInformationType, mapInfoTypeToFormVals } from '../api'
 import { useNavigate } from 'react-router-dom'
 import { HeadingMedium } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
+import {ampli} from "../service/Amplitude";
 
 const InformationtypeCreatePage = () => {
   const [isLoading, setLoading] = React.useState(true)
   const [errorSubmit, setErrorSubmit] = React.useState(null)
   const navigate = useNavigate()
+
+  ampli.logEvent("besøk", {side: 'Opplysningstyper', type: 'Opprett opplysningstype'})
 
   const handleSubmit = async (values: InformationtypeFormValues) => {
     if (!values) return

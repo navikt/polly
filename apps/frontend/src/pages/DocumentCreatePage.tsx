@@ -5,6 +5,7 @@ import { createInformationTypesDocument } from '../api'
 import { useNavigate } from 'react-router-dom'
 import { HeadingMedium } from 'baseui/typography'
 import { intl } from '../util'
+import {ampli} from "../service/Amplitude";
 
 let initialCreateDocumentFormValues: DocumentFormValues = {
   name: '',
@@ -29,6 +30,8 @@ export const convertDocumentToFormRequest = (values: DocumentFormValues) => {
 
 const DocumentCreatePage = () => {
   const navigate = useNavigate()
+
+  ampli.logEvent("besøk", {side: 'Dokumenter', type:'Opprett dokument'})
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
     try {

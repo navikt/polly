@@ -23,6 +23,7 @@ import { user } from '../../service/User'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { getResourceById } from '../../api'
+import {ampli} from "../../service/Amplitude";
 
 const DpProcessView = () => {
   const navigate = useNavigate()
@@ -32,6 +33,8 @@ const DpProcessView = () => {
   const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
   const [showDeleteModal, toggleDeleteModal] = useReducer((prevState) => !prevState, false)
   const [processors, setProcessors] = useState<Processor[]>([])
+
+  ampli.logEvent("besøk", {side: 'NAV som databehandler', type: 'view'})
 
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')

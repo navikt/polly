@@ -19,6 +19,7 @@ import { user } from '../service/User'
 import { codelist } from '../service/Codelist'
 import moment from 'moment'
 import { SORT_DIRECTION } from 'baseui/table'
+import {ampli} from "../service/Amplitude";
 
 type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
@@ -100,6 +101,8 @@ export const AlertEventPage = () => {
       column,
       dir: state.sort.column !== column ? SORT_DIRECTION.ASC : state.sort.dir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC,
     })
+
+  ampli.logEvent("besøk", {side: 'Varsler'})
 
   useEffect(() => {
     getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId).then((a) =>

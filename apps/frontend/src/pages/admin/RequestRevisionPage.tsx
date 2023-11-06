@@ -20,6 +20,7 @@ import { Process } from '../../constants'
 import { Combobox } from 'baseui/combobox'
 import { Notification } from 'baseui/notification'
 import { FieldTextarea } from '../../components/Process/common/FieldTextArea'
+import {ampli} from "../../service/Amplitude";
 
 enum ProcessSelection {
   ONE = 'ONE',
@@ -74,6 +75,8 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+
+  ampli.logEvent("besøk", {side: 'Admin', type:  'Trenger revidering'})
 
   const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
   const areas = useAllAreas()

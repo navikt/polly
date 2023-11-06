@@ -10,11 +10,14 @@ import { ProcessStatusFilter, ProductAreaDashCount } from '../constants'
 import Charts from '../components/Charts/Charts'
 import { Block } from 'baseui/block'
 import { HeadingSmall } from 'baseui/typography'
+import {ampli} from "../service/Amplitude";
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = React.useState(true)
   const [chartData, setChartData] = React.useState<ProductAreaDashCount>()
   const { productAreaId } = useParams<{ productAreaId: string }>()
+
+  ampli.logEvent("besøk", {side: 'ProductAreaPage'})
 
   useEffect(() => {
     ;(async () => {

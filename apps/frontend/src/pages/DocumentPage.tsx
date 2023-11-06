@@ -19,6 +19,7 @@ import {AuditButton} from '../components/audit/AuditButton'
 import {SIZE as ButtonSize} from 'baseui/button'
 import {tabOverride} from '../components/common/Style'
 import AlphabeticList from '../components/common/AlphabeticList'
+import {ampli} from "../service/Amplitude";
 
 const renderTextWithLabel = (label: string, text: string) => (
   <Block marginTop="scale1000">
@@ -38,6 +39,8 @@ const DocumentPage = () => {
   const [errorMessage, setErrorMessage] = React.useState<string>()
   const [activeKey, setActiveKey] = React.useState<string | number | bigint>('containsInformationType')
   const [documents, setDocuments] = React.useState<Document[]>([])
+
+  ampli.logEvent("besøk", {side: 'Dokumenter'})
 
   useEffect(() => setDocumentId(params.id), [params.id])
 

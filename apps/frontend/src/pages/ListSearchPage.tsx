@@ -4,10 +4,13 @@ import { codelist, ListName } from '../service/Codelist'
 import { HeadingMedium } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
 import AlphabeticList from '../components/common/AlphabeticList'
+import {ampli} from "../service/Amplitude";
 
 const codelistPage = (listName: ListName, baseUrl: string, title?: string) => () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   useAwait(codelist.wait(), setIsLoading)
+
+  ampli.logEvent("besøk", {side: 'Listevisning', type:  title})
 
   const codes = listName == ListName.THIRD_PARTY ? codelist.getCodes(listName).filter((l) => l.shortName != 'NAV') : codelist.getCodes(listName)
 

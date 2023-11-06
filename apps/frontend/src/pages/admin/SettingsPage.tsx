@@ -11,11 +11,14 @@ import { HeadingMedium, LabelMedium } from 'baseui/typography'
 import { Button } from 'baseui/button'
 import { StatefulTextarea } from 'baseui/textarea'
 import { Markdown } from '../../components/common/Markdown'
+import {ampli} from "../../service/Amplitude";
 
 export const SettingsPage = () => {
   const [loading, setLoading] = React.useState<boolean>(true)
   const [error, setError] = useState()
   const [settings, setSettings] = useState<Settings>()
+
+  ampli.logEvent("besøk", {side: 'Admin', type: 'Instillinger'})
 
   const load = async () => {
     setLoading(true)

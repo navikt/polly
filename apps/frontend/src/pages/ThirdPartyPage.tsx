@@ -20,6 +20,7 @@ import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProce
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import { Accordion, Panel } from 'baseui/accordion'
 import { toggleOverride } from '../components/common/Accordion'
+import {ampli} from "../service/Amplitude";
 
 export type PathParams = {
   thirdPartyCode: string
@@ -36,6 +37,8 @@ const ThirdPartyPage = () => {
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
   const [error, setError] = React.useState<string>()
   const [processListCount, setProcessListCount] = React.useState<number>(0)
+
+  ampli.logEvent("besøk", {side: 'Eksterne parter'})
 
   useEffect(() => {
     ;(async () => {

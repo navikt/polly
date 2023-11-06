@@ -11,6 +11,7 @@ import { lowerFirst } from 'lodash'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { useLocation, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
+import {ampli} from "../service/Amplitude";
 
 const val = (v: Value) => (v.length ? (v[0].id as string) : undefined)
 
@@ -20,6 +21,8 @@ export const LegalPage = () => {
   const nationalLaw = useQueryParam('nationalLaw')
   const navigate = useNavigate()
   const location = useLocation()
+
+  ampli.logEvent("besøk", {side: 'Legal Page'})
 
   useEffect(() => {
     if (!gdprArticle && !nationalLaw) {

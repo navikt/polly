@@ -13,6 +13,7 @@ import AlphabeticList from '../components/common/AlphabeticList'
 import { Spinner } from '../components/common/Spinner'
 import { useNavigate } from 'react-router-dom'
 import ProcessorModal from '../components/Processor/ProcessorModal'
+import {ampli} from "../service/Amplitude";
 
 export const ProcessorListPage = () => {
   const [processors, setProcessors] = useState<Processor[]>([])
@@ -21,6 +22,8 @@ export const ProcessorListPage = () => {
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
+
+  ampli.logEvent("besøk", {side: 'Databehandlere'})
 
   const handleCreateProcessor = (processor: ProcessorFormValues) => {
     if (!processor) return

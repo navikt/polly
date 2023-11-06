@@ -8,6 +8,7 @@ import shortid from 'shortid'
 import { HeadingMedium } from 'baseui/typography'
 import { intl } from '../util'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
+import {ampli} from "../service/Amplitude";
 
 const convertToDocumentFormValues = (document: Document) => {
   return {
@@ -31,6 +32,8 @@ const DocumentEditPage = () => {
   const [isLoading, setLoading] = React.useState(false)
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
+
+  ampli.logEvent("besøk", {side: 'Dokumenter', type: 'Rediger dokument'})
 
   const handleEditDocument = async (values: DocumentFormValues) => {
     try {

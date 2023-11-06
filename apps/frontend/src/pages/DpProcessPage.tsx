@@ -13,6 +13,7 @@ import { HeadingMedium } from 'baseui/typography'
 import { user } from '../service/User'
 import { useNavigate } from 'react-router-dom'
 import { Spinner } from 'baseui/spinner'
+import {ampli} from "../service/Amplitude";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
@@ -20,6 +21,8 @@ const DpProcessPage = () => {
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
   const [isLoading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
+
+  ampli.logEvent("besøk", {side: 'NAV som databehandler'})
 
   useEffect(() => {
     ;(async () => {

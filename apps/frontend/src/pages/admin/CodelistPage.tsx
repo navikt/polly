@@ -16,6 +16,7 @@ import { HeadingMedium } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
 import Button from '../../components/common/Button'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import {ampli} from "../../service/Amplitude";
 
 const CodeListPage = () => {
   const params = useParams<{ listname?: string }>()
@@ -26,6 +27,8 @@ const CodeListPage = () => {
   const [errorOnResponse, setErrorOnResponse] = React.useState(null)
   const forceUpdate = useForceUpdate()
   useAwait(codelist.wait(), setLoading)
+
+  ampli.logEvent("besøk", {side: 'Admin', type:  'Kodeverk'})
 
   const lists = codelist.lists?.codelist
   const currentCodelist = lists && listname ? lists[listname] : undefined
