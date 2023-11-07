@@ -13,6 +13,7 @@ import { Button, KIND } from 'baseui/button'
 import { TriangleDown } from 'baseui/icon'
 import { Pagination } from 'baseui/pagination'
 import { Markdown } from '../../components/common/Markdown'
+import {ampli} from "../../service/Amplitude";
 
 interface MailLog {
   time: string
@@ -29,6 +30,8 @@ export const MailLogPage = () => {
   const [log, setLog] = useState<PageResponse<MailLog>>({ content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0 })
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(20)
+
+  ampli.logEvent("besøk", {side: 'Admin', type:  'Mail log'})
 
   useEffect(() => {
     getMailLog(page - 1, limit).then(setLog)

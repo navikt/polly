@@ -7,7 +7,6 @@ import { Provider as StyletronProvider } from 'styletron-react'
 import Header from './components/Header'
 import SideBar from './components/SideBar'
 import AppRoutes from './AppRoutes'
-import { ampli } from './service/Amplitude'
 import { codelist } from './service/Codelist'
 import { user } from './service/User'
 import { theme, useAwait } from './util'
@@ -16,7 +15,7 @@ import { useLang } from './util/intl/intl'
 
 const engine = new Styletron()
 
-ampli.logEvent('visit_count_behandlingskatalog')
+
 
 const Main = (props) => {
   const { history } = props

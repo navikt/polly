@@ -13,11 +13,14 @@ import { user } from '../service/User'
 import { HeadingXXLarge } from 'baseui/typography'
 import ShortcutNav from '../components/Main/ShortcutNav'
 import { intl, theme } from '../util'
+import {ampli} from "../service/Amplitude";
 
 export const MainPage = () => {
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<DashboardData>()
+
+  ampli.logEvent("besøk", {side: 'Hovedside'})
 
   useEffect(() => {
     ;(async () => {

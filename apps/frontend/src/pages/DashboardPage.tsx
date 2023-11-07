@@ -10,11 +10,14 @@ import { getDashboard } from '../api'
 import { Spinner } from '../components/common/Spinner'
 import { HeadingMedium } from 'baseui/typography'
 import Departments from '../components/Dashboard/Departments'
+import {ampli} from "../service/Amplitude";
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData>()
   const { processStatus } = useParams<{ processStatus: ProcessStatusFilter }>()
   const [dashboardStatus, setDashboardStatus] = useState<ProcessStatusFilter>(processStatus ? (processStatus as ProcessStatusFilter) : ProcessStatusFilter.All)
+
+  ampli.logEvent("besøk", {side: 'Dashboard'})
 
   useEffect(() => {
     ;(async () => {

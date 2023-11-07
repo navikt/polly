@@ -15,6 +15,7 @@ import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocum
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
 import { Spinner } from '../components/common/Spinner'
+import {ampli} from "../service/Amplitude";
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -29,6 +30,8 @@ const InformationtypePage = () => {
   const [disclosures, setDisclosures] = React.useState<Disclosure[]>()
   const [documents, setDocuments] = React.useState<Document[]>()
   const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
+
+  ampli.logEvent("besøk", {side: 'Opplysningstyper'})
 
   useEffect(() => {
     ;(async () => {

@@ -10,6 +10,7 @@ import { AuditLog } from '../../constants'
 import { AuditRecentTable } from '../../components/audit/AuditRecentTable'
 import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
 import { useNavigate, useParams } from 'react-router-dom'
+import {ampli} from "../../service/Amplitude";
 
 const format = (id: string) => _.trim(id, '"')
 
@@ -20,6 +21,8 @@ export const AuditPage = () => {
   const [error, setError] = useState()
   const [auditLog, setAuditLog] = useState<AuditLog>()
   const [idSearch, setIdInput, idInput] = useDebouncedState(params.id || '', 400)
+
+  ampli.logEvent("besøk", {side: 'Admin', type:  'Versjonering'})
 
   const lookupVersion = (id?: string) => {
     ;(async () => {

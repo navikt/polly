@@ -7,9 +7,12 @@ import { getInformationTypesBy } from '../api'
 import { PageHeader } from '../components/common/PageHeader'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import { intl } from '../util'
+import {ampli} from "../service/Amplitude";
 
 export const SystemPage = () => {
   const { systemCode } = useParams<{ systemCode: string }>()
+
+  ampli.logEvent("besøk", {side: 'Systemer'})
 
   return (
     <>
