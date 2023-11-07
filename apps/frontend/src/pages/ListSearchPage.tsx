@@ -10,7 +10,7 @@ const codelistPage = (listName: ListName, baseUrl: string, title?: string) => ()
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   useAwait(codelist.wait(), setIsLoading)
 
-  ampli.logEvent("besøk", {side: 'Listevisning', type:  title})
+  ampli.logEvent("besøk", {side: 'Listevisning', url: baseUrl, app: 'Behandlingskatalogen', type:  title})
 
   const codes = listName == ListName.THIRD_PARTY ? codelist.getCodes(listName).filter((l) => l.shortName != 'NAV') : codelist.getCodes(listName)
 

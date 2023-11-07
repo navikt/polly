@@ -22,7 +22,7 @@ const DpProcessPage = () => {
   const [isLoading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'NAV som databehandler'})
+  ampli.logEvent("besøk", {side: 'NAV som databehandler', url: '/dpprocess', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     ;(async () => {

@@ -51,7 +51,7 @@ const ProcessPage = () => {
   const { section, code, processId } = params
   const location = useLocation()
 
-  ampli.logEvent("besøk", {side: 'Behandlinger'})
+  ampli.logEvent("besøk", {side: 'Behandlinger', url: '/process/:section/:code/', app: 'Behandlingskatalogen'})
 
   const moveScroll = () => {
     window.scrollTo(0, localStorage.getItem('Yposition' + location.pathname) != null ? Number(localStorage.getItem('Yposition' + location.pathname)) + 200 : 0)

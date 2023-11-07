@@ -76,7 +76,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
-  ampli.logEvent("besøk", {side: 'Admin', type:  'Trenger revidering'})
+  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/request-revision', app: 'Behandlingskatalogen', type:  'Trenger revidering'})
 
   const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
   const areas = useAllAreas()

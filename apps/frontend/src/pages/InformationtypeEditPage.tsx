@@ -18,7 +18,7 @@ const InformationtypeEditPage = () => {
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Opplysningstyper', type: 'Rediger opplysningstype'})
+  ampli.logEvent("besøk", {side: 'Opplysningstyper', url: '/informationtype/id:/edit', app: 'Behandlingskatalogen', type: 'Rediger opplysningstype'})
 
   const handleAxiosError = (error: any) => {
     if (error.response) {

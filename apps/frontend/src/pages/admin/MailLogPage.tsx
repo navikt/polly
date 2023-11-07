@@ -31,7 +31,7 @@ export const MailLogPage = () => {
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(20)
 
-  ampli.logEvent("besøk", {side: 'Admin', type:  'Mail log'})
+  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/maillog', app: 'Behandlingskatalogen', type:  'Mail log'})
 
   useEffect(() => {
     getMailLog(page - 1, limit).then(setLog)

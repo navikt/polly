@@ -12,7 +12,7 @@ import {ampli} from "../service/Amplitude";
 export const SystemPage = () => {
   const { systemCode } = useParams<{ systemCode: string }>()
 
-  ampli.logEvent("besøk", {side: 'Systemer'})
+  ampli.logEvent("besøk", {side: 'Systemer', url: '/system/:systemCode', app: 'Behandlingskatalogen'})
 
   return (
     <>

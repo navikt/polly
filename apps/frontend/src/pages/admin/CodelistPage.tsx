@@ -28,7 +28,7 @@ const CodeListPage = () => {
   const forceUpdate = useForceUpdate()
   useAwait(codelist.wait(), setLoading)
 
-  ampli.logEvent("besøk", {side: 'Admin', type:  'Kodeverk'})
+  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/codelist/', app: 'Behandlingskatalog', type:  'Kodeverk'})
 
   const lists = codelist.lists?.codelist
   const currentCodelist = lists && listname ? lists[listname] : undefined

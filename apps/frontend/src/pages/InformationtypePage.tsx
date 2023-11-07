@@ -31,7 +31,7 @@ const InformationtypePage = () => {
   const [documents, setDocuments] = React.useState<Document[]>()
   const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
 
-  ampli.logEvent("besøk", {side: 'Opplysningstyper'})
+  ampli.logEvent("besøk", {side: 'Opplysningstyper', url: '/informationtype/', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     ;(async () => {

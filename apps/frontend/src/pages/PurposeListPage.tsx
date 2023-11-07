@@ -20,7 +20,7 @@ export const PurposeListPage = () => {
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
   const [errorProcessModal, setErrorProcessModal] = React.useState(null)
 
-  ampli.logEvent("besøk", {side: 'Behandlinger', type: 'Velg overordnet behandlingsaktivitet'})
+  ampli.logEvent("besøk", {side: 'Behandlinger', url: '/process', app: 'Behandlingskatalogen', type: 'Velg overordnet behandlingsaktivitet'})
 
   const handleCreateProcess = async (process: ProcessFormValues) => {
     if (!process) return

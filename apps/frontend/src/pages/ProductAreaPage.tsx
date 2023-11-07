@@ -17,7 +17,7 @@ export const ProductAreaPage = () => {
   const [chartData, setChartData] = React.useState<ProductAreaDashCount>()
   const { productAreaId } = useParams<{ productAreaId: string }>()
 
-  ampli.logEvent("besøk", {side: 'ProductAreaPage'})
+  ampli.logEvent("besøk", {side: 'ProductAreaPage', url: '/productarea/:productAreaId', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     ;(async () => {

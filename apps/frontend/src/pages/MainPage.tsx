@@ -20,7 +20,7 @@ export const MainPage = () => {
   const [isLoading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<DashboardData>()
 
-  ampli.logEvent("besøk", {side: 'Hovedside'})
+  ampli.logEvent("besøk", {side: 'Hovedside', url: '/', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     ;(async () => {

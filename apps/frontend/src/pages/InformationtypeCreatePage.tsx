@@ -17,7 +17,7 @@ const InformationtypeCreatePage = () => {
   const [errorSubmit, setErrorSubmit] = React.useState(null)
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Opplysningstyper', type: 'Opprett opplysningstype'})
+  ampli.logEvent("besøk", {side: 'Opplysningstyper', url: '/informationtype/create', app: 'Behandlingskatalogen', type: 'Opprett opplysningstype'})
 
   const handleSubmit = async (values: InformationtypeFormValues) => {
     if (!values) return

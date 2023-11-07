@@ -47,7 +47,7 @@ export const DisclosureListPage = () => {
   const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Utleveringer'})
+  ampli.logEvent("besøk", {side: 'Utleveringer', url: '/disclosure', app:'Behandlingskatalogen'})
 
   const initialFormValues: DisclosureFormValues = {
     name: '',

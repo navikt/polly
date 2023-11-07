@@ -22,7 +22,7 @@ export const LegalPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  ampli.logEvent("besøk", {side: 'Legal Page'})
+  ampli.logEvent("besøk", {side: 'Legal Page', url: '/process/legal', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     if (!gdprArticle && !nationalLaw) {
