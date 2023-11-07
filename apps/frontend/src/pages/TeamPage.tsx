@@ -11,7 +11,7 @@ import {ampli} from "../service/Amplitude";
 export const TeamPage = () => {
   const { teamId } = useParams<{ teamId: string }>()
 
-  ampli.logEvent("besøk", {side: 'Team'})
+  ampli.logEvent("besøk", {side: 'Team', url: '/team/:id', app: 'Behandlingskatalogen'})
 
   return (
     <>

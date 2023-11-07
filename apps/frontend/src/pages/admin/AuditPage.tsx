@@ -22,7 +22,7 @@ export const AuditPage = () => {
   const [auditLog, setAuditLog] = useState<AuditLog>()
   const [idSearch, setIdInput, idInput] = useDebouncedState(params.id || '', 400)
 
-  ampli.logEvent("besøk", {side: 'Admin', type:  'Versjonering'})
+  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/audit/:id/', app: 'Behandlingskatalogen',  type:  'Versjonering'})
 
   const lookupVersion = (id?: string) => {
     ;(async () => {

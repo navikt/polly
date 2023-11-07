@@ -18,7 +18,7 @@ export const SettingsPage = () => {
   const [error, setError] = useState()
   const [settings, setSettings] = useState<Settings>()
 
-  ampli.logEvent("besøk", {side: 'Admin', type: 'Instillinger'})
+  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/settings', app: 'Behandlingskatalogen', type: 'Instillinger'})
 
   const load = async () => {
     setLoading(true)

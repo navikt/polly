@@ -38,7 +38,7 @@ const ThirdPartyPage = () => {
   const [error, setError] = React.useState<string>()
   const [processListCount, setProcessListCount] = React.useState<number>(0)
 
-  ampli.logEvent("besøk", {side: 'Eksterne parter'})
+  ampli.logEvent("besøk", {side: 'Eksterne parter', url: '/thirdparty/:thirdPartyCode/', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     ;(async () => {

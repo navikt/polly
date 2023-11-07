@@ -102,7 +102,7 @@ export const AlertEventPage = () => {
       dir: state.sort.column !== column ? SORT_DIRECTION.ASC : state.sort.dir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC,
     })
 
-  ampli.logEvent("besøk", {side: 'Varsler'})
+  ampli.logEvent("besøk", {side: 'Varsler', url: '/alert/events/', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId).then((a) =>

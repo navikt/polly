@@ -23,7 +23,7 @@ export const ProcessorListPage = () => {
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
 
-  ampli.logEvent("besøk", {side: 'Databehandlere'})
+  ampli.logEvent("besøk", {side: 'Databehandlere', url: '/processor', app: 'Behandlingskatalogen'})
 
   const handleCreateProcessor = (processor: ProcessorFormValues) => {
     if (!processor) return

@@ -40,7 +40,7 @@ const ProcessorView = () => {
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const [usageCount, setUsageCount] = useState<number>(0)
 
-  ampli.logEvent("besøk", {side: 'Databehandlere', type: 'view'})
+  ampli.logEvent("besøk", {side: 'Databehandlere', url:'/processor/:id', app: 'Behandlingskatalogen', type: 'view'})
 
   const hasAccess = () => user.canWrite()
   const navigate = useNavigate()

@@ -40,7 +40,7 @@ const DocumentPage = () => {
   const [activeKey, setActiveKey] = React.useState<string | number | bigint>('containsInformationType')
   const [documents, setDocuments] = React.useState<Document[]>([])
 
-  ampli.logEvent("besøk", {side: 'Dokumenter'})
+  ampli.logEvent("besøk", {side: 'Dokumenter', url: '/document/', app: 'Behandlingskatalogen'})
 
   useEffect(() => setDocumentId(params.id), [params.id])
 

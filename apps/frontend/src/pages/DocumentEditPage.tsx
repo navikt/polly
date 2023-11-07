@@ -33,7 +33,7 @@ const DocumentEditPage = () => {
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Dokumenter', type: 'Rediger dokument'})
+  ampli.logEvent("besøk", {side: 'Dokumenter', url:'/document/:id/edit', app: 'Behandlingskatalogen', type: 'Rediger dokument'})
 
   const handleEditDocument = async (values: DocumentFormValues) => {
     try {

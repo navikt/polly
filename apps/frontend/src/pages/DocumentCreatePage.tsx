@@ -31,7 +31,7 @@ export const convertDocumentToFormRequest = (values: DocumentFormValues) => {
 const DocumentCreatePage = () => {
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Dokumenter', type:'Opprett dokument'})
+  ampli.logEvent("besøk", {side: 'Dokumenter', url: '/document/create', app: 'Behandlingskatalogen', type:'Opprett dokument'})
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
     try {

@@ -17,7 +17,7 @@ export const DashboardPage = () => {
   const { processStatus } = useParams<{ processStatus: ProcessStatusFilter }>()
   const [dashboardStatus, setDashboardStatus] = useState<ProcessStatusFilter>(processStatus ? (processStatus as ProcessStatusFilter) : ProcessStatusFilter.All)
 
-  ampli.logEvent("besøk", {side: 'Dashboard'})
+  ampli.logEvent("besøk", {side: 'Dashboard', url: '/dashboard/', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     ;(async () => {
