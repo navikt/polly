@@ -34,7 +34,7 @@ const DpProcessView = () => {
   const [showDeleteModal, toggleDeleteModal] = useReducer((prevState) => !prevState, false)
   const [processors, setProcessors] = useState<Processor[]>([])
 
-  ampli.logEvent("besøk", {side: 'NAV som databehandler', url: 'dpprocess/:id', app:'Behandlingskatalogen', type: 'view'})
+  ampli.logEvent("besøk", {side: 'NAV som databehandler', url: 'dpprocess/:id', app: 'Behandlingskatalogen', type: 'view'})
 
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')
