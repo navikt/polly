@@ -50,6 +50,7 @@ public abstract class Auditable {
         return ChangeStampResponse.builder()
                 .lastModifiedBy(getLastModifiedBy())
                 .lastModifiedDate(getLastModifiedDate() == null ? LocalDateTime.now() : getLastModifiedDate())
+                .createdDate(getCreatedDate())
                 .build();
     }
 }
