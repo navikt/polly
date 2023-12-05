@@ -7,6 +7,8 @@ Prosjektet krever maven og java 17
 
 ``mvn clean install``
 
+Integrasjonstestene forutsetter Docker desktop (https://www.docker.com/products/docker-desktop/).
+
 #####For å kjøre lokalt
 Start postgres med `docker-compose up -d postgres`
 og bruk ``no.nav.data.polly.LocalAppStarter``
