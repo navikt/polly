@@ -87,7 +87,7 @@ class CodelistControllerTest {
             MockHttpServletResponse response = mvc.perform(get(uri)).andExpect(status().isOk()).andReturn().getResponse();
 
             @SuppressWarnings("unchecked")
-            List<Map> mappedResponse = JsonUtils.toObject(response.getContentAsString(), ArrayList.class);
+            List<Map<?, ?>> mappedResponse = JsonUtils.toObject(response.getContentAsString(), ArrayList.class);
             assertThat(mappedResponse).hasSize(CodelistService.getCodelist(ListName.THIRD_PARTY).size());
         }
 

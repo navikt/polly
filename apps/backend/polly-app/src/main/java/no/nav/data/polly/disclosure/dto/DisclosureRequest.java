@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.With;
 import lombok.experimental.FieldNameConstants;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -26,7 +25,6 @@ import static no.nav.data.common.utils.StringUtils.formatList;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
-@Slf4j
 @With
 @Data
 @Builder

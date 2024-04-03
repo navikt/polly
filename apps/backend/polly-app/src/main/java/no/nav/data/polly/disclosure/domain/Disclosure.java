@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.CodelistService;
@@ -32,7 +31,6 @@ import java.util.UUID;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 
-@Slf4j
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = false)

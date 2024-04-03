@@ -2,7 +2,6 @@ package no.nav.data.common.jpa;
 
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import jakarta.persistence.EntityManagerFactory;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.AppStarter;
 import no.nav.data.common.auditing.AuditVersionListener;
 import no.nav.data.common.auditing.AuditorAwareImpl;
@@ -27,7 +26,6 @@ import java.util.List;
 
 import static no.nav.data.common.utils.MdcUtils.wrapAsync;
 
-@Slf4j
 @EntityScan(basePackageClasses = AppStarter.class)
 @EnableJpaRepositories(basePackageClasses = AppStarter.class)
 @Configuration

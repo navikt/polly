@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.polly.codelist.CodelistService;
@@ -34,7 +33,6 @@ import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 
-@Slf4j
 @RestController
 @RequestMapping("/export")
 @Tag(name = "Export", description = "REST API for exports")

@@ -63,10 +63,12 @@ public class AzureUserInfo implements UserInfo {
         return "1.0".equals(getClaim(jwtClaimsSet, VER_CLAIM));
     }
 
+    @Override
     public String getIdentName() {
         return String.format("%s - %s", ident, name);
     }
 
+    @Override
     public String getAppName() {
         return AppIdMapping.getAppNameForAppId(appId);
     }
@@ -81,6 +83,7 @@ public class AzureUserInfo implements UserInfo {
         return groups.contains(AppRole.ADMIN.name());
     }
 
+    @Override
     public UserInfoResponse convertToResponse() {
         return UserInfoResponse.builder()
                 .loggedIn(true)

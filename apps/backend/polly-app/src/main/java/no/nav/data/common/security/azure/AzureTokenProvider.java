@@ -44,7 +44,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 import static java.util.Objects.requireNonNull;
 import static no.nav.data.common.security.SecurityConstants.SESS_ID_LEN;
@@ -91,7 +90,6 @@ public class AzureTokenProvider implements TokenProvider {
     }
 
     // buildClient has omitted it's generic type...
-    @SuppressWarnings("unchecked")
     GraphServiceClient getGraphClient(String accessToken) {
         BaseBearerTokenAuthenticationProvider authenticationProvider = new BaseBearerTokenAuthenticationProvider(
                 new AccessTokenProvider() {
@@ -108,7 +106,6 @@ public class AzureTokenProvider implements TokenProvider {
                     }
                 }
         );
-
 
         return new GraphServiceClient(authenticationProvider);
     }

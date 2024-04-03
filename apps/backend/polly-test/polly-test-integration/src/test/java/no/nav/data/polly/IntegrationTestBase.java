@@ -2,7 +2,6 @@ package no.nav.data.polly;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.AppStarter;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
@@ -82,7 +81,6 @@ import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataPro
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
 import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 
-@Slf4j
 @ActiveProfiles("test")
 @ExtendWith(WiremockExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppStarter.class, TestConfig.class})
@@ -458,6 +456,7 @@ public abstract class IntegrationTestBase {
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
+        @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),

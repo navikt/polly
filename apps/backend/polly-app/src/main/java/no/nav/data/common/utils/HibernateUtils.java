@@ -16,7 +16,6 @@ public final class HibernateUtils {
      * Get id without loading the entity
      */
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     public static UUID getId(Object entity) {
         if (entity instanceof HibernateProxy) {
             LazyInitializer lazyInitializer = ((HibernateProxy) entity).getHibernateLazyInitializer();
