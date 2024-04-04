@@ -2,13 +2,11 @@ package no.nav.data.common.jpa;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Configuration;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-@Slf4j
 @Configuration
 public class DatasourceConfig {
     static HikariDataSource hikariDataSource(DataSourceProperties properties) {

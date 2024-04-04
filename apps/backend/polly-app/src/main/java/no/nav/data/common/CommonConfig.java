@@ -2,7 +2,6 @@ package no.nav.data.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.prometheus.client.CollectorRegistry;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.DateUtil;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.common.web.TraceHeaderRequestInterceptor;
@@ -17,7 +16,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
-@Slf4j
 @Configuration
 @EnableScheduling
 public class CommonConfig {

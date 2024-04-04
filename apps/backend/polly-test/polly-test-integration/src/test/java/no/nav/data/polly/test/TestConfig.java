@@ -7,44 +7,22 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.security.AppIdMapping;
 import no.nav.data.common.security.azure.AADAuthenticationProperties;
 import no.nav.data.common.security.azure.AADStatelessAuthenticationFilter;
 import no.nav.data.common.security.azure.AzureUserInfo;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.BufferingClientHttpRequestFactory;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Optional;
 
-@Slf4j
 @Configuration
 public class TestConfig {
-
-    @Bean
-    public ApplicationRunner testRestTemplate(TestRestTemplate testRestTemplate) {
-        return (args) -> {
-            testRestTemplate.getRestTemplate().setRequestFactory(new BufferingClientHttpRequestFactory(testRestTemplate.getRestTemplate().getRequestFactory()));
-            testRestTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
-                @Override
-                public void handleError(ClientHttpResponse response) {
-                    log.error(new String(getResponseBody(response), Optional.ofNullable(getCharset(response)).orElse(Charset.defaultCharset())));
-                }
-            });
-        };
-    }
 
     @Bean
     public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter() throws URISyntaxException {

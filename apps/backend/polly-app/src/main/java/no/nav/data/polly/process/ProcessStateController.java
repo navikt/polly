@@ -4,7 +4,6 @@ package no.nav.data.polly.process;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
@@ -22,7 +21,6 @@ import java.util.List;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 
-@Slf4j
 @RestController
 @Tag(name = "Process", description = "Process State")
 @RequestMapping("/process/state")

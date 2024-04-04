@@ -127,7 +127,7 @@ public class AuditVersion {
                 .collect(Collectors.toList());
     }
 
-    public static String tableName(@SuppressWarnings("rawtypes") Class<? extends Auditable> aClass) {
+    public static String tableName(Class<? extends Auditable> aClass) {
         return aClass.getAnnotation(Table.class).name();
     }
 

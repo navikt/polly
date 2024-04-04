@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
@@ -13,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-@Slf4j
 @Data
 @Builder
 @AllArgsConstructor

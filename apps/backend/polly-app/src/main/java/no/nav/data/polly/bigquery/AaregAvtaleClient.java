@@ -3,7 +3,6 @@ package no.nav.data.polly.bigquery;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.bigquery.domain.AaregAvtale;
 import no.nav.data.polly.bigquery.domain.PollyAaregAvtale;
@@ -11,14 +10,12 @@ import no.nav.data.polly.bigquery.queryService.AaregAvtaleQueryService;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.data.common.utils.StreamUtils.safeStream;
 
-@Slf4j
 @Component
 public class AaregAvtaleClient implements AaregAvtaleService {
 

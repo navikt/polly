@@ -61,7 +61,6 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final CodeUsageService codeUsageService;
     private final TemplateService templateService;
     private final EmailService emailService;
-    private final InformationTypeRepository informationTypeRepository;
     private final PolicyRepository policyRepository;
 
 

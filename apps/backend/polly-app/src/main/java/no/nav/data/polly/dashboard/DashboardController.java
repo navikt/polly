@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertRepository;
@@ -52,7 +51,6 @@ import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
 import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-@Slf4j
 @RestController
 @RequestMapping("/dash")
 @Tag(name = "Dashboard")
