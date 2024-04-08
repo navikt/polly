@@ -1,11 +1,10 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { intl, theme } from '../../../util'
-import { ParagraphMedium } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
 import { Disclosure, Process } from '../../../constants'
-import { List } from '@navikt/ds-react'
+import {BodyShort, Heading, List} from '@navikt/ds-react'
 
 interface DeleteProcessProps {
   onClose: () => void
@@ -21,13 +20,20 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} animate size="default">
-      <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+      <ModalHeader>
+        <Heading size="medium">
+          {intl.confirmDeleteHeader}
+        </Heading>
+      </ModalHeader>
       <ModalBody>
-        <ParagraphMedium>{intl.deleteProcessText}</ParagraphMedium>
+        <BodyShort spacing>
+          {intl.deleteProcessText}
+        </BodyShort>
+
         {!process.policies.length && (
-          <ParagraphMedium>
+          <BodyShort spacing>
             {intl.confirmDeleteProcessText} {process.name}
-          </ParagraphMedium>
+          </BodyShort>
         )}
         {(!!process.policies.length || !!disclosures.length) && (
           <List as="ul" title={intl.deleteRelationText}>
