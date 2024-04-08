@@ -82,6 +82,7 @@ export interface IStrings {
   dispatcher: string
   linkDisclosurePage: string
   deleteProcessDisclosureError: string
+  deleteRelationText: string
   editDisclosure: string
   documents: string
   dataAccessClass: string
