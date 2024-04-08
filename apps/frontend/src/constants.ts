@@ -330,6 +330,7 @@ export interface ProcessShort {
   purposes: Code[]
   affiliation: Affiliation
   status?: ProcessStatus
+  end: string
   commonExternalProcessResponsible?: Code
   changeStamp: ChangeStamp
 }

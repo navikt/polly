@@ -12,6 +12,7 @@ import Button from '../../common/Button'
 import { SIZE as ButtonSize } from 'baseui/button'
 import * as React from 'react'
 import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Tag } from '@navikt/ds-react'
 
 type AccordionTitleProps = {
   process: ProcessShort
@@ -27,12 +28,20 @@ export const InformationTypeRef = React.createRef<HTMLDivElement>()
 const AccordionTitle = (props: AccordionTitleProps) => {
   const { process, expanded, hasAccess } = props
   const [isExportModalOpen, setIsExportModalOpen] = React.useState<boolean>(false)
+  const today = new Date().toISOString().split('T')[0]
+
+  const isActive = today < process.end
+
+
+
 
   return (
     <>
       <Block ref={props.forwardRef}>
         <LabelLarge color={theme.colors.primary}>
           {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+          <span> </span>
+          <Tag variant={isActive ? 'success' : 'warning'}>{isActive ? 'Aktiv' : 'Utgått'}</Tag>
           <span> </span>
           <span>{process.purposes.map((p) => codelist.getShortname(ListName.PURPOSE, p.code)).join(', ')}: </span>
           <span>{process.name}</span>
