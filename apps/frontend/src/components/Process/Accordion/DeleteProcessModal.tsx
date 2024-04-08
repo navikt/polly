@@ -5,6 +5,7 @@ import { Block } from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
 import { Disclosure, Process } from '../../../constants'
+import { List } from '@navikt/ds-react'
 
 interface DeleteProcessProps {
   onClose: () => void
@@ -28,9 +29,12 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
             {intl.confirmDeleteProcessText} {process.name}
           </ParagraphMedium>
         )}
-        {!!process.policies.length && <ParagraphMedium>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</ParagraphMedium>}
-
-        {!!disclosures.length && <ParagraphMedium>{intl.deleteProcessDisclosureError}</ParagraphMedium>}
+        {(!!process.policies.length || !!disclosures.length) && (
+          <List as="ul" title={intl.deleteRelationText}>
+            {!!process.policies.length && <List.Item>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</List.Item>}
+            {!!disclosures.length && <List.Item>{intl.deleteProcessDisclosureError}</List.Item>}
+          </List>
+        )}
       </ModalBody>
 
       <ModalFooter>
