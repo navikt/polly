@@ -154,6 +154,7 @@ public class Process extends Auditable {
                 .affiliation(data.getAffiliation().convertToResponse())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .status(getData().getStatus())
+                .end(getData().getEnd())
                 .changeStamp(super.convertChangeStampResponse())
                 .build();
     }

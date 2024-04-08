@@ -10,6 +10,7 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class ProcessShortResponse {
     private AffiliationResponse affiliation;
     private CodelistResponse commonExternalProcessResponsible;
     private ProcessStatus status;
+    private LocalDate end;
     private ChangeStampResponse changeStamp;
 
 }
