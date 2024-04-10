@@ -13,7 +13,7 @@ data:
   CLIENT_TERM_CATALOG_URL: https://begrepskatalog-api.intern.dev.nav.no/api/dcat
   ENVIRONMENT_CLASS: preprod
   GOOGLE_APPLICATION_CREDENTIALS: /var/run/secrets/polly_aareg_integration_key.json
-  POLLY_SECURITY_REDIRECT_URIS: http://localhost:3000,https://behandlingskatalog.intern.dev.nav.no
+  POLLY_SECURITY_REDIRECT_URIS: http://localhost:3000,https://behandlingskatalog.ansatt.dev.nav.no
 kind: ConfigMap
 metadata:
   name: behandlingskatalogcfg
