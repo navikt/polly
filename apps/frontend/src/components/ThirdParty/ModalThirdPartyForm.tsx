@@ -19,6 +19,9 @@ import SelectProcess from '../common/SelectProcess'
 import SelectInformationTypes from '../common/SelectInformationTypes'
 import BoolField from '../Process/common/BoolField'
 import { renderTagList } from '../common/TagList'
+import FieldDepartment from "../Process/common/FieldDepartment";
+import FieldProductTeam from "../common/form/FieldProductTeam";
+
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -272,6 +275,35 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     },
                   }}
                 >
+                  <Panel
+                    key="organizing"
+                    title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={isPanelExpanded} />} />}
+                    overrides={{ ...panelOverrides }}
+                  >
+                    <Block display="flex" width="100%" justifyContent="space-between">
+                      <Block width="48%">
+                        <ModalLabel label={intl.department} tooltip={intl.departmentHelpText} />
+                      </Block>
+                    </Block>
+
+                    <Block display="flex" width="100%" justifyContent="space-between">
+                      <Block width="48%">
+                        <FieldDepartment department={formikBag.values.department} fieldName="department" />
+                      </Block>
+                    </Block>
+
+                    <Block display="flex" width="100%" justifyContent="space-between" marginTop={theme.sizing.scale400}>
+                      <Block width="48%">
+                        <ModalLabel label={intl.productTeamFromTK} tooltip={intl.productTeamFromTKHelpText} fullwidth={true} />
+                      </Block>
+                    </Block>
+
+                    <Block display="flex" width="100%" justifyContent="space-between">
+                      <Block width="48%">
+                        <FieldProductTeam productTeams={formikBag.values.productTeams || []} fieldName="productTeams" />
+                      </Block>
+                    </Block>
+                  </Panel>
                   <Panel
                     title={<PanelTitle title={intl.legalBasisShort} expanded={isPanelExpanded} />}
                     onChange={() => {
