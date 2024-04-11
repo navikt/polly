@@ -523,6 +523,8 @@ export interface DisclosureFormValues {
   processIds: string[]
   assessedConfidentiality?: boolean
   confidentialityDescription?: string
+  productTeams?: string[]
+  department?: string
 }
 
 export interface DisclosureAbroad {
@@ -550,6 +552,8 @@ export interface Disclosure extends IDurationed {
   thirdCountryReceiver?: boolean
   assessedConfidentiality?: boolean
   confidentialityDescription?: string
+  productTeams?: string[]
+  department?: Code
 
   changeStamp: ChangeStamp
 }

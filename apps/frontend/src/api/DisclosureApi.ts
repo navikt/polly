@@ -79,7 +79,9 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     administrationArchiveCaseNumber: values.administrationArchiveCaseNumber,
     thirdCountryReceiver: mapBool(values.thirdCountryReceiver),
     assessedConfidentiality: mapBool(values.assessedConfidentiality),
-    confidentialityDescription: values.confidentialityDescription
+    confidentialityDescription: values.confidentialityDescription,
+    productTeams: values.productTeams,
+    department: values.department
   }
 }
 
@@ -110,11 +112,13 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
       refToAgreement: disclosure.abroad.refToAgreement || '',
       businessArea: disclosure.abroad.businessArea || '',
     },
+    productTeams: disclosure.productTeams || [],
+    department: disclosure?.department?.code || '',
     processIds: disclosure.processIds || [],
     administrationArchiveCaseNumber: disclosure.administrationArchiveCaseNumber || '',
     thirdCountryReceiver: mapBool(disclosure.thirdCountryReceiver),
     assessedConfidentiality: mapBool(disclosure.assessedConfidentiality),
-    confidentialityDescription: disclosure.confidentialityDescription || ''
+    confidentialityDescription: disclosure.confidentialityDescription || '',
   }
 }
 

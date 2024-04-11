@@ -380,7 +380,9 @@ export const disclosureSchema: () => yup.ObjectSchema<DisclosureFormValues> = ()
     administrationArchiveCaseNumber: yup.string(),
     thirdCountryReceiver: yup.boolean(),
     assessedConfidentiality: yup.boolean().required(intl.required),
-    confidentialityDescription: yup.string().required(intl.required)
+    confidentialityDescription: yup.string().required(intl.required),
+    department: yup.string(),
+    productTeams: yup.array<String>()
   })
 
 export const addDocumentToProcessSchema: () => yup.ObjectSchema<AddDocumentToProcessFormValues> = () =>
