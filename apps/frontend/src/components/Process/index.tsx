@@ -15,6 +15,7 @@ import {
   createPolicies,
   createPolicy,
   createProcess,
+  deletePoliciesByProcessId,
   deletePolicy,
   deleteProcess,
   getCodelistUsage,
@@ -243,6 +244,22 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
+  const handleDeleteAllPolicies = async (processId: string) => {
+    if (!processId) return false
+    try {
+      await deletePoliciesByProcessId(processId)
+      if (currentProcess) {
+        setCurrentProcess({ ...currentProcess, policies: [] })
+        setErrorPolicyModal(null)
+      }
+      return true
+    } catch (err: any) {
+      setErrorPolicyModal(err.message)
+      return false
+    }
+  }
+
+
   const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
     try {
       const policies: PolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
@@ -339,6 +356,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
           submitCreatePolicy={handleCreatePolicy}
           submitEditPolicy={handleEditPolicy}
           submitDeletePolicy={handleDeletePolicy}
+          submitDeleteAllPolicy={handleDeleteAllPolicies}
           submitAddDocument={handleAddDocument}
           errorProcessModal={errorProcessModal}
           errorPolicyModal={errorPolicyModal}
