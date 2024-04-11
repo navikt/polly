@@ -167,8 +167,11 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               if (today < a.end && today > b.end) return -1
               else if (today > a.end && today < b.end) return 1
 
+              
+              const aname = a.purposes[0].shortName + ': ' + a.name.trim()
+              const bname = b.purposes[0].shortName + ': ' + b.name.trim()
 
-              return a.name.trim().localeCompare(b.name.trim())
+              return aname.localeCompare(bname)
 
             })
             .map((p: ProcessShort) => {
