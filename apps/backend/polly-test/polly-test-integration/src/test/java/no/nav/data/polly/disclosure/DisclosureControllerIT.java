@@ -280,7 +280,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .start(LocalDate.now().toString())
                 .end(LocalDate.now().toString())
                 .productTeams(List.of())
-                .department("dep")
+                .department("DEP")
                 .legalBasis(createLegalBasisRequest())
                 .abroad(DisclosureAbroadRequest.builder()
                         .abroad(true)
