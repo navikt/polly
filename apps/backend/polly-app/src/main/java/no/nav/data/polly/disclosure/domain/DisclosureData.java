@@ -32,6 +32,8 @@ public class DisclosureData {
     private UUID documentId;
     private List<UUID> processIds;
     private List<UUID> informationTypeIds;
+    private String department;
+    private List<String> productTeams;
 
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();

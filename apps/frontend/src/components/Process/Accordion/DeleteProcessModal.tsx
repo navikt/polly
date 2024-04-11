@@ -45,20 +45,20 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
         )}
       </Modal.Body>
 
-      <Modal.Footer>
+      {user.isAdmin() && <Modal.Footer>
         <div className="self-end">{errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}</div>
         <Button
           onClick={() => {
             submitDeleteProcess(process).then(onClose)
           }}
-          disabled={(!!process.policies.length || !!disclosures.length) && user.isAdmin()}
+          disabled={(!!process.policies.length || !!disclosures.length)}
         >
           {intl.delete}
         </Button>
         <Button variant="secondary" onClick={onClose}>
           {intl.abort}
         </Button>
-      </Modal.Footer>
+      </Modal.Footer>}
     </Modal>
   )
 }
