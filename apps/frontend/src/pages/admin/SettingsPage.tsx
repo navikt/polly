@@ -43,7 +43,7 @@ export const SettingsPage = () => {
   }, [])
 
   return (
-    <Block>
+    <div>
       <>
         <HeadingMedium>{intl.settings}</HeadingMedium>
         {loading ? (
@@ -51,7 +51,7 @@ export const SettingsPage = () => {
         ) : error || !settings ? (
           { error }
         ) : (
-          <Block>
+          <div>
             <DefaultProcessDocument documentId={settings.defaultProcessDocument} setDocumentId={(defaultProcessDocument) => setSettings({ ...settings, defaultProcessDocument })} />
             <FrontpageMessage message={settings?.frontpageMessage} setMessage={(frontpageMessage) => setSettings({ ...settings, frontpageMessage })} />
 
@@ -63,10 +63,10 @@ export const SettingsPage = () => {
                 {intl.save}
               </Button>
             </Block>
-          </Block>
+          </div>
         )}
       </>
-    </Block>
+    </div>
   )
 }
 
@@ -99,9 +99,9 @@ const DefaultProcessDocument = (props: { documentId?: string; setDocumentId: (id
   }, [documentSearch])
 
   return (
-    <Block display="flex" alignItems="center">
+    <div className="flex align-middle">
       <LabelMedium marginRight="1rem">{intl.defaultProcessDocument}</LabelMedium>
-      <Block width="40%">
+      <div className="w-2/5">
         <Select
           clearable
           searchable
@@ -121,29 +121,29 @@ const DefaultProcessDocument = (props: { documentId?: string; setDocumentId: (id
           filterOptions={(options) => options}
           labelKey="name"
         />
-      </Block>
-    </Block>
+      </div>
+    </div>
   )
 }
 
 const FrontpageMessage = (props: { message?: string; setMessage: (message: string) => void }) => {
   return (
     <>
-      <Block alignItems="center" marginTop="1rem">
+      <div className="align-middle mt-4">
         <LabelMedium marginRight="1rem">Forsidemelding</LabelMedium>
-        <Block width="100%" display="flex">
-          <Block width="50%" marginRight="1rem">
+        <div className="w-full flex">
+          <div className="w-1/2 mr-4">
             <StatefulTextarea
               initialState={{ value: props.message }}
               rows={20}
               onChange={(event: any) => props.setMessage((event as FormEvent<HTMLInputElement>).currentTarget.value)}
             />
-          </Block>
-          <Block width="50%">
+          </div>
+          <div className="w-1/2">
             <Markdown source={props.message} escapeHtml={false} verbatim />
-          </Block>
-        </Block>
-      </Block>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
