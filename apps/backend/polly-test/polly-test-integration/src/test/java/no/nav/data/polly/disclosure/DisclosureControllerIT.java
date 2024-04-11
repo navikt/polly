@@ -274,6 +274,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .recipientPurpose("recipient purpose")
                 .start(LocalDate.now().toString())
                 .end(LocalDate.now().toString())
+                .productTeams(List.of())
+                .department("")
                 .legalBasis(createLegalBasisRequest())
                 .abroad(DisclosureAbroadRequest.builder()
                         .abroad(true)
