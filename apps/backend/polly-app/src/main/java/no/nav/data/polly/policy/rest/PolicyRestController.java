@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -81,11 +82,25 @@ public class PolicyRestController {
 
     @Operation(summary = "Count all Policies")
     @ApiResponse(description = "Count policies fetched")
-
     @GetMapping("/count")
     public ResponseEntity<Long> countPolicies() {
         log.debug("Received request for number of Policies");
         return ResponseEntity.ok(policyRepository.count());
+    }
+
+    @Operation(summary = "Delete all Policies by process id")
+    @ApiResponse(description = "Delete all Policies by process id")
+    @DeleteMapping("/process/{id}")
+    public ResponseEntity<List<PolicyResponse>> deletePoliciesByProcessId(@PathVariable UUID id) {
+        log.debug("Received request to delete Policies with process id={}", id);
+         List<Policy> deletedPolicies = service.deleteByProcessId(id);
+         List<PolicyResponse> deletedPoliciesResponse = new ArrayList<>();
+
+         deletedPolicies.forEach(policy -> {
+             deletedPoliciesResponse.add(policy.convertToResponse(false));
+         });
+
+        return ResponseEntity.ok(deletedPoliciesResponse);
     }
 
     @Operation(summary = "Count Policies by InformationType")
