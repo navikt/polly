@@ -79,6 +79,8 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   const hasAccess = () => user.canWrite()
 
+  const today = new Date().toISOString().split('T')[0]
+
   const renderCreatePolicyButton = () => (
     <Button
       tooltip={intl.addOneInformationType}
@@ -161,7 +163,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       <StatelessAccordion onChange={({ expanded }) => onChangeProcess(expanded.length ? (expanded[0] as string) : undefined)} expanded={params.processId ? [params.processId] : []}>
         {props.processList &&
           props.processList
-            .sort((a, b) => a.purposes[0].shortName.localeCompare(b.purposes[0].shortName))
+            .sort((a, b) =>{
+              if (today < a.end && today > b.end) return -1
+              else if (today > a.end && today < b.end) return 1
+
+
+              return a.name.trim().localeCompare(b.name.trim())
+
+            })
             .map((p: ProcessShort) => {
               const expanded = params.processId === p.id
               return (
