@@ -49,7 +49,16 @@ export const ProcessDisclosureTabs = (props: IProps) => {
 
   const handleEditDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
-      await updateDisclosure(disclosure)
+      let editedDisclosure = await updateDisclosure(disclosure)
+
+      const newDisclosureData = disclosureData.map((d:Disclosure) => {
+        if(d.id === editedDisclosure.id) {
+          return editedDisclosure
+        } else return d
+      })
+
+      setDisclosureData(newDisclosureData)
+
       return true
     } catch (err: any) {
       setError(err.message)
