@@ -43,6 +43,10 @@ export const searchDisclosure = async (text: string) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/search/${text}`)).data
 }
 
+export const getDisclosureByDepartment = async (department: string) => {
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/department/${department}`)).data
+}
+
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
   let body = convertFormValuesToDisclosure(disclosure)
   return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data
