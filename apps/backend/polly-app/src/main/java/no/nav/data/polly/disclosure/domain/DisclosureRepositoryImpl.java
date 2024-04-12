@@ -71,7 +71,7 @@ public class DisclosureRepositoryImpl implements DisclosureRepositoryCustom {
 
     @Override
     public List<Disclosure> findByProductTeam(String productTeam) {
-        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{affiliation,productTeams}' ?? :productTeam",
+        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{productTeams}' ?? :productTeam",
                 new MapSqlParameterSource().addValue("productTeam", productTeam));
         return getDisclosures(resp);
     }
