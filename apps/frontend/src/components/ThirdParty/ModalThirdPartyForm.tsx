@@ -114,7 +114,6 @@ type ModalThirdPartyProps = {
 const ModalThirdParty = (props: ModalThirdPartyProps) => {
   const [isPanelExpanded, togglePanel] = React.useReducer((prevState) => !prevState, false)
   const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } = props
-  console.log(initialValues)
   return (
     <Modal onClose={onClose} isOpen={isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
       <Block {...modalBlockProps}>

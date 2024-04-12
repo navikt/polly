@@ -109,7 +109,6 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           disclosureList
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((d: Disclosure) => {
-              console.log(d.assessedConfidentiality)
               return (
                 <Panel
                   title={
@@ -188,6 +187,9 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                     >
                       <Block padding={theme.sizing.scale800}>
                         <Block width="100%">
+                          {showRecipient && 
+                          <DataText label={intl.recipient} text={selectedDisclosure?.recipient.shortName} />
+                          }
                           <DataText label={intl.disclosureName} text={selectedDisclosure?.name} />
                           <DataText label={intl.disclosurePurpose} text={selectedDisclosure?.recipientPurpose} />
                           <DataText label={intl.additionalDescription} text={selectedDisclosure?.description} />
