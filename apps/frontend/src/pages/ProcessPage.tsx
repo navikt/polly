@@ -105,6 +105,7 @@ const ProcessPage = () => {
                 filter={filter}
                 section={section}
                 moveScroll={moveScroll}
+                isEditable={true}
               />
             )}
           </div>

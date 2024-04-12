@@ -20,6 +20,7 @@ interface IProps {
   code: string
 
   section: Section
+  isEditable: boolean
 
   moveScroll?: Function
 
@@ -29,7 +30,7 @@ interface IProps {
 }
 
 export const ProcessDisclosureTabs = (props: IProps) => {
-  const { disclosureData, setDisclosureData, code, listName, processId, filter, section, moveScroll } = props
+  const { disclosureData, setDisclosureData, code, listName, processId, filter, section, moveScroll, isEditable } = props
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
 
@@ -51,8 +52,8 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     try {
       let editedDisclosure = await updateDisclosure(disclosure)
 
-      const newDisclosureData = disclosureData.map((d:Disclosure) => {
-        if(d.id === editedDisclosure.id) {
+      const newDisclosureData = disclosureData.map((d: Disclosure) => {
+        if (d.id === editedDisclosure.id) {
           return editedDisclosure
         } else return d
       })
@@ -103,7 +104,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
       </Tabs.List>
       <Tabs.Panel value="behandlinger">
         <div className="my-2">
-          <ProcessList code={code} listName={listName} processId={processId} filter={filter} section={section} moveScroll={moveScroll} isEditable={true} />
+          <ProcessList code={code} listName={listName} processId={processId} filter={filter} section={section} moveScroll={moveScroll} isEditable={isEditable} />
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="utleveringer">
@@ -111,29 +112,31 @@ export const ProcessDisclosureTabs = (props: IProps) => {
           <div className="flex">
             <HeadingXLarge>Utleveringer ({disclosureData ? disclosureData.length : 0})</HeadingXLarge>
             <Spacer />
-            <Block display="flex" justifyContent="flex-end">
-              {user.canWrite() && (
-                <Button
-                  size="compact"
-                  kind={KIND.tertiary}
-                  onClick={() => setShowCreateDisclosureModal(true)}
-                  startEnhancer={() => (
-                    <Block display="flex" justifyContent="center">
-                      <Plus size={22} />
-                    </Block>
-                  )}
-                >
-                  {intl.createNew}
-                </Button>
-              )}
-            </Block>
+            {isEditable && (
+              <Block display="flex" justifyContent="flex-end">
+                {user.canWrite() && (
+                  <Button
+                    size="compact"
+                    kind={KIND.tertiary}
+                    onClick={() => setShowCreateDisclosureModal(true)}
+                    startEnhancer={() => (
+                      <Block display="flex" justifyContent="center">
+                        <Plus size={22} />
+                      </Block>
+                    )}
+                  >
+                    {intl.createNew}
+                  </Button>
+                )}
+              </Block>
+            )}
           </div>
 
           <AccordionDisclosure
             disclosureList={disclosureData}
             showRecipient={true}
             errorModal={error}
-            editable
+            editable={isEditable}
             submitDeleteDisclosure={handleDeleteDisclosure}
             submitEditDisclosure={handleEditDisclosure}
             onCloseModal={() => setError(undefined)}

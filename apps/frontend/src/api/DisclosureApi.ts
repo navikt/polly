@@ -47,6 +47,10 @@ export const getDisclosureByDepartment = async (department: string) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/department/${department}`)).data
 }
 
+export const getDisclosureByProductTeam = async (productTeam: string) => {
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/productTeam/${productTeam}`)).data
+}
+
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
   let body = convertFormValuesToDisclosure(disclosure)
   return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data
