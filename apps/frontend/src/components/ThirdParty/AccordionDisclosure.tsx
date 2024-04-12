@@ -25,6 +25,8 @@ import { shortenLinksInText } from '../../util/helper-functions'
 import { user } from '../../service/User'
 import LinkListInformationType from './components/LinkListInformationType'
 import { lastModifiedDate } from '../../util/date-formatter'
+import { DotTags } from '../common/DotTag'
+import { TeamList } from '../common/Team'
 
 type AccordionDisclosureProps = {
   disclosureList: Array<Disclosure>
@@ -125,32 +127,32 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                           <>
                             {d.id === expanded[0]
                               ? editable && (
-                                <>
-                                  {selectedDisclosure && hasAlert && canViewAlerts() && (
-                                    <Button
-                                      kind={'outline'}
-                                      size={ButtonSize.compact}
-                                      icon={faExclamationCircle}
-                                      marginRight
-                                      tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
-                                      onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
-                                    >
-                                      {intl.alerts}
-                                    </Button>
-                                  )}
-                                  {user.isLoggedIn() && (
-                                    <>
-                                      <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} tooltip={intl.edit} onClick={() => setShowEditModal(true)} marginRight>
-                                        {intl.edit}
+                                  <>
+                                    {selectedDisclosure && hasAlert && canViewAlerts() && (
+                                      <Button
+                                        kind={'outline'}
+                                        size={ButtonSize.compact}
+                                        icon={faExclamationCircle}
+                                        marginRight
+                                        tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                                        onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                                      >
+                                        {intl.alerts}
                                       </Button>
+                                    )}
+                                    {user.isLoggedIn() && (
+                                      <>
+                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} tooltip={intl.edit} onClick={() => setShowEditModal(true)} marginRight>
+                                          {intl.edit}
+                                        </Button>
 
-                                      <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} tooltip={intl.delete} onClick={() => setShowDeleteModal(true)}>
-                                        {intl.delete}
-                                      </Button>
-                                    </>
-                                  )}
-                                </>
-                              )
+                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} tooltip={intl.delete} onClick={() => setShowDeleteModal(true)}>
+                                          {intl.delete}
+                                        </Button>
+                                      </>
+                                    )}
+                                  </>
+                                )
                               : ''}
                           </>
                         </div>
@@ -233,20 +235,29 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                         </Block>
                         {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
 
-
                         <Block>
-                          <DataText label={intl.confidentialityAssessment} text={d.assessedConfidentiality !== null ? d.assessedConfidentiality ? intl.yes : intl.no : intl.emptyMessage} />
+                          <DataText
+                            label={intl.confidentialityAssessment}
+                            text={d.assessedConfidentiality !== null ? (d.assessedConfidentiality ? intl.yes : intl.no) : intl.emptyMessage}
+                          />
 
-                          {
-                            d.assessedConfidentiality !== null && (
-                              <DataText label={d.assessedConfidentiality ? intl.confidentialityDescriptionYes : intl.confidentialityDescriptionNo} text="">
-                                {shortenLinksInText(d.confidentialityDescription ? d.confidentialityDescription : intl.emptyMessage)}
-                              </DataText>
-                            )
-                          }
-
+                          {d.assessedConfidentiality !== null && (
+                            <DataText label={d.assessedConfidentiality ? intl.confidentialityDescriptionYes : intl.confidentialityDescriptionNo} text="">
+                              {shortenLinksInText(d.confidentialityDescription ? d.confidentialityDescription : intl.emptyMessage)}
+                            </DataText>
+                          )}
                         </Block>
 
+                        <Block>
+                          <DataText label={intl.department}>
+                            {d.department?.code && <DotTags list={ListName.DEPARTMENT} codes={[d.department]} commaSeparator linkCodelist />}
+                            {!d.department?.code && intl.emptyMessage}
+                          </DataText>
+
+                          <DataText label={intl.productTeam}>
+                          {!!d.productTeams?.length ? <TeamList teamIds={d.productTeams} /> : intl.emptyMessage}
+                          </DataText>
+                        </Block>
                       </Block>
                       <Block display="flex" justifyContent="flex-end" marginBottom={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
                         <ParagraphSmall>
