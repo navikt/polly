@@ -1,4 +1,4 @@
-import { Spacer, Tabs } from '@navikt/ds-react'
+import { BodyShort, Spacer, Tabs } from '@navikt/ds-react'
 import { Block } from 'baseui/block'
 import { Button, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
@@ -132,7 +132,9 @@ export const ProcessDisclosureTabs = (props: IProps) => {
             )}
           </div>
 
-          <AccordionDisclosure
+        {disclosureData.length === 0 && <BodyShort className="my-4">Ingen utleveringer</BodyShort>}
+
+         {disclosureData.length > 0 && <AccordionDisclosure
             disclosureList={disclosureData}
             showRecipient={true}
             errorModal={error}
@@ -140,7 +142,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
             submitDeleteDisclosure={handleDeleteDisclosure}
             submitEditDisclosure={handleEditDisclosure}
             onCloseModal={() => setError(undefined)}
-          />
+          />}
 
           <ModalThirdParty
             title={intl.createThirdPartyModalTitle}
