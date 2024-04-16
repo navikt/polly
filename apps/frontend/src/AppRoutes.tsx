@@ -14,7 +14,7 @@ import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
 import { MainPage } from './pages/MainPage'
 import CodelistPage from './pages/admin/CodelistPage'
 import { AuditPage } from './pages/admin/AuditPage'
-import { intl, theme } from './util'
+import { theme } from './util'
 import notFound from './resources/notfound.svg'
 import { SettingsPage } from './pages/admin/SettingsPage'
 import DocumentCreatePage from './pages/DocumentCreatePage'
@@ -111,9 +111,9 @@ const AppRoutes = (): JSX.Element => (
 const NotFound = () => (
   <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale4800}>
     <ParagraphLarge>
-      {intl.pageNotFound} - {useLocation().pathname}
+      Oida 404! Fant ikke den siden der nei  - {useLocation().pathname}
     </ParagraphLarge>
-    <img src={notFound} alt={intl.pageNotFound} style={{ maxWidth: '65%' }} />
+    <img src={notFound} alt="404 Finner ikke den siden" style={{ maxWidth: '65%' }} />
   </Block>
 )
 
