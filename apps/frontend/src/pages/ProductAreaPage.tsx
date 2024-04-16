@@ -1,23 +1,23 @@
-import { useParams } from 'react-router-dom'
-import React, { useEffect } from 'react'
-import ProcessList from '../components/Process'
-import { Section } from './ProcessPage'
-import { PageHeader } from '../components/common/PageHeader'
-import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
-import { intl } from '../util'
-import { getDashboard, getInformationTypesBy } from '../api'
-import { ProcessStatusFilter, ProductAreaDashCount } from '../constants'
-import Charts from '../components/Charts/Charts'
 import { Block } from 'baseui/block'
 import { HeadingSmall } from 'baseui/typography'
-import {ampli} from "../service/Amplitude";
+import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { getDashboard, getInformationTypesBy } from '../api'
+import Charts from '../components/Charts/Charts'
+import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
+import ProcessList from '../components/Process'
+import { PageHeader } from '../components/common/PageHeader'
+import { ProcessStatusFilter, ProductAreaDashCount } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { intl } from '../util'
+import { Section } from './ProcessPage'
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = React.useState(true)
   const [chartData, setChartData] = React.useState<ProductAreaDashCount>()
   const { productAreaId } = useParams<{ productAreaId: string }>()
 
-  ampli.logEvent("besøk", {side: 'ProductAreaPage', url: '/productarea/:productAreaId', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'ProductAreaPage', url: '/productarea/:productAreaId', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {
