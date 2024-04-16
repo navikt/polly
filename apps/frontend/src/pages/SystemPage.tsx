@@ -20,7 +20,7 @@ export const SystemPage = () => {
         <>
           <PageHeader section={Section.system} code={systemCode} />
 
-          <Tabs>
+          <Tabs defaultValue="behandlinger">
             <Tabs.List>
               <Tabs.Tab value="behandlinger" label="Behandlinger" />
               <Tabs.Tab value="opplysningstyper" label="opplysningstyper" />

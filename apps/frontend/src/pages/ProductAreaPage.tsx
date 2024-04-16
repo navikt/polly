@@ -37,7 +37,7 @@ export const ProductAreaPage = () => {
         <>
           <PageHeader section={Section.productarea} code={productAreaId} />
 
-          <Tabs>
+          <Tabs defaultValue="behandlinger">
             <Tabs.List>
               <Tabs.Tab value="behandlinger" label="Behandlinger" />
               <Tabs.Tab value="opplysningstyper" label="Opplysningstyper" />
