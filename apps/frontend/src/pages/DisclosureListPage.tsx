@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
 import { useQueryParam, useTable } from '../util/hooks'
 import { Block } from 'baseui/block'
 import { Button, Button as BButton, KIND } from 'baseui/button'
 import { ButtonGroup } from 'baseui/button-group'
 import { useNavigate } from 'react-router-dom'
-import { lowerFirst } from 'lodash'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
 import { ObjectLink } from '../components/common/RouteLink'
 import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
@@ -121,10 +120,10 @@ export const DisclosureListPage = () => {
   return (
     <>
       <Block display="flex" justifyContent="space-between" alignItems="center">
-        <HeadingLarge>{intl.disclosures}</HeadingLarge>
+        <HeadingLarge>Utleveringer</HeadingLarge>
         <Block>
           <LabelMedium marginBottom={theme.sizing.scale600}>
-            {intl.filter} {lowerFirst(intl.legalBasisShort)}
+            Filter behandlingsgrunnlag
           </LabelMedium>
           <ButtonGroup selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2} mode="radio" shape="pill">
             <BButton
@@ -134,7 +133,7 @@ export const DisclosureListPage = () => {
                 })
               }
             >
-              {intl.all}
+              Alle
             </BButton>
             <BButton
               onClick={() =>
@@ -143,7 +142,7 @@ export const DisclosureListPage = () => {
                 })
               }
             >
-              {intl.filled}
+              Utfylt
             </BButton>
             <BButton
               onClick={() =>
@@ -152,7 +151,7 @@ export const DisclosureListPage = () => {
                 })
               }
             >
-              {intl.incomplete}
+              Ufullstendig
             </BButton>
           </ButtonGroup>
         </Block>
@@ -165,7 +164,7 @@ export const DisclosureListPage = () => {
           <Block marginLeft="8px" display="flex">
             <Button size="compact" onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}>
               {' '}
-              {showAaregAvtaleTable ? intl.hideAaregTable : intl.showAaregTable}
+              {showAaregAvtaleTable ? "Skjul Aa-reg avtaler" : "Vis Aa-reg avtaler"}
             </Button>
           </Block>
         </Block>
@@ -181,20 +180,20 @@ export const DisclosureListPage = () => {
                 </Block>
               )}
             >
-              {intl.createNew}
+              Opprett ny utlevering
             </Button>
           )}
         </Block>
       </Block>
       {!showAaregAvtaleTable && (
         <Table
-          emptyText={intl.disclosures}
+          emptyText="Utleveringer"
           headers={
             <>
-              <HeadCell title={intl.disclosureName} column="name" tableState={[table, sortColumn]} />
-              <HeadCell title={`${intl.recipient} (${intl.thirdParty})`} column="recipient" tableState={[table, sortColumn]} />
-              <HeadCell title={intl.relatedProcesses} column="processes" tableState={[table, sortColumn]} />
-              <HeadCell title={intl.legalBasesShort} column="legalBases" tableState={[table, sortColumn]} />
+              <HeadCell title="Navn på utlevering" column="name" tableState={[table, sortColumn]} />
+              <HeadCell title="Mottaker (ekstern part)" column="recipient" tableState={[table, sortColumn]} />
+              <HeadCell title="Relaterte behandlinger" column="processes" tableState={[table, sortColumn]} />
+              <HeadCell title="Behandlingsgrunnlag" column="legalBases" tableState={[table, sortColumn]} />
             </>
           }
         >
@@ -221,7 +220,7 @@ export const DisclosureListPage = () => {
                   ))}
                 </Block>
               </Cell>
-              <Cell>{d.legalBases ? intl.yes : intl.no}</Cell>
+              <Cell>{d.legalBases ? "Ja" : "Nei"}</Cell>
             </Row>
           ))}
         </Table>
@@ -232,7 +231,7 @@ export const DisclosureListPage = () => {
         </Block>
       )}
       <ModalThirdParty
-        title={intl.createThirdPartyModalTitle}
+        title="Opprett utlevering til ekstern part"
         isOpen={showCreateModal}
         initialValues={initialFormValues}
         submit={handleCreateDisclosure}
