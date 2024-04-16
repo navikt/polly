@@ -1,3 +1,4 @@
+import { Tabs } from '@navikt/ds-react'
 import { Block } from 'baseui/block'
 import { HeadingSmall } from 'baseui/typography'
 import React, { useEffect } from 'react'
@@ -35,17 +36,30 @@ export const ProductAreaPage = () => {
       {productAreaId && (
         <>
           <PageHeader section={Section.productarea} code={productAreaId} />
-          <ProcessList section={Section.productarea} code={productAreaId} isEditable={false} />
+
+          <Tabs>
+            <Tabs.List>
+              <Tabs.Tab value="behandlinger" label="Behandlinger" />
+              <Tabs.Tab value="opplysningstyper" label="Opplysningstyper" />
+              {!isLoading && chartData && <Tabs.Tab value="dashboard" label="Dashboard" />}
+            </Tabs.List>
+            <Tabs.Panel value="behandlinger">
+              <ProcessList section={Section.productarea} code={productAreaId} isEditable={false} />
+            </Tabs.Panel>
+            <Tabs.Panel value="opplysningstyper">
+              <InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productArea: productAreaId })).content} />
+            </Tabs.Panel>
+
+            {!isLoading && chartData && (
+              <Tabs.Panel value="dashboard">
+                <Block marginBottom="240px">
+                  <HeadingSmall>{intl.overview}</HeadingSmall>
+                  <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId} />
+                </Block>
+              </Tabs.Panel>
+            )}
+          </Tabs>
         </>
-      )}
-
-      <InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productArea: productAreaId })).content} />
-
-      {!isLoading && chartData && (
-        <Block marginBottom="240px">
-          <HeadingSmall>{intl.overview}</HeadingSmall>
-          <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId} />
-        </Block>
       )}
     </>
   )
