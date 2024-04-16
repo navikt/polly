@@ -3,7 +3,7 @@ import * as React from 'react'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import { codelist } from '../service/Codelist'
 import { InformationtypeFormValues } from '../constants'
-import { intl, useAwait } from '../util'
+import { useAwait } from '../util'
 import { user } from '../service/User'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
 import { createInformationType, mapInfoTypeToFormVals } from '../api'
@@ -45,7 +45,7 @@ const InformationtypeCreatePage = () => {
             <Spinner $size={30} />
           ) : (
             <>
-              <HeadingMedium>{intl.informationTypeCreate}</HeadingMedium>
+              <HeadingMedium>Opprett opplysningstype</HeadingMedium>
               {codelist ? (
                 <>
                   <InformationtypeForm formInitialValues={mapInfoTypeToFormVals({})} submit={handleSubmit} isEdit={false} />

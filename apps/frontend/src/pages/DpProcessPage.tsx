@@ -4,7 +4,6 @@ import Button from '../components/common/Button'
 import DpProcessModal from '../components/DpProcess/DpProcessModal'
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
 import { DpProcess, DpProcessFormValues } from '../constants'
-import { intl } from '../util'
 import DpProcessTable from '../components/DpProcess/DpProcessTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
@@ -44,7 +43,7 @@ const DpProcessPage = () => {
       toggleModal()
     } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
-        setErrorDpProcessModal(intl.dpProcessDuplicatedError)
+        setErrorDpProcessModal("Databehandlingen eksisterer allerede")
         return
       }
       setErrorDpProcessModal(err.response.data.message)
@@ -54,12 +53,12 @@ const DpProcessPage = () => {
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <HeadingMedium marginTop="0">{intl.dpProcessPageTitle}</HeadingMedium>
+        <HeadingMedium marginTop="0">Behandlinger hvor NAV er databehandler</HeadingMedium>
         <Block>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
             <Button kind="outline" onClick={() => toggleModal()}>
               <FontAwesomeIcon icon={faPlusCircle} />
-              &nbsp;{intl.createDpProcess}
+              &nbsp;Opprett ny behandling
             </Button>
           )}
         </Block>
