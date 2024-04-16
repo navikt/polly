@@ -12,7 +12,7 @@ import { RecentEditsByUser } from '../components/audit/RecentEditsByUser'
 import { user } from '../service/User'
 import { HeadingXXLarge } from 'baseui/typography'
 import ShortcutNav from '../components/Main/ShortcutNav'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import {ampli} from "../service/Amplitude";
 
 export const MainPage = () => {
@@ -53,13 +53,13 @@ export const MainPage = () => {
         <>
           <Block width="100%" display="flex" flexDirection="column">
             <Block display="flex" justifyContent="center">
-              <HeadingXXLarge>{intl.mainPageMessage}</HeadingXXLarge>
+              <HeadingXXLarge>Hva vil du gjøre?</HeadingXXLarge>
             </Block>
             <ShortcutNav />
           </Block>
 
           <Block width="100%" display="flex" justifyContent="center" marginTop={theme.sizing.scale1200} marginBottom={theme.sizing.scale800}>
-            <HeadingXXLarge>{intl.mainPageEventsMessage}</HeadingXXLarge>
+            <HeadingXXLarge>Hva har endret seg i det siste?</HeadingXXLarge>
           </Block>
 
           <Block width="100%" display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale800} flexWrap>
