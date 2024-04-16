@@ -15,7 +15,7 @@ import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
   const [table, setTable] = useState<ObjectType>(ObjectType.PROCESS)
-  const [action, setAction] = useState<Value>([{ id: AuditAction.CREATE, label: intl.CREATE } as Option])
+  const [action, setAction] = useState<Value>([{ id: AuditAction.CREATE, label: "Opprett" } as Option])
 
   useEffect(() => {
     ;(async () => {
@@ -42,9 +42,9 @@ export const LastEvents = () => {
   return (
     <Block>
       <Block display="flex" justifyContent="space-between" alignItems="center" width="100%">
-        <HeadingXLarge>{intl.lastEvents}</HeadingXLarge>
+        <HeadingXLarge>Siste hendelser</HeadingXLarge>
         <Block display="flex" justifyContent="space-between" alignItems="center">
-          <LabelMedium marginRight={theme.sizing.scale300}>{intl.eventType}</LabelMedium>
+          <LabelMedium marginRight={theme.sizing.scale300}>Hendelsestype</LabelMedium>
           <StatefulSelect
             size="compact"
             clearable={false}

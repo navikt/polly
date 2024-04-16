@@ -123,26 +123,26 @@ export const AlertEventPage = () => {
   return (
     <>
       <Block display="flex" width="100%" justifyContent="space-between" alignItems="center">
-        <HeadingLarge>{intl.alerts}</HeadingLarge>
+        <HeadingLarge>Varsler</HeadingLarge>
         {(state.informationTypeId || state.processId || state.disclosureId) && (
           <Block display="flex" alignItems="center">
-            <LabelMedium>{intl.filter}: </LabelMedium>
+            <LabelMedium>Filter: </LabelMedium>
             <Button kind="secondary" size="compact" marginLeft marginRight iconEnd={faTimes} onClick={() => dispatch({ type: 'OBJECT_FILTER' })}>
-              {state.processId && intl.process}
-              {state.informationTypeId && intl.informationType}
-              {state.disclosureId && intl.disclosure}
+              {state.processId && "Behandling"}
+              {state.informationTypeId && "Opplysningstype"}
+              {state.disclosureId && "Utlevering"}
             </Button>
           </Block>
         )}
       </Block>
       <Block width="100%" display="flex" marginBottom={theme.sizing.scale200}>
         <Block width="50%" display="flex" justifyContent="flex-start" alignItems="center">
-          <LabelMedium marginRight={theme.sizing.scale600}>{intl.type}: </LabelMedium>
+          <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
           <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: intl[t] }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
         </Block>
 
         <Block width="50%" display="flex" justifyContent="flex-end" alignItems="center">
-          <LabelMedium marginRight={theme.sizing.scale600}>{intl.level}: </LabelMedium>
+          <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
           {levelButton(intl.all)}
           {levelButton(intl.INFO, AlertEventLevel.INFO)}
           {levelButton(intl.WARNING, AlertEventLevel.WARNING)}
@@ -150,15 +150,15 @@ export const AlertEventPage = () => {
         </Block>
       </Block>
       <Table
-        emptyText={intl.noAlertsAvailableInTable}
+        emptyText="Ingen varsler"
         headers={
           <>
-            <HeadCell title={intl.process} />
-            <HeadCell title={intl.informationType} />
-            <HeadCell title={intl.disclosure} />
-            <HeadCell title={intl.level + ' - ' + intl.type} />
-            <HeadCell title={intl.time} />
-            <HeadCell title={intl.user} />
+            <HeadCell title="Behandling" />
+            <HeadCell title="Opplysningstype" />
+            <HeadCell title="Utlevering" />
+            <HeadCell title="Nivå - Type" />
+            <HeadCell title="Tidspunkt" />
+            <HeadCell title="Bruker" />
           </>
         }
       >
@@ -223,14 +223,14 @@ export const AlertEventPage = () => {
           )}
         >
           <div>
-            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${state.limit} ${intl.rows}`}</Button>
+            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${state.limit} Rader`}</Button>
           </div>
         </StatefulPopover>
         <Pagination
           currentPage={state.page}
           numPages={state.events.pages}
           onPageChange={(a) => setPage(a.nextPage)}
-          labels={{ nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton }}
+          labels={{ nextButton: "Neste", preposition: "av", prevButton: "Forrige" }}
         />
       </Block>
     </>
