@@ -4,7 +4,7 @@ import { Document, Settings } from '../../constants'
 import { useDebouncedState } from '../../util/hooks'
 import { getDocument, searchDocuments } from '../../api'
 import { Select, TYPE } from 'baseui/select'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { getSettings, writeSettings } from '../../api/SettingsApi'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium, LabelMedium } from 'baseui/typography'
@@ -45,7 +45,7 @@ export const SettingsPage = () => {
   return (
     <Block>
       <>
-        <HeadingMedium>{intl.settings}</HeadingMedium>
+        <HeadingMedium>Innstillinger</HeadingMedium>
         {loading ? (
           <Spinner $size={40} />
         ) : error || !settings ? (
@@ -57,10 +57,10 @@ export const SettingsPage = () => {
 
             <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
               <Button type="button" kind="secondary" onClick={load}>
-                {intl.abort}
+                Avbryt
               </Button>
               <Button type="button" onClick={save}>
-                {intl.save}
+                Lagre
               </Button>
             </Block>
           </Block>
@@ -100,17 +100,17 @@ const DefaultProcessDocument = (props: { documentId?: string; setDocumentId: (id
 
   return (
     <Block display="flex" alignItems="center">
-      <LabelMedium marginRight="1rem">{intl.defaultProcessDocument}</LabelMedium>
+      <LabelMedium marginRight="1rem">Dokument for standard informasjonstyper i behandling</LabelMedium>
       <Block width="40%">
         <Select
           clearable
           searchable
-          noResultsMsg={intl.emptyTable}
+          noResultsMsg="Ingen"
           isLoading={loading}
           maxDropdownHeight="400px"
           type={TYPE.search}
           options={documents}
-          placeholder={intl.searchDocuments}
+          placeholder="Søk dokumenter"
           value={document ? [document as any] : []}
           onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
           onChange={(params) => {
