@@ -30,11 +30,17 @@ export const TeamPage = () => {
         <>
           <PageHeader section={Section.team} code={teamId} />
 
-          <ProcessDisclosureTabs disclosureData={disclosureData} setDisclosureData={setDisclosureData} section={Section.team} code={teamId} isEditable={false} />
+          <ProcessDisclosureTabs
+            disclosureData={disclosureData}
+            setDisclosureData={setDisclosureData}
+            section={Section.team}
+            code={teamId}
+            isEditable={false}
+            thirdTabTitle="Opplysningstyper"
+            thirdTabContent={<InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />}
+          />
         </>
       )}
-
-      <InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />
     </>
   )
 }
