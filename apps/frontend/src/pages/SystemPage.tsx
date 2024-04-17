@@ -1,29 +1,39 @@
+import { Tabs } from '@navikt/ds-react'
 import { useParams } from 'react-router-dom'
-import React from 'react'
-import { ListName } from '../service/Codelist'
-import ProcessList from '../components/Process'
-import { Section } from './ProcessPage'
 import { getInformationTypesBy } from '../api'
-import { PageHeader } from '../components/common/PageHeader'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
+import ProcessList from '../components/Process'
+import { PageHeader } from '../components/common/PageHeader'
+import { ampli } from '../service/Amplitude'
+import { ListName } from '../service/Codelist'
 import { intl } from '../util'
-import {ampli} from "../service/Amplitude";
+import { Section } from './ProcessPage'
 
 export const SystemPage = () => {
   const { systemCode } = useParams<{ systemCode: string }>()
 
-  ampli.logEvent("besøk", {side: 'Systemer', url: '/system/:systemCode', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Systemer', url: '/system/:systemCode', app: 'Behandlingskatalogen' })
 
   return (
     <>
       {systemCode && (
         <>
           <PageHeader section={Section.system} code={systemCode} />
-          <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM} isEditable={false} />
+
+          <Tabs defaultValue="behandlinger">
+            <Tabs.List>
+              <Tabs.Tab value="behandlinger" label="Behandlinger" />
+              <Tabs.Tab value="opplysningstyper" label="opplysningstyper" />
+            </Tabs.List>
+            <Tabs.Panel value="behandlinger">
+              <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM} isEditable={false} />
+            </Tabs.Panel>
+            <Tabs.Panel value="opplysningstyper">
+              <InfoTypeTable title={intl.orgMasterInfTypeHeader} getInfoTypes={async () => (await getInformationTypesBy({ orgMaster: systemCode })).content} />
+            </Tabs.Panel>
+          </Tabs>
         </>
       )}
-
-      <InfoTypeTable title={intl.orgMasterInfTypeHeader} getInfoTypes={async () => (await getInformationTypesBy({ orgMaster: systemCode })).content} />
     </>
   )
 }

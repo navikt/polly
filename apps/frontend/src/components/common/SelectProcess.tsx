@@ -35,7 +35,7 @@ const SelectProcess = (props: SelectProcessProps) => {
 
         res = res
           .map((v: Process) => {
-            return { ...v, namePurpose: (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
+            return { ...v, namePurpose:  'B' + v.number + ' ' + (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
           })
           .filter((p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
           .filter((p1) => !formikBag.values.processes.map((value) => value.id).includes(p1.id))
@@ -69,7 +69,7 @@ const SelectProcess = (props: SelectProcessProps) => {
 
           <Block>
             {renderTagList(
-              formikBag.values.processes.map((p) => p.purposes[0].shortName + ': ' + p.name),
+              formikBag.values.processes.map((p) => 'B' + p.number + ' ' +  p.purposes[0].shortName + ': ' + p.name),
               arrayHelpers,
             )}
           </Block>

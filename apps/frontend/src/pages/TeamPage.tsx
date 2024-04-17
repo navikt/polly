@@ -1,14 +1,13 @@
-import { useParams } from 'react-router-dom'
 import React, { useEffect } from 'react'
-import ProcessList from '../components/Process'
-import { Section } from './ProcessPage'
-import { PageHeader } from '../components/common/PageHeader'
-import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
-import { intl } from '../util'
+import { useParams } from 'react-router-dom'
 import { getDisclosureByProductTeam, getInformationTypesBy } from '../api'
-import {ampli} from "../service/Amplitude";
-import { Disclosure } from '../constants'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
+import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
+import { PageHeader } from '../components/common/PageHeader'
+import { Disclosure } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { intl } from '../util'
+import { Section } from './ProcessPage'
 
 export const TeamPage = () => {
   const { teamId } = useParams<{ teamId: string }>()
@@ -17,15 +16,13 @@ export const TeamPage = () => {
   useEffect(() => {
     if (teamId) {
       ;(async () => {
-          let disclosureResponse = await getDisclosureByProductTeam(teamId)
-          if (disclosureResponse) setDisclosureData(disclosureResponse.content)
-
+        let disclosureResponse = await getDisclosureByProductTeam(teamId)
+        if (disclosureResponse) setDisclosureData(disclosureResponse.content)
       })()
     }
   }, [teamId])
-  
 
-  ampli.logEvent("besøk", {side: 'Team', url: '/team/:id', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Team', url: '/team/:id', app: 'Behandlingskatalogen' })
 
   return (
     <>
@@ -33,18 +30,17 @@ export const TeamPage = () => {
         <>
           <PageHeader section={Section.team} code={teamId} />
 
-          <ProcessDisclosureTabs 
+          <ProcessDisclosureTabs
             disclosureData={disclosureData}
             setDisclosureData={setDisclosureData}
             section={Section.team}
             code={teamId}
             isEditable={false}
+            thirdTabTitle="Opplysningstyper"
+            thirdTabContent={<InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />}
           />
-
         </>
       )}
-
-      <InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />
     </>
   )
 }

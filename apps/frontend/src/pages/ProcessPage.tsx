@@ -95,7 +95,7 @@ const ProcessPage = () => {
               <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll} isEditable={true} />
             )}
 
-            {section === Section.department && (
+            {!isLoading && section === Section.department && (
               <ProcessDisclosureTabs
                 disclosureData={disclosureData}
                 setDisclosureData={setDisclosureData}
@@ -106,20 +106,21 @@ const ProcessPage = () => {
                 section={section}
                 moveScroll={moveScroll}
                 isEditable={true}
+                thirdTabTitle="Dashboard"
+                thirdTabContent={
+                  <Block marginBottom={theme.sizing.scale1200}>
+                    <HeadingSmall>{intl.overview}</HeadingSmall>
+                    <Charts
+                      chartData={chartData!}
+                      processStatus={ProcessStatusFilter.All}
+                      departmentCode={code}
+                      type={section === Section.department ? Section.department : Section.productarea}
+                    />
+                  </Block>
+                }
               />
             )}
           </div>
-        )}
-        {!isLoading && section === Section.department && (
-          <Block marginBottom={theme.sizing.scale1200}>
-            <HeadingSmall>{intl.overview}</HeadingSmall>
-            <Charts
-              chartData={chartData!}
-              processStatus={ProcessStatusFilter.All}
-              departmentCode={code}
-              type={section === Section.department ? Section.department : Section.productarea}
-            />
-          </Block>
         )}
       </Block>
     </>

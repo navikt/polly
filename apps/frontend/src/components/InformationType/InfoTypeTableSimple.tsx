@@ -1,15 +1,15 @@
-import { InformationType, informationTypeSort } from '../../constants'
-import { useTable } from '../../util/hooks'
 import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
-import { HeadingSmall } from 'baseui/typography'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
-import RouteLink from '../common/RouteLink'
-import { Sensitivity } from './Sensitivity'
-import { DotTags } from '../common/DotTag'
-import { ListName } from '../../service/Codelist'
+import { HeadingXLarge } from 'baseui/typography'
 import React, { useEffect, useState } from 'react'
+import { InformationType, informationTypeSort } from '../../constants'
+import { ListName } from '../../service/Codelist'
+import { intl, theme } from '../../util'
+import { useTable } from '../../util/hooks'
+import { DotTags } from '../common/DotTag'
+import RouteLink from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
+import { Sensitivity } from './Sensitivity'
 
 type TableProps = {
   title: string
@@ -38,7 +38,9 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TablePr
 
   return (
     <Block marginBottom={theme.sizing.scale1200}>
-      <HeadingSmall>{title}</HeadingSmall>
+      <HeadingXLarge>
+        {title} ({informationTypeList.length})
+      </HeadingXLarge>
 
       <Table
         emptyText={intl.noInformationTypesAvailableInTable}

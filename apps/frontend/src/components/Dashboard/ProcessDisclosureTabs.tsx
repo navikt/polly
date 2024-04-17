@@ -1,18 +1,18 @@
-import { useState } from 'react'
+import { BodyShort, Spacer, Tabs } from '@navikt/ds-react'
+import { Block } from 'baseui/block'
+import { Button, KIND } from 'baseui/button'
+import { Plus } from 'baseui/icon'
+import { HeadingXLarge } from 'baseui/typography'
+import { ReactNode, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api'
 import { Disclosure, DisclosureFormValues, ProcessStatus } from '../../constants'
-import { Spacer, Tabs } from '@navikt/ds-react'
-import { HeadingXLarge } from 'baseui/typography'
-import { Block } from 'baseui/block'
-import { user } from '../../service/User'
-import { Button, KIND } from 'baseui/button'
-import { intl } from '../../util'
-import { Plus } from 'baseui/icon'
-import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
-import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
-import ProcessList from '../Process'
 import { Section } from '../../pages/ProcessPage'
 import { ListName } from '../../service/Codelist'
+import { user } from '../../service/User'
+import { intl } from '../../util'
+import ProcessList from '../Process'
+import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
+import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 
 interface IProps {
   disclosureData: Disclosure[]
@@ -27,10 +27,13 @@ interface IProps {
   listName?: ListName
   processId?: string
   filter?: ProcessStatus
+
+  thirdTabTitle?: string
+  thirdTabContent?: ReactNode
 }
 
 export const ProcessDisclosureTabs = (props: IProps) => {
-  const { disclosureData, setDisclosureData, code, listName, processId, filter, section, moveScroll, isEditable } = props
+  const { disclosureData, setDisclosureData, code, listName, processId, filter, section, moveScroll, isEditable, thirdTabTitle, thirdTabContent } = props
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
 
@@ -101,6 +104,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
       <Tabs.List>
         <Tabs.Tab value="behandlinger" label="Behandlinger" />
         <Tabs.Tab value="utleveringer" label="Utleveringer" />
+        {thirdTabTitle && <Tabs.Tab value={thirdTabTitle} label={thirdTabTitle} />}
       </Tabs.List>
       <Tabs.Panel value="behandlinger">
         <div className="my-2">
@@ -132,15 +136,19 @@ export const ProcessDisclosureTabs = (props: IProps) => {
             )}
           </div>
 
-          <AccordionDisclosure
-            disclosureList={disclosureData}
-            showRecipient={true}
-            errorModal={error}
-            editable={isEditable}
-            submitDeleteDisclosure={handleDeleteDisclosure}
-            submitEditDisclosure={handleEditDisclosure}
-            onCloseModal={() => setError(undefined)}
-          />
+          {disclosureData.length === 0 && <BodyShort className="my-4">Ingen utleveringer</BodyShort>}
+
+          {disclosureData.length > 0 && (
+            <AccordionDisclosure
+              disclosureList={disclosureData}
+              showRecipient={true}
+              errorModal={error}
+              editable={isEditable}
+              submitDeleteDisclosure={handleDeleteDisclosure}
+              submitEditDisclosure={handleEditDisclosure}
+              onCloseModal={() => setError(undefined)}
+            />
+          )}
 
           <ModalThirdParty
             title={intl.createThirdPartyModalTitle}
@@ -155,6 +163,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
           />
         </div>
       </Tabs.Panel>
+      {thirdTabTitle && thirdTabContent && <Tabs.Panel value={thirdTabTitle}>{thirdTabContent}</Tabs.Panel>}
     </Tabs>
   )
 }
