@@ -44,34 +44,34 @@ const PurposeTable = () => {
 
   const changeTitle = () => {
     if (filterName === ProcessField.DPIA && filterValue) {
-      setTitle(`${intl.dpiaNeeded}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Behov for PVK: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.MISSING_LEGAL_BASIS) {
-      setTitle(intl.processesWithUnknownLegalBasis)
+      setTitle("Behandlinger med rettslig grunnlag uavklart")
     } else if (filterName === ProcessField.MISSING_ARTICLE_6) {
-      setTitle(intl.processesWithoutArticle6LegalBasis)
+      setTitle("Behandlinger med rettslig grunnlag artikkel 6 mangler")
     } else if (filterName === ProcessField.MISSING_ARTICLE_9) {
-      setTitle(intl.processesWithoutArticle9LegalBasis)
+      setTitle("Behandlinger med rettslig grunnlag artikkel 9 mangler")
     } else if (filterName === ProcessField.RETENTION_DATA) {
-      setTitle(`${intl.retention}: ${intl.unknown}`)
+      setTitle("Uavklart lagringsbehov")
     } else if (filterName === ProcessField.RETENTION) {
       switch (filterValue) {
         case ProcessState.YES:
-          return setTitle(intl.retentionPlanYes)
+          return setTitle("Omfattes av NAVs bevarings- og kassasjonsvedtak")
         case ProcessState.NO:
-          return setTitle(intl.retentionPlanNo)
+          return setTitle("Omfattes ikke av NAVs bevarings- og kassasjonsvedtak")
         case ProcessState.UNKNOWN:
-          return setTitle(intl.retentionPlanUnclarified)
+          return setTitle("Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak")
       }
     } else if (filterName === ProcessField.PROFILING && filterValue) {
-      setTitle(`${intl.profiling}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Profilering: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.AUTOMATION && filterValue) {
-      setTitle(`${intl.automaticProcessing}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Helautomatisk behandling: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR && filterValue) {
-      setTitle(`${intl.processor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Databehandler: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
-      setTitle(intl.navResponsible)
+      setTitle("Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part")
     } else if (filterName === ProcessField.DPIA_REFERENCE_MISSING) {
-      setTitle(intl.missingPVK)
+      setTitle("Ref. til PVK ikke angitt")
     }
   }
 

@@ -52,7 +52,7 @@ const DpProcessView = () => {
       toggleModal()
     } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
-        setErrorDpProcessModal(intl.dpProcessDuplicatedError)
+        setErrorDpProcessModal("Databehandlingen eksisterer allerede.")
         return
       }
       setErrorDpProcessModal(err.response.data.message)
@@ -69,7 +69,7 @@ const DpProcessView = () => {
       }
     } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
-        setErrorDpProcessModal(intl.dpProcessDuplicatedError)
+        setErrorDpProcessModal("Databehandlingen eksisterer allerede.")
         return
       }
       setErrorDpProcessModal(err.response.data.message)
@@ -110,82 +110,82 @@ const DpProcessView = () => {
             <HeadingMedium>{dpProcess?.name}</HeadingMedium>
             {user.canWrite() /*!env.disableDpProcess &&*/ && (
               <Block>
-                <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>
-                  {intl.edit}
+                <Button size="compact" kind="outline" icon={faEdit} marginRight onClick={toggleModal}>
+                  Redigér
                 </Button>
-                <Button size={ButtonSize.compact} kind="outline" onClick={toggleDeleteModal} tooltip={intl.delete} icon={faTrash}>
-                  {intl.delete}
+                <Button size={ButtonSize.compact} kind="outline" onClick={toggleDeleteModal} icon={faTrash}>
+                  Slett
                 </Button>
               </Block>
             )}
           </Block>
 
-          <DataText label={intl.externalProcessResponsible} text={''}>
+          <DataText label="Behandlingsansvarlig" text={''}>
             <span>
               {!!dpProcess?.externalProcessResponsible ? (
                 <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>{codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}</RouteLink>
               ) : (
-                intl.no
+                "Nei"
               )}
             </span>
           </DataText>
 
-          <DataText label={intl.description} text={dpProcess?.description} />
+          <DataText label="Beskrivelse" text={dpProcess?.description} />
 
-          <DataText label={intl.purpose} text={dpProcess?.purposeDescription} />
+          <DataText label="Formål" text={dpProcess?.purposeDescription} />
 
-          <DataText label={intl.validityOfProcess} text={''}>
+          <DataText label="Gyldighetsperiode for behandlingen" text={''}>
             <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
           </DataText>
 
-          <DataText label={intl.article9} text={boolToText(dpProcess?.art9)} />
-          <DataText label={intl.article10} text={boolToText(dpProcess?.art10)} />
+          <DataText label="Behandles det særlige kategorier av personopplysninger?" text={boolToText(dpProcess?.art9)} />
+          <DataText label="Behandles det personopplysninger om straffedommer og lovovertredelser?" text={boolToText(dpProcess?.art10)} />
 
-          <DataText label={intl.system} text={''}>
+          <DataText label="System" text={''}>
             {dpProcess && <DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist />}
           </DataText>
 
-          <DataText label={intl.organizing} text={''}>
+          <DataText label="Organisering" text={''}>
             {dpProcess?.affiliation.department ? (
               <Block>
-                <span>{intl.department}: </span>
+                <span>Avdeling: </span>
                 <span>
                   <DotTags list={ListName.DEPARTMENT} codes={[dpProcess?.affiliation.department]} commaSeparator linkCodelist />{' '}
                 </span>
               </Block>
             ) : (
               <span>
-                {intl.department}: {intl.notFilled}
+                Avdeling: Ikke utfylt
               </span>
             )}
             {!!dpProcess?.affiliation.subDepartments.length && (
               <Block>
                 <Block display="flex">
-                  <span>{intl.subDepartment}: </span>
+                  <span>Underavdeling: </span>
                   <DotTags list={ListName.SUB_DEPARTMENT} codes={dpProcess?.affiliation.subDepartments} linkCodelist />
                 </Block>
               </Block>
             )}
 
             <Block display="flex">
-              <span>{intl.productTeam}: </span>
-              {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : intl.notFilled}
+              <span>Team: </span>
+              {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : "Ikke utfylt"}
             </Block>
           </DataText>
-          <DataText label={intl.retention} text={''}>
+          <DataText label="Lagringsbehov" text={''}>
             <>
               <Block>
                 <RetentionView retention={dpProcess?.retention} />
               </Block>
             </>
           </DataText>
-          <DataText label={intl.dpProcessDataProcessor} text={''}>
+          <DataText label="Databehandleravtale med behandlingsansvarlig" text={''}>
             <>
               <Block>
                 <Block>
                   {isDataProcessingAgreementsAvailable && (
                     <Block display="flex" alignItems="center">
-                      <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }}>{`${intl.processorAgreement}: `}</Block>
+                      <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }}>Ref. til databehandleravtale</Block>
                       <DotTags items={dpProcess?.dataProcessingAgreements} markdown />
                     </Block>
                   )}
@@ -194,15 +194,15 @@ const DpProcessView = () => {
             </>
           </DataText>
 
-          <DataText label={intl.subDataProcessor} text={''}>
+          <DataText label="Underdatabehandler" text={''}>
             <>
-              {dpProcess?.subDataProcessing?.dataProcessor === null && intl.processorUnclarified}
-              {dpProcess?.subDataProcessing?.dataProcessor === false && intl.processorNo}
+              {dpProcess?.subDataProcessing?.dataProcessor === null && "Uavklart om databehandler brukes"}
+              {dpProcess?.subDataProcessing?.dataProcessor === false && "Databehandler benyttes ikke"}
             </>
             <>
               {dpProcess?.subDataProcessing.dataProcessor && (
                 <Block>
-                  <Block>{intl.processorYes}</Block>
+                  <Block>Databehandler benyttes</Block>
                   <Block>
                     {processors && (
                       <Block display="flex" alignItems="center">
@@ -249,7 +249,7 @@ const DpProcessView = () => {
             errorOnCreate={errorDpProcessModal}
           />
           <DpProcessDeleteModal
-            title={intl.confirmDeleteHeader}
+            title="Bekreft sletting"
             isOpen={showDeleteModal}
             onClose={toggleDeleteModal}
             onSubmit={() => handleDeleteDpProcess(dpProcess?.id)}
