@@ -33,13 +33,13 @@ const LoggedInHeader = () => {
       content={
         <Block padding={theme.sizing.scale400}>
           <LabelMedium {...blockStyle}>
-            {intl.name}: {user.getName()}
+            Navn: {user.getName()}
           </LabelMedium>
           <LabelMedium {...blockStyle}>
-            {intl.groups}: {user.getGroupsHumanReadable().join(', ')}
+            Grupper: {user.getGroupsHumanReadable().join(', ')}
           </LabelMedium>
           <Block {...blockStyle}>
-            <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>{intl.logout}</StyledLink>
+            <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</StyledLink>
           </Block>
         </Block>
       }
@@ -54,7 +54,7 @@ const LoggedInHeader = () => {
 const LoginButton = () => {
   return (
     <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
-      <Button style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>{intl.login}</Button>
+      <Button style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>Logg inn</Button>
     </StyledLink>
   )
 }
@@ -126,11 +126,11 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
 const AdminOptions = () => {
   const navigate = useNavigate()
   const pages = [
-    { label: intl.manageCodeListTitle, href: '/admin/codelist' },
-    { label: intl.audit, href: '/admin/audit' },
-    { label: intl.settings, href: '/admin/settings' },
-    { label: intl.mailLog, href: '/admin/maillog' },
-    { label: intl.needsRevision, href: '/admin/request-revision', super: true },
+    { label: "Administrering av kodeverk", href: '/admin/codelist' },
+    { label: "Versjonering", href: '/admin/audit' },
+    { label: "Innstillinger", href: '/admin/settings' },
+    { label: "Mail log", href: '/admin/maillog' },
+    { label: "Trenger revidering", href: '/admin/request-revision', super: true },
   ]
   return (
     <StatefulPopover
@@ -146,7 +146,7 @@ const AdminOptions = () => {
       )}
     >
       <Button endEnhancer={() => <TriangleDown size={24} />} kind="tertiary">
-        {intl.administrate}
+        Admin
       </Button>
     </StatefulPopover>
   )
