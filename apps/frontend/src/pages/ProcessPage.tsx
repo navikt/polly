@@ -14,7 +14,7 @@ import { PageHeader } from '../components/common/PageHeader'
 import { DepartmentDashCount, Disclosure, Process, ProcessStatus, ProcessStatusFilter } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { ListName } from '../service/Codelist'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { useQueryParam } from '../util/hooks'
 
 export enum Section {
@@ -109,7 +109,7 @@ const ProcessPage = () => {
                 thirdTabTitle="Dashboard"
                 thirdTabContent={
                   <Block marginBottom={theme.sizing.scale1200}>
-                    <HeadingSmall>{intl.overview}</HeadingSmall>
+                    <HeadingSmall>Oversikt</HeadingSmall>
                     <Charts
                       chartData={chartData!}
                       processStatus={ProcessStatusFilter.All}

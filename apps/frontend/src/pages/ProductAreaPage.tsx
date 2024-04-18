@@ -10,7 +10,6 @@ import ProcessList from '../components/Process'
 import { PageHeader } from '../components/common/PageHeader'
 import { ProcessStatusFilter, ProductAreaDashCount } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { intl } from '../util'
 import { Section } from './ProcessPage'
 
 export const ProductAreaPage = () => {
@@ -46,14 +45,14 @@ export const ProductAreaPage = () => {
             <Tabs.Panel value="behandlinger">
               <ProcessList section={Section.productarea} code={productAreaId} isEditable={false} />
             </Tabs.Panel>
-            <Tabs.Panel value="opplysningstyper">
-              <InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productArea: productAreaId })).content} />
+            <Tabs.Panel value="Opplysningstyper">
+              <InfoTypeTable title="Opplysningstyper" getInfoTypes={async () => (await getInformationTypesBy({ productArea: productAreaId })).content} />
             </Tabs.Panel>
 
             {!isLoading && chartData && (
               <Tabs.Panel value="dashboard">
                 <Block marginBottom="240px">
-                  <HeadingSmall>{intl.overview}</HeadingSmall>
+                  <HeadingSmall>Oversikt</HeadingSmall>
                   <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId} />
                 </Block>
               </Tabs.Panel>

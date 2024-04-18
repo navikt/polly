@@ -6,7 +6,6 @@ import ProcessList from '../components/Process'
 import { PageHeader } from '../components/common/PageHeader'
 import { ampli } from '../service/Amplitude'
 import { ListName } from '../service/Codelist'
-import { intl } from '../util'
 import { Section } from './ProcessPage'
 
 export const SystemPage = () => {
@@ -29,7 +28,7 @@ export const SystemPage = () => {
               <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM} isEditable={false} />
             </Tabs.Panel>
             <Tabs.Panel value="opplysningstyper">
-              <InfoTypeTable title={intl.orgMasterInfTypeHeader} getInfoTypes={async () => (await getInformationTypesBy({ orgMaster: systemCode })).content} />
+              <InfoTypeTable title="Opplysningstyper systemet er master for" getInfoTypes={async () => (await getInformationTypesBy({ orgMaster: systemCode })).content} />
             </Tabs.Panel>
           </Tabs>
         </>

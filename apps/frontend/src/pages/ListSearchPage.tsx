@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { intl, useAwait } from '../util'
+import { useAwait } from '../util'
 import { codelist, ListName } from '../service/Codelist'
 import { HeadingMedium } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
