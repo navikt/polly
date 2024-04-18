@@ -140,7 +140,7 @@ const ThirdPartyPage = () => {
             }}
             initialState={{ expanded: params.section ? [params.section] : [] }}
           >
-            <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`} key="disclosure">
+            <Panel title={`Utleveringer til ekstern part (${disclosureList?.length || 0})`} key="disclosure">
               <Block display="flex" justifyContent="flex-end">
                 {user.canWrite() && (
                   <Button
@@ -153,7 +153,7 @@ const ThirdPartyPage = () => {
                       </Block>
                     )}
                   >
-                    {intl.createNew}
+                    Opprett ny
                   </Button>
                 )}
               </Block>
@@ -169,7 +169,7 @@ const ThirdPartyPage = () => {
               />
             </Panel>
 
-            <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`} key="informationtype">
+            <Panel title={`Innhentinger fra ekstern part (${informationTypeList?.length || 0})`} key="informationtype">
               <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true} />
             </Panel>
 
@@ -182,7 +182,7 @@ const ThirdPartyPage = () => {
               </Panel>
             )}
 
-            <Panel key="process" title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
+            <Panel key="process" title={`Felles behandlingsansvarlig med NAV (${processListCount})`}>
               {params.thirdPartyCode && (
                 <ProcessList
                   section={Section.thirdparty}
@@ -197,7 +197,7 @@ const ThirdPartyPage = () => {
           </Accordion>
 
           <ModalThirdParty
-            title={intl.createThirdPartyModalTitle}
+            title="Opprett utlevering til ekstern part"
             isOpen={showCreateModal}
             initialValues={initialFormValues}
             submit={handleCreateDisclosure}

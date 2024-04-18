@@ -37,7 +37,7 @@ export const TeamPage = () => {
             code={teamId}
             isEditable={false}
             thirdTabTitle="Opplysningstyper"
-            thirdTabContent={<InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />}
+            thirdTabContent={<InfoTypeTable title="Opplysningstyper" getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />}
           />
         </>
       )}
