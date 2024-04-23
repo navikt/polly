@@ -12,7 +12,6 @@ import { Option, Select, TYPE, Value } from 'baseui/select'
 
 import { codelist, ListName } from '../../service/Codelist'
 import { InformationtypeFormValues } from '../../constants'
-import { intl } from '../../util'
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
 import { infoTypeSchema } from '../common/schema'
 import { renderTagList } from '../common/TagList'
@@ -99,7 +98,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
   const onSubmit = async (values: InformationtypeFormValues, actions: FormikHelpers<InformationtypeFormValues>) => {
     const searchResults = (await searchInformationType(values.name!)).content.filter((it) => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
     if (searchResults.length > 0) {
-      actions.setFieldError('name', intl.informationTypeExists)
+      actions.setFieldError('name', "Informasjonstypen eksisterer allerede")
     } else {
       submit(values)
       actions.setSubmitting(false)
@@ -121,9 +120,9 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   render={({ form, field }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <LabelMedium>{intl.name}</LabelMedium>
+                        <LabelMedium>Navn</LabelMedium>
                       </Block>
-                      <Input {...field} placeholder={intl.nameWrite} error={!!form.errors.name && !!form.submitCount} />
+                      <Input {...field} error={!!form.errors.name && !!form.submitCount} />
                     </Block>
                   )}
                 />
@@ -136,13 +135,12 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block marginBottom="1em">
                       <Block {...labelProps}>
-                        <LabelMedium>{intl.orgMaster}</LabelMedium>
+                        <LabelMedium>Master i NAV</LabelMedium>
                       </Block>
 
                       <Select
                         options={codelist.getParsedOptions(ListName.SYSTEM)}
                         value={masterValue as Value}
-                        placeholder={!form.values.orgMaster ? intl.orgMasterSelect : ''}
                         onChange={(params) => {
                           let master = params.value.length ? params.value[0] : undefined
                           setMasterValue(master as Option)
@@ -162,15 +160,14 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block>
                       <Block {...labelProps}>
-                        <LabelMedium>{intl.termEditHeader}</LabelMedium>
+                        <LabelMedium>Begrepsdefinisjon (oppslag i Begrepskatalogen)</LabelMedium>
                       </Block>
                       <Select
-                        noResultsMsg={intl.emptyTable}
+                        noResultsMsg="Ingen"
                         maxDropdownHeight="350px"
                         searchable={true}
                         type={TYPE.search}
                         options={termSearchResult}
-                        placeholder={intl.definitionWrite}
                         value={termValue as Value}
                         onInputChange={(event) => setTermSearch(event.currentTarget.value)}
                         onChange={(params) => {
@@ -197,7 +194,6 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                       </Block>
                       <Select
                         options={getParsedOptions(ListName.THIRD_PARTY, formikBag.values.sources)}
-                        placeholder={intl.sourcesWrite}
                         maxDropdownHeight="300px"
                         onChange={({ option }) => {
                           arrayHelpers.push(option ? option.id : null)
@@ -217,11 +213,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   render={(arrayHelpers: FieldArrayRenderProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <LabelMedium>{intl.searchWords}</LabelMedium>
+                        <LabelMedium>Søkeord</LabelMedium>
                       </Block>
                       <Input
                         type="text"
-                        placeholder={intl.searchWordsWrite}
                         value={currentKeywordValue}
                         onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
                         onBlur={() => onAddKeyword(arrayHelpers)}
@@ -248,7 +243,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               <FlexGridItem>
                 <Block>
                   <Block {...labelProps}>
-                    <LabelMedium>{intl.productTeam}</LabelMedium>
+                    <LabelMedium>Team</LabelMedium>
                   </Block>
                   <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName="productTeams" />
                 </Block>
@@ -260,11 +255,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   render={(arrayHelpers: FieldArrayRenderProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <LabelMedium>{intl.categories}</LabelMedium>
+                        <LabelMedium>Kategorier</LabelMedium>
                       </Block>
                       <Select
                         options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
-                        placeholder={intl.categoriesWrite}
                         maxDropdownHeight="300px"
                         onChange={({ option }) => {
                           arrayHelpers.push(option ? option.id : null)
@@ -284,14 +278,13 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   render={({ field, form }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <LabelMedium>{intl.usefulInformation}</LabelMedium>
+                        <LabelMedium>Nyttig å vite om opplysningstypen</LabelMedium>
                       </Block>
                       <Textarea
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
                         }}
                         {...field}
-                        placeholder={intl.descriptionWrite}
                         rows={5}
                       />
                     </Block>
@@ -305,13 +298,12 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
                     <Block>
                       <Block {...labelProps}>
-                        <LabelMedium>{intl.sensitivity}</LabelMedium>
+                        <LabelMedium>Type personopplysning</LabelMedium>
                       </Block>
 
                       <Select
                         options={codelist.getParsedOptions(ListName.SENSITIVITY).filter((s) => !s.label.includes('Ikke'))}
                         value={sensitivityValue as Value}
-                        placeholder={formikBag.values.sensitivity ? '' : intl.sensitivitySelect}
                         onChange={(params) => {
                           let sensitivity = params.value.length ? params.value[0] : undefined
                           setSensitivityValue(sensitivity as Option)
@@ -343,7 +335,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 }}
                 onClick={() => window.history.back()}
               >
-                {intl.abort}
+                Avbryt
               </Button>
               <Button
                 type="submit"
@@ -360,7 +352,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   },
                 }}
               >
-                {intl.save}
+                Lagre
               </Button>
             </Block>
           </Form>
