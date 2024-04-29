@@ -6,7 +6,6 @@ import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple
 import { PageHeader } from '../components/common/PageHeader'
 import { Disclosure } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { intl } from '../util'
 import { Section } from './ProcessPage'
 
 export const TeamPage = () => {

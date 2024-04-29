@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react'
 import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { LabelLarge } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChartBar, faChartPie, faCircle } from '@fortawesome/free-solid-svg-icons'
@@ -174,7 +174,7 @@ const Visualization = (props: VisualizationProps) => {
                     </Block>
                   </div>
                 ))}
-              {noChartData && <Block $style={{ ...marginAll(theme.sizing.scale100) }}>{intl.emptyTable}</Block>}
+              {noChartData && <Block $style={{ ...marginAll(theme.sizing.scale100) }}>Ingen</Block>}
             </Block>
           </Block>
         </div>

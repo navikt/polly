@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { useParams } from 'react-router-dom'
 import { codelist, ListName } from '../service/Codelist'
 import { Plus } from 'baseui/icon'
@@ -176,7 +176,7 @@ const ThirdPartyPage = () => {
             {params.thirdPartyCode && (
               <Panel
                 key="dpprocess"
-                title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}
+                title={`NAV er databehandler for ${codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)} i følgende behandlinger (${dpProcesses?.length || 0})`}
               >
                 <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []} />
               </Panel>

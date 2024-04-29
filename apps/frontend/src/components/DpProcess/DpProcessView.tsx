@@ -5,7 +5,7 @@ import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess }
 import { Spinner } from 'baseui/spinner'
 import { Block } from 'baseui/block'
 import { HeadingMedium } from 'baseui/typography'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { DotTag, DotTags } from '../common/DotTag'
 import DataText from '../common/DataText'
 import { codelist, ListName } from '../../service/Codelist'
@@ -234,8 +234,9 @@ const DpProcessView = () => {
               <Block display="flex" justifyContent="flex-end">
                 <span>
                   <i>
-                    {intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>,{' '}
-                    {lastModifiedDate(dpProcess.changeStamp.lastModifiedDate)}
+                    {`Sist endret av `}
+                      <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
+                    {` ${lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}`}
                   </i>
                 </span>
               </Block>
