@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import ReactJson from 'react-json-view'
 import React, { useEffect, useState } from 'react'
 import { AuditAction, AuditLog } from '../../constants'
@@ -47,22 +47,22 @@ export const AuditView = (props: AuditViewProps) => {
   return (
     <Card>
       {loading && <Spinner $size={theme.sizing.scale2400} />}
-      {!loading && auditLog && !logFound && <LabelLarge>{intl.auditNotFound}</LabelLarge>}
+      {!loading && auditLog && !logFound && <LabelLarge>Fant ingen versjonering</LabelLarge>}
 
       {logFound && (
         <>
           <Block display="flex" justifyContent="space-between">
             <Block width="90%">
-              <Label label={intl.id}>{auditLog?.id}</Label>
-              <Label label={intl.table}>{newestAudit?.table}</Label>
-              <Label label={intl.audits}>{auditLog?.audits.length}</Label>
+              <Label label='ID:'>{auditLog?.id}</Label>
+              <Label label='Tabellnavn:'>{newestAudit?.table}</Label>
+              <Label label='Versjoneringer:'>{auditLog?.audits.length}</Label>
             </Block>
             <Block display="flex">
               <Button size="compact" kind="tertiary" marginRight onClick={() => setOpen(auditLog!.audits.map(() => true))}>
                 Åpne alle
               </Button>
               {newestAudit?.action !== AuditAction.DELETE && (
-                <CustomizedStatefulTooltip content={() => intl.view}>
+                <CustomizedStatefulTooltip content={() => 'Vis'}>
                   <Block>
                     <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table} audit={newestAudit}>
                       <Button size="compact" shape="round" kind="tertiary">
@@ -72,7 +72,7 @@ export const AuditView = (props: AuditViewProps) => {
                   </Block>
                 </CustomizedStatefulTooltip>
               )}
-              <CustomizedStatefulTooltip content={() => intl.close}>
+              <CustomizedStatefulTooltip content={() => 'Lukk'}>
                 <Block>
                   <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId('')}>
                     <FontAwesomeIcon icon={faTimes} />
@@ -89,14 +89,14 @@ export const AuditView = (props: AuditViewProps) => {
                 <Block key={audit.id} ref={refs[audit.id]} marginBottom="1rem" marginTop=".5rem" backgroundColor={audit.id === props.auditId ? theme.colors.mono200 : undefined}>
                   <Block display="flex" justifyContent="space-between">
                     <Block width="90%">
-                      <Label label={intl.auditNr}>{auditLog.audits.length - index}</Label>
-                      <Label label={intl.action}>
+                      <Label label='Versjon #:'>{auditLog.audits.length - index}</Label>
+                      <Label label='Handling:'>
                         <AuditActionIcon action={audit.action} withText={true} />
                       </Label>
-                      <Label label={intl.time}>
+                      <Label label='Tidspunkt: '>
                         {time.format('LL')} {time.format('HH:mm:ss.SSS Z')}
                       </Label>
-                      <Label label={intl.user}>{audit.user}</Label>
+                      <Label label='Bruker'>{audit.user}</Label>
                     </Block>
                     <Block>
                       <StatefulPopover

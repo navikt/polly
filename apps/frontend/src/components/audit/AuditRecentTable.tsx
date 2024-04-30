@@ -2,7 +2,7 @@ import { LabelLarge, LabelSmall } from 'baseui/typography'
 import React, { useEffect, useState } from 'react'
 import { getAudits } from '../../api/AuditApi'
 import { AuditItem, ObjectType, PageResponse } from '../../constants'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import moment from 'moment'
 import { Pagination } from 'baseui/pagination'
 import { TriangleDown } from 'baseui/icon'
@@ -66,23 +66,23 @@ export const AuditRecentTable = (props: { show: boolean }) => {
   return (
     <>
       <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
-        <LabelLarge>{intl.lastChanges}</LabelLarge>
+        <LabelLarge>Siste endringer</LabelLarge>
         <Block width="300px" display="flex" justifyContent="space-between">
           <LabelSmall alignSelf="center" marginRight=".5rem">
-            {intl.table}:{' '}
+            Tabellnavn:{' '}
           </LabelSmall>
           <StatefulSelect size="compact" options={Object.keys(ObjectType).map((ot) => ({ id: ot, label: ot }))} onChange={(p) => setTable(p?.value[0]?.id as ObjectType)} />
         </Block>
       </Block>
 
       <Table
-        emptyText={intl.noAuditsAvailableInTable}
+        emptyText='Ingen versjonering'
         headers={
           <>
-            <HeadCell $style={{ maxWidth: '13%' }} title={intl.time} />
-            <HeadCell $style={{ maxWidth: '17%' }} title={intl.action} />
-            <HeadCell title={intl.id} />
-            <HeadCell title={intl.user} />
+            <HeadCell $style={{ maxWidth: '13%' }} title='Tidspunkt' />
+            <HeadCell $style={{ maxWidth: '17%' }} title='Tabell' />
+            <HeadCell title='ID' />
+            <HeadCell title='Bruker' />
           </>
         }
       >
@@ -143,13 +143,13 @@ export const AuditRecentTable = (props: { show: boolean }) => {
           )}
           placement={PLACEMENT.bottom}
         >
-          <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>{`${limit} ${intl.rows}`}</Button>
+          <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>{`${limit} Rader`}</Button>
         </StatefulPopover>
         <Pagination
           currentPage={page}
           numPages={audits.pages}
           onPageChange={({ nextPage }) => handlePageChange(nextPage)}
-          labels={{ nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton }}
+          labels={{ nextButton: 'Neste', preposition: 'av', prevButton: 'Fordige' }}
         />
       </Block>
     </>
