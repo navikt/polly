@@ -1,23 +1,22 @@
 import * as React from 'react'
 import { Helmet } from 'react-helmet'
 import { useEffect } from 'react'
-import { intl } from '../util/intl/intl'
 
 interface RootProps {
   children: JSX.Element | Array<JSX.Element>
 }
 
 const Root = ({ children }: RootProps): JSX.Element => {
-  let language = intl.getLanguage()
+  const language = 'nb'
   useEffect(() => {
-    document.title = intl.appName
+    document.title = 'Behandlingskatalog'
   }, [language])
 
   return (
     <div>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>{intl.appName}</title>
+        <title>Behandlingskatalog</title>
       </Helmet>
       {children}
     </div>
