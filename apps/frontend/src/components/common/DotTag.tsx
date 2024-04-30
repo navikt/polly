@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Code, codelist, ListName } from '../../service/Codelist'
 import { NavigableItem } from '../../constants'
@@ -56,7 +56,7 @@ export const DotTags = (props: DotTagsParams) => {
   const { commaSeparator } = props
   const items = props.items || props.codes?.map((c) => c.code) || []
 
-  if (!items.length) return <>{intl.emptyMessage}</>
+  if (!items.length) return <>Ikke angitt</>
 
   if (commaSeparator)
     return (

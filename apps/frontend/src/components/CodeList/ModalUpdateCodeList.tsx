@@ -9,7 +9,6 @@ import { LabelMedium } from 'baseui/typography'
 import { Textarea } from 'baseui/textarea'
 import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { CodeListFormValues, ProcessFormValues } from '../../constants'
-import { intl } from '../../util'
 import { Error } from '../common/ModalSchema'
 import { codeListSchema } from '../common/schema'
 
@@ -79,9 +78,9 @@ const UpdateCodeListModal = ({ title, initialValues, errorOnUpdate, isOpen, onCl
                 <Block display="flex" justifyContent="flex-end">
                   <Block marginRight="auto">{errorOnUpdate && <p>{errorOnUpdate}</p>}</Block>
                   <Button type="button" kind={KIND.secondary} onClick={() => onClose()}>
-                    {intl.abort}
+                    Avbryt
                   </Button>
-                  <ModalButton type="submit">{intl.save}</ModalButton>
+                  <ModalButton type="submit">Lagre</ModalButton>
                 </Block>
               </ModalFooter>
             </Form>

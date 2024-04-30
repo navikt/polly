@@ -1,6 +1,5 @@
 import { Block } from 'baseui/block'
 import React from 'react'
-import { intl } from '../../util'
 import { Cell, HeadCell, Row, Table } from '../common/Table'
 
 type AAregHjemmelDataTextProps = {
@@ -17,12 +16,12 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
   return (
     <Block>
       <Table
-        emptyText={intl.emptyMessage}
+        emptyText='Ikke angitt'
         headers={
           <>
-            <HeadCell title={intl.purposeForProcess} />
-            <HeadCell title={intl.authorityAndGroundsForDelivery} />
-            <HeadCell title={intl.consumerAuthorityForProcess} />
+            <HeadCell title='Formål med behandlingen' />
+            <HeadCell title='NAVs hjemmel for utlevering' />
+            <HeadCell title='Konsumentens hjemmel for behandlingen' />
           </>
         }
       >

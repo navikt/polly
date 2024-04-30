@@ -3,7 +3,7 @@ import { AaregAvtale } from '../../constants'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { StatefulMenu } from 'baseui/menu'
 import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import Button from '../common/Button'
 import { KIND } from 'baseui/button'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
@@ -63,7 +63,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
 
   return (
     <>
-      <HeadingLarge>{intl.aaregContracts}</HeadingLarge>
+      <HeadingLarge>Utleveringsavtaler i Aa-registeret</HeadingLarge>
       <StatelessAccordion
         onChange={({ expanded }) => {
           setSelectedAaregAvtale(expanded[0] as string)
@@ -82,7 +82,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                       {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
                       <span> </span>
                       <span>
-                        {a.virksomhet} - ({intl.aaregContractNumber}-{a.avtalenummer.replace('AVT-', '')})
+                        {a.virksomhet} - (Avtalenummer-{a.avtalenummer.replace('AVT-', '')})
                       </span>
                     </LabelLarge>
                   </Block>
@@ -109,27 +109,27 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                   }}
                 >
                   <Block paddingBottom={theme.sizing.scale800} paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
-                    <CustomPanelLabel text={intl.consumer} />
-                    <DataText label={intl.name} text={a.virksomhet || intl.emptyMessage} />
-                    <DataText label={intl.organisationNumber} text={a.organisasjonsnummer || intl.emptyMessage} />
+                    <CustomPanelLabel text='Konsument' />
+                    <DataText label='Navn' text={a.virksomhet || 'Ikke angitt'} />
+                    <DataText label='Organisasjonsnummer' text={a.organisasjonsnummer || 'Ikke angitt'} />
 
-                    <CustomPanelLabel text={intl.contractAareg} />
-                    <DataText label={intl.aaregContractNumber} text={a.avtalenummer || intl.emptyMessage} />
-                    <DataText label={intl.createdDate} text={a.opprettet || intl.emptyMessage} />
+                    <CustomPanelLabel text='Avtale' />
+                    <DataText label='Avtalenummer' text={a.avtalenummer || 'Ikke angitt'} />
+                    <DataText label='Dato opprettet' text={a.opprettet || 'Ikke angitt'} />
 
-                    <CustomPanelLabel text={intl.purposeAuthorityLegalBasis} />
+                    <CustomPanelLabel text='Formål, Hjemmel og Behandlingsgrunnlag' />
 
                     <AAregHjemmelDataText data={a.hjemmel_behandlingsgrunnlag_formal} />
 
-                    <CustomPanelLabel text={intl.accessType} />
-                    <DataText label={intl.API} text={a.integrert_oppslag_api ? intl.available : intl.unavailable} />
-                    <DataText label={intl.extract} text={a.uttrekk ? intl.available : intl.unavailable} />
-                    <DataText label={intl.webLookup} text={a.web_oppslag ? intl.available : intl.unavailable} />
-                    <DataText label={intl.incidents} text={a.hendelser ? intl.available : intl.unavailable} />
+                    <CustomPanelLabel text='Type tilgang' />
+                    <DataText label='API' text={a.integrert_oppslag_api ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <DataText label='Uttrekk' text={a.uttrekk ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <DataText label='Web-oppslag' text={a.web_oppslag ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <DataText label='Hendelser' text={a.hendelser ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
 
-                    <CustomPanelLabel text={intl.processor} />
-                    <DataText label={intl.organisationNumber} text={a.databehandler_organisasjonsnummer || intl.emptyMessage} />
-                    <DataText label={intl.name} text={a.databehandler_navn || intl.emptyMessage} />
+                    <CustomPanelLabel text='Databehandler' />
+                    <DataText label='Organisasjonsnummer' text={a.databehandler_organisasjonsnummer || 'Ikke angitt'} />
+                    <DataText label='Navn' text={a.databehandler_navn || 'Ikke angitt'} />
                   </Block>
                 </Block>
               </Panel>
@@ -156,14 +156,14 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
           )}
         >
           <div>
-            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${pageLimit} ${intl.rows}`}</Button>
+            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${pageLimit} Rader`}</Button>
           </div>
         </StatefulPopover>
         <Pagination
           currentPage={page}
           numPages={Math.ceil(props.aaregAvtaler.length / pageLimit)}
           onPageChange={(a) => setPage(a.nextPage)}
-          labels={{ nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton }}
+          labels={{ nextButton: 'Neste', preposition: 'av', prevButton: 'Forrige' }}
         />
       </Block>
     </>

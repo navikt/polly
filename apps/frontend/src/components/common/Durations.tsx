@@ -39,7 +39,7 @@ export const ActiveIndicator = (props: { start?: string; end?: string; alwaysSho
     <CustomizedStatefulTooltip
       content={
         <>
-          {hasStart && intl.startDate + ' ' + startView} {hasStart && hasEnd && ' - '} {hasEnd && intl.endDate + ' ' + endView}
+          {hasStart && 'Fra og med ' + startView} {hasStart && hasEnd && ' - '} {hasEnd && ' til og med ' + endView}
         </>
       }
     >
