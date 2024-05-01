@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Document, DocumentFormValues } from '../../constants'
-import { intl, useDebouncedState } from '../../util'
+import { useDebouncedState } from '../../util'
 import { searchDocuments } from '../../api'
 import { Option, Select, TYPE } from 'baseui/select'
 
@@ -33,10 +33,10 @@ const SelectDocument = (props: SelectDocumentProps) => {
       isLoading={isLoadingDocuments}
       clearable
       searchable={true}
-      noResultsMsg={intl.emptyTable}
+      noResultsMsg='Ingen'
       type={TYPE.search}
       maxDropdownHeight="400px"
-      placeholder={intl.searchDocuments}
+      placeholder='Søk dokumenter'
       value={document ? [document as Option] : []}
       onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
       onChange={(params) => handleChange(params.value[0] as Document)}
