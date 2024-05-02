@@ -44,12 +44,12 @@ const DpProcessTable = (props: DpProcessTableProps) => {
   return (
     <>
       <Table
-        emptyText={intl.noProcessesAvailableInTable}
+        emptyText='Ingen behandlinger'
         headers={
           <>
-            <HeadCell title={intl.process} column="name" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.externalProcessResponsible} column="externalProcessResponsible" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} column="lastModifiedEmail" tableState={[table, sortColumn]} />
+            <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} />
+            <HeadCell title='Behandlingsansvarlig' column="externalProcessResponsible" tableState={[table, sortColumn]} />
+            <HeadCell title='Sist endret av' column="lastModifiedEmail" tableState={[table, sortColumn]} />
           </>
         }
       >
