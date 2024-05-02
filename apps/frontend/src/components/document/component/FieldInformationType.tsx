@@ -2,7 +2,6 @@ import { DocumentInfoTypeUse, InformationTypeShort } from '../../../constants'
 import { Select, TYPE } from 'baseui/select'
 import React from 'react'
 import { useInfoTypeSearch } from '../../../api'
-import { intl } from '../../../util'
 import { PLACEMENT } from 'baseui/popover'
 
 const FieldInformationType = (props: { documentInformationType: DocumentInfoTypeUse; handleChange: Function }) => {
@@ -13,13 +12,13 @@ const FieldInformationType = (props: { documentInformationType: DocumentInfoType
 
   return (
     <Select
-      noResultsMsg={intl.emptyTable}
+      noResultsMsg='Ingen'
       isLoading={isLoading}
       maxDropdownHeight="400px"
       searchable={true}
       type={TYPE.search}
       options={searchKeyword}
-      placeholder={selectedInformationType ? '' : intl.informationTypeSearch}
+      placeholder={selectedInformationType ? '' : 'Søk opplysningstyper'}
       overrides={{
         Popover: {
           props: {

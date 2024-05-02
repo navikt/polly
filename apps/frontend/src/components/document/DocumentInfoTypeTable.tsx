@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useTable } from '../../util/hooks'
 import { DocumentInfoTypeUse, documentSort } from '../../constants'
-import { intl } from '../../util'
 import RouteLink from '../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../common/Table'
 
@@ -15,11 +14,11 @@ const DocumentInfoTypeTable = (props: DocumentInfoTypeTableProps) => {
 
   return (
     <Table
-      emptyText={intl.noInformationTypesAvailableInTable}
+      emptyText='Ingen opplysningstyper'
       headers={
         <>
-          <HeadCell title={intl.informationType} column="informationType" tableState={[table, sortColumn]} />
-          <HeadCell title={intl.subjectCategories} column="subjectCategories" tableState={[table, sortColumn]} />
+          <HeadCell title='Opplysningstype' column="informationType" tableState={[table, sortColumn]} />
+          <HeadCell title='Personkategori' column="subjectCategories" tableState={[table, sortColumn]} />
         </>
       }
     >

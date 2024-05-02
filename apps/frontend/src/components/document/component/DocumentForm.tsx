@@ -1,7 +1,7 @@
 import React from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { LabelMedium } from 'baseui/typography'
-import { intl, useAwait } from '../../../util'
+import { useAwait } from '../../../util'
 import { Input, SIZE } from 'baseui/input'
 import { Textarea } from 'baseui/textarea'
 import { DocumentFormValues } from '../../../constants'
@@ -56,7 +56,7 @@ const DocumentForm = (props: DocumentFormProps) => {
   const onSubmit = async (values: DocumentFormValues, actions: FormikHelpers<DocumentFormValues>) => {
     const searchResults = (await searchDocuments(values.name)).content.filter((doc) => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id)
     if (searchResults.length > 0) {
-      actions.setFieldError('name', intl.documentExists)
+      actions.setFieldError('name', 'Dokument med samme navn eksisterer allerede')
     } else {
       try {
         handleSubmit(values)
@@ -76,13 +76,13 @@ const DocumentForm = (props: DocumentFormProps) => {
         <Form onKeyDown={disableEnter}>
           <Block {...rowBlockProps}>
             <Block>
-              <LabelMedium {...labelProps}>{intl.name}</LabelMedium>
+              <LabelMedium {...labelProps}>Navn</LabelMedium>
               <Field name="name">{(props: FieldProps) => <Input type="text" size={SIZE.default} {...props.field} />}</Field>
               <Error fieldName="name" fullWidth={true} />
             </Block>
           </Block>
           <Block {...rowBlockProps}>
-            <LabelMedium {...labelProps}>{intl.description}</LabelMedium>
+            <LabelMedium {...labelProps}>Beskrivelse</LabelMedium>
             <Field name="description">{(props: FieldProps) => <Textarea {...props.field} />}</Field>
             <Error fieldName="description" fullWidth={true} />
           </Block>
@@ -94,12 +94,12 @@ const DocumentForm = (props: DocumentFormProps) => {
                 <Block>
                   <Block {...labelProps}>
                     <ModalLabel
-                      label={intl.dataAccessClass}
+                      label='Datatilgangsklasse'
                       tooltip={
                         <Block>
-                          {intl.moreInfo + ' '}
+                          Mer informasjon finner du
                           <StyledLink target="_blank" rel="noopener noreferrer" href={'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'}>
-                            {intl.here + ' '}
+                            her
                             <span>
                               <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
                             </span>
@@ -112,7 +112,7 @@ const DocumentForm = (props: DocumentFormProps) => {
                   <Select
                     options={codelist.getParsedOptions(ListName.DATA_ACCESS_CLASS)}
                     value={dataAccessClass as Value}
-                    placeholder={formikProps.values.dataAccessClass ? '' : intl.dataAccessClassSelect}
+                    placeholder={formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'}
                     onChange={(params) => {
                       let dac = params.value.length ? params.value[0] : undefined
                       setDataAccessClass(dac as Option)
@@ -127,7 +127,7 @@ const DocumentForm = (props: DocumentFormProps) => {
           </Block>
 
           <Block marginTop="3rem">
-            <LabelMedium marginBottom="2rem">{intl.informationtypesUsedInDocument}</LabelMedium>
+            <LabelMedium marginBottom="2rem">Opplysningstyper i dokumentet</LabelMedium>
             <FieldArray name="informationTypes" render={(arrayHelpers: FieldArrayRenderProps) => <InformationTypesTable arrayHelpers={arrayHelpers} />} />
           </Block>
           <Block display="flex" justifyContent="flex-end" marginTop="10px">
@@ -138,11 +138,11 @@ const DocumentForm = (props: DocumentFormProps) => {
             )}
 
             <Button type="button" kind="secondary" onClick={() => window.history.back()}>
-              {intl.abort}
+              Avbryt
             </Button>
 
             <Button type="submit" kind="primary" marginLeft marginRight>
-              {intl.save}
+              Lagre
             </Button>
           </Block>
         </Form>

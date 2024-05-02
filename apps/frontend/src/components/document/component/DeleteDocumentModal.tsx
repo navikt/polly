@@ -2,7 +2,6 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import { Button } from 'baseui/button'
-import { intl } from '../../../util'
 import * as React from 'react'
 
 type ModalDeleteProps = {
@@ -22,20 +21,21 @@ const DeleteDocumentModal = ({ title, documentName = '', isOpen, onClose, submit
         {!!!documentUsageCount ? (
           <ParagraphMedium>
             {' '}
-            {intl.confirmDeleteDocumentText} "{documentName}"
+            Bekreft sletting av dokument "{documentName}"
           </ParagraphMedium>
         ) : (
-          <ParagraphMedium>{intl.formatString(intl.cannotDeleteProcess, documentName.toString(), documentUsageCount.toString())}</ParagraphMedium>
+         <ParagraphMedium>{`Kan ikke slette behandlingen ${documentName.toString()}
+          den inneholder fortsatt ${documentUsageCount.toString()} opplysningstype(r)`}</ParagraphMedium>
         )}
       </ModalBody>
 
       <ModalFooter>
         <Block display="flex" justifyContent="flex-end">
           <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
-            {intl.abort}
+            Avbryt
           </Button>
           <Button onClick={() => submit()} disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}>
-            {intl.delete}
+            Slett
           </Button>
         </Block>
       </ModalFooter>
