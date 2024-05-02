@@ -4,9 +4,7 @@ import { ParagraphMedium } from 'baseui/typography'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsersCog } from '@fortawesome/free-solid-svg-icons'
-
 import { codelist, ListName } from '../../../service/Codelist'
-import { intl } from '../../../util'
 import { PurposeMap } from '../../../pages/InformationtypePage'
 import { Policy } from '../../../constants'
 import { paddingZero } from '../../common/Style'
@@ -38,8 +36,8 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
   const selectedPurpose = useQueryParam('purpose')
   const navigate = useNavigate()
   const location = useLocation()
-  if (!policies) return <ParagraphMedium>{intl.purposeNotFound}</ParagraphMedium>
-  if (!codelist.isLoaded()) return <ParagraphMedium>{intl.couldntLoad}</ParagraphMedium>
+  if (!policies) return <ParagraphMedium>Fant ingen formål</ParagraphMedium>
+  if (!codelist.isLoaded()) return <ParagraphMedium>Kunne ikke laste inn siden</ParagraphMedium>
 
   const purposeMap = reducePolicyList(policies)
   const getPolicylistForPurpose = (purpose: string) => (!purposeMap[purpose] ? [] : purposeMap[purpose])

@@ -1,9 +1,7 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import { codelist, ListName } from '../../../service/Codelist'
-import { intl } from '../../../util'
 import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
 import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
@@ -41,14 +39,14 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
 
   return (
     <Table
-      emptyText={intl.noProcessesAvailableInTable}
+      emptyText='Ingen behandlinger'
       headers={
         <>
-          <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.process} column={'process'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.legalBasesShort} column={'legalBases'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.retention} />
+          <HeadCell title='Overordnet behandlingsaktivitet' column={'purposes'} tableState={[table, sortColumn]} />
+          <HeadCell title='Behandling' column={'process'} tableState={[table, sortColumn]} />
+          <HeadCell title='Personkategori' column={'subjectCategories'} tableState={[table, sortColumn]} />
+          <HeadCell title='Behandlingsgrunnlag' column={'legalBases'} tableState={[table, sortColumn]} />
+          <HeadCell title='Lagringsbehov' />
         </>
       }
     >
