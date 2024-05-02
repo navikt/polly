@@ -3,7 +3,6 @@ import { DpProcessFormValues } from '../../../constants'
 import * as React from 'react'
 import { Block } from 'baseui/block'
 import { Input } from 'baseui/input'
-import { intl } from '../../../util'
 import { Button, SHAPE } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { renderTagList } from '../../common/TagList'
@@ -29,7 +28,7 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
           <Input
             type="text"
             size="compact"
-            placeholder={intl.processorAgreementPlaceholder}
+            placeholder='(f.eks. lenke til Websak, Confluence e.l.)'
             value={currentKeywordValue}
             onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
             onKeyDown={(e) => {

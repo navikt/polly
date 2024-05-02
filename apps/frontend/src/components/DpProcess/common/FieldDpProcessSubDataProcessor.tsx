@@ -44,14 +44,14 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.isSubDataProcessorUsed} tooltip={intl.isSubDataProcessorUsedDpProcessHelpText} />
+        <ModalLabel label='Benyttes underdatabehandler(e)?' tooltip='En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler.' />
         <BoolField fieldName="subDataProcessing.dataProcessor" value={formikBag.values.subDataProcessing.dataProcessor} />
       </Block>
 
       {formikBag.values.subDataProcessing.dataProcessor && (
         <>
           <Block {...rowBlockProps}>
-            <ModalLabel label={intl.processor} />
+            <ModalLabel label='Databehandler' />
             <FieldDpDataProcessors
               formikBag={formikBag}
               subDataProcessors={subDataProcessors}
