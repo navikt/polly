@@ -8,7 +8,7 @@ import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues
 import { intl, theme, useAwait } from '../../util'
 import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
-import AccordionProcess from './Accordion'
+import AccordionProcess from './Accordion/AccordionProcess'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,

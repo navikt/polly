@@ -10,7 +10,6 @@ import { Button, KIND } from 'baseui/button'
 import { InformationTypeShort, LegalBasesUse, PolicyFormValues } from '../../../constants'
 import { getInformationTypesShort } from '../../../api'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { intl } from '../../../util'
 import { policySchema } from '../../common/schema'
 import { Tag, VARIANT } from 'baseui/tag'
 import { Docs } from './TablePolicy'
@@ -63,9 +62,9 @@ const FieldInformationType = () => {
       render={({ form }: FieldProps<PolicyFormValues>) => (
         <StatefulSelect
           maxDropdownHeight="400px"
-          noResultsMsg={intl.emptyTable}
+          noResultsMsg='Ingen'
           options={infoTypes}
-          placeholder={form.values.informationType ? '' : intl.informationTypeSearch}
+          placeholder={form.values.informationType ? '' : 'Søk opplysningsyper'}
           initialState={{ value: form.values.informationType }}
           onChange={(params) => form.setFieldValue('informationType', params.value[0] as InformationTypeShort)}
           error={!!form.errors.informationType && !!form.submitCount}
@@ -94,11 +93,11 @@ const FieldLegalBasesUse = (props: { legalBasesUse: LegalBasesUse }) => {
                 setValue(selected as LegalBasesUse)
               }}
             >
-              <Radio value={LegalBasesUse.INHERITED_FROM_PROCESS}>{intl.legalBasesProcess}</Radio>
-              <Radio value={LegalBasesUse.UNRESOLVED}>{intl.legalBasesUndecided}</Radio>
-              <Radio value={LegalBasesUse.DEDICATED_LEGAL_BASES}>{intl.legalBasesOwn}</Radio>
+              <Radio value={LegalBasesUse.INHERITED_FROM_PROCESS}>Bruker behandlingens rettslige grunnlag</Radio>
+              <Radio value={LegalBasesUse.UNRESOLVED}>Uavklart</Radio>
+              <Radio value={LegalBasesUse.DEDICATED_LEGAL_BASES}>Har eget Behandlingsgrunnlag</Radio>
               <Radio value={LegalBasesUse.EXCESS_INFO}>
-                <CustomizedStatefulTooltip content={intl.excessInfoHelpText}>{intl.EXCESS_INFO}</CustomizedStatefulTooltip>
+                <CustomizedStatefulTooltip content='Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'>Overskuddsinformasjon</CustomizedStatefulTooltip>
               </Radio>
             </RadioGroup>
           </Block>
@@ -140,7 +139,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                     {title}
                     {addBatch && (
                       <Button type="button" kind="secondary" size="compact" onClick={addBatch}>
-                        {intl.addManyFromSystem}
+                        Legg til flere fra et system
                       </Button>
                     )}
                   </Block>
@@ -148,13 +147,13 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
 
                 <ModalBody>
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.informationType} />
+                    <ModalLabel label='Opplysningstype' />
                     <FieldInformationType />
                   </Block>
                   <Error fieldName="informationType" />
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.subjectCategories} />
+                    <ModalLabel label='Personkategori' />
                     <FieldArray
                       name="subjectCategories"
                       render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -176,7 +175,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
 
                   {!!formikBag.values.documentIds?.length && docs && (
                     <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.documents} />
+                      <ModalLabel label='Dokumenter' />
                       <FieldArray
                         name="documentIds"
                         render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -192,7 +191,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                   )}
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.legalBasesShort} />
+                    <ModalLabel label='Behandlingsgrunnlag' />
                     <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
                   </Block>
                   <Error fieldName="legalBasesUse" />
@@ -205,9 +204,9 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                   <Block display="flex" justifyContent="flex-end">
                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                     <Button type="button" kind={KIND.tertiary} onClick={onClose}>
-                      {intl.abort}
+                      Avbryt
                     </Button>
-                    <ModalButton type="submit">{intl.save}</ModalButton>
+                    <ModalButton type="submit">Lagre</ModalButton>
                   </Block>
                 </ModalFooter>
               </Form>
