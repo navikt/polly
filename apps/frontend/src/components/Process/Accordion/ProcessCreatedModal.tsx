@@ -1,5 +1,4 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { intl } from '../../../util'
 import { Block } from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
@@ -13,14 +12,14 @@ export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddD
 
   return (
     <Modal isOpen={location.search.indexOf('create') >= 0} closeable={false}>
-      <ModalHeader>{intl.processCreated}</ModalHeader>
+      <ModalHeader>Behandling opprettet</ModalHeader>
       <ModalBody>
-        <ParagraphMedium>{intl.doYouWantToAddPolicies}</ParagraphMedium>
+        <ParagraphMedium>Vil du legge til opplysningstyper?</ParagraphMedium>
       </ModalBody>
       <ModalFooter>
         <Block display="flex" justifyContent="flex-end">
           <Button size="compact" kind="tertiary" marginRight onClick={closeModal}>
-            {intl.no}
+            Nei
           </Button>
           <Button
             size="compact"
@@ -31,7 +30,7 @@ export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddD
               props.openAddPolicy()
             }}
           >
-            {intl.addPolicies}
+            Legg til opplysningstyper enkeltvis
           </Button>
           <Button
             size="compact"
@@ -41,7 +40,7 @@ export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddD
               props.openAddDocument()
             }}
           >
-            {intl.addDefaultDocument}
+            Legg til standardopplysningstyper
           </Button>
         </Block>
       </ModalFooter>
