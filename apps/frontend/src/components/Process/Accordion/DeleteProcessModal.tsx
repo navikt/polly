@@ -1,4 +1,3 @@
-import { intl } from '../../../util'
 import * as React from 'react'
 import { Disclosure, Process } from '../../../constants'
 import { BodyShort, Link, List } from '@navikt/ds-react'
@@ -37,7 +36,7 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
             )}
             {(!!process.policies.length || !!disclosures.length) && (
               <List as="ul" title="Disse koblingene må fjernes">
-                {!!process.policies.length && <List.Item>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</List.Item>}
+                {!!process.policies.length && <List.Item>{`Kan ikke slette behandlingen ${process.name}, den inneholder fortsatt ${process.policies.length} opplysningstype(r)`}</List.Item>}
                 {!!disclosures.length && <List.Item>Du kan ikke slette behandlinger med eksisterende utleveringer.</List.Item>}
               </List>
             )}
