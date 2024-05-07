@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { getResourceById } from '../../../api'
 import { codelist, ListName } from '../../../service/Codelist'
 import { Block } from 'baseui/block'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { ActiveIndicator } from '../../common/Durations'
 import { DotTag, DotTags } from '../../common/DotTag'
@@ -25,18 +25,18 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
     if (dpia.refToDpia) {
       return (
         <>
-          {`${intl.yes}. ${intl.reference}`}
+          {'Ja. Referanse: '}
           {shortenLinksInText(dpia.refToDpia)}
         </>
       )
     } else {
-      return intl.yes
+      return 'Ja'
     }
   } else if (dpia?.needForDpia === false) {
     if (dpia) {
       return (
         <>
-          {`${intl.no}. ${intl.ground}`}
+          {'Nei. Begrunnelse: '}
           <DotTags
             items={dpia.noDpiaReasons.map((r) => {
               return r === 'OTHER' && dpia?.grounds ? `${getNoDpiaLabel(r)} (${dpia.grounds})` : getNoDpiaLabel(r)
@@ -46,19 +46,19 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
       )
     }
   } else {
-    return intl.unclarified
+    return 'Uavklart'
   }
 }
 
 export const processStatusText = (status: ProcessStatus | undefined) => {
   switch (status) {
     case ProcessStatus.COMPLETED:
-      return intl.completedProcesses
+      return 'Ferdig dokumentert'
     case ProcessStatus.NEEDS_REVISION:
-      return intl.needsRevision
+      return 'Trenger revidering'
     case ProcessStatus.IN_PROGRESS:
     default:
-      return intl.inProgress
+      return 'Under arbeid'
   }
 }
 

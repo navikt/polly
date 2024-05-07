@@ -12,7 +12,7 @@ import { Sensitivity } from '../../InformationType/Sensitivity'
 import ModalPolicy from './ModalPolicy'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from '../../../constants'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { convertPolicyToFormValues, getDocument } from '../../../api'
 import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
@@ -65,13 +65,13 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
   return (
     <React.Fragment>
       <Table
-        emptyText={process.usesAllInformationTypes ? intl.usesAllInformationTypes : intl.noInformationTypesAvailableInTable}
+        emptyText={process.usesAllInformationTypes ? 'Bruker potensielt alle opplysningstyper' : 'Ingen opplysningstyper'}
         backgroundColor={theme.colors.primary100}
         headers={
           <>
-            <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]} />
+            <HeadCell title='Opplysningstype' column={'informationType'} tableState={[table, sortColumn]} />
+            <HeadCell title='Personkategori' column={'subjectCategories'} tableState={[table, sortColumn]} />
+            <HeadCell title='Behandlingsgrunnlag' column={'legalBases'} tableState={[table, sortColumn]} />
             <HeadCell small />
           </>
         }
@@ -90,7 +90,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                       </RouteLink>
                     </Block>
                     <Block>
-                      <CustomizedStatefulTooltip content={() => intl.documents}>
+                      <CustomizedStatefulTooltip content={() => 'Dokument'}>
                         <Block $style={{ opacity: '80%' }}>{!!row.documentIds?.length && '(' + row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') + ')'}</Block>
                       </CustomizedStatefulTooltip>
                     </Block>
@@ -110,7 +110,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                     <AuditButton id={row.id} kind="tertiary" />
                     {hasAccess && (
                       <>
-                        <CustomizedStatefulTooltip content={intl.edit}>
+                        <CustomizedStatefulTooltip content='Redigér'>
                           <Button
                             size={ButtonSize.compact}
                             kind={KIND.tertiary}
@@ -119,10 +119,10 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                               setShowEditModal(true)
                             }}
                           >
-                            <FontAwesomeIcon title={intl.edit} icon={faEdit} />
+                            <FontAwesomeIcon title='Redigér' icon={faEdit} />
                           </Button>
                         </CustomizedStatefulTooltip>
-                        <CustomizedStatefulTooltip content={intl.delete}>
+                        <CustomizedStatefulTooltip content='Slett'>
                           <Button
                             size={ButtonSize.compact}
                             kind={KIND.tertiary}
@@ -131,7 +131,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                               setShowDeleteModal(true)
                             }}
                           >
-                            <FontAwesomeIcon title={intl.delete} icon={faTrash} />
+                            <FontAwesomeIcon title='Slett' icon={faTrash} />
                           </Button>
                         </CustomizedStatefulTooltip>
                       </>
@@ -146,7 +146,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
 
       {showEditModal && currentPolicy && (
         <ModalPolicy
-          title={intl.policyEdit}
+          title='Rediger behandling for opplysningstype'
           initialValues={convertPolicyToFormValues(
             currentPolicy,
             process.policies.filter((p) => p.id !== currentPolicy.id),
@@ -164,10 +164,10 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
 
       {showDeleteModal && currentPolicy && (
         <Modal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal} animate size="default">
-          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalHeader>Bekreft sletting</ModalHeader>
           <ModalBody>
             <ParagraphMedium>
-              {intl.confirmDeletePolicyText} {currentPolicy.informationType.name}
+              Bekreft sletting av opplysningstypen {currentPolicy.informationType.name} for denne behandlingen
             </ParagraphMedium>
           </ModalBody>
 
@@ -175,7 +175,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
             <Block display="flex" justifyContent="flex-end">
               <Block alignSelf="flex-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</Block>
               <Button kind="secondary" onClick={() => setShowDeleteModal(false)} overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}>
-                {intl.abort}
+                Avbryt
               </Button>
               <Button
                 onClick={() => {
@@ -184,7 +184,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                     .catch(() => setShowDeleteModal(true))
                 }}
               >
-                {intl.delete}
+                Slett
               </Button>
             </Block>
           </ModalFooter>
