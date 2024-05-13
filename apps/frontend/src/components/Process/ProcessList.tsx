@@ -5,7 +5,7 @@ import { Block } from 'baseui/block'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { KIND, SIZE as ButtonSize, SIZE } from 'baseui/button'
 import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
-import { intl, theme, useAwait } from '../../util'
+import { theme, useAwait } from '../../util'
 import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion/AccordionProcess'
@@ -50,7 +50,7 @@ type ProcessListProps = {
   getCount?: (i: number) => void
 }
 
-const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
+const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, 'nb'))
 
 const ProcessList = ({ code, listName, filter, processId, section, moveScroll, titleOverride, hideTitle, isEditable, getCount }: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])

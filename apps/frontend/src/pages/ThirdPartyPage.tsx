@@ -13,7 +13,7 @@ import { Disclosure, DisclosureFormValues, DpProcess, InformationType } from '..
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { Spinner } from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
-import ProcessList from '../components/Process'
+import ProcessList from '../components/Process/ProcessList'
 import { Section } from './ProcessPage'
 import { getAllDpProcesses } from '../api/DpProcessApi'
 import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
