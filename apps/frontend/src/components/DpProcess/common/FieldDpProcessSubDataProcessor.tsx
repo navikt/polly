@@ -1,7 +1,6 @@
 import React from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { intl } from '../../../util'
 import BoolField from '../../Process/common/BoolField'
 import { DpProcessFormValues, Processor } from '../../../constants'
 import { FormikProps } from 'formik'

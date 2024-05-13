@@ -2,7 +2,7 @@ import * as React from 'react'
 import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { env } from '../../util/env'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 

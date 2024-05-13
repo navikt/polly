@@ -1,6 +1,5 @@
 import { useTable } from '../../util/hooks'
 import { Cell, HeadCell, Row, Table } from '../common/Table'
-import { intl } from '../../util'
 import { DpProcess, dpProcessSort, DpProcessWithEmail } from '../../constants'
 import RouteLink from '../common/RouteLink'
 import { useEffect, useState } from 'react'
