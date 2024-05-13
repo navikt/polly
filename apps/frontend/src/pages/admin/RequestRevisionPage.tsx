@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { HeadingMedium } from 'baseui/typography'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Spinner } from '../../components/common/Spinner'
 import { useNavigate } from 'react-router-dom'
 import { codelist, ListName } from '../../service/Codelist'

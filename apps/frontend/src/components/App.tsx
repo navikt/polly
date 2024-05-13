@@ -2,7 +2,7 @@ import * as React from 'react'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { Block } from 'baseui/block'
 import { LightTheme } from 'baseui'
-import SideBar from './SideBar'
+import SideBar from './SideBar/SideBar'
 import AppRoutes from '../AppRoutes'
 
 const narrowItemProps = {
