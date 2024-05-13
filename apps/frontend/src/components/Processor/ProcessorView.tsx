@@ -4,7 +4,7 @@ import { Process, Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS
 import { convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor } from '../../api/ProcessorApi'
 import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api'
 import { Block, BlockProps } from 'baseui/block'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import TextWithLabel from '../common/TextWithLabel'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -118,7 +118,7 @@ const ProcessorView = () => {
             <>
               <Button kind="outline" onClick={() => setShowEditProcessorModal(true)}>
                 <FontAwesomeIcon icon={faEdit} />
-                &nbsp;{intl.edit}
+                &nbsp;Redigér
               </Button>
               <Button
                 kind="outline"
@@ -128,7 +128,7 @@ const ProcessorView = () => {
                 marginLeft={true}
               >
                 <FontAwesomeIcon icon={faTrash} />
-                &nbsp;{intl.delete}
+                &nbsp;Slett
               </Button>
             </>
           )}
@@ -141,15 +141,15 @@ const ProcessorView = () => {
               <Block width="40%" paddingRight={dividerDistance}>
                 <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.contract} text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : intl.notFilled} />
+                    <TextWithLabel label='Ref. på databehandleravtale' text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : 'Ikke utfylt'} />
                   </FlexGridItem>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.contractOwner} text={currentProcessor.contractOwner ? contractOwner?.fullName : intl.notFilled} />
+                    <TextWithLabel label='Avtaleeier' text={currentProcessor.contractOwner ? contractOwner?.fullName : 'Ikke utfylt'} />
                   </FlexGridItem>
                   <FlexGridItem>
                     <TextWithLabel
-                      label={intl.operationalContractManagers}
-                      text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map((r) => r.fullName).join(', ') : intl.notFilled}
+                      label='Fagansvarlig'
+                      text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map((r) => r.fullName).join(', ') : 'Ikke utfylt'}
                     />
                   </FlexGridItem>
                 </FlexGrid>
@@ -157,13 +157,13 @@ const ProcessorView = () => {
               <Block width="60%" paddingLeft={dividerDistance} $style={{ borderLeft: `1px solid ${theme.colors.mono600}` }}>
                 <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.note} text={currentProcessor.note ? currentProcessor.note : intl.notFilled} />
+                    <TextWithLabel label='Merknad'text={currentProcessor.note ? currentProcessor.note : 'Ikke utfylt'} />
                   </FlexGridItem>
                   <FlexGridItem>
-                    <TextWithLabel label={intl.isDataProcessedOutsideEUEEA} text={''}>
+                    <TextWithLabel label='Behandler databehandler personopplysninger utenfor EU/EØS?' text={''}>
                       <Block {...blockProps}>
-                        {currentProcessor?.outsideEU === null && intl.unclarified}
-                        {currentProcessor.outsideEU === false && intl.no}
+                        {currentProcessor?.outsideEU === null && 'Uavklart'}
+                        {currentProcessor.outsideEU === false && 'Nei'}
                       </Block>
                       <>
                         {currentProcessor.outsideEU && (
@@ -175,17 +175,17 @@ const ProcessorView = () => {
                         )}
                         {currentProcessor.outsideEU && (
                           <>
-                            <TextWithLabel label={intl.transferGroundsOutsideEUEEA} text={''}>
+                            <TextWithLabel label='Overføringsgrunnlag for behandling utenfor EU/EØS' text={''}>
                               <Block {...blockProps}>
                                 {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
-                                {!currentProcessor.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
+                                {!currentProcessor.transferGroundsOutsideEU && <span>Ikke angitt</span>}
                                 {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther && (
                                   <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>
                                 )}
                               </Block>
                             </TextWithLabel>
                             {currentProcessor.countries && !!currentProcessor?.countries.length && (
-                              <TextWithLabel label={intl.countries} text={''}>
+                              <TextWithLabel label='Land' text={''}>
                                 <Block {...blockProps}>
                                   <span>{currentProcessor.countries.map((c) => codelist.countryName(c)).join(', ')}</span>
                                 </Block>
@@ -200,12 +200,12 @@ const ProcessorView = () => {
                 <Block display="flex" justifyContent="flex-end">
                   {currentProcessor.changeStamp && (
                     <ParagraphSmall>
-                      <i>{intl.formatString(intl.lastModified, currentProcessor.changeStamp.lastModifiedBy, lastModifiedDate(currentProcessor.changeStamp.lastModifiedDate))}</i>
+                       <i>{`Sist endret av ${currentProcessor.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcessor.changeStamp?.lastModifiedDate)}`}</i>
                     </ParagraphSmall>
                   )}
                 </Block>
                 <ProcessorModal
-                  title={intl.processor}
+                  title='Databehandler'
                   isOpen={showEditProcessorModal}
                   initialValues={convertProcessorToFormValues(currentProcessor)}
                   submit={handleEditDataProcessor}
