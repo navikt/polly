@@ -10,13 +10,16 @@ import AppRoutes from './AppRoutes'
 import { codelist } from './service/Codelist'
 import { user } from './service/User'
 import { theme, useAwait } from './util'
+import { useLang } from './util/intl/intl'
 
 
 const engine = new Styletron()
 
 
+
 const Main = (props) => {
   const { history } = props
+  const setLang = useLang()
 
   // all pages need these
   useAwait(codelist.wait())
@@ -33,7 +36,7 @@ const Main = (props) => {
               </Block>
               <Block minHeight={'100%'} width={'100%'} marginBottom={'200px'}>
                 <Block>
-                  <Header setLang='nb' />
+                  <Header setLang={setLang} />
                 </Block>
                 <Block marginTop={'4rem'} paddingRight={'30px'} paddingLeft={'30px'}>
                   <AppRoutes />
