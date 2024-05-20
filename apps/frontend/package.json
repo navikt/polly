@@ -11,7 +11,7 @@
     "@navikt/ds-react": "^6.0.0",
     "@navikt/ds-tailwind": "^6.0.0",
     "amplitude-js": "^8.0.0",
-    "axios": "1.6.8",
+    "axios": "1.7.0",
     "baseui": "^13.0.0",
     "core-js": "^3.7.0",
     "flag-icon-css": "^4.1.6",
