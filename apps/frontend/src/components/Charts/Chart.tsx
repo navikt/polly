@@ -181,7 +181,7 @@ const Visualization = (props: VisualizationProps) => {
       </Card>
 
       <div onClick={toggle} style={{ position: 'absolute', top: '5px', left: '5px' }}>
-        <CustomizedStatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søyledriagram'}>
+        <CustomizedStatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
           <Block $style={{ cursor: 'pointer' }}>
             <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
           </Block>
