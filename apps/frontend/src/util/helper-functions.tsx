@@ -1,9 +1,7 @@
-import { intl } from './intl/intl'
 import { StyledLink } from 'baseui/link'
 import * as React from 'react'
 import { KeyboardEvent } from 'react'
 import { StatefulTooltip } from 'baseui/tooltip'
-import { lowerFirst } from 'lodash'
 import { Process } from '../constants'
 
 export const isLink = (text: string) => {
@@ -21,7 +19,7 @@ export const shortenLinksInText = (text: string) => {
         <span key={index}>
           <StatefulTooltip content={word}>
             <StyledLink href={word} target="_blank" rel="noopener noreferrer">
-              {index === 0 ? intl.seeExternalLink : lowerFirst(intl.seeExternalLink)}
+              se ekstern lenke
             </StyledLink>
           </StatefulTooltip>
           &nbsp;
@@ -41,17 +39,17 @@ export const disableEnter = (e: KeyboardEvent) => {
 
 export const getNoDpiaLabel = (id: string) => {
   if (id === 'NO_SPECIAL_CATEGORY_PI') {
-    return intl.no_dpia_no_special_category_pi
+    return 'Ingen særlige kategorier personopplysninger behandles'
   } else if (id === 'SMALL_SCALE') {
-    return intl.no_dpia_small_scale
+    return 'Behandlingen skjer ikke i stor skala (få personopplysninger eller registrerte)'
   } else if (id === 'NO_DATASET_CONSOLIDATION') {
-    return intl.no_dpia_no_dataset_consolidation
+    return 'Ingen sammenstilling av datasett på tvers av formål'
   } else if (id === 'NO_NEW_TECH') {
-    return intl.no_dpia_no_new_tech
+    return 'Ingen bruk av teknologi på nye måter eller ny teknologi'
   } else if (id === 'NO_PROFILING_OR_AUTOMATION') {
-    return intl.no_dpia_no_profiling_or_automation
+    return 'Ingen bruk av profilering eller automatisering'
   } else if (id === 'OTHER') {
-    return intl.no_dpia_other
+    return 'Annet'
   }
   return ''
 }
