@@ -3,7 +3,6 @@ import { getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, ge
 import { ProcessField, ProcessShort, ProcessState, ProcessStatusFilter } from '../../constants'
 import { useParams } from 'react-router-dom'
 import { HeadingLarge } from 'baseui/typography'
-import { intl } from '../../util'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
 import { useQueryParam } from '../../util/hooks'
 import { Spinner } from '../common/Spinner'
@@ -44,7 +43,7 @@ const PurposeTable = () => {
 
   const changeTitle = () => {
     if (filterName === ProcessField.DPIA && filterValue) {
-      setTitle(`Behov for PVK: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Behov for PVK: ${translateToNorwegian(filterValue)}`)
     } else if (filterName === ProcessField.MISSING_LEGAL_BASIS) {
       setTitle("Behandlinger med rettslig grunnlag uavklart")
     } else if (filterName === ProcessField.MISSING_ARTICLE_6) {
@@ -63,11 +62,11 @@ const PurposeTable = () => {
           return setTitle("Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak")
       }
     } else if (filterName === ProcessField.PROFILING && filterValue) {
-      setTitle(`Profilering: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Profilering: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === ProcessField.AUTOMATION && filterValue) {
-      setTitle(`Helautomatisk behandling: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Helautomatisk behandling: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR && filterValue) {
-      setTitle(`Databehandler: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Databehandler: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle("Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part")
     } else if (filterName === ProcessField.DPIA_REFERENCE_MISSING) {
@@ -82,6 +81,15 @@ const PurposeTable = () => {
       {!loading && <SimpleProcessTable processes={filtered} title={title} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR} />}
     </>
   )
+}
+
+const translateToNorwegian = (filtervalue: string) => {
+  switch (filtervalue) {
+    case 'YES': return 'Ja'
+    case 'NO' : return 'Nei'
+    case 'UNKNOWN' : return 'Uavklart'
+    default : return ''
+    }
 }
 
 export default PurposeTable

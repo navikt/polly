@@ -4,7 +4,7 @@ import React from 'react'
 import { AuditAction } from '../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 
 const labelBlockProps: BlockProps = {
@@ -32,9 +32,9 @@ export const AuditActionIcon = (props: { action: AuditAction; withText?: boolean
     (props.action === AuditAction.DELETE && { icon: faMinusCircle, color: theme.colors.negative400 }) || { icon: undefined, color: undefined }
 
   return (
-    <CustomizedStatefulTooltip content={() => intl[props.action]}>
+    <CustomizedStatefulTooltip content={() => props.action}>
       <Block marginRight=".5rem" display="inline">
-        <FontAwesomeIcon icon={icon.icon!} color={icon.color} /> {props.withText && intl[props.action]}
+        <FontAwesomeIcon icon={icon.icon!} color={icon.color} /> {props.withText && props.action}
       </Block>
     </CustomizedStatefulTooltip>
   )
