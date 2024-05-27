@@ -8,7 +8,7 @@ import { Button } from 'baseui/button'
 import { LegalBasis, LegalBasisFormValues, PolicyAlert } from '../../constants'
 import { codelist, ListName, SensitivityLevel } from '../../service/Codelist'
 import { processString } from '../../util/string-processor'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { StyledLink } from 'baseui/link'
 import { env } from '../../util/env'
 import { ParagraphMedium } from 'baseui/typography'
@@ -81,36 +81,36 @@ export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
     <Block color={color}>
       <Block>
         {props.alert?.missingLegalBasis && (
-          <CustomizedStatefulTooltip content={intl.unknownLegalBasisHelpText}>
+          <CustomizedStatefulTooltip content='Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.'>
             <span>
-              {warningIcon} {intl.MISSING_LEGAL_BASIS}
+              {warningIcon} Behandlingsgrunnlag er ikke avklart
             </span>
           </CustomizedStatefulTooltip>
         )}
       </Block>
       <Block>
         {props.alert?.excessInfo && (
-          <CustomizedStatefulTooltip content={intl.excessInfoHelpText}>
+          <CustomizedStatefulTooltip content={'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'}>
             <span>
-              {warningIcon} {intl.EXCESS_INFO}
+              {warningIcon} Overskuddsinformasjon
             </span>
           </CustomizedStatefulTooltip>
         )}
       </Block>
       <Block>
         {props.alert?.missingArt6 && (
-          <CustomizedStatefulTooltip content={intl.withoutArticle6LegalBasisHelpText}>
+          <CustomizedStatefulTooltip content='Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.'>
             <span>
-              {warningIcon} {intl.MISSING_ARTICLE_6}
+              {warningIcon} Behandlingsgrunnlag for artikkel 6 mangler
             </span>
           </CustomizedStatefulTooltip>
         )}
       </Block>
       <Block>
         {props.alert?.missingArt9 && (
-          <CustomizedStatefulTooltip content={intl.withoutArticle9LegalBasisHelpText}>
+          <CustomizedStatefulTooltip content='Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9'>
             <span>
-              {warningIcon} {intl.MISSING_ARTICLE_9}
+              {warningIcon} Behandlingsgrunnlag for artikkel 9 mangler
             </span>
           </CustomizedStatefulTooltip>
         )}
