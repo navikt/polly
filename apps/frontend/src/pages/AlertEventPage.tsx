@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react'
 import { AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse } from '../constants'
 import { getAlertEvents } from '../api/AlertApi'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { Block } from 'baseui/block'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { StatefulMenu } from 'baseui/menu'
@@ -20,6 +20,7 @@ import { codelist } from '../service/Codelist'
 import moment from 'moment'
 import { SORT_DIRECTION } from 'baseui/table'
 import {ampli} from "../service/Amplitude";
+import {tekster} from "../util/lang";
 
 type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
@@ -138,7 +139,7 @@ export const AlertEventPage = () => {
       <Block width="100%" display="flex" marginBottom={theme.sizing.scale200}>
         <Block width="50%" display="flex" justifyContent="flex-start" alignItems="center">
           <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
-          <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: intl[t] + t }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
+          <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: tekster[t] }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
         </Block>
 
         <Block width="50%" display="flex" justifyContent="flex-end" alignItems="center">
@@ -197,8 +198,7 @@ export const AlertEventPage = () => {
             </Cell>
 
             <Cell>
-              {intl[event.level]} - {intl[event.type]}
-              {event.level} - {event.type}
+              {tekster[event.level]} - {tekster[event.type]}
             </Cell>
             <Cell>{moment(event.changeStamp.lastModifiedDate).format('lll')}</Cell>
             <Cell>{event.changeStamp.lastModifiedBy}</Cell>

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { AuditAction, Event, ObjectType, PageResponse } from '../../constants'
 import { Option, StatefulSelect, Value } from 'baseui/select'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { getEvents } from '../../api/AuditApi'
 import { Block } from 'baseui/block'
 import { ObjectLink } from '../common/RouteLink'
@@ -11,6 +11,7 @@ import moment from 'moment'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { StatefulTabs, Tab } from 'baseui/tabs'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
+import {tekster} from "../../util/lang";
 
 export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
@@ -49,7 +50,7 @@ export const LastEvents = () => {
             size="compact"
             clearable={false}
             searchable={false}
-            options={Object.keys(AuditAction).map((auditAction) => ({ id: auditAction, label: intl[auditAction as AuditAction] }))}
+            options={Object.keys(AuditAction).map((auditAction) => ({ id: auditAction, label: tekster[auditAction as AuditAction] }))}
             initialState={{ value: action }}
             onChange={(params) => setAction(params.value)}
             overrides={{
@@ -65,7 +66,7 @@ export const LastEvents = () => {
       <Block>
         <StatefulTabs onChange={(args) => setTable(args.activeKey as ObjectType)}>
           {[ObjectType.PROCESS, ObjectType.INFORMATION_TYPE, ObjectType.DISCLOSURE, ObjectType.DOCUMENT].map((tableName) => (
-            <Tab key={tableName} title={(intl as any)[tableName] || tableName}>
+            <Tab key={tableName} title={(tekster as any)[tableName] || tableName}>
               {content}
             </Tab>
           ))}
