@@ -80,7 +80,7 @@ spec:
       external:
         - host: {{teamcat_ingress}}
         - host: {{termcat_ingress}}
-        - host: kodeverk.nais.adeo.no
+        - host: kodeverk-api.nav.no
         - host: slack.com
   envFrom:
     - configmap: behandlingskatalogcfg
