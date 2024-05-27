@@ -8,7 +8,7 @@ data:
   BIGQUERY_AAREG_DATASETNAME: aareg_avtaler
   BIGQUERY_AAREG_PROJECTID: teamcrm-prod-31a7
   BIGQUERY_AAREG_TABLENAME: aareg_avtaler_for_tilgang
-  CLIENT_COMMON_CODE_NAV_URL: https://kodeverk.dev-fss-pub.nais.io/api
+  CLIENT_COMMON_CODE_NAV_URL: https://kodeverk-api.nav.no/api
   CLIENT_TEAMCAT_URL: https://teamkatalog-api.intern.dev.nav.no
   CLIENT_TERM_CATALOG_URL: https://begrepskatalog-api.intern.dev.nav.no/api/dcat
   ENVIRONMENT_CLASS: preprod
