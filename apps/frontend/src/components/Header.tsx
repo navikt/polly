@@ -3,17 +3,15 @@ import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, Styled
 import { Button } from 'baseui/button'
 import { Block, BlockProps } from 'baseui/block'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { user } from '../service/User'
 import { StyledLink } from 'baseui/link'
 import { StatefulPopover } from 'baseui/popover'
 import { LabelMedium } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { OptionProfile, StatefulMenu } from 'baseui/menu'
-import { Lang, langs, langsArray } from '../util/intl/intl'
+import { StatefulMenu } from 'baseui/menu'
 import { TriangleDown } from 'baseui/icon'
-import { FlagIcon } from './common/Flag'
 import { paddingAll } from './common/Style'
 import MainSearch from './search/MainSearch'
 
@@ -56,70 +54,6 @@ const LoginButton = () => {
     <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
       <Button style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>Logg inn</Button>
     </StyledLink>
-  )
-}
-
-const Flag = (props: { langCode: string }) => (
-  <span role="img" aria-label={langs[props.langCode].name}>
-    <FlagIcon country={langs[props.langCode].flag} />
-  </span>
-)
-
-const FlagWithName = (props: { langCode: string }) => (
-  <span>
-    <Flag langCode={props.langCode} /> {langs[props.langCode].name}
-  </span>
-)
-
-const LangDropdown = (props: { setLang: (lang: string) => void }) => {
-  return (
-    <StatefulPopover
-      content={({ close }) => (
-        <StatefulMenu
-          items={langsArray.filter((l) => l.langCode !== intl.getLanguage())}
-          onItemSelect={({ item }) => {
-            close()
-            props.setLang(item.langCode)
-          }}
-          overrides={{
-            Option: {
-              component: OptionProfile,
-              props: {
-                getProfileItemLabels: (lang: Lang) => ({
-                  title: lang.name,
-                  subtitle: lang.langCode,
-                }),
-                getProfileItemImg: (lang: Lang) => () => <Flag langCode={lang.langCode} />,
-                overrides: {
-                  ListItemProfile: {
-                    props: {
-                      style: {
-                        paddingTop: theme.sizing.scale100,
-                        paddingBottom: theme.sizing.scale100,
-                        paddingLeft: theme.sizing.scale600,
-                        paddingRight: theme.sizing.scale800,
-                      },
-                    },
-                  },
-                  ProfileImgContainer: {
-                    props: {
-                      style: {
-                        height: theme.sizing.scale900,
-                        width: theme.sizing.scale900,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          }}
-        />
-      )}
-    >
-      <Button endEnhancer={() => <TriangleDown size={24} />} kind="tertiary">
-        <FlagWithName langCode={intl.getLanguage()} />
-      </Button>
-    </StatefulPopover>
   )
 }
 
@@ -173,10 +107,6 @@ const Header = (props: HeaderProps) => {
                 <AdminOptions />
               </NavigationItem>
             )}
-
-            <NavigationItem $style={{ paddingLeft: 0 }}>
-              <LangDropdown setLang={props.setLang} />
-            </NavigationItem>
 
             {!user.isLoggedIn() && (
               <NavigationItem $style={{ paddingLeft: 0 }}>

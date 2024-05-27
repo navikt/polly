@@ -138,15 +138,15 @@ export const AlertEventPage = () => {
       <Block width="100%" display="flex" marginBottom={theme.sizing.scale200}>
         <Block width="50%" display="flex" justifyContent="flex-start" alignItems="center">
           <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
-          <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: intl[t] }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
+          <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: intl[t] + t }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
         </Block>
 
         <Block width="50%" display="flex" justifyContent="flex-end" alignItems="center">
           <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
-          {levelButton(intl.all)}
-          {levelButton(intl.INFO, AlertEventLevel.INFO)}
-          {levelButton(intl.WARNING, AlertEventLevel.WARNING)}
-          {levelButton(intl.ERROR, AlertEventLevel.ERROR)}
+          {levelButton('Alle')}
+          {levelButton('Info', AlertEventLevel.INFO)}
+          {levelButton('Advarsel', AlertEventLevel.WARNING)}
+          {levelButton('Feil', AlertEventLevel.ERROR)}
         </Block>
       </Block>
       <Table
@@ -198,6 +198,7 @@ export const AlertEventPage = () => {
 
             <Cell>
               {intl[event.level]} - {intl[event.type]}
+              {event.level} - {event.type}
             </Cell>
             <Cell>{moment(event.changeStamp.lastModifiedDate).format('lll')}</Cell>
             <Cell>{event.changeStamp.lastModifiedBy}</Cell>
