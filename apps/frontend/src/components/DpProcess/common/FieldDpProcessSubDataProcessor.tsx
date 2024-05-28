@@ -7,7 +7,6 @@ import { FormikProps } from 'formik'
 import FieldDpDataProcessors from './FieldDpDataProcessors'
 import { getAll } from '../../../api'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
-import { FlexGridItem } from 'baseui/flex-grid'
 
 type FieldDpProcessSubDataProcessorProps = {
   rowBlockProps: BlockProps

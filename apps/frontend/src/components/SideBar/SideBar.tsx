@@ -8,7 +8,7 @@ import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import { StyledLink } from 'baseui/link'
 import NavItem from './NavItem'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import { datajegerSlackLink, documentationLink, helpLink } from '../../util/config'
+import { datajegerSlackLink, helpLink } from '../../util/config'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 
 const sideBarProps: BlockProps = {

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { Block } from 'baseui/block'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
-import { KIND, SIZE as ButtonSize, SIZE } from 'baseui/button'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
 import { theme, useAwait } from '../../util'
 import { user } from '../../service/User'
