@@ -20,7 +20,7 @@ import { codelist } from '../service/Codelist'
 import moment from 'moment'
 import { SORT_DIRECTION } from 'baseui/table'
 import {ampli} from "../service/Amplitude";
-import {tekster} from "../util/lang";
+import {tekster} from "../util/codeToFineText";
 
 type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 

@@ -11,7 +11,7 @@ import moment from 'moment'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { StatefulTabs, Tab } from 'baseui/tabs'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
-import {tekster} from "../../util/lang";
+import {tekster} from "../../util/codeToFineText";
 
 export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()

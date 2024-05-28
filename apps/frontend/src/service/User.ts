@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { UserInfo } from '../constants'
 import { getUserInfo } from '../api'
-import {tekster} from "../util/lang";
+import {tekster} from "../util/codeToFineText";
 
 export enum Group {
   READ = 'READ',
