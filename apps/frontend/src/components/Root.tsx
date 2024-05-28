@@ -7,11 +7,7 @@ interface RootProps {
 }
 
 const Root = ({ children }: RootProps): JSX.Element => {
-  const language = 'nb'
-  useEffect(() => {
     document.title = 'Behandlingskatalog'
-  }, [language])
-
   return (
     <div>
       <Helmet>
