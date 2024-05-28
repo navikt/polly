@@ -86,11 +86,7 @@ const AdminOptions = () => {
   )
 }
 
-interface HeaderProps {
-  setLang: (lang: string) => void
-}
-
-const Header = (props: HeaderProps) => {
+const Header = () => {
   return (
     <Block paddingRight={'30px'} paddingLeft={'30px'}>
       <HeaderNavigation overrides={{ Root: { style: { paddingBottom: 0, borderBottomStyle: 'none' } } }}>
