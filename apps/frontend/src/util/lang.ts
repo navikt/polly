@@ -22,6 +22,7 @@ export interface IStrings {
   WARNING: string
   ERROR: string
 
+
   // Alert events
   MISSING_LEGAL_BASIS: string
   EXCESS_INFO: string
