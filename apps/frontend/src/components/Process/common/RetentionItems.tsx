@@ -3,7 +3,7 @@ import { ProcessFormValues } from '../../../constants'
 import { default as React, useEffect, useState } from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { Slider } from 'baseui/slider'
 import FieldInput from './FieldInput'
 import BoolField from './BoolField'
@@ -48,21 +48,21 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.includeConservationPlan} />
+        <ModalLabel label='Omfattes av NAVs bevarings- og kassasjonsvedtak?' />
         <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan} />
       </Block>
 
       {
         <>
           <Block {...rowBlockProps}>
-            <ModalLabel label={intl.retentionMonths} tooltip={intl.retentionNeedsHelpText} />
+            <ModalLabel label='Lagringsbehov for NAV' tooltip='Det er hvor lenge NAV har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket.' />
             <Field
               name="retention.retentionMonths"
               render={({ field, form }: FieldProps<string, ProcessFormValues>) => (
                 <>
                   <Block width={'50%'} marginRight={'25px'}>
                     <Slider
-                      overrides={sliderOverride(intl.years)}
+                      overrides={sliderOverride('år')}
                       min={0}
                       max={100}
                       value={[retentionYears]}
@@ -71,7 +71,7 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
                   </Block>
                   <Block width={'50%'} marginLeft={'25px'}>
                     <Slider
-                      overrides={sliderOverride(intl.months)}
+                      overrides={sliderOverride('måneder')}
                       min={0}
                       max={11}
                       value={[retentionMonths]}
@@ -85,7 +85,7 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
           <Error fieldName="retention.retentionMonths" />
 
           <Block {...rowBlockProps}>
-            <ModalLabel label={intl.retentionStart} tooltip={intl.retentionHelpText} />
+            <ModalLabel label='Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse' tooltip='Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.' />
             <Block width={'100%'}>
               <FieldInput fieldName="retention.retentionStart" fieldValue={formikBag.values.retention.retentionStart} />
             </Block>
@@ -94,8 +94,8 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
         </>
       }
       <Block {...rowBlockProps}>
-        <ModalLabel label={intl.retentionReference} />
-        <FieldInput fieldName="retention.retentionDescription" fieldValue={formikBag.values.retention.retentionDescription} placeHolder={intl.retentionDescriptionPlaceHolder} />
+        <ModalLabel label='Ref. til relevant dokumentasjon' />
+        <FieldInput fieldName="retention.retentionDescription" fieldValue={formikBag.values.retention.retentionDescription} placeHolder='(f.eks. lenke til Websak, Confluence e.l.)' />
       </Block>
       <Error fieldName="retention.retentionDescription" />
     </>

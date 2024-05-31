@@ -5,7 +5,7 @@ import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { Spinner } from 'baseui/spinner'
 import { Block } from 'baseui/block'
 import { LabelMedium } from 'baseui/typography'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { user } from '../../../service/User'
 import { Plus } from 'baseui/icon'
 import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
@@ -83,7 +83,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   const renderCreatePolicyButton = () => (
     <Button
-      tooltip={intl.addOneInformationType}
+      tooltip='Legg til én informasjonstype'
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowCreatePolicyModal(true)}
@@ -93,7 +93,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
         </Block>
       }
     >
-      {intl.informationType}
+      Opplysningstype
     </Button>
   )
 
@@ -105,7 +105,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       onClick={() => setShowDeleteAllPolicyModal(true)}
       startEnhancer={
         <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
-          <FontAwesomeIcon title={intl.delete} icon={faTrash}/>
+          <FontAwesomeIcon title='Slett' icon={faTrash}/>
         </Block>
       }
     >
@@ -115,7 +115,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   const renderAddDocumentButton = () => (
     <Button
-      tooltip={intl.addCollectionOfInformationTypes}
+      tooltip='Legg til en samling av opplysningstyper'
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowAddDocumentModal(true)}
@@ -125,7 +125,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
         </Block>
       }
     >
-      {intl.document}
+      Dokument
     </Button>
   )
 
@@ -167,7 +167,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               if (today < a.end && today > b.end) return -1
               else if (today > a.end && today < b.end) return 1
 
-              
+
               const aname = a.purposes[0].shortName + ': ' + a.name.trim()
               const bname = b.purposes[0].shortName + ': ' + b.name.trim()
 
@@ -224,8 +224,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                           <Block display="flex" justifyContent="flex-end">
                             <span>
                               <i>
-                                {intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>,{' '}
-                                {lastModifiedDate(currentProcess.changeStamp.lastModifiedDate)}
+                                {`Sist endret av ${currentProcess.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcess.changeStamp?.lastModifiedDate)}`}
                               </i>
                             </span>
                           </Block>
@@ -235,14 +234,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                             {canViewAlerts() && (
                               <Block marginRight="auto">
                                 <Button type="button" kind="tertiary" size="compact" icon={faExclamationCircle} onClick={() => history(`/alert/events/process/${p.id}`)}>
-                                  {intl.alerts}
+                                  Varsler
                                 </Button>
                               </Block>
                             )}
                             {(user.isAdmin() || user.isSuper()) && (
                               <Block marginRight="auto">
                                 <Button type="button" kind="tertiary" size="compact" icon={faGavel} onClick={() => setShowRevisionModal(true)}>
-                                  {intl.newRevision}
+                                  Ny revidering
                                 </Button>
                               </Block>
                             )}
@@ -274,7 +273,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       </StatelessAccordion>
       {!props.processList.length && (
         <LabelMedium margin="1rem">
-          {intl.emptyTable} {intl.processes}
+          Ingen behandlinger
         </LabelMedium>
       )}
 
@@ -282,7 +281,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
         <>
           <ModalProcess
             key={currentProcess.id}
-            title={intl.processingActivitiesEdit}
+            title='Redigér behandling'
             onClose={() => setShowEditProcessModal(false)}
             isOpen={showEditProcessModal}
             submit={async (values: ProcessFormValues) => {
@@ -293,7 +292,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             initialValues={{ ...convertProcessToFormValues(currentProcess), disclosures: disclosures }}
           />
           <ModalPolicy
-            title={intl.policyAdd}
+            title='Legg til opplysningstyper brukt i behandlingen'
             initialValues={{
               legalBasesOpen: false,
               informationType: undefined,

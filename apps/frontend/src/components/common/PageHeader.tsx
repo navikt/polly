@@ -1,6 +1,6 @@
 import { Block } from 'baseui/block'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Markdown } from './Markdown'
 import * as React from 'react'
 import { useEffect } from 'react'
@@ -14,7 +14,7 @@ import { StyledLink } from 'baseui/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
-import { lowerFirst } from 'lodash'
+
 
 export const PageHeader = (props: { section: Section; code: string }) => {
   const [isLoading, setLoading] = React.useState(false)
@@ -46,18 +46,18 @@ export const PageHeader = (props: { section: Section; code: string }) => {
     if (section === Section.productarea) {
       return productArea?.name || ''
     }
-    return intl.ERROR
+    return 'Feil'
   }
 
   const metadataTitle = () => {
-    if (section === Section.subdepartment) return intl.subDepartment
-    else if (section === Section.department) return intl.department
-    else if (section === Section.team) return intl.team
-    else if (section === Section.productarea) return intl.productArea
-    else if (section === Section.system) return intl.system
-    else if (section === Section.processor) return intl.processor
-    else if (section === Section.thirdparty) return `${intl.commonExternalProcessResponsible} ${intl.with} ${lowerFirst(intl.thirdParty)}`
-    return intl.overallPurposeActivity
+    if (section === Section.subdepartment) return 'Linja'
+    else if (section === Section.department) return 'Avdeling'
+    else if (section === Section.team) return 'Team'
+    else if (section === Section.productarea) return 'Produktområde'
+    else if (section === Section.system) return 'System'
+    else if (section === Section.processor) return 'Databehandler'
+    else if (section === Section.thirdparty) return `Felles behandlingsansvarlig med ekstern part}`
+    return 'Overordnet behandlingsaktivitet'
   }
 
   const getDescription = () => {
@@ -83,7 +83,7 @@ export const PageHeader = (props: { section: Section; code: string }) => {
       <>
         <Block marginRight={theme.sizing.scale1200} />
         <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
-          <CustomizedStatefulTooltip content={intl.goToSite}>
+          <CustomizedStatefulTooltip content='Gå til side'>
             <span>
               <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
             </span>

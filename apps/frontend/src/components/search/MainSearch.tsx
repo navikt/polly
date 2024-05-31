@@ -4,7 +4,7 @@ import { Block } from 'baseui/block'
 import { codelist, ListName } from '../../service/Codelist'
 import { useDebouncedState } from '../../util/hooks'
 import { prefixBiasedSort } from '../../util/sort'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam } from '../../api'
 import { Select, TYPE, Value } from 'baseui/select'
 import { urlForObject } from '../common/RouteLink'
@@ -53,19 +53,19 @@ const useMainSearch = () => {
   useEffect(() => {
     setSearchResult([])
     if (type === 'purpose') {
-      setSearchResult(getCodelistByListnameAndType(search, ListName.PURPOSE, intl.purpose))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.PURPOSE, 'Formål'))
     } else if (type === 'department') {
-      setSearchResult(getCodelistByListnameAndType(search, ListName.DEPARTMENT, intl.department))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.DEPARTMENT, 'Avdeling'))
     } else if (type === 'subDepartment') {
-      setSearchResult(getCodelistByListnameAndType(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.SUB_DEPARTMENT, 'Linja'))
     } else if (type === 'thirdParty') {
-      setSearchResult(getCodelistByListnameAndType(search, ListName.THIRD_PARTY, intl.thirdParty))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.THIRD_PARTY, 'Ekstern part'))
     } else if (type === 'system') {
-      setSearchResult(getCodelistByListnameAndType(search, ListName.SYSTEM, intl.system))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.SYSTEM, 'System'))
     } else if (type === 'nationalLaw') {
-      setSearchResult(getCodelistByListnameAndType(search, ListName.NATIONAL_LAW, intl.nationalLaw))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.NATIONAL_LAW, 'Nasjonal lov'))
     } else if (type === 'gdprArticle') {
-      setSearchResult(getCodelistByListnameAndType(search, ListName.GDPR_ARTICLE, intl.gdprArticle))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.GDPR_ARTICLE, 'GDPR artikkel'))
     } else {
       ;(async () => {
         if (search && search.replace(/ /g, '').length > 2) {
@@ -83,13 +83,13 @@ const useMainSearch = () => {
           setLoading(true)
 
           if (type === 'all') {
-            add(searchCodelist(search, ListName.PURPOSE, intl.processActivity, searchResultColor.purposeBackground))
-            add(searchCodelist(search, ListName.DEPARTMENT, intl.department, searchResultColor.departmentBackground))
-            add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment, searchResultColor.subDepartmentBackground))
-            add(searchCodelist(search, ListName.THIRD_PARTY, intl.thirdParty, searchResultColor.thirdPartyBackground))
-            add(searchCodelist(search, ListName.SYSTEM, intl.system, searchResultColor.systemBackground))
-            add(searchCodelist(search, ListName.NATIONAL_LAW, intl.nationalLaw, searchResultColor.nationalLawBackground))
-            add(searchCodelist(search, ListName.GDPR_ARTICLE, intl.gdprArticle, searchResultColor.gdprBackground))
+            add(searchCodelist(search, ListName.PURPOSE, 'Behandlingsaktivitet', searchResultColor.purposeBackground))
+            add(searchCodelist(search, ListName.DEPARTMENT, 'Avdeling', searchResultColor.departmentBackground))
+            add(searchCodelist(search, ListName.SUB_DEPARTMENT, 'Linja', searchResultColor.subDepartmentBackground))
+            add(searchCodelist(search, ListName.THIRD_PARTY, 'Ekstern part', searchResultColor.thirdPartyBackground))
+            add(searchCodelist(search, ListName.SYSTEM, 'System', searchResultColor.systemBackground))
+            add(searchCodelist(search, ListName.NATIONAL_LAW, 'Nasjonal lov', searchResultColor.nationalLawBackground))
+            add(searchCodelist(search, ListName.GDPR_ARTICLE, 'GDPR artikkel', searchResultColor.gdprBackground))
           }
 
           if (type === 'all' || type === 'informationType') {
@@ -100,7 +100,7 @@ const useMainSearch = () => {
                   infoTypesRes.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type={intl.informationType} backgroundColor={searchResultColor.informationTypeBackground} />,
+                    label: <SearchLabel name={it.name} type='Opplysningstype' backgroundColor={searchResultColor.informationTypeBackground} />,
                     type: ObjectType.INFORMATION_TYPE,
                   })),
                 )
@@ -118,7 +118,7 @@ const useMainSearch = () => {
                     return {
                       id: it.id,
                       sortKey: `${it.name} ${purposes}`,
-                      label: <SearchLabel name={`${purposes}: ${it.name}`} type={intl.process} backgroundColor={searchResultColor.processBackground} />,
+                      label: <SearchLabel name={`${purposes}: ${it.name}`} type='Behandling' backgroundColor={searchResultColor.processBackground} />,
                       type: ObjectType.PROCESS,
                       number: it.number,
                     }
@@ -137,7 +137,7 @@ const useMainSearch = () => {
                     return {
                       id: it.id,
                       sortKey: it.name,
-                      label: <SearchLabel name={it.name} type={intl.dpProcess} backgroundColor={searchResultColor.dpProcessBackground} />,
+                      label: <SearchLabel name={it.name} type='NAV som databehandler' backgroundColor={searchResultColor.dpProcessBackground} />,
                       type: ObjectType.DP_PROCESS,
                     }
                   }),
@@ -154,7 +154,7 @@ const useMainSearch = () => {
                   resTeams.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type={intl.productTeam} backgroundColor={searchResultColor.teamBackground} />,
+                    label: <SearchLabel name={it.name} type='Team' backgroundColor={searchResultColor.teamBackground} />,
                     type: 'team',
                   })),
                 )
@@ -170,7 +170,7 @@ const useMainSearch = () => {
                   res.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type={intl.productArea} backgroundColor={searchResultColor.productAreaBackground} />,
+                    label: <SearchLabel name={it.name} type='Område' backgroundColor={searchResultColor.productAreaBackground} />,
                     type: 'productarea',
                   })),
                 )
@@ -186,7 +186,7 @@ const useMainSearch = () => {
                   resDocs.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type={intl.document} backgroundColor={searchResultColor.documentBackground} />,
+                    label: <SearchLabel name={it.name} type='Dokument' backgroundColor={searchResultColor.documentBackground} />,
                     type: ObjectType.DOCUMENT,
                   })),
                 )
@@ -214,15 +214,15 @@ export const MainSearch = () => {
     <Block>
       <Block display="flex" alignItems="center">
         <Select
-          noResultsMsg={intl.emptyTable}
+          noResultsMsg='Ingen'
           autoFocus={location.pathname === '/'}
           isLoading={loading}
           maxDropdownHeight="400px"
           searchable={true}
           type={TYPE.search}
           options={searchResult}
-          aria-label={intl.search}
-          placeholder={intl.search}
+          aria-label='Søk'
+          placeholder='Søk'
           value={value}
           onInputChange={(event) => {
             setSearch(event.currentTarget.value)
@@ -278,7 +278,7 @@ export const MainSearch = () => {
           marginLeft
           $style={{ height: theme.sizing.scale1000, width: theme.sizing.scale1000 }}
         >
-          <img aria-label={intl.filter} />
+          <img aria-label='Filter'/>
         </Button>
       </Block>
       {filter && <SelectType type={type} setType={setType} />}

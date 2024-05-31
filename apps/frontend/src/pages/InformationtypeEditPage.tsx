@@ -3,7 +3,6 @@ import * as React from 'react'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import { InformationType, InformationtypeFormValues } from '../constants'
 import { codelist } from '../service/Codelist'
-import { intl } from '../util'
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api'
 import { useNavigate, useParams } from 'react-router-dom'
 import { HeadingMedium } from 'baseui/typography'
@@ -67,7 +66,7 @@ const InformationtypeEditPage = () => {
         <Spinner $size={30} />
       ) : (
         <React.Fragment>
-          <HeadingMedium>{intl.edit}</HeadingMedium>
+          <HeadingMedium>Redigér</HeadingMedium>
 
           {!error && informationtype ? (
             <React.Fragment>
@@ -75,7 +74,7 @@ const InformationtypeEditPage = () => {
               {errorSubmit && <p>{errorSubmit}</p>}
             </React.Fragment>
           ) : (
-            <p>{intl.couldntLoad}</p>
+            <p>Kunne ikke laste inn siden</p>
           )}
         </React.Fragment>
       )}

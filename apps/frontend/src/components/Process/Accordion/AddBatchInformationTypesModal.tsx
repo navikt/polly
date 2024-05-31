@@ -4,7 +4,7 @@ import { getInformationTypesBy } from '../../../api'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { Block, BlockProps } from 'baseui/block'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Select, Value } from 'baseui/select'
@@ -13,7 +13,6 @@ import Button from '../../common/Button'
 import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { LabelMedium, LabelSmall } from 'baseui/typography'
-import { lowerFirst } from 'lodash'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import { KIND } from 'baseui/button'
 import { disableEnter } from '../../../util/helper-functions'
@@ -84,18 +83,18 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
         render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
           return (
             <Form onKeyDown={disableEnter}>
-              <ModalHeader>{intl.addCollectionOfInformationTypes}</ModalHeader>
+              <ModalHeader>Legg til en samling av opplysningstyper</ModalHeader>
               <ModalBody>
                 <Block {...modalBlockProps}>
                   <Block {...rowBlockProps} flexDirection="row">
-                    <ModalLabel label={intl.orgMaster} />
+                    <ModalLabel label='Master i NAV' />
                     <Select
                       autoFocus
                       isLoading={searchLoading}
                       options={codelist.getParsedOptions(ListName.SYSTEM)}
                       maxDropdownHeight="400px"
                       value={system}
-                      placeholder={intl.system}
+                      placeholder='System'
                       onChange={(params) => {
                         setSystem(params.value)
                       }}
@@ -117,12 +116,12 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                               {!!addable.length && (
                                 <>
                                   <Block display="flex" flexDirection="column">
-                                    <LabelMedium marginTop={theme.sizing.scale600}>{intl.informationTypes}</LabelMedium>
+                                    <LabelMedium marginTop={theme.sizing.scale600}>Opplysningstyper ja</LabelMedium>
                                     <Block {...rowBlockProps}>
                                       {addable.map((it) => (
                                         <Block key={it.id} display="flex" alignItems="center" marginBottom={theme.sizing.scale100} marginTop={theme.sizing.scale100}>
                                           <LabelMedium>{it.name}</LabelMedium>
-                                          <Button size="compact" kind="tertiary" shape="round" tooltip={intl.add} onClick={() => informationTypesProps.push(mapToUse(it))}>
+                                          <Button size="compact" kind="tertiary" shape="round" tooltip='Legg til' onClick={() => informationTypesProps.push(mapToUse(it))}>
                                             <FontAwesomeIcon icon={faPlusCircle} />
                                           </Button>
                                         </Block>
@@ -133,12 +132,12 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                               )}
                               {!addable.length && !infoTypes.length && (
                                 <LabelMedium marginTop={theme.sizing.scale600}>
-                                  {intl.emptyTable} {lowerFirst(intl.informationTypes)}
+                                  Ingen opplysningstyper
                                 </LabelMedium>
                               )}
                               {!addable.length && !!infoTypes.length && (
                                 <LabelMedium marginTop={theme.sizing.scale600}>
-                                  {intl.all} {lowerFirst(intl.informationTypes)} {intl.added}
+                                  Alle opplysningstyper lagt til
                                 </LabelMedium>
                               )}
 
@@ -157,7 +156,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                                   </LabelMedium>
 
                                   <Block width="60%" display="flex" alignItems="center">
-                                    <LabelSmall marginRight={theme.sizing.scale100}>{intl.subjectCategories}: </LabelSmall>
+                                    <LabelSmall marginRight={theme.sizing.scale100}>Personkategori: </LabelSmall>
                                     <Select
                                       options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
                                       value={it.subjectCategories.map((sc) => ({ id: sc.code }))}
@@ -166,7 +165,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                                         informationTypesProps.replace(idx, { ...it, subjectCategories })
                                       }}
                                     />
-                                    <Button marginLeft size="compact" kind="tertiary" shape="round" tooltip={intl.remove} onClick={() => informationTypesProps.remove(idx)}>
+                                    <Button marginLeft size="compact" kind="tertiary" shape="round" tooltip='Fjern' onClick={() => informationTypesProps.remove(idx)}>
                                       <FontAwesomeIcon icon={faMinusCircle} />
                                     </Button>
                                   </Block>
@@ -196,9 +195,9 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{props.error && <p>{props.error}</p>}</Block>
                   <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
-                    {intl.abort}
+                    Avbryt
                   </Button>
-                  <ModalButton type="submit">{intl.add}</ModalButton>
+                  <ModalButton type="submit">Legg til</ModalButton>
                 </Block>
               </ModalFooter>
             </Form>

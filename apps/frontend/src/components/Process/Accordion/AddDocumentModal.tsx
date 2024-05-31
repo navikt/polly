@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process } from '../../../constants'
 import { Block, BlockProps } from 'baseui/block'
 import { ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { intl, useDebouncedState } from '../../../util'
+import { useDebouncedState } from '../../../util'
 import { addDocumentToProcessSchema } from '../../common/schema'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Option, Select, TYPE } from 'baseui/select'
@@ -60,7 +60,7 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[]; 
               </Block>
               <Block $style={{ opacity: '80%' }}>{informationType.subjectCategories.map((s) => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}</Block>
             </Block>
-            <CustomizedStatefulTooltip content={intl.remove}>
+            <CustomizedStatefulTooltip content='Fjern'>
               <Button
                 size="compact"
                 kind="tertiary"
@@ -127,7 +127,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
         return { ...infoType, subjectCategories: remainingSubjectCategories }
       })
       .filter((infoType) => !!infoType.subjectCategories.length) // remove infoTypes with no set subjectCategories
-    infoTypeUses.sort((a, b) => a.informationType.name.localeCompare(b.informationType.name, intl.getLanguage()))
+    infoTypeUses.sort((a, b) => a.informationType.name.localeCompare(b.informationType.name))
     return infoTypeUses
   }
 
@@ -155,11 +155,11 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
 
             return (
               <Form onKeyDown={disableEnter}>
-                <ModalHeader>{intl.addDocument}</ModalHeader>
+                <ModalHeader>Legg til opplysningstyper fra dokument</ModalHeader>
                 <ModalBody>
                   <Block {...modalBlockProps}>
                     <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.document} />
+                      <ModalLabel label='Dokument' />
                       <Field
                         name="document"
                         render={({ form }: FieldProps<AddDocumentToProcessFormValues>) => (
@@ -168,12 +168,12 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                               clearable={false}
                               isLoading={searchLoading}
                               autoFocus
-                              noResultsMsg={intl.emptyTable}
+                              noResultsMsg='Ingen'
                               maxDropdownHeight="400px"
                               searchable={true}
                               type={TYPE.search}
                               options={documents}
-                              placeholder={intl.searchDocuments}
+                              placeholder='Søk dokumenter'
                               value={form.values.document ? [form.values.document as Option] : []}
                               onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
                               onChange={(params) => {
@@ -187,7 +187,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                             />
                             {!formik.values.document && defaultDoc && (
                               <Button type="button" kind="secondary" size="compact" style={{ marginLeft: '.5rem' }} onClick={() => selectDocument(defaultDoc, true)}>
-                                {intl.includeDefaultDocument}
+                                Standard opplysningstyper
                               </Button>
                             )}
                           </>
@@ -200,7 +200,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                       <>
                         <ParagraphSmall>{formik.values.document.description}</ParagraphSmall>
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.informationTypes} />
+                          <ModalLabel label='Opplysningstyper' />
                           <FieldArray
                             name="informationTypes"
                             render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -217,9 +217,9 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                   <Block display="flex" justifyContent="flex-end">
                     <Block alignSelf="flex-end">{props.error && <p>{props.error}</p>}</Block>
                     <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
-                      {intl.abort}
+                      Avbryt
                     </Button>
-                    <ModalButton type="submit">{intl.add}</ModalButton>
+                    <ModalButton type="submit">Legg til</ModalButton>
                   </Block>
                 </ModalFooter>
               </Form>

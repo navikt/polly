@@ -1,17 +1,16 @@
 import { Value } from 'baseui/select'
-import { intl } from '../../../util'
 
 export const customizeNationalLawPlaceholder = (gdpr: Value) => {
   if (!gdpr[0]) return
   switch (gdpr[0].id) {
     case 'ART61F':
-      return intl.descriptionWriteLegalBasesF
+      return 'Spesifiser interessen'
       break
     case 'ART61C':
-      return intl.descriptionWriteLegalBasesCE
+      return 'Legg inn paragraf (§) eller kapittel'
       break
     case 'ART61E':
-      return intl.descriptionWriteLegalBasesCE
+      return 'Legg inn paragraf (§) eller kapittel'
       break
   }
 }

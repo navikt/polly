@@ -4,7 +4,7 @@ import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } f
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
 import { Block, BlockProps } from 'baseui/block'
 import { Error, ModalLabel } from '../common/ModalSchema'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Button } from 'baseui/button'
 import { Select, Value } from 'baseui/select'
 import { codelist, ListName } from '../../service/Codelist'
@@ -135,44 +135,48 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
 
               <ModalBody>
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.recipient} />
+                  <ModalLabel label='Mottaker' />
                   <FieldRecipient value={formikBag.values.recipient} disabled={disableRecipientField} />
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosureName} tooltip={intl.disclosureNameTooltip} />
+                  <ModalLabel label='Navn på utlevering'
+                              tooltip='Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap.' />
                   <FieldInput fieldName="name" fieldValue={formikBag.values.name} />
                 </Block>
                 <Error fieldName="name" />
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosurePurpose} tooltip={intl.disclosurePurposeTooltip} />
+                  <ModalLabel label='Formål med utlevering'
+                              tooltip='Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.' />
                   <FieldTextarea fieldName="recipientPurpose" fieldValue={formikBag.values.recipientPurpose} />
                 </Block>
                 <Error fieldName="recipientPurpose" />
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.additionalDescription} tooltip={intl.disclosureDescriptionTooltip} />
+                  <ModalLabel label='Ytterligere beskrivelse'
+                              tooltip='Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.' />
                   <FieldTextarea fieldName="description" fieldValue={formikBag.values.description} />
                 </Block>
                 <Error fieldName="description" />
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.relatedProcesses} />
+                  <ModalLabel label='Relaterte behandlinger' />
                   <Block width="100%">
                     <SelectProcess formikBag={formikBag} />
                   </Block>
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.informationTypes} />
+                  <ModalLabel label='Opplysningstyper' />
                   <Block width="100%">
                     <SelectInformationTypes formikBag={formikBag} />
                   </Block>
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.document} tooltip={intl.disclosureDocumentTooltip} />
+                  <ModalLabel label='Dokument'
+                              tooltip='En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.' />
                   <Field
                     name="document"
                     render={({ form }: FieldProps<DisclosureFormValues>) => (
@@ -188,20 +192,20 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Error fieldName="document" />
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.administrationArchiveCaseNumber} />
+                  <ModalLabel label='Saksnummer i adminstrativt arkiv' />
                   <FieldInput fieldName="administrationArchiveCaseNumber" fieldValue={formikBag.values.administrationArchiveCaseNumber} />
                 </Block>
                 <Error fieldName="administrationArchiveCaseNumber" />
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.deliverAbroad} />
+                  <ModalLabel label='Utleveres personopplysningene til utlandet?' />
                   <BoolField fieldName="abroad.abroad" value={formikBag.values.abroad.abroad} />
                 </Block>
 
                 {formikBag.values.abroad.abroad && (
                   <>
                     <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.countries} />
+                      <ModalLabel label='Land' />
                       <FieldArray
                         name="abroad.countries"
                         render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -233,12 +237,12 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     </Block>
 
                     <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.socialSecurityAgreement} />
+                      <ModalLabel label='Oppgi referanse til trygdeavtale' />
                       <FieldInput fieldName="abroad.refToAgreement" fieldValue={formikBag.values.abroad.refToAgreement} />
                     </Block>
 
                     <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.socialSecurityArea} />
+                      <ModalLabel label='Trygdeområde' />
                       <FieldInput fieldName="abroad.businessArea" fieldValue={formikBag.values.abroad.businessArea} />
                     </Block>
                   </>
@@ -246,7 +250,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
 
                 <Block>
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.confidentialityAssessment} />
+                    <ModalLabel label='Hjemmel for unntak fra taushetsplikt er vurdert' />
                     <BoolField fieldName="assessedConfidentiality" value={formikBag.values.assessedConfidentiality} omitUndefined={true} />
                   </Block>
                   <Error fieldName="assessedConfidentiality" />
@@ -256,7 +260,8 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                   (<>
                     <Block>
                       <Block {...rowBlockProps}>
-                        <ModalLabel label={formikBag.values.assessedConfidentiality ? intl.confidentialityDescriptionYes : intl.confidentialityDescriptionNo} />
+                        <ModalLabel label={formikBag.values.assessedConfidentiality ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
+                          : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'} />
                         <FieldTextarea fieldName="confidentialityDescription" fieldValue={formikBag.values.confidentialityDescription} />
                       </Block>
                       <Error fieldName="confidentialityDescription" />
@@ -276,12 +281,12 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 >
                   <Panel
                     key="organizing"
-                    title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={isPanelExpanded} />} />}
+                    title={<ModalLabel label={<PanelTitle title='Organisering' expanded={isPanelExpanded} />} />}
                     overrides={{ ...panelOverrides }}
                   >
                     <Block display="flex" width="100%" justifyContent="space-between">
                       <Block width="48%">
-                        <ModalLabel label={intl.department} tooltip={intl.departmentHelpText} />
+                        <ModalLabel label='Avdeling' tooltip='Angi hvilken avdeling som har hovedansvar for behandlingen.' />
                       </Block>
                     </Block>
 
@@ -293,7 +298,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
 
                     <Block display="flex" width="100%" justifyContent="space-between" marginTop={theme.sizing.scale400}>
                       <Block width="48%">
-                        <ModalLabel label={intl.productTeamFromTK} tooltip={intl.productTeamFromTKHelpText} fullwidth={true} />
+                        <ModalLabel label='Team (Oppslag i Teamkatalogen)' tooltip='Angi hvilke team som har forvaltningsansvaret for IT-systemene.' fullwidth={true} />
                       </Block>
                     </Block>
 
@@ -304,7 +309,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     </Block>
                   </Panel>
                   <Panel
-                    title={<PanelTitle title={intl.legalBasisShort} expanded={isPanelExpanded} />}
+                    title={<PanelTitle title='Behandlingsgrunnlag' expanded={isPanelExpanded} />}
                     onChange={() => {
                       togglePanel()
                       formikBag.setFieldValue('legalBasesOpen', !isPanelExpanded)
@@ -323,9 +328,9 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                   <Button type="button" kind="tertiary" onClick={() => onClose()}>
-                    {intl.abort}
+                    Avbryt
                   </Button>
-                  <ModalButton type="submit">{intl.save}</ModalButton>
+                  <ModalButton type="submit">Lagre</ModalButton>
                 </Block>
               </ModalFooter>
             </Form>

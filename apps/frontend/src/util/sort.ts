@@ -1,4 +1,3 @@
-import { intl } from './intl/intl'
 
 const start = (prefix: string) => (text: string) => {
   const startIndex = text.indexOf(prefix.toLowerCase())
@@ -10,5 +9,5 @@ export const prefixBiasedSort: (prefix: string, a: string, b: string) => number 
   const aLower = a.toLowerCase()
   const bLower = b.toLowerCase()
   const c1 = comp(aLower) - comp(bLower)
-  return c1 === 0 ? aLower.localeCompare(bLower, intl.getLanguage()) : c1
+  return c1 === 0 ? aLower.localeCompare(bLower, 'nb') : c1
 }

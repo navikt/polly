@@ -1,7 +1,6 @@
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { user } from '../../service/User'
 import RouteLink from '../common/RouteLink'
-import { intl } from '../../util'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHistory } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
@@ -14,8 +13,8 @@ export const AuditButton = (props: { id: string; auditId?: string; kind?: (typeo
         props.children
       ) : (
         <>
-          <Button tooltip={intl.version} marginLeft={props.marginLeft} marginRight={props.marginRight} size={ButtonSize.compact} kind={props.kind || 'outline'}>
-            <FontAwesomeIcon title={intl.version} icon={faHistory} />
+          <Button tooltip='Versjonering' marginLeft={props.marginLeft} marginRight={props.marginRight} size={ButtonSize.compact} kind={props.kind || 'outline'}>
+            <FontAwesomeIcon title='Versjonering'icon={faHistory} />
           </Button>
         </>
       )}

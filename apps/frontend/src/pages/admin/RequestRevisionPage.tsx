@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { HeadingMedium } from 'baseui/typography'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Spinner } from '../../components/common/Spinner'
 import { useNavigate } from 'react-router-dom'
 import { codelist, ListName } from '../../service/Codelist'
@@ -9,7 +9,7 @@ import { useAllAreas, useProcessSearch } from '../../api'
 import axios from 'axios'
 import { env } from '../../util/env'
 import * as yup from 'yup'
-import { Field, Form, Formik, FormikProps } from 'formik'
+import { Field, Form, Formik } from 'formik'
 import { Error, ModalLabel } from '../../components/common/ModalSchema'
 import { ButtonGroup } from 'baseui/button-group'
 import { Button as BButton } from 'baseui/button'
@@ -48,7 +48,7 @@ const initialValues: ProcessRevisionRequest = {
 }
 
 const schema: () => yup.ObjectSchema<ProcessRevisionRequest> = () => {
-  const requiredString = yup.string().required(intl.required)
+  const requiredString = yup.string().required("Feltet er påkrevd")
   return yup.object({
     processSelection: yup.mixed<ProcessSelection>().oneOf(Object.values(ProcessSelection)).required(),
     processId: yup.string().when('processSelection', { is: ProcessSelection.ONE, then: () => requiredString }),
@@ -110,18 +110,18 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
 
   return (
     <Block>
-      <HeadingMedium>{intl.needsRevision}</HeadingMedium>
+      <HeadingMedium>Trenger revidering</HeadingMedium>
       {loading ? <Spinner /> : error && <Notification kind={'negative'}>{error}</Notification>}
 
       {done ? (
         <Block>
-          <Notification kind={'positive'}>{intl.revisionCreated}</Notification>
+          <Notification kind={'positive'}>Revidering etterspurt</Notification>
           <Button type="button" kind="secondary" onClick={abort} marginRight>
-            {modalView ? intl.close : intl.back}
+            {modalView ? "Lukk" : "Tilbake"}
           </Button>
           {!props.close && (
             <Button type="button" onClick={reset}>
-              {intl.newRevision}
+              Ny revidering
             </Button>
           )}
         </Block>
@@ -139,10 +139,10 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
             <Form>
               {!modalView && (
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.processes} />
+                  <ModalLabel label="Behandlinger" />
                   <Field name="processSelection">
                     {() => {
-                      const button = (s: ProcessSelection, text: string = intl.all) => {
+                      const button = (s: ProcessSelection, text: string = "Alle") => {
                         const onClick = () => formikBag.setFieldValue('processSelection', s)
                         return (
                           <BButton type="button" onClick={onClick}>
@@ -153,10 +153,10 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                       return (
                         <Block>
                           <ButtonGroup selected={Object.values(ProcessSelection).indexOf(formikBag.values.processSelection)}>
-                            {button(ProcessSelection.ONE, intl.one)}
-                            {button(ProcessSelection.ALL, intl.all)}
-                            {button(ProcessSelection.DEPARTMENT, intl.department)}
-                            {button(ProcessSelection.PRODUCT_AREA, intl.productArea)}
+                            {button(ProcessSelection.ONE, "Én")}
+                            {button(ProcessSelection.ALL, "Alle")}
+                            {button(ProcessSelection.DEPARTMENT, "Avdeling")}
+                            {button(ProcessSelection.PRODUCT_AREA, "Område")}
                           </ButtonGroup>
                         </Block>
                       )
@@ -168,7 +168,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
 
               {!modalView && (
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.completedOnly} />
+                  <ModalLabel label="Bare fullførte" />
                   <Field name="completedOnly">
                     {() => <RadioBoolButton setValue={(b) => formikBag.setFieldValue('completedOnly', b)} value={formikBag.values.completedOnly} omitUndefined />}
                   </Field>
@@ -178,15 +178,15 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
 
               {formikBag.values.processSelection === ProcessSelection.ONE && !modalView && (
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.process} />
+                  <ModalLabel label="Behandling" />
                   <Select
-                    noResultsMsg={intl.emptyTable}
+                    noResultsMsg="Ingen"
                     isLoading={processSearchLoading}
                     maxDropdownHeight="400px"
                     searchable={true}
                     type={TYPE.search}
                     options={processSearchResult}
-                    placeholder={intl.search}
+                    placeholder="Søk"
                     value={processSearchResult.filter((r) => r.id === formikBag.values.processId)}
                     onInputChange={(event) => setProcessSearch(event.currentTarget.value)}
                     onChange={(params) => {
@@ -202,7 +202,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
 
               {formikBag.values.processSelection === ProcessSelection.DEPARTMENT && (
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.department} />
+                  <ModalLabel label="Avdeling" />
                   <Block width="100%">
                     <Combobox
                       mapOptionToString={(o) => o.label}
@@ -217,7 +217,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
 
               {formikBag.values.processSelection === ProcessSelection.PRODUCT_AREA && (
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.productArea} />
+                  <ModalLabel label="Område" />
                   <Block width="100%">
                     <Combobox
                       mapOptionToString={(o) => o.name}
@@ -231,17 +231,17 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
               <Error fieldName="productAreaId" fullWidth />
 
               <Block {...rowBlockProps}>
-                <ModalLabel label={intl.revisionText} />
-                <FieldTextarea fieldName="revisionText" placeHolder={intl.revisionText} rows={6} />
+                <ModalLabel label="Revideringstekst" />
+                <FieldTextarea fieldName="revisionText" placeHolder="Revideringstekst" rows={6} />
               </Block>
               <Error fieldName="revisionText" fullWidth />
 
               <Block>
                 <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
                   <Button type="button" kind="secondary" onClick={abort} marginRight>
-                    {intl.abort}
+                    Avbryt
                   </Button>
-                  <Button type="submit">{intl.save}</Button>
+                  <Button type="submit">Lagre</Button>
                 </Block>
               </Block>
             </Form>

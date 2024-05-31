@@ -1,4 +1,3 @@
-import { intl } from '../../util'
 import { Radio, RadioGroup } from 'baseui/radio'
 import * as React from 'react'
 
@@ -8,7 +7,7 @@ const YES = 'YES',
 const boolToRadio = (bool?: boolean) => (bool === undefined ? UNCLARIFIED : bool ? YES : NO)
 const radioToBool = (radio: string) => (radio === UNCLARIFIED ? undefined : radio === YES)
 
-export const boolToText = (b?: boolean) => (b === null || b === undefined ? intl.unclarified : b ? intl.yes : intl.no)
+export const boolToText = (b?: boolean) => (b === null || b === undefined ? 'Uavklart': b ? 'Ja' : 'Nei')
 
 type radioBoolProps = {
   value?: boolean
@@ -29,14 +28,14 @@ export const RadioBoolButton = (props: radioBoolProps) => (
     }}
   >
     <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={YES}>
-      {intl.yes} {props.firstButtonLabel}
+      Ja {props.firstButtonLabel}
     </Radio>
     <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={NO}>
-      {intl.no} {props.secondButtonLabel}
+      Nei {props.secondButtonLabel}
     </Radio>
     {!props.omitUndefined && (
       <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={UNCLARIFIED}>
-        {intl.unclarified}
+        Uavklart
       </Radio>
     )}
   </RadioGroup>

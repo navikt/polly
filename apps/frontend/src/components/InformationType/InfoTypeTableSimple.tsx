@@ -3,7 +3,7 @@ import { HeadingXLarge } from 'baseui/typography'
 import React, { useEffect, useState } from 'react'
 import { InformationType, informationTypeSort } from '../../constants'
 import { ListName } from '../../service/Codelist'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { useTable } from '../../util/hooks'
 import { DotTags } from '../common/DotTag'
 import RouteLink from '../common/RouteLink'
@@ -43,12 +43,12 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TablePr
       </HeadingXLarge>
 
       <Table
-        emptyText={intl.noInformationTypesAvailableInTable}
+        emptyText="Ingen opplysningstyper"
         headers={
           <>
-            <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.sources} column={'sources'} tableState={[table, sortColumn]} />
+            <HeadCell title="Navn" column={'name'} tableState={[table, sortColumn]} />
+            <HeadCell title="Beskrivelse" column={'description'} tableState={[table, sortColumn]} />
+            <HeadCell title="Kilder" column={'sources'} tableState={[table, sortColumn]} />
           </>
         }
       >

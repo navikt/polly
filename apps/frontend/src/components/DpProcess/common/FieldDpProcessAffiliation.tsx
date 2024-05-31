@@ -1,7 +1,7 @@
 import React from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { ModalLabel } from '../../common/ModalSchema'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { DpProcessFormValues } from '../../../constants'
 import { FormikProps } from 'formik'
 import FieldDpProcessDepartment from './FieldDpProcessDepartment'
@@ -22,10 +22,10 @@ const FieldDpProcessAffiliation = (props: FieldDpProcessAffiliationProps) => {
     <>
       <Block display="flex" width="100%" justifyContent="space-between">
         <Block width="48%">
-          <ModalLabel label={intl.department} tooltip={intl.departmentHelpText} />
+          <ModalLabel label='Avdeling' tooltip='Angi hvilken avdeling som har hovedansvar for behandlingen.' />
         </Block>
         <Block width="48%">
-          <ModalLabel label={intl.subDepartment} tooltip={intl.subDepartmentHelpText} />
+          <ModalLabel label='Linja' tooltip='Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres.' />
         </Block>
       </Block>
 
@@ -40,7 +40,7 @@ const FieldDpProcessAffiliation = (props: FieldDpProcessAffiliationProps) => {
 
       <Block display="flex" width="100%" justifyContent="space-between" marginTop={theme.sizing.scale400}>
         <Block width="48%">
-          <ModalLabel label={intl.productTeamFromTK} tooltip={intl.productTeamFromTKHelpText} fullwidth={true} />
+          <ModalLabel label='Team (Oppslag i Teamkatalogen)' tooltip='Angi hvilke team som har forvaltningsansvaret for IT-systemene.' fullwidth={true} />
         </Block>
       </Block>
 

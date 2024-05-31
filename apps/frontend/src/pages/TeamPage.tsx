@@ -6,7 +6,6 @@ import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple
 import { PageHeader } from '../components/common/PageHeader'
 import { Disclosure } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { intl } from '../util'
 import { Section } from './ProcessPage'
 
 export const TeamPage = () => {
@@ -37,7 +36,7 @@ export const TeamPage = () => {
             code={teamId}
             isEditable={false}
             thirdTabTitle="Opplysningstyper"
-            thirdTabContent={<InfoTypeTable title={intl.informationTypes} getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />}
+            thirdTabContent={<InfoTypeTable title="Opplysningstyper" getInfoTypes={async () => (await getInformationTypesBy({ productTeam: teamId })).content} />}
           />
         </>
       )}

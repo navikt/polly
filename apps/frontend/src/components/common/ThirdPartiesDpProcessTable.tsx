@@ -1,12 +1,10 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { intl } from '../../util'
 import { DpProcess, dpProcessSort, Team } from '../../constants'
 import { useTable } from '../../util/hooks'
 import { Cell, HeadCell, Row, Table } from './Table'
 import RouteLink from './RouteLink'
 import { getTeam } from '../../api'
-import { lowerFirst } from 'lodash'
 
 type TableDpProcessType = {
   dpProcesses: Array<DpProcess>
@@ -33,13 +31,13 @@ const ThirdPartiesDpProcessTable = ({ dpProcesses }: TableDpProcessType) => {
 
   return (
     <Table
-      emptyText={intl.emptyTable + ' ' + lowerFirst(intl.dpProcesses)}
+      emptyText='Ingen databehandlinger'
       headers={
         <>
-          <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.productTeam} column={'affiliation'} tableState={[table, sortColumn]} />
+          <HeadCell title='Navn' column={'name'} tableState={[table, sortColumn]} />
+          <HeadCell title='Beskrivelse' column={'description'} tableState={[table, sortColumn]} />
+          <HeadCell title='Avdeling' column={'affiliation'} tableState={[table, sortColumn]} />
+          <HeadCell title='Team' column={'affiliation'} tableState={[table, sortColumn]} />
         </>
       }
     >

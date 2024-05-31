@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { intl } from '../../util'
 import { ParagraphMedium } from 'baseui/typography'
 import { Button } from 'baseui/button'
 import { Block } from 'baseui/block'
@@ -30,9 +29,9 @@ const DeleteCodeListModal = ({ title, initialValues, isOpen, errorOnDelete, subm
         <Block display="flex" justifyContent="flex-end">
           <Block marginRight="auto">{errorOnDelete && <p>{errorOnDelete}</p>}</Block>
           <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
-            {intl.abort}
+            Avbryt
           </Button>
-          <Button onClick={() => submit({ list: initialValues.list, code: initialValues.code })}>{intl.delete}</Button>
+          <Button onClick={() => submit({ list: initialValues.list, code: initialValues.code })}>Slett</Button>
         </Block>
       </ModalFooter>
     </Modal>

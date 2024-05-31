@@ -6,7 +6,7 @@ import { PageResponse } from '../../constants'
 import { Block } from 'baseui/block'
 import { Card } from 'baseui/card'
 import moment from 'moment'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { StatefulMenu } from 'baseui/menu'
 import { Button, KIND } from 'baseui/button'
@@ -56,7 +56,7 @@ export const MailLogPage = () => {
 
   return (
     <>
-      <HeadingMedium>{intl.mailLog}</HeadingMedium>
+      <HeadingMedium>Mail log</HeadingMedium>
       {log?.content.map((l, i) => {
         let html = l.body
         const bodyIdx = l.body.indexOf('<body>')
@@ -101,13 +101,13 @@ export const MailLogPage = () => {
           )}
           placement={PLACEMENT.bottom}
         >
-          <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>{`${limit} ${intl.rows}`}</Button>
+          <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>{`${limit} Rader`}</Button>
         </StatefulPopover>
         <Pagination
           currentPage={page}
           numPages={log.pages}
           onPageChange={({ nextPage }) => handlePageChange(nextPage)}
-          labels={{ nextButton: intl.nextButton, prevButton: intl.prevButton }}
+          labels={{ nextButton: "Neste", prevButton: "Forrige" }}
         />
       </Block>
     </>

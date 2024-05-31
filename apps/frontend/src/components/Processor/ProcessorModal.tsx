@@ -20,7 +20,7 @@ import FieldTransferGroundsOutsideEU from './components/FieldTransferGroundsOuts
 import FieldTransferGroundsOutsideEUOther from './components/FieldTransferGroundsOutsideEUOther'
 import FieldCountries from './components/FieldCountries'
 import { getResourcesByIds } from '../../api'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 
 type ModalProcessorProps = {
   title: string
@@ -97,7 +97,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
               </ModalHeader>
               <ModalBody>
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.processorName} tooltip={intl.processorNameHelpText} />
+                  <ModalLabel label='Navn på databehandler' />
                   <Field name="name">
                     {({ field, form }: FieldProps<string, ProcessorFormValues>) => (
                       <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name && form.touched.name} />
@@ -107,7 +107,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                 <Error fieldName={'name'} />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.contract} tooltip={intl.contractHelpText} />
+                  <ModalLabel label='Ref. på databehandleravtale' tooltip='Referanse til avtalen, gjerne URL til avtalen i WebSak e.l.' />
                   <Field name="contract">
                     {({ field, form }: FieldProps<string, ProcessorFormValues>) => (
                       <Input {...field} type="input" size={InputSIZE.default} error={!!form.errors.contract && form.touched.contract} />
@@ -117,17 +117,17 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                 <Error fieldName={'contract'} />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.contractOwner} tooltip={intl.contractOwnerHelpText} />
+                  <ModalLabel label='Avtaleeier' tooltip='Den som formelt står som eier av avtalen med databehandler.' />
                   <FieldContractOwner contractOwner={formikBag.values.contractOwner} />
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.operationalContractManagers} tooltip={intl.operationalContractManagersHelpText} />
+                  <ModalLabel label='Fagansvarlig'tooltip='De(n) som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne.' />
                   <FieldOperationalContractManagers formikBag={formikBag} resources={operationalContractManagers} />
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.note} tooltip={intl.noteHelpText} />
+                  <ModalLabel label='Merknad' tooltip='Eventuelle vesentlige merknader/begrensninger som bruker av databehandleren må være ekstra oppmerksom på.' />
                   <FieldNote />
                 </CustomizedModalBlock>
 
@@ -142,30 +142,30 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                   expanded={expanded}
                   onChange={(e) => setExpanded(e.expanded)}
                 >
-                  <Panel key={'transfer'} title={<PanelTitle title={intl.transferPanelTitle} expanded={expanded.indexOf('transfer') >= 0} />} overrides={{ ...panelOverrides }}>
+                  <Panel key={'transfer'} title={<PanelTitle title='Overføres data til utlandet' expanded={expanded.indexOf('transfer') >= 0} />} overrides={{ ...panelOverrides }}>
                     <Block {...rowBlockProps} marginTop={0}>
-                      <ModalLabel label={intl.isDataProcessedOutsideEUEEA} tooltip={intl.isDataProcessedOutsideEUEEAHelpTextDP} />
+                      <ModalLabel label='Behandler databehandler personopplysninger utenfor EU/EØS?' />
                       <BoolField fieldName="outsideEU" value={formikBag.values.outsideEU} />
                     </Block>
 
                     {formikBag.values.outsideEU && (
                       <>
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.transferGroundsOutsideEUEEA} tooltip={intl.transferGroundsOutsideEUEEAHelpText} />
+                          <ModalLabel label='Overføringsgrunnlag for behandling utenfor EU/EØS'/>
                           <FieldTransferGroundsOutsideEU code={formikBag.values.transferGroundsOutsideEU} />
                         </Block>
                         <Error fieldName="transferGroundsOutsideEU" />
 
                         {formikBag.values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
                           <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.transferGroundsOutsideEUEEAOther} tooltip={intl.transferGroundsOutsideEUEEAOtherHelpText} />
+                            <ModalLabel label='Andre overføringsgrunnlag' tooltip='Du har valgt at overføringsgrunnlaget er "annet", spesifiser grunnlaget her.' />
                             <FieldTransferGroundsOutsideEUOther />
                           </Block>
                         )}
                         <Error fieldName="transferGroundsOutsideEUOther" />
 
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.countries} tooltip={intl.countriesHelpText} />
+                          <ModalLabel label='Land' tooltip='I hvilke(t) land lagrer databehandleren personopplysninger i?' />
                           <FieldCountries formikBag={formikBag} />
                         </Block>
                         <Error fieldName="countries" />
@@ -182,9 +182,9 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{props.errorMessage && <p>{props.errorMessage}</p>}</Block>
                   <Button type="button" kind={KIND.tertiary} onClick={props.onClose}>
-                    {intl.abort}
+                    Avbryt
                   </Button>
-                  <ModalButton type="submit">{intl.save}</ModalButton>
+                  <ModalButton type="submit">Lagre</ModalButton>
                 </Block>
               </ModalFooter>
             </Form>

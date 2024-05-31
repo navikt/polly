@@ -4,7 +4,7 @@ import { Block } from 'baseui/block'
 
 import AccordionInformationType from './AccordionInformationType'
 import { Disclosure, Document, InformationType, Policy } from '../../../constants'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import Metadata from './Metadata'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 import TableDisclosure from '../../common/TableDisclosure'
@@ -49,7 +49,7 @@ const Purposes = ({ policies }: { policies: Policy[] }) => {
             bottom: theme.sizing.scale600,
           }}
         >
-          {accordion ? intl.showAll : intl.groupByProcessingActivities}
+          {accordion ? 'Vis alle' : 'Gruppér etter behandlingsaktivitet'}
         </Button>
       </Block>
       {accordion ? <AccordionInformationType policies={policies} /> : <InformationtypePolicyTable policies={policies} showPurpose={true} />}
@@ -85,25 +85,25 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
                   icon={faExclamationCircle}
                   onClick={() => navigate(`/alert/events/informationtype/${props.informationtype.id}`)}
                 >
-                  {intl.alerts}
+                  Varsler
                 </Button>
               </Block>
             )}
             <ParagraphSmall>
-              <i>{intl.formatString(intl.lastModified, props.informationtype.changeStamp.lastModifiedBy, lastModifiedDate(props.informationtype.changeStamp.lastModifiedDate))}</i>
+               <i>{`Sist endret av ${props.informationtype.changeStamp.lastModifiedBy}, ${lastModifiedDate(props.informationtype.changeStamp?.lastModifiedDate)}`}</i>
             </ParagraphSmall>
           </Block>
 
           <CustomizedTabs activeKey={activeTab} onChange={(args) => setActiveTab(args.activeKey as string)}>
-            <Tab key="purposes" title={intl.processingActivityUse} overrides={tabOverride}>
+            <Tab key="purposes" title='Brukes til behandlingsaktivitet' overrides={tabOverride}>
               {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
               {props.policies && <Purposes policies={props.policies} />}
             </Tab>
-            <Tab key="disclose" title={intl.disclosuresToThirdParty} overrides={tabOverride}>
+            <Tab key="disclose" title='Utleveringer til ekstern part' overrides={tabOverride}>
               {!props.disclosures && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
               {props.disclosures && <Disclosures disclosures={props.disclosures} />}
             </Tab>
-            <Tab key="document" title={intl.documents} overrides={tabOverride}>
+            <Tab key="document" title='Dokumenter' overrides={tabOverride}>
               {!props.documents && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
               {props.documents && <DocumentTable documents={props.documents} />}
             </Tab>

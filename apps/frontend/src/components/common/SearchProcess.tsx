@@ -1,7 +1,7 @@
 import { Process } from '../../constants'
 import * as React from 'react'
 import { Dispatch, SetStateAction } from 'react'
-import { intl, useDebouncedState } from '../../util'
+import { useDebouncedState } from '../../util'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { codelist, ListName } from '../../service/Codelist'
 import { Block } from 'baseui/block'
@@ -35,7 +35,7 @@ const SearchProcess = (props: SearchProcessProps) => {
           })
           .filter((p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
 
-        
+
         setProcessList(content)
         setLoading(false)
       }
@@ -49,10 +49,10 @@ const SearchProcess = (props: SearchProcessProps) => {
         isLoading={isLoading}
         clearable
         searchable={true}
-        noResultsMsg={intl.emptyTable}
+        noResultsMsg='Ingen'
         type={TYPE.search}
         maxDropdownHeight="400px"
-        placeholder={intl.searchProcess}
+        placeholder='Søk etter behandlinger'
         onInputChange={(event) => setSearch(event.currentTarget.value)}
         labelKey="namePurpose"
         value={

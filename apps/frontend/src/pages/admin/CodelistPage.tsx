@@ -9,7 +9,7 @@ import { Code, codelist } from '../../service/Codelist'
 import CreateCodeListModal from '../../components/CodeList/ModalCreateCodeList'
 import { user } from '../../service/User'
 import CodeListTable from '../../components/CodeList/CodeListStyledTable'
-import { intl, theme, useAwait, useForceUpdate } from '../../util'
+import { theme, useAwait, useForceUpdate } from '../../util'
 import { createCodelist } from '../../api'
 import { CodeListFormValues } from '../../constants'
 import { HeadingMedium } from 'baseui/typography'
@@ -67,7 +67,7 @@ const CodeListPage = () => {
 
   return (
     <>
-      <HeadingMedium>{intl.manageCodeListTitle}</HeadingMedium>
+      <HeadingMedium>Administrering av kodeverk</HeadingMedium>
       {loading ? (
         <Spinner />
       ) : (
@@ -77,14 +77,14 @@ const CodeListPage = () => {
               options={codelist.makeIdLabelForAllCodeLists()}
               onChange={({ value }) => setListname(value[0].id as string)}
               clearable={false}
-              placeholder={intl.chooseCodeList}
+              placeholder="Velg kodeverk"
               initialState={{ value: listname ? [{ id: listname, label: listname }] : [] }}
             />
           </Block>
           {listname && (
             <Block>
-              <Button tooltip={intl.addNew} icon={faPlus} size={ButtonSize.compact} kind={KIND.tertiary} onClick={() => setCreateCodeListModal(!createCodeListModal)}>
-                {intl.createNewCodeList}
+              <Button icon={faPlus} size={ButtonSize.compact} kind={KIND.tertiary} onClick={() => setCreateCodeListModal(!createCodeListModal)}>
+                Opprett ny kode
               </Button>
             </Block>
           )}
@@ -98,7 +98,7 @@ const CodeListPage = () => {
       )}
 
       <CreateCodeListModal
-        title={intl.createCodeListTitle}
+        title="Ny kode"
         list={listname!}
         isOpen={createCodeListModal}
         errorOnCreate={errorOnResponse}

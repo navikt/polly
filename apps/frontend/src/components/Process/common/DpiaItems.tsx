@@ -5,7 +5,6 @@ import { Block, BlockProps } from 'baseui/block'
 import { ModalLabel } from '../../common/ModalSchema'
 import FieldInput from './FieldInput'
 import BoolField from './BoolField'
-import { intl } from '../../../util'
 import FieldNoDpiaReason from '../../common/FieldNoDpiaReason'
 
 const rowBlockProps: BlockProps = {
@@ -19,7 +18,7 @@ const DpiaItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.isDpiaRequired} tooltip={intl.dpiaHelpText} />
+        <ModalLabel label='Er det behov for PVK?' tooltip='Det er behov for å gjøre en PVK dersom det er sannsynlig at behandlingen vil medføre en høy risiko for den registrertes rettigheter og friheter' />
         <BoolField fieldName="dpia.needForDpia" value={formikBag.values.dpia.needForDpia} omitUndefined={false} />
       </Block>
       {formikBag.values.dpia?.needForDpia === undefined ? (
@@ -27,20 +26,20 @@ const DpiaItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
       ) : formikBag.values.dpia?.needForDpia ? (
         <>
           <Block {...rowBlockProps}>
-            <ModalLabel label={intl.dpiaReference} />
-            <FieldInput fieldName="dpia.refToDpia" fieldValue={formikBag.values.dpia?.refToDpia} placeHolder={intl.dpiaReferencePlaceholder} />
+            <ModalLabel label='Ref. til PVK' />
+            <FieldInput fieldName="dpia.refToDpia" fieldValue={formikBag.values.dpia?.refToDpia} placeHolder='(f.eks. lenke til Websak, Confluence e.l.)' />
           </Block>
         </>
       ) : (
         <>
           <Block {...rowBlockProps}>
-            <ModalLabel label={intl.grounds} />
+            <ModalLabel label='Begrunnelse' />
             <FieldNoDpiaReason formikBag={formikBag} />
           </Block>
 
           {formikBag.values.dpia.noDpiaReasons.filter((reason) => reason === 'OTHER').length > 0 && (
             <Block {...rowBlockProps}>
-              <ModalLabel label={intl.specifyOther} />
+              <ModalLabel label='Spesifiser ved annet' />
               <FieldInput fieldName="dpia.grounds" fieldValue={formikBag.values.dpia?.grounds} />
             </Block>
           )}

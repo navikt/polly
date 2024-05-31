@@ -5,7 +5,7 @@ import { LabelMedium, LabelXSmall } from 'baseui/typography'
 import { Select, Value } from 'baseui/select'
 import { Button } from 'baseui/button'
 
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { CodeUsage, ObjectType } from '../../constants'
 import { ObjectLink } from '../common/RouteLink'
 import { codelist, ListName } from '../../service/Codelist'
@@ -37,17 +37,17 @@ const UsageTable = (props: { usage: CodeUsage }) => {
 
   return (
     <Table
-      emptyText={intl.noUsageAvailableInTable}
+      emptyText='Ingen bruk'
       hoverColor={theme.colors.primary100}
       headers={
         <>
-          {informationTypes && <HeadCell title={intl.informationType} />}
-          {processes && <HeadCell title={intl.process} />}
-          {processors && <HeadCell title={intl.processors} />}
-          {dpProcesses && <HeadCell title={intl.dpProcess} />}
-          {policies && <HeadCell title={intl.policy} />}
-          {disclosures && <HeadCell title={intl.disclosure} />}
-          {documents && <HeadCell title={intl.documents} />}
+          {informationTypes && <HeadCell title='Opplysningstype' />}
+          {processes && <HeadCell title='Behandling' />}
+          {processors && <HeadCell title='Databehandlere' />}
+          {dpProcesses && <HeadCell title='NAV som databehandler' />}
+          {policies && <HeadCell title='Polis' />}
+          {disclosures && <HeadCell title='Utleveringer' />}
+          {documents && <HeadCell title='Dokumenter' />}
         </>
       }
     >
@@ -157,10 +157,10 @@ export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
   return (
     <Block marginTop="2rem" ref={ref}>
       <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
-        <LabelMedium font="font450">{intl.usage}</LabelMedium>
+        <LabelMedium font="font450">Bruk</LabelMedium>
         {!!usage?.inUse && (
           <Button type="button" kind="secondary" size="compact" onClick={() => setShowReplace(true)}>
-            {intl.replaceAllUse}
+            Erstatt all bruk
           </Button>
         )}
       </Block>
@@ -171,20 +171,20 @@ export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
             size="compact"
             maxDropdownHeight="300px"
             searchable={true}
-            placeholder={intl.newValue}
+            placeholder='Ny verdi'
             options={codelist.getParsedOptions(usage.listName)}
             value={newValue}
             onChange={(params) => setNewValue(params.value)}
           />
           <Button type="button" size="compact" onClick={replace} disabled={!newValue.length}>
-            {intl.replace}
+            Erstatt
           </Button>
         </Block>
       )}
 
       {usage && <UsageTable usage={usage} />}
       {!usage && <Spinner />}
-      {usage && !usage.inUse && <LabelXSmall marginTop=".5rem">{intl.usageNotFound}</LabelXSmall>}
+      {usage && !usage.inUse && <LabelXSmall marginTop=".5rem">Fant ingen bruk</LabelXSmall>}
     </Block>
   )
 }

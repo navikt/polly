@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { UserInfo } from '../constants'
-import { intl } from '../util'
 import { getUserInfo } from '../api'
+import {tekster} from "../util/codeToFineText";
 
 export enum Group {
   READ = 'READ',
@@ -67,7 +67,7 @@ class UserService {
   }
 
   public getGroupsHumanReadable(): string[] {
-    return this.userInfo.groups.map((group) => (intl as any)[group] || group)
+    return this.userInfo.groups.map((group) => (tekster as any)[group] || group)
   }
 
   public hasGroup(group: string): boolean {

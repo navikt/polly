@@ -6,8 +6,7 @@ import { Block } from 'baseui/block'
 import { HeadingLarge, HeadingMedium, HeadingSmall } from 'baseui/typography'
 import { Select, Value } from 'baseui/select'
 import { codelist, ListName } from '../service/Codelist'
-import { intl, theme } from '../util'
-import { lowerFirst } from 'lodash'
+import { theme } from '../util'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { useLocation, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
@@ -34,11 +33,11 @@ export const LegalPage = () => {
   return (
     <Block>
       <HeadingLarge>
-        {intl.search} {lowerFirst(intl.legalBasisShort)}
+        Søk behandlingsgrunnlag
       </HeadingLarge>
       <Block display={'flex'}>
         <Block width="40%">
-          <HeadingSmall>{intl.gdprSelect}</HeadingSmall>
+          <HeadingSmall>Velg GDPR artikkel</HeadingSmall>
           <Select
             maxDropdownHeight="400px"
             value={gdprArticle ? [{ id: gdprArticle }] : []}
@@ -48,7 +47,7 @@ export const LegalPage = () => {
         </Block>
         <Block width="40%" marginLeft={theme.sizing.scale400}>
           <HeadingSmall>
-            {intl.and}/{intl.or} {lowerFirst(intl.nationalLaw)}
+            og/eller nasjonal lov
           </HeadingSmall>
           <Select
             maxDropdownHeight="400px"
@@ -66,8 +65,8 @@ export const LegalPage = () => {
 const ProcessTable = (props: { processes: Process[] }) => (
   <Block display={'flex'} flexDirection={'column'}>
     <HeadingMedium>
-      {intl.processes} ({props.processes.length})
+      Behandlinger ({props.processes.length})
     </HeadingMedium>
-    <SimpleProcessTable title={intl.processes + ' (' + props.processes.length + ')'} processes={props.processes} />
+    <SimpleProcessTable title={"Behandlinger" + ' (' + props.processes.length + ')'} processes={props.processes} />
   </Block>
 )

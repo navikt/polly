@@ -1,6 +1,6 @@
 import { Block } from 'baseui/block'
 import React, { useEffect, useState } from 'react'
-import { intl, useDebouncedState } from '../../util'
+import { useDebouncedState } from '../../util'
 import { Input } from 'baseui/input'
 import _ from 'lodash'
 import { AuditView } from '../../components/audit/AuditView'
@@ -54,14 +54,14 @@ export const AuditPage = () => {
 
   return (
     <>
-      <HeadingMedium>{intl.audit}</HeadingMedium>
+      <HeadingMedium>Versjonering</HeadingMedium>
       <Block marginBottom="1rem">
-        <Label label={intl.searchId}>
+        <Label label="Søk etter Id">
           <Input
             size="compact"
             value={idInput}
             overrides={{ Input: { style: { width: '300px' } } }}
-            placeholder={intl.id}
+            placeholder="Id"
             onChange={(e) => setIdInput(format((e.target as HTMLInputElement).value))}
           />
         </Label>

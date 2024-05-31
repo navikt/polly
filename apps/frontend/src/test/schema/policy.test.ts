@@ -105,5 +105,5 @@ test('Policy missingArt9LegalBasisForSensitiveInfoType', () => {
 test('Policy informationType-SubjectCategory combo already exists', () => {
   const policy = createPolicy()
   policy.informationType = { ...otherPolicy.informationType }
-  expect(policy).toBeSchemaErrorAt(schema, 'subjectCategories', "Behandlingen inneholder allerede personkategorien 'PERSON name' for opplysningstype 'name'")
+  expect(policy).toBeSchemaErrorAt(schema, 'subjectCategories', "Behandlingen inneholder allerede personkategorien PERSON name for opplysningstype name")
 })

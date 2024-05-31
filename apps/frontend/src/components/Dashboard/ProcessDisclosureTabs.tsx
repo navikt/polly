@@ -9,8 +9,7 @@ import { Disclosure, DisclosureFormValues, ProcessStatus } from '../../constants
 import { Section } from '../../pages/ProcessPage'
 import { ListName } from '../../service/Codelist'
 import { user } from '../../service/User'
-import { intl } from '../../util'
-import ProcessList from '../Process'
+import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 
@@ -129,7 +128,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
                       </Block>
                     )}
                   >
-                    {intl.createNew}
+                    Opprett ny utlevering
                   </Button>
                 )}
               </Block>
@@ -151,7 +150,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
           )}
 
           <ModalThirdParty
-            title={intl.createThirdPartyModalTitle}
+            title="Opprett utlevering til ekstern part"
             isOpen={showCreateDisclosureModal}
             initialValues={initialFormValues}
             submit={handleCreateDisclosure}

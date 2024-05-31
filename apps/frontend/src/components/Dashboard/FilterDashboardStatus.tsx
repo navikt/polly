@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ProcessStatusFilter } from '../../constants'
 import { StatefulSelect } from 'baseui/select'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Block } from 'baseui/block'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LabelMedium } from 'baseui/typography'
@@ -18,10 +18,10 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
           deleteRemoves={false}
           escapeClearsValue={false}
           options={[
-            { label: intl.all, id: ProcessStatusFilter.All },
-            { label: intl.inProgress, id: ProcessStatusFilter.IN_PROGRESS },
-            { label: intl.needsRevision, id: ProcessStatusFilter.NEEDS_REVISION },
-            { label: intl.done, id: ProcessStatusFilter.COMPLETED },
+            { label: 'Alle', id: ProcessStatusFilter.All },
+            { label: 'Under arbeid', id: ProcessStatusFilter.IN_PROGRESS },
+            { label: 'Trenger revidering', id: ProcessStatusFilter.NEEDS_REVISION },
+            { label: 'Fullført', id: ProcessStatusFilter.COMPLETED },
           ]}
           initialState={{ value: [{ id: processStatus ? (processStatus as ProcessStatusFilter) : ProcessStatusFilter.All }] }}
           filterOutSelected={false}
@@ -34,7 +34,7 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
       </Block>
       <Block alignSelf="center">
         <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
-          {intl.filterPieChartsByStatus}
+          Filtrer diagrammene på status
         </LabelMedium>
       </Block>
     </Block>

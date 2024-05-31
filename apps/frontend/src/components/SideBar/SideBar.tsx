@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Block, BlockProps } from 'baseui/block'
 import { LabelLarge, ParagraphXSmall } from 'baseui/typography'
 import NavLogo from '../../resources/navlogo.svg'
@@ -8,7 +8,7 @@ import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import { StyledLink } from 'baseui/link'
 import NavItem from './NavItem'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import { datajegerSlackLink, documentationLink, helpLink } from '../../util/config'
+import { datajegerSlackLink, helpLink } from '../../util/config'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 
 const sideBarProps: BlockProps = {
@@ -41,17 +41,17 @@ const SideBar = () => {
       <Block height="100%" position="fixed" display="flex" style={{ flexDirection: 'column' }}>
         <Brand />
         <Block {...items} top={'150px'} flex="1">
-          <NavItem to="/process" text={intl.processes} tooltip={intl.processSideMenuHelpText} />
-          <NavItem to="/dpprocess" text={intl.dpProcess} />
-          <NavItem to="/informationtype" text={intl.informationTypes} tooltip={intl.informationTypeSideMenuHelpText} />
-          <NavItem to="/document" text={intl.documents} tooltip={intl.documentSideMenuHelpText} />
-          <NavItem to="/disclosure" text={intl.disclosures} tooltip={intl.disclosuresSideMenuHelpText} />
-          <NavItem to="/thirdparty" text={intl.thirdParties} tooltip={intl.externalPartsSideMenuHelpText} />
-          <NavItem to="/system" text={intl.systems} tooltip={intl.systemSideMenuHelpText} />
-          <NavItem to="/processor" text={intl.processors} tooltip={intl.processorSideMenuHelpText} />
-          <NavItem to="/dashboard" text={intl.dashboard} tooltip={intl.dashboardSideMenuHelpText} />
-          {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
-          <NavItem to="//navikt.github.io/naka/behandlingskatalog" text={intl.supervisor} tooltip={intl.omBehandlingskatalog} />
+          <NavItem to="/process" text='Behandlinger' tooltip='En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon' />
+          <NavItem to="/dpprocess" text='NAV som databehandler'/>
+          <NavItem to="/informationtype" text='Opplysningstyper' tooltip='Personopplysninger som f.eks. kjønn, sivilstand, pensjonsopptjening.' />
+          <NavItem to="/document" text='Dokumenter' tooltip='En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.' />
+          <NavItem to="/disclosure" text='Utleveringer' tooltip='En samling av utleveringer av persondata fra NAV til eksterne bedrifter eller etater' />
+          <NavItem to="/thirdparty" text='Eksterne parter' tooltip='Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere' />
+          <NavItem to="/system" text='Systemer' tooltip='En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg' />
+          <NavItem to="/processor" text='Databehandlere'/>
+          <NavItem to="/dashboard" text='Dashboard' tooltip='Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen' />
+          {canViewAlerts() && <NavItem to="/alert/events" text='Varsler' />}
+          <NavItem to="//navikt.github.io/naka/behandlingskatalog" text='Veileder'/>
         </Block>
         <Block maxWidth={'240px'} marginTop="25px">
           <Block display="flex" justifyContent="center">
@@ -62,8 +62,8 @@ const SideBar = () => {
 
           <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank">
             <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
-              <CustomizedStatefulTooltip content={intl.helpTooltip} ignoreBoundary={false}>
-                <ParagraphXSmall color={theme.colors.white}>{intl.help}</ParagraphXSmall>
+              <CustomizedStatefulTooltip content='På navets personvernsider finner du informasjon til hjelp for utfylling.' ignoreBoundary={false}>
+                <ParagraphXSmall color={theme.colors.white}>Hjelp</ParagraphXSmall>
               </CustomizedStatefulTooltip>
             </Block>
           </a>

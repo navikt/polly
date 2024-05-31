@@ -4,7 +4,7 @@ import { Block, BlockProps } from 'baseui/block'
 import { Field, FieldProps, Form, Formik } from 'formik'
 import CustomizedModalBlock from '../common/CustomizedModalBlock'
 import { Error, ModalLabel } from '../common/ModalSchema'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { DpProcessFormValues } from '../../constants'
 import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Panel, PanelOverrides, StatelessAccordion } from 'baseui/accordion'
@@ -82,11 +82,11 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
           {(formikBag) => (
             <Form onKeyDown={disableEnter}>
               <ModalHeader>
-                <Block {...modalHeaderProps}>{intl.dpProcessPageTitle}</Block>
+                <Block {...modalHeaderProps}>Behandlinger hvor NAV er databehandler</Block>
               </ModalHeader>
               <ModalBody>
                 <CustomizedModalBlock first>
-                  <ModalLabel label={intl.name} tooltip={intl.nameDpProcessHelpText} />
+                  <ModalLabel label='Navn' tooltip='Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring.' />
                   <Field
                     name="name"
                     render={({ field, form }: FieldProps<string, DpProcessFormValues>) => (
@@ -97,46 +97,46 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                 <Error fieldName={'name'} />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.externalProcessResponsible} tooltip={intl.externalProcessResponsibleDpProcessHelpText} />
+                  <ModalLabel label='Behandlingsansvarlig' tooltip='Oppgi navn på den behandlingsansvarlige virksomheten.' />
                   <Block width={'100%'}>
                     <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible} />
                   </Block>
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.description} tooltip={intl.descriptionDpProcessHelpText} />
+                  <ModalLabel label='Beskrivelse' tooltip='Beskriv behandlingen NAV gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger.' />
                   <FieldDescription />
                 </CustomizedModalBlock>
                 <Error fieldName="description" />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.purpose} tooltip={intl.purposeDpProcessHelpText} />
+                  <ModalLabel label='Formål' tooltip='Beskriv formålet med å bruke personopplysninger i denne behandlingen.' />
                   <FieldPurposeDescription />
                 </CustomizedModalBlock>
                 <Error fieldName="purposeDescription" />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.validityOfProcess} />
+                  <ModalLabel label='Gyldighetsperiode for behandlingen' />
                   <FieldDpProcessDates showDates={true} showLabels={true} rowBlockProps={rowBlockProps} />
                 </CustomizedModalBlock>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.article9} tooltip={intl.article9DpProcessHelpText} />
+                  <ModalLabel label='Behandles det særlige kategorier av personopplysninger?' tooltip='Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning.' />
                   <BoolField fieldName="art9" value={formikBag.values.art9} />
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.article10} />
+                  <ModalLabel label='Behandles det personopplysninger om straffedommer og lovovertredelser?' />
                   <BoolField fieldName="art10" value={formikBag.values.art10} />
                 </Block>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.system} tooltip={intl.systemHelpText} />
+                  <ModalLabel label='System' tooltip='Angi hvilke systemer som er primært i bruk i denne behandlingen.' />
                   <FieldProduct formikBag={formikBag} />
                 </CustomizedModalBlock>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.processorAgreement} />
+                  <ModalLabel label='Ref. til databehandleravtale' />
                   <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
                 </Block>
                 <Error fieldName="dataProcessingAgreements" />
@@ -154,7 +154,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                 >
                   <Panel
                     key="organizing"
-                    title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={expanded.indexOf('organizing') >= 0} />} />}
+                    title={<ModalLabel label={<PanelTitle title='Organisering' expanded={expanded.indexOf('organizing') >= 0} />} />}
                     overrides={{ ...panelOverrides }}
                   >
                     <FieldDpProcessAffiliation
@@ -167,13 +167,13 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
 
                   <Panel
                     key="subDataProcessor"
-                    title={<PanelTitle title={intl.subDataProcessor} expanded={expanded.indexOf('subDataProcessor') >= 0} />}
+                    title={<PanelTitle title='Underdatabehandler' expanded={expanded.indexOf('subDataProcessor') >= 0} />}
                     overrides={{ ...panelOverrides }}
                   >
                     <FieldDpProcessSubDataProcessor rowBlockProps={rowBlockProps} formikBag={formikBag} initialValues={props.initialValues} />
                   </Panel>
 
-                  <Panel key="retention" title={<PanelTitle title={intl.retention} expanded={expanded.indexOf('retention') >= 0} />} overrides={{ ...panelOverrides }}>
+                  <Panel key="retention" title={<PanelTitle title='Lagringsbehov' expanded={expanded.indexOf('retention') >= 0} />} overrides={{ ...panelOverrides }}>
                     <RetentionItems formikBag={formikBag} />
                   </Panel>
                 </StatelessAccordion>
@@ -186,9 +186,9 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{props.errorOnCreate && <p>{props.errorOnCreate}</p>}</Block>
                   <Button type="button" kind={KIND.tertiary} onClick={props.onClose}>
-                    {intl.abort}
+                    Avbryt
                   </Button>
-                  <ModalButton type="submit">{intl.save}</ModalButton>
+                  <ModalButton type="submit">Lagre</ModalButton>
                 </Block>
               </ModalFooter>
             </Form>

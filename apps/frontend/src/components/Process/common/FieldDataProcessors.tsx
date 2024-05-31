@@ -6,7 +6,6 @@ import { ProcessFormValues } from '../../../constants'
 import { Option, Select } from 'baseui/select'
 import { renderTagList } from '../../common/TagList'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
-import { intl } from '../../../util'
 
 type fieldDataProcessorsProps = {
   formikBag: FormikProps<ProcessFormValues>
@@ -35,7 +34,7 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
             <Block width="100%">
               <Select
                 clearable
-                noResultsMsg={intl.notFoundProcessor}
+                noResultsMsg='Databehandler er ikke registrert i løsningen. Registrer databehandleren først.'
                 options={props.options
                   .sort((a, b) => (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString()))
                   .filter((dp) => !props.formikBag.values.dataProcessing.processors.includes(dp.id ? dp.id.toString() : ''))}

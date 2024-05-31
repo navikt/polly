@@ -1,5 +1,4 @@
 import { utils, writeFile } from 'xlsx'
-import { intl } from '.'
 import { processStatusText } from '../components/Process/Accordion/ProcessData'
 import { ProcessShortWithEmail } from '../constants'
 
@@ -11,12 +10,12 @@ export const handleExcelExport = (processes: ProcessShortWithEmail[], fileName: 
   processes.forEach((p) => {
     const newProcessObject: any = {}
 
-    newProcessObject[`${intl.process}`] = p.purposes[0].shortName + ': ' + p.name
-    newProcessObject[`${intl.department}`] = p.affiliation.department?.shortName
-    newProcessObject[`${intl.status}`] = processStatusText(p.status)
-    newProcessObject[`${intl.commonExternalProcessResponsible}`] = p.commonExternalProcessResponsible?.shortName
-    newProcessObject[`${intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)}`] = p.changeStamp.lastModifiedBy
-    newProcessObject[`${intl.email}`] = p.lastModifiedEmail
+    newProcessObject['Behandling'] = p.purposes[0].shortName + ': ' + p.name
+    newProcessObject['Avdeling'] = p.affiliation.department?.shortName
+    newProcessObject['Status'] = processStatusText(p.status)
+    newProcessObject['Felles behandlingsansvarlig'] = p.commonExternalProcessResponsible?.shortName
+    newProcessObject['Sist endret av'] = p.changeStamp.lastModifiedBy
+    newProcessObject['Email'] = p.lastModifiedEmail
 
     workSheetData.push(newProcessObject)
   })

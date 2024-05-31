@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DisclosureFormValues, Process } from '../../constants'
-import { intl, useDebouncedState } from '../../util'
+import { useDebouncedState } from '../../util'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
@@ -57,10 +57,10 @@ const SelectProcess = (props: SelectProcessProps) => {
               isLoading={isLoading}
               clearable
               searchable={true}
-              noResultsMsg={intl.emptyTable}
+              noResultsMsg='Ingen'
               type={TYPE.search}
               maxDropdownHeight="400px"
-              placeholder={intl.searchProcess}
+              placeholder='Søk behandlinger'
               onInputChange={(event) => setSearch(event.currentTarget.value)}
               labelKey="namePurpose"
               onChange={({ value }) => arrayHelpers.form.setFieldValue('processes', [...props.formikBag.values.processes, ...value.map((v) => v)])}

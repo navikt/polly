@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { useParams } from 'react-router-dom'
 import { codelist, ListName } from '../service/Codelist'
 import { Plus } from 'baseui/icon'
@@ -13,7 +13,7 @@ import { Disclosure, DisclosureFormValues, DpProcess, InformationType } from '..
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { Spinner } from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
-import ProcessList from '../components/Process'
+import ProcessList from '../components/Process/ProcessList'
 import { Section } from './ProcessPage'
 import { getAllDpProcesses } from '../api/DpProcessApi'
 import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
@@ -140,7 +140,7 @@ const ThirdPartyPage = () => {
             }}
             initialState={{ expanded: params.section ? [params.section] : [] }}
           >
-            <Panel title={intl.disclosuresToThirdParty + ` (${disclosureList?.length || 0})`} key="disclosure">
+            <Panel title={`Utleveringer til ekstern part (${disclosureList?.length || 0})`} key="disclosure">
               <Block display="flex" justifyContent="flex-end">
                 {user.canWrite() && (
                   <Button
@@ -153,7 +153,7 @@ const ThirdPartyPage = () => {
                       </Block>
                     )}
                   >
-                    {intl.createNew}
+                    Opprett ny
                   </Button>
                 )}
               </Block>
@@ -169,20 +169,20 @@ const ThirdPartyPage = () => {
               />
             </Panel>
 
-            <Panel title={intl.retrievedFromThirdParty + ` (${informationTypeList?.length || 0})`} key="informationtype">
+            <Panel title={`Innhentinger fra ekstern part (${informationTypeList?.length || 0})`} key="informationtype">
               <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true} />
             </Panel>
 
             {params.thirdPartyCode && (
               <Panel
                 key="dpprocess"
-                title={intl.formatString(intl.thirdPartyDpProcessTableTitle, codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)) + ` (${dpProcesses?.length || 0})`}
+                title={`NAV er databehandler for ${codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)} i følgende behandlinger (${dpProcesses?.length || 0})`}
               >
                 <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []} />
               </Panel>
             )}
 
-            <Panel key="process" title={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg} (${processListCount})`}>
+            <Panel key="process" title={`Felles behandlingsansvarlig med NAV (${processListCount})`}>
               {params.thirdPartyCode && (
                 <ProcessList
                   section={Section.thirdparty}
@@ -197,7 +197,7 @@ const ThirdPartyPage = () => {
           </Accordion>
 
           <ModalThirdParty
-            title={intl.createThirdPartyModalTitle}
+            title="Opprett utlevering til ekstern part"
             isOpen={showCreateModal}
             initialValues={initialFormValues}
             submit={handleCreateDisclosure}

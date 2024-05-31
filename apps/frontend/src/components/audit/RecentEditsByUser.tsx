@@ -7,7 +7,7 @@ import { ObjectLink } from '../common/RouteLink'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import moment from 'moment'
 import { HeadingXLarge } from 'baseui/typography'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 
 export const RecentEditsByUser = () => {
   const [recentEdits, setRecentEdits] = React.useState<RecentEdits[]>([])
@@ -20,7 +20,7 @@ export const RecentEditsByUser = () => {
 
   return (
     <Block alignItems="center" width="100%">
-      <HeadingXLarge>{intl.userLastChanges}</HeadingXLarge>
+      <HeadingXLarge>Mine siste endringer</HeadingXLarge>
       {recentEdits
         .slice(0, 10)
         .sort((a, b) => moment(b.time).valueOf() - moment(a.time).valueOf())

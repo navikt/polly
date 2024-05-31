@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react'
 import { AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse } from '../constants'
 import { getAlertEvents } from '../api/AlertApi'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { Block } from 'baseui/block'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { StatefulMenu } from 'baseui/menu'
@@ -20,6 +20,7 @@ import { codelist } from '../service/Codelist'
 import moment from 'moment'
 import { SORT_DIRECTION } from 'baseui/table'
 import {ampli} from "../service/Amplitude";
+import {tekster} from "../util/codeToFineText";
 
 type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
@@ -123,42 +124,42 @@ export const AlertEventPage = () => {
   return (
     <>
       <Block display="flex" width="100%" justifyContent="space-between" alignItems="center">
-        <HeadingLarge>{intl.alerts}</HeadingLarge>
+        <HeadingLarge>Varsler</HeadingLarge>
         {(state.informationTypeId || state.processId || state.disclosureId) && (
           <Block display="flex" alignItems="center">
-            <LabelMedium>{intl.filter}: </LabelMedium>
+            <LabelMedium>Filter: </LabelMedium>
             <Button kind="secondary" size="compact" marginLeft marginRight iconEnd={faTimes} onClick={() => dispatch({ type: 'OBJECT_FILTER' })}>
-              {state.processId && intl.process}
-              {state.informationTypeId && intl.informationType}
-              {state.disclosureId && intl.disclosure}
+              {state.processId && "Behandling"}
+              {state.informationTypeId && "Opplysningstype"}
+              {state.disclosureId && "Utlevering"}
             </Button>
           </Block>
         )}
       </Block>
       <Block width="100%" display="flex" marginBottom={theme.sizing.scale200}>
         <Block width="50%" display="flex" justifyContent="flex-start" alignItems="center">
-          <LabelMedium marginRight={theme.sizing.scale600}>{intl.type}: </LabelMedium>
-          <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: intl[t] }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
+          <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
+          <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: tekster[t] }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
         </Block>
 
         <Block width="50%" display="flex" justifyContent="flex-end" alignItems="center">
-          <LabelMedium marginRight={theme.sizing.scale600}>{intl.level}: </LabelMedium>
-          {levelButton(intl.all)}
-          {levelButton(intl.INFO, AlertEventLevel.INFO)}
-          {levelButton(intl.WARNING, AlertEventLevel.WARNING)}
-          {levelButton(intl.ERROR, AlertEventLevel.ERROR)}
+          <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
+          {levelButton('Alle')}
+          {levelButton('Info', AlertEventLevel.INFO)}
+          {levelButton('Advarsel', AlertEventLevel.WARNING)}
+          {levelButton('Feil', AlertEventLevel.ERROR)}
         </Block>
       </Block>
       <Table
-        emptyText={intl.noAlertsAvailableInTable}
+        emptyText="Ingen varsler"
         headers={
           <>
-            <HeadCell title={intl.process} />
-            <HeadCell title={intl.informationType} />
-            <HeadCell title={intl.disclosure} />
-            <HeadCell title={intl.level + ' - ' + intl.type} />
-            <HeadCell title={intl.time} />
-            <HeadCell title={intl.user} />
+            <HeadCell title="Behandling" />
+            <HeadCell title="Opplysningstype" />
+            <HeadCell title="Utlevering" />
+            <HeadCell title="Nivå - Type" />
+            <HeadCell title="Tidspunkt" />
+            <HeadCell title="Bruker" />
           </>
         }
       >
@@ -197,7 +198,7 @@ export const AlertEventPage = () => {
             </Cell>
 
             <Cell>
-              {intl[event.level]} - {intl[event.type]}
+              {tekster[event.level]} - {tekster[event.type]}
             </Cell>
             <Cell>{moment(event.changeStamp.lastModifiedDate).format('lll')}</Cell>
             <Cell>{event.changeStamp.lastModifiedBy}</Cell>
@@ -223,14 +224,14 @@ export const AlertEventPage = () => {
           )}
         >
           <div>
-            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${state.limit} ${intl.rows}`}</Button>
+            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${state.limit} Rader`}</Button>
           </div>
         </StatefulPopover>
         <Pagination
           currentPage={state.page}
           numPages={state.events.pages}
           onPageChange={(a) => setPage(a.nextPage)}
-          labels={{ nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton }}
+          labels={{ nextButton: "Neste", preposition: "av", prevButton: "Forrige" }}
         />
       </Block>
     </>

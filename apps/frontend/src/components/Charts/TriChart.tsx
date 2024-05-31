@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Counter, ProcessField, ProcessState, ProcessStatusFilter } from '../../constants'
 import { Chart } from './Chart'
-import { intl } from '../../util'
 import { chartColor } from '../../util/theme'
 
 const chartSize = 80
@@ -25,19 +24,19 @@ const TriChart = (props: TriChartProps) => {
       size={chartSize}
       data={[
         {
-          label: intl.yes,
+          label: 'Ja',
           size: counter.yes,
           color: chartColor.generalBlue,
           onClick: onClickPieChartSlice(processField, ProcessState.YES, processStatus),
         },
         {
-          label: intl.no,
+          label: 'Nei',
           size: counter.no,
           color: chartColor.generalMustard,
           onClick: onClickPieChartSlice(processField, ProcessState.NO, processStatus),
         },
         {
-          label: intl.unclarified,
+          label: 'Uavklart',
           size: counter.unknown,
           color: chartColor.generalRed,
           onClick: onClickPieChartSlice(processField, ProcessState.UNKNOWN, processStatus),

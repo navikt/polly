@@ -2,7 +2,7 @@ import * as React from 'react'
 import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { env } from '../../util/env'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
@@ -39,7 +39,7 @@ export const ActiveIndicator = (props: { start?: string; end?: string; alwaysSho
     <CustomizedStatefulTooltip
       content={
         <>
-          {hasStart && intl.startDate + ' ' + startView} {hasStart && hasEnd && ' - '} {hasEnd && intl.endDate + ' ' + endView}
+          {hasStart && 'Fra og med ' + startView} {hasStart && hasEnd && ' - '} {hasEnd && ' til og med ' + endView}
         </>
       }
     >

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { intl, useAwait } from '../util'
+import { useAwait } from '../util'
 import { codelist, ListName } from '../service/Codelist'
 import { HeadingMedium } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
@@ -25,6 +25,6 @@ const codelistPage = (listName: ListName, baseUrl: string, title?: string) => ()
   )
 }
 
-export const ThirdPartyListPage = codelistPage(ListName.THIRD_PARTY, '/thirdparty/', intl.thirdParties)
-export const SystemListPage = codelistPage(ListName.SYSTEM, '/system/', intl.systems)
+export const ThirdPartyListPage = codelistPage(ListName.THIRD_PARTY, '/thirdparty/', "Eksterne parter")
+export const SystemListPage = codelistPage(ListName.SYSTEM, '/system/', "Systemer")
 export const PurposeList = codelistPage(ListName.PURPOSE, '/process/purpose/')
