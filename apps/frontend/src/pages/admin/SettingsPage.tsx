@@ -1,17 +1,15 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
 import { Document, Settings } from '../../constants'
 import { useDebouncedState } from '../../util/hooks'
 import { getDocument, searchDocuments } from '../../api'
-import { Select, TYPE } from 'baseui/select'
-import { intl, theme } from '../../util'
+
+import { intl } from '../../util'
 import { getSettings, writeSettings } from '../../api/SettingsApi'
-import { Spinner } from 'baseui/spinner'
-import { HeadingMedium, LabelMedium } from 'baseui/typography'
-import { Button } from 'baseui/button'
 import { StatefulTextarea } from 'baseui/textarea'
 import { Markdown } from '../../components/common/Markdown'
 import {ampli} from "../../service/Amplitude";
+import {Button, Heading, Label, Loader} from "@navikt/ds-react";
+import Select from 'react-select'
 
 export const SettingsPage = () => {
   const [loading, setLoading] = React.useState<boolean>(true)
@@ -45,9 +43,9 @@ export const SettingsPage = () => {
   return (
     <div>
       <>
-        <HeadingMedium>{intl.settings}</HeadingMedium>
+        <Heading size="large">{intl.settings}</Heading>
         {loading ? (
-          <Spinner $size={40} />
+          <Loader size="large" />
         ) : error || !settings ? (
           { error }
         ) : (
@@ -55,14 +53,14 @@ export const SettingsPage = () => {
             <DefaultProcessDocument documentId={settings.defaultProcessDocument} setDocumentId={(defaultProcessDocument) => setSettings({ ...settings, defaultProcessDocument })} />
             <FrontpageMessage message={settings?.frontpageMessage} setMessage={(frontpageMessage) => setSettings({ ...settings, frontpageMessage })} />
 
-            <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
-              <Button type="button" kind="secondary" onClick={load}>
+            <div className="flex justify-end mt-6 gap-2">
+              <Button variant="secondary" onClick={load}>
                 {intl.abort}
               </Button>
-              <Button type="button" onClick={save}>
+              <Button variant="primary" onClick={save}>
                 {intl.save}
               </Button>
-            </Block>
+            </div>
           </div>
         )}
       </>
@@ -100,26 +98,18 @@ const DefaultProcessDocument = (props: { documentId?: string; setDocumentId: (id
 
   return (
     <div className="flex align-middle">
-      <LabelMedium marginRight="1rem">{intl.defaultProcessDocument}</LabelMedium>
+      <Label className="mr-4" size="small" >{intl.defaultProcessDocument}</Label>
       <div className="w-2/5">
         <Select
-          clearable
-          searchable
-          noResultsMsg={intl.emptyTable}
-          isLoading={loading}
-          maxDropdownHeight="400px"
-          type={TYPE.search}
           options={documents}
           placeholder={intl.searchDocuments}
-          value={document ? [document as any] : []}
-          onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
-          onChange={(params) => {
-            const doc = params.value[0] as Document
-            setDocument(doc)
-            props.setDocumentId(doc?.id)
+          aria-label={intl.searchDocuments}
+          value={document}
+          onChange={(value) => {
+            if (value) {
+              setDocument(value)
+            }
           }}
-          filterOptions={(options) => options}
-          labelKey="name"
         />
       </div>
     </div>
@@ -130,7 +120,7 @@ const FrontpageMessage = (props: { message?: string; setMessage: (message: strin
   return (
     <>
       <div className="align-middle mt-4">
-        <LabelMedium marginRight="1rem">Forsidemelding</LabelMedium>
+        <Label className="mr-4" size="small">Forsidemelding</Label>
         <div className="w-full flex">
           <div className="w-1/2 mr-4">
             <StatefulTextarea
