@@ -1,7 +1,7 @@
 import { ProcessShort, ProcessStatus } from '../../../constants'
 import { Block } from 'baseui/block'
 import { LabelLarge } from 'baseui/typography'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight, faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { codelist, ListName } from '../../../service/Codelist'
@@ -55,23 +55,23 @@ const AccordionTitle = (props: AccordionTitleProps) => {
         {expanded && (
           <>
             <AuditButton id={process.id} marginRight />
-            <Button onClick={() => setIsExportModalOpen(true)} kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
-              {intl.export}
+            <Button onClick={() => setIsExportModalOpen(true)} kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+              Eksportér
             </Button>
           </>
         )}
 
         <Modal closeable animate autoFocus size={SIZE.auto} role={ROLE.dialog} isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)}>
-          <ModalHeader>{intl.exportHeader}</ModalHeader>
+          <ModalHeader>Velg eksportmetode</ModalHeader>
           <ModalBody>
             <StyledLink style={{ textDecoration: 'none' }} href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
-                {intl.exportInternal}
+              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+                Eksport for intern bruk
               </Button>
             </StyledLink>
             <StyledLink style={{ textDecoration: 'none' }} href={`${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight disabled={process.status !== ProcessStatus.COMPLETED}>
-                {intl.exportExternal}
+              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight disabled={process.status !== ProcessStatus.COMPLETED}>
+                Eksport for ekstern bruk
               </Button>
             </StyledLink>
           </ModalBody>
@@ -79,15 +79,14 @@ const AccordionTitle = (props: AccordionTitleProps) => {
 
         {hasAccess && expanded && (
           <>
-            <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} tooltip={intl.edit} onClick={props.editProcess} marginRight>
-              {intl.edit}
+            <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} onClick={props.editProcess} marginRight>
+              Redigér
             </Button>
 
             <Button
               kind={'outline'}
               size={ButtonSize.compact}
               icon={faEdit}
-              tooltip={intl.editInformationTypes}
               onClick={() => {
                 if (InformationTypeRef && InformationTypeRef.current) {
                   InformationTypeRef.current.scrollIntoView()
@@ -95,11 +94,11 @@ const AccordionTitle = (props: AccordionTitleProps) => {
               }}
               marginRight
             >
-              {intl.editInformationTypes}
+              Rediger opplysningstyper
             </Button>
 
-            <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} tooltip={intl.delete} onClick={props.deleteProcess}>
-              {intl.delete}
+            <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} onClick={props.deleteProcess}>
+              Slett
             </Button>
           </>
         )}

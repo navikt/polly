@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-
 import { ListLegalBasesInTable } from './LegalBasis'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Disclosure, DisclosureAlert, DisclosureFormValues, disclosureSort } from '../../constants'
 import { useTable } from '../../util/hooks'
 import RouteLink from './RouteLink'
@@ -51,15 +50,15 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
   return (
     <React.Fragment>
       <Table
-        emptyText={intl.noDisclosuresToThirdPartyAvailableInTable}
+        emptyText='Ingen utlevering'
         headers={
           <>
-            {showRecipient && <HeadCell title={intl.recipient} column={'recipient'} tableState={[table, sortColumn]} />}
-            <HeadCell title={intl.disclosureName} column={'name'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.document} column={'document'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.disclosurePurpose} column={'recipientPurpose'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.additionalDescription} column={'description'} tableState={[table, sortColumn]} />
-            <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]} />
+            {showRecipient && <HeadCell title='Mottaker' column={'recipient'} tableState={[table, sortColumn]} />}
+            <HeadCell title='Navn på utlevering' column={'name'} tableState={[table, sortColumn]} />
+            <HeadCell title='Dokument' column={'document'} tableState={[table, sortColumn]} />
+            <HeadCell title='Formål med utlevering' column={'recipientPurpose'} tableState={[table, sortColumn]} />
+            <HeadCell title='Ytterligere beskrivelse' column={'description'} tableState={[table, sortColumn]} />
+            <HeadCell title='Behandlingsgrunnlag' column={'legalBases'} tableState={[table, sortColumn]} />
             <HeadCell small />
           </>
         }
@@ -80,7 +79,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
 
       {editable && showEditModal && selectedDisclosure && (
         <ModalThirdParty
-          title={intl.editDisclosure}
+          title='Rediger utlevering'
           isOpen={showEditModal}
           initialValues={convertDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => (submitEditDisclosure && (await submitEditDisclosure(values)) ? setShowEditModal(false) : setShowEditModal(true))}
@@ -95,10 +94,10 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
 
       {showDeleteModal && (
         <Modal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal} animate size="default">
-          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalHeader>Bekreft sletting</ModalHeader>
           <ModalBody>
             <ParagraphMedium>
-              {intl.confirmDeletePolicyText} {selectedDisclosure && selectedDisclosure.recipient.code}
+              Bekreft sletting av behandling for opplysningstypen {selectedDisclosure && selectedDisclosure.recipient.code}
             </ParagraphMedium>
           </ModalBody>
 
@@ -106,7 +105,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
             <Block display="flex" justifyContent="flex-end">
               <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
               <Button kind="secondary" onClick={() => setShowDeleteModal(false)} marginLeft marginRight>
-                {intl.abort}
+                Avbryt
               </Button>
               <Button
                 onClick={() => {
@@ -121,7 +120,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                   }
                 }}
               >
-                {intl.delete}
+                Slett
               </Button>
             </Block>
           </ModalFooter>
@@ -163,7 +162,7 @@ const DisclosureRow = (props: {
             kind="tertiary"
             size="compact"
             icon={faExclamationCircle}
-            tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+            tooltip={hasAlert ? `Varsler: Behandlingsgrunnlag for artikkel 6 mangler` : `Varsler: Nei`}
             $style={{ color: hasAlert ? theme.colors.warning500 : undefined }}
             onClick={() => navigate(`/alert/events/disclosure/${disclosure.id}`)}
           />
@@ -172,7 +171,7 @@ const DisclosureRow = (props: {
         {editable && (
           <Block width="100%" display="flex" justifyContent="flex-end">
             <Button
-              tooltip={intl.edit}
+              tooltip='Rediger'
               size={SIZE.compact}
               kind={KIND.tertiary}
               onClick={() => {
@@ -183,7 +182,7 @@ const DisclosureRow = (props: {
             />
 
             <Button
-              tooltip={intl.delete}
+              tooltip='Slett'
               size={SIZE.compact}
               kind={KIND.tertiary}
               onClick={() => {

@@ -5,9 +5,8 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useNavigate, useParams } from 'react-router-dom'
 import { HeadingMedium } from 'baseui/typography'
-
-import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/'
-import { intl, theme } from '../util'
+import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
+import { theme } from '../util'
 import { CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
 import { ListName } from '../service/Codelist'
 import { user } from '../service/User'
@@ -74,12 +73,12 @@ const InformationtypePage = () => {
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <HeadingMedium marginTop="0">{intl.informationTypes}</HeadingMedium>
+        <HeadingMedium marginTop="0">Opplysningstyper</HeadingMedium>
         <Block>
           {user.canWrite() && (
             <Button kind="outline" onClick={() => navigate('/informationtype/create')}>
               <FontAwesomeIcon icon={faPlusCircle} />
-              &nbsp;{intl.createNew}
+              &nbsp;Opprett ny opplysningstype
             </Button>
           )}
         </Block>

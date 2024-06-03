@@ -1,14 +1,12 @@
 import React from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { intl } from '../../../util'
 import BoolField from '../../Process/common/BoolField'
 import { DpProcessFormValues, Processor } from '../../../constants'
 import { FormikProps } from 'formik'
 import FieldDpDataProcessors from './FieldDpDataProcessors'
 import { getAll } from '../../../api'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
-import { FlexGridItem } from 'baseui/flex-grid'
 
 type FieldDpProcessSubDataProcessorProps = {
   rowBlockProps: BlockProps
@@ -44,14 +42,14 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.isSubDataProcessorUsed} tooltip={intl.isSubDataProcessorUsedDpProcessHelpText} />
+        <ModalLabel label='Benyttes underdatabehandler(e)?' tooltip='En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler.' />
         <BoolField fieldName="subDataProcessing.dataProcessor" value={formikBag.values.subDataProcessing.dataProcessor} />
       </Block>
 
       {formikBag.values.subDataProcessing.dataProcessor && (
         <>
           <Block {...rowBlockProps}>
-            <ModalLabel label={intl.processor} />
+            <ModalLabel label='Databehandler' />
             <FieldDpDataProcessors
               formikBag={formikBag}
               subDataProcessors={subDataProcessors}

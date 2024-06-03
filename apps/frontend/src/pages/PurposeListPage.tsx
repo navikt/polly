@@ -1,4 +1,4 @@
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import React from 'react'
 import { Block } from 'baseui/block'
@@ -41,11 +41,11 @@ export const PurposeListPage = () => {
   return (
     <Block overrides={{ Block: { props: { role: 'main' } } }}>
       <>
-        <HeadingXXLarge>{intl.processingActivities}</HeadingXXLarge>
+        <HeadingXXLarge>Behandlingsaktiviteter</HeadingXXLarge>
 
         <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Block>
-            <LabelLarge>{intl.purposeSelect}</LabelLarge>
+            <LabelLarge>Velg overordnet behandlingsaktivitet</LabelLarge>
           </Block>
 
           <Block marginTop={'auto'}>
@@ -60,7 +60,7 @@ export const PurposeListPage = () => {
                   </Block>
                 }
               >
-                {intl.processingActivitiesNew}
+                Opprett ny behandling
               </Button>
             )}
           </Block>
@@ -69,7 +69,7 @@ export const PurposeListPage = () => {
         <Block marginBottom={theme.sizing.scale800} />
 
         <ModalProcess
-          title={intl.processingActivitiesNew}
+          title="Opprett ny behandling"
           onClose={() => setShowCreateProcessModal(false)}
           isOpen={showCreateProcessModal}
           submit={(values: ProcessFormValues) => handleCreateProcess(values)}

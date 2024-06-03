@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import { intl } from '../../../util'
 import { Code, codelist } from '../../../service/Codelist'
 import { Process } from '../../../constants'
 import { ColumnCompares, useTable } from '../../../util/hooks'
@@ -43,13 +42,13 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
   return (
     <>
       <Table
-        emptyText={intl.noProcessesAvailableInTable}
+        emptyText='Ingen behandlinger'
         headers={
           <>
-            <HeadCell title={intl.overallPurposeActivity} column="purposes" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.process} column="name" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.department} column="department" tableState={[table, sortColumn]} />
-            <HeadCell title={intl.system} column="products" tableState={[table, sortColumn]} />
+            <HeadCell title='Overordnet behandlingsaktivitet' column="purposes" tableState={[table, sortColumn]} />
+            <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} />
+            <HeadCell title='Avdeling' column="department" tableState={[table, sortColumn]} />
+            <HeadCell title='System' column="products" tableState={[table, sortColumn]} />
           </>
         }
       >

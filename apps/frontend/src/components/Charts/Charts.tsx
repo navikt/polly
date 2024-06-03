@@ -4,7 +4,6 @@ import { Block } from 'baseui/block'
 import { cardShadow, chartCardProps } from '../common/Style'
 import { AllDashCount, DepartmentDashCount, ProcessField, ProcessState, ProcessStatusFilter, ProductAreaDashCount } from '../../constants'
 import TriChart from './TriChart'
-import { intl } from '../../util'
 import { Chart } from './Chart'
 import { clickOnPieChartSlice } from '../../util/dashboard'
 import { chartColor } from '../../util/theme'
@@ -12,7 +11,6 @@ import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
 import { Section } from '../../pages/ProcessPage'
 import { Card } from 'baseui/card'
-import { lowerFirst } from 'lodash'
 
 const chartSize = 80
 
@@ -45,16 +43,16 @@ const Charts = (props: ChartsProps) => {
   return (
     <Block display="flex" flexWrap={true} width={'100%'} justifyContent={'space-between'}>
       <Block {...chartCardProps}>
-        <TriChart counter={chartData.dpia} title={intl.dpiaNeeded} processStatus={processStatus} processField={ProcessField.DPIA} onClickPieChartSlice={handleClickPieChartSlice} />
+        <TriChart counter={chartData.dpia} title='Behov for PVK' processStatus={processStatus} processField={ProcessField.DPIA} onClickPieChartSlice={handleClickPieChartSlice} />
         <ParagraphMedium>
-          {intl.missingPVK}: <RouteLink href={link(ProcessField.DPIA_REFERENCE_MISSING, ProcessState.YES)}>{chartData.dpiaReferenceMissing}</RouteLink>
+          Ref. til PVK ikke angitt: <RouteLink href={link(ProcessField.DPIA_REFERENCE_MISSING, ProcessState.YES)}>{chartData.dpiaReferenceMissing}</RouteLink>
         </ParagraphMedium>
       </Block>
 
       <Block {...chartCardProps}>
         <TriChart
           counter={chartData.profiling}
-          title={intl.profiling}
+          title='Profilering'
           processStatus={processStatus}
           processField={ProcessField.PROFILING}
           onClickPieChartSlice={handleClickPieChartSlice}
@@ -64,7 +62,7 @@ const Charts = (props: ChartsProps) => {
       <Block {...chartCardProps}>
         <TriChart
           counter={chartData.automation}
-          title={intl.automaticProcessing}
+          title='Helautomatisk behandling'
           processStatus={processStatus}
           processField={ProcessField.AUTOMATION}
           onClickPieChartSlice={handleClickPieChartSlice}
@@ -73,25 +71,25 @@ const Charts = (props: ChartsProps) => {
 
       <Block {...chartCardProps}>
         <Chart
-          chartTitle={intl.incompleteLegalBasis}
+          chartTitle='Ufullstendig behandlingsgrunnlag'
           size={chartSize}
           hidePercent
           type="bar"
           data={[
             {
-              label: intl.numberOfProcessesWithUnknownLegalBasis,
+              label: 'Rettslig grunnlag uavklart',
               size: chartData.processesMissingLegalBases,
               color: chartColor.generalRed,
               onClick: handleClickPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES, processStatus),
             },
             {
-              label: intl.numberOfProcessesWithoutArticle6LegalBasis,
+              label: 'Artikkel 6 mangler',
               size: chartData.processesMissingArt6,
               color: chartColor.generalMustard,
               onClick: handleClickPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES, processStatus),
             },
             {
-              label: intl.numberOfProcessesWithoutArticle9LegalBasis,
+              label: 'Artikkel 9 mangler',
               size: chartData.processesMissingArt9,
               color: chartColor.generalBlue,
               onClick: handleClickPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES, processStatus),
@@ -104,12 +102,12 @@ const Charts = (props: ChartsProps) => {
         <TriChart
           counter={chartData.retention}
           processStatus={processStatus}
-          title={intl.retentionPieChartTitle}
+          title='Omfattes av NAVs bevarings- og kassasjonsvedtak'
           processField={ProcessField.RETENTION}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
         <ParagraphLarge>
-          {intl.processWithIncompleteRetention} <RouteLink href={link(ProcessField.RETENTION_DATA)}>{chartData.retentionDataIncomplete}</RouteLink>
+          Behandlinger med ufullstendig lagringstid: <RouteLink href={link(ProcessField.RETENTION_DATA)}>{chartData.retentionDataIncomplete}</RouteLink>
         </ParagraphLarge>
       </Block>
 
@@ -117,7 +115,7 @@ const Charts = (props: ChartsProps) => {
         <TriChart
           counter={chartData.dataProcessor}
           processStatus={processStatus}
-          title={intl.isProcessorUsed}
+          title='Benyttes databehandler(e)?'
           processField={ProcessField.DATA_PROCESSOR}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
@@ -126,16 +124,16 @@ const Charts = (props: ChartsProps) => {
       {all.disclosures !== undefined && (
         <Block {...chartCardProps}>
           <Chart
-            chartTitle={intl.disclosures + ' ' + lowerFirst(intl.legalBasesShort)}
+            chartTitle='Utleveringer behandlingsgrunnlag'
             data={[
               {
-                label: intl.filled,
+                label: 'Utfylt',
                 size: all.disclosures - all.disclosuresIncomplete,
                 color: chartColor.generalBlue,
                 onClick: () => navigate('/disclosure?filter=legalbases'),
               },
               {
-                label: intl.incomplete,
+                label: 'Ufullstendig',
                 size: all.disclosuresIncomplete,
                 color: chartColor.generalRed,
                 onClick: () => navigate('/disclosure?filter=emptylegalbases'),
@@ -144,7 +142,7 @@ const Charts = (props: ChartsProps) => {
             size={chartSize}
           />
           <ParagraphMedium>
-            {intl.disclosures}: <RouteLink href={'/disclosure'}>{all.disclosures}</RouteLink>
+            Utleveringer: <RouteLink href={'/disclosure'}>{all.disclosures}</RouteLink>
           </ParagraphMedium>
         </Block>
       )}
@@ -153,10 +151,10 @@ const Charts = (props: ChartsProps) => {
         <Card overrides={cardShadow}>
           <Block>
             <ParagraphMedium>
-              {intl.navResponsible}: <RouteLink href={link(ProcessField.COMMON_EXTERNAL_PROCESSOR, ProcessState.YES)}>{chartData.commonExternalProcessResponsible}</RouteLink>
+              Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part: <RouteLink href={link(ProcessField.COMMON_EXTERNAL_PROCESSOR, ProcessState.YES)}>{chartData.commonExternalProcessResponsible}</RouteLink>
             </ParagraphMedium>
             <ParagraphMedium>
-              {intl.dpProcessPageTitle}: <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
+              Behandlinger hvor NAV er databehandler: <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
             </ParagraphMedium>
           </Block>
         </Card>

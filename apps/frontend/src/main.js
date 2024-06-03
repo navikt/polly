@@ -5,21 +5,17 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { Client as Styletron } from 'styletron-engine-atomic'
 import { Provider as StyletronProvider } from 'styletron-react'
 import Header from './components/Header'
-import SideBar from './components/SideBar'
+import SideBar from './components/SideBar/SideBar'
 import AppRoutes from './AppRoutes'
 import { codelist } from './service/Codelist'
 import { user } from './service/User'
 import { theme, useAwait } from './util'
-import { useLang } from './util/intl/intl'
 
 
 const engine = new Styletron()
 
-
-
 const Main = (props) => {
   const { history } = props
-  const setLang = useLang()
 
   // all pages need these
   useAwait(codelist.wait())
@@ -36,7 +32,7 @@ const Main = (props) => {
               </Block>
               <Block minHeight={'100%'} width={'100%'} marginBottom={'200px'}>
                 <Block>
-                  <Header setLang={setLang} />
+                  <Header/>
                 </Block>
                 <Block marginTop={'4rem'} paddingRight={'30px'} paddingLeft={'30px'}>
                   <AppRoutes />

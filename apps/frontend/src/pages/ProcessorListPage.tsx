@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { convertProcessorToFormValues, createProcessor, getProcessorsByPageAndPageSize } from '../api/ProcessorApi'
 import { Processor, ProcessorFormValues } from '../constants'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { HeadingMedium, LabelLarge } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import Button from '../components/common/Button'
@@ -53,17 +53,17 @@ export const ProcessorListPage = () => {
     <Spinner size={theme.sizing.scale1200} />
   ) : (
     <>
-      <HeadingMedium>{intl.processors}</HeadingMedium>
+      <HeadingMedium>Databehandlere</HeadingMedium>
       <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
         <Block>
-          <LabelLarge>{intl.processorSelect}</LabelLarge>
+          <LabelLarge>Databehandlere</LabelLarge>
         </Block>
 
         <Block marginTop={'auto'}>
           {hasAccess() && (
             <Button kind="outline" onClick={() => setShowCreateProcessorModal(true)}>
               <FontAwesomeIcon icon={faPlusCircle} />
-              &nbsp;{intl.createProcessor}
+              &nbsp;Opprett ny databehandler
             </Button>
           )}
         </Block>
@@ -77,7 +77,7 @@ export const ProcessorListPage = () => {
         />
       </Block>
       <ProcessorModal
-        title={intl.createProcessor}
+        title="Opprett ny databehandler"
         isOpen={showCreateProcessorModal}
         initialValues={convertProcessorToFormValues({})}
         submit={handleCreateProcessor}

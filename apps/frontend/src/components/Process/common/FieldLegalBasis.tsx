@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import CardLegalBasis from '../Accordion/CardLegalBasis'
-import { intl } from '../../../util'
 import { Block } from 'baseui/block'
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
 import { SensitivityLevel } from '../../../service/Codelist'
@@ -36,7 +35,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
         <>
           {formikBag.values.legalBasesOpen ? (
             <CardLegalBasis
-              titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
+              titleSubmitButton={selectedLegalBasis ? 'Oppdater' : 'Legg til'}
               initValue={selectedLegalBasis || {}}
               hideCard={() => {
                 formikBag.setFieldValue('legalBasesOpen', false)
@@ -57,7 +56,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
           ) : (
             <Block display={'flex'} width={'100%'}>
               <Block width={'100%'}>
-                <CustomizedStatefulTooltip content={intl.article6HelpText}>
+                <CustomizedStatefulTooltip content='Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'>
                   <Block>
                     <Button
                       size={ButtonSize.compact}
@@ -72,7 +71,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                         </Block>
                       )}
                     >
-                      {intl.addArticle6}
+                      Behandlingsgrunnlag
                     </Button>
                   </Block>
                 </CustomizedStatefulTooltip>
@@ -93,7 +92,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
               </Block>
 
               <Block width={'100%'}>
-                <CustomizedStatefulTooltip content={intl.article9HelpText}>
+                <CustomizedStatefulTooltip content='Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'>
                   <Block>
                     <Button
                       size={ButtonSize.compact}
@@ -108,7 +107,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                         </Block>
                       )}
                     >
-                      {intl.addArticle9}
+                      Behandlingsgrunnlag for særlige kategorier
                     </Button>
                   </Block>
                 </CustomizedStatefulTooltip>

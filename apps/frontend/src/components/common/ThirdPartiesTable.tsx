@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { intl } from '../../util'
 import { InformationType, informationTypeSort } from '../../constants'
 import { useTable } from '../../util/hooks'
 import { Cell, HeadCell, Row, Table } from './Table'
@@ -18,11 +17,11 @@ const ThirdPartiesTable = ({ informationTypes, sortName }: TableInformationTypes
 
   return (
     <Table
-      emptyText={intl.noRetrievedFromThirdPartyAvailableInTable}
+      emptyText='Ingen innhentinger fra ekstern part'
       headers={
         <>
-          <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.orgMaster} column={'orgMaster'} tableState={[table, sortColumn]} />
+          <HeadCell title='Navn' column={'name'} tableState={[table, sortColumn]} />
+          <HeadCell title='Master i NAV' column={'orgMaster'} tableState={[table, sortColumn]} />
         </>
       }
     >

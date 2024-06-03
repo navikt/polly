@@ -1,5 +1,5 @@
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { Process, processSort } from '../../../constants'
 import React from 'react'
 import { Block } from 'baseui/block'
@@ -15,14 +15,14 @@ const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps)
   return (
     <>
       <Table
-        emptyText={intl.emptyTable}
+        emptyText='Ingen'
         backgroundColor={theme.colors.primary100}
         headers={
           <>
-            <HeadCell title={intl.overallPurposeActivity} column={'purposes'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
-            <HeadCell title={intl.process} column={'name'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
-            <HeadCell title={intl.department} column={'affiliation'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
-            <HeadCell title={intl.system} $style={{ maxWidth: '25%' }} />
+            <HeadCell title='Overordnet behandlingsaktivitet' column={'purposes'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
+            <HeadCell title='Behandling ja' column={'name'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
+            <HeadCell title='Avdeling' column={'affiliation'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
+            <HeadCell title='System'$style={{ maxWidth: '25%' }} />
           </>
         }
       >

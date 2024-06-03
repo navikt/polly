@@ -3,6 +3,7 @@ package no.nav.data.polly.disclosure;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosureSummaryPage;
 import no.nav.data.polly.disclosure.dto.DisclosureAbroadRequest;
@@ -69,6 +70,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
         InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
                 CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
 
+       CodelistResponse department = CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP");
+
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
                 .name("disc name")
@@ -78,6 +81,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .start(LocalDate.now())
                 .end(LocalDate.now())
                 .legalBasis(legalBasisResponse())
+                .productTeams(List.of())
+                .department(department)
                 .documentId(document.getId())
                 .document(DocumentResponse.builder()
                         .id(document.getId())
@@ -274,6 +279,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .recipientPurpose("recipient purpose")
                 .start(LocalDate.now().toString())
                 .end(LocalDate.now().toString())
+                .productTeams(List.of())
+                .department("DEP")
                 .legalBasis(createLegalBasisRequest())
                 .abroad(DisclosureAbroadRequest.builder()
                         .abroad(true)

@@ -5,7 +5,8 @@ import { Field, FieldProps } from 'formik'
 import { ProcessFormValues } from '../../../constants'
 import { Block } from 'baseui/block'
 
-const FieldDepartment = (props: { department?: string }) => {
+
+const FieldDepartment = (props: { department?: string, fieldName?: string }) => {
   const { department } = props
   const [value, setValue] = React.useState<Value>(
     department
@@ -20,14 +21,14 @@ const FieldDepartment = (props: { department?: string }) => {
 
   return (
     <Field
-      name="affiliation.department"
+      name={props.fieldName ? props.fieldName : "affiliation.department"}
       render={({ form }: FieldProps<ProcessFormValues>) => (
         <Block width={'100%'}>
           <Select
             options={codelist.getParsedOptions(ListName.DEPARTMENT)}
             onChange={({ value }) => {
               setValue(value)
-              form.setFieldValue('affiliation.department', value.length > 0 ? value[0].id : '')
+              form.setFieldValue(props.fieldName ? props.fieldName :'affiliation.department', value.length > 0 ? value[0].id : '')
             }}
             value={value}
             overrides={{ Placeholder: { style: { color: 'black' } } }}

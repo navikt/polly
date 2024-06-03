@@ -7,11 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { padding } from '../../common/Style'
 import { DpProcessFormValues } from '../../../constants'
-import { currentLang } from '../../../util/intl/intl'
 import { Error } from '../../common/ModalSchema'
+import nb from 'date-fns/locale/nb';
 
 interface DateModalProps {
   showDates: boolean
@@ -43,7 +43,7 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
       {!showDates ? (
         <Block {...rowBlockProps}>
           <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
-            {intl.useDates}
+            Velg datoer
           </Button>
         </Block>
       ) : (
@@ -51,9 +51,9 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
           <Block width={'100%'}>
             <Block display={'flex'} width={'100%'}>
               <Block width={'50%'} marginRight={'1rem'}>
-                {showLabels && <LabelWithTooltip text={intl.startDate} tooltip={intl.fomDateHelpText} />}
+                {showLabels && <LabelWithTooltip text='Fom dato' tooltip='Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.' />}
               </Block>
-              <Block width={'50%'}>{showLabels && <LabelWithTooltip text={intl.endDate} tooltip={intl.tomDateHelpText} />}</Block>
+              <Block width={'50%'}>{showLabels && <LabelWithTooltip text='Tom dato' tooltip='Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.' />}</Block>
             </Block>
             <Block display={'flex'} width={'100%'}>
               <Block width={'50%'} marginRight={'1rem'}>
@@ -61,12 +61,12 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
                   <Field name="start">
                     {({ field, form }: FieldProps<string, DpProcessFormValues>) => (
                       <Datepicker
-                        placeholder={intl.datePickStart}
+                        placeholder='Velg fra og med dato '
                         value={field.value ? new Date(field.value) : undefined}
                         onChange={({ date }) => {
                           form.setFieldValue('start', dateToDateString(date))
                         }}
-                        locale={currentLang().dateLocale}
+                        locale={nb}
                         formatString={'dd-MM-yyyy'}
                         error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
                         clearable
@@ -88,14 +88,14 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
                   <Field name="end">
                     {({ field, form }: FieldProps<string, DpProcessFormValues>) => (
                       <Datepicker
-                        placeholder={intl.datePickEnd}
+                        placeholder='Velg til og med dato'
                         value={field.value ? new Date(field.value) : undefined}
                         onChange={({ date }) => {
                           form.setFieldValue('end', dateToDateString(date))
                         }}
                         formatString={'dd-MM-yyyy'}
                         error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
-                        locale={currentLang().dateLocale}
+                        locale={nb}
                         clearable
                         overrides={{
                           Input: {

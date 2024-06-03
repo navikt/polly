@@ -5,7 +5,7 @@ import { Block } from 'baseui/block'
 import { useStyletron } from 'baseui'
 import { Accordion, Panel } from 'baseui/accordion'
 import { ListItem, ListItemLabel } from 'baseui/list'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { codelist, ListName } from '../../service/Codelist'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -27,7 +27,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
     if (!categoryUsages) return
     return categoryUsages
       .filter((categoryUsage) => categoryUsage.informationTypes.length > 0)
-      .sort((a, b) => codelist.getShortname(a.listName, a.code).localeCompare(codelist.getShortname(b.listName, b.code), intl.getLanguage()))
+      .sort((a, b) => codelist.getShortname(a.listName, a.code).localeCompare(codelist.getShortname(b.listName, b.code), 'nb'))
       .map((categoryUsage) => {
         return (
           <Panel
@@ -47,7 +47,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
                     },
                   }}
                 >
-                  {intl.informationTypes}: {categoryUsage.informationTypes.length}
+                  Opplysningstyper: {categoryUsage.informationTypes.length}
                 </Block>
               </Block>
             }
@@ -70,7 +70,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
               })}
             >
               {categoryUsage.informationTypes
-                .sort((a, b) => a.name.localeCompare(b.name, intl.getLanguage()))
+                .sort((a, b) => a.name.localeCompare(b.name, 'nb'))
                 .map((informationType) => {
                   return (
                     <ListItem
@@ -104,14 +104,14 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
         <ParagraphLarge marginBottom={theme.sizing.scale1200}>
           <FontAwesomeIcon icon={faExclamationTriangle} color={theme.colors.negative400} />
           <Block marginRight={theme.sizing.scale200} display="inline" />
-          {intl.formatString(intl.categoryNotInUse, codelist.getShortname(ListName.CATEGORY, category!))}
+          {`Kategori ${codelist.getShortname(ListName.CATEGORY, category!)} er ikke i bruk`}
         </ParagraphLarge>
       )}
 
       <Block>
         <HeadingLevel>
           <Heading styleLevel={5} paddingLeft="20px">
-            {intl.categories}
+            Kategorier
           </Heading>
         </HeadingLevel>
         <Accordion initialState={{ expanded: category ? [category] : [] }}>{panelList()}</Accordion>

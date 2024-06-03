@@ -43,6 +43,14 @@ export const searchDisclosure = async (text: string) => {
   return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/search/${text}`)).data
 }
 
+export const getDisclosureByDepartment = async (department: string) => {
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/department/${department}`)).data
+}
+
+export const getDisclosureByProductTeam = async (productTeam: string) => {
+  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/productTeam/${productTeam}`)).data
+}
+
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
   let body = convertFormValuesToDisclosure(disclosure)
   return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data
@@ -79,7 +87,9 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     administrationArchiveCaseNumber: values.administrationArchiveCaseNumber,
     thirdCountryReceiver: mapBool(values.thirdCountryReceiver),
     assessedConfidentiality: mapBool(values.assessedConfidentiality),
-    confidentialityDescription: values.confidentialityDescription
+    confidentialityDescription: values.confidentialityDescription,
+    productTeams: values.productTeams,
+    department: values.department
   }
 }
 
@@ -110,11 +120,13 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
       refToAgreement: disclosure.abroad.refToAgreement || '',
       businessArea: disclosure.abroad.businessArea || '',
     },
+    productTeams: disclosure.productTeams || [],
+    department: disclosure?.department?.code || '',
     processIds: disclosure.processIds || [],
     administrationArchiveCaseNumber: disclosure.administrationArchiveCaseNumber || '',
     thirdCountryReceiver: mapBool(disclosure.thirdCountryReceiver),
     assessedConfidentiality: mapBool(disclosure.assessedConfidentiality),
-    confidentialityDescription: disclosure.confidentialityDescription || ''
+    confidentialityDescription: disclosure.confidentialityDescription || '',
   }
 }
 

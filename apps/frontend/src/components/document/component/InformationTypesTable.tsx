@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
-import { intl } from '../../../util'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { DocumentInformationTypes, DocumentInfoTypeUse } from '../../../constants'
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -37,11 +36,11 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
   return (
     <>
       <StyledHead>
-        <StyledHeadCell style={{ maxWidth: '45%' }}>{intl.informationType}</StyledHeadCell>
-        <StyledHeadCell style={{ maxWidth: '45%' }}>{intl.subjectCategories}</StyledHeadCell>
+        <StyledHeadCell style={{ maxWidth: '45%' }}>Opplysningstype</StyledHeadCell>
+        <StyledHeadCell style={{ maxWidth: '45%' }}>Personkategori</StyledHeadCell>
         <StyledHeadCell style={{ maxWidth: '10%', justifyContent: 'center' }}>
-          <Button type="button" kind={KIND.secondary} size={ButtonSize.compact} icon={faPlus} tooltip={intl.addNew} onClick={() => arrayHelpers.push(newRow())}>
-            {intl.addNew}
+          <Button type="button" kind={KIND.secondary} size={ButtonSize.compact} icon={faPlus} onClick={() => arrayHelpers.push(newRow())}>
+            Legg til ny
           </Button>
         </StyledHeadCell>
       </StyledHead>
@@ -61,12 +60,11 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
                   kind={KIND.secondary}
                   size={ButtonSize.compact}
                   icon={faTrash}
-                  tooltip={intl.delete}
                   onClick={() => {
                     arrayHelpers.remove(index)
                   }}
                 >
-                  {intl.delete}
+                  Slett
                 </Button>
               )}
             </StyledCell>

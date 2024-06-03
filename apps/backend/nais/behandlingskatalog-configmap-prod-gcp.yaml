@@ -8,12 +8,12 @@ data:
   BIGQUERY_AAREG_DATASETNAME: aareg_avtaler
   BIGQUERY_AAREG_PROJECTID: teamcrm-prod-31a7
   BIGQUERY_AAREG_TABLENAME: aareg_avtaler_for_tilgang
-  CLIENT_COMMON_CODE_NAV_URL: https://kodeverk.prod-fss-pub.nais.io/api
+  CLIENT_COMMON_CODE_NAV_URL: https://kodeverk-api.nav.no/api
   CLIENT_TEAMCAT_URL: https://teamkatalog-api.intern.nav.no
   CLIENT_TERM_CATALOG_URL: https://begrepskatalog-api.intern.nav.no/api/dcat
   ENVIRONMENT_CLASS: prod
   GOOGLE_APPLICATION_CREDENTIALS: /var/run/secrets/polly_aareg_integration_key.json
-  POLLY_SECURITY_REDIRECT_URIS: https://behandlingskatalog.intern.nav.no
+  POLLY_SECURITY_REDIRECT_URIS: https://behandlingskatalog.intern.nav.no, https://behandlingskatalog.ansatt.nav.no
 kind: ConfigMap
 metadata:
   name: behandlingskatalogcfg

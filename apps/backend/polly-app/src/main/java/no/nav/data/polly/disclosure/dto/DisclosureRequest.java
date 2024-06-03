@@ -53,6 +53,8 @@ public class DisclosureRequest implements RequestElement {
     private String administrationArchiveCaseNumber;
     private Boolean assessedConfidentiality;
     private String confidentialityDescription;
+    private String department;
+    private List<String> productTeams;
 
     private boolean update;
     private int requestIndex;

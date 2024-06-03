@@ -68,4 +68,11 @@ public class DisclosureRepositoryImpl implements DisclosureRepositoryCustom {
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
         return disclosureRepository.findAllById(ids);
     }
+
+    @Override
+    public List<Disclosure> findByProductTeam(String productTeam) {
+        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{productTeams}' ?? :productTeam",
+                new MapSqlParameterSource().addValue("productTeam", productTeam));
+        return getDisclosures(resp);
+    }
 }

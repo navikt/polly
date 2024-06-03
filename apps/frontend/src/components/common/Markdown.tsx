@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
-import {ParagraphMedium} from 'baseui/typography'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import {StyledLink} from "baseui/link";

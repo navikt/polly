@@ -8,7 +8,7 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { ParagraphMedium } from 'baseui/typography'
 import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
 import { InformationType } from '../../constants'
@@ -47,21 +47,19 @@ export const DeleteModal = (props: { id: string; showDeleteModal: boolean; close
 
   return (
     <Modal onClose={props.closeModal} isOpen={props.showDeleteModal} animate size="default">
-      <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+      <ModalHeader>Bekreft sletting</ModalHeader>
       <ModalBody>
         {!infoType && <Spinner />}
         {canDelete && (
           <ParagraphMedium>
-            {intl.confirmDeleteInformationTypeText} {infoType?.name}
+            Bekreft sletting av opplysningstypen {infoType?.name}
           </ParagraphMedium>
         )}
         {infoType && !canDelete && (
           <ParagraphMedium>
-            {intl.formatString(intl.cannotDeleteInformationTypes, infoType.name)}
-            <br />
-            {!!policies && intl.formatString(intl.informationTypeHasPolicies, policies)}
-            <br />
-            {!!documents && intl.formatString(intl.informationTypeHasDocuments, documents)}
+            {`Kan ikke slette opplysningstypen ${infoType.name} da den er knyttet til:`}
+            {!!policies && <ul>{policies} Behandling(er)</ul>}
+            {!!documents && <ul>{documents} Dokument(er)</ul>}
           </ParagraphMedium>
         )}
       </ModalBody>
@@ -71,11 +69,11 @@ export const DeleteModal = (props: { id: string; showDeleteModal: boolean; close
           <Block alignSelf="flex-end">{errorProcessModal && <p>{errorProcessModal}</p>}</Block>
           <Block display="inline" marginLeft={theme.sizing.scale400} />
           <Button kind="secondary" onClick={props.closeModal}>
-            {intl.abort}
+            Avbryt
           </Button>
           <Block display="inline" marginLeft={theme.sizing.scale400} />
           <Button onClick={submitDeleteProcess} disabled={!canDelete}>
-            {intl.delete}
+            Slett
           </Button>
         </Block>
       </ModalFooter>
@@ -94,13 +92,13 @@ export const InformationTypeBannerButtons = (props: { id: string }) => {
         <AuditButton id={props.id} marginRight />
 
         <RouteLink href={`/informationtype/${props.id}/edit`} className={link}>
-          <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight>
-            {intl.edit}
+          <Button size="compact" kind="outline" icon={faEdit} marginRight>
+            Redigér
           </Button>
         </RouteLink>
 
-        <Button size={ButtonSize.compact} kind="outline" onClick={() => setShowDeleteModal(true)} tooltip={intl.delete} icon={faTrash}>
-          {intl.delete}
+        <Button size={ButtonSize.compact} kind="outline" onClick={() => setShowDeleteModal(true)} icon={faTrash}>
+          Slett
         </Button>
       </Block>
       <DeleteModal id={props.id} showDeleteModal={showDeleteModal} closeModal={() => setShowDeleteModal(false)} />

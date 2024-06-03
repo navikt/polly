@@ -1,15 +1,17 @@
 import React, { FormEvent, useEffect, useState } from 'react'
+import { Block } from 'baseui/block'
 import { Document, Settings } from '../../constants'
 import { useDebouncedState } from '../../util/hooks'
 import { getDocument, searchDocuments } from '../../api'
-
-import { intl } from '../../util'
+import { Select, TYPE } from 'baseui/select'
+import { theme } from '../../util'
 import { getSettings, writeSettings } from '../../api/SettingsApi'
+import { Spinner } from 'baseui/spinner'
+import { HeadingMedium, LabelMedium } from 'baseui/typography'
+import { Button } from 'baseui/button'
 import { StatefulTextarea } from 'baseui/textarea'
 import { Markdown } from '../../components/common/Markdown'
 import {ampli} from "../../service/Amplitude";
-import {Button, Heading, Label, Loader} from "@navikt/ds-react";
-import Select from 'react-select'
 
 export const SettingsPage = () => {
   const [loading, setLoading] = React.useState<boolean>(true)
@@ -41,30 +43,30 @@ export const SettingsPage = () => {
   }, [])
 
   return (
-    <div>
+    <Block>
       <>
-        <Heading size="large">{intl.settings}</Heading>
+        <HeadingMedium>Innstillinger</HeadingMedium>
         {loading ? (
-          <Loader size="large" />
+          <Spinner $size={40} />
         ) : error || !settings ? (
           { error }
         ) : (
-          <div>
+          <Block>
             <DefaultProcessDocument documentId={settings.defaultProcessDocument} setDocumentId={(defaultProcessDocument) => setSettings({ ...settings, defaultProcessDocument })} />
             <FrontpageMessage message={settings?.frontpageMessage} setMessage={(frontpageMessage) => setSettings({ ...settings, frontpageMessage })} />
 
-            <div className="flex justify-end mt-6 gap-2">
-              <Button variant="secondary" onClick={load}>
-                {intl.abort}
+            <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
+              <Button type="button" kind="secondary" onClick={load}>
+                Avbryt
               </Button>
-              <Button variant="primary" onClick={save}>
-                {intl.save}
+              <Button type="button" onClick={save}>
+                Lagre
               </Button>
-            </div>
-          </div>
+            </Block>
+          </Block>
         )}
       </>
-    </div>
+    </Block>
   )
 }
 
@@ -97,43 +99,51 @@ const DefaultProcessDocument = (props: { documentId?: string; setDocumentId: (id
   }, [documentSearch])
 
   return (
-    <div className="flex align-middle">
-      <Label className="mr-4" size="small" >{intl.defaultProcessDocument}</Label>
-      <div className="w-2/5">
+    <Block display="flex" alignItems="center">
+      <LabelMedium marginRight="1rem">Dokument for standard informasjonstyper i behandling</LabelMedium>
+      <Block width="40%">
         <Select
+          clearable
+          searchable
+          noResultsMsg="Ingen"
+          isLoading={loading}
+          maxDropdownHeight="400px"
+          type={TYPE.search}
           options={documents}
-          placeholder={intl.searchDocuments}
-          aria-label={intl.searchDocuments}
-          value={document}
-          onChange={(value) => {
-            if (value) {
-              setDocument(value)
-            }
+          placeholder="Søk dokumenter"
+          value={document ? [document as any] : []}
+          onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
+          onChange={(params) => {
+            const doc = params.value[0] as Document
+            setDocument(doc)
+            props.setDocumentId(doc?.id)
           }}
+          filterOptions={(options) => options}
+          labelKey="name"
         />
-      </div>
-    </div>
+      </Block>
+    </Block>
   )
 }
 
 const FrontpageMessage = (props: { message?: string; setMessage: (message: string) => void }) => {
   return (
     <>
-      <div className="align-middle mt-4">
-        <Label className="mr-4" size="small">Forsidemelding</Label>
-        <div className="w-full flex">
-          <div className="w-1/2 mr-4">
+      <Block alignItems="center" marginTop="1rem">
+        <LabelMedium marginRight="1rem">Forsidemelding</LabelMedium>
+        <Block width="100%" display="flex">
+          <Block width="50%" marginRight="1rem">
             <StatefulTextarea
               initialState={{ value: props.message }}
               rows={20}
               onChange={(event: any) => props.setMessage((event as FormEvent<HTMLInputElement>).currentTarget.value)}
             />
-          </div>
-          <div className="w-1/2">
+          </Block>
+          <Block width="50%">
             <Markdown source={props.message} escapeHtml={false} verbatim />
-          </div>
-        </div>
-      </div>
+          </Block>
+        </Block>
+      </Block>
     </>
   )
 }

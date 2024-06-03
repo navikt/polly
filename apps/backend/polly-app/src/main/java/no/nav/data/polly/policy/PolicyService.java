@@ -52,6 +52,13 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
     }
 
     @Transactional
+    public List<Policy> deleteByProcessId(UUID processId) {
+        List<Policy> policeis = policyRepository.findByProcessId(processId);
+        policeis.forEach((this::delete));
+        return policeis;
+    }
+
+    @Transactional
     public void delete(Policy policy) {
         policyRepository.deleteById(policy.getId());
         onChange(List.of(policy), true);

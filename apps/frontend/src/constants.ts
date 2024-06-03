@@ -1,6 +1,5 @@
 import {Code, codelist, ListName} from './service/Codelist'
 import {ColumnCompares} from './util/hooks'
-import {intl} from './util'
 
 export enum LegalBasesUse {
   INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
@@ -274,10 +273,10 @@ export interface Policy {
 }
 
 export const policySort: ColumnCompares<Policy> = {
-  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), intl.getLanguage()),
+  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
-  subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
+  subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), 'nb'),
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length,
 }
 
@@ -304,7 +303,7 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
 
 export const processSort: ColumnCompares<Process> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), intl.getLanguage()),
+  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
   affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
 }
 
@@ -523,6 +522,8 @@ export interface DisclosureFormValues {
   processIds: string[]
   assessedConfidentiality?: boolean
   confidentialityDescription?: string
+  productTeams?: string[]
+  department?: string
 }
 
 export interface DisclosureAbroad {
@@ -550,6 +551,8 @@ export interface Disclosure extends IDurationed {
   thirdCountryReceiver?: boolean
   assessedConfidentiality?: boolean
   confidentialityDescription?: string
+  productTeams?: string[]
+  department?: Code
 
   changeStamp: ChangeStamp
 }

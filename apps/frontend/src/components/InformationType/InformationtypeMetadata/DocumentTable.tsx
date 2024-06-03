@@ -1,6 +1,5 @@
 import { Document } from '../../../constants'
 import React from 'react'
-import { intl } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
@@ -19,12 +18,12 @@ export const DocumentTable = (props: DocumentTableProps) => {
 
   return (
     <Table
-      emptyText={intl.noDocumentsAvailableInTable}
+      emptyText='Ingen dokumenter'
       headers={
         <>
-          <HeadCell title={intl.name} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.description} tableState={[table, sortColumn]} />
-          <HeadCell title={intl.informationTypes} tableState={[table, sortColumn]} />
+          <HeadCell title='Navn' tableState={[table, sortColumn]} />
+          <HeadCell title='Beskrivelse' tableState={[table, sortColumn]} />
+          <HeadCell title='Opplysningstyper' tableState={[table, sortColumn]} />
         </>
       }
     >

@@ -3,7 +3,7 @@ import { getTeam } from '../../api'
 import { Team } from '../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faTimesCircle, faUser } from '@fortawesome/free-solid-svg-icons'
-import { copyToClipboard, intl, theme } from '../../util'
+import { copyToClipboard, theme } from '../../util'
 import { Card, StyledBody } from 'baseui/card'
 import { ListItem, ListItemLabel, ListOverrides } from 'baseui/list'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
@@ -41,7 +41,7 @@ const TeamContent = (props: { team: Team }) => (
     <StyledBody>
       <dl>
         <dt>
-          <LabelSmall>{intl.description}</LabelSmall>
+          <LabelSmall>Beskrivelse</LabelSmall>
         </dt>
         <dd>
           <ParagraphSmall>
@@ -51,7 +51,7 @@ const TeamContent = (props: { team: Team }) => (
         {props.team.slackChannel && (
           <>
             <dt>
-              <LabelSmall>{intl.slack}</LabelSmall>
+              <LabelSmall>Slack-kanal</LabelSmall>
             </dt>
             <dd>
               <SlackLink channel={props.team.slackChannel} />
@@ -66,20 +66,20 @@ const TeamContent = (props: { team: Team }) => (
           overrides={listOverrides}
           endEnhancer={() => (
             <CustomizedStatefulTooltip
-              content={`${intl.email} ${member.email} ${intl.copied}!`}
+              content={`Epost ${member.email} kopiert!`}
               triggerType="click"
-              onOpen={() => copyToClipboard(member.email || intl.emptyMessage)}
+              onOpen={() => copyToClipboard(member.email || 'Ikke angitt')}
             >
               <span>
                 <Button size="compact" shape="pill" kind="secondary">
-                  <SmallIcon icon={faEnvelope} /> {intl.email}
+                  <SmallIcon icon={faEnvelope} /> Epost
                 </Button>
               </span>
             </CustomizedStatefulTooltip>
           )}
         >
           <ListItemLabel>
-            <SmallIcon icon={faUser} /> {member.name || intl.unknown}
+            <SmallIcon icon={faUser} /> {member.name || 'Uavklart'}
           </ListItemLabel>
         </ListItem>
       ))}
@@ -113,7 +113,7 @@ const TeamView = (props: { teamId: string }) => {
           {team.name}
         </ObjectLink>
       ) : (
-        <CustomizedStatefulTooltip content={intl.couldntLoadTeam}>
+        <CustomizedStatefulTooltip content='Kunne ikke finne team'>
           <span>
             <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500} /> {team.name}
           </span>

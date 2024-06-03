@@ -14,4 +14,6 @@ public interface DisclosureRepositoryCustom {
     List<Disclosure> findByInformationTypeId(UUID informationTypeId);
 
     List<Disclosure> findByProcessId(UUID processId);
+
+    List<Disclosure> findByProductTeam(String productTeam);
 }

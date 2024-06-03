@@ -6,6 +6,7 @@ ingresses:
   - https://polly.intern.dev.nav.no
 replies:
   - https://behandlingskatalog.intern.dev.nav.no/oauth2/callback
+  - https://behandlingskatalog.ansatt.dev.nav.no/oauth2/callback
   - https://behandlingskatalog-backend.intern.dev.nav.no/oauth2/callback
   - http://localhost:8080/oauth2/callback
   - http://localhost:3000/oauth2/callback

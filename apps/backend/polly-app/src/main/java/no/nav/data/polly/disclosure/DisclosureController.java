@@ -115,6 +115,24 @@ public class DisclosureController {
         return returnResults(new RestResponsePage<>(convert(discs, Disclosure::convertToResponse)));
     }
 
+    @Operation(summary = "Get disclosures by department")
+    @ApiResponse(description = "Disclosures fetched")
+    @GetMapping("/department/{department}")
+    public ResponseEntity<RestResponsePage<DisclosureResponse>> getByDepartment(@PathVariable String department) {
+        log.info("Received request for Disclosure with department={}", department);
+        var discs = new ArrayList<>(repository.getByDepartment(department));
+        return returnResults(new RestResponsePage<>(convert(discs, Disclosure::convertToResponse)));
+    }
+
+    @Operation(summary = "Get disclosures by productTeam")
+    @ApiResponse(description = "Disclosures fetched")
+    @GetMapping("/productTeam/{productTeam}")
+    public ResponseEntity<RestResponsePage<DisclosureResponse>> getByProductTeam(@PathVariable String productTeam) {
+        log.info("Received request for Disclosure with productTeam={}", productTeam);
+        var discs = new ArrayList<>(repository.findByProductTeam(productTeam));
+        return returnResults(new RestResponsePage<>(convert(discs, Disclosure::convertToResponse)));
+    }
+
     private ResponseEntity<RestResponsePage<DisclosureResponse>> returnResults(RestResponsePage<DisclosureResponse> page) {
         log.info("Returned {} Disclosures", page.getNumberOfElements());
         return ResponseEntity.ok(page);

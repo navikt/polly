@@ -4,7 +4,7 @@ import { Card } from 'baseui/card'
 import { cardShadow } from '../common/Style'
 import { Block } from 'baseui/block'
 import { LabelLarge, ParagraphMedium } from 'baseui/typography'
-import { intl, theme, useAwait } from '../../util'
+import { theme, useAwait } from '../../util'
 import { DashboardData, DepartmentDashCount as DepartmentProcess, ProcessStatus } from '../../constants'
 import { codelist, ListName } from '../../service/Codelist'
 import RouteLink from '../common/RouteLink'
@@ -50,13 +50,13 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             </RouteLink>
 
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)} style={{ textDecoration: 'none' }}>
-              <TextWithNumber label={intl.completed} number={department.processesCompleted} />
+              <TextWithNumber label='Godkjent' number={department.processesCompleted} />
             </RouteLink>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.IN_PROGRESS)} style={{ textDecoration: 'none' }}>
-              <TextWithNumber label={intl.inProgress} number={department.processesInProgress} />
+              <TextWithNumber label='Under arbeid' number={department.processesInProgress} />
             </RouteLink>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.NEEDS_REVISION)} style={{ textDecoration: 'none' }}>
-              <TextWithNumber label={intl.revision} number={department.processesNeedsRevision} />
+              <TextWithNumber label='Revidering' number={department.processesNeedsRevision} />
             </RouteLink>
           </Block>
         </Card>

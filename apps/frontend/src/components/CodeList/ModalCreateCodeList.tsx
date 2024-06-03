@@ -8,7 +8,6 @@ import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Error } from '../common/ModalSchema'
 import { Textarea } from 'baseui/textarea'
 import { Button, KIND } from 'baseui/button'
-import { intl } from '../../util'
 import { codeListSchema } from '../common/schema'
 
 const modalBlockProps: BlockProps = {
@@ -81,9 +80,9 @@ const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, subm
                 <Block display="flex" justifyContent="flex-end">
                   <Block marginRight="auto">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                   <Button type="button" kind={KIND.secondary} onClick={() => onClose()}>
-                    {intl.abort}
+                    Avbryt
                   </Button>
-                  <ModalButton type="submit">{intl.save}</ModalButton>
+                  <ModalButton type="submit">Lagre</ModalButton>
                 </Block>
               </ModalFooter>
             </Form>

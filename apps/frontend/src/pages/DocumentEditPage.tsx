@@ -6,7 +6,6 @@ import { getDocument, updateInformationTypesDocument } from '../api'
 import { Document, DocumentFormValues, DocumentInfoTypeUse } from '../constants'
 import shortid from 'shortid'
 import { HeadingMedium } from 'baseui/typography'
-import { intl } from '../util'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
 import {ampli} from "../service/Amplitude";
 
@@ -59,7 +58,7 @@ const DocumentEditPage = () => {
     <React.Fragment>
       {!isLoading && document && (
         <React.Fragment>
-          <HeadingMedium>{intl.editDocument}</HeadingMedium>
+          <HeadingMedium>Redigér dokument</HeadingMedium>
           <DocumentForm initialValues={convertToDocumentFormValues(document)} handleSubmit={handleEditDocument} />
         </React.Fragment>
       )}

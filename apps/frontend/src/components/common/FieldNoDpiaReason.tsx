@@ -4,7 +4,6 @@ import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { NoDpiaReason, ProcessFormValues } from '../../constants'
 import { renderTagList } from './TagList'
 import { Block } from 'baseui/block'
-import { intl } from '../../util'
 import { getNoDpiaLabel } from '../../util/helper-functions'
 
 type fieldNoDpiaReasonProps = {
@@ -21,7 +20,7 @@ const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
             <Block width="100%">
               <Select
                 clearable
-                placeholder={intl.chooseGrounds}
+                placeholder='Velg en eller flere begrunnelser'
                 options={Object.keys(NoDpiaReason)
                   .filter((reason) => props.formikBag.values.dpia.noDpiaReasons.indexOf(reason) === -1)
                   .map((reason) => {

@@ -1,8 +1,8 @@
-import { intl, theme } from '../../../util'
 import * as React from 'react'
 import { Disclosure, Process } from '../../../constants'
-import {BodyShort, Heading, List} from '@navikt/ds-react'
-import {Modal, Button} from '@navikt/ds-react'
+import { BodyShort, Link, List } from '@navikt/ds-react'
+import { Modal, Button } from '@navikt/ds-react'
+import { user } from '../../../service/User'
 
 interface DeleteProcessProps {
   onClose: () => void
@@ -17,39 +17,47 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
   const { process, onClose, isOpen, submitDeleteProcess, errorProcessModal, disclosures } = props
 
   return (
-    <Modal header={{heading: intl.confirmDeleteHeader}} onClose={onClose} open={isOpen}>
+    <Modal header={{ heading: "Bekreft sletting" }} onClose={onClose} open={isOpen}>
       <Modal.Body>
-        <BodyShort spacing>
-          {intl.deleteProcessText}
-        </BodyShort>
+        <BodyShort spacing>Er du sikker på at du vil slette behandlingen? Dersom behandlingen er opphørt skal gyldighetsperiode oppdateres.</BodyShort>
 
-        {!process.policies.length && (
-          <BodyShort spacing>
-            {intl.confirmDeleteProcessText} {process.name}
+        {!user.isAdmin() && (
+          <BodyShort>
+              For å slette behandlingen, kontakt oss på <Link target="_blank" href="https://nav-it.slack.com/archives/CR1B19E6L">slack</Link>.
           </BodyShort>
         )}
-        {(!!process.policies.length || !!disclosures.length) && (
-          <List as="ul" title={intl.deleteRelationText}>
-            {!!process.policies.length && <List.Item>{intl.formatString(intl.cannotDeleteProcess, process.name, '' + process.policies.length)}</List.Item>}
-            {!!disclosures.length && <List.Item>{intl.deleteProcessDisclosureError}</List.Item>}
-          </List>
+
+        {user.isAdmin() && (
+          <div>
+            {!process.policies.length && (
+              <BodyShort spacing>
+                Bekreft sletting av behandlingen {process.name}
+              </BodyShort>
+            )}
+            {(!!process.policies.length || !!disclosures.length) && (
+              <List as="ul" title="Disse koblingene må fjernes">
+                {!!process.policies.length && <List.Item>{`Kan ikke slette behandlingen ${process.name}, den inneholder fortsatt ${process.policies.length} opplysningstype(r)`}</List.Item>}
+                {!!disclosures.length && <List.Item>Du kan ikke slette behandlinger med eksisterende utleveringer.</List.Item>}
+              </List>
+            )}
+          </div>
         )}
       </Modal.Body>
 
-      <Modal.Footer>
-          <div className="self-end">{errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}</div>
-          <Button
-            onClick={() => {
-              submitDeleteProcess(process).then(onClose)
-            }}
-            disabled={!!process.policies.length || !!disclosures.length}
-          >
-            {intl.delete}
-          </Button>
-        <Button variant="secondary" onClick={onClose}>
-          {intl.abort}
+      {user.isAdmin() && <Modal.Footer>
+        <div className="self-end">{errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}</div>
+        <Button
+          onClick={() => {
+            submitDeleteProcess(process).then(onClose)
+          }}
+          disabled={(!!process.policies.length || !!disclosures.length)}
+        >
+          Slett
         </Button>
-      </Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Avbryt
+        </Button>
+      </Modal.Footer>}
     </Modal>
   )
 }

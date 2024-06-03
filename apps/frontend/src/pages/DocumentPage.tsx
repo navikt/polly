@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
-import {intl} from '../util'
 import {Block} from 'baseui/block'
 import {deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor} from '../api'
 import {Document, Process} from '../constants'
@@ -83,7 +82,7 @@ const DocumentPage = () => {
     <>
       <>
         <Block width="100%">
-          <HeadingMedium>{intl.documents}</HeadingMedium>
+          <HeadingMedium>Dokumenter</HeadingMedium>
         </Block>
         <Block display="flex" flexDirection="row-reverse" marginTop="10px">
           {user.canWrite() && (
@@ -91,19 +90,19 @@ const DocumentPage = () => {
               {currentDocument && <AuditButton id={currentDocument.id} />}
 
               {currentDocument && (
-                <Button tooltip={intl.delete} icon={faTrash} kind="outline" size={ButtonSize.compact} onClick={() => setDeleteModalVisibility(true)} marginLeft>
-                  {intl.delete}
+                <Button icon={faTrash} kind="outline" size={ButtonSize.compact} onClick={() => setDeleteModalVisibility(true)} marginLeft>
+                  Slett
                 </Button>
               )}
 
               {currentDocument && (
-                <Button tooltip={intl.edit} icon={faEdit} kind="outline" size={ButtonSize.compact} onClick={() => navigate(`/document/${currentDocument.id}/edit`)} marginLeft>
-                  {intl.edit}
+                <Button icon={faEdit} kind="outline" size={ButtonSize.compact} onClick={() => navigate(`/document/${currentDocument.id}/edit`)} marginLeft>
+                  Redigér
                 </Button>
               )}
 
-              <Button kind="outline" size={ButtonSize.compact} icon={faPlusCircle} tooltip={intl.createNew} onClick={() => navigate('/document/create')} marginLeft>
-                {intl.createNew}
+              <Button kind="outline" size={ButtonSize.compact} icon={faPlusCircle}  onClick={() => navigate('/document/create')} marginLeft>
+                Opprett ny
               </Button>
             </Block>
           )}
@@ -120,9 +119,9 @@ const DocumentPage = () => {
               },
             }}
           >
-            {renderTextWithLabel(intl.name, currentDocument.name)}
-            {renderTextWithLabel(intl.description, currentDocument.description)}
-            {renderTextWithLabel(intl.dataAccessClass, currentDocument.dataAccessClass ? currentDocument.dataAccessClass.shortName : intl.emptyMessage)}
+            {renderTextWithLabel("Navn", currentDocument.name)}
+            {renderTextWithLabel("Beskrivelse", currentDocument.description)}
+            {renderTextWithLabel("Datatilgangsklasse", currentDocument.dataAccessClass ? currentDocument.dataAccessClass.shortName : "Ikke angitt")}
           </Block>
         )}
 
@@ -133,14 +132,14 @@ const DocumentPage = () => {
             }}
             activeKey={activeKey as React.Key}
           >
-            <Tab key={'containsInformationType'} title={intl.containsInformationType} overrides={tabOverride}>
+            <Tab key={'containsInformationType'} title="Inneholder opplysningstyper" overrides={tabOverride}>
               <Block>
                 <DocumentMetadata document={currentDocument} />
               </Block>
             </Tab>
             <>
               {documentUsages && documentUsages.length > 0 && (
-                <Tab key={'containsProcesses'} title={intl.containsProcesses} overrides={tabOverride}>
+                <Tab key={'containsProcesses'} title="Brukes i behandlinger" overrides={tabOverride}>
                   <Block>
                     <DocumentProcessesTable documentUsages={documentUsages} />
                   </Block>
@@ -154,7 +153,7 @@ const DocumentPage = () => {
       </>
 
       <DeleteDocumentModal
-        title={intl.confirmDeleteHeader}
+        title="Bekreft sletting"
         documentName={currentDocument?.name as string}
         isOpen={isDeleteModalVisible}
         submit={handleDelete}

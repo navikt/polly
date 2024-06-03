@@ -1,11 +1,11 @@
 import { Process } from '../../constants'
 import * as React from 'react'
 import { Dispatch, SetStateAction } from 'react'
-import { intl, useDebouncedState } from '../../util'
+import { useDebouncedState } from '../../util'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { codelist, ListName } from '../../service/Codelist'
 import { Block } from 'baseui/block'
-import { Select, TYPE, Value } from 'baseui/select'
+import { Select, TYPE } from 'baseui/select'
 
 type SearchProcessProps = {
   selectedProcess?: Process
@@ -21,19 +21,22 @@ const SearchProcess = (props: SearchProcessProps) => {
     ;(async () => {
       if (search && search.length > 2) {
         setLoading(true)
-        let res = (await searchProcess(search)).content
+        const res = await searchProcess(search)
+        let content = res.content
         const purposes = codelist.getCodes(ListName.PURPOSE).filter((c) => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
         const processesPromise: Promise<any>[] = []
         for (let i = 0; i < purposes.length; i++) {
           processesPromise.push(getProcessesByPurpose(purposes[i].code))
         }
-        res = [...res, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
-        res = res
+        content = [...content, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
+        content = content
           .map((v: Process) => {
-            return { ...v, namePurpose: (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
+            return { ...v, namePurpose: 'B' + v.number + ' ' + (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
           })
           .filter((p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
-        setProcessList(res)
+
+
+        setProcessList(content)
         setLoading(false)
       }
     })()
@@ -46,10 +49,10 @@ const SearchProcess = (props: SearchProcessProps) => {
         isLoading={isLoading}
         clearable
         searchable={true}
-        noResultsMsg={intl.emptyTable}
+        noResultsMsg='Ingen'
         type={TYPE.search}
         maxDropdownHeight="400px"
-        placeholder={intl.searchProcess}
+        placeholder='Søk etter behandlinger'
         onInputChange={(event) => setSearch(event.currentTarget.value)}
         labelKey="namePurpose"
         value={

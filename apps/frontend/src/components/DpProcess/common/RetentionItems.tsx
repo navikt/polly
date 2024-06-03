@@ -3,7 +3,7 @@ import { DpProcessFormValues, ProcessFormValues } from '../../../constants'
 import { default as React, useEffect, useState } from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { Slider } from 'baseui/slider'
 import FieldInput from '../../Process/common/FieldInput'
 
@@ -48,14 +48,14 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
     <>
       <>
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.retentionMonths} tooltip={intl.retentionMonthsDpProcessHelpText} />
+          <ModalLabel label='Lagringsbehov for NAV' tooltip='Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige.' />
           <Field
             name="retention.retentionMonths"
             render={({ field, form }: FieldProps<string, ProcessFormValues>) => (
               <>
                 <Block width={'50%'} marginRight={'25px'}>
                   <Slider
-                    overrides={sliderOverride(intl.years)}
+                    overrides={sliderOverride('År')}
                     min={0}
                     max={100}
                     value={[retentionYears]}
@@ -64,7 +64,7 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
                 </Block>
                 <Block width={'50%'} marginLeft={'25px'}>
                   <Slider
-                    overrides={sliderOverride(intl.months)}
+                    overrides={sliderOverride('Måneder')}
                     min={0}
                     max={11}
                     value={[retentionMonths]}
@@ -78,7 +78,7 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
         <Error fieldName="retention.retentionMonths" />
 
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.retentionStart} />
+          <ModalLabel label='Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse' />
           <Block width={'100%'}>
             <FieldInput fieldName="retention.retentionStart" fieldValue={formikBag.values.retention.retentionStart} />
           </Block>

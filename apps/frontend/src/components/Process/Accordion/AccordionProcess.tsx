@@ -5,7 +5,7 @@ import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { Spinner } from 'baseui/spinner'
 import { Block } from 'baseui/block'
 import { LabelMedium } from 'baseui/typography'
-import { intl, theme } from '../../../util'
+import { theme } from '../../../util'
 import { user } from '../../../service/User'
 import { Plus } from 'baseui/icon'
 import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
@@ -19,7 +19,7 @@ import Button from '../../common/Button'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import ProcessData from './ProcessData'
 import { lastModifiedDate } from '../../../util/date-formatter'
-import { faExclamationCircle, faGavel } from '@fortawesome/free-solid-svg-icons'
+import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { DeleteProcessModal } from './DeleteProcessModal'
 import { ProcessCreatedModal } from './ProcessCreatedModal'
@@ -27,6 +27,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { RequestRevisionPage } from '../../../pages/admin/RequestRevisionPage'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import DeleteAllPolicyModal from './DeleteAllPolicyModal'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -42,6 +44,7 @@ type AccordionProcessProps = {
   submitCreatePolicy: (process: PolicyFormValues) => Promise<boolean>
   submitEditPolicy: (process: PolicyFormValues) => Promise<boolean>
   submitDeletePolicy: (process: Policy) => Promise<boolean>
+  submitDeleteAllPolicy: (processId: string) => Promise<boolean>
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
@@ -57,6 +60,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
     errorProcessModal,
     errorPolicyModal,
     submitDeletePolicy,
+    submitDeleteAllPolicy,
   } = props
 
   const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
@@ -66,6 +70,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const [showRevisionModal, setShowRevisionModal] = React.useState(false)
+  const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = React.useState(false)
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')
   const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
   const purposeRef = React.useRef<HTMLInputElement>(null)
@@ -74,9 +79,11 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   const hasAccess = () => user.canWrite()
 
+  const today = new Date().toISOString().split('T')[0]
+
   const renderCreatePolicyButton = () => (
     <Button
-      tooltip={intl.addOneInformationType}
+      tooltip='Legg til én informasjonstype'
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowCreatePolicyModal(true)}
@@ -86,13 +93,29 @@ const AccordionProcess = (props: AccordionProcessProps) => {
         </Block>
       }
     >
-      {intl.informationType}
+      Opplysningstype
+    </Button>
+  )
+
+  const renderDeleteAllPolicyButton = () => (
+    <Button
+      tooltip="Slett alle opplysningstype"
+      size={ButtonSize.compact}
+      kind={KIND.tertiary}
+      onClick={() => setShowDeleteAllPolicyModal(true)}
+      startEnhancer={
+        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+          <FontAwesomeIcon title='Slett' icon={faTrash}/>
+        </Block>
+      }
+    >
+      Slett hele tabelen
     </Button>
   )
 
   const renderAddDocumentButton = () => (
     <Button
-      tooltip={intl.addCollectionOfInformationTypes}
+      tooltip='Legg til en samling av opplysningstyper'
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowAddDocumentModal(true)}
@@ -102,7 +125,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
         </Block>
       }
     >
-      {intl.document}
+      Dokument
     </Button>
   )
 
@@ -140,7 +163,17 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       <StatelessAccordion onChange={({ expanded }) => onChangeProcess(expanded.length ? (expanded[0] as string) : undefined)} expanded={params.processId ? [params.processId] : []}>
         {props.processList &&
           props.processList
-            .sort((a, b) => a.purposes[0].shortName.localeCompare(b.purposes[0].shortName))
+            .sort((a, b) =>{
+              if (today < a.end && today > b.end) return -1
+              else if (today > a.end && today < b.end) return 1
+
+
+              const aname = a.purposes[0].shortName + ': ' + a.name.trim()
+              const bname = b.purposes[0].shortName + ': ' + b.name.trim()
+
+              return aname.localeCompare(bname)
+
+            })
             .map((p: ProcessShort) => {
               const expanded = params.processId === p.id
               return (
@@ -191,8 +224,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                           <Block display="flex" justifyContent="flex-end">
                             <span>
                               <i>
-                                {intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>,{' '}
-                                {lastModifiedDate(currentProcess.changeStamp.lastModifiedDate)}
+                                {`Sist endret av ${currentProcess.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcess.changeStamp?.lastModifiedDate)}`}
                               </i>
                             </span>
                           </Block>
@@ -202,23 +234,24 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                             {canViewAlerts() && (
                               <Block marginRight="auto">
                                 <Button type="button" kind="tertiary" size="compact" icon={faExclamationCircle} onClick={() => history(`/alert/events/process/${p.id}`)}>
-                                  {intl.alerts}
+                                  Varsler
                                 </Button>
                               </Block>
                             )}
                             {(user.isAdmin() || user.isSuper()) && (
                               <Block marginRight="auto">
                                 <Button type="button" kind="tertiary" size="compact" icon={faGavel} onClick={() => setShowRevisionModal(true)}>
-                                  {intl.newRevision}
+                                  Ny revidering
                                 </Button>
                               </Block>
                             )}
                           </Block>
                           {hasAccess() && (
-                            <Block>
+                            <Block display="flex" justifyContent="center">
                               <div ref={InformationTypeRef} />
                               {renderAddDocumentButton()}
                               {renderCreatePolicyButton()}
+                              {renderDeleteAllPolicyButton()}
                             </Block>
                           )}
                         </Block>
@@ -240,7 +273,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       </StatelessAccordion>
       {!props.processList.length && (
         <LabelMedium margin="1rem">
-          {intl.emptyTable} {intl.processes}
+          Ingen behandlinger
         </LabelMedium>
       )}
 
@@ -248,7 +281,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
         <>
           <ModalProcess
             key={currentProcess.id}
-            title={intl.processingActivitiesEdit}
+            title='Redigér behandling'
             onClose={() => setShowEditProcessModal(false)}
             isOpen={showEditProcessModal}
             submit={async (values: ProcessFormValues) => {
@@ -259,7 +292,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             initialValues={{ ...convertProcessToFormValues(currentProcess), disclosures: disclosures }}
           />
           <ModalPolicy
-            title={intl.policyAdd}
+            title='Legg til opplysningstyper brukt i behandlingen'
             initialValues={{
               legalBasesOpen: false,
               informationType: undefined,
@@ -284,6 +317,17 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               setShowAddBatchInfoTypesModal(true)
             }}
             errorOnCreate={errorPolicyModal}
+          />
+
+          <DeleteAllPolicyModal
+            isOpen={showDeleteAllPolicyModal}
+            submitDeleteAllPolicies={() => {
+              submitDeleteAllPolicy(currentProcess.id)
+              setShowDeleteAllPolicyModal(false)
+            }}
+            onClose={() => {
+              setShowDeleteAllPolicyModal(false)
+            }}
           />
 
           <AddDocumentModal

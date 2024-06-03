@@ -3,7 +3,7 @@ import Charts from '../components/Charts/Charts'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Block } from 'baseui/block'
-import { intl, theme } from '../util'
+import { theme } from '../util'
 import { DashboardData, ProcessStatusFilter } from '../constants'
 import { useParams } from 'react-router-dom'
 import { getDashboard } from '../api'
@@ -28,7 +28,7 @@ export const DashboardPage = () => {
   return (
     <Block marginBottom={theme.sizing.scale1200} display="flex" flexWrap>
       <Block display="flex" justifyContent="space-between" width="100%">
-        <HeadingMedium marginTop="0">{intl.dashboard}</HeadingMedium>
+        <HeadingMedium marginTop="0">Dashboard</HeadingMedium>
         <FilterDashboardStatus setFilter={setDashboardStatus} />
       </Block>
 

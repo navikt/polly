@@ -3,18 +3,19 @@ import { useEffect } from 'react'
 
 import { Block } from 'baseui/block'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
-import { KIND, SIZE as ButtonSize, SIZE } from 'baseui/button'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
-import { intl, theme, useAwait } from '../../util'
+import { theme, useAwait } from '../../util'
 import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
-import AccordionProcess from './Accordion'
+import AccordionProcess from './Accordion/AccordionProcess'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,
   createPolicies,
   createPolicy,
   createProcess,
+  deletePoliciesByProcessId,
   deletePolicy,
   deleteProcess,
   getCodelistUsage,
@@ -49,7 +50,7 @@ type ProcessListProps = {
   getCount?: (i: number) => void
 }
 
-const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
+const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, 'nb'))
 
 const ProcessList = ({ code, listName, filter, processId, section, moveScroll, titleOverride, hideTitle, isEditable, getCount }: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
@@ -191,7 +192,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       return true
     } catch (err: any) {
       if (err.response.data.message.includes('disclosure(s)')) {
-        setErrorProcessModal(intl.deleteProcessDisclosureError)
+        setErrorProcessModal("Du kan ikke slette behandlinger med eksisterende utleveringer.")
         return false
       }
       setErrorProcessModal(err.response.data.message)
@@ -243,6 +244,22 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
+  const handleDeleteAllPolicies = async (processId: string) => {
+    if (!processId) return false
+    try {
+      await deletePoliciesByProcessId(processId)
+      if (currentProcess) {
+        setCurrentProcess({ ...currentProcess, policies: [] })
+        setErrorPolicyModal(null)
+      }
+      return true
+    } catch (err: any) {
+      setErrorPolicyModal(err.message)
+      return false
+    }
+  }
+
+
   const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
     try {
       const policies: PolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
@@ -269,26 +286,26 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     <>
       <Block display={'flex'} flexDirection={'row-reverse'} alignItems={'center'}>
         <Block>
-          <Button onClick={() => setIsExportModalOpen(true)} kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
-            {intl.export}
+          <Button onClick={() => setIsExportModalOpen(true)} kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+            Eksportér
           </Button>
           {isEditable && hasAccess() && (
             <Button size={ButtonSize.compact} kind={KIND.tertiary} icon={faPlus} onClick={() => setShowCreateProcessModal(true)}>
-              {intl.processingActivitiesNew}
+              Opprett ny behandling
             </Button>
           )}
         </Block>
         <Modal closeable animate autoFocus size={ModalSize.auto} role={ROLE.dialog} isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)}>
-          <ModalHeader>{intl.exportHeader}</ModalHeader>
+          <ModalHeader>Velg eksport metode</ModalHeader>
           <ModalBody>
             <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
-                {intl.exportInternal}
+              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+                Eksport for intern bruk
               </Button>
             </StyledLink>
             <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} tooltip={intl.export} marginRight>
-                {intl.exportExternal}
+              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+                Eksport for ekstern bruk
               </Button>
             </StyledLink>
           </ModalBody>
@@ -300,10 +317,10 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
             deleteRemoves={false}
             escapeClearsValue={false}
             options={[
-              { label: intl.allProcesses, id: undefined },
-              { label: intl.inProgressProcesses, id: ProcessStatus.IN_PROGRESS },
-              { label: intl.needsRevision, id: ProcessStatus.NEEDS_REVISION },
-              { label: intl.showCompletedProcesses, id: ProcessStatus.COMPLETED },
+              { label: "Alle behandlinger", id: undefined },
+              { label: "Behandlinger under arbeid", id: ProcessStatus.IN_PROGRESS },
+              { label: "Trenger revidering", id: ProcessStatus.NEEDS_REVISION },
+              { label: "Ferdig dokumenterte behandlinger", id: ProcessStatus.COMPLETED },
             ]}
             initialState={{ value: [{ id: filter }] }}
             filterOutSelected={false}
@@ -313,13 +330,13 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
         </Block>
         <Block>
           <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
-            {intl.filter}
+            Filter
           </LabelMedium>
         </Block>
         <Block marginRight="auto">
           {!hideTitle && (
             <HeadingXLarge>
-              {titleOverride || intl.processes} ({processList.length})
+              {titleOverride || "Behandlinger"} ({processList.length})
             </HeadingXLarge>
           )}
         </Block>
@@ -339,6 +356,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
           submitCreatePolicy={handleCreatePolicy}
           submitEditPolicy={handleEditPolicy}
           submitDeletePolicy={handleDeletePolicy}
+          submitDeleteAllPolicy={handleDeleteAllPolicies}
           submitAddDocument={handleAddDocument}
           errorProcessModal={errorProcessModal}
           errorPolicyModal={errorPolicyModal}
@@ -347,7 +365,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       )}
       {!codelistLoading && (
         <ModalProcess
-          title={intl.processingActivitiesNew}
+          title="Opprett ny behandling"
           onClose={() => {
             setErrorProcessModal('')
             setShowCreateProcessModal(false)

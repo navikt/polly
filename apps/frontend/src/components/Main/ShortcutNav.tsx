@@ -2,7 +2,7 @@ import { Block } from 'baseui/block'
 import { Card, CardOverrides } from 'baseui/card'
 import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
 import * as React from 'react'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { primitives } from '../../util/theme'
 import RouteLink from '../common/RouteLink'
 import { borderColor, marginAll } from '../common/Style'
@@ -85,10 +85,10 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
 const ShortcutNav = () => {
   return (
     <Block display="flex" justifyContent="space-between" flexWrap>
-      <ShortcutCard title={intl.processes} subtitle={intl.shortcutSubtitleProcess} to="/process" />
-      <ShortcutCard title={intl.informationTypes} subtitle={intl.shortcutSubtitleInformationtype} to="/informationtype" />
-      <ShortcutCard title={intl.thirdParties} subtitle={intl.shortcutSubtitleThirdParty} to="/thirdparty" />
-      <ShortcutCard title={intl.dashboard} subtitle={intl.shortcutSubtitleDashboard} to="/dashboard" />
+      <ShortcutCard title="Behandlinger" subtitle="Se og endre behandlinger" to="/process" />
+      <ShortcutCard title="Opplysningstyper" subtitle="Se og endre opplysningstyper" to="/informationtype" />
+      <ShortcutCard title="Eksterne parter" subtitle="Se alle eksterne parter" to="/thirdparty" />
+      <ShortcutCard title="Dashboard" subtitle="Se statistikk over behandlinger" to="/dashboard" />
     </Block>
   )
 }

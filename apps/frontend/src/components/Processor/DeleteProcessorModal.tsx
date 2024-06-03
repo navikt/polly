@@ -3,7 +3,7 @@ import { ParagraphMedium } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import * as React from 'react'
 import { Processor } from '../../constants'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import Button from '../common/Button'
 
 interface DeleteProcessProps {
@@ -20,19 +20,15 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} animate size="default">
-      <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+      <ModalHeader>Bekreft sletting</ModalHeader>
       <ModalBody>
         {usageCount === 0 ? (
           <>
-            <ParagraphMedium> {intl.deleteProcessorText}</ParagraphMedium>
-            <ParagraphMedium>
-              {intl.confirmDeleteProcessorText} {processor.name}
-            </ParagraphMedium>
+            <ParagraphMedium>Er du sikker på at du vil slette {processor.name}?</ParagraphMedium>
           </>
         ) : (
           <>
-            <ParagraphMedium>{intl.formatString(intl.canNotDeleteProcessorParagraph1, processor.name)}</ParagraphMedium>
-            <ParagraphMedium>{intl.formatString(intl.canNotDeleteProcessorParagraph2, usageCount)}</ParagraphMedium>
+            <ParagraphMedium>Kan ikke slette {processor.name} siden den er knyttet til {usageCount} behandling(er)</ParagraphMedium>
           </>
         )}
       </ModalBody>
@@ -41,11 +37,11 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
         <Block display="flex" justifyContent="flex-end">
           <Block alignSelf="flex-end">{errorProcessorModal && <p>{errorProcessorModal}</p>}</Block>
           <Button kind="secondary" onClick={onClose}>
-            {intl.abort}
+            Avbryt
           </Button>
           <Block display="inline" marginRight={theme.sizing.scale500} />
           <Button onClick={() => submitDeleteProcessor(processor).then(onClose)} disabled={usageCount > 0}>
-            {intl.delete}
+            Slett
           </Button>
         </Block>
       </ModalFooter>

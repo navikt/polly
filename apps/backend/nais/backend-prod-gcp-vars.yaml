@@ -7,6 +7,7 @@ ingresses:
 replies:
   - https://behandlingskatalog.intern.nav.no/oauth2/callback
   - https://behandlingskatalog-backend.intern.nav.no/oauth2/callback
+  - https://behandlingskatalog.ansatt.nav.no/oauth2/callback
 azuregroupid:
   - "7d275d5e-59a5-473d-b530-a9091b3de4c6"
   - "bf05a29f-6f80-4da1-b419-22c802fd41e7"

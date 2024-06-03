@@ -1,5 +1,4 @@
 import { Cell, HeadCell, Row, Table } from '../common/Table'
-import { intl } from '../../util'
 import RouteLink from '../common/RouteLink'
 import { ProcessShort, ProcessShortWithEmail } from '../../constants'
 import React, { useEffect, useState } from 'react'
@@ -65,24 +64,24 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: st
           kind={KIND.tertiary}
           size={ButtonSize.compact}
           icon={faFileExcel}
-          tooltip={intl.export}
+          tooltip='Eksportér'
           marginRight
           onClick={() => handleExcelExport(processesWithEmail, props.title)}
         >
-          {intl.export}
+          Eksportér
         </Button>
       </Block>
       <Table
-        emptyText={intl.noProcessesAvailableInTable}
+        emptyText='Ingen behandlinger'
         headers={
           <>
-            <HeadCell title={intl.process} column="name" tableState={[table, sortColumn]} $style={cellStyle} />
-            <HeadCell title={intl.department} column="affiliation" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title='Avdeling' column="affiliation" tableState={[table, sortColumn]} $style={cellStyle} />
             {props.showCommonExternalProcessResponsible && (
-              <HeadCell title={intl.commonExternalProcessResponsible} column="commonExternalProcessResponsible" tableState={[table, sortColumn]} $style={cellStyle} />
+              <HeadCell title='Felles behandlingsansvarlig' column="commonExternalProcessResponsible" tableState={[table, sortColumn]} $style={cellStyle} />
             )}
-            <HeadCell title={intl.status} column="status" tableState={[table, sortColumn]} $style={cellStyle} />
-            <HeadCell title={intl.formatString(intl.lastModified, '', '').toString().slice(0, -2)} column="lastModifiedEmail" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title='Status' column="status" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title='Sist endret av' column="lastModifiedEmail" tableState={[table, sortColumn]} $style={cellStyle} />
           </>
         }
       >

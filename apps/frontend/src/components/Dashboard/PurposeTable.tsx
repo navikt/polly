@@ -3,7 +3,6 @@ import { getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, ge
 import { ProcessField, ProcessShort, ProcessState, ProcessStatusFilter } from '../../constants'
 import { useParams } from 'react-router-dom'
 import { HeadingLarge } from 'baseui/typography'
-import { intl } from '../../util'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
 import { useQueryParam } from '../../util/hooks'
 import { Spinner } from '../common/Spinner'
@@ -44,34 +43,34 @@ const PurposeTable = () => {
 
   const changeTitle = () => {
     if (filterName === ProcessField.DPIA && filterValue) {
-      setTitle(`${intl.dpiaNeeded}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Behov for PVK: ${translateToNorwegian(filterValue)}`)
     } else if (filterName === ProcessField.MISSING_LEGAL_BASIS) {
-      setTitle(intl.processesWithUnknownLegalBasis)
+      setTitle("Behandlinger med rettslig grunnlag uavklart")
     } else if (filterName === ProcessField.MISSING_ARTICLE_6) {
-      setTitle(intl.processesWithoutArticle6LegalBasis)
+      setTitle("Behandlinger med rettslig grunnlag artikkel 6 mangler")
     } else if (filterName === ProcessField.MISSING_ARTICLE_9) {
-      setTitle(intl.processesWithoutArticle9LegalBasis)
+      setTitle("Behandlinger med rettslig grunnlag artikkel 9 mangler")
     } else if (filterName === ProcessField.RETENTION_DATA) {
-      setTitle(`${intl.retention}: ${intl.unknown}`)
+      setTitle("Uavklart lagringsbehov")
     } else if (filterName === ProcessField.RETENTION) {
       switch (filterValue) {
         case ProcessState.YES:
-          return setTitle(intl.retentionPlanYes)
+          return setTitle("Omfattes av NAVs bevarings- og kassasjonsvedtak")
         case ProcessState.NO:
-          return setTitle(intl.retentionPlanNo)
+          return setTitle("Omfattes ikke av NAVs bevarings- og kassasjonsvedtak")
         case ProcessState.UNKNOWN:
-          return setTitle(intl.retentionPlanUnclarified)
+          return setTitle("Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak")
       }
     } else if (filterName === ProcessField.PROFILING && filterValue) {
-      setTitle(`${intl.profiling}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Profilering: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === ProcessField.AUTOMATION && filterValue) {
-      setTitle(`${intl.automaticProcessing}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Helautomatisk behandling: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR && filterValue) {
-      setTitle(`${intl.processor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+      setTitle(`Databehandler: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
-      setTitle(intl.navResponsible)
+      setTitle("Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part")
     } else if (filterName === ProcessField.DPIA_REFERENCE_MISSING) {
-      setTitle(intl.missingPVK)
+      setTitle("Ref. til PVK ikke angitt")
     }
   }
 
@@ -82,6 +81,15 @@ const PurposeTable = () => {
       {!loading && <SimpleProcessTable processes={filtered} title={title} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR} />}
     </>
   )
+}
+
+const translateToNorwegian = (filtervalue: string) => {
+  switch (filtervalue) {
+    case 'YES': return 'Ja'
+    case 'NO' : return 'Nei'
+    case 'UNKNOWN' : return 'Uavklart'
+    default : return ''
+    }
 }
 
 export default PurposeTable

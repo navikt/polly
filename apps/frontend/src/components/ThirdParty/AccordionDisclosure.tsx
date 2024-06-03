@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Disclosure, DisclosureAbroad, DisclosureAlert, DisclosureFormValues, ObjectType } from '../../constants'
 import { getAlertForDisclosure } from '../../api/AlertApi'
-import { intl, theme } from '../../util'
+import { theme } from '../../util'
 import { Block } from 'baseui/block'
 import { Panel, StatelessAccordion } from 'baseui/accordion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -25,6 +25,9 @@ import { shortenLinksInText } from '../../util/helper-functions'
 import { user } from '../../service/User'
 import LinkListInformationType from './components/LinkListInformationType'
 import { lastModifiedDate } from '../../util/date-formatter'
+import { DotTags } from '../common/DotTag'
+import { TeamList } from '../common/Team'
+
 
 type AccordionDisclosureProps = {
   disclosureList: Array<Disclosure>
@@ -44,27 +47,27 @@ const showAbroad = (abroad: DisclosureAbroad) => {
     if (abroad.refToAgreement) {
       return (
         <>
-          <DataText label={intl.deliverAbroad}>
+          <DataText label='Utleveres personopplysningene til utlandet?'>
             <Block>
-              {`${intl.yes}. ${intl.reference}`}
+              {'Ja. Referanse'}
               {shortenLinksInText(abroad.refToAgreement)}
             </Block>
           </DataText>
-          {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea} />}
+          {abroad.businessArea && <DataText label='Trygdeområde' text={abroad.businessArea} />}
         </>
       )
     } else {
       return (
         <>
-          <DataText label={intl.deliverAbroad} children={intl.yes} />
-          {abroad.businessArea && <DataText label={intl.socialSecurityArea} text={abroad.businessArea} />}
+          <DataText label='Utleveres personopplysningene til utlandet?' children='Ja' />
+          {abroad.businessArea && <DataText label='Trygdeområde' text={abroad.businessArea} />}
         </>
       )
     }
   } else if (abroad.abroad === false) {
-    return <DataText label={intl.deliverAbroad} text={intl.no} />
+    return <DataText label='Utleveres personopplysningene til utlandet?' text='Nei' />
   } else {
-    return <DataText label={intl.deliverAbroad} text={intl.unclarified} />
+    return <DataText label='Utleveres personopplysningene til utlandet?' text='Uavklart' />
   }
 }
 
@@ -107,7 +110,6 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           disclosureList
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((d: Disclosure) => {
-              console.log(d.assessedConfidentiality)
               return (
                 <Panel
                   title={
@@ -125,32 +127,32 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                           <>
                             {d.id === expanded[0]
                               ? editable && (
-                                <>
-                                  {selectedDisclosure && hasAlert && canViewAlerts() && (
-                                    <Button
-                                      kind={'outline'}
-                                      size={ButtonSize.compact}
-                                      icon={faExclamationCircle}
-                                      marginRight
-                                      tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
-                                      onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
-                                    >
-                                      {intl.alerts}
-                                    </Button>
-                                  )}
-                                  {user.isLoggedIn() && (
-                                    <>
-                                      <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} tooltip={intl.edit} onClick={() => setShowEditModal(true)} marginRight>
-                                        {intl.edit}
+                                  <>
+                                    {selectedDisclosure && hasAlert && canViewAlerts() && (
+                                      <Button
+                                        kind={'outline'}
+                                        size={ButtonSize.compact}
+                                        icon={faExclamationCircle}
+                                        marginRight
+                                        tooltip={hasAlert ? 'Varsler: Behandlingsgrunnlag for artikkel 6 mangler' : 'Varsler: Nei'}
+                                        onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                                      >
+                                        Varsler
                                       </Button>
+                                    )}
+                                    {user.isLoggedIn() && (
+                                      <>
+                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} onClick={() => setShowEditModal(true)} marginRight>
+                                          Redigér
+                                        </Button>
 
-                                      <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} tooltip={intl.delete} onClick={() => setShowDeleteModal(true)}>
-                                        {intl.delete}
-                                      </Button>
-                                    </>
-                                  )}
-                                </>
-                              )
+                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} onClick={() => setShowDeleteModal(true)}>
+                                          Slett
+                                        </Button>
+                                      </>
+                                    )}
+                                  </>
+                                )
                               : ''}
                           </>
                         </div>
@@ -186,15 +188,18 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                     >
                       <Block padding={theme.sizing.scale800}>
                         <Block width="100%">
-                          <DataText label={intl.disclosureName} text={selectedDisclosure?.name} />
-                          <DataText label={intl.disclosurePurpose} text={selectedDisclosure?.recipientPurpose} />
-                          <DataText label={intl.additionalDescription} text={selectedDisclosure?.description} />
+                          {showRecipient &&
+                          <DataText label='Mottaker' text={selectedDisclosure?.recipient.shortName} />
+                          }
+                          <DataText label='Navn på utlevering' text={selectedDisclosure?.name} />
+                          <DataText label='Formål med utlevering' text={selectedDisclosure?.recipientPurpose} />
+                          <DataText label='Ytterligere beskrivelse' text={selectedDisclosure?.description} />
 
-                          <DataText label={intl.relatedProcesses}>
+                          <DataText label='Relaterte behandlinger'>
                             {LinkListProcess(selectedDisclosure?.processes ? selectedDisclosure?.processes : [], '/process/purpose', ObjectType.PROCESS)}
                           </DataText>
 
-                          <DataText label={intl.informationTypes}>
+                          <DataText label='Opplysningstyper'>
                             {LinkListInformationType(
                               selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map((p) => p) : [],
                               '/informationtype',
@@ -203,20 +208,20 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                           </DataText>
 
                           <DataText
-                            label={intl.document}
+                            label='Dokument'
                             children={
                               selectedDisclosure?.documentId ? (
                                 <StyledLink href={`/document/${selectedDisclosure?.documentId}`} target="_blank" rel="noopener noreferrer">
                                   {selectedDisclosure?.document?.name}
                                 </StyledLink>
                               ) : (
-                                <>{intl.emptyMessage}</>
+                                <>Ikke angitt</>
                               )
                             }
                           />
 
                           {selectedDisclosure?.legalBases.length ? (
-                            <DataText label={intl.legalBasis} text={''}>
+                            <DataText label='Behandlingsgrunnlag for hele behandlingen' text={''}>
                               {selectedDisclosure.legalBases
                                 .sort((a, b) => codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
                                 .map((legalBasis, index) => (
@@ -227,36 +232,43 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                             </DataText>
                           ) : (
                             <>
-                              <DataText label={intl.legalBasis} text={intl.emptyMessage} />
+                              <DataText label='Behandlingsgrunnlag for hele behandlingen' text='Ikke angitt' />
                             </>
                           )}
                         </Block>
                         {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
 
-
                         <Block>
-                          <DataText label={intl.confidentialityAssessment} text={d.assessedConfidentiality !== null ? d.assessedConfidentiality ? intl.yes : intl.no : intl.emptyMessage} />
+                          <DataText
+                            label='Hjemmel for unntak fra taushetsplikt er vurdert'
+                            text={d.assessedConfidentiality !== null ? (d.assessedConfidentiality ? 'Ja' : 'Nei') : 'Ikke angitt'}
+                          />
 
-                          {
-                            d.assessedConfidentiality !== null && (
-                              <DataText label={d.assessedConfidentiality ? intl.confidentialityDescriptionYes : intl.confidentialityDescriptionNo} text="">
-                                {shortenLinksInText(d.confidentialityDescription ? d.confidentialityDescription : intl.emptyMessage)}
-                              </DataText>
-                            )
-                          }
-
+                          {d.assessedConfidentiality !== null && (
+                            <DataText label={d.assessedConfidentiality ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
+                              : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'} text="">
+                              {shortenLinksInText(d.confidentialityDescription ? d.confidentialityDescription : 'Ikke angitt')}
+                            </DataText>
+                          )}
                         </Block>
 
+                        <Block>
+                          <DataText label='Avdeling'>
+                            {d.department?.code && <DotTags list={ListName.DEPARTMENT} codes={[d.department]} commaSeparator linkCodelist />}
+                            {!d.department?.code && 'Ikke angitt'}
+                          </DataText>
+
+                          <DataText label='Team'>
+                          {!!d.productTeams?.length ? <TeamList teamIds={d.productTeams} /> : 'Ikke angitt'}
+                          </DataText>
+                        </Block>
                       </Block>
                       <Block display="flex" justifyContent="flex-end" marginBottom={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
                         <ParagraphSmall>
                           {selectedDisclosure && (
                             <i>
-                              {intl.formatString(
-                                intl.lastModified,
-                                selectedDisclosure?.changeStamp?.lastModifiedBy,
-                                lastModifiedDate(selectedDisclosure?.changeStamp?.lastModifiedDate),
-                              )}
+                              {`Sist endret av ${selectedDisclosure?.changeStamp?.lastModifiedBy} ,
+                              ${lastModifiedDate(selectedDisclosure?.changeStamp?.lastModifiedDate)}`}
                             </i>
                           )}
                         </ParagraphSmall>
@@ -269,7 +281,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
       </StatelessAccordion>
       {editable && showEditModal && selectedDisclosure && (
         <ModalThirdParty
-          title={intl.editDisclosure}
+          title='Rediger utlevering'
           isOpen={showEditModal}
           initialValues={convertDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => {
@@ -290,10 +302,10 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
       )}
       {showDeleteModal && (
         <Modal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal} animate size="default">
-          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalHeader>Bekreft sletting</ModalHeader>
           <ModalBody>
             <ParagraphMedium>
-              {intl.confirmDeletePolicyText} {selectedDisclosure?.name}
+              Bekreft sletting av utlevering {selectedDisclosure?.name}
             </ParagraphMedium>
           </ModalBody>
 
@@ -308,7 +320,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                 marginLeft
                 marginRight
               >
-                {intl.abort}
+                Avbryt
               </Button>
               <Button
                 onClick={() => {
@@ -323,7 +335,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                   }
                 }}
               >
-                {intl.delete}
+                Slett
               </Button>
             </Block>
           </ModalFooter>

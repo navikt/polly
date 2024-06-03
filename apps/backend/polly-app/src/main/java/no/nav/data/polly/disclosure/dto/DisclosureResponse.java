@@ -48,6 +48,8 @@ public class DisclosureResponse {
     private String administrationArchiveCaseNumber;
     private Boolean assessedConfidentiality;
     private String confidentialityDescription;
+    private CodelistResponse department;
+    private List<String> productTeams;
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);

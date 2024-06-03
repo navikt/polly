@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DisclosureFormValues, Process } from '../../constants'
-import { intl, useDebouncedState } from '../../util'
+import { useDebouncedState } from '../../util'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
@@ -35,7 +35,7 @@ const SelectProcess = (props: SelectProcessProps) => {
 
         res = res
           .map((v: Process) => {
-            return { ...v, namePurpose: (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
+            return { ...v, namePurpose:  'B' + v.number + ' ' + (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
           })
           .filter((p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
           .filter((p1) => !formikBag.values.processes.map((value) => value.id).includes(p1.id))
@@ -57,10 +57,10 @@ const SelectProcess = (props: SelectProcessProps) => {
               isLoading={isLoading}
               clearable
               searchable={true}
-              noResultsMsg={intl.emptyTable}
+              noResultsMsg='Ingen'
               type={TYPE.search}
               maxDropdownHeight="400px"
-              placeholder={intl.searchProcess}
+              placeholder='Søk behandlinger'
               onInputChange={(event) => setSearch(event.currentTarget.value)}
               labelKey="namePurpose"
               onChange={({ value }) => arrayHelpers.form.setFieldValue('processes', [...props.formikBag.values.processes, ...value.map((v) => v)])}
@@ -69,7 +69,7 @@ const SelectProcess = (props: SelectProcessProps) => {
 
           <Block>
             {renderTagList(
-              formikBag.values.processes.map((p) => p.purposes[0].shortName + ': ' + p.name),
+              formikBag.values.processes.map((p) => 'B' + p.number + ' ' +  p.purposes[0].shortName + ': ' + p.name),
               arrayHelpers,
             )}
           </Block>

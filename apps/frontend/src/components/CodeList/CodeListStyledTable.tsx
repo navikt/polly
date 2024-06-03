@@ -6,7 +6,6 @@ import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faGhost, faTrash } from '@fortawesome/free-solid-svg-icons'
 import UpdateCodeListModal from './ModalUpdateCodeList'
-import { intl } from '../../util'
 import DeleteCodeListModal from './ModalDeleteCodeList'
 import { useTable } from '../../util/hooks'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../api'
@@ -69,12 +68,12 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
   return (
     <>
       <Table
-        emptyText={intl.noCodesAvailableInTable}
+        emptyText='Ingen koder'
         headers={
           <>
-            <HeadCell small title={intl.code} column="code" tableState={[table, sortColumn]} />
-            <HeadCell small title={intl.shortName} column="shortName" tableState={[table, sortColumn]} />
-            <HeadCell $style={{ width: '55%' }} title={intl.description} column="description" tableState={[table, sortColumn]} />
+            <HeadCell small title='Kode' column="code" tableState={[table, sortColumn]} />
+            <HeadCell small title='Kortnavn' column="shortName" tableState={[table, sortColumn]} />
+            <HeadCell $style={{ width: '55%' }} title='Beskrivelse' column="description" tableState={[table, sortColumn]} />
             <HeadCell small />
           </>
         }
@@ -89,7 +88,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
             <Cell small>
               <Block display="flex" justifyContent="flex-end" width="100%">
                 <Button
-                  tooltip={intl.ghost}
+                  tooltip='Vis bruk'
                   size={ButtonSize.compact}
                   kind={row === selectedCode && showUsage ? KIND.primary : KIND.tertiary}
                   onClick={() => {
@@ -101,7 +100,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
                 </Button>
                 <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary} />
                 <Button
-                  tooltip={intl.edit}
+                  tooltip='Redigér'
                   size={ButtonSize.compact}
                   kind={KIND.tertiary}
                   onClick={() => {
@@ -112,7 +111,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
                   <FontAwesomeIcon icon={faEdit} />
                 </Button>
                 <Button
-                  tooltip={intl.delete}
+                  tooltip='Slett'
                   size={ButtonSize.compact}
                   kind={KIND.tertiary}
                   onClick={() => {
@@ -130,7 +129,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
 
       {showEditModal && selectedCode && (
         <UpdateCodeListModal
-          title={intl.editCodeListTitle}
+          title='Rediger kode'
           initialValues={{
             list: selectedCode.list ?? '',
             code: selectedCode.code ?? '',
@@ -148,7 +147,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
       )}
       {showDeleteModal && selectedCode && (
         <DeleteCodeListModal
-          title={intl.deleteCodeListConfirmationTitle}
+          title='Bekreft sletting'
           initialValues={{
             list: selectedCode.list ?? '',
             code: selectedCode.code ?? '',
