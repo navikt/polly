@@ -1,22 +1,16 @@
 import * as React from 'react'
 import { useEffect } from 'react'
-import { StatefulSelect } from 'baseui/select'
-import { Block } from 'baseui/block'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import { Code, codelist } from '../../service/Codelist'
 import CreateCodeListModal from '../../components/CodeList/ModalCreateCodeList'
 import { user } from '../../service/User'
 import CodeListTable from '../../components/CodeList/CodeListStyledTable'
-import { theme, useAwait, useForceUpdate } from '../../util'
+import { useAwait, useForceUpdate } from '../../util'
 import { createCodelist } from '../../api'
 import { CodeListFormValues } from '../../constants'
-import { HeadingMedium } from 'baseui/typography'
-import { Spinner } from 'baseui/spinner'
-import Button from '../../components/common/Button'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import {ampli} from "../../service/Amplitude";
+import {Button, Heading, Loader, Select} from "@navikt/ds-react";
+import {PlusIcon} from "@navikt/aksel-icons";
 
 const CodeListPage = () => {
   const params = useParams<{ listname?: string }>()
@@ -62,39 +56,44 @@ const CodeListPage = () => {
   }, [listname, lists])
 
   if (!user.isAdmin() || !lists) {
-    return <Spinner $size={theme.sizing.scale2400} />
+    return <Loader size="2xlarge" />
   }
 
   return (
     <>
-      <HeadingMedium>Administrering av kodeverk</HeadingMedium>
+      <Heading size="large">Administrering av kodeverk</Heading>
       {loading ? (
-        <Spinner />
+        <Loader />
       ) : (
-        <Block display="flex" justifyContent="space-between" width="100%">
-          <Block width="600px">
-            <StatefulSelect
-              options={codelist.makeIdLabelForAllCodeLists()}
-              onChange={({ value }) => setListname(value[0].id as string)}
-              clearable={false}
-              placeholder="Velg kodeverk"
-              initialState={{ value: listname ? [{ id: listname, label: listname }] : [] }}
-            />
-          </Block>
+        <div className="flex justify-between w-full" >
+          <div>
+            <Select label="Velg kodeverk"
+                    onChange={(event) => setListname(event.target.value as string)}
+            >
+              <option  />
+              {codelist.makeIdLabelForAllCodeLists().map((value)=> {
+                return (
+                  <>
+                    <option key={value.id} value={value.id}>{value.label}</option>
+                  </>
+                )
+              })}
+            </Select>
+          </div>
           {listname && (
-            <Block>
-              <Button icon={faPlus} size={ButtonSize.compact} kind={KIND.tertiary} onClick={() => setCreateCodeListModal(!createCodeListModal)}>
+            <div>
+              <Button icon={<PlusIcon />}  onClick={() => setCreateCodeListModal(!createCodeListModal)}>
                 Opprett ny kode
               </Button>
-            </Block>
+            </div>
           )}
-        </Block>
+        </div>
       )}
 
       {!loading && currentCodelist && (
-        <Block marginTop={theme.sizing.scale600}>
+        <div className="mt-4" >
           <CodeListTable tableData={currentCodelist || []} refresh={update} />
-        </Block>
+        </div>
       )}
 
       <CreateCodeListModal
