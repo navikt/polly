@@ -1,17 +1,11 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
 import { Document, Settings } from '../../constants'
-import { useDebouncedState } from '../../util/hooks'
-import { getDocument, searchDocuments } from '../../api'
-import { Select, TYPE } from 'baseui/select'
-import { theme } from '../../util'
+import {getDocument, getDocumentByPageAndPageSize} from '../../api'
 import { getSettings, writeSettings } from '../../api/SettingsApi'
-import { Spinner } from 'baseui/spinner'
-import { HeadingMedium, LabelMedium } from 'baseui/typography'
-import { Button } from 'baseui/button'
-import { StatefulTextarea } from 'baseui/textarea'
 import { Markdown } from '../../components/common/Markdown'
 import {ampli} from "../../service/Amplitude";
+import {Button, Heading, Loader, Select, Textarea} from "@navikt/ds-react";
+
 
 export const SettingsPage = () => {
   const [loading, setLoading] = React.useState<boolean>(true)
@@ -43,107 +37,95 @@ export const SettingsPage = () => {
   }, [])
 
   return (
-    <Block>
+    <div>
       <>
-        <HeadingMedium>Innstillinger</HeadingMedium>
+        <Heading size="large">Innstillinger</Heading>
         {loading ? (
-          <Spinner $size={40} />
+          <Loader size="large" />
         ) : error || !settings ? (
           { error }
         ) : (
-          <Block>
+          <div>
             <DefaultProcessDocument documentId={settings.defaultProcessDocument} setDocumentId={(defaultProcessDocument) => setSettings({ ...settings, defaultProcessDocument })} />
             <FrontpageMessage message={settings?.frontpageMessage} setMessage={(frontpageMessage) => setSettings({ ...settings, frontpageMessage })} />
-
-            <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
-              <Button type="button" kind="secondary" onClick={load}>
+            <div className="flex justify-end mt-6 gap-2">
+              <Button variant="secondary" onClick={load}>
                 Avbryt
               </Button>
               <Button type="button" onClick={save}>
                 Lagre
               </Button>
-            </Block>
-          </Block>
+            </div>
+          </div>
         )}
       </>
-    </Block>
+    </div>
   )
 }
 
 const DefaultProcessDocument = (props: { documentId?: string; setDocumentId: (id: string) => void }) => {
   const [document, setDocument] = useState<Document | undefined>(undefined)
   const [documents, setDocuments] = useState<Document[]>([])
-  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
-  const [loading, setLoading] = React.useState<boolean>(false)
 
   useEffect(() => {
     ;(async () => {
       if (props.documentId && props.documentId !== document?.id) {
-        setLoading(true)
         const doc = await getDocument(props.documentId)
         setDocument(doc)
-        setLoading(false)
       }
     })()
   }, [document, props.documentId])
 
+
   useEffect(() => {
     ;(async () => {
-      if (documentSearch && documentSearch.length > 2) {
-        setLoading(true)
-        const res = await searchDocuments(documentSearch)
+        const res = await getDocumentByPageAndPageSize(0, 200)
         setDocuments(res.content)
-        setLoading(false)
-      }
     })()
-  }, [documentSearch])
+  }, [])
+
 
   return (
-    <Block display="flex" alignItems="center">
-      <LabelMedium marginRight="1rem">Dokument for standard informasjonstyper i behandling</LabelMedium>
-      <Block width="40%">
+    <div className="flex align-middle">
+      <div className="w-2/5">
         <Select
-          clearable
-          searchable
-          noResultsMsg="Ingen"
-          isLoading={loading}
-          maxDropdownHeight="400px"
-          type={TYPE.search}
-          options={documents}
-          placeholder="Søk dokumenter"
-          value={document ? [document as any] : []}
-          onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
-          onChange={(params) => {
-            const doc = params.value[0] as Document
-            setDocument(doc)
-            props.setDocumentId(doc?.id)
+          label="Dokument for standard informasjonstyper i behandling"
+          value={props.documentId}
+          onChange={(event) => {
+            props.setDocumentId(event.target.value)
           }}
-          filterOptions={(options) => options}
-          labelKey="name"
-        />
-      </Block>
-    </Block>
+        >
+          {documents.map((value)=> {
+            return (
+              <>
+                <option key={value.id} value={value.id}>{value.name}</option>
+              </>
+            )
+          })}
+        </Select>
+      </div>
+    </div>
   )
 }
 
 const FrontpageMessage = (props: { message?: string; setMessage: (message: string) => void }) => {
   return (
     <>
-      <Block alignItems="center" marginTop="1rem">
-        <LabelMedium marginRight="1rem">Forsidemelding</LabelMedium>
-        <Block width="100%" display="flex">
-          <Block width="50%" marginRight="1rem">
-            <StatefulTextarea
-              initialState={{ value: props.message }}
-              rows={20}
+      <div className="align-middle mt-4">
+        <div className="w-full flex">
+          <div className="w-1/2 mr-4">
+            <Textarea
+              label="Forsidemelding"
+              value={props.message }
+              minRows={16}
               onChange={(event: any) => props.setMessage((event as FormEvent<HTMLInputElement>).currentTarget.value)}
             />
-          </Block>
-          <Block width="50%">
+          </div>
+          <div className="w-1/2 mt-8">
             <Markdown source={props.message} escapeHtml={false} verbatim />
-          </Block>
-        </Block>
-      </Block>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
