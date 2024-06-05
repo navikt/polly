@@ -10,9 +10,12 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.processor.domain.Processor;
 
 import java.util.List;
+import java.util.UUID;
 
+import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.common.utils.StringUtils.formatList;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
@@ -72,4 +75,24 @@ public class ProcessorRequest implements RequestElement {
             validator.checkRequiredCodelist(Fields.transferGroundsOutsideEU, transferGroundsOutsideEU, ListName.TRANSFER_GROUNDS_OUTSIDE_EU);
         }
     }
+    
+    public Processor mergeInto(Processor p) {
+        if (isUpdate()) {
+            p.setId(UUID.randomUUID());
+        }
+
+        p.getData().setName(getName());
+        p.getData().setContract(getContract());
+        p.getData().setContractOwner(getContractOwner());
+        p.getData().setOperationalContractManagers(copyOf(getOperationalContractManagers()));
+        p.getData().setNote(getNote());
+
+        p.getData().setOutsideEU(getOutsideEU());
+        p.getData().setTransferGroundsOutsideEU(getTransferGroundsOutsideEU());
+        p.getData().setTransferGroundsOutsideEUOther(getTransferGroundsOutsideEUOther());
+        p.getData().setCountries(copyOf(getCountries()));
+
+        return p;
+    }
+
 }

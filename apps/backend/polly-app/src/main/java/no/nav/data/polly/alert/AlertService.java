@@ -38,7 +38,6 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Service
-@Transactional
 public class AlertService {
 
     private static final String SENSITIVITY_ART9 = "SAERLIGE";
@@ -72,6 +71,7 @@ public class AlertService {
 
     // CALCULATE AND SAVE EVENTS
 
+    @Transactional
     public void calculateEventsForInforamtionType(UUID informationTypeId) {
         var alerts = checkAlertsForInformationType(informationTypeId);
         var currentEvents = StreamUtils.convertFlat(alerts.getProcesses(), this::convertAlertsToEvents);
@@ -79,6 +79,7 @@ public class AlertService {
         updateEvents(existingEvents, currentEvents);
     }
 
+    @Transactional
     public void calculateEventsForProcess(UUID processId) {
         var alerts = checkAlertsForProcess(processId);
         var currentEvents = convertAlertsToEvents(alerts);
@@ -86,6 +87,7 @@ public class AlertService {
         updateEvents(existingEvents, currentEvents);
     }
 
+    @Transactional
     public void calculateEventsForPolicy(Policy policy) {
         var alerts = checkProcess(policy.getProcess(), policy.getInformationType());
         var currentEvents = convertAlertsToEvents(alerts);
@@ -95,6 +97,7 @@ public class AlertService {
         updateEvents(existingEvents, currentEvents);
     }
 
+    @Transactional
     public void calculateEventsForDisclosure(UUID disclosureId) {
         var alerts = checkAlertsForDisclosure(disclosureId);
         var currentEvents = convertAlertsToEvents(alerts);
@@ -112,21 +115,25 @@ public class AlertService {
 
     // DELETE
 
+    @Transactional
     public void deleteEventsForInformationType(UUID informationTypeId) {
         int deleted = alertRepository.deleteByInformationTypeId(informationTypeId);
         log.info("deleted {} events for informationType {}", deleted, informationTypeId);
     }
 
+    @Transactional
     public void deleteEventsForProcess(UUID processId) {
         int deleted = alertRepository.deleteByProcessId(processId);
         log.info("deleted {} events for process {}", deleted, processId);
     }
 
+    @Transactional
     public void deleteEventsForPolicy(Policy policy) {
         int deleted = alertRepository.deleteByProcessIdAndInformationTypeId(policy.getProcess().getId(), policy.getInformationTypeId());
         log.info("deleted {} events for process {} informationType {}", deleted, policy.getProcess().getId(), policy.getInformationTypeId());
     }
 
+    @Transactional
     public void deleteEventsForDisclosure(UUID disclosureId) {
         int deleted = alertRepository.deleteByDisclosureId(disclosureId);
         log.info("deleted {} events for disclosure {}", deleted, disclosureId);
@@ -248,6 +255,7 @@ public class AlertService {
         return safeStream(legalBases).anyMatch(lb -> lb.getGdpr().startsWith(articlePrefix));
     }
 
+    @Transactional
     public Page<AlertEvent> getEvents(AlertEventRequest request) {
         return alertRepository.findAlerts(request);
     }

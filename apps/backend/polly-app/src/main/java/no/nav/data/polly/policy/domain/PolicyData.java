@@ -24,6 +24,7 @@ public class PolicyData {
     @NotNull
     @Singular
     private List<String> subjectCategories;
+    @Builder.Default
     private boolean legalBasesInherited = false;
     @NotNull
     private LegalBasesUse legalBasesUse;

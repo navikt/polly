@@ -13,6 +13,7 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessRequestValidator;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,11 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RequestMapping("/dpprocess")
 public class DpProcessController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk og *Repository-aksess til tjenestelaget.
+    
     private final DpProcessRepository repository;
     private final DpProcessService service;
+    private final DpProcessRequestValidator requestValidator;
 
     @Operation(summary = "Get DpProcessTypes")
     @ApiResponse(description = "DpProcess fetched")
@@ -89,7 +93,7 @@ public class DpProcessController {
     @PostMapping
     public ResponseEntity<DpProcessResponse> create(@RequestBody DpProcessRequest request) {
         log.info("Received requests to create DpProcess");
-        service.validateRequest(request, false);
+        requestValidator.validateRequest(request, false);
 
         request.setNewDpProcessNmber(repository.nextDpProcessNumber());
 
@@ -110,7 +114,7 @@ public class DpProcessController {
             log.info("Cannot find DpProcess with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequest(request, true);
+        requestValidator.validateRequest(request, true);
         return ResponseEntity.ok(service.update(request).convertToResponse());
     }
 
@@ -129,7 +133,6 @@ public class DpProcessController {
     }
 
     static class DpProcessPage extends RestResponsePage<DpProcessResponse> {
-
     }
 
 }

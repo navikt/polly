@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.polly.Period;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistService;
@@ -103,7 +102,6 @@ public class ProcessToDocx {
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
     private static final String headingExternalProcessList = "Dokumentet inneholder følgende ferdigstilte behandlinger (%s)";
 
-    @SneakyThrows
     public byte[] generateDocForProcess(Process process, DocumentAccess documentAccess) {
         var doc = new DocumentBuilder();
         Date date = new Date();
@@ -123,9 +121,9 @@ public class ProcessToDocx {
         doc.addTitle(title);
         doc.addText("Eksportert " + formatter.format(date));
 
-        if(documentAccess.equals(DocumentAccess.INTERNAL)){
+        if (documentAccess.equals(DocumentAccess.INTERNAL)) {
             doc.addHeading1(String.format(headingProcessList, processList.size()));
-        }else {
+        } else {
             doc.addHeading1(String.format(headingExternalProcessList, processList.size()));
         }
 
@@ -143,7 +141,7 @@ public class ProcessToDocx {
 
     private List<Process> getProcesses(List<Process> processes, DocumentAccess documentAccess) {
         List<Process> processList;
-        if(documentAccess == DocumentAccess.EXTERNAL) {
+        if (documentAccess == DocumentAccess.EXTERNAL) {
             processList = new ArrayList<>(processes.stream().filter(p -> p.getData().getStatus().equals(ProcessStatus.COMPLETED)).toList());
         } else {
             processList = new ArrayList<>(processes);
@@ -190,9 +188,9 @@ public class ProcessToDocx {
         doc.addText("Eksportert " + formatter.format(date));
         doc.addText(codelist.getDescription());
 
-        if(documentAccess.equals(DocumentAccess.INTERNAL)){
+        if (documentAccess.equals(DocumentAccess.INTERNAL)) {
             doc.addHeading1(String.format(headingProcessList, processes.size()));
-        }else {
+        } else {
             doc.addHeading1(String.format(headingExternalProcessList, processes.size()));
         }
         doc.addToc(processes);
@@ -328,16 +326,6 @@ public class ProcessToDocx {
             );
         }
 
-        private String periodText(Period period) {
-            var active = period.isActive() ? "Aktiv" : "Inaktiv";
-            return period.hasStart() || period.hasEnd() ?
-                    String.format(" (%s, periode %s - %s)",
-                            active,
-                            period.getStart().format(df),
-                            period.getEnd().format(df)
-                    ) : null;
-        }
-
         private void policies(Process process) {
             addHeading2("Opplysningstyper");
             if (process.getData().isUsesAllInformationTypes()) {
@@ -425,12 +413,11 @@ public class ProcessToDocx {
             if (data == null) {
                 return;
             }
-            var riskOwner = Optional.ofNullable(data.getRiskOwner()).flatMap(resourceService::getResource).map(Resource::getFullName).orElse(data.getRiskOwner());
             addHeading4("Er det behov for personvernkonsekvensvurdering (PVK)?");
             addText(boolToText(data.getNeedForDpia()));
             if (boolToText(data.getNeedForDpia()).equals("Nei")) {
                 addText("Begrunnelse: ");
-                if(data.getNoDpiaReasons() != null) {
+                if (data.getNoDpiaReasons() != null) {
                     data.getNoDpiaReasons().forEach(noDpiaReason -> {
                         addText(noDpiaReasonToString(noDpiaReason));
                     });
@@ -535,11 +522,6 @@ public class ProcessToDocx {
 
         private void addHeading4(String text) {
             P p = main.addStyledParagraphOfText(HEADING_4, text);
-            ((R) p.getContent().get(0)).setRPr(createRpr());
-        }
-
-        private void addHeading5(String text) {
-            P p = main.addStyledParagraphOfText(HEADING_5, text);
             ((R) p.getContent().get(0)).setRPr(createRpr());
         }
 
@@ -698,7 +680,6 @@ public class ProcessToDocx {
             var bmStart = fac.createBodyBookmarkStart(bm);
             p.getContent().add(0, bmStart);
         }
-
 
         @SneakyThrows
         public byte[] build() {

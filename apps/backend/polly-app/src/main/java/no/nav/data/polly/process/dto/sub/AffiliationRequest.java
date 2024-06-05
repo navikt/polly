@@ -11,9 +11,11 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.Validated;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.process.domain.sub.Affiliation;
 
 import java.util.List;
 
+import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.common.utils.StringUtils.formatList;
 import static no.nav.data.common.utils.StringUtils.formatListToUppercase;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
@@ -54,4 +56,15 @@ public class AffiliationRequest implements Validated {
         subDepartments.forEach(sd -> validator.checkCodelist(Fields.subDepartments, sd, ListName.SUB_DEPARTMENT));
         products.forEach(product -> validator.checkCodelist(Fields.products, product, ListName.SYSTEM));
     }
+    
+    public Affiliation convertToAffiliation() {
+        return Affiliation.builder()
+                .department(getDepartment())
+                .subDepartments(copyOf(getSubDepartments()))
+                .productTeams(copyOf(getProductTeams()))
+                .products(copyOf(getProducts()))
+                .disclosureDispatchers(copyOf(getDisclosureDispatchers()))
+                .build();
+    }
+
 }

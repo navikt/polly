@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 public interface GenericStorageData {
 
+    // TODO: Dette interfacet bør types (GenericStorageData<T extends GenericStorageData<T>>)
+    
     @JsonIgnore
     ChangeStamp getChangeStamp();
 
@@ -17,6 +19,7 @@ public interface GenericStorageData {
         return StorageType.fromClass(this.getClass());
     }
 
+    // TODO: Snu avhengigheten innover
     default ChangeStampResponse convertChangeStampResponse() {
         if (getChangeStamp() == null) {
             return null;

@@ -64,7 +64,6 @@ public class ProcessData {
         return new Period(start, end);
     }
 
-
     public DataProcessing getDataProcessing() {
         if (dataProcessing == null) {
             dataProcessing = new DataProcessing();
@@ -92,4 +91,5 @@ public class ProcessData {
         }
         return affiliation;
     }
+    
 }

@@ -121,7 +121,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         DisclosureRequest request = buildDisclosure();
         request.setProcessIds(List.of(process.getId().toString()));
         var d1 = restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
-        var d2 = restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         var resp = restTemplate.getForEntity("/disclosure/summary", DisclosureSummaryPage.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);

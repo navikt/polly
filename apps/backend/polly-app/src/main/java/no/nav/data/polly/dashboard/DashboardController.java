@@ -56,6 +56,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Tag(name = "Dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
+    
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
 
     private final ProcessRepository processRepository;
     private final DpProcessRepository dpProcessRepository;

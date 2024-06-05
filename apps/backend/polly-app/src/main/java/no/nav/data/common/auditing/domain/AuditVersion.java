@@ -67,18 +67,7 @@ public class AuditVersion {
     @Column(name = "DATA", nullable = false, updatable = false)
     private String data;
 
-    public AuditResponse convertToResponse() {
-        return AuditResponse.builder()
-                .id(id.toString())
-                .action(action)
-                .table(table)
-                .tableId(tableId)
-                .time(time)
-                .user(user)
-                .data(JsonUtils.toJsonNode(data))
-                .build();
-    }
-
+    // TODO: Snu avhengigheten innover (ikke triviell). Flytt all forretningslogikk i domeneklassen ut til tjenestelaget.
     public EventResponse convertToEventResponse() {
         return EventResponse.builder()
                 .id(id.toString())

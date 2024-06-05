@@ -39,7 +39,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Autowired
     protected TestRestTemplate restTemplate;
-
+    
     @BeforeEach
     void setUp() {
         processRepository.save(Process.builder().id(PROCESS_ID_1)

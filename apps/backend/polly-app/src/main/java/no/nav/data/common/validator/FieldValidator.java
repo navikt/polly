@@ -42,7 +42,6 @@ public class FieldValidator {
     private final String reference;
     private final String parentField;
 
-
     public FieldValidator(String reference) {
         this.reference = reference;
         this.parentField = "";

@@ -7,6 +7,7 @@ import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.settings.dto.Settings;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -21,10 +22,12 @@ public class SettingsService {
         this.documentRepository = documentRepository;
     }
 
+    @Transactional // Merk: Kallet kan resultere i save mot databasen
     public Settings getSettings() {
         return storage.getSingleton(Settings.class);
     }
 
+    @Transactional
     public Settings updateSettings(Settings settings) {
         validate(settings);
         GenericStorage settingsStorage = storage.getSingletonAsStorage(Settings.class);

@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.common.auditing.domain.Auditable;
@@ -23,9 +22,13 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
+import no.nav.data.polly.process.dto.sub.AffiliationResponse;
+import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
+import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -37,15 +40,12 @@ import java.util.UUID;
 import static java.util.Comparator.comparing;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.safeStream;
-import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
-import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
 import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 
 @Data
 @Builder
 @ToString(exclude = {"policies"})
-@EqualsAndHashCode(callSuper = false, exclude = {"policies"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -79,6 +79,7 @@ public class Process extends Auditable {
         return DateUtil.isNow(data.getStart(), data.getEnd());
     }
 
+    // TODO: Snu avhengigheten innover
     public ProcessResponse convertToResponse() {
         return ProcessResponse.builder()
                 .id(id)
@@ -87,7 +88,7 @@ public class Process extends Auditable {
                 .description(data.getDescription())
                 .additionalDescription(data.getAdditionalDescription())
                 .purposes(getPurposeCodeResponses())
-                .affiliation(data.getAffiliation().convertToResponse())
+                .affiliation(AffiliationResponse.buildFrom(data.getAffiliation()))
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .start(data.getStart())
                 .end(data.getEnd())
@@ -95,16 +96,17 @@ public class Process extends Auditable {
                 .usesAllInformationTypes(data.isUsesAllInformationTypes())
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
-                .dataProcessing(data.getDataProcessing().convertToResponse())
+                .dataProcessing(DataProcessingResponse.buildFrom(data.getDataProcessing()))                
                 .retention(data.getRetention().convertToResponse())
                 .dpia(data.getDpia().convertToResponse())
                 // If we dont include policies avoid loading them all from DB
-                .changeStamp(super.convertChangeStampResponse())
+                .changeStamp(ChangeStampResponse.from(this))
                 .status(data.getStatus())
                 .revisionText(data.getRevisionText())
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public ProcessResponse convertToResponseWithPolicies() {
         var response = convertToResponse();
         response.setPolicies(convert(policies, policy -> policy.convertToResponse(false)));
@@ -112,6 +114,7 @@ public class Process extends Auditable {
         return response;
     }
 
+    // TODO: Snu avhengigheten innover
     public Process convertFromRequest(ProcessRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
@@ -122,7 +125,7 @@ public class Process extends Auditable {
         data.setPurposes(List.copyOf(request.getPurposes()));
         data.setDescription(request.getDescription());
         data.setAdditionalDescription(request.getAdditionalDescription());
-        data.setAffiliation(convertAffiliation(request.getAffiliation()));
+        data.setAffiliation(request.getAffiliation() == null ? new Affiliation() : request.getAffiliation().convertToAffiliation());
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
@@ -130,7 +133,7 @@ public class Process extends Auditable {
         data.setUsesAllInformationTypes(request.isUsesAllInformationTypes());
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());
-        data.setDataProcessing(convertDataProcessing(request.getDataProcessing()));
+        data.setDataProcessing(DataProcessingRequest.convertToDataProcessingNullSafe(request.getDataProcessing()));
         data.setRetention(convertRetention(request.getRetention()));
         data.setDpia(convertDpia(request.getDpia()));
         if (request.getStatus() == ProcessStatus.NEEDS_REVISION && data.getStatus() != ProcessStatus.NEEDS_REVISION) {
@@ -144,6 +147,7 @@ public class Process extends Auditable {
         return this;
     }
 
+    // TODO: Snu avhengigheten innover
     public ProcessShortResponse convertToShortResponse() {
         return ProcessShortResponse.builder()
                 .id(getId())
@@ -151,7 +155,7 @@ public class Process extends Auditable {
                 .number(data.getNumber())
                 .description(data.getDescription())
                 .purposes(getPurposeCodeResponses())
-                .affiliation(data.getAffiliation().convertToResponse())
+                .affiliation(AffiliationResponse.buildFrom(data.getAffiliation()))
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .status(getData().getStatus())
                 .end(getData().getEnd())
@@ -179,14 +183,8 @@ public class Process extends Auditable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Process process = (Process) obj;
-        return id == process.id;
+        if (!(obj instanceof Process process)) return false;
+        return id == process.id; //  Merk: Er dette riktig i alle tilfeller hvis id == process.id == null?
     }
 
     @Override

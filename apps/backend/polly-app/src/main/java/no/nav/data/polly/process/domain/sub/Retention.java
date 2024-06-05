@@ -18,6 +18,7 @@ public class Retention {
     private String retentionStart;
     private String retentionDescription;
 
+    // TODO: Snu avhengigheten innover
     public RetentionResponse convertToResponse() {
         return RetentionResponse.builder()
                 .retentionPlan(getRetentionPlan())
@@ -27,6 +28,7 @@ public class Retention {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public static Retention convertRetention(RetentionRequest retention) {
         if (retention == null) {
             return new Retention();

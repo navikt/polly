@@ -1,12 +1,8 @@
 package no.nav.data.polly.document;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.common.validator.RequestElement;
-import no.nav.data.common.validator.RequestValidator;
-import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
@@ -20,18 +16,16 @@ import no.nav.data.polly.settings.SettingsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.filter;
 
-@Slf4j
 @Service
-public class DocumentService extends RequestValidator<DocumentRequest> {
+@RequiredArgsConstructor
+public class DocumentService {
 
     private final DocumentRepository repository;
     private final InformationTypeRepository informationTypeRepository;
@@ -39,23 +33,16 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
     private final DisclosureRepository disclosureRepository;
     private final SettingsService settingsService;
 
-    public DocumentService(DocumentRepository repository, InformationTypeRepository informationTypeRepository, PolicyRepository policyRepository,
-            DisclosureRepository disclosureRepository, SettingsService settingsService) {
-        this.repository = repository;
-        this.informationTypeRepository = informationTypeRepository;
-        this.policyRepository = policyRepository;
-        this.disclosureRepository = disclosureRepository;
-        this.settingsService = settingsService;
-    }
-
+    // TODO: Snu avhengigheten innover
     public DocumentResponse getDocumentAsResponse(UUID uuid) {
         var document = repository.findById(uuid).orElseThrow(() -> new NotFoundException("Document " + uuid + " not found"));
-        DocumentResponse response = document.convertToResponse();
+        DocumentResponse response = DocumentResponse.buildFrom(document);
         Map<UUID, InformationTypeShortResponse> informationTypes = getInformationTypes(document);
         response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;
     }
 
+    // TODO: Snu avhengigheten innover
     public Map<UUID, InformationTypeShortResponse> getInformationTypes(Document document) {
         return informationTypeRepository.findAllById(convert(document.getData().getInformationTypes(), InformationTypeUse::getInformationTypeId))
                 .stream()
@@ -63,20 +50,18 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
                 .collect(Collectors.toMap(InformationTypeShortResponse::getId, Function.identity()));
     }
 
+    // TODO: Snu avhengigheten innover
     @Transactional
     public Document save(DocumentRequest request) {
-        initialize(List.of(request), false);
-        validateRequest(request);
         return repository.save(new Document().convertFromRequest(request));
     }
 
-    @Transactional
+    // TODO: Fantastisk navn på denne metoden... Metoden gjør IKKE en update, men et oppslag og manipulering (uten å skrive til DB).
     public Document update(DocumentRequest request) {
-        initialize(List.of(request), true);
-        validateRequest(request);
         return repository.findById(request.getIdAsUUID()).orElseThrow().convertFromRequest(request);
     }
 
+    @Transactional
     public Document delete(UUID uuid) {
         var doc = repository.findById(uuid).orElseThrow(() -> new NotFoundException("Couldn't find document " + uuid));
         var disclosures = disclosureRepository.findByDocumentId(uuid.toString());
@@ -94,36 +79,4 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
         return doc;
     }
 
-    private void validateRequest(DocumentRequest request) {
-        var validationErrors = StreamUtils.applyAll(request,
-                RequestElement::validateFields,
-                r -> validateRepositoryValues(r, r.getIdAsUUID() != null && repository.findById(r.getIdAsUUID()).isPresent()),
-                this::validateInformationTypes
-        );
-
-        ifErrorsThrowValidationException(validationErrors);
-    }
-
-    private List<ValidationError> validateInformationTypes(DocumentRequest request) {
-        if (request.getInformationTypes().isEmpty()) {
-            return List.of();
-        }
-        List<UUID> ids = convert(filter(request.getInformationTypes(), it ->
-                isValidUUID(it.getInformationTypeId())), infoType -> UUID.fromString(infoType.getInformationTypeId()));
-        var infoTypes = informationTypeRepository.findAllById(ids);
-        var missingInfoTypes = ids.stream().filter(id -> filter(infoTypes, infoType -> ids.contains(infoType.getId())).isEmpty()).collect(Collectors.toList());
-        return missingInfoTypes.isEmpty() ? List.of()
-                : List.of(new ValidationError(request.getReference(), "informationTypeDoesNotExist", String.format("The InformationTypes %s doesnt exist", missingInfoTypes)));
-    }
-
-    private boolean isValidUUID(String uuid) {
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            UUID.fromString(uuid);
-            return true;
-        } catch (Exception e) {
-            log.trace("invalid uuid " + uuid, e);
-            return false;
-        }
-    }
 }
