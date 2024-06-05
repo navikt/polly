@@ -30,9 +30,11 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
 
     @Override
     public Page<AlertEvent> findAlerts(AlertEventRequest request) {
-        var query = "select id , count(*) over () as count "
-                + "from generic_storage gs "
-                + "where type = 'ALERT_EVENT' ";
+        var query = """
+                select id , count(*) over () as count
+                from generic_storage gs
+                where type = 'ALERT_EVENT'
+                """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("page", request.page())
@@ -97,7 +99,6 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
             AlertEventType type, AlertEventLevel level,
             int page, int pageSize, AlertSort sort, SortDir dir
     ) {
-
     }
 
 }

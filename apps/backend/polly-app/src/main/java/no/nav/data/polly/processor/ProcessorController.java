@@ -38,6 +38,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RequestMapping("/processor")
 public class ProcessorController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final ProcessorRepository repository;
     private final ProcessorService service;
 
@@ -118,7 +120,6 @@ public class ProcessorController {
     }
 
     static class ProcessorPage extends RestResponsePage<ProcessorResponse> {
-
     }
 
 }

@@ -16,6 +16,7 @@ public class PollyTerm {
     private String name;
     private String description;
 
+    // TODO: Snu avhengigheten innover
     public TermResponse convertToResponse() {
         return TermResponse.builder()
                 .id(id)

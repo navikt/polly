@@ -18,6 +18,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
@@ -29,9 +30,11 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @Lazy(false)
-@Service
+@Service // Likevel, tjenestene som tilbys her har state (gjennom CodelistCache)
 public class CodelistService extends RequestValidator<CodelistRequest> implements InitializingBean {
-
+    
+    // TODO: Denne klassen skal ikke subklasse RequestValidator. Flytt dette ut til en egen komponent (XxxRequestValidator).
+    
     private static final String FIELD_NAME_LIST = "list";
     private static final String FIELD_NAME_CODE = "code";
     private static final String REFERENCE = "Validate Codelist";
@@ -44,10 +47,13 @@ public class CodelistService extends RequestValidator<CodelistRequest> implement
         this.codeUsageService = codeUsageService;
     }
 
+    // TODO: Denne skal ikke være static
     public static Codelist getCodelist(ListName listName, String code) {
         return CodelistCache.getCodelist(listName, code);
     }
 
+    // TODO: Snu avhengigheten innover
+    // TODO: Denne skal ikke være static
     public static CodelistResponse getCodelistResponse(ListName listName, String code) {
         if (code == null) {
             return null;
@@ -59,29 +65,38 @@ public class CodelistService extends RequestValidator<CodelistRequest> implement
         return codelist.convertToResponse();
     }
 
+    // TODO: Snu avhengigheten innover
+    // TODO: Denne skal ikke være static
     public static List<CodelistResponse> getCodelistResponseList(ListName listName) {
         return convert(CodelistCache.getCodelist(listName), Codelist::convertToResponse);
     }
 
+    // TODO: Snu avhengigheten innover
+    // TODO: Denne skal ikke være static
     public static List<CodelistResponse> getCodelistResponseList(ListName listName, Collection<String> codes) {
         return convert(codes, code -> getCodelistResponse(listName, code));
     }
 
+    // TODO: Denne skal ikke være static
     public static List<Codelist> getCodelist(ListName name) {
         return CodelistCache.getCodelist(name);
     }
 
+    // TODO: Denne skal ikke være static
     public static List<Codelist> getAll() {
         return CodelistCache.getAll();
     }
 
     @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT1M")
+    @Transactional
     public void refreshCache() {
         log.info("Refreshing codelist cache");
         List<Codelist> allCodelists = codelistRepository.findAll();
         CodelistCache.init(cache -> allCodelists.forEach(cache::setCode));
     }
 
+    // TODO: Snu avhengigheten innover
+    @Transactional
     public List<Codelist> save(List<CodelistRequest> requests) {
         List<Codelist> codelists = requests.stream()
                 .map(CodelistRequest::convert)
@@ -91,11 +106,11 @@ public class CodelistService extends RequestValidator<CodelistRequest> implement
         return saved;
     }
 
+    // TODO: Snu avhengigheten innover
     public List<Codelist> update(List<CodelistRequest> requests) {
         List<Codelist> codelists = requests.stream()
                 .map(this::updateDescriptionInRepository)
                 .collect(Collectors.toList());
-
         List<Codelist> saved = codelistRepository.saveAll(codelists);
         saved.forEach(CodelistCache::set);
         return saved;
@@ -110,12 +125,12 @@ public class CodelistService extends RequestValidator<CodelistRequest> implement
         return codelist;
     }
 
+    @Transactional
     public void delete(ListName name, String code) {
         Optional<Codelist> toDelete = codelistRepository.findByListAndCode(name, code);
         if (toDelete.isEmpty()) {
             log.warn("Cannot find a codelist to delete with code={} and listName={}", code, name);
-            throw new CodelistNotFoundException(
-                    String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
+            throw new CodelistNotFoundException(String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
         }
         validateNonImmutableTypeOfCodelist(name);
         validateCodelistIsNotInUse(name, code);

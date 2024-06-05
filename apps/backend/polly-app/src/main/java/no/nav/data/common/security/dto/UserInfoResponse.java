@@ -36,7 +36,6 @@ public class UserInfoResponse {
         return responseBuilder.build();
     }
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class UserInfoResponseBuilder {
 
         private List<String> groups = new ArrayList<>();

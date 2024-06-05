@@ -39,6 +39,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Tag(name = "Audit")
 @RequiredArgsConstructor
 public class AuditController {
+    
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk og *Repository-aksess til tjenestelaget. 
 
     private final AuditVersionRepository repository;
     private final StorageService storage;

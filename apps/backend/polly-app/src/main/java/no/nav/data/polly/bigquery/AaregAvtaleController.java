@@ -55,10 +55,8 @@ public class AaregAvtaleController {
             throw new ValidationException("Search parameter must be at least 3 characters");
         }
         List<PollyAaregAvtale> pollyAaregAvtaleList = aaregAvtaleService.searchAaregAvtale(searchParam);
-        log.info("Returned AAREG avtale");
-//        pollyAaregAvtaleList.sort(comparing(paa->paa.getVirksomhet()+paa.getId(),startsWith(searchParam)));
         log.info("Returned {} Aareg avtale", pollyAaregAvtaleList.size());
 
-        return new ResponseEntity<>(new RestResponsePage<>(convert(pollyAaregAvtaleList,PollyAaregAvtale::toResponse)), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponsePage<>(convert(pollyAaregAvtaleList, PollyAaregAvtale::toResponse)), HttpStatus.OK);
     }
 }

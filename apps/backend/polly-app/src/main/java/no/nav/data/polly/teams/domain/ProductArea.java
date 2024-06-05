@@ -4,11 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.teams.dto.ProductAreaResponse;
 
 import java.util.List;
-
-import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Data
 @Builder
@@ -22,18 +19,4 @@ public class ProductArea {
     private List<String> tags;
     private List<Member> members;
 
-    public ProductAreaResponse convertToResponseWithMembers() {
-        var resp = convertToResponse();
-        resp.setMembers(convert(members, Member::convertToResponse));
-        return resp;
-    }
-
-    public ProductAreaResponse convertToResponse() {
-        return ProductAreaResponse.builder()
-                .id(id)
-                .name(name)
-                .description(description)
-                .tags(tags)
-                .build();
-    }
 }

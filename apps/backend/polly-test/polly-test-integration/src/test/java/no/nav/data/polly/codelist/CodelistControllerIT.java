@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("static-access") // TODO: Fjern når dette ikke trengs
 class CodelistControllerIT extends IntegrationTestBase {
 
     private static final ParameterizedTypeReference<List<CodelistResponse>> CODELIST_LIST_RESP = new ParameterizedTypeReference<>() {
@@ -68,7 +69,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             Arrays.stream(ListName.values())
                     .forEach(listName -> assertThat(responseEntity.getBody().getCodelist()
-                            .get(listName)).containsAll(CodelistService.getCodelistResponseList(listName)));
+                            .get(listName)).containsAll(service.getCodelistResponseList(listName)));
         }
 
         @Test
@@ -78,7 +79,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody()).isEqualTo(CodelistService.getCodelistResponseList(ListName.THIRD_PARTY));
+            assertThat(responseEntity.getBody()).isEqualTo(service.getCodelistResponseList(ListName.THIRD_PARTY));
         }
 
         @Test
@@ -90,7 +91,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getDescription()).isEqualTo(CodelistService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription());
+            assertThat(responseEntity.getBody().getDescription()).isEqualTo(service.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription());
         }
 
         @Test
@@ -146,7 +147,7 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertThat(codelist.getDescription()).isEqualTo("SaveDescription");
 
             assertTrue(CodelistCache.contains(ListName.THIRD_PARTY, "SAVECODE"));
-            Codelist savedCodelist = CodelistService.getCodelist(ListName.THIRD_PARTY, "SAVECODE");
+            Codelist savedCodelist = service.getCodelist(ListName.THIRD_PARTY, "SAVECODE");
             assertThat(savedCodelist.getCode()).isEqualTo("SAVECODE");
             assertThat(savedCodelist.getShortName()).isEqualTo("SaveShortName");
             assertThat(savedCodelist.getDescription()).isEqualTo("SaveDescription");
@@ -202,8 +203,8 @@ class CodelistControllerIT extends IntegrationTestBase {
         @Test
         void shouldUpdateOneCodelist() {
             saveCodelist(createCodelist(ListName.THIRD_PARTY, "CODE", "SavedShortName", "SavedDescription"));
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("SavedShortName");
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("SavedDescription");
+            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("SavedShortName");
+            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("SavedDescription");
 
             List<CodelistRequest> updatedCodelists = List.of(
                     createCodelistRequest("THIRD_PARTY", "CODE", "UpdatedShortName", "UpdatedDescription"));
@@ -212,8 +213,8 @@ class CodelistControllerIT extends IntegrationTestBase {
                     "/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("UpdatedShortName");
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("UpdatedDescription");
+            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("UpdatedShortName");
+            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("UpdatedDescription");
         }
 
         @Test

@@ -41,5 +41,4 @@ public class SettingsController {
         return ResponseEntity.ok(service.updateSettings(settings));
     }
 
-
 }

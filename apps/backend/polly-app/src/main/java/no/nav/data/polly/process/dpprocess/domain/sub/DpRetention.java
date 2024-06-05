@@ -16,6 +16,7 @@ public class DpRetention {
     private Integer retentionMonths;
     private String retentionStart;
 
+    // TODO: Snu avhengigheten innover
     public DpRetentionResponse convertToResponse() {
         return DpRetentionResponse.builder()
                 .retentionMonths(getRetentionMonths())
@@ -23,6 +24,7 @@ public class DpRetention {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public static DpRetention convertRetention(DpRetentionRequest retention) {
         if (retention == null) {
             return new DpRetention();

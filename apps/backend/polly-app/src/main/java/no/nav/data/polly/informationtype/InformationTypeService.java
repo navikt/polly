@@ -36,6 +36,8 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 @Transactional
 public class InformationTypeService extends RequestValidator<InformationTypeRequest> {
 
+    // TODO: Denne klassen skal ikke subklasse RequestValidator. Flytt dette ut til en egen komponent (XxxRequestValidator).
+
     private final InformationTypeRepository repository;
     private final PolicyRepository policyRepository;
     private final DocumentRepository documentRepository;

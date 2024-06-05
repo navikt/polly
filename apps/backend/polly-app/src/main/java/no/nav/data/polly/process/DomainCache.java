@@ -8,13 +8,13 @@ import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
+@Component
 public class DomainCache {
 
     private final LoadingCache<UUID, Optional<Process>> processCache;

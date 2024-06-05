@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AaregAvtale {
+    
     private String avtalenummer;
     private String organisasjonsnummer;
     private String virksomhet;
@@ -42,6 +43,5 @@ public class AaregAvtale {
                 .hjemmel_behandlingsgrunnlag_formal(hjemmel_behandlingsgrunnlag_formal)
                 .hendelser(hendelser)
                 .build();
-
     }
 }

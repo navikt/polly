@@ -33,7 +33,6 @@ public class AppIdMapping {
 
     @Data
     static class AuthApps {
-
         private String name;
         private String clientId;
     }

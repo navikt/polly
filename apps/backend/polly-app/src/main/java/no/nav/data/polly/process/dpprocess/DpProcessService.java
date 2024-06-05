@@ -23,6 +23,8 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class DpProcessService extends RequestValidator<DpProcessRequest> {
 
+    // TODO: Denne klassen skal ikke subklasse RequestValidator. Flytt dette ut til en egen komponent (XxxRequestValidator).
+
     private final DpProcessRepository repository;
     private final TeamService teamService;
 

@@ -31,6 +31,7 @@ public class ProcessorData {
     @Singular
     private List<String> countries;
 
+    // TODO: Snu avhengigheten innover
     public CodelistResponse getTransferGroundsOutsideEUCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, getTransferGroundsOutsideEU());
     }

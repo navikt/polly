@@ -15,7 +15,6 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
-import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessStatus;
@@ -52,6 +51,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class ProcessService extends RequestValidator<ProcessRequest> {
 
+    // TODO: Denne klassen skal ikke subklasse RequestValidator. Flytt dette ut til en egen komponent (XxxRequestValidator).
+
     private final ProcessRepository processRepository;
     private final ProcessorRepository processorRepository;
     private final DisclosureRepository disclosureRepository;
@@ -62,7 +63,6 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final TemplateService templateService;
     private final EmailService emailService;
     private final PolicyRepository policyRepository;
-
 
 
     @Transactional
@@ -114,6 +114,13 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         return processRepository.findAllById(all);
     }
 
+    private List<UUID> getAllProcessIds(CodeUsageResponse usage) {
+        return union(
+                convert(usage.getProcesses(), ProcessShortResponse::getId),
+                convert(usage.getPolicies(), p -> UUID.fromString(p.getProcessId()))
+        ).stream().distinct().collect(toList());
+    }
+
     public List<Process> fetchAllProcessesByInformationTypeSensitivity(String sensitivity) {
         CodeUsageResponse codeUsageResponse = codeUsageService.findCodeUsage(ListName.SENSITIVITY,sensitivity);
         List<Process> processes = new ArrayList<>();
@@ -124,13 +131,6 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
             });
         });
         return processes.stream().distinct().collect(Collectors.toList());
-    }
-
-    private List<UUID> getAllProcessIds(CodeUsageResponse usage) {
-        return union(
-                convert(usage.getProcesses(), ProcessShortResponse::getId),
-                convert(usage.getPolicies(), p -> UUID.fromString(p.getProcessId()))
-        ).stream().distinct().collect(toList());
     }
 
     public void validateRequest(ProcessRequest request, boolean update) {

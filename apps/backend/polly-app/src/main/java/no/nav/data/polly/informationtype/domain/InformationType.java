@@ -68,10 +68,12 @@ public class InformationType extends Auditable {
         return this;
     }
 
+    // TODO: Snu avhengigheten innover
     public InformationTypeResponse convertToResponse() {
         return new InformationTypeResponse(this);
     }
 
+    // TODO: Snu avhengigheten innover
     public InformationTypeShortResponse convertToShortResponse() {
         return new InformationTypeShortResponse(getId(), getData().getName(), CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
     }
@@ -80,16 +82,19 @@ public class InformationType extends Auditable {
         return UsedInInstance.builder().id(id.toString()).name(data.getName()).build();
     }
 
+    // TODO: Snu avhengigheten innover
     public InformationType convertNewFromRequest(InformationTypeRequest request) {
         id = UUID.randomUUID();
         convertFromRequest(request);
         return this;
     }
 
+    // TODO: Snu avhengigheten innover
     public void convertUpdateFromRequest(InformationTypeRequest request) {
         convertFromRequest(request);
     }
 
+    // TODO: Snu avhengigheten innover
     private void convertFromRequest(InformationTypeRequest request) {
         setTermId(request.getTerm());
         data.setName(request.getName());

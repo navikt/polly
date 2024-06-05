@@ -38,6 +38,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Tag(name = "Export", description = "REST API for exports")
 public class ExportController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private static final String WORDPROCESSINGML_DOCUMENT = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
     private final ProcessRepository processRepository;
@@ -54,7 +56,7 @@ public class ExportController {
 
     @Operation(summary = "Get export for process")
     @ApiResponse(description = "Doc fetched", content = @Content(schema = @Schema(implementation = byte[].class)))
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // TODO: Flytt dette inn til tjenestelaget
     @SneakyThrows
     @GetMapping(value = "/process", produces = WORDPROCESSINGML_DOCUMENT)
     public void getExport(
@@ -76,12 +78,13 @@ public class ExportController {
                 throw new NotFoundException("Couldn't find process " + processId);
             }
             Process p;
-            if(documentAccess==DocumentAccess.INTERNAL || (documentAccess==DocumentAccess.EXTERNAL && process.get().getData().getStatus()== ProcessStatus.COMPLETED)){
-                p=process.get();
-            } else{
+            if (documentAccess == DocumentAccess.INTERNAL || (documentAccess == DocumentAccess.EXTERNAL
+                    && process.get().getData().getStatus() == ProcessStatus.COMPLETED)) {
+                p = process.get();
+            } else {
                 throw new NotFoundException("The process is not completed therefore it can not be exported");
             }
-            doc = processToDocx.generateDocForProcess(p,documentAccess);
+            doc = processToDocx.generateDocForProcess(p, documentAccess);
             filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
         } else if (productArea != null) {
             var teams = teamService.getTeamsForProductArea(productArea);
@@ -89,14 +92,14 @@ public class ExportController {
             String productAreaName = productAreaData.isPresent() ? productAreaData.get().getName() : "";
 
             List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
-            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productAreaName),documentAccess);
+            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productAreaName), documentAccess);
             filename = "behandling_produktområde_" + productArea + ".docx";
         } else if (productTeam != null) {
             List<Process> processes = processRepository.findByProductTeam(productTeam);
             var productTeamData = teamService.getTeam(productTeam);
             String productTeamName = productTeamData.isPresent() ? productTeamData.get().getName() : "";
 
-            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeamName),documentAccess);
+            doc = processToDocx.generateDocForProcessList(processes, "Team: " + StringUtils.capitalize(productTeamName), documentAccess);
             filename = "behandling_team_" + productTeam + ".docx";
         } else {
             ListName list;
@@ -117,7 +120,7 @@ public class ExportController {
                 throw new ValidationException("No paramater given");
             }
             codelistService.validateListNameAndCode(list.name(), code);
-            doc = processToDocx.generateDocFor(list, code,documentAccess);
+            doc = processToDocx.generateDocFor(list, code, documentAccess);
             String depNameClean = cleanCodelistName(list, code);
             filename = "behandling_" + list.name().toLowerCase() + "_" + depNameClean + ".docx";
 

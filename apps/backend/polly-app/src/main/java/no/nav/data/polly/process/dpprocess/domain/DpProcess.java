@@ -20,13 +20,14 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessShortResponse;
+import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
+import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
-import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
 import static no.nav.data.polly.process.dpprocess.domain.sub.DpRetention.convertRetention;
 
 @Data
@@ -53,6 +54,7 @@ public class DpProcess extends Auditable {
         return DateUtil.isNow(data.getStart(), data.getEnd());
     }
 
+    // TODO: Snu avhengigheten innover
     public DpProcess convertFromRequest(DpProcessRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
@@ -63,7 +65,7 @@ public class DpProcess extends Auditable {
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setDataProcessingAgreements(copyOf(request.getDataProcessingAgreements()));
-        data.setSubDataProcessing(convertDataProcessing(request.getSubDataProcessing()));
+        data.setSubDataProcessing(DataProcessingRequest.convertToDataProcessingNullSafe(request.getSubDataProcessing()));
         data.setPurposeDescription(request.getPurposeDescription());
         data.setDescription(request.getDescription());
         data.setArt9(request.getArt9());
@@ -72,6 +74,7 @@ public class DpProcess extends Auditable {
         return this;
     }
 
+    // TODO: Snu avhengigheten innover
     public DpProcessResponse convertToResponse() {
         return DpProcessResponse.builder()
                 .id(id)
@@ -81,7 +84,7 @@ public class DpProcess extends Auditable {
                 .start(data.getStart())
                 .end(data.getEnd())
                 .dataProcessingAgreements(copyOf(data.getDataProcessingAgreements()))
-                .subDataProcessing(data.getSubDataProcessing().convertToResponse())
+                .subDataProcessing(DataProcessingResponse.buildFrom(data.getSubDataProcessing()))
                 .purposeDescription(data.getPurposeDescription())
                 .description(data.getDescription())
                 .art9(data.getArt9())
@@ -91,10 +94,13 @@ public class DpProcess extends Auditable {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
+    // TODO: Skal ikke ha kall til service her.
     private CodelistResponse getExternalProcessResponsibleCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getExternalProcessResponsible());
     }
 
+    // TODO: Snu avhengigheten innover
     public DpProcessShortResponse convertToShortResponse() {
         return new DpProcessShortResponse(id, data.getName(), data.getAffiliation().convertToResponse());
     }

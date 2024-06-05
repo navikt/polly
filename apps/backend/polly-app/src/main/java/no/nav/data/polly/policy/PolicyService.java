@@ -31,6 +31,8 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 @Service
 public class PolicyService extends RequestValidator<PolicyRequest> {
 
+    // TODO: Denne klassen skal ikke subklasse RequestValidator. Flytt dette ut til en egen komponent (XxxRequestValidator).
+
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;

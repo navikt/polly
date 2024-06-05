@@ -156,6 +156,7 @@ public class CodeUsageService {
                 case TRANSFER_GROUNDS_OUTSIDE_EU -> {
                     getProcessors(usage).forEach(p -> p.getData().setTransferGroundsOutsideEU(newCode));
                 }
+                case DATA_ACCESS_CLASS -> {} // TODO: Er det riktig at dette er en no-op?
             }
         }
         return usage;

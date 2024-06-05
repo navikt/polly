@@ -26,6 +26,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RequestMapping("/process/state")
 public class ProcessStateController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final ProcessRepository processRepository;
     private final TeamService teamService;
 
@@ -52,6 +54,5 @@ public class ProcessStateController {
     }
 
     static class ProcessShortPage extends RestResponsePage<ProcessShortResponse> {
-
     }
 }

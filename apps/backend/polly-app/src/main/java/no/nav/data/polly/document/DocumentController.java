@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -13,6 +14,7 @@ import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.document.dto.DocumentRequest;
+import no.nav.data.polly.document.dto.DocumentRequestValidator;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.springframework.http.HttpStatus;
@@ -41,15 +43,14 @@ import static no.nav.data.common.utils.StartsWithComparator.startsWith;
 @RestController
 @RequestMapping("/document")
 @Tag(name = "Document", description = "REST API for Document")
+@RequiredArgsConstructor
 public class DocumentController {
+    
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
 
     private final DocumentRepository repository;
     private final DocumentService service;
-
-    public DocumentController(DocumentRepository repository, DocumentService service) {
-        this.repository = repository;
-        this.service = service;
-    }
+    private final DocumentRequestValidator requestValidator;
 
     @Operation(summary = "Get All Documents")
     @ApiResponse(description = "All Documents fetched")
@@ -62,7 +63,7 @@ public class DocumentController {
             var doc = repository.findByInformationTypeId(informationTypeId);
             return returnResults(new RestResponsePage<>(StreamUtils.convert(doc, this::convertToResponseWithInfoTypes)));
         }
-        return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Document::convertToResponse)));
+        return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(DocumentResponse::buildFrom)));
     }
 
     @Operation(summary = "Search Documents")
@@ -103,6 +104,7 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DocumentResponse> createPolicy(@Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to create Document");
+        requestValidator.validateRequest(request, false);
         var setup = service.save(request);
         return new ResponseEntity<>(convertToResponseWithInfoTypes(setup), HttpStatus.CREATED);
     }
@@ -113,13 +115,14 @@ public class DocumentController {
     public ResponseEntity<DocumentResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to update Document");
         Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
+        requestValidator.validateRequest(request, true);
         return ResponseEntity.ok(convertToResponseWithInfoTypes(service.update(request)));
     }
 
     @Operation(summary = "Delete Document")
     @ApiResponse(description = "Document deleted")
     @DeleteMapping("/{id}")
-    @Transactional
+    @Transactional // TODO: Flytt til tjenestelaget
     public ResponseEntity<DocumentResponse> deleteDocumentById(@PathVariable UUID id) {
         log.info("Received a request to delete Document with id={}", id);
         var doc = service.delete(id);
@@ -128,7 +131,7 @@ public class DocumentController {
     }
 
     private DocumentResponse convertToResponseWithInfoTypes(Document document) {
-        var response = document.convertToResponse();
+        var response = DocumentResponse.buildFrom(document);
         Map<UUID, InformationTypeShortResponse> informationTypes = service.getInformationTypes(document);
         response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;

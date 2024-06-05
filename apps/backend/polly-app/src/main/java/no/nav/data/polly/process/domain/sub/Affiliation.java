@@ -27,6 +27,7 @@ public class Affiliation {
     private List<String> products;
     private List<String> disclosureDispatchers;
 
+    // TODO: Snu avhengigheten innover
     public static Affiliation convertAffiliation(AffiliationRequest request) {
         if (request == null) {
             return new Affiliation();
@@ -40,6 +41,7 @@ public class Affiliation {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public AffiliationResponse convertToResponse() {
         return AffiliationResponse.builder()
                 .department(getDepartmentCodeResponse())
@@ -50,21 +52,24 @@ public class Affiliation {
                 .build();
     }
 
+    // TODO: Avhengighet utover
     public CodelistResponse getDepartmentCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.DEPARTMENT, getDepartment());
     }
 
+    // TODO: Avhengighet utover
     public List<CodelistResponse> getSubDepartmentCodeResponses() {
         return CodelistService.getCodelistResponseList(ListName.SUB_DEPARTMENT, getSubDepartments());
     }
 
+    // TODO: Avhengighet utover
     public List<CodelistResponse> getProductCodeResponses() {
         return CodelistService.getCodelistResponseList(ListName.SYSTEM, getProducts());
     }
 
+    // TODO: Avhengighet utover
     public List<CodelistResponse> getDisclosureDispatcherCodeResponses() {
         return CodelistService.getCodelistResponseList(ListName.SYSTEM, getDisclosureDispatchers());
     }
-
 
 }

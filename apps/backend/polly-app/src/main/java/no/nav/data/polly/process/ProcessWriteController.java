@@ -35,11 +35,13 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Transactional
+@Transactional // TODO: Flytt dette inn til tjenestelaget
 @Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
 public class ProcessWriteController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final ProcessService service;
     private final ProcessRepository repository;
     private final TeamService teamService;
@@ -83,7 +85,6 @@ public class ProcessWriteController {
     @Operation(summary = "Delete Process")
     @ApiResponse(description = "Process deleted")
     @DeleteMapping("/{id}")
-    @Transactional
     public ResponseEntity<ProcessResponse> deleteProcessById(@PathVariable UUID id) {
         log.info("Received a request to delete Process with id={}", id);
         Optional<Process> fromRepository = repository.findById(id);

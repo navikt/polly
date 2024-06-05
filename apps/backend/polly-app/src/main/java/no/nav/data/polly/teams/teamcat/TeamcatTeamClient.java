@@ -9,7 +9,7 @@ import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.ProductArea;
 import no.nav.data.polly.teams.domain.Team;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 import static no.nav.data.common.utils.StreamUtils.filter;
 import static no.nav.data.common.utils.StreamUtils.safeStream;
 
-@Service
+@Component
 @ConditionalOnProperty("client.teamcat-team.enabled")
 @Slf4j
 public class TeamcatTeamClient implements TeamService {
@@ -37,8 +37,7 @@ public class TeamcatTeamClient implements TeamService {
     private final LoadingCache<String, Map<String, Team>> allTeamsCache;
     private final LoadingCache<String, Map<String, ProductArea>> allPaCache;
 
-    public TeamcatTeamClient(RestTemplate restTemplate,
-                             TeamcatProperties properties) {
+    public TeamcatTeamClient(RestTemplate restTemplate, TeamcatProperties properties) {
         this.restTemplate = restTemplate;
         this.properties = properties;
 
@@ -117,11 +116,9 @@ public class TeamcatTeamClient implements TeamService {
     }
 
     static class TeamPage extends RestResponsePage<TeamKatTeam> {
-
     }
 
     static class ProductAreaPage extends RestResponsePage<TeamKatProductArea> {
-
     }
 
 }

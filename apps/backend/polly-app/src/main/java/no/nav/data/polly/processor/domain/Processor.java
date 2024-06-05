@@ -42,6 +42,7 @@ public class Processor extends Auditable {
     @Column(name = "DATA", nullable = false)
     private ProcessorData data = new ProcessorData();
 
+    // TODO: Snu avhengigheten innover
     public ProcessorResponse convertToResponse() {
         return ProcessorResponse.builder()
                 .id(id)
@@ -58,6 +59,7 @@ public class Processor extends Auditable {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public Processor convertFromRequest(ProcessorRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();

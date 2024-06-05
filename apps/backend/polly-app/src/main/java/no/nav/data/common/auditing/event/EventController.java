@@ -4,6 +4,7 @@ package no.nav.data.common.auditing.event;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.domain.Action;
 import no.nav.data.common.auditing.domain.AuditVersion;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,19 +33,18 @@ import java.util.List;
 import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/event")
 @Tag(name = "Event", description = "Domain object events")
 public class EventController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+
     private final AuditVersionRepository repository;
     private final List<String> allowedTables = convert(
             List.of(InformationType.class, Process.class, Policy.class, Disclosure.class, Document.class),
             AuditVersion::tableName);
-
-    public EventController(AuditVersionRepository repository) {
-        this.repository = repository;
-    }
 
     @Operation(summary = "Get events")
     @ApiResponse(description = "Events fetched")
@@ -63,7 +64,6 @@ public class EventController {
     }
 
     static class EventPage extends RestResponsePage<EventResponse> {
-
     }
 
 }

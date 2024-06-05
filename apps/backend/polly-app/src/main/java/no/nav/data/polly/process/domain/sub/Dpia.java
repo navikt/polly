@@ -28,6 +28,7 @@ public class Dpia {
     private String riskOwner;
     private String riskOwnerFunction;
 
+    // TODO: Snu avhengigheten innover
     public DpiaResponse convertToResponse() {
         return DpiaResponse.builder()
                 .needForDpia(getNeedForDpia())
@@ -40,6 +41,7 @@ public class Dpia {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public static Dpia convertDpia(DpiaRequest dpia) {
         if (dpia == null) {
             return new Dpia();

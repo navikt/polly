@@ -39,6 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("static-access") // TODO: Fjern når dette ikke trengs
 class CodelistServiceTest {
 
     private static final String VALIDATION_EXCEPTION_ERROR_MESSAGE = "The request was not accepted. The following errors occurred during validation: [%s]";
@@ -58,8 +59,8 @@ class CodelistServiceTest {
             when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
             service.save(List.of(createCodelistRequest("THIRD_PARTY", "TEST_CODE", "Test shortName", "Test description")));
             verify(repository, times(1)).saveAll(anyList());
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getShortName()).isEqualTo("Test shortName");
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription()).isEqualTo("Test description");
+            assertThat(service.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getShortName()).isEqualTo("Test shortName");
+            assertThat(service.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription()).isEqualTo("Test description");
         }
 
         @Test
@@ -76,7 +77,7 @@ class CodelistServiceTest {
             service.update(List.of(request));
 
             verify(repository, times(1)).saveAll(anyList());
-            Codelist codelist = CodelistService.getCodelist(ListName.THIRD_PARTY, request.getCode());
+            Codelist codelist = service.getCodelist(ListName.THIRD_PARTY, request.getCode());
             assertThat(codelist.getShortName()).isEqualTo("name2");
             assertThat(codelist.getDescription()).isEqualTo("desc2");
         }
@@ -89,7 +90,7 @@ class CodelistServiceTest {
             service.delete(ListName.THIRD_PARTY, "DELETE_CODE");
 
             verify(repository, times(1)).delete(any(Codelist.class));
-            assertNull(CodelistService.getCodelist(ListName.THIRD_PARTY, "DELETE_CODE"));
+            assertNull(service.getCodelist(ListName.THIRD_PARTY, "DELETE_CODE"));
         }
 
         @Test
@@ -275,7 +276,7 @@ class CodelistServiceTest {
                 service.validateRequest(requests, false);
                 service.save(requests);
                 assertTrue(CodelistCache.contains(ListName.CATEGORY, "CORRECTFORMAT"));
-                assertThat(CodelistService.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");
+                assertThat(service.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");
             }
         }
 

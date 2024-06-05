@@ -25,6 +25,8 @@ import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.common.utils.MdcUtils;
 import no.nav.data.polly.codelist.domain.Codelist;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.Optional;
@@ -33,7 +35,11 @@ import java.util.UUID;
 @Slf4j
 public class AuditVersionListener {
 
-    private static AuditVersionRepository repository;
+    // Merk: Denne klassen er IKKE håndtert av Spring (siden den instansieres av JPA), men den avhenger av en Spring-managed bønne.
+    // Dette er løst med et hæck der Spring kaller en statisk metode i denne klassen for å tilby bønna.
+    // Men dette hacket virker ikke alltid for integrasjonstesting, så det er et hæck til i IntegrationTestBase for å få det til å gå.
+    
+    private static volatile AuditVersionRepository repository;
 
     private static final ObjectWriter wr;
 
@@ -64,16 +70,17 @@ public class AuditVersionListener {
         audit(entity, Action.DELETE);
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     private void audit(Object entity, Action action) {
         try {
             Assert.isTrue(entity instanceof Auditable, "Invalid object");
-            if (entity instanceof GenericStorage && !((GenericStorage) entity).getType().isAudit()) {
+            if (entity instanceof GenericStorage genStorage && !genStorage.getType().isAudit()) {
                 return;
             }
             String tableName = AuditVersion.tableName(((Auditable) entity).getClass());
             String id = getIdForObject(entity);
             String data = wr.writeValueAsString(entity);
-            String user = Optional.ofNullable(MdcUtils.getUser()).orElse("no user set");
+            String user = Optional.ofNullable(MdcUtils.getUser()).orElse("no-user-set");
             AuditVersion auditVersion = AuditVersion.builder()
                     .action(action).table(tableName).tableId(id).data(data).user(user)
                     .build();
@@ -85,8 +92,8 @@ public class AuditVersionListener {
 
     public static String getIdForObject(Object entity) {
         String id;
-        if (entity instanceof Codelist) {
-            id = ((Codelist) entity).getList() + "-" + ((Codelist) entity).getCode();
+        if (entity instanceof Codelist clEntity) {
+            id = clEntity.getList() + "-" + clEntity.getCode();
         } else {
             UUID uuid = HibernateUtils.getId(entity);
             Assert.notNull(uuid, "entity has not set id");

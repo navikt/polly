@@ -51,7 +51,7 @@ public class TeamController {
     @GetMapping
     public RestResponsePage<TeamResponse> findAllTeams() {
         log.info("Received a request for all teams");
-        return new RestResponsePage<>(convert(teamsService.getAllTeams(), Team::convertToResponse));
+        return new RestResponsePage<>(convert(teamsService.getAllTeams(), TeamResponse::buildFrom));
     }
 
     @Operation(summary = "Get team")
@@ -63,7 +63,7 @@ public class TeamController {
         if (team.isEmpty()) {
             throw new NotFoundException("Couldn't find team " + teamId);
         }
-        return new ResponseEntity<>(team.get().convertToResponseWithMembers(), HttpStatus.OK);
+        return new ResponseEntity<>(TeamResponse.buildFromWithMembers(team.get()), HttpStatus.OK);
     }
 
     @Operation(summary = "Search teams")
@@ -77,7 +77,7 @@ public class TeamController {
         var teams = StreamUtils.filter(teamsService.getAllTeams(), team -> containsIgnoreCase(team.getName(), name));
         teams.sort(comparing(Team::getName, startsWith(name)));
         log.info("Returned {} teams", teams.size());
-        return new ResponseEntity<>(new RestResponsePage<>(convert(teams, Team::convertToResponse)), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponsePage<>(convert(teams, TeamResponse::buildFrom)), HttpStatus.OK);
     }
 
     // Product Areas
@@ -87,7 +87,7 @@ public class TeamController {
     @GetMapping("/productarea")
     public RestResponsePage<ProductAreaResponse> findAllProductAreas() {
         log.info("Received a request for all product areas");
-        return new RestResponsePage<>(convert(teamsService.getAllProductAreas(), ProductArea::convertToResponse));
+        return new RestResponsePage<>(convert(teamsService.getAllProductAreas(), ProductAreaResponse::buildFrom));
     }
 
     @Operation(summary = "Get product area")
@@ -99,7 +99,7 @@ public class TeamController {
         if (pa.isEmpty()) {
             throw new NotFoundException("Couldn't find product area " + paId);
         }
-        return new ResponseEntity<>(pa.get().convertToResponseWithMembers(), HttpStatus.OK);
+        return new ResponseEntity<>(ProductAreaResponse.buildFromWithMembers(pa.get()), HttpStatus.OK);
     }
 
     @Operation(summary = "Search product areas")
@@ -113,7 +113,7 @@ public class TeamController {
         var pas = StreamUtils.filter(teamsService.getAllProductAreas(), pa -> containsIgnoreCase(pa.getName(), name));
         pas.sort(comparing(ProductArea::getName, startsWith(name)));
         log.info("Returned {} pas", pas.size());
-        return new ResponseEntity<>(new RestResponsePage<>(convert(pas, ProductArea::convertToResponse)), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponsePage<>(convert(pas, ProductAreaResponse::buildFrom)), HttpStatus.OK);
     }
 
     // Resources
@@ -144,14 +144,11 @@ public class TeamController {
     }
 
     static class ResourcePage extends RestResponsePage<Resource> {
-
     }
 
     static class TeamPage extends RestResponsePage<TeamResponse> {
-
     }
 
     static class ProductAreaPage extends RestResponsePage<ProductAreaResponse> {
-
     }
 }

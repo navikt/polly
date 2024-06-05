@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"avtalenummer", "organisasjonsnummer", "virksomhet"})
-
 public class AaregAvtaleResponse {
 
     private String avtalenummer;

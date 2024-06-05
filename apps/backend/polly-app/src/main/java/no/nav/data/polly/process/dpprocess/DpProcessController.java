@@ -38,6 +38,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RequestMapping("/dpprocess")
 public class DpProcessController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk og *Repository-aksess til tjenestelaget.
+    
     private final DpProcessRepository repository;
     private final DpProcessService service;
 
@@ -118,7 +120,6 @@ public class DpProcessController {
     }
 
     static class DpProcessPage extends RestResponsePage<DpProcessResponse> {
-
     }
 
 }

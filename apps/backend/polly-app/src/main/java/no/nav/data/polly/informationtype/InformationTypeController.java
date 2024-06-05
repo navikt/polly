@@ -46,6 +46,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Tag(name = "InformationType", description = "REST API for InformationType")
 public class InformationTypeController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final InformationTypeRepository repository;
     private final InformationTypeService service;
     private final TeamService teamService;
@@ -186,7 +188,7 @@ public class InformationTypeController {
     @Operation(summary = "Delete InformationType")
     @ApiResponse(description = "InformationType deleted")
     @DeleteMapping("/{id}")
-    @Transactional
+    @Transactional // TODO: Flytt dette inn til tjenestelaget
     public ResponseEntity<InformationTypeResponse> deleteInformationTypeById(@PathVariable UUID id) {
         log.info("Received a request to delete InformationType with id={}", id);
         if (id == null) {
@@ -197,11 +199,9 @@ public class InformationTypeController {
     }
 
     static final class InformationTypePage extends RestResponsePage<InformationTypeResponse> {
-
     }
 
     static final class InformationTypeShortPage extends RestResponsePage<InformationTypeShortResponse> {
-
     }
 
 }
