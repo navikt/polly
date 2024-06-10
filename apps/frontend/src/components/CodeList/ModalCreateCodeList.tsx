@@ -1,27 +1,10 @@
 import * as React from 'react'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Block, BlockProps } from 'baseui/block'
-import { LabelMedium } from 'baseui/typography'
-import { Field, FieldProps, Form, Formik } from 'formik'
+import {ErrorMessage, Field, FieldProps, Form, Formik} from 'formik'
 import { CodeListFormValues } from '../../constants'
-import { Input, SIZE as InputSIZE } from 'baseui/input'
-import { Error } from '../common/ModalSchema'
-import { Textarea } from 'baseui/textarea'
-import { Button, KIND } from 'baseui/button'
 import { codeListSchema } from '../common/schema'
+import { BodyShort, Button, Modal, Textarea, TextField} from "@navikt/ds-react";
 
-const modalBlockProps: BlockProps = {
-  width: '700px',
-  paddingRight: '2rem',
-  paddingLeft: '2rem',
-}
 
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-  alignItems: 'center',
-}
 
 type ModalCreateProps = {
   title: string
@@ -33,10 +16,13 @@ type ModalCreateProps = {
 }
 
 const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, submit }: ModalCreateProps) => {
+
   return (
-    <Modal closeable animate autoFocus size={SIZE.auto} role={ROLE.dialog} isOpen={isOpen} onClose={() => onClose()}>
-      <Block {...modalBlockProps}>
+    <Modal className="px-8" width="medium" open={isOpen} header={{heading:title}}  onClose={()=>onClose()}>
+      <div>
         <Formik
+          validateOnChange={false}
+          validateOnBlur={false}
           onSubmit={(values) => {
             submit(values)
             onClose()
@@ -48,47 +34,59 @@ const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, subm
             description: '',
           }}
           validationSchema={codeListSchema()}
-          render={(formik) => (
+>
+          {({errors, submitForm}) => (
             <Form>
-              <ModalHeader>{title}</ModalHeader>
-              <ModalBody>
-                <Block {...rowBlockProps}>
-                  <LabelMedium marginRight={'1rem'} width="25%">
-                    Code:
-                  </LabelMedium>
-                  <Field name="code" render={({ field }: FieldProps) => <Input {...field} type="input" size={InputSIZE.default} />} />
-                </Block>
-                <Error fieldName="code" />
+              <Modal.Body>
+                <Field
+                  name="code"
+                  render={({field}: FieldProps)=> (
+                    <TextField
+                      className="w-full"
+                      {...field}
+                      label="Kode"
+                      error={errors.code && <ErrorMessage name="code"/>}
+                      />
+                  )}
+                />
+                  <Field
+                    name="shortName"
+                    render={({field}: FieldProps)=> (
+                      <TextField
+                        className="w-full mt-4"
+                        {...field}
+                        label="Navn"
+                        error={errors.shortName && <ErrorMessage name="shortName" />}
+                        />
+                    )}
+                    />
+                  <Field
+                    name="description"
+                    render={({field}: FieldProps)=> (
+                      <Textarea
+                        className="w-full mt-4"
+                        {...field}
+                        label="Beskrivelse"
+                        minRows={6}
+                        error={errors.description && <ErrorMessage name="description" />}
+                      />
+                    )}
+                  />
 
-                <Block {...rowBlockProps}>
-                  <LabelMedium marginRight={'1rem'} width="25%">
-                    Short name:
-                  </LabelMedium>
-                  <Field name="shortName" render={({ field }: FieldProps) => <Input {...field} type="input" size={InputSIZE.default} />} />
-                </Block>
-                <Error fieldName="shortName" />
-
-                <Block {...rowBlockProps}>
-                  <LabelMedium marginRight={'1rem'} width="25%">
-                    Description:
-                  </LabelMedium>
-                  <Field name="description" render={({ field }: FieldProps) => <Textarea {...field} type="input" />} />
-                </Block>
-                <Error fieldName="description" />
-              </ModalBody>
-              <ModalFooter>
-                <Block display="flex" justifyContent="flex-end">
-                  <Block marginRight="auto">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                  <Button type="button" kind={KIND.secondary} onClick={() => onClose()}>
+              </Modal.Body>
+              <Modal.Footer>
+                {errorOnCreate && <BodyShort>{errorOnCreate}</BodyShort>}
+                <div className="flex justify-end mt-6 gap-2">
+                  <Button variant="secondary" type="button" onClick={() =>onClose()}>
                     Avbryt
                   </Button>
-                  <ModalButton type="submit">Lagre</ModalButton>
-                </Block>
-              </ModalFooter>
+                  <Button variant="primary" type="button" onClick={submitForm}>Lagre</Button>
+                </div>
+              </Modal.Footer>
             </Form>
           )}
-        />
-      </Block>
+        </Formik>
+      </div>
     </Modal>
   )
 }

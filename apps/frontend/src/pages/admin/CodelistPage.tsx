@@ -45,9 +45,6 @@ const CodeListPage = () => {
     forceUpdate()
   }
 
-  useEffect(() => {
-    update().catch()
-  }, [])
 
   useEffect(() => {
     if (listname && listname !== params.listname) {
@@ -61,16 +58,16 @@ const CodeListPage = () => {
 
   return (
     <>
-      <Heading size="large">Administrering av kodeverk</Heading>
+      <Heading size="large" level="1">Administrering av kodeverk</Heading>
       {loading ? (
         <Loader />
       ) : (
         <div className="flex justify-between w-full" >
-          <div>
             <Select label="Velg kodeverk"
+                    hideLabel
                     onChange={(event) => setListname(event.target.value as string)}
             >
-              <option  />
+              <option value="">Velg kodeverk</option>
               {codelist.makeIdLabelForAllCodeLists().map((value)=> {
                 return (
                   <>
@@ -79,7 +76,6 @@ const CodeListPage = () => {
                 )
               })}
             </Select>
-          </div>
           {listname && (
             <div>
               <Button icon={<PlusIcon />}  onClick={() => setCreateCodeListModal(!createCodeListModal)}>
@@ -102,7 +98,7 @@ const CodeListPage = () => {
         isOpen={createCodeListModal}
         errorOnCreate={errorOnResponse}
         onClose={() => {
-          setCreateCodeListModal(!createCodeListModal)
+          setCreateCodeListModal(false)
           setErrorOnResponse(null)
         }}
         submit={handleCreateCodelist}
