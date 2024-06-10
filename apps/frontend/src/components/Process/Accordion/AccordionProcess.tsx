@@ -26,7 +26,7 @@ import { ProcessCreatedModal } from './ProcessCreatedModal'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
-import { RequestRevisionPage } from '../../../pages/admin/RequestRevisionPage'
+import { RequestRevisionPage } from '../../admin/revision/RequestRevisionPage'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import DeleteAllPolicyModal from './DeleteAllPolicyModal'
 

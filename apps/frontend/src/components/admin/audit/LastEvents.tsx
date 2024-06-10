@@ -1,17 +1,17 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { AuditAction, Event, ObjectType, PageResponse } from '../../constants'
+import { AuditAction, Event, ObjectType, PageResponse } from '../../../constants'
 import { Option, StatefulSelect, Value } from 'baseui/select'
-import { theme } from '../../util'
-import { getEvents } from '../../api/AuditApi'
+import { theme } from '../../../util'
+import { getEvents } from '../../../api/AuditApi'
 import { Block } from 'baseui/block'
-import { ObjectLink } from '../common/RouteLink'
+import { ObjectLink } from '../../common/RouteLink'
 import { AuditActionIcon } from './AuditComponents'
 import moment from 'moment'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { StatefulTabs, Tab } from 'baseui/tabs'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
-import {tekster} from "../../util/codeToFineText";
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import {tekster} from "../../../util/codeToFineText";
 
 export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()

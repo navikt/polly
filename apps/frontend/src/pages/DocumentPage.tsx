@@ -14,7 +14,7 @@ import DocumentProcessesTable from '../components/document/component/DocumentPro
 import {Tab} from 'baseui/tabs'
 import {CustomizedTabs} from '../components/common/CustomizedTabs'
 import Button from '../components/common/Button'
-import {AuditButton} from '../components/audit/AuditButton'
+import {AuditButton} from '../components/admin/audit/AuditButton'
 import {SIZE as ButtonSize} from 'baseui/button'
 import {tabOverride} from '../components/common/Style'
 import AlphabeticList from '../components/common/AlphabeticList'

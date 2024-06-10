@@ -1,9 +1,9 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { Document, Settings } from '../../constants'
-import {getDocument, getDocumentByPageAndPageSize} from '../../api'
-import { getSettings, writeSettings } from '../../api/SettingsApi'
-import { Markdown } from '../../components/common/Markdown'
-import {ampli} from "../../service/Amplitude";
+import { Document, Settings } from '../../../constants'
+import {getDocument, getDocumentByPageAndPageSize} from '../../../api'
+import { getSettings, writeSettings } from '../../../api/SettingsApi'
+import { Markdown } from '../../common/Markdown'
+import {ampli} from "../../../service/Amplitude";
 import {Button, Heading, Loader, Select, Textarea} from "@navikt/ds-react";
 
 

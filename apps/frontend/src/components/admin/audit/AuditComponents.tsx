@@ -1,12 +1,12 @@
 import { Block, BlockProps } from 'baseui/block'
 import { LabelMedium, LabelSmall } from 'baseui/typography'
 import React from 'react'
-import { AuditAction } from '../../constants'
+import { AuditAction } from '../../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { theme } from '../../util'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
-import {tekster} from "../../util/codeToFineText";
+import { theme } from '../../../util'
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import {tekster} from "../../../util/codeToFineText";
 
 const labelBlockProps: BlockProps = {
   display: ['flex', 'block', 'block', 'flex'],

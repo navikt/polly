@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { HeadingMedium, HeadingXSmall } from 'baseui/typography'
 import axios from 'axios'
-import { env } from '../../util/env'
-import { PageResponse } from '../../constants'
+import { env } from '../../../util/env'
+import { PageResponse } from '../../../constants'
 import { Block } from 'baseui/block'
 import { Card } from 'baseui/card'
 import moment from 'moment'
-import { theme } from '../../util'
+import { theme } from '../../../util'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { StatefulMenu } from 'baseui/menu'
 import { Button, KIND } from 'baseui/button'
 import { TriangleDown } from 'baseui/icon'
 import { Pagination } from 'baseui/pagination'
-import { Markdown } from '../../components/common/Markdown'
-import {ampli} from "../../service/Amplitude";
+import { Markdown } from '../../common/Markdown'
+import {ampli} from "../../../service/Amplitude";
 
 interface MailLog {
   time: string

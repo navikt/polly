@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Button } from 'baseui/button'
 import { Block } from 'baseui/block'
-import { CodeListFormValues } from '../../constants'
+import { CodeListFormValues } from '../../../constants'
 
 type ModalDeleteProps = {
   title: string

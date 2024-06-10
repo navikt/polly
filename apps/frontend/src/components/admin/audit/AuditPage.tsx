@@ -1,16 +1,16 @@
 import { Block } from 'baseui/block'
 import React, { useEffect, useState } from 'react'
-import { useDebouncedState } from '../../util'
+import { useDebouncedState } from '../../../util'
 import { Input } from 'baseui/input'
 import _ from 'lodash'
-import { AuditView } from '../../components/audit/AuditView'
-import { AuditLabel as Label } from '../../components/audit/AuditComponents'
-import { getAuditLog } from '../../api/AuditApi'
-import { AuditLog } from '../../constants'
-import { AuditRecentTable } from '../../components/audit/AuditRecentTable'
+import { AuditView } from './AuditView'
+import { AuditLabel as Label } from './AuditComponents'
+import { getAuditLog } from '../../../api/AuditApi'
+import { AuditLog } from '../../../constants'
+import { AuditRecentTable } from './AuditRecentTable'
 import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
 import { useNavigate, useParams } from 'react-router-dom'
-import {ampli} from "../../service/Amplitude";
+import {ampli} from "../../../service/Amplitude";
 
 const format = (id: string) => _.trim(id, '"')
 

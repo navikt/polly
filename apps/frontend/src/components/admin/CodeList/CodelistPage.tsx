@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Code, codelist } from '../../service/Codelist'
-import CreateCodeListModal from '../../components/CodeList/ModalCreateCodeList'
-import { user } from '../../service/User'
-import CodeListTable from '../../components/CodeList/CodeListStyledTable'
-import { useAwait, useForceUpdate } from '../../util'
-import { createCodelist } from '../../api'
-import { CodeListFormValues } from '../../constants'
-import {ampli} from "../../service/Amplitude";
+import { Code, codelist } from '../../../service/Codelist'
+import CreateCodeListModal from './ModalCreateCodeList'
+import { user } from '../../../service/User'
+import CodeListTable from './CodeListStyledTable'
+import { useAwait, useForceUpdate } from '../../../util'
+import { createCodelist } from '../../../api'
+import { CodeListFormValues } from '../../../constants'
+import {ampli} from "../../../service/Amplitude";
 import {Button, Heading, Loader, Select} from "@navikt/ds-react";
 import {PlusIcon} from "@navikt/aksel-icons";
 

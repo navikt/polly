@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ErrorMessage, Field, FieldProps, Form, Formik} from 'formik'
-import { CodeListFormValues } from '../../constants'
-import { codeListSchema } from '../common/schema'
+import { CodeListFormValues } from '../../../constants'
+import { codeListSchema } from '../../common/schema'
 import { BodyShort, Button, Modal, Textarea, TextField} from "@navikt/ds-react";
 
 

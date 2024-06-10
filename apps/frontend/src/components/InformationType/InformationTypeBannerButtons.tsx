@@ -1,6 +1,6 @@
 import { useStyletron } from 'baseui'
 import { Block } from 'baseui/block'
-import { AuditButton } from '../audit/AuditButton'
+import { AuditButton } from '../admin/audit/AuditButton'
 import RouteLink from '../common/RouteLink'
 import { SIZE as ButtonSize } from 'baseui/button'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'

@@ -8,9 +8,9 @@ import { Block, BlockProps } from 'baseui/block'
 import { LabelMedium } from 'baseui/typography'
 import { Textarea } from 'baseui/textarea'
 import { Input, SIZE as InputSIZE } from 'baseui/input'
-import { CodeListFormValues, ProcessFormValues } from '../../constants'
-import { Error } from '../common/ModalSchema'
-import { codeListSchema } from '../common/schema'
+import { CodeListFormValues, ProcessFormValues } from '../../../constants'
+import { Error } from '../../common/ModalSchema'
+import { codeListSchema } from '../../common/schema'
 
 const modalBlockProps: BlockProps = {
   width: '700px',

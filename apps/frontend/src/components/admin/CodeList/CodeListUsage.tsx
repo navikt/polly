@@ -5,13 +5,13 @@ import { LabelMedium, LabelXSmall } from 'baseui/typography'
 import { Select, Value } from 'baseui/select'
 import { Button } from 'baseui/button'
 
-import { theme } from '../../util'
-import { CodeUsage, ObjectType } from '../../constants'
-import { ObjectLink } from '../common/RouteLink'
-import { codelist, ListName } from '../../service/Codelist'
-import { replaceCodelistUsage } from '../../api'
+import { theme } from '../../../util'
+import { CodeUsage, ObjectType } from '../../../constants'
+import { ObjectLink } from '../../common/RouteLink'
+import { codelist, ListName } from '../../../service/Codelist'
+import { replaceCodelistUsage } from '../../../api'
 import { Spinner } from 'baseui/spinner'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 const UsageTable = (props: { usage: CodeUsage }) => {
   const { usage } = props

@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { useEffect } from 'react'
-import { getRecentEditedProcesses } from '../../api'
-import { ObjectType, RecentEdits } from '../../constants'
+import { getRecentEditedProcesses } from '../../../api'
+import { ObjectType, RecentEdits } from '../../../constants'
 import { Block } from 'baseui/block/index'
-import { ObjectLink } from '../common/RouteLink'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
+import { ObjectLink } from '../../common/RouteLink'
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import moment from 'moment'
 import { HeadingXLarge } from 'baseui/typography'
-import { theme } from '../../util'
+import { theme } from '../../../util'
 
 export const RecentEditsByUser = () => {
   const [recentEdits, setRecentEdits] = React.useState<RecentEdits[]>([])
