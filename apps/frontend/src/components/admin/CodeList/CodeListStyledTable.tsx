@@ -1,19 +1,16 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Code } from '../../../service/Codelist'
-import { Block } from 'baseui/block'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faGhost, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { KIND} from 'baseui/button'
 import UpdateCodeListModal from './ModalUpdateCodeList'
 import DeleteCodeListModal from './ModalDeleteCodeList'
-import { useTable } from '../../../util/hooks'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../../api'
 import { Usage } from './CodeListUsage'
 import { CodeListFormValues, CodeUsage } from '../../../constants'
 import { AuditButton } from '../audit/AuditButton'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import Button from '../../common/Button'
+import {Button, SortState, Table, Tooltip} from "@navikt/ds-react";
+import {DocPencilIcon, GlassesIcon, TrashIcon} from "@navikt/aksel-icons";
+import {handleSort} from "../../../util/handleTableSort";
 
 type TableCodelistProps = {
   tableData: Code[]
@@ -26,11 +23,8 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
   const [showEditModal, setShowEditModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const [errorOnResponse, setErrorOnResponse] = React.useState(null)
-  const [table, sortColumn] = useTable<Code, keyof Code>(tableData, {
-    useDefaultStringCompare: true,
-    initialSortColumn: 'code',
-  })
   const [usage, setUsage] = useState<CodeUsage>()
+  const [sort, setSort] = useState<SortState>()
 
   useEffect(() => {
     if (showUsage && selectedCode) {
@@ -65,66 +59,103 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
     }
   }
 
+  let sortedData = tableData
+
+  const comparator = (a: Code, b: Code, orderBy: string) => {
+    switch (orderBy) {
+      case 'code':
+        return a.code.localeCompare(b.code)
+      case 'navn':
+        return (a.shortName || '').localeCompare(b.shortName || '')
+      default:
+        return 0
+    }
+  }
+
+  sortedData = sortedData.sort((a, b) => {
+    if (sort) {
+      return sort.direction === 'ascending'
+        ? comparator(b, a, sort.orderBy)
+        : comparator(a, b, sort.orderBy)
+    }
+    return 1
+  })
+
   return (
     <>
       <Table
-        emptyText='Ingen koder'
-        headers={
-          <>
-            <HeadCell small title='Kode' column="code" tableState={[table, sortColumn]} />
-            <HeadCell small title='Kortnavn' column="shortName" tableState={[table, sortColumn]} />
-            <HeadCell $style={{ width: '55%' }} title='Beskrivelse' column="description" tableState={[table, sortColumn]} />
-            <HeadCell small />
-          </>
-        }
-      >
-        {table.data.map((row, index) => (
-          <Row key={index}>
-            <Cell small $style={{ wordBreak: 'break-word' }}>
-              {row.code}
-            </Cell>
-            <Cell small>{row.shortName}</Cell>
-            <Cell $style={{ width: '55%' }}>{row.description}</Cell>
-            <Cell small>
-              <Block display="flex" justifyContent="flex-end" width="100%">
-                <Button
-                  tooltip='Vis bruk'
-                  size={ButtonSize.compact}
-                  kind={row === selectedCode && showUsage ? KIND.primary : KIND.tertiary}
-                  onClick={() => {
-                    setSelectedCode(row)
-                    setShowUsage(true)
-                  }}
-                >
-                  <FontAwesomeIcon icon={faGhost} />
-                </Button>
-                <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary} />
-                <Button
-                  tooltip='Redigér'
-                  size={ButtonSize.compact}
-                  kind={KIND.tertiary}
-                  onClick={() => {
-                    setSelectedCode(row)
-                    setShowEditModal(true)
-                  }}
-                >
-                  <FontAwesomeIcon icon={faEdit} />
-                </Button>
-                <Button
-                  tooltip='Slett'
-                  size={ButtonSize.compact}
-                  kind={KIND.tertiary}
-                  onClick={() => {
-                    setSelectedCode(row)
-                    setShowDeleteModal(true)
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </Button>
-              </Block>
-            </Cell>
-          </Row>
-        ))}
+        size="large"
+        zebraStripes
+        sort={sort}
+        onSortChange={(sortKey)=> handleSort(sort, setSort, sortKey)}
+        >
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader sortKey="code" className="w-[15%]" sortable>
+              ICode
+            </Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="navn" className="w-[25%]" sortable>
+              Navn
+            </Table.ColumnHeader>
+            <Table.ColumnHeader className="w-1/2 break-all">
+              Beskrivelse
+            </Table.ColumnHeader>
+            <Table.ColumnHeader/>
+          </Table.Row>
+          </Table.Header>
+        <Table.Body>
+          {sortedData.map((row, index) => {
+            return (
+            <Table.Row key={index}>
+              <Table.DataCell className="w-[15%] break-all" scope="row">
+                {row.code}
+              </Table.DataCell>
+              <Table.DataCell>{row.shortName}</Table.DataCell>
+              <Table.DataCell className="w-[15%] break-all">{row.description}</Table.DataCell>
+              <Table.DataCell>
+                <div className="flex justify-end w-full">
+                  <Tooltip content="Vis bruk">
+                    <Button
+                      variant={row === selectedCode  && showUsage ? "primary" : "tertiary"}
+                      onClick={() => {
+                        setSelectedCode(row)
+                        setShowUsage(true)
+                      }}
+                      icon={<GlassesIcon title="Vis bruk"/>}
+                    />
+                  </Tooltip>
+
+                  <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary} />
+
+                  <Tooltip content="Redigér">
+                    <Button
+                      variant="tertiary"
+                      onClick={() => {
+                        setSelectedCode(row)
+                        setShowEditModal(true)
+                      }}
+                      icon={<DocPencilIcon title="Redigér"/>}
+                    />
+                  </Tooltip>
+
+                  <Tooltip content="Slett">
+                    <Button
+                      variant="tertiary"
+                      onClick={() => {
+                        setSelectedCode(row)
+                        setShowDeleteModal(true)
+                      }}
+                      icon={<TrashIcon title="Slett"/>}
+                    />
+                  </Tooltip>
+
+                </div>
+              </Table.DataCell>
+            </Table.Row>
+          )})}
+
+        </Table.Body>
+
       </Table>
 
       {showEditModal && selectedCode && (
