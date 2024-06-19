@@ -4,14 +4,13 @@ import { Block } from 'baseui/block'
 import { LabelMedium, LabelXSmall } from 'baseui/typography'
 import { Select, Value } from 'baseui/select'
 import { Button } from 'baseui/button'
-
-import { theme } from '../../../util'
 import { CodeUsage, ObjectType } from '../../../constants'
 import { ObjectLink } from '../../common/RouteLink'
 import { codelist, ListName } from '../../../service/Codelist'
 import { replaceCodelistUsage } from '../../../api'
 import { Spinner } from 'baseui/spinner'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import {Table} from "@navikt/ds-react";
+
 
 const UsageTable = (props: { usage: CodeUsage }) => {
   const { usage } = props
@@ -36,21 +35,20 @@ const UsageTable = (props: { usage: CodeUsage }) => {
     : -1
 
   return (
-    <Table
-      emptyText='Ingen bruk'
-      hoverColor={theme.colors.primary100}
-      headers={
-        <>
-          {informationTypes && <HeadCell title='Opplysningstype' />}
-          {processes && <HeadCell title='Behandling' />}
-          {processors && <HeadCell title='Databehandlere' />}
-          {dpProcesses && <HeadCell title='NAV som databehandler' />}
-          {policies && <HeadCell title='Polis' />}
-          {disclosures && <HeadCell title='Utleveringer' />}
-          {documents && <HeadCell title='Dokumenter' />}
-        </>
-      }
-    >
+    <Table>
+      <Table.Header>
+        <Table.Row>
+          {informationTypes && <Table.ColumnHeader>Opplysningstype</Table.ColumnHeader>}
+          {processes && <Table.ColumnHeader>Behandling</Table.ColumnHeader>}
+          {processors && <Table.ColumnHeader>Databehandlere</Table.ColumnHeader>}
+          {dpProcesses && <Table.ColumnHeader>NAV som databehandler</Table.ColumnHeader>}
+          {policies && <Table.ColumnHeader>Polis</Table.ColumnHeader>}
+          {disclosures && <Table.ColumnHeader>Utleveringer</Table.ColumnHeader>}
+          {documents && <Table.ColumnHeader>Dokumenter</Table.ColumnHeader>}
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+
       {Array.from(Array(rows).keys()).map((index) => {
         const it = usage.informationTypes[index]
         const po = usage.policies[index]
@@ -60,18 +58,18 @@ const UsageTable = (props: { usage: CodeUsage }) => {
         const di = usage.disclosures[index]
         const doc = usage.documents[index]
         return (
-          <Row key={index} $style={{ borderBottomStyle: 'none' }}>
+          <Table.Row key={index}>
             {informationTypes && (
-              <Cell>
+              <Table.DataCell>
                 {it && (
                   <ObjectLink id={it.id} type={ObjectType.INFORMATION_TYPE} withHistory={true}>
                     {it.name}
                   </ObjectLink>
                 )}
-              </Cell>
+              </Table.DataCell>
             )}
             {processes && (
-              <Cell>
+              <Table.DataCell>
                 {pr && (
                   <ObjectLink id={pr.id} type={ObjectType.PROCESS} withHistory={true}>
                     {codelist
@@ -83,56 +81,57 @@ const UsageTable = (props: { usage: CodeUsage }) => {
                     {pr.name}
                   </ObjectLink>
                 )}
-              </Cell>
+              </Table.DataCell>
             )}
             {processors && (
-              <Cell>
+              <Table.DataCell>
                 {pr && (
                   <ObjectLink id={pro.id} type={ObjectType.PROCESSOR} withHistory={true}>
                     {pro.name}
                   </ObjectLink>
                 )}
-              </Cell>
+              </Table.DataCell>
             )}
             {dpProcesses && (
-              <Cell>
+              <Table.DataCell>
                 {dpr && (
                   <ObjectLink id={dpr.id} type={ObjectType.DP_PROCESS} withHistory={true}>
                     {dpr.name}
                   </ObjectLink>
                 )}
-              </Cell>
+              </Table.DataCell>
             )}
             {policies && (
-              <Cell>
+              <Table.DataCell>
                 {po && (
                   <ObjectLink id={po.id} type={ObjectType.POLICY} withHistory={true}>
                     {codelist.getShortnames(ListName.PURPOSE, po.purposes).join(', ')} {po.name}
                   </ObjectLink>
                 )}
-              </Cell>
+              </Table.DataCell>
             )}
             {disclosures && (
-              <Cell>
+              <Table.DataCell>
                 {di && (
                   <ObjectLink id={di.id} type={ObjectType.DISCLOSURE} withHistory={true}>
                     {di.name}
                   </ObjectLink>
                 )}
-              </Cell>
+              </Table.DataCell>
             )}
             {documents && (
-              <Cell>
+              <Table.DataCell>
                 {doc && (
                   <ObjectLink id={doc.id} type={ObjectType.DOCUMENT} withHistory={true}>
                     {doc.name}
                   </ObjectLink>
                 )}
-              </Cell>
+              </Table.DataCell>
             )}
-          </Row>
+          </Table.Row>
         )
       })}
+      </Table.Body>
     </Table>
   )
 }
