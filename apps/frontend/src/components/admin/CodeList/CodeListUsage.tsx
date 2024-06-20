@@ -1,15 +1,10 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { LabelMedium, LabelXSmall } from 'baseui/typography'
-import { Select, Value } from 'baseui/select'
-import { Button } from 'baseui/button'
 import { CodeUsage, ObjectType } from '../../../constants'
 import { ObjectLink } from '../../common/RouteLink'
 import { codelist, ListName } from '../../../service/Codelist'
 import { replaceCodelistUsage } from '../../../api'
-import { Spinner } from 'baseui/spinner'
-import {Table} from "@navikt/ds-react";
+import {Button, Label, Loader, Select, Table} from "@navikt/ds-react";
 
 
 const UsageTable = (props: { usage: CodeUsage }) => {
@@ -138,7 +133,7 @@ const UsageTable = (props: { usage: CodeUsage }) => {
 
 export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
   const [showReplace, setShowReplace] = useState(false)
-  const [newValue, setNewValue] = useState<Value>([])
+  const [newValue, setNewValue] = useState<string>()
   const ref = React.createRef<HTMLDivElement>()
 
   const { usage, refresh } = props
@@ -149,41 +144,49 @@ export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
   }, [usage])
 
   const replace = async () => {
-    await replaceCodelistUsage(usage!.listName, usage!.code, newValue[0].id as string)
-    refresh()
+    if (newValue) {
+      await replaceCodelistUsage(usage!.listName, usage!.code, newValue).then(() => refresh())
+    }
   }
 
   return (
-    <Block marginTop="2rem" ref={ref}>
-      <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
-        <LabelMedium font="font450">Bruk</LabelMedium>
+    <div className="mt-8" ref={ref}>
+      <div className="flex justify-between mib-2">
+        <Label>Bruk</Label>
         {!!usage?.inUse && (
-          <Button type="button" kind="secondary" size="compact" onClick={() => setShowReplace(true)}>
+          <Button type="button" variant="secondary" onClick={() => setShowReplace(true)}>
             Erstatt all bruk
           </Button>
         )}
-      </Block>
+      </div>
 
       {showReplace && usage && usage.listName && (
-        <Block display="flex" margin="1rem" justifyContent="space-between">
+        <div className="flex m-4 justify-end">
           <Select
-            size="compact"
-            maxDropdownHeight="300px"
-            searchable={true}
-            placeholder='Ny verdi'
-            options={codelist.getParsedOptions(usage.listName)}
+            label='Velg ny verdi'
+            hideLabel
+            className="mr-4"
             value={newValue}
-            onChange={(params) => setNewValue(params.value)}
-          />
-          <Button type="button" size="compact" onClick={replace} disabled={!newValue.length}>
+            onChange={(params) => setNewValue(params.target.value)}
+        >
+
+            <option value="">Ny verdi</option>
+            {codelist.getParsedOptions(usage.listName).map((code, index) => (
+              <option key={index + '_' + code.label} value={code.label}>
+                {code.label}
+              </option>
+            ))}
+
+          </Select>
+
+          <Button type="button" onClick={replace} disabled={!newValue}>
             Erstatt
           </Button>
-        </Block>
+        </div>
       )}
 
       {usage && <UsageTable usage={usage} />}
-      {!usage && <Spinner />}
-      {usage && !usage.inUse && <LabelXSmall marginTop=".5rem">Fant ingen bruk</LabelXSmall>}
-    </Block>
+      {!usage && <Loader/>}
+    </div>
   )
 }
