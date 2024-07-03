@@ -23,7 +23,7 @@ import { user } from '../../service/User'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { getResourceById } from '../../api'
-import {ampli} from "../../service/Amplitude";
+import { ampli } from '../../service/Amplitude'
 
 const DpProcessView = () => {
   const navigate = useNavigate()
@@ -34,7 +34,7 @@ const DpProcessView = () => {
   const [showDeleteModal, toggleDeleteModal] = useReducer((prevState) => !prevState, false)
   const [processors, setProcessors] = useState<Processor[]>([])
 
-  ampli.logEvent("besøk", {side: 'NAV som databehandler', url: 'dpprocess/:id', app: 'Behandlingskatalogen', type: 'view'})
+  ampli.logEvent('besøk', { side: 'NAV som databehandler', url: 'dpprocess/:id', app: 'Behandlingskatalogen', type: 'view' })
 
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')
@@ -52,7 +52,7 @@ const DpProcessView = () => {
       toggleModal()
     } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
-        setErrorDpProcessModal("Databehandlingen eksisterer allerede.")
+        setErrorDpProcessModal('Databehandlingen eksisterer allerede.')
         return
       }
       setErrorDpProcessModal(err.response.data.message)
@@ -69,7 +69,7 @@ const DpProcessView = () => {
       }
     } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
-        setErrorDpProcessModal("Databehandlingen eksisterer allerede.")
+        setErrorDpProcessModal('Databehandlingen eksisterer allerede.')
         return
       }
       setErrorDpProcessModal(err.response.data.message)
@@ -119,14 +119,15 @@ const DpProcessView = () => {
               </Block>
             )}
           </Block>
-          
-          <DataText label="Behandlingsnummer" text={'D' + dpProcess?.dpProcessNumber.toString()} />
+          <Block marginTop="1rem">
+            <DataText label="Behandlingsnummer" text={'D' + dpProcess?.dpProcessNumber.toString()} />
+          </Block>
           <DataText label="Behandlingsansvarlig" text={''}>
             <span>
               {!!dpProcess?.externalProcessResponsible ? (
                 <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>{codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}</RouteLink>
               ) : (
-                "Nei"
+                'Nei'
               )}
             </span>
           </DataText>
@@ -155,9 +156,7 @@ const DpProcessView = () => {
                 </span>
               </Block>
             ) : (
-              <span>
-                Avdeling: Ikke utfylt
-              </span>
+              <span>Avdeling: Ikke utfylt</span>
             )}
             {!!dpProcess?.affiliation.subDepartments.length && (
               <Block>
@@ -170,7 +169,7 @@ const DpProcessView = () => {
 
             <Block display="flex">
               <span>Team: </span>
-              {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : "Ikke utfylt"}
+              {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : 'Ikke utfylt'}
             </Block>
           </DataText>
           <DataText label="Lagringsbehov" text={''}>
@@ -197,8 +196,8 @@ const DpProcessView = () => {
 
           <DataText label="Underdatabehandler" text={''}>
             <>
-              {dpProcess?.subDataProcessing?.dataProcessor === null && "Uavklart om databehandler brukes"}
-              {dpProcess?.subDataProcessing?.dataProcessor === false && "Databehandler benyttes ikke"}
+              {dpProcess?.subDataProcessing?.dataProcessor === null && 'Uavklart om databehandler brukes'}
+              {dpProcess?.subDataProcessing?.dataProcessor === false && 'Databehandler benyttes ikke'}
             </>
             <>
               {dpProcess?.subDataProcessing.dataProcessor && (
@@ -236,7 +235,7 @@ const DpProcessView = () => {
                 <span>
                   <i>
                     {`Sist endret av `}
-                      <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
+                    <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
                     {` ${lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}`}
                   </i>
                 </span>
