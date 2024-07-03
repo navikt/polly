@@ -14,6 +14,7 @@ import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -72,6 +73,14 @@ public class DpProcessController {
             throw new ValidationException("Search term must be at least 3 characters");
         }
         var processes = repository.findByNameContaining(search);
+
+        if(search.toLowerCase().matches("d[0-9]+")){
+            repository.searchByDpProcessNumber(search.substring(1)).ifPresent(processes::addAll);
+        }
+        if (StringUtils.isNumeric(search)) {
+            repository.searchByDpProcessNumber(search).ifPresent(processes::addAll);
+        }
+
         return ResponseEntity.ok(new RestResponsePage<>(convert(processes, DpProcess::convertToResponse)));
     }
 
@@ -81,6 +90,8 @@ public class DpProcessController {
     public ResponseEntity<DpProcessResponse> create(@RequestBody DpProcessRequest request) {
         log.info("Received requests to create DpProcess");
         service.validateRequest(request, false);
+
+        request.setNewDpProcessNmber(repository.nextDpProcessNumber());
 
         DpProcess process = service.save(new DpProcess().convertFromRequest(request));
         return new ResponseEntity<>(process.convertToResponse(), HttpStatus.CREATED);
