@@ -119,7 +119,8 @@ const DpProcessView = () => {
               </Block>
             )}
           </Block>
-
+          
+          <DataText label="Behandlingsnummer" text={'D' + dpProcess?.dpProcessNumber.toString()} />
           <DataText label="Behandlingsansvarlig" text={''}>
             <span>
               {!!dpProcess?.externalProcessResponsible ? (

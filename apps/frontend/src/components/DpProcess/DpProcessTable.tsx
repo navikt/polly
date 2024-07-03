@@ -47,6 +47,7 @@ const DpProcessTable = (props: DpProcessTableProps) => {
         headers={
           <>
             <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} />
+            <HeadCell title='Nummer' column="dpProcessNumber" tableState={[table, sortColumn]} />
             <HeadCell title='Behandlingsansvarlig' column="externalProcessResponsible" tableState={[table, sortColumn]} />
             <HeadCell title='Sist endret av' column="lastModifiedEmail" tableState={[table, sortColumn]} />
           </>
@@ -58,6 +59,11 @@ const DpProcessTable = (props: DpProcessTableProps) => {
               <RouteLink href={`/dpprocess/${process.id}`} style={{ textDecoration: 'none' }}>
                 {process.name}
               </RouteLink>
+            </Cell>
+            <Cell>
+              <div>
+                D{process.dpProcessNumber}
+              </div>
             </Cell>
             <Cell>
               <RouteLink href={`/thirdparty/${process.externalProcessResponsible?.code}`} style={{ textDecoration: 'none' }}>

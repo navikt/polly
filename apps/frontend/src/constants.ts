@@ -309,6 +309,7 @@ export const processSort: ColumnCompares<Process> = {
 
 export const dpProcessSort: ColumnCompares<DpProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
+  dpProcessNumber: (a, b) => a.dpProcessNumber - b.dpProcessNumber,
   externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
   affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
   description: (a, b) => (a.description || '').localeCompare(b.description || ''),
@@ -378,6 +379,7 @@ export interface Process extends IDurationed {
 export interface DpProcess extends IDurationed {
   id: string
   name: string
+  dpProcessNumber: number
   description?: string
   purposeDescription?: string
   affiliation: Affiliation
@@ -393,6 +395,7 @@ export interface DpProcess extends IDurationed {
 export interface DpProcessWithEmail extends IDurationed {
   id: string
   name: string
+  dpProcessNumber: number
   description?: string
   purposeDescription?: string
   affiliation: Affiliation
