@@ -56,6 +56,7 @@ public class DpProcess extends Auditable {
     public DpProcess convertFromRequest(DpProcessRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
+            data.setDpProcessNumber(request.getNewDpProcessNmber());
         }
         data.setName(request.getName());
         data.setAffiliation(convertAffiliation(request.getAffiliation()));
@@ -76,6 +77,7 @@ public class DpProcess extends Auditable {
         return DpProcessResponse.builder()
                 .id(id)
                 .name(data.getName())
+                .dpProcessNumber(data.getDpProcessNumber())
                 .affiliation(data.getAffiliation().convertToResponse())
                 .externalProcessResponsible(getExternalProcessResponsibleCodeResponse())
                 .start(data.getStart())
