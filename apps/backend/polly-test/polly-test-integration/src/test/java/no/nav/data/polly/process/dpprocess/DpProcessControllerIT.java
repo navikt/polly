@@ -104,6 +104,7 @@ class DpProcessControllerIT extends IntegrationTestBase {
         body.setChangeStamp(null);
         assertThat(body).isEqualTo(DpProcessResponse.builder()
                 .name("name")
+                .dpProcessNumber(body.getDpProcessNumber())
                 .affiliation(affiliationResponse())
                 .externalProcessResponsible(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
                 .start(LocalDate.now())
