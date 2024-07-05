@@ -19,6 +19,8 @@ import java.util.UUID;
 @Service
 public class DisclosureService extends RequestValidator<DisclosureRequest> {
 
+    // TODO: Denne klassen skal ikke subklasse RequestValidator. Flytt dette ut til en egen komponent (XxxRequestValidator). 
+
     private final DisclosureRepository repository;
     private final DocumentRepository documentRepository;
     private final InformationTypeRepository informationTypeRepository;
@@ -33,7 +35,6 @@ public class DisclosureService extends RequestValidator<DisclosureRequest> {
         this.informationTypeRepository = informationTypeRepository;
         this.processRepository = processRepository;
         this.alertService = alertService;
-
     }
 
     @Transactional

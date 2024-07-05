@@ -26,6 +26,9 @@ public class CodelistRequest implements RequestElement {
     private String shortName;
     private String description;
 
+    private boolean update;
+    private int requestIndex;
+
     public Codelist convert() {
         return Codelist.builder()
                 .list(ListName.valueOf(list))
@@ -34,9 +37,6 @@ public class CodelistRequest implements RequestElement {
                 .description(description)
                 .build();
     }
-
-    private boolean update;
-    private int requestIndex;
 
     @JsonIgnore
     @Override

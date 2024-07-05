@@ -6,6 +6,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
+import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.disclosure.domain.Disclosure;
@@ -42,7 +43,6 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 @Transactional
 public class CodeUsageService {
 
-    private final CodelistService codelistService;
     private final ProcessRepository processRepository;
     private final DpProcessRepository dpProcessRepository;
     private final PolicyRepository policyRepository;
@@ -51,12 +51,11 @@ public class CodeUsageService {
     private final DocumentRepository documentRepository;
     private final ProcessorRepository processorRepository;
     private final Summary summary;
+    private final CodelistRequestValidator requestValidator;
 
-    public CodeUsageService(CodelistService codelistService, ProcessRepository processRepository, DpProcessRepository dpProcessRepository,
-            PolicyRepository policyRepository,
+    public CodeUsageService(ProcessRepository processRepository, DpProcessRepository dpProcessRepository, PolicyRepository policyRepository,
             InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, DocumentRepository documentRepository,
-            ProcessorRepository processorRepository) {
-        this.codelistService = codelistService;
+            ProcessorRepository processorRepository, CodelistRequestValidator requestValidator) {
         this.processRepository = processRepository;
         this.dpProcessRepository = dpProcessRepository;
         this.policyRepository = policyRepository;
@@ -74,10 +73,11 @@ public class CodeUsageService {
                 .maxAgeSeconds(Duration.ofHours(6).getSeconds())
                 .ageBuckets(6)
                 .register();
+        this.requestValidator = requestValidator;
     }
 
     public void validateListName(String list) {
-        codelistService.validateListName(list);
+        requestValidator.validateListName(list);
     }
 
     void validateRequests(String listName, String code) {
@@ -85,7 +85,7 @@ public class CodeUsageService {
     }
 
     void validateRequests(List<CodeUsageRequest> requests) {
-        codelistService.validateCodeUsageRequests(requests);
+        requestValidator.validateCodeUsageRequests(requests);
     }
 
     public List<CodeUsageResponse> findCodeUsageOfList(ListName list) {
@@ -156,6 +156,7 @@ public class CodeUsageService {
                 case TRANSFER_GROUNDS_OUTSIDE_EU -> {
                     getProcessors(usage).forEach(p -> p.getData().setTransferGroundsOutsideEU(newCode));
                 }
+                case DATA_ACCESS_CLASS -> {} // TODO: Er det riktig at dette er en no-op?
             }
         }
         return usage;

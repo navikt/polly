@@ -63,6 +63,8 @@ import static no.nav.data.common.utils.StreamUtils.filter;
 @RequiredArgsConstructor
 public class ProcessReadController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final TeamService teamService;
     private final ProcessRepository repository;
     private final ProcessService processService;
@@ -71,7 +73,7 @@ public class ProcessReadController {
     @Operation(summary = "Get Process with InformationTypes for Id or process number")
     @ApiResponse(description = "Process fetched")
     @GetMapping("/{id}")
-    @Transactional
+    @Transactional // TODO: Flytt til tjenestelaget
     public ResponseEntity<ProcessResponse> findForId(@PathVariable @Parameter(description = "Treated as process number if numeric") String id) {
         log.info("Received request for Process with id/number={}", id);
         Optional<Process> process;
@@ -143,7 +145,7 @@ public class ProcessReadController {
     @Operation(summary = "Get Processes for Purpose")
     @ApiResponse(description = "Processes fetched")
     @GetMapping("/purpose/{purpose}")
-    @Transactional
+    @Transactional // TODO: Flytt til tjenestelaget
     public ResponseEntity<RestResponsePage<ProcessResponse>> getPurpose(@PathVariable String purpose) {
         log.info("Get processes for purpose={}", purpose);
         Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
@@ -248,11 +250,9 @@ public class ProcessReadController {
     }
 
     static class ProcessPage extends RestResponsePage<ProcessResponse> {
-
     }
 
     static class LastEditedPage extends RestResponsePage<LastEditedResponse> {
-
     }
 
 }

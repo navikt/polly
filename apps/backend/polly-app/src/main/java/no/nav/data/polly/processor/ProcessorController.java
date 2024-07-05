@@ -38,6 +38,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RequestMapping("/processor")
 public class ProcessorController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final ProcessorRepository repository;
     private final ProcessorService service;
 
@@ -46,7 +48,7 @@ public class ProcessorController {
     @GetMapping("/{id}")
     public ResponseEntity<ProcessorResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Processor with id={}", id);
-        var processor = repository.findById(id).map(Processor::convertToResponse);
+        var processor = repository.findById(id).map(ProcessorResponse::buidFrom);
         if (processor.isEmpty()) {
             log.info("Cannot find Processor with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -59,7 +61,7 @@ public class ProcessorController {
     @GetMapping
     public ResponseEntity<RestResponsePage<ProcessorResponse>> getAll(PageParameters pageParameters) {
         log.info("Received request for all Processors");
-        var page = repository.findAll(pageParameters.createIdSortedPage()).map(Processor::convertToResponse);
+        var page = repository.findAll(pageParameters.createIdSortedPage()).map(ProcessorResponse::buidFrom);
         return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 
@@ -72,7 +74,7 @@ public class ProcessorController {
             throw new ValidationException("Search term must be at least 3 characters");
         }
         var processors = repository.findByNameContaining(search);
-        return ResponseEntity.ok(new RestResponsePage<>(convert(processors, Processor::convertToResponse)));
+        return ResponseEntity.ok(new RestResponsePage<>(convert(processors, ProcessorResponse::buidFrom)));
     }
 
     @Operation(summary = "Create Processors")
@@ -83,7 +85,7 @@ public class ProcessorController {
         service.validateRequest(request, false);
 
         Processor processor = service.save(new Processor().convertFromRequest(request));
-        return new ResponseEntity<>(processor.convertToResponse(), HttpStatus.CREATED);
+        return new ResponseEntity<>(ProcessorResponse.buidFrom(processor), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update Processor")
@@ -100,7 +102,7 @@ public class ProcessorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         service.validateRequest(request, true);
-        return ResponseEntity.ok(service.update(request).convertToResponse());
+        return ResponseEntity.ok(ProcessorResponse.buidFrom(service.update(request)));
     }
 
     @Operation(summary = "Delete Processor")
@@ -114,11 +116,10 @@ public class ProcessorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         service.deleteById(id);
-        return new ResponseEntity<>(fromRepository.get().convertToResponse(), HttpStatus.OK);
+        return new ResponseEntity<>(ProcessorResponse.buidFrom(fromRepository.get()), HttpStatus.OK);
     }
 
     static class ProcessorPage extends RestResponsePage<ProcessorResponse> {
-
     }
 
 }

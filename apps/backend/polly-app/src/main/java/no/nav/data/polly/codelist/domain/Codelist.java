@@ -60,10 +60,8 @@ public class Codelist extends Auditable {
 
     @Data
     static class IdClass implements Serializable {
-
         private ListName list;
         private String code;
-
     }
 
 }

@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
-import no.nav.data.polly.processor.dto.ProcessorResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
@@ -42,22 +41,7 @@ public class Processor extends Auditable {
     @Column(name = "DATA", nullable = false)
     private ProcessorData data = new ProcessorData();
 
-    public ProcessorResponse convertToResponse() {
-        return ProcessorResponse.builder()
-                .id(id)
-                .name(data.getName())
-                .contract(data.getContract())
-                .contractOwner(data.getContractOwner())
-                .operationalContractManagers(copyOf(data.getOperationalContractManagers()))
-                .note(data.getNote())
-                .transferGroundsOutsideEU(data.getTransferGroundsOutsideEUCodeResponse())
-                .transferGroundsOutsideEUOther(data.getTransferGroundsOutsideEUOther())
-                .outsideEU(data.getOutsideEU())
-                .countries(data.getCountries())
-                .changeStamp(convertChangeStampResponse())
-                .build();
-    }
-
+    // TODO: Snu avhengigheten innover
     public Processor convertFromRequest(ProcessorRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();

@@ -1,6 +1,7 @@
 package no.nav.data.common.storage;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import lombok.RequiredArgsConstructor;
 import no.nav.data.common.storage.domain.AppState;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.storage.domain.GenericStorageData;
@@ -13,13 +14,10 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 @Service
+@RequiredArgsConstructor
 public class StorageService {
 
     private final GenericStorageRepository repository;
-
-    public StorageService(GenericStorageRepository repository) {
-        this.repository = repository;
-    }
 
     public <T extends GenericStorageData> T getSingleton(Class<T> type) {
         return getSingletonAsStorage(type).getDataObject(type);
@@ -29,6 +27,7 @@ public class StorageService {
         return repository.findById(id).orElseThrow().getDataObject(type);
     }
 
+    @Transactional(readOnly = false) // Merk: På tross av navnet på metoden, kan den resultere i save
     public <T extends GenericStorageData> GenericStorage getSingletonAsStorage(Class<T> type) {
         return findType(StorageType.fromClass(type));
     }
@@ -41,17 +40,19 @@ public class StorageService {
         return repository.save(GenericStorage.builder().generateId().type(type).data(JsonNodeFactory.instance.objectNode()).build());
     }
 
+    @Transactional
     public GenericStorage save(GenericStorage storage) {
         return repository.save(storage);
     }
 
+    @Transactional
     public void save(GenericStorageData data) {
         var storage = GenericStorage.builder().generateId().build();
         storage.setDataObject(data);
         repository.save(storage);
     }
 
-    @Transactional
+    @Transactional 
     public void usingAppState(Consumer<AppState> consumer) {
         var appStateStorage = getSingletonAsStorage(AppState.class);
         var appState = appStateStorage.getDataObject(AppState.class);

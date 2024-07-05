@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PollyAaregAvtale {
+    
     private String id;
     private String organisasjonsnummer;
     private String virksomhet;
@@ -27,7 +28,7 @@ public class PollyAaregAvtale {
     private String hjemmel_behandlingsgrunnlag_formal;
     private Boolean hendelser;
 
-
+    // TODO: Snu avhengigheten innover
     public AaregAvtaleResponse toResponse() {
         return AaregAvtaleResponse.builder()
                 .avtalenummer(id)
@@ -44,6 +45,5 @@ public class PollyAaregAvtale {
                 .hjemmel_behandlingsgrunnlag_formal(hjemmel_behandlingsgrunnlag_formal)
                 .hendelser(hendelser)
                 .build();
-
     }
 }

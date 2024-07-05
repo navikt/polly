@@ -5,6 +5,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.dto.ProcessVeryShortResponse;
+import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public interface ProcessVeryShort {
         var purposeCodes = JsonUtils.toObject(getPurposesJsonArray(), String[].class);
         var affiliationString = JsonUtils.toObject(getAffiliationJson(), Affiliation.class);
         var purposes = CodelistService.getCodelistResponseList(ListName.PURPOSE, Arrays.asList(purposeCodes));
-        var affiliationResponse = affiliationString.convertToResponse();
+        var affiliationResponse = AffiliationResponse.buildFrom(affiliationString);
 
         return ProcessVeryShortResponse.builder()
                 .id(getId())
