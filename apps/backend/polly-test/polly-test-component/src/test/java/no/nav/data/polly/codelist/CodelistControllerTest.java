@@ -79,8 +79,8 @@ class CodelistControllerTest {
 
             assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
             assertThat(returnedCodelist.getCodelist().size()).isEqualTo(ListName.values().length);
-            assertThat(returnedCodelist.getCodelist().get(ListName.THIRD_PARTY).size()).isEqualTo(CodelistService.getCodelist(ListName.THIRD_PARTY).size());
-            assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
+            assertThat(returnedCodelist.getCodelist().get(ListName.THIRD_PARTY).size()).isEqualTo(CodelistStaticService.getCodelist(ListName.THIRD_PARTY).size());
+            assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistStaticService.getCodelist(ListName.CATEGORY).size());
         }
 
         @Test
@@ -91,7 +91,7 @@ class CodelistControllerTest {
 
             @SuppressWarnings("unchecked")
             List<Map<?, ?>> mappedResponse = JsonUtils.toObject(response.getContentAsString(), ArrayList.class);
-            assertThat(mappedResponse).hasSize(CodelistService.getCodelist(ListName.THIRD_PARTY).size());
+            assertThat(mappedResponse).hasSize(CodelistStaticService.getCodelist(ListName.THIRD_PARTY).size());
         }
 
         @Test
@@ -102,7 +102,7 @@ class CodelistControllerTest {
                     .andExpect(status().isOk())
                     .andReturn().getResponse();
 
-            assertThat(response.getContentAsString()).isEqualTo(JsonUtils.toJson(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "ARBEIDSGIVER")));
+            assertThat(response.getContentAsString()).isEqualTo(JsonUtils.toJson(CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, "ARBEIDSGIVER")));
         }
 
         @Test
@@ -149,7 +149,7 @@ class CodelistControllerTest {
                     .content(inputJson))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.length()").value(2));
-            verify(service).save(requests);
+            verify(service).save(CodelistRequest.convertToCodelists(requests));
         }
 
         @Test

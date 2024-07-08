@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.common.auditing.domain.Auditable;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
@@ -75,7 +75,7 @@ public class InformationType extends Auditable {
 
     // TODO: Snu avhengigheten innover
     public InformationTypeShortResponse convertToShortResponse() {
-        return new InformationTypeShortResponse(getId(), getData().getName(), CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
+        return new InformationTypeShortResponse(getId(), getData().getName(), CodelistStaticService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
     }
 
     public UsedInInstance getInstanceIdentification() {

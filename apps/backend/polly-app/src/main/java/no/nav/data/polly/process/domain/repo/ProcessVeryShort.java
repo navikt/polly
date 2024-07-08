@@ -1,7 +1,7 @@
 package no.nav.data.polly.process.domain.repo;
 
 import no.nav.data.common.utils.JsonUtils;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.dto.ProcessVeryShortResponse;
@@ -25,7 +25,7 @@ public interface ProcessVeryShort {
     default ProcessVeryShortResponse toResponse() {
         var purposeCodes = JsonUtils.toObject(getPurposesJsonArray(), String[].class);
         var affiliationString = JsonUtils.toObject(getAffiliationJson(), Affiliation.class);
-        var purposes = CodelistService.getCodelistResponseList(ListName.PURPOSE, Arrays.asList(purposeCodes));
+        var purposes = CodelistStaticService.getCodelistResponseList(ListName.PURPOSE, Arrays.asList(purposeCodes));
         var affiliationResponse = AffiliationResponse.buildFrom(affiliationString);
 
         return ProcessVeryShortResponse.builder()

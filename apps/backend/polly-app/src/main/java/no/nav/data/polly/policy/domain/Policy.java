@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.codelist.CodelistService.getCodelistResponseList;
+import static no.nav.data.polly.codelist.CodelistStaticService.getCodelistResponseList;
 
 @Data
 @Builder

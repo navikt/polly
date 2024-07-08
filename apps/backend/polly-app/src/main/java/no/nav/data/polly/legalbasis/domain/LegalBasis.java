@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
@@ -28,11 +28,11 @@ public class LegalBasis implements Serializable {
     }
 
     private CodelistResponse gdprCodelistResponse() {
-        return CodelistService.getCodelistResponse(ListName.GDPR_ARTICLE, gdpr);
+        return CodelistStaticService.getCodelistResponse(ListName.GDPR_ARTICLE, gdpr);
     }
 
     private CodelistResponse nationalLawCodelistResponse() {
-        return CodelistService.getCodelistResponse(ListName.NATIONAL_LAW, nationalLaw);
+        return CodelistStaticService.getCodelistResponse(ListName.NATIONAL_LAW, nationalLaw);
     }
 
 }

@@ -1,6 +1,6 @@
 package no.nav.data.common.validator;
 
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -136,7 +136,7 @@ public class FieldValidator {
     }
 
     private void checkCode(String fieldName, String fieldValue, ListName listName) {
-        if (CodelistService.getCodelist(listName, fieldValue) == null) {
+        if (CodelistStaticService.getCodelist(listName, fieldValue) == null) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST, String.format(ERROR_MESSAGE_CODELIST, getFieldName(fieldName), fieldValue, listName)));
         }
     }

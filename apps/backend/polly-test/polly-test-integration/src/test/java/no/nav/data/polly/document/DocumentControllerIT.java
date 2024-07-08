@@ -1,8 +1,9 @@
 package no.nav.data.polly.document;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.document.DocumentController.DocumentPage;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseRequest;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
@@ -62,7 +63,7 @@ class DocumentControllerIT extends IntegrationTestBase {
         assertThat(documentResponse).isNotNull();
 
         InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
-                CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
+                CodelistResponse.buildFrom(CodelistStaticService.getCodelist(ListName.SENSITIVITY, infoType.getData().getSensitivity())));
 
         assertThat(documentResponse).isEqualTo(DocumentResponse.builder()
                 .id(documentResponse.getId())
@@ -70,7 +71,7 @@ class DocumentControllerIT extends IntegrationTestBase {
                 .description("desc")
                 .informationTypes(List.of(DocumentInfoTypeUseResponse.builder().informationTypeId(infoTypeRes.getId())
                         .informationType(infoTypeRes)
-                        .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, "BRUKER")).build()))
+                        .subjectCategory(CodelistResponse.buildFrom(CodelistStaticService.getCodelist(ListName.SUBJECT_CATEGORY, "BRUKER"))).build()))
                 .build());
     }
 

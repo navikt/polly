@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.common.rest.ChangeStampResponse;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -50,11 +50,11 @@ public class InformationTypeResponse {
     private void mapJsonFields(@NotNull InformationTypeData data) {
         setName(data.getName());
         setDescription(data.getDescription());
-        setSensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
-        setOrgMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getOrgMaster()));
+        setSensitivity(CodelistStaticService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
+        setOrgMaster(CodelistStaticService.getCodelistResponse(ListName.SYSTEM, data.getOrgMaster()));
         setProductTeams(copyOf(data.getProductTeams()));
-        setCategories(CodelistService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));
-        setSources(CodelistService.getCodelistResponseList(ListName.THIRD_PARTY, data.getSources()));
+        setCategories(CodelistStaticService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));
+        setSources(CodelistStaticService.getCodelistResponseList(ListName.THIRD_PARTY, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));
     }
 

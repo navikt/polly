@@ -10,6 +10,7 @@ import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureData;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
@@ -80,7 +81,7 @@ import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static no.nav.data.polly.codelist.CodelistService.getCodelistResponse;
+import static no.nav.data.polly.codelist.CodelistStaticService.getCodelist;
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
 import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 
@@ -388,9 +389,9 @@ public abstract class IntegrationTestBase {
                 .name("Auto_" + PURPOSE_CODE1)
                 .description("process description")
                 .additionalDescription("additional description")
-                .purposes(List.of(getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1)))
+                .purposes(List.of(CodelistResponse.buildFrom(getCodelist(ListName.PURPOSE, PURPOSE_CODE1))))
                 .affiliation(affiliationResponse())
-                .commonExternalProcessResponsible(getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
+                .commonExternalProcessResponsible(CodelistResponse.buildFrom(getCodelist(ListName.THIRD_PARTY, "SKATT")))
                 .start(LocalDate.now())
                 .end(LocalDate.now())
                 .legalBasis(legalBasisResponse())
@@ -406,10 +407,10 @@ public abstract class IntegrationTestBase {
 
     protected AffiliationResponse affiliationResponse() {
         return AffiliationResponse.builder()
-                .department(getCodelistResponse(ListName.DEPARTMENT, "DEP"))
-                .subDepartment(getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
+                .department(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")))
+                .subDepartment(CodelistResponse.buildFrom(getCodelist(ListName.SUB_DEPARTMENT, "SUBDEP")))
                 .productTeam("teamid1")
-                .product(getCodelistResponse(ListName.SYSTEM, "PESYS"))
+                .product(CodelistResponse.buildFrom(getCodelist(ListName.SYSTEM, "PESYS")))
                 .build();
     }
 

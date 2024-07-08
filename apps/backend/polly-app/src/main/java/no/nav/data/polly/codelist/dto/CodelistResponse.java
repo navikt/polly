@@ -7,7 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @Builder
@@ -30,4 +35,19 @@ public class CodelistResponse {
     public Boolean isInvalidCode() {
         return description == null ? Boolean.TRUE : null;
     }
+    
+    public static CodelistResponse buildFrom(Codelist cl) {
+        return CodelistResponse.builder()
+                .list(cl.getList())
+                .code(cl.getCode())
+                .shortName(cl.getShortName())
+                .description(cl.getDescription())
+                .build();
+    }
+    
+    public static List<CodelistResponse> convertToCodelistResponses(Collection<Codelist> codelists) {
+        return StreamUtils.convert(codelists, CodelistResponse::buildFrom);
+    }
+
+
 }

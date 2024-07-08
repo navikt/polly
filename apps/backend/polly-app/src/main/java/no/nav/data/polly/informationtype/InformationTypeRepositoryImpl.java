@@ -1,6 +1,6 @@
 package no.nav.data.polly.informationtype;
 
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
@@ -63,7 +63,7 @@ public class InformationTypeRepositoryImpl implements InformationTypeRepositoryC
                 (rs, rowNum) -> InformationTypeShortResponse.builder()
                         .id(UUID.fromString(rs.getString(1)))
                         .name(rs.getString(2))
-                        .sensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, rs.getString(3)))
+                        .sensitivity(CodelistStaticService.getCodelistResponse(ListName.SENSITIVITY, rs.getString(3)))
                         .build());
     }
 

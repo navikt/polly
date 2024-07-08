@@ -7,7 +7,7 @@ import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.commoncode.CommonCodeService;
 import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
@@ -182,7 +182,7 @@ public class ProcessToDocx {
 
         processes = getProcesses(processes, documentAccess);
 
-        Codelist codelist = CodelistService.getCodelist(list, code);
+        Codelist codelist = CodelistStaticService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
         doc.addText("Eksportert " + formatter.format(date));
@@ -240,7 +240,7 @@ public class ProcessToDocx {
 
             data.getPurposes().forEach(purpose -> {
                 addHeading4("Overordnet formål: " + shortName(ListName.PURPOSE, purpose));
-                addText(CodelistService.getCodelist(ListName.PURPOSE, purpose).getDescription());
+                addText(CodelistStaticService.getCodelist(ListName.PURPOSE, purpose).getDescription());
             });
 
             addHeading4("Formål med behandlingen");
@@ -698,7 +698,7 @@ public class ProcessToDocx {
     }
 
     private static String shortName(ListName listName, String code) {
-        return code == null ? "" : CodelistService.getCodelist(listName, code).getShortName();
+        return code == null ? "" : CodelistStaticService.getCodelist(listName, code).getShortName();
     }
 
     private static String processStatusText(ProcessData data) {

@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
@@ -63,7 +63,7 @@ public class Document extends Auditable {
     public static DocumentInfoTypeUseResponse convertToInfoTypeUseResponse(DocumentData.InformationTypeUse informationTypeUse) {
         return DocumentInfoTypeUseResponse.builder()
                 .informationTypeId(informationTypeUse.getInformationTypeId())
-                .subjectCategories(CodelistService.getCodelistResponseList(ListName.SUBJECT_CATEGORY, informationTypeUse.getSubjectCategories()))
+                .subjectCategories(CodelistStaticService.getCodelistResponseList(ListName.SUBJECT_CATEGORY, informationTypeUse.getSubjectCategories()))
                 .build();
     }
 
