@@ -56,7 +56,7 @@ spec:
   gcp:
     sqlInstances:
       - name: behandlingskatalog
-        type: POSTGRES_12
+        type: POSTGRES_13
         databases:
           - name: behandlingskatalogdb
             envVarPrefix: DB
