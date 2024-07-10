@@ -5,6 +5,7 @@ import RouteLink from '../common/RouteLink'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../api'
 import { StyledLink } from 'baseui/link'
+import { Tag } from '@navikt/ds-react'
 
 type DpProcessTableProps = {
   dpProcesses: DpProcess[]
@@ -16,6 +17,8 @@ const DpProcessTable = (props: DpProcessTableProps) => {
     sorting: dpProcessSort,
     initialSortColumn: 'name',
   })
+
+  const today = new Date().toISOString().split('T')[0]
 
   useEffect(() => {
     ;(async () => {
@@ -43,38 +46,40 @@ const DpProcessTable = (props: DpProcessTableProps) => {
   return (
     <>
       <Table
-        emptyText='Ingen behandlinger'
+        emptyText="Ingen behandlinger"
         headers={
           <>
-            <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} />
-            <HeadCell title='Nummer' column="dpProcessNumber" tableState={[table, sortColumn]} />
-            <HeadCell title='Behandlingsansvarlig' column="externalProcessResponsible" tableState={[table, sortColumn]} />
-            <HeadCell title='Sist endret av' column="lastModifiedEmail" tableState={[table, sortColumn]} />
+            <HeadCell title="Behandling" column="name" tableState={[table, sortColumn]} />
+            <HeadCell title="Status" />
+            <HeadCell title="Behandlingsansvarlig" column="externalProcessResponsible" tableState={[table, sortColumn]} />
+            <HeadCell title="Sist endret av" column="lastModifiedEmail" tableState={[table, sortColumn]} />
           </>
         }
       >
-        {table.data.map((process, index) => (
-          <Row key={index}>
-            <Cell>
-              <RouteLink href={`/dpprocess/${process.id}`} style={{ textDecoration: 'none' }}>
-                {process.name}
-              </RouteLink>
-            </Cell>
-            <Cell>
-              <div>
-                D{process.dpProcessNumber}
-              </div>
-            </Cell>
-            <Cell>
-              <RouteLink href={`/thirdparty/${process.externalProcessResponsible?.code}`} style={{ textDecoration: 'none' }}>
-                {process.externalProcessResponsible?.shortName}
-              </RouteLink>
-            </Cell>
-            <Cell>
-              <StyledLink href={'mailto: ' + process.lastModifiedEmail}>{process.lastModifiedEmail}</StyledLink>
-            </Cell>
-          </Row>
-        ))}
+        {table.data.map((process, index) => {
+          const isActive = today < process.end
+
+          return (
+            <Row key={index}>
+              <Cell>
+                <RouteLink href={`/dpprocess/${process.id}`} style={{ textDecoration: 'none' }}>
+                  {process.name}
+                </RouteLink>
+              </Cell>
+              <Cell>
+                <Tag variant={isActive ? 'success' : 'warning'}>{isActive ? 'Aktiv' : 'Utgått'}</Tag>
+              </Cell>
+              <Cell>
+                <RouteLink href={`/thirdparty/${process.externalProcessResponsible?.code}`} style={{ textDecoration: 'none' }}>
+                  {process.externalProcessResponsible?.shortName}
+                </RouteLink>
+              </Cell>
+              <Cell>
+                <StyledLink href={'mailto: ' + process.lastModifiedEmail}>{process.lastModifiedEmail}</StyledLink>
+              </Cell>
+            </Row>
+          )
+        })}
       </Table>
     </>
   )

@@ -309,7 +309,6 @@ export const processSort: ColumnCompares<Process> = {
 
 export const dpProcessSort: ColumnCompares<DpProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  dpProcessNumber: (a, b) => a.dpProcessNumber - b.dpProcessNumber,
   externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
   affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
   description: (a, b) => (a.description || '').localeCompare(b.description || ''),
