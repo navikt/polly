@@ -39,15 +39,22 @@ const Charts = (props: ChartsProps) => {
   }
 
   const all = chartData as AllDashCount
+  const chartCardStyle=''
 
+        {/* marginTop: theme.sizing.scale600,
+  width: ['95%', '45%', '30%', '30%'],
+  backgroundColor: 'white',
+  $style: {
+    boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08)',
+    padding: '15px', */}
   return (
-    <Block display="flex" flexWrap={true} width={'100%'} justifyContent={'space-between'}>
-      <Block {...chartCardProps}>
+    <div className="flex flex-wrap w-full justify-between">
+      <div className="mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] ">
         <TriChart counter={chartData.dpia} title='Behov for PVK' processStatus={processStatus} processField={ProcessField.DPIA} onClickPieChartSlice={handleClickPieChartSlice} />
         <ParagraphMedium>
           Ref. til PVK ikke angitt: <RouteLink href={link(ProcessField.DPIA_REFERENCE_MISSING, ProcessState.YES)}>{chartData.dpiaReferenceMissing}</RouteLink>
         </ParagraphMedium>
-      </Block>
+      </div>
 
       <Block {...chartCardProps}>
         <TriChart
@@ -159,7 +166,7 @@ const Charts = (props: ChartsProps) => {
           </Block>
         </Card>
       </Block>
-    </Block>
+    </div>
   )
 }
 

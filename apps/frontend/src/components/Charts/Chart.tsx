@@ -160,7 +160,7 @@ const Visualization = (props: VisualizationProps) => {
               {!noChartData &&
                 data.map((d, idx) => (
                   <div key={idx} onMouseOver={() => setHover(idx)} onClick={d.onClick}>
-                    <div className={`${hover ? 'bg-[#B71DAD]' :' bg-white'} cursor-pointer flex items-center`}>
+                    <div className={`${idx===hover ? 'bg-[#EFF3FE]' :'bg-white'} cursor-pointer flex items-center`}>
                       <FontAwesomeIcon icon={faCircle} color={d.color} />
                       <div className="min-w-10 flex justify-end">
                         {d.size}
