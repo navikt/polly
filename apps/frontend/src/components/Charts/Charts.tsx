@@ -1,16 +1,14 @@
-import * as React from 'react'
+import { Card } from 'baseui/card'
+import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
 import { useNavigate } from 'react-router-dom'
-import { Block } from 'baseui/block'
-import { cardShadow, chartCardProps } from '../common/Style'
 import { AllDashCount, DepartmentDashCount, ProcessField, ProcessState, ProcessStatusFilter, ProductAreaDashCount } from '../../constants'
-import TriChart from './TriChart'
-import { Chart } from './Chart'
+import { Section } from '../../pages/ProcessPage'
 import { clickOnPieChartSlice } from '../../util/dashboard'
 import { chartColor } from '../../util/theme'
-import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
-import { Section } from '../../pages/ProcessPage'
-import { Card } from 'baseui/card'
+import { cardShadow } from '../common/Style'
+import { Chart } from './Chart'
+import TriChart from './TriChart'
 
 const chartSize = 80
 
@@ -39,46 +37,40 @@ const Charts = (props: ChartsProps) => {
   }
 
   const all = chartData as AllDashCount
-  const chartCardStyle=''
+  const chartCardStyle = 'mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]'
 
-        {/* marginTop: theme.sizing.scale600,
-  width: ['95%', '45%', '30%', '30%'],
-  backgroundColor: 'white',
-  $style: {
-    boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08)',
-    padding: '15px', */}
   return (
     <div className="flex flex-wrap w-full justify-between">
-      <div className="mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] ">
-        <TriChart counter={chartData.dpia} title='Behov for PVK' processStatus={processStatus} processField={ProcessField.DPIA} onClickPieChartSlice={handleClickPieChartSlice} />
+      <div className={chartCardStyle}>
+        <TriChart counter={chartData.dpia} title="Behov for PVK" processStatus={processStatus} processField={ProcessField.DPIA} onClickPieChartSlice={handleClickPieChartSlice} />
         <ParagraphMedium>
           Ref. til PVK ikke angitt: <RouteLink href={link(ProcessField.DPIA_REFERENCE_MISSING, ProcessState.YES)}>{chartData.dpiaReferenceMissing}</RouteLink>
         </ParagraphMedium>
       </div>
 
-      <Block {...chartCardProps}>
+      <div className={chartCardStyle}>
         <TriChart
           counter={chartData.profiling}
-          title='Profilering'
+          title="Profilering"
           processStatus={processStatus}
           processField={ProcessField.PROFILING}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
-      </Block>
+      </div>
 
-      <Block {...chartCardProps}>
+      <div className={chartCardStyle}>
         <TriChart
           counter={chartData.automation}
-          title='Helautomatisk behandling'
+          title="Helautomatisk behandling"
           processStatus={processStatus}
           processField={ProcessField.AUTOMATION}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
-      </Block>
+      </div>
 
-      <Block {...chartCardProps}>
+      <div className={chartCardStyle}>
         <Chart
-          chartTitle='Ufullstendig behandlingsgrunnlag'
+          chartTitle="Ufullstendig behandlingsgrunnlag"
           size={chartSize}
           hidePercent
           type="bar"
@@ -103,35 +95,35 @@ const Charts = (props: ChartsProps) => {
             },
           ]}
         />
-      </Block>
+      </div>
 
-      <Block {...chartCardProps}>
+      <div className={chartCardStyle}>
         <TriChart
           counter={chartData.retention}
           processStatus={processStatus}
-          title='Omfattes av NAVs bevarings- og kassasjonsvedtak'
+          title="Omfattes av NAVs bevarings- og kassasjonsvedtak"
           processField={ProcessField.RETENTION}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
         <ParagraphLarge>
           Behandlinger med ufullstendig lagringstid: <RouteLink href={link(ProcessField.RETENTION_DATA)}>{chartData.retentionDataIncomplete}</RouteLink>
         </ParagraphLarge>
-      </Block>
+      </div>
 
-      <Block {...chartCardProps}>
+      <div className={chartCardStyle}>
         <TriChart
           counter={chartData.dataProcessor}
           processStatus={processStatus}
-          title='Benyttes databehandler(e)?'
+          title="Benyttes databehandler(e)?"
           processField={ProcessField.DATA_PROCESSOR}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
-      </Block>
+      </div>
 
       {all.disclosures !== undefined && (
-        <Block {...chartCardProps}>
+        <div className={chartCardStyle}>
           <Chart
-            chartTitle='Utleveringer behandlingsgrunnlag'
+            chartTitle="Utleveringer behandlingsgrunnlag"
             data={[
               {
                 label: 'Utfylt',
@@ -151,21 +143,22 @@ const Charts = (props: ChartsProps) => {
           <ParagraphMedium>
             Utleveringer: <RouteLink href={'/disclosure'}>{all.disclosures}</RouteLink>
           </ParagraphMedium>
-        </Block>
+        </div>
       )}
 
-      <Block marginTop="2.5rem" width={'100%'}>
+      <div className="mt-10 w-full">
         <Card overrides={cardShadow}>
-          <Block>
+          <div>
             <ParagraphMedium>
-              Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part: <RouteLink href={link(ProcessField.COMMON_EXTERNAL_PROCESSOR, ProcessState.YES)}>{chartData.commonExternalProcessResponsible}</RouteLink>
+              Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
+              <RouteLink href={link(ProcessField.COMMON_EXTERNAL_PROCESSOR, ProcessState.YES)}>{chartData.commonExternalProcessResponsible}</RouteLink>
             </ParagraphMedium>
             <ParagraphMedium>
               Behandlinger hvor NAV er databehandler: <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
             </ParagraphMedium>
-          </Block>
+          </div>
         </Card>
-      </Block>
+      </div>
     </div>
   )
 }
