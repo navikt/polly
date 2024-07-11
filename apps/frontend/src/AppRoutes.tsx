@@ -109,12 +109,12 @@ const AppRoutes = (): JSX.Element => (
 )
 
 const NotFound = () => (
-  <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale4800}>
+  <div className="flex justify-center content-center just mt-48">
     <ParagraphLarge>
       Oida 404! Fant ikke den siden der nei  - {useLocation().pathname}
     </ParagraphLarge>
     <img src={notFound} alt="404 Finner ikke den siden" style={{ maxWidth: '65%' }} />
-  </Block>
+  </div>
 )
 
 const processUrl = async (id: string) => {
