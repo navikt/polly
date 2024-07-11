@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
 import no.nav.data.polly.export.domain.DocumentAccess;
@@ -128,7 +128,7 @@ public class ExportController {
     }
 
     private String cleanCodelistName(ListName listName, String codelist) {
-        return CodelistService.getCodelist(listName, codelist).getShortName().replaceAll("[^a-zA-Z\\d]", "-");
+        return CodelistStaticService.getCodelist(listName, codelist).getShortName().replaceAll("[^a-zA-Z\\d]", "-");
     }
 
 }

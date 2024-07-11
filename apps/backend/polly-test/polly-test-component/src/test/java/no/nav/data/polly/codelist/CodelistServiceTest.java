@@ -9,11 +9,7 @@ import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
@@ -59,10 +55,10 @@ class CodelistServiceTest {
     @Test
     void save_shouldSaveCodelist_whenRequestIsValid() {
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-        service.save(List.of(createCodelistRequest("THIRD_PARTY", "TEST_CODE", "Test shortName", "Test description")));
+        service.save(List.of(createCodelist(ListName.THIRD_PARTY, "TEST_CODE", "Test shortName", "Test description")));
         verify(repository, times(1)).saveAll(anyList());
-        assertThat(service.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getShortName()).isEqualTo("Test shortName");
-        assertThat(service.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription()).isEqualTo("Test description");
+        assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getShortName()).isEqualTo("Test shortName");
+        assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription()).isEqualTo("Test description");
     }
 
     @Test
@@ -73,13 +69,13 @@ class CodelistServiceTest {
         request.setShortName("name2");
         request.setDescription("desc2");
 
-        when(repository.findByListAndCode(ListName.THIRD_PARTY, "CODE")).thenReturn(Optional.of(request.convert()));
-        when(repository.saveAll(List.of(request.convert()))).thenReturn(List.of(request.convert()));
+        when(repository.findByListAndCode(ListName.THIRD_PARTY, "CODE")).thenReturn(Optional.of(request.convertToCodelist()));
+        when(repository.saveAll(List.of(request.convertToCodelist()))).thenReturn(List.of(request.convertToCodelist()));
 
         service.update(List.of(request));
 
         verify(repository, times(1)).saveAll(anyList());
-        Codelist codelist = service.getCodelist(ListName.THIRD_PARTY, request.getCode());
+        Codelist codelist = CodelistStaticService.getCodelist(ListName.THIRD_PARTY, request.getCode());
         assertThat(codelist.getShortName()).isEqualTo("name2");
         assertThat(codelist.getDescription()).isEqualTo("desc2");
     }
@@ -92,7 +88,7 @@ class CodelistServiceTest {
         service.delete(ListName.THIRD_PARTY, "DELETE_CODE");
 
         verify(repository, times(1)).delete(any(Codelist.class));
-        assertNull(service.getCodelist(ListName.THIRD_PARTY, "DELETE_CODE"));
+        assertNull(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "DELETE_CODE"));
     }
 
     @Test

@@ -16,7 +16,7 @@ import lombok.ToString;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.DateUtil;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -163,12 +163,14 @@ public class Process extends Auditable {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public List<CodelistResponse> getPurposeCodeResponses() {
-        return CodelistService.getCodelistResponseList(ListName.PURPOSE, data.getPurposes());
+        return CodelistStaticService.getCodelistResponseList(ListName.PURPOSE, data.getPurposes());
     }
 
+    // TODO: Snu avhengigheten innover
     private CodelistResponse getCommonExternalProcessResponsibleCodeResponse() {
-        return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
+        return CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
     }
 
     @Override

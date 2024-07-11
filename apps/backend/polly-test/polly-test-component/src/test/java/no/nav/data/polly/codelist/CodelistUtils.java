@@ -23,6 +23,10 @@ public class CodelistUtils {
         return createCodelist(listName, code, "shortName", "description");
     }
 
+    public static Codelist createCodelist(String listName, String code) {
+        return createCodelist(ListName.valueOf(listName), code, "shortName", "description");
+    }
+
     public static Codelist createCodelist(ListName listName, String code, String shortName, String description) {
         return Codelist.builder()
                 .list(listName)

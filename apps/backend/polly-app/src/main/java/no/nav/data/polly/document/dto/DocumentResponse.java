@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.document.domain.Document;
@@ -38,7 +38,7 @@ public class DocumentResponse {
                 .name(data.getName())
                 .description(data.getDescription())
                 .informationTypes(convert(data.getInformationTypes(), Document::convertToInfoTypeUseResponse))
-                .dataAccessClass(CodelistService.getCodelistResponse(ListName.DATA_ACCESS_CLASS, data.getDataAccessClass()))
+                .dataAccessClass(CodelistStaticService.getCodelistResponse(ListName.DATA_ACCESS_CLASS, data.getDataAccessClass()))
                 .build();
     }
     

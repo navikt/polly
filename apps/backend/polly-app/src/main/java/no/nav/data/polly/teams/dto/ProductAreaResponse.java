@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.teams.domain.Member;
 import no.nav.data.polly.teams.domain.ProductArea;
 
 import java.util.List;

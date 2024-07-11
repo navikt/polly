@@ -16,7 +16,7 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.common.security.SecurityUtils;
 import no.nav.data.common.security.dto.UserInfo;
 import no.nav.data.common.utils.JsonUtils;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
@@ -148,7 +148,7 @@ public class ProcessReadController {
     @Transactional // TODO: Flytt til tjenestelaget
     public ResponseEntity<RestResponsePage<ProcessResponse>> getPurpose(@PathVariable String purpose) {
         log.info("Get processes for purpose={}", purpose);
-        Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
+        Codelist codelist = CodelistStaticService.getCodelist(ListName.PURPOSE, purpose);
         if (codelist == null) {
             return ResponseEntity.notFound().build();
         }
@@ -197,7 +197,7 @@ public class ProcessReadController {
             repository.searchByProcessNumber(search).ifPresent(processes::addAll);
         }
         if (includePurpose) {
-            var purposes = filter(CodelistService.getCodelist(ListName.PURPOSE), c -> StringUtils.containsIgnoreCase(c.getShortName(), search));
+            var purposes = filter(CodelistStaticService.getCodelist(ListName.PURPOSE), c -> StringUtils.containsIgnoreCase(c.getShortName(), search));
             purposes.sort(comparing(Codelist::getShortName, startsWith(search)));
             if (!purposes.isEmpty()) {
                 processes.addAll(repository.findByPurpose(purposes.get(0).getCode()));

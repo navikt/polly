@@ -1,7 +1,7 @@
 package no.nav.data.polly.process.dpprocess;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.dpprocess.DpProcessController.DpProcessPage;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
@@ -106,7 +106,7 @@ class DpProcessControllerIT extends IntegrationTestBase {
                 .name("name")
                 .dpProcessNumber(body.getDpProcessNumber())
                 .affiliation(affiliationResponse())
-                .externalProcessResponsible(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
+                .externalProcessResponsible(CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
                 .start(LocalDate.now())
                 .end(LocalDate.now().plusDays(1))
                 .dataProcessingAgreement("Agreement 1")

@@ -1,7 +1,7 @@
 package no.nav.data.polly.processor;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.processor.ProcessorController.ProcessorPage;
 import no.nav.data.polly.processor.domain.Processor;
@@ -123,7 +123,7 @@ class ProcessorControllerIT extends IntegrationTestBase {
                 .note("note")
 
                 .outsideEU(true)
-                .transferGroundsOutsideEU(CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
+                .transferGroundsOutsideEU(CodelistStaticService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
                 .transferGroundsOutsideEUOther("reason")
                 .country("FJI")
                 .build());

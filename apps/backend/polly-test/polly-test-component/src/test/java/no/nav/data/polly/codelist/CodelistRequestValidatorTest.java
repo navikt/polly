@@ -198,9 +198,9 @@ class CodelistRequestValidatorTest {
                     createCodelistRequest("     category      ", "    cOrRecTFormAT  ", "  name ", "   Trim av description             "));
             when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
             requestValidator.validateRequest(requests, false);
-            service.save(requests);
+            service.save(CodelistRequest.convertToCodelists(requests));
             assertTrue(CodelistCache.contains(ListName.CATEGORY, "CORRECTFORMAT"));
-            assertThat(service.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");
+            assertThat(CodelistStaticService.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");
         }
 
     }

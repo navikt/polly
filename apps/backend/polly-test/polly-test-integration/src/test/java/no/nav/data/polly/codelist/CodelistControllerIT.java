@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
 import static no.nav.data.polly.codelist.CodelistUtils.createNrOfCodelistRequests;
@@ -68,8 +69,8 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertThat(responseEntity.getBody().getCodelist()).hasSize(ListName.values().length);
 
             Arrays.stream(ListName.values())
-                    .forEach(listName -> assertThat(responseEntity.getBody().getCodelist()
-                            .get(listName)).containsAll(service.getCodelistResponseList(listName)));
+                    .forEach(listName -> assertThat(responseEntity.getBody().getCodelist().get(listName))
+                            .containsAll(CodelistResponse.convertToCodelistResponses(CodelistStaticService.getCodelists(listName))));
         }
 
         @Test
@@ -79,7 +80,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody()).isEqualTo(service.getCodelistResponseList(ListName.THIRD_PARTY));
+            assertThat(responseEntity.getBody()).isEqualTo(CodelistResponse.convertToCodelistResponses(CodelistStaticService.getCodelists(ListName.THIRD_PARTY)));
         }
 
         @Test
@@ -91,7 +92,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getDescription()).isEqualTo(service.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription());
+            assertThat(responseEntity.getBody().getDescription()).isEqualTo(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription());
         }
 
         @Test
@@ -147,7 +148,7 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertThat(codelist.getDescription()).isEqualTo("SaveDescription");
 
             assertTrue(CodelistCache.contains(ListName.THIRD_PARTY, "SAVECODE"));
-            Codelist savedCodelist = service.getCodelist(ListName.THIRD_PARTY, "SAVECODE");
+            Codelist savedCodelist = CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "SAVECODE");
             assertThat(savedCodelist.getCode()).isEqualTo("SAVECODE");
             assertThat(savedCodelist.getShortName()).isEqualTo("SaveShortName");
             assertThat(savedCodelist.getDescription()).isEqualTo("SaveDescription");
@@ -172,7 +173,7 @@ class CodelistControllerIT extends IntegrationTestBase {
                     "/codelist", HttpMethod.POST, new HttpEntity<>(requests), CODELIST_LIST_RESP);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY).size()).isEqualTo(20);
+            assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY).size()).isEqualTo(20);
         }
 
         @Test
@@ -203,8 +204,8 @@ class CodelistControllerIT extends IntegrationTestBase {
         @Test
         void shouldUpdateOneCodelist() {
             saveCodelist(createCodelist(ListName.THIRD_PARTY, "CODE", "SavedShortName", "SavedDescription"));
-            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("SavedShortName");
-            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("SavedDescription");
+            assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("SavedShortName");
+            assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("SavedDescription");
 
             List<CodelistRequest> updatedCodelists = List.of(
                     createCodelistRequest("THIRD_PARTY", "CODE", "UpdatedShortName", "UpdatedDescription"));
@@ -213,8 +214,8 @@ class CodelistControllerIT extends IntegrationTestBase {
                     "/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("UpdatedShortName");
-            assertThat(service.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("UpdatedDescription");
+            assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("UpdatedShortName");
+            assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("UpdatedDescription");
         }
 
         @Test
@@ -236,8 +237,8 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY).size()).isEqualTo(20);
-            List<Codelist> list = CodelistService.getCodelist(ListName.THIRD_PARTY);
+            assertThat(CodelistStaticService.getCodelist(ListName.THIRD_PARTY).size()).isEqualTo(20);
+            List<Codelist> list = CodelistStaticService.getCodelist(ListName.THIRD_PARTY);
             list.forEach(cod -> {
                 assertThat(cod.getShortName()).isEqualTo("UpdatedShortName");
                 assertThat(cod.getDescription()).isEqualTo("UpdatedDescription");

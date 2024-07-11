@@ -2,7 +2,7 @@ package no.nav.data.polly.codelist.codeusage;
 
 import io.prometheus.client.Summary;
 import no.nav.data.common.utils.MetricUtils;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
@@ -89,7 +89,7 @@ public class CodeUsageService {
     }
 
     public List<CodeUsageResponse> findCodeUsageOfList(ListName list) {
-        return CodelistService.getCodelist(list).stream().map(c -> findCodeUsage(c.getList(), c.getCode())).collect(toList());
+        return CodelistStaticService.getCodelist(list).stream().map(c -> findCodeUsage(c.getList(), c.getCode())).collect(toList());
     }
 
     public CodeUsageResponse findCodeUsage(ListName listName, String code) {

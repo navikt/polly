@@ -1,6 +1,5 @@
 package no.nav.data.polly.codelist.dto;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.CodelistNotErasableException;
 import no.nav.data.common.utils.StreamUtils;

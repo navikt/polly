@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.common.utils.DateUtil;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.domain.sub.Affiliation;
@@ -100,7 +100,7 @@ public class DpProcess extends Auditable {
     // TODO: Snu avhengigheten innover
     // TODO: Skal ikke ha kall til service her.
     private CodelistResponse getExternalProcessResponsibleCodeResponse() {
-        return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getExternalProcessResponsible());
+        return CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, data.getExternalProcessResponsible());
     }
 
     // TODO: Snu avhengigheten innover
