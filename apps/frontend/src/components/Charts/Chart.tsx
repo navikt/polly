@@ -108,13 +108,13 @@ export const Chart = (props: ChartProps) => {
   return (
     <>
       {headerTitle && (
-        <Block marginLeft={(size - 1) * 2 + 'px'}>
+        <div className={`ml-[${(size - 1) * 2 + 'px'}]`}>
           <LabelLarge marginLeft={theme.sizing.scale700}>{headerTitle}</LabelLarge>
-        </Block>
+        </div>
       )}
-      <Block>
+      <div>
         <Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} hidePercent={!!hidePercent} type={props.type || 'pie'} />
-      </Block>
+      </div>
     </>
   )
 }
@@ -135,7 +135,7 @@ const Visualization = (props: VisualizationProps) => {
 
   let noChartData = !data.length || !data.reduce((p, c) => p + c.size, 0)
   return (
-    <Block position="relative">
+    <div className="relative">
       <Card
         overrides={{
           Root: {
@@ -148,46 +148,46 @@ const Visualization = (props: VisualizationProps) => {
         }}
       >
         <div onMouseLeave={() => setHover(-1)}>
-          <Block display="flex" alignItems="center" flexDirection={leftLegend ? 'row-reverse' : 'row'} maxWidth={'fit-content'} flexWrap>
+          <div className={`flex items-center ${leftLegend ? 'flex-row-reverse' : 'flex-row'} max-w-fit flex-wrap`}>
             {!noChartData && (
-              <Block>
+              <div>
                 {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover} />}
                 {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover} />}
-              </Block>
+              </div>
             )}
-            <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200} marginTop={noChartData ? theme.sizing.scale400 : undefined}>
+            <div className={`mx-1.5 ${noChartData ? '-mt-2.5': ''}`}>
               <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
               {!noChartData &&
                 data.map((d, idx) => (
                   <div key={idx} onMouseOver={() => setHover(idx)} onClick={d.onClick}>
-                    <Block backgroundColor={idx === hover ? theme.colors.accent50 : theme.colors.white} $style={cursor} display="flex" alignItems="center">
+                    <div className={`${hover ? 'bg-[#B71DAD]' :' bg-white'} cursor-pointer flex items-center`}>
                       <FontAwesomeIcon icon={faCircle} color={d.color} />
-                      <Block minWidth={theme.sizing.scale1000} display="flex" justifyContent="flex-end">
+                      <div className="min-w-10 flex justify-end">
                         {d.size}
-                      </Block>
+                      </div>
                       {!hidePercent && (
-                        <Block minWidth={theme.sizing.scale1000} display="flex" justifyContent="flex-end">
+                        <div className="min-w-10 flex justify-end">
                           {(d.fraction * 100).toFixed(0)}%
-                        </Block>
+                        </div>
                       )}
-                      <Block marginLeft={theme.sizing.scale400}>{d.label}</Block>
-                    </Block>
+                      <div className="ml-2.5">{d.label}</div>
+                    </div>
                   </div>
                 ))}
-              {noChartData && <Block $style={{ ...marginAll(theme.sizing.scale100) }}>Ingen</Block>}
-            </Block>
-          </Block>
+              {noChartData && <div className="m-1">Ingen</div>}
+            </div>
+          </div>
         </div>
       </Card>
 
       <div onClick={toggle} style={{ position: 'absolute', top: '5px', left: '5px' }}>
         <CustomizedStatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
-          <Block $style={{ cursor: 'pointer' }}>
+          <div className="cursor-pointer">
             <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
-          </Block>
+          </div>
         </CustomizedStatefulTooltip>
       </div>
-    </Block>
+    </div>
   )
 }
 
