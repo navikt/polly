@@ -96,6 +96,8 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
     processIds: [],
     administrationArchiveCaseNumber: '',
+    assessedConfidentiality: undefined,
+    confidentialityDescription: ''
   }
 
   return (
