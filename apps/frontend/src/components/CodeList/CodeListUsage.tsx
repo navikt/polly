@@ -155,18 +155,18 @@ export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
   }
 
   return (
-    <Block marginTop="2rem" ref={ref}>
-      <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
+    <div className="mt-8" ref={ref}>
+      <div className="flex justify-between mb-2">
         <LabelMedium font="font450">Bruk</LabelMedium>
         {!!usage?.inUse && (
           <Button type="button" kind="secondary" size="compact" onClick={() => setShowReplace(true)}>
             Erstatt all bruk
           </Button>
         )}
-      </Block>
+      </div>
 
       {showReplace && usage && usage.listName && (
-        <Block display="flex" margin="1rem" justifyContent="space-between">
+        <div className="flex m-4 justify-center">
           <Select
             size="compact"
             maxDropdownHeight="300px"
@@ -179,12 +179,12 @@ export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
           <Button type="button" size="compact" onClick={replace} disabled={!newValue.length}>
             Erstatt
           </Button>
-        </Block>
+        </div>
       )}
 
       {usage && <UsageTable usage={usage} />}
       {!usage && <Spinner />}
       {usage && !usage.inUse && <LabelXSmall marginTop=".5rem">Fant ingen bruk</LabelXSmall>}
-    </Block>
+    </div>
   )
 }
