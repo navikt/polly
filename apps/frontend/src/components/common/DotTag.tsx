@@ -11,23 +11,23 @@ import { Markdown } from './Markdown'
 export const DotTag = (props: { children: ReactNode; wrapText?: boolean }) => {
   if (props.wrapText) {
     return (
-      <Block marginLeft={theme.sizing.scale100} marginRight={theme.sizing.scale100} display="flex" alignItems="center">
-        <Block $style={{ whiteSpace: 'normal' }} display="flex">
-          <Block marginRight={theme.sizing.scale100} marginTop="-3px">
+      <div className="mx-1 flex items-center">
+        <div className="flex whitespace-normal">
+          <div className="mr-1 mt-[-3px]">
             <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
-          </Block>
-          <Block>{props.children}</Block>
-        </Block>
-      </Block>
+          </div>
+          <div>{props.children}</div>
+        </div>
+      </div>
     )
   }
 
   return (
-    <Block marginLeft={theme.sizing.scale100} marginRight={theme.sizing.scale100} display="flex" alignItems="center">
+    <div className="mx-1 flex items-center">
       <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
-      <Block display="inline" marginRight={theme.sizing.scale100} />
-      <Block $style={{ whiteSpace: 'nowrap' }}>{props.children}</Block>
-    </Block>
+      <div className="inline mr-1"/>
+      <div className=" whitespace-nowrap">{props.children}</div>
+    </div>
   )
 }
 
@@ -60,26 +60,26 @@ export const DotTags = (props: DotTagsParams) => {
 
   if (commaSeparator)
     return (
-      <Block display="inline">
+      <div className="inline">
         {items.map((item, i) => (
           <React.Fragment key={i}>
             <Content {...props} item={item} />
             <span>{i < items.length - 1 ? ', ' : ''}</span>
           </React.Fragment>
         ))}
-      </Block>
+      </div>
     )
 
   return (
-    <Block display={props.noFlex ? 'block' : 'flex'} flexWrap>
+    <div className={`${props.noFlex ? 'Block' : 'flex'} flex-wrap`}>
       {items.map((item, i) => (
-        <Block key={i} marginRight={i < items.length && !commaSeparator ? theme.sizing.scale200 : 0}>
+        <div key={i} className={`${i < items.length && !commaSeparator ? 'mr-1.5' : '0px'}`}>
           <DotTag wrapText={props.wrapText}>
             {' '}
             <Content {...props} item={item} />{' '}
           </DotTag>
-        </Block>
+        </div>
       ))}
-    </Block>
+    </div>
   )
 }
