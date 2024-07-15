@@ -1,33 +1,9 @@
-import { Block, BlockProps } from 'baseui/block'
-import * as React from 'react'
 import { useStyletron } from 'baseui'
-
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  minWidth: '100%',
-  marginBottom: '1rem',
-  paddingTop: '1rem',
-}
+import * as React from 'react'
 
 const CustomizedModalBlock = (props: { children: React.ReactNode; first?: boolean }) => {
   const [css] = useStyletron()
-  return (
-    <Block
-      {...rowBlockProps}
-      overrides={{
-        Block: {
-          props: {
-            className: css({
-              borderTop: !props.first ? '1px solid #E2E2E2' : undefined,
-            }),
-          },
-        },
-      }}
-    >
-      {props.children}
-    </Block>
-  )
+  return <div className={`flex w-full min-w-full mb-4 pt-4 ${!props.first ? 'border-t border-solid border-[#E2E2E2]' : ''}`}>{props.children}</div>
 }
 
 export default CustomizedModalBlock
