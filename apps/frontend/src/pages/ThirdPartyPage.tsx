@@ -101,6 +101,8 @@ const ThirdPartyPage = () => {
     abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
     processIds: [],
     administrationArchiveCaseNumber: '',
+    assessedConfidentiality: undefined,
+    confidentialityDescription: ''
   }
 
   useEffect(() => {
