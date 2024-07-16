@@ -1,12 +1,11 @@
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button as BaseUIButton, KIND, SHAPE, SIZE } from 'baseui/button'
+import { Override } from 'baseui/overrides'
 import * as React from 'react'
 import { ReactNode } from 'react'
-import { Button as BaseUIButton, KIND, SHAPE, SIZE } from 'baseui/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
-import { theme } from '../../../util'
-import { Override } from 'baseui/overrides'
 import { StyleObject } from 'styletron-react'
-import { Block } from 'baseui/block'
+import { theme } from '../../../util'
 import CustomizedStatefulTooltip from '../CustomizedStatefulTooltip'
 
 interface ButtonProps {
@@ -62,7 +61,7 @@ const Button = (props: ButtonProps) => {
   }
   return (
     <>
-      <Block display="inline" marginLeft={props.marginLeft ? theme.sizing.scale400 : 0} />
+      <div className={`inline ${props.marginLeft ? `ml-[${'ml-2.5'}]` : 0}`} />
       <Tooltip tooltip={props.tooltip}>
         <BaseUIButton
           kind={baseuiKind}
@@ -79,7 +78,7 @@ const Button = (props: ButtonProps) => {
           {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} style={{ marginLeft: props.children ? '.5rem' : undefined }} />}
         </BaseUIButton>
       </Tooltip>
-      <Block display="inline" marginRight={props.marginRight ? theme.sizing.scale400 : 0} />
+      <div className={`inline ${props.marginLeft ? `ml-[${'ml-2.5'}]` : 0}`} />
     </>
   )
 }

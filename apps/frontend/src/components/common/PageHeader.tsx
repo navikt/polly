@@ -81,7 +81,7 @@ export const PageHeader = (props: { section: Section; code: string }) => {
     if (!url) return null
     return (
       <>
-        <Block marginRight={theme.sizing.scale1200} />
+        <div className="mr-12"/>
         <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
           <CustomizedStatefulTooltip content='Gå til side'>
             <span>
@@ -98,15 +98,15 @@ export const PageHeader = (props: { section: Section; code: string }) => {
       {isLoading && <Spinner size={theme.sizing.scale2400} />}
       {!isLoading && (
         <>
-          <Block marginBottom="3rem" display="flex" alignItems="center">
+          <div className="mb-12 flex items-center">
             <HeadingXXLarge>{getTitle()}</HeadingXXLarge>
             {externalLink()}
-          </Block>
+          </div>
 
-          <Block marginBottom="scale1000">
+          <div className="mb-10">
             <LabelLarge marginBottom={theme.sizing.scale600}>{metadataTitle()}</LabelLarge>
             <Markdown source={getDescription()} />
-          </Block>
+          </div>
         </>
       )}
     </>

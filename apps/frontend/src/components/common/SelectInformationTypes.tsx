@@ -18,8 +18,8 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
     <FieldArray
       name="informationTypes"
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <Block width="100%">
-          <Block width="100%">
+        <div className="w-full">
+          <div className="w-full">
             <Select
               options={infoTypeSearchResult.filter((i) => !formikBag.values.informationTypes?.map((value) => value.id).includes(i.id))}
               clearable
@@ -37,17 +37,17 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
                 )
               }
             />
-          </Block>
+          </div>
 
           {formikBag.values.informationTypes && (
-            <Block>
+            <div>
               {renderTagList(
                 formikBag.values.informationTypes.map((i) => i.name),
                 arrayHelpers,
               )}
-            </Block>
+            </div>
           )}
-        </Block>
+        </div>
       )}
     />
   )

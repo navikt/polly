@@ -124,11 +124,11 @@ const TeamView = (props: { teamId: string }) => {
 }
 
 export const TeamList = (props: { teamIds: string[] }) => (
-  <Block display="flex">
+  <div className="flex">
     {props.teamIds.map((t, i) => (
       <DotTag key={i}>
         <TeamView teamId={t} />
       </DotTag>
     ))}
-  </Block>
+  </div>
 )
