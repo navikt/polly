@@ -71,7 +71,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose} animate size={SIZE.auto} role={ROLE.dialog}>
-      <Block {...modalBlockProps}>
+      <div className="w-[960px] pr-8 pl-8">
         <Formik
           onSubmit={(values) => {
             props.submit(values)
@@ -82,7 +82,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
           {(formikBag) => (
             <Form onKeyDown={disableEnter}>
               <ModalHeader>
-                <Block {...modalHeaderProps}>Behandlinger hvor NAV er databehandler</Block>
+                <div className="flex justify-center mb-8">Behandlinger hvor NAV er databehandler</div>
               </ModalHeader>
               <ModalBody>
                 <CustomizedModalBlock first>
@@ -98,9 +98,9 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
 
                 <CustomizedModalBlock>
                   <ModalLabel label='Behandlingsansvarlig' tooltip='Oppgi navn på den behandlingsansvarlige virksomheten.' />
-                  <Block width={'100%'}>
+                  <div className="w-full">
                     <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible} />
-                  </Block>
+                  </div>
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
@@ -120,25 +120,25 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   <FieldDpProcessDates showDates={true} showLabels={true} rowBlockProps={rowBlockProps} />
                 </CustomizedModalBlock>
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Behandles det særlige kategorier av personopplysninger?' tooltip='Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning.' />
                   <BoolField fieldName="art9" value={formikBag.values.art9} />
-                </Block>
+                </div>
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Behandles det personopplysninger om straffedommer og lovovertredelser?' />
                   <BoolField fieldName="art10" value={formikBag.values.art10} />
-                </Block>
+                </div>
 
                 <CustomizedModalBlock>
                   <ModalLabel label='System' tooltip='Angi hvilke systemer som er primært i bruk i denne behandlingen.' />
                   <FieldProduct formikBag={formikBag} />
                 </CustomizedModalBlock>
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Ref. til databehandleravtale' />
                   <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
-                </Block>
+                </div>
                 <Error fieldName="dataProcessingAgreements" />
 
                 <StatelessAccordion
@@ -183,18 +183,18 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   borderTop: 0,
                 }}
               >
-                <Block display="flex" justifyContent="flex-end">
-                  <Block alignSelf="flex-end">{props.errorOnCreate && <p>{props.errorOnCreate}</p>}</Block>
+                <div className="flex justify-end">
+                  <div className="self-end">{props.errorOnCreate && <p>{props.errorOnCreate}</p>}</div>
                   <Button type="button" kind={KIND.tertiary} onClick={props.onClose}>
                     Avbryt
                   </Button>
                   <ModalButton type="submit">Lagre</ModalButton>
-                </Block>
+                </div>
               </ModalFooter>
             </Form>
           )}
         </Formik>
-      </Block>
+      </div>
     </Modal>
   )
 }

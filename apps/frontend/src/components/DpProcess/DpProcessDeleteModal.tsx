@@ -13,13 +13,13 @@ export const DpProcessDeleteModal = (props: { errorOnDeletion: string; isOpen: b
           <ParagraphMedium>Bekreft sletting av behandlingen</ParagraphMedium>
         </ModalBody>
         <ModalFooter>
-          <Block display="flex" justifyContent="flex-end">
-            <Block alignSelf="flex-end">{props.errorOnDeletion && <p>{props.errorOnDeletion}</p>}</Block>
+          <div className="flex justify-end">
+            <div className="self-end">{props.errorOnDeletion && <p>{props.errorOnDeletion}</p>}</div>
             <Button kind="secondary" onClick={() => props.onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
               Avbryt
             </Button>
             <Button onClick={() => props.onSubmit()}>Slett</Button>
-          </Block>
+          </div>
         </ModalFooter>
       </Modal>
     </>

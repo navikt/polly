@@ -106,22 +106,22 @@ const DpProcessView = () => {
     <>
       {!isLoading ? (
         <>
-          <Block display="flex" justifyContent={'space-between'} alignItems={'center'}>
+          <div className="flex justify-between items-center">
             <HeadingMedium>{dpProcess?.name}</HeadingMedium>
             {user.canWrite() /*!env.disableDpProcess &&*/ && (
-              <Block>
+              <div>
                 <Button size="compact" kind="outline" icon={faEdit} marginRight onClick={toggleModal}>
                   Redigér
                 </Button>
                 <Button size={ButtonSize.compact} kind="outline" onClick={toggleDeleteModal} icon={faTrash}>
                   Slett
                 </Button>
-              </Block>
+              </div>
             )}
-          </Block>
-          <Block marginTop="1rem">
+          </div>
+          <div className="mt-4">
             <DataText label="Behandlingsnummer" text={'D' + dpProcess?.dpProcessNumber.toString()} />
-          </Block>
+          </div>
           <DataText label="Behandlingsansvarlig" text={''}>
             <span>
               {!!dpProcess?.externalProcessResponsible ? (
@@ -149,48 +149,48 @@ const DpProcessView = () => {
 
           <DataText label="Organisering" text={''}>
             {dpProcess?.affiliation.department ? (
-              <Block>
+              <div>
                 <span>Avdeling: </span>
                 <span>
                   <DotTags list={ListName.DEPARTMENT} codes={[dpProcess?.affiliation.department]} commaSeparator linkCodelist />{' '}
                 </span>
-              </Block>
+              </div>
             ) : (
               <span>Avdeling: Ikke utfylt</span>
             )}
             {!!dpProcess?.affiliation.subDepartments.length && (
-              <Block>
-                <Block display="flex">
+              <div>
+                <div className="flex">
                   <span>Underavdeling: </span>
                   <DotTags list={ListName.SUB_DEPARTMENT} codes={dpProcess?.affiliation.subDepartments} linkCodelist />
-                </Block>
-              </Block>
+                </div>
+              </div>
             )}
 
-            <Block display="flex">
+            <div className="flex">
               <span>Team: </span>
               {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : 'Ikke utfylt'}
-            </Block>
+            </div>
           </DataText>
           <DataText label="Lagringsbehov" text={''}>
             <>
-              <Block>
+              <div>
                 <RetentionView retention={dpProcess?.retention} />
-              </Block>
+              </div>
             </>
           </DataText>
           <DataText label="Databehandleravtale med behandlingsansvarlig" text={''}>
             <>
-              <Block>
-                <Block>
+              <div>
+                <div>
                   {isDataProcessingAgreementsAvailable && (
-                    <Block display="flex" alignItems="center">
-                      <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }}>Ref. til databehandleravtale</Block>
+                    <div className="flex items-center">
+                      <div className="whitespace-nowrap mt-1 mr-0">Ref. til databehandleravtale</div>
                       <DotTags items={dpProcess?.dataProcessingAgreements} markdown />
-                    </Block>
+                    </div>
                   )}
-                </Block>
-              </Block>
+                </div>
+              </div>
             </>
           </DataText>
 
@@ -201,37 +201,30 @@ const DpProcessView = () => {
             </>
             <>
               {dpProcess?.subDataProcessing.dataProcessor && (
-                <Block>
-                  <Block>Databehandler benyttes</Block>
-                  <Block>
+                <div>
+                  <div>Databehandler benyttes</div>
+                  <div>
                     {processors && (
-                      <Block display="flex" alignItems="center">
-                        <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }} />
-                        <Block display="flex" flexWrap>
+                      <div className="flex items-center">
+                        <div className="whitespace-nowrap mt-4 mr-0"/>
+                        <div className="flex flexWrap">
                           {processors.map((dp, i) => (
-                            <Block key={dp.id} marginRight={i < processors.length ? theme.sizing.scale200 : 0}>
+                            <div className={i < processors.length ? 'mr-1.5' : ''}>
                               <DotTag key={dp.id}>
                                 <RouteLink href={'/processor/' + dp.id}>{dp.name}</RouteLink>
                               </DotTag>
-                            </Block>
+                            </div>
                           ))}
-                        </Block>
-                      </Block>
+                        </div>
+                      </div>
                     )}
-                  </Block>
-                </Block>
+                  </div>
+                </div>
               )}
             </>
           </DataText>
           {dpProcess && (
-            <Block
-              $style={{
-                fontFamily: 'system-ui, Helvetica Neue, Helvetica, Arial, sans-serif',
-                fontSize: '14px',
-                color: '#3e3832',
-              }}
-            >
-              <Block display="flex" justifyContent="flex-end">
+              <div className="flex justify-end">
                 <span>
                   <i>
                     {`Sist endret av `}
@@ -239,8 +232,7 @@ const DpProcessView = () => {
                     {` ${lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}`}
                   </i>
                 </span>
-              </Block>
-            </Block>
+              </div>  
           )}
           <DpProcessModal
             isOpen={showModal}
