@@ -10,8 +10,8 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
   const navigate = useNavigate()
   const { processStatus } = useParams<{ processStatus: ProcessStatusFilter }>()
   return (
-    <Block width="100%" display="flex" flexDirection="row-reverse" marginTop={theme.sizing.scale600}>
-      <Block width={'240px'}>
+    <div className="w-full flex flex-row-reverse mt-4">
+      <div className="w-60">
         <StatefulSelect
           backspaceRemoves={false}
           clearable={false}
@@ -31,12 +31,12 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
             props.setFilter(params.value[0].id)
           }}
         />
-      </Block>
-      <Block alignSelf="center">
+      </div>
+      <div className="self-center">
         <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
           Filtrer diagrammene på status
         </LabelMedium>
-      </Block>
-    </Block>
+      </div>
+    </div>
   )
 }

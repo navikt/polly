@@ -118,22 +118,22 @@ export const ProcessDisclosureTabs = (props: IProps) => {
             <HeadingXLarge>Utleveringer ({disclosureData ? disclosureData.length : 0})</HeadingXLarge>
             <Spacer />
             {isEditable && (
-              <Block display="flex" justifyContent="flex-end">
+              <div className="flex justify-end">
                 {user.canWrite() && (
                   <Button
                     size="compact"
                     kind={KIND.tertiary}
                     onClick={() => setShowCreateDisclosureModal(true)}
                     startEnhancer={() => (
-                      <Block display="flex" justifyContent="center">
+                      <div className="flex justify-center">
                         <Plus size={22} />
-                      </Block>
+                      </div>
                     )}
                   >
                     Opprett ny utlevering
                   </Button>
                 )}
-              </Block>
+              </div>
             )}
           </div>
 
