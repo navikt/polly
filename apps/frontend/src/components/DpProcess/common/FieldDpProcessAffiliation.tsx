@@ -20,35 +20,35 @@ const FieldDpProcessAffiliation = (props: FieldDpProcessAffiliationProps) => {
 
   return (
     <>
-      <Block display="flex" width="100%" justifyContent="space-between">
-        <Block width="48%">
+      <div className="flex w-full justify-between">
+        <div className="w-[48%]">
           <ModalLabel label='Avdeling' tooltip='Angi hvilken avdeling som har hovedansvar for behandlingen.' />
-        </Block>
-        <Block width="48%">
+        </div>
+        <div className="w-[48%]">
           <ModalLabel label='Linja' tooltip='Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres.' />
-        </Block>
-      </Block>
+        </div>
+      </div>
 
-      <Block display="flex" width="100%" justifyContent="space-between">
-        <Block width="48%">
+      <div className="flex w-full justify-between">
+        <div className="w-[48%]">
           <FieldDpProcessDepartment department={formikBag.values.affiliation.department} />
-        </Block>
-        <Block width="48%">
+        </div>
+        <div className="48%">
           <FieldSubDepartments formikBag={formikBag} />
-        </Block>
-      </Block>
+        </div>
+      </div>
 
-      <Block display="flex" width="100%" justifyContent="space-between" marginTop={theme.sizing.scale400}>
-        <Block width="48%">
+      <div className="flex w-full justify-between mt-2.5">
+        <div className="w-[48%]">
           <ModalLabel label='Team (Oppslag i Teamkatalogen)' tooltip='Angi hvilke team som har forvaltningsansvaret for IT-systemene.' fullwidth={true} />
-        </Block>
-      </Block>
+        </div>
+      </div>
 
-      <Block display="flex" width="100%" justifyContent="space-between">
-        <Block width="48%">
+      <div className="flex w-full justify-between">
+        <div className="w-[48%]">
           <FieldProductTeam productTeams={formikBag.values.affiliation.productTeams} fieldName="affiliation.productTeams" />
-        </Block>
-      </Block>
+        </div>
+      </div>
     </>
   )
 }
