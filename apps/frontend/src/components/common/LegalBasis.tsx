@@ -144,7 +144,7 @@ export const ListLegalBases = (props: {
               ArtworkContainer: {},
             }}
             endEnhancer={() => (
-              <Block minWidth="100px">
+              <div className="w-full">
                 <Button
                   type="button"
                   kind="tertiary"
@@ -165,7 +165,7 @@ export const ListLegalBases = (props: {
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
-              </Block>
+              </div>
             )}
             sublist
             key={i}
@@ -182,16 +182,16 @@ export const ListLegalBases = (props: {
 export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
   const { legalBases } = props
   return (
-    <Block>
+    <div>
       <ul style={{ listStyle: 'none', paddingInlineStart: 0, marginTop: 0, marginBottom: 0 }}>
         {legalBases.map((legalBasis, i) => (
-          <Block marginBottom="8px" key={i}>
+          <div className="mb-2" key={i}>
             <li>
               <LegalBasisView legalBasis={legalBasis} />
             </li>
-          </Block>
+          </div>
         ))}
       </ul>
-    </Block>
+    </div>
   )
 }
