@@ -15,7 +15,6 @@ import nb from 'date-fns/locale/nb';
 
 interface DateModalProps {
   showDates: boolean
-  rowBlockProps: BlockProps
   showLabels?: boolean
 }
 
@@ -27,37 +26,40 @@ function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | nu
 
 const LabelWithTooltip = (props: { text: string; tooltip: string }) => (
   <CustomizedStatefulTooltip content={props.tooltip}>
-    <Block display="flex">
+    <div className="flex">
       {props.text}
       <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
-    </Block>
+    </div>
   </CustomizedStatefulTooltip>
 )
 
 export const FieldDpProcessDates = (props: DateModalProps) => {
   const [showDates, setShowDates] = React.useState<boolean>(props.showDates)
-  const { rowBlockProps, showLabels } = props
+  const { showLabels } = props
 
   return (
     <>
       {!showDates ? (
-        <Block {...rowBlockProps}>
+          // display: 'flex',
+          // width: '100%',
+          // marginTop: '1rem',
+        <div className="flex w-full mt-4">
           <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
             Velg datoer
           </Button>
-        </Block>
+        </div>
       ) : (
         <>
-          <Block width={'100%'}>
-            <Block display={'flex'} width={'100%'}>
-              <Block width={'50%'} marginRight={'1rem'}>
+          <div className="w-full">
+            <div className="flex w-full">
+              <div className="w-[50%] mr-4">
                 {showLabels && <LabelWithTooltip text='Fom dato' tooltip='Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.' />}
-              </Block>
-              <Block width={'50%'}>{showLabels && <LabelWithTooltip text='Tom dato' tooltip='Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.' />}</Block>
-            </Block>
-            <Block display={'flex'} width={'100%'}>
-              <Block width={'50%'} marginRight={'1rem'}>
-                <Block {...rowBlockProps}>
+              </div>
+              <div className="w-[50%]">{showLabels && <LabelWithTooltip text='Tom dato' tooltip='Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.' />}</div>
+            </div>
+            <div className="flex w-full">
+              <div className="w-[50%] mr-4">
+                <div  className="flex w-full mt-4">
                   <Field name="start">
                     {({ field, form }: FieldProps<string, DpProcessFormValues>) => (
                       <Datepicker
@@ -80,11 +82,11 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
                       />
                     )}
                   </Field>
-                </Block>
+                </div>
                 <Error fieldName="start" />
-              </Block>
-              <Block width={'50%'}>
-                <Block {...rowBlockProps}>
+              </div>
+              <div className="w-[50%]">
+                <div  className="flex w-full mt-4">
                   <Field name="end">
                     {({ field, form }: FieldProps<string, DpProcessFormValues>) => (
                       <Datepicker
@@ -107,11 +109,11 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
                       />
                     )}
                   </Field>
-                </Block>
+                </div>
                 <Error fieldName={'end'} />
-              </Block>
-            </Block>
-          </Block>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </>

@@ -24,7 +24,7 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
     <FieldArray
       name="dataProcessingAgreements"
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <Block width="100%">
+        <div className="w-full">
           <Input
             type="text"
             size="compact"
@@ -45,7 +45,7 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
             }}
           />
           {renderTagList(props.formikBag.values.dataProcessingAgreements, arrayHelpers)}
-        </Block>
+        </div>
       )}
     />
   )
