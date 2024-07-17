@@ -34,8 +34,8 @@ const Purposes = ({ policies }: { policies: Policy[] }) => {
   const selectedPurpose = useQueryParam('purpose')
   const [accordion, setAccordion] = React.useState(!!selectedPurpose)
   return (
-    <Block>
-      <Block display="flex" justifyContent="flex-end">
+    <div>
+      <div className="flex justify-end">
         <Button
           onClick={() => setAccordion(!accordion)}
           size="compact"
@@ -51,9 +51,9 @@ const Purposes = ({ policies }: { policies: Policy[] }) => {
         >
           {accordion ? 'Vis alle' : 'Gruppér etter behandlingsaktivitet'}
         </Button>
-      </Block>
+      </div>
       {accordion ? <AccordionInformationType policies={policies} /> : <InformationtypePolicyTable policies={policies} showPurpose={true} />}
-    </Block>
+    </div>
   )
 }
 
@@ -68,16 +68,16 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
     <>
       {props.informationtype && (
         <>
-          <Block display="flex" justifyContent="space-between">
+          <div className="flex justify-between">
             <HeadingMedium marginTop="0">{props.informationtype.name}</HeadingMedium>
             {user.canWrite() && <InformationTypeBannerButtons id={props.informationtype.id} />}
-          </Block>
+          </div>
 
           <Metadata informationtype={props.informationtype} />
 
-          <Block display="flex" justifyContent="flex-end" marginBottom={theme.sizing.scale600}>
+          <div className="flex justify-end mb-4">
             {canViewAlerts() && (
-              <Block marginRight="auto">
+              <div className="mr-auto">
                 <Button
                   type="button"
                   kind="tertiary"
@@ -87,12 +87,12 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
                 >
                   Varsler
                 </Button>
-              </Block>
+              </div>
             )}
             <ParagraphSmall>
                <i>{`Sist endret av ${props.informationtype.changeStamp.lastModifiedBy}, ${lastModifiedDate(props.informationtype.changeStamp?.lastModifiedDate)}`}</i>
             </ParagraphSmall>
-          </Block>
+          </div>
 
           <CustomizedTabs activeKey={activeTab} onChange={(args) => setActiveTab(args.activeKey as string)}>
             <Tab key="purposes" title='Brukes til behandlingsaktivitet' overrides={tabOverride}>

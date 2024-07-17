@@ -200,7 +200,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
                   <CustomizedModalBlock>
                     <ModalLabel label='Gyldighetsperiode for behandlingen' />
-                    <DateFieldsProcessModal showDates={true} showLabels={true} rowBlockProps={rowBlockProps} />
+                    <DateFieldsProcessModal showDates={true} showLabels={true} />
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>

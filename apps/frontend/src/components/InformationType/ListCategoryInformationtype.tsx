@@ -1,18 +1,16 @@
-import * as React from 'react'
-import { CodeUsage } from '../../constants'
-import RouteLink from '../common/RouteLink'
-import { Block } from 'baseui/block'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useStyletron } from 'baseui'
 import { Accordion, Panel } from 'baseui/accordion'
-import { ListItem, ListItemLabel } from 'baseui/list'
-import { theme } from '../../util'
-import { codelist, ListName } from '../../service/Codelist'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { Heading, HeadingLevel } from 'baseui/heading'
-import { useQueryParam } from '../../util/hooks'
+import { ListItem, ListItemLabel } from 'baseui/list'
 import { ParagraphLarge } from 'baseui/typography'
+import { CodeUsage } from '../../constants'
+import { codelist, ListName } from '../../service/Codelist'
+import { theme } from '../../util'
+import { useQueryParam } from '../../util/hooks'
 import { toggleOverride } from '../common/Accordion'
+import RouteLink from '../common/RouteLink'
 
 type InformationTypeAccordionProps = {
   categoryUsages: CodeUsage[] | undefined
@@ -32,24 +30,10 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
         return (
           <Panel
             title={
-              <Block display="flex" width="100%">
-                <Block minWidth="80%">{codelist.getShortname(ListName.CATEGORY, categoryUsage.code)}</Block>
-                <Block
-                  marginRight="50px"
-                  minWidth="20%"
-                  overrides={{
-                    Block: {
-                      style: {
-                        opacity: '0.5',
-                        color: '#545454',
-                        fontSize: '.9rem',
-                      },
-                    },
-                  }}
-                >
-                  Opplysningstyper: {categoryUsage.informationTypes.length}
-                </Block>
-              </Block>
+              <div className="flex w-full">
+                <div className="min-w-[80%]">{codelist.getShortname(ListName.CATEGORY, categoryUsage.code)}</div>
+                <div className="mr-[50px] min-w-[20%] opacity-50 color-[#545454] text-sm">Opplysningstyper: {categoryUsage.informationTypes.length}</div>
+              </div>
             }
             overrides={{
               Content: {
@@ -103,19 +87,19 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
       {categoryNotInUse && (
         <ParagraphLarge marginBottom={theme.sizing.scale1200}>
           <FontAwesomeIcon icon={faExclamationTriangle} color={theme.colors.negative400} />
-          <Block marginRight={theme.sizing.scale200} display="inline" />
+          <div className="mr-1.5 inline" />
           {`Kategori ${codelist.getShortname(ListName.CATEGORY, category!)} er ikke i bruk`}
         </ParagraphLarge>
       )}
 
-      <Block>
+      <div>
         <HeadingLevel>
           <Heading styleLevel={5} paddingLeft="20px">
             Kategorier
           </Heading>
         </HeadingLevel>
         <Accordion initialState={{ expanded: category ? [category] : [] }}>{panelList()}</Accordion>
-      </Block>
+      </div>
     </>
   )
 }

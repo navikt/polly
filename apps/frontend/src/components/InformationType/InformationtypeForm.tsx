@@ -19,11 +19,6 @@ import { Error } from '../common/ModalSchema'
 import FieldProductTeam from '../common/form/FieldProductTeam'
 import { disableEnter } from '../../util/helper-functions'
 
-const labelProps: BlockProps = {
-  marginBottom: '8px',
-  alignSelf: 'center',
-}
-
 type FormProps = {
   formInitialValues: InformationtypeFormValues
   submit: (infoType: InformationtypeFormValues) => Promise<void>
@@ -119,9 +114,9 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   name="name"
                   render={({ form, field }: FieldProps) => (
                     <div>
-                      <Block {...labelProps}>
+                      <div className="mb-2 self-center">
                         <LabelMedium>Navn</LabelMedium>
-                      </Block>
+                      </div>
                       <Input {...field} error={!!form.errors.name && !!form.submitCount} />
                     </div>
                   )}
@@ -133,10 +128,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 <Field
                   name="orgMaster"
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
-                    <Block marginBottom="1em">
-                      <Block {...labelProps}>
+                    <div className="mb-4">
+                      <div className="mb-2 self-center">
                         <LabelMedium>Master i NAV</LabelMedium>
-                      </Block>
+                      </div>
 
                       <Select
                         options={codelist.getParsedOptions(ListName.SYSTEM)}
@@ -148,7 +143,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         }}
                         error={!!form.errors.orgMaster && !!form.submitCount}
                       />
-                    </Block>
+                    </div>
                   )}
                 />
                 <Error fieldName="orgMaster" fullWidth />
@@ -158,10 +153,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 <Field
                   name="term"
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
-                    <Block>
-                      <Block {...labelProps}>
+                    <div>
+                      <div className="mb-2 self-center">
                         <LabelMedium>Begrepsdefinisjon (oppslag i Begrepskatalogen)</LabelMedium>
-                      </Block>
+                      </div>
                       <Select
                         noResultsMsg="Ingen"
                         maxDropdownHeight="350px"
@@ -178,7 +173,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         error={!!form.errors.term && !!form.submitCount}
                         isLoading={termSearchLoading}
                       />
-                    </Block>
+                    </div>
                   )}
                 />
                 <Error fieldName="term" fullWidth />
@@ -188,10 +183,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 <FieldArray
                   name="sources"
                   render={(arrayHelpers: FieldArrayRenderProps) => (
-                    <Block>
-                      <Block {...labelProps}>
+                    <div>
+                      <div className="mb-2 self-center">
                         <LabelMedium>Kilder</LabelMedium>
-                      </Block>
+                      </div>
                       <Select
                         options={getParsedOptions(ListName.THIRD_PARTY, formikBag.values.sources)}
                         maxDropdownHeight="300px"
@@ -201,7 +196,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
                       />
                       {renderTagList(codelist.getShortnames(ListName.THIRD_PARTY, formikBag.values.sources), arrayHelpers)}
-                    </Block>
+                    </div>
                   )}
                 />
                 <Error fieldName="sources" fullWidth />
@@ -211,10 +206,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 <FieldArray
                   name="keywords"
                   render={(arrayHelpers: FieldArrayRenderProps) => (
-                    <Block>
-                      <Block {...labelProps}>
+                    <div>
+                      <div className="mb-2 self-center">
                         <LabelMedium>Søkeord</LabelMedium>
-                      </Block>
+                      </div>
                       <Input
                         type="text"
                         value={currentKeywordValue}
@@ -234,29 +229,29 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         error={!!arrayHelpers.form.errors.keywords && !!arrayHelpers.form.submitCount}
                       />
                       {renderTagList(formikBag.values.keywords, arrayHelpers)}
-                    </Block>
+                    </div>
                   )}
                 />
                 <Error fieldName="keywords" fullWidth />
               </FlexGridItem>
 
               <FlexGridItem>
-                <Block>
-                  <Block {...labelProps}>
+                <div>
+                  <div className="mb-2 self-center">
                     <LabelMedium>Team</LabelMedium>
-                  </Block>
+                  </div>
                   <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName="productTeams" />
-                </Block>
+                </div>
               </FlexGridItem>
 
               <FlexGridItem>
                 <FieldArray
                   name="categories"
                   render={(arrayHelpers: FieldArrayRenderProps) => (
-                    <Block>
-                      <Block {...labelProps}>
+                    <div>
+                      <div className="mb-2 self-center">
                         <LabelMedium>Kategorier</LabelMedium>
-                      </Block>
+                      </div>
                       <Select
                         options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
                         maxDropdownHeight="300px"
@@ -266,7 +261,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         error={!!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount}
                       />
                       {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
-                    </Block>
+                    </div>
                   )}
                 />
                 <Error fieldName="categories" fullWidth />
@@ -276,10 +271,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 <Field
                   name="description"
                   render={({ field, form }: FieldProps) => (
-                    <Block>
-                      <Block {...labelProps}>
+                    <div>
+                      <div className="mb-2 self-center">
                         <LabelMedium>Nyttig å vite om opplysningstypen</LabelMedium>
-                      </Block>
+                      </div>
                       <Textarea
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
@@ -287,7 +282,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         {...field}
                         rows={5}
                       />
-                    </Block>
+                    </div>
                   )}
                 />
               </FlexGridItem>
@@ -296,10 +291,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 <Field
                   name="sensitivity"
                   render={({ form }: FieldProps<InformationtypeFormValues>) => (
-                    <Block>
-                      <Block {...labelProps}>
+                    <div>
+                      <div className="mb-2 self-center">
                         <LabelMedium>Type personopplysning</LabelMedium>
-                      </Block>
+                      </div>
 
                       <Select
                         options={codelist.getParsedOptions(ListName.SENSITIVITY).filter((s) => !s.label.includes('Ikke'))}
@@ -311,14 +306,14 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         }}
                         error={!!form.errors.sensitivity && !!form.submitCount}
                       />
-                    </Block>
+                    </div>
                   )}
                 />
                 <Error fieldName="sensitivity" fullWidth />
               </FlexGridItem>
             </FlexGrid>
 
-            <Block display="flex" marginTop="2rem" justifyContent="flex-end">
+            <div className="flex mt-8 justify-end">
               <Button
                 type="button"
                 kind="secondary"
@@ -354,7 +349,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               >
                 Lagre
               </Button>
-            </Block>
+            </div>
           </Form>
         )}
       />
