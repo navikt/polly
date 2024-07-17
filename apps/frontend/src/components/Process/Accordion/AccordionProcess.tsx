@@ -88,9 +88,9 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       kind={KIND.tertiary}
       onClick={() => setShowCreatePolicyModal(true)}
       startEnhancer={
-        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+        <div className="flex justify-center mr-1">
           <Plus size={22} />
-        </Block>
+        </div>
       }
     >
       Opplysningstype
@@ -104,9 +104,9 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       kind={KIND.tertiary}
       onClick={() => setShowDeleteAllPolicyModal(true)}
       startEnhancer={
-        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+        <div className="flex justify-center mr-1">
           <FontAwesomeIcon title='Slett' icon={faTrash}/>
-        </Block>
+        </div>
       }
     >
       Slett hele tabelen
@@ -120,9 +120,9 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       kind={KIND.tertiary}
       onClick={() => setShowAddDocumentModal(true)}
       startEnhancer={
-        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+        <div className="flex justify-center mr-1">
           <Plus size={22} />
-        </Block>
+        </div>
       }
     >
       Dokument
