@@ -41,23 +41,6 @@ import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api
 import FieldDataProcessors from '../common/FieldDataProcessors'
 import FieldDispatcher from '../../common/FieldDispatcher'
 
-const modalHeaderProps: BlockProps = {
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: '2rem',
-}
-
-const modalBlockProps: BlockProps = {
-  width: '960px',
-  paddingRight: '2rem',
-  paddingLeft: '2rem',
-}
-
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-}
 
 type ModalProcessProps = {
   title: string
@@ -131,7 +114,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
-      <Block {...modalBlockProps}>
+      <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -149,7 +132,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
             return (
               <Form onKeyDown={disableEnter}>
                 <ModalHeader>
-                  <Block {...modalHeaderProps}>{title}</Block>
+                  <div className="flex justify-center mb-8">{title}</div>
                 </ModalHeader>
 
                 <ModalBody>
@@ -179,9 +162,9 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
                   <CustomizedModalBlock>
                     <ModalLabel label='Er behandlingen innført i NAV?' />
-                    <Block>
+                    <div>
                       <BoolField value={formikBag.values.dpia?.processImplemented} fieldName="dpia.processImplemented" omitUndefined />
-                    </Block>
+                    </div>
                   </CustomizedModalBlock>
 
                   {!env.disableRiskOwner && (
@@ -210,19 +193,19 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
                   <CustomizedModalBlock>
                     <ModalLabel label='Bruker alle opplysningstyper' tooltip='Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet.' />
-                    <Block>
+                    <div>
                       <BoolField
                         value={formikBag.values.usesAllInformationTypes}
                         fieldName="usesAllInformationTypes"
                         omitUndefined
                         firstButtonLabel='(Brukes unntaksvis)'
                       />
-                    </Block>
+                    </div>
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
                     <ModalLabel label='Status på utfylling' />
-                    <Block {...rowBlockProps}>
+                    <div className="flex w-full mt-4">
                       <Field
                         name="status"
                         render={({ form }: FieldProps<ProcessFormValues>) => (
@@ -233,7 +216,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                           </RadioGroup>
                         )}
                       />
-                    </Block>
+                    </div>
                   </CustomizedModalBlock>
 
                   <StatelessAccordion
@@ -252,38 +235,38 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                       title={<ModalLabel label={<PanelTitle title='Organisering' expanded={expanded.indexOf('organizing') >= 0} />} />}
                       overrides={{ ...panelOverrides }}
                     >
-                      <Block display="flex" width="100%" justifyContent="space-between">
-                        <Block width="48%">
+                      <div className="flex w-full justify-between">
+                        <div className="w-[48%]">
                           <ModalLabel label='Avdeling' tooltip='Angi hvilken avdeling som har hovedansvar for behandlingen.' />
-                        </Block>
-                        <Block width="48%">
+                        </div>
+                        <div className="w-[48%]">
                           <ModalLabel label='Linja' tooltip='Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres.' />
-                        </Block>
-                      </Block>
+                        </div>
+                      </div>
 
-                      <Block display="flex" width="100%" justifyContent="space-between">
-                        <Block width="48%">
+                      <div className="flex w-full justify-between">
+                        <div className="w-[48%]">
                           <FieldDepartment department={formikBag.values.affiliation.department} />
-                        </Block>
-                        <Block width="48%">
+                        </div>
+                        <div className="w-[48%]">
                           <FieldSubDepartments formikBag={formikBag} />
-                        </Block>
-                      </Block>
+                        </div>
+                      </div>
 
-                      <Block display="flex" width="100%" justifyContent="space-between" marginTop={theme.sizing.scale400}>
-                        <Block width="48%">
+                      <div className="flex w-full justify-between mt-2.5">
+                        <div className="w-[48%]">
                           <ModalLabel label='Team (Oppslag i Teamkatalogen)' tooltip='Angi hvilke team som har forvaltningsansvaret for IT-systemene.' fullwidth={true} />
-                        </Block>
-                        <Block width="48%">
+                        </div>
+                        <div className="w-[48%]">
                           <ModalLabel fullwidth label='Felles behandlingsansvarlig' tooltip='Er NAV behandlingsansvarlig sammen med annen virksomhet?' />
-                        </Block>
-                      </Block>
+                        </div>
+                      </div>
 
-                      <Block display="flex" width="100%" justifyContent="space-between">
-                        <Block width="48%">
+                      <div className="flex w-full justify-between">
+                        <div className="w-[48]">
                           <FieldProductTeam productTeams={formikBag.values.affiliation.productTeams} fieldName="affiliation.productTeams" />
-                        </Block>
-                        <Block width="48%">
+                        </div>
+                        <div className="w-[48%]">
                           {showResponsibleSelect && (
                             <FieldCommonExternalProcessResponsible
                               thirdParty={formikBag.values.commonExternalProcessResponsible}
@@ -291,8 +274,8 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                             />
                           )}
                           {!showResponsibleSelect && <RadioBoolButton value={showResponsibleSelect} setValue={(b) => setShowResponsibleSelect(b!)} omitUndefined />}
-                        </Block>
-                      </Block>
+                        </div>
+                      </div>
                     </Panel>
 
                     <Panel key="legalBasis" title={<PanelTitle title='Behandlingsgrunnlag for hele behandlingen'expanded={expanded.indexOf('legalBasis') >= 0} />} overrides={{ ...panelOverrides }}>
@@ -301,25 +284,25 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                     </Panel>
 
                     <Panel key="automation" title={<PanelTitle title='Automatisering og profilering' expanded={expanded.indexOf('automation') >= 0} />} overrides={{ ...panelOverrides }}>
-                      <Block {...rowBlockProps}>
+                      <div className="flex w-full mt-4">
                         <ModalLabel label='Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling?' tooltip='Med helautomatisert behandling menes behandling som fører til en individuell avgjørelser eller vedtak uten menneskelig involvering' fullwidth={true} />
                         <BoolField fieldName="automaticProcessing" value={formikBag.values.automaticProcessing} justifyContent={'flex-end'} />
-                      </Block>
-                      <Block {...rowBlockProps}>
+                      </div>
+                      <div className="flex w-full mt-4">
                         <ModalLabel label='Benyttes profilering' tooltip='Med profilering menes det å utlede nye egenskaper, tilbøyeligheter eller behov hos en bruker etter sammenligning med andre brukere i liknende omstendigheter' />
                         <BoolField fieldName="profiling" value={formikBag.values.profiling} justifyContent={'flex-end'} />
-                      </Block>
+                      </div>
                     </Panel>
 
                     <Panel key="dataProcessor" title={<PanelTitle title='Databehandler' expanded={expanded.indexOf('dataProcessor') >= 0} />} overrides={{ ...panelOverrides }}>
-                      <Block {...rowBlockProps} marginTop={0}>
+                      <div className="flex w-full mt-0">
                         <ModalLabel label='Benyttes databehandler(e)' tooltip='En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne.' />
                         <BoolField fieldName="dataProcessing.dataProcessor" value={formikBag.values.dataProcessing.dataProcessor} />
-                      </Block>
+                      </div>
 
                       {formikBag.values.dataProcessing.dataProcessor && (
                         <>
-                          <Block {...rowBlockProps}>
+                          <div className="flex w-full mt-4">
                             <ModalLabel label='Databehandler' />
                             <FieldDataProcessors
                               formikBag={formikBag}
@@ -331,7 +314,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                 }
                               })}
                             />
-                          </Block>
+                          </div>
                           <Error fieldName="dataProcessing.processors" />
                           <FlexGridItem></FlexGridItem>
                         </>
@@ -350,7 +333,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                         <FieldDispatcher formikBag={formikBag} />
                       </CustomizedModalBlock>
 
-                      <Block width="100%" marginBottom={'5px'} display="flex">
+                      <div className="w-full flex mb-[5px]">
                         <ModalLabel label='Mottaker' />
                         <Select
                           value={thirdParty}
@@ -360,16 +343,16 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                           }}
                           overrides={{ Placeholder: { style: { color: 'black' } } }}
                         />
-                      </Block>
+                      </div>
 
                       <FieldArray
                         name="disclosures"
                         render={(arrayHelpers: FieldArrayRenderProps) => (
                           <>
-                            <Block width="100%">
-                              <Block width="100%" display="flex">
+                            <div className="w-full">
+                              <div className="w-full flex">
                                 <ModalLabel label='Utleveringer' />
-                                <Block width="100%">
+                                <div className="w-full">
                                   <Select
                                     disabled={thirdParty.length === 0}
                                     noResultsMsg='Ingen eksisterende utleveringer passer til søket. Opprett ny utlevering før du legger den til her.'
@@ -381,15 +364,15 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     valueKey="id"
                                     overrides={{ Placeholder: { style: { color: 'black' } } }}
                                   />
-                                  <Block>
+                                  <div>
                                     {renderTagList(
                                       formikBag.values.disclosures.map((d) => d.recipient.shortName + ':' + d.name),
                                       arrayHelpers,
                                     )}
-                                  </Block>
-                                </Block>
-                              </Block>
-                            </Block>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </>
                         )}
                       />
@@ -402,19 +385,19 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                     borderTop: 0,
                   }}
                 >
-                  <Block display="flex" justifyContent="flex-end">
-                    <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
+                  <div className="flex justify-end">
+                    <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
                     <Button type="button" kind={KIND.tertiary} onClick={onClose}>
                       Avbryt
                     </Button>
                     <ModalButton type="submit">Lagre</ModalButton>
-                  </Block>
+                  </div>
                 </ModalFooter>
               </Form>
             )
           }}
         />
-      </Block>
+      </div>
     </Modal>
   )
 }

@@ -17,7 +17,7 @@ export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddD
         <ParagraphMedium>Vil du legge til opplysningstyper?</ParagraphMedium>
       </ModalBody>
       <ModalFooter>
-        <Block display="flex" justifyContent="flex-end">
+        <div className="flex justify-end">
           <Button size="compact" kind="tertiary" marginRight onClick={closeModal}>
             Nei
           </Button>
@@ -42,7 +42,7 @@ export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddD
           >
             Legg til standardopplysningstyper
           </Button>
-        </Block>
+        </div>
       </ModalFooter>
     </Modal>
   )

@@ -1,33 +1,21 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { Block } from 'baseui/block'
+import { Button, KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { Block, BlockProps } from 'baseui/block'
 import { Radio, RadioGroup } from 'baseui/radio'
 import { Select, StatefulSelect } from 'baseui/select'
-import { codelist, ListName } from '../../../service/Codelist'
-import { Button, KIND } from 'baseui/button'
-import { InformationTypeShort, LegalBasesUse, PolicyFormValues } from '../../../constants'
+import { Tag, VARIANT } from 'baseui/tag'
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { getInformationTypesShort } from '../../../api'
+import { InformationTypeShort, LegalBasesUse, PolicyFormValues } from '../../../constants'
+import { codelist, ListName } from '../../../service/Codelist'
+import { disableEnter } from '../../../util/helper-functions'
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { policySchema } from '../../common/schema'
-import { Tag, VARIANT } from 'baseui/tag'
-import { Docs } from './TablePolicy'
 import FieldLegalBasis from '../common/FieldLegalBasis'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import { disableEnter } from '../../../util/helper-functions'
-
-const modalBlockProps: BlockProps = {
-  width: '750px',
-  paddingRight: '2rem',
-  paddingLeft: '2rem',
-}
-
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-}
+import { Docs } from './TablePolicy'
 
 const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => {
   return (
@@ -62,7 +50,7 @@ const FieldInformationType = () => {
       render={({ form }: FieldProps<PolicyFormValues>) => (
         <StatefulSelect
           maxDropdownHeight="400px"
-          noResultsMsg='Ingen'
+          noResultsMsg="Ingen"
           options={infoTypes}
           placeholder={form.values.informationType ? '' : 'Søk opplysningsyper'}
           initialState={{ value: form.values.informationType }}
@@ -82,7 +70,7 @@ const FieldLegalBasesUse = (props: { legalBasesUse: LegalBasesUse }) => {
       name="legalBasesUse"
       render={({ form }: FieldProps<PolicyFormValues>) => {
         return (
-          <Block width="100%">
+          <div className="w-full">
             <RadioGroup
               value={value}
               align="vertical"
@@ -97,10 +85,12 @@ const FieldLegalBasesUse = (props: { legalBasesUse: LegalBasesUse }) => {
               <Radio value={LegalBasesUse.UNRESOLVED}>Uavklart</Radio>
               <Radio value={LegalBasesUse.DEDICATED_LEGAL_BASES}>Har eget Behandlingsgrunnlag</Radio>
               <Radio value={LegalBasesUse.EXCESS_INFO}>
-                <CustomizedStatefulTooltip content='Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'>Overskuddsinformasjon</CustomizedStatefulTooltip>
+                <CustomizedStatefulTooltip content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.">
+                  Overskuddsinformasjon
+                </CustomizedStatefulTooltip>
               </Radio>
             </RadioGroup>
-          </Block>
+          </div>
         )
       }}
     />
@@ -122,7 +112,7 @@ type ModalPolicyProps = {
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, docs, title, addBatch }: ModalPolicyProps) => {
   return (
     <Modal onClose={onClose} isOpen={isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
-      <Block {...modalBlockProps}>
+      <div className="w-[750px] px-8">
         <Formik
           initialValues={initialValues}
           validationSchema={policySchema()}
@@ -135,29 +125,29 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
             return (
               <Form onKeyDown={disableEnter}>
                 <ModalHeader>
-                  <Block display="flex" justifyContent="space-around" marginBottom="2rem">
+                  <div className="flex justify-around mb-8">
                     {title}
                     {addBatch && (
                       <Button type="button" kind="secondary" size="compact" onClick={addBatch}>
                         Legg til flere fra et system
                       </Button>
                     )}
-                  </Block>
+                  </div>
                 </ModalHeader>
 
                 <ModalBody>
-                  <Block {...rowBlockProps}>
-                    <ModalLabel label='Opplysningstype' />
+                  <div className="flex w-full mt-4">
+                    <ModalLabel label="Opplysningstype" />
                     <FieldInformationType />
-                  </Block>
+                  </div>
                   <Error fieldName="informationType" />
 
-                  <Block {...rowBlockProps}>
-                    <ModalLabel label='Personkategori' />
+                  <div className="flex w-full mt-4">
+                    <ModalLabel label="Personkategori" />
                     <FieldArray
                       name="subjectCategories"
                       render={(arrayHelpers: FieldArrayRenderProps) => (
-                        <Block width="100%">
+                        <div className="w-full">
                           <Select
                             options={codelist.getParsedOptionsFilterOutSelected(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories)}
                             maxDropdownHeight="300px"
@@ -167,33 +157,33 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                             error={!!formikBag.errors.subjectCategories && !!formikBag.touched.subjectCategories}
                           />
                           {renderTagList(codelist.getShortnames(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories), arrayHelpers)}
-                        </Block>
+                        </div>
                       )}
                     />
-                  </Block>
+                  </div>
                   <Error fieldName="subjectCategories" />
 
                   {!!formikBag.values.documentIds?.length && docs && (
-                    <Block {...rowBlockProps}>
-                      <ModalLabel label='Dokumenter' />
+                    <div className="flex w-full mt-4">
+                      <ModalLabel label="Dokumenter" />
                       <FieldArray
                         name="documentIds"
                         render={(arrayHelpers: FieldArrayRenderProps) => (
-                          <Block width="100%">
+                          <div className="w-full">
                             {renderTagList(
                               formikBag.values.documentIds.map((id) => docs[id].name),
                               arrayHelpers,
                             )}
-                          </Block>
+                          </div>
                         )}
                       />
-                    </Block>
+                    </div>
                   )}
 
-                  <Block {...rowBlockProps}>
-                    <ModalLabel label='Behandlingsgrunnlag' />
+                  <div className="flex w-full mt-4">
+                    <ModalLabel label="Behandlingsgrunnlag" />
                     <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
-                  </Block>
+                  </div>
                   <Error fieldName="legalBasesUse" />
 
                   {formikBag.values.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && <FieldLegalBasis formikBag={formikBag} />}
@@ -201,19 +191,19 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                 <Error fieldName="legalBasesOpen" fullWidth={true} />
 
                 <ModalFooter>
-                  <Block display="flex" justifyContent="flex-end">
-                    <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
+                  <div className="flex justify-end">
+                    <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
                     <Button type="button" kind={KIND.tertiary} onClick={onClose}>
                       Avbryt
                     </Button>
                     <ModalButton type="submit">Lagre</ModalButton>
-                  </Block>
+                  </div>
                 </ModalFooter>
               </Form>
             )
           }}
         </Formik>
-      </Block>
+      </div>
     </Modal>
   )
 }

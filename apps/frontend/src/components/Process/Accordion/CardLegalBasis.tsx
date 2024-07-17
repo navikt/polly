@@ -19,35 +19,30 @@ import { paddingZero } from '../../common/Style'
 import shortid from 'shortid'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  marginTop: '1rem',
-  width: '100%',
-}
 
 const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
     {(msg: any) => (
-      <Block {...rowBlockProps} marginTop=".2rem">
+      <div className="flex mt-4 w-full">
         <Notification overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }} kind={NKIND.negative}>
           {msg}
         </Notification>
-      </Block>
+      </div>
     )}
   </ErrorMessage>
 )
 
 const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => {
   return (
-    <Block display="flex">
+    <div className="flex">
       <CustomizedStatefulTooltip content={sensitivityLevel === SensitivityLevel.ART6 ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
         : 'Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'}>
-        <Block display="flex">
+        <div className="flex">
           <LabelMedium>{text}</LabelMedium>
           <FontAwesomeIcon style={{ marginLeft: '.25rem' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
-        </Block>
+        </div>
       </CustomizedStatefulTooltip>
-    </Block>
+    </div>
   )
 }
 
@@ -93,7 +88,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
               sensitivityLevel === SensitivityLevel.ART9 ? 'Behandlingsgrunnlag for særlige kategorier' : 'Behandlingsgrunnlag',
               sensitivityLevel === SensitivityLevel.ART9 ? SensitivityLevel.ART9 : SensitivityLevel.ART6,
             )}
-            <Block {...rowBlockProps}>
+            <div className="flex mt-4 w-full">
               <Field
                 name="gdpr"
                 render={() => (
@@ -113,10 +108,10 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
                   />
                 )}
               />
-            </Block>
+            </div>
             <Error fieldName="gdpr" />
 
-            <Block {...rowBlockProps} display={codelist.requiresNationalLaw(form.values.gdpr) ? rowBlockProps.display : 'none'}>
+            <div className={`mt-4 w-full ${codelist.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}>
               <Field
                 name="nationalLaw"
                 render={() => (
@@ -134,10 +129,9 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
                   />
                 )}
               />
-            </Block>
+            </div>
             <Error fieldName="nationalLaw" />
-
-            <Block {...rowBlockProps} display={codelist.requiresDescription(form.values.gdpr) ? rowBlockProps.display : 'none'}>
+            <div className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex': 'hidden'}`}>
               <Field
                 name="description"
                 render={({ field }: FieldProps<string, LegalBasisFormValues>) => (
@@ -154,24 +148,23 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
                   />
                 )}
               />
-            </Block>
+            </div>
             <Error fieldName="description" />
-
-            <Block {...rowBlockProps} justifyContent="flex-end">
+            <div className="flex mt-4 w-full justify-end">
               <Button type="button" kind={KIND.tertiary} size={ButtonSize.compact} onClick={() => hideCard()}>
                 Avbryt
               </Button>
               <Button type="button" kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
                 {titleSubmitButton}
               </Button>
-            </Block>
+            </div>
 
             {form.values.gdpr && (
               <>
-                <Block {...rowBlockProps}>Forhåndsvisning</Block>
-                <Block {...rowBlockProps}>
+                <div className="flex mt-4 w-full">Forhåndsvisning</div>
+                <div className="flex mt-4 w-full ">
                   <LegalBasisView legalBasisForm={form.values} />
-                </Block>
+                </div>
               </>
             )}
           </Card>
