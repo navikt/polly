@@ -1,26 +1,25 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { Block } from 'baseui/block'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 
+import _ from 'lodash'
+import { convertPolicyToFormValues, getDocument } from '../../../api'
+import { getAlertForProcess } from '../../../api/AlertApi'
+import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from '../../../constants'
 import { codelist, ListName } from '../../../service/Codelist'
+import { theme } from '../../../util'
+import { useTable } from '../../../util/hooks'
+import { AuditButton } from '../../audit/AuditButton'
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
+import RouteLink from '../../common/RouteLink'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import ModalPolicy from './ModalPolicy'
-import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
-import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from '../../../constants'
-import { theme } from '../../../util'
-import { convertPolicyToFormValues, getDocument } from '../../../api'
-import { useTable } from '../../../util/hooks'
-import RouteLink from '../../common/RouteLink'
-import { AuditButton } from '../../audit/AuditButton'
-import _ from 'lodash'
-import { getAlertForProcess } from '../../../api/AlertApi'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 
 type TablePurposeProps = {
   process: Process
@@ -69,9 +68,9 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
         backgroundColor={theme.colors.primary100}
         headers={
           <>
-            <HeadCell title='Opplysningstype' column={'informationType'} tableState={[table, sortColumn]} />
-            <HeadCell title='Personkategori' column={'subjectCategories'} tableState={[table, sortColumn]} />
-            <HeadCell title='Behandlingsgrunnlag' column={'legalBases'} tableState={[table, sortColumn]} />
+            <HeadCell title="Opplysningstype" column={'informationType'} tableState={[table, sortColumn]} />
+            <HeadCell title="Personkategori" column={'subjectCategories'} tableState={[table, sortColumn]} />
+            <HeadCell title="Behandlingsgrunnlag" column={'legalBases'} tableState={[table, sortColumn]} />
             <HeadCell small />
           </>
         }
@@ -81,36 +80,36 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
             <React.Fragment key={index}>
               <Row>
                 <Cell>
-                  <Block display="flex" width="100%" justifyContent="space-between">
-                    <Block>
+                  <div className="flex w-full justify-between">
+                    <div>
                       <Sensitivity sensitivity={row.informationType.sensitivity} />
                       &nbsp;
                       <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
                         {row.informationType.name}
                       </RouteLink>
-                    </Block>
-                    <Block>
+                    </div>
+                    <div>
                       <CustomizedStatefulTooltip content={() => 'Dokument'}>
-                        <Block $style={{ opacity: '80%' }}>{!!row.documentIds?.length && '(' + row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') + ')'}</Block>
+                        <div className="opacity-80">{!!row.documentIds?.length && '(' + row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') + ')'}</div>
                       </CustomizedStatefulTooltip>
-                    </Block>
-                  </Block>
+                    </div>
+                  </div>
                 </Cell>
 
                 <Cell>{row.subjectCategories.map((sc) => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(', ')}</Cell>
                 <Cell>
-                  <Block>
+                  <div>
                     <LegalBasesNotClarified alert={alert?.policies.filter((p) => p.policyId === row.id)[0]} />
 
                     {row.legalBases && row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
-                  </Block>
+                  </div>
                 </Cell>
                 <Cell small>
-                  <Block display="flex" justifyContent="flex-end" width="100%">
+                  <div className="flex justify-end w-full">
                     <AuditButton id={row.id} kind="tertiary" />
                     {hasAccess && (
                       <>
-                        <CustomizedStatefulTooltip content='Redigér'>
+                        <CustomizedStatefulTooltip content="Redigér">
                           <Button
                             size={ButtonSize.compact}
                             kind={KIND.tertiary}
@@ -119,10 +118,10 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                               setShowEditModal(true)
                             }}
                           >
-                            <FontAwesomeIcon title='Redigér' icon={faEdit} />
+                            <FontAwesomeIcon title="Redigér" icon={faEdit} />
                           </Button>
                         </CustomizedStatefulTooltip>
-                        <CustomizedStatefulTooltip content='Slett'>
+                        <CustomizedStatefulTooltip content="Slett">
                           <Button
                             size={ButtonSize.compact}
                             kind={KIND.tertiary}
@@ -131,12 +130,12 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                               setShowDeleteModal(true)
                             }}
                           >
-                            <FontAwesomeIcon title='Slett' icon={faTrash} />
+                            <FontAwesomeIcon title="Slett" icon={faTrash} />
                           </Button>
                         </CustomizedStatefulTooltip>
                       </>
                     )}
-                  </Block>
+                  </div>
                 </Cell>
               </Row>
             </React.Fragment>
@@ -146,7 +145,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
 
       {showEditModal && currentPolicy && (
         <ModalPolicy
-          title='Rediger behandling for opplysningstype'
+          title="Rediger behandling for opplysningstype"
           initialValues={convertPolicyToFormValues(
             currentPolicy,
             process.policies.filter((p) => p.id !== currentPolicy.id),
@@ -166,14 +165,12 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
         <Modal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal} animate size="default">
           <ModalHeader>Bekreft sletting</ModalHeader>
           <ModalBody>
-            <ParagraphMedium>
-              Bekreft sletting av opplysningstypen {currentPolicy.informationType.name} for denne behandlingen
-            </ParagraphMedium>
+            <ParagraphMedium>Bekreft sletting av opplysningstypen {currentPolicy.informationType.name} for denne behandlingen</ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>
-            <Block display="flex" justifyContent="flex-end">
-              <Block alignSelf="flex-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</Block>
+            <div className="flex justify-end">
+              <div className="self-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</div>
               <Button kind="secondary" onClick={() => setShowDeleteModal(false)} overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}>
                 Avbryt
               </Button>
@@ -186,7 +183,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
               >
                 Slett
               </Button>
-            </Block>
+            </div>
           </ModalFooter>
         </Modal>
       )}
