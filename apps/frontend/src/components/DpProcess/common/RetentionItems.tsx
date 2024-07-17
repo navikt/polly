@@ -56,7 +56,7 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
                     onChange={({ value }) => setRetention(value[0] * 12 + retentionMonths)}
                   />
                 </div>
-                <div className="w-1/2 ml-[25px]">
+                <div className="w-1/2 mt-[25px]">
                   <Slider
                     overrides={sliderOverride('Måneder')}
                     min={0}

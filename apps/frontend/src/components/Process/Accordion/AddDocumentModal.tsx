@@ -51,15 +51,15 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[]; 
     <ul className={css({ paddingLeft: 0, width: '100%' })}>
       {informationTypes.map((informationType, index) => (
         <ListItem key={informationType.informationTypeId} sublist>
-          <Block display="flex" width="100%" justifyContent="space-between">
-            <Block display="flex" justifyContent="space-between" width="90%" alignItems="center">
-              <Block>
+          <div className="flex w-full justify-between">
+            <div className="flex justify-between w-[90%] items-center">
+              <div>
                 <Sensitivity sensitivity={informationType.informationType.sensitivity} />
                 &nbsp;
                 {informationType.informationType.name}
-              </Block>
-              <Block $style={{ opacity: '80%' }}>{informationType.subjectCategories.map((s) => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}</Block>
-            </Block>
+              </div>
+              <div className="opacity-80">{informationType.subjectCategories.map((s) => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}</div>
+            </div>
             <CustomizedStatefulTooltip content='Fjern'>
               <Button
                 size="compact"
@@ -77,7 +77,7 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[]; 
                 <FontAwesomeIcon icon={faMinusCircle} />{' '}
               </Button>
             </CustomizedStatefulTooltip>
-          </Block>
+          </div>
         </ListItem>
       ))}
     </ul>

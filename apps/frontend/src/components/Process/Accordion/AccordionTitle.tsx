@@ -37,7 +37,7 @@ const AccordionTitle = (props: AccordionTitleProps) => {
 
   return (
     <>
-      <Block ref={props.forwardRef}>
+      <div ref={props.forwardRef}>
         <LabelLarge color={theme.colors.primary}>
           {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
           <span> </span>
@@ -46,7 +46,7 @@ const AccordionTitle = (props: AccordionTitleProps) => {
           <span>{process.purposes.map((p) => codelist.getShortname(ListName.PURPOSE, p.code)).join(', ')}: </span>
           <span>{process.name}</span>
         </LabelLarge>
-      </Block>
+      </div>
       <div
         onClick={(e) => {
           e.stopPropagation()

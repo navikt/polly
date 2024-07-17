@@ -61,7 +61,7 @@ const Button = (props: ButtonProps) => {
   }
   return (
     <>
-      <div className={`inline ${props.marginLeft ? `ml-[${'ml-2.5'}]` : 0}`} />
+      <div className={`inline ${props.marginLeft ? 'ml-2.5' : ''}`} />
       <Tooltip tooltip={props.tooltip}>
         <BaseUIButton
           kind={baseuiKind}
@@ -78,7 +78,7 @@ const Button = (props: ButtonProps) => {
           {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} style={{ marginLeft: props.children ? '.5rem' : undefined }} />}
         </BaseUIButton>
       </Tooltip>
-      <div className={`inline ${props.marginLeft ? `ml-[${'ml-2.5'}]` : 0}`} />
+      <div className={`inline ${props.marginRight ? 'mr-2.5' : ''}`} />
     </>
   )
 }

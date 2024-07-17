@@ -1,34 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process } from '../../../constants'
-import { getInformationTypesBy } from '../../../api'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
-import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
-import { theme } from '../../../util'
-import { Block, BlockProps } from 'baseui/block'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { Select, Value } from 'baseui/select'
-import { codelist, ListName } from '../../../service/Codelist'
-import Button from '../../common/Button'
 import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { LabelMedium, LabelSmall } from 'baseui/typography'
-import { Sensitivity } from '../../InformationType/Sensitivity'
 import { KIND } from 'baseui/button'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Select, Value } from 'baseui/select'
+import { LabelMedium, LabelSmall } from 'baseui/typography'
+import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
+import React, { useEffect, useState } from 'react'
+import { getInformationTypesBy } from '../../../api'
+import { AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process } from '../../../constants'
+import { codelist, ListName } from '../../../service/Codelist'
+import { theme } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
-
-const modalBlockProps: BlockProps = {
-  width: '750px',
-  paddingRight: '2rem',
-  paddingLeft: '2rem',
-}
-
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  marginTop: '1rem',
-}
+import Button from '../../common/Button'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
+import { Sensitivity } from '../../InformationType/Sensitivity'
 
 type AddBatchInformationTypesProps = {
   isOpen: boolean
@@ -85,24 +71,24 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
             <Form onKeyDown={disableEnter}>
               <ModalHeader>Legg til en samling av opplysningstyper</ModalHeader>
               <ModalBody>
-                <Block {...modalBlockProps}>
-                  <Block {...rowBlockProps} flexDirection="row">
-                    <ModalLabel label='Master i NAV' />
+                <div className="w-[750px] px-8">
+                  <div className=" flex w-full mt-4 flex-row">
+                    <ModalLabel label="Master i NAV" />
                     <Select
                       autoFocus
                       isLoading={searchLoading}
                       options={codelist.getParsedOptions(ListName.SYSTEM)}
                       maxDropdownHeight="400px"
                       value={system}
-                      placeholder='System'
+                      placeholder="System"
                       onChange={(params) => {
                         setSystem(params.value)
                       }}
                     />
-                  </Block>
-                </Block>
+                  </div>
+                </div>
 
-                <Block {...modalBlockProps} marginTop={theme.sizing.scale200}>
+                <div className="w-[750px] px-8 mt-1.5">
                   <FieldArray
                     name="informationTypes"
                     render={(informationTypesProps: FieldArrayRenderProps) => {
@@ -115,47 +101,39 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                             <>
                               {!!addable.length && (
                                 <>
-                                  <Block display="flex" flexDirection="column">
+                                  <div className="flex flex-col">
                                     <LabelMedium marginTop={theme.sizing.scale600}>Opplysningstyper ja</LabelMedium>
-                                    <Block {...rowBlockProps}>
+                                    <div className="flex flex-col w-full mt-4">
                                       {addable.map((it) => (
-                                        <Block key={it.id} display="flex" alignItems="center" marginBottom={theme.sizing.scale100} marginTop={theme.sizing.scale100}>
+                                        <div key={it.id} className="flex items-center my-1">
                                           <LabelMedium>{it.name}</LabelMedium>
-                                          <Button size="compact" kind="tertiary" shape="round" tooltip='Legg til' onClick={() => informationTypesProps.push(mapToUse(it))}>
+                                          <Button size="compact" kind="tertiary" shape="round" tooltip="Legg til" onClick={() => informationTypesProps.push(mapToUse(it))}>
                                             <FontAwesomeIcon icon={faPlusCircle} />
                                           </Button>
-                                        </Block>
+                                        </div>
                                       ))}
-                                    </Block>
-                                  </Block>
+                                    </div>
+                                  </div>
                                 </>
                               )}
-                              {!addable.length && !infoTypes.length && (
-                                <LabelMedium marginTop={theme.sizing.scale600}>
-                                  Ingen opplysningstyper
-                                </LabelMedium>
-                              )}
-                              {!addable.length && !!infoTypes.length && (
-                                <LabelMedium marginTop={theme.sizing.scale600}>
-                                  Alle opplysningstyper lagt til
-                                </LabelMedium>
-                              )}
+                              {!addable.length && !infoTypes.length && <LabelMedium marginTop={theme.sizing.scale600}>Ingen opplysningstyper</LabelMedium>}
+                              {!addable.length && !!infoTypes.length && <LabelMedium marginTop={theme.sizing.scale600}>Alle opplysningstyper lagt til</LabelMedium>}
 
-                              <Block marginTop={theme.sizing.scale600} marginBottom={theme.sizing.scale600} width="100%" $style={{ borderBottom: '1px solid' }} />
+                              <div className="my-4 w-full border-solid border-b-[1px]" />
                             </>
                           )}
 
-                          <Block {...rowBlockProps}>
+                          <div className="flex flex-col w-full mt-4">
                             {added.map((it, idx) => (
                               <React.Fragment key={it.informationType.id}>
-                                <Block display="flex" justifyContent="space-between" alignItems="center" marginBottom={theme.sizing.scale100} marginTop={theme.sizing.scale100}>
+                                <div className="flex justify-between items-center my-1">
                                   <LabelMedium>
                                     <Sensitivity sensitivity={it.informationType.sensitivity} />
                                     &nbsp;
                                     {it.informationType.name}
                                   </LabelMedium>
 
-                                  <Block width="60%" display="flex" alignItems="center">
+                                  <div className="w-[60%] flex item-center">
                                     <LabelSmall marginRight={theme.sizing.scale100}>Personkategori: </LabelSmall>
                                     <Select
                                       options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
@@ -165,40 +143,40 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                                         informationTypesProps.replace(idx, { ...it, subjectCategories })
                                       }}
                                     />
-                                    <Button marginLeft size="compact" kind="tertiary" shape="round" tooltip='Fjern' onClick={() => informationTypesProps.remove(idx)}>
+                                    <Button marginLeft size="compact" kind="tertiary" shape="round" tooltip="Fjern" onClick={() => informationTypesProps.remove(idx)}>
                                       <FontAwesomeIcon icon={faMinusCircle} />
                                     </Button>
-                                  </Block>
-                                </Block>
-                                <Block>
+                                  </div>
+                                </div>
+                                <div>
                                   {' '}
                                   <Error fieldName={`informationTypes[${idx}]`} />{' '}
-                                </Block>
-                                <Block>
+                                </div>
+                                <div>
                                   {' '}
                                   <Error fieldName={`informationTypes[${idx}].informationType`} />{' '}
-                                </Block>
-                                <Block>
+                                </div>
+                                <div>
                                   {' '}
                                   <Error fieldName={`informationTypes[${idx}].subjectCategories`} />{' '}
-                                </Block>
+                                </div>
                               </React.Fragment>
                             ))}
-                          </Block>
+                          </div>
                         </>
                       )
                     }}
                   />
-                </Block>
+                </div>
               </ModalBody>
               <ModalFooter>
-                <Block display="flex" justifyContent="flex-end">
-                  <Block alignSelf="flex-end">{props.error && <p>{props.error}</p>}</Block>
+                <div className="flex justify-end">
+                  <div className="self-end">{props.error && <p>{props.error}</p>}</div>
                   <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
                     Avbryt
                   </Button>
                   <ModalButton type="submit">Legg til</ModalButton>
-                </Block>
+                </div>
               </ModalFooter>
             </Form>
           )
