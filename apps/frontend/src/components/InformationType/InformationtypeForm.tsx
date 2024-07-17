@@ -118,12 +118,12 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 <Field
                   name="name"
                   render={({ form, field }: FieldProps) => (
-                    <Block>
+                    <div>
                       <Block {...labelProps}>
                         <LabelMedium>Navn</LabelMedium>
                       </Block>
                       <Input {...field} error={!!form.errors.name && !!form.submitCount} />
-                    </Block>
+                    </div>
                   )}
                 />
                 <Error fieldName="name" fullWidth />
