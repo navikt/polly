@@ -34,16 +34,16 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
       </ModalBody>
 
       <ModalFooter>
-        <Block display="flex" justifyContent="flex-end">
-          <Block alignSelf="flex-end">{errorProcessorModal && <p>{errorProcessorModal}</p>}</Block>
+        <div className="flex justify-end">
+          <div className="self-end">{errorProcessorModal && <p>{errorProcessorModal}</p>}</div>
           <Button kind="secondary" onClick={onClose}>
             Avbryt
           </Button>
-          <Block display="inline" marginRight={theme.sizing.scale500} />
+          <div className="inline mr-3"/>
           <Button onClick={() => submitDeleteProcessor(processor).then(onClose)} disabled={usageCount > 0}>
             Slett
           </Button>
-        </Block>
+        </div>
       </ModalFooter>
     </Modal>
   )

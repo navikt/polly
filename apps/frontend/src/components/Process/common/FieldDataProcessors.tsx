@@ -1,11 +1,9 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { Block } from 'baseui/block'
-import { ProcessFormValues } from '../../../constants'
 import { Option, Select } from 'baseui/select'
-import { renderTagList } from '../../common/TagList'
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
+import { ProcessFormValues } from '../../../constants'
+import { renderTagList } from '../../common/TagList'
 
 type fieldDataProcessorsProps = {
   formikBag: FormikProps<ProcessFormValues>
@@ -30,11 +28,11 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
       name="dataProcessing.processors"
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <Block width="100%">
-            <Block width="100%">
+          <div className="w-full">
+            <div className="w-full">
               <Select
                 clearable
-                noResultsMsg='Databehandler er ikke registrert i løsningen. Registrer databehandleren først.'
+                noResultsMsg="Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
                 options={props.options
                   .sort((a, b) => (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString()))
                   .filter((dp) => !props.formikBag.values.dataProcessing.processors.includes(dp.id ? dp.id.toString() : ''))}
@@ -45,8 +43,8 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
                   arrayHelpers.form.setFieldValue('dataProcessing.processors', [...(props.formikBag.values.dataProcessing.processors || []), ...params.value.map((v) => v.id)])
                 }}
               />
-            </Block>
-            <Block>
+            </div>
+            <div>
               {props.formikBag.values.dataProcessing.processors &&
                 renderTagList(
                   props.formikBag.values.dataProcessing.processors.map((dp) => {
@@ -60,8 +58,8 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
                   }),
                   arrayHelpers,
                 )}
-            </Block>
-          </Block>
+            </div>
+          </div>
         </>
       )}
     />

@@ -54,10 +54,10 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
               sensitivityLevel={sensitivityLevel}
             />
           ) : (
-            <Block display={'flex'} width={'100%'}>
-              <Block width={'100%'}>
+            <div className="flex w-full">
+              <div className="w-full">
                 <CustomizedStatefulTooltip content='Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'>
-                  <Block>
+                  <div>
                     <Button
                       size={ButtonSize.compact}
                       kind={KIND.tertiary}
@@ -66,17 +66,17 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                         setSensitivityLevel(SensitivityLevel.ART6)
                       }}
                       startEnhancer={() => (
-                        <Block display="flex" justifyContent="center">
+                        <div className="flex justify-center">
                           <Plus size={22} />
-                        </Block>
+                        </div>
                       )}
                     >
                       Behandlingsgrunnlag
                     </Button>
-                  </Block>
+                  </div>
                 </CustomizedStatefulTooltip>
 
-                <Block>
+                <div>
                   <ListLegalBases
                     sensitivityLevel={SensitivityLevel.ART6}
                     legalBases={formikBag.values.legalBases}
@@ -88,12 +88,12 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                       formikBag.setFieldValue('legalBasesOpen', true)
                     }}
                   />
-                </Block>
-              </Block>
+                </div>
+              </div>
 
-              <Block width={'100%'}>
+              <div className="w-full">
                 <CustomizedStatefulTooltip content='Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'>
-                  <Block>
+                  <div>
                     <Button
                       size={ButtonSize.compact}
                       kind={KIND.tertiary}
@@ -102,16 +102,16 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                         setSensitivityLevel(SensitivityLevel.ART9)
                       }}
                       startEnhancer={() => (
-                        <Block display="flex" justifyContent="center">
+                        <div className="flex justify-center">
                           <Plus size={22} />
-                        </Block>
+                        </div>
                       )}
                     >
                       Behandlingsgrunnlag for særlige kategorier
                     </Button>
-                  </Block>
+                  </div>
                 </CustomizedStatefulTooltip>
-                <Block>
+                <div>
                   <ListLegalBases
                     sensitivityLevel={SensitivityLevel.ART9}
                     legalBases={formikBag.values.legalBases}
@@ -125,9 +125,9 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                       formikBag.setFieldValue('legalBasesOpen', true)
                     }}
                   />
-                </Block>
-              </Block>
-            </Block>
+                </div>
+              </div>
+            </div>
           )}
         </>
       )}
