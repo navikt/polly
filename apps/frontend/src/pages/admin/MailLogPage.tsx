@@ -69,7 +69,7 @@ export const MailLogPage = () => {
         const rowNum = log.pageNumber * log.pageSize + i + 1
 
         return (
-          <Block key={i} marginBottom={theme.sizing.scale800}>
+          <div key={i} className="mb-6">
             <HeadingXSmall marginBottom={0}>
               #{rowNum} Tid: {moment(l.time).format('lll')} Til: {l.to}
             </HeadingXSmall>
@@ -79,11 +79,11 @@ export const MailLogPage = () => {
             <Card>
               <Markdown source={html} escapeHtml={false} />
             </Card>
-          </Block>
+          </div>
         )
       })}
 
-      <Block display="flex" justifyContent="space-between" marginTop="1rem">
+      <div className="flex justify-between mt-4">
         <StatefulPopover
           content={({ close }) => (
             <StatefulMenu
@@ -109,7 +109,7 @@ export const MailLogPage = () => {
           onPageChange={({ nextPage }) => handlePageChange(nextPage)}
           labels={{ nextButton: "Neste", prevButton: "Forrige" }}
         />
-      </Block>
+      </div>
     </>
   )
 }
