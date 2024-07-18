@@ -155,7 +155,7 @@ const Visualization = (props: VisualizationProps) => {
                 {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover} />}
               </div>
             )}
-            <div className={`mx-1.5 ${noChartData ? '-mt-2.5': ''}`}>
+            <div className={`mx-1.5 ${noChartData ? 'mt-2.5': ''}`}>
               <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
               {!noChartData &&
                 data.map((d, idx) => (
