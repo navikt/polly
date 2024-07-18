@@ -40,9 +40,6 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
   return (
     <>
       {!showDates ? (
-          // display: 'flex',
-          // width: '100%',
-          // marginTop: '1rem',
         <div className="flex w-full mt-4">
           <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
             Velg datoer

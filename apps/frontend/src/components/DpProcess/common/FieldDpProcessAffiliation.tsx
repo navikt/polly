@@ -33,7 +33,7 @@ const FieldDpProcessAffiliation = (props: FieldDpProcessAffiliationProps) => {
         <div className="w-[48%]">
           <FieldDpProcessDepartment department={formikBag.values.affiliation.department} />
         </div>
-        <div className="48%">
+        <div className="w-[48%]">
           <FieldSubDepartments formikBag={formikBag} />
         </div>
       </div>
