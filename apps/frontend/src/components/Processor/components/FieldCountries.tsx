@@ -12,8 +12,8 @@ const FieldCountries = (props: { formikBag: FormikProps<ProcessorFormValues> }) 
   return (
     <FieldArray name="countries">
       {(arrayHelpers: FieldArrayRenderProps) => (
-        <Block width="100%">
-          <Block width="100%">
+        <div className="w-full">
+          <div className="w-full">
             <Select
               clearable
               options={codelist
@@ -25,16 +25,16 @@ const FieldCountries = (props: { formikBag: FormikProps<ProcessorFormValues> }) 
               }}
               maxDropdownHeight={'400px'}
             />
-          </Block>
-          <Block>
-            <Block>
+          </div>
+          <div>
+            <div>
               {renderTagList(
                 countries.map((c) => codelist.countryName(c)),
                 arrayHelpers,
               )}
-            </Block>
-          </Block>
-        </Block>
+            </div>
+          </div>
+        </div>
       )}
     </FieldArray>
   )

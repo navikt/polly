@@ -211,8 +211,8 @@ export const MainSearch = () => {
   const location = useLocation()
 
   return (
-    <Block>
-      <Block display="flex" alignItems="center">
+    <div>
+      <div className="flex items-center">
         <Select
           noResultsMsg='Ingen'
           autoFocus={location.pathname === '/'}
@@ -280,9 +280,9 @@ export const MainSearch = () => {
         >
           <img aria-label='Filter'/>
         </Button>
-      </Block>
+      </div>
       {filter && <SelectType type={type} setType={setType} />}
-    </Block>
+    </div>
   )
 }
 

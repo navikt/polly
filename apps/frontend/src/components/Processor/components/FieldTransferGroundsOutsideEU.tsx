@@ -21,7 +21,7 @@ const FieldTransferGroundsOutsideEU = (props: { code?: string }) => {
   return (
     <Field name="transferGroundsOutsideEU">
       {({ form }: FieldProps<string, ProcessorFormValues>) => (
-        <Block width={'100%'}>
+        <div className="w-full">
           <Select
             options={codelist.getParsedOptions(ListName.TRANSFER_GROUNDS_OUTSIDE_EU)}
             onChange={({ value }) => {
@@ -31,7 +31,7 @@ const FieldTransferGroundsOutsideEU = (props: { code?: string }) => {
             value={value}
             error={!!(form.errors.transferGroundsOutsideEU && form.touched.transferGroundsOutsideEU)}
           />
-        </Block>
+        </div>
       )}
     </Field>
   )

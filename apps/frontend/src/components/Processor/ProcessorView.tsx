@@ -38,7 +38,6 @@ const ProcessorView = () => {
   const hasAccess = () => user.canWrite()
   const navigate = useNavigate()
   const params = useParams<{ id?: string }>()
-  const dividerDistance = theme.sizing.scale2400
 
   useEffect(() => {
     ;(async () => {
@@ -160,11 +159,11 @@ const ProcessorView = () => {
                       </div>
                       <>
                         {currentProcessor.outsideEU && (
-                          <Block>
-                            <Block className="flex whitespace-pre-wrap m-0 text-base">
+                          <div>
+                            <div className="flex whitespace-pre-wrap m-0 text-base">
                               <span>{boolToText(currentProcessor.outsideEU)}</span>
-                            </Block>
-                          </Block>
+                            </div>
+                          </div>
                         )}
                         {currentProcessor.outsideEU && (
                           <>
