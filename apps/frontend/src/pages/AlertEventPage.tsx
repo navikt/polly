@@ -123,33 +123,33 @@ export const AlertEventPage = () => {
 
   return (
     <>
-      <Block display="flex" width="100%" justifyContent="space-between" alignItems="center">
+      <div className="flex w-full justify-between items-center">
         <HeadingLarge>Varsler</HeadingLarge>
         {(state.informationTypeId || state.processId || state.disclosureId) && (
-          <Block display="flex" alignItems="center">
+          <div className="flex items-center">
             <LabelMedium>Filter: </LabelMedium>
             <Button kind="secondary" size="compact" marginLeft marginRight iconEnd={faTimes} onClick={() => dispatch({ type: 'OBJECT_FILTER' })}>
               {state.processId && "Behandling"}
               {state.informationTypeId && "Opplysningstype"}
               {state.disclosureId && "Utlevering"}
             </Button>
-          </Block>
+          </div>
         )}
-      </Block>
-      <Block width="100%" display="flex" marginBottom={theme.sizing.scale200}>
-        <Block width="50%" display="flex" justifyContent="flex-start" alignItems="center">
+      </div>
+      <div className="w-full flex mb-1.5">
+        <div className="w-1/2 flex justify-start items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
           <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: tekster[t] }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
-        </Block>
+        </div>
 
-        <Block width="50%" display="flex" justifyContent="flex-end" alignItems="center">
+        <div className="w-1/2 flex justify-end items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
           {levelButton('Alle')}
           {levelButton('Info', AlertEventLevel.INFO)}
           {levelButton('Advarsel', AlertEventLevel.WARNING)}
           {levelButton('Feil', AlertEventLevel.ERROR)}
-        </Block>
-      </Block>
+        </div>
+      </div>
       <Table
         emptyText="Ingen varsler"
         headers={
@@ -205,7 +205,7 @@ export const AlertEventPage = () => {
           </Row>
         ))}
       </Table>
-      <Block display="flex" justifyContent="space-between" marginTop="1rem">
+      <div className="flex justify-between mt-4">
         <StatefulPopover
           placement={PLACEMENT.bottom}
           content={({ close }) => (
@@ -233,7 +233,7 @@ export const AlertEventPage = () => {
           onPageChange={(a) => setPage(a.nextPage)}
           labels={{ nextButton: "Neste", preposition: "av", prevButton: "Forrige" }}
         />
-      </Block>
+      </div>
     </>
   )
 }

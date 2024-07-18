@@ -87,7 +87,7 @@ const ProcessPage = () => {
 
   return (
     <>
-      <Block overrides={{ Block: { props: { role: 'main' } } }}>
+      <div role="main">
         {section && code && <PageHeader section={section} code={code} />}
         {section && code && (
           <div>
@@ -108,7 +108,7 @@ const ProcessPage = () => {
                 isEditable={true}
                 thirdTabTitle="Dashboard"
                 thirdTabContent={
-                  <Block marginBottom={theme.sizing.scale1200}>
+                  <div className="mb-12">
                     <HeadingSmall>Oversikt</HeadingSmall>
                     <Charts
                       chartData={chartData!}
@@ -116,13 +116,13 @@ const ProcessPage = () => {
                       departmentCode={code}
                       type={section === Section.department ? Section.department : Section.productarea}
                     />
-                  </Block>
+                  </div>
                 }
               />
             )}
           </div>
         )}
-      </Block>
+      </div>
     </>
   )
 }

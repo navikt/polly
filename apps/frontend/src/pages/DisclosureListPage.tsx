@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { HeadingLarge, LabelMedium } from 'baseui/typography'
-import { theme } from '../util'
-import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
-import { useQueryParam, useTable } from '../util/hooks'
-import { Block } from 'baseui/block'
-import { Button, Button as BButton, KIND } from 'baseui/button'
+import { Button as BButton, Button, KIND } from 'baseui/button'
 import { ButtonGroup } from 'baseui/button-group'
-import { useNavigate } from 'react-router-dom'
-import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { ObjectLink } from '../components/common/RouteLink'
-import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
-import { ListName } from '../service/Codelist'
-import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import { user } from '../service/User'
 import { Plus } from 'baseui/icon'
-import SearchProcess from '../components/common/SearchProcess'
-import { checkForAaregDispatcher } from '../util/helper-functions'
+import { HeadingLarge, LabelMedium } from 'baseui/typography'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
-import {ampli} from "../service/Amplitude";
+import { ObjectLink } from '../components/common/RouteLink'
+import SearchProcess from '../components/common/SearchProcess'
+import { Cell, HeadCell, Row, Table } from '../components/common/Table'
+import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
+import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { ListName } from '../service/Codelist'
+import { user } from '../service/User'
+import { theme } from '../util'
+import { checkForAaregDispatcher } from '../util/helper-functions'
+import { useQueryParam, useTable } from '../util/hooks'
 
 enum FilterType {
   legalbases = 'legalbases',
@@ -46,7 +45,7 @@ export const DisclosureListPage = () => {
   const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Utleveringer', url: '/disclosure', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Utleveringer', url: '/disclosure', app: 'Behandlingskatalogen' })
 
   const initialFormValues: DisclosureFormValues = {
     name: '',
@@ -63,7 +62,7 @@ export const DisclosureListPage = () => {
     processIds: [],
     administrationArchiveCaseNumber: '',
     assessedConfidentiality: undefined,
-    confidentialityDescription: undefined
+    confidentialityDescription: undefined,
   }
 
   useEffect(() => {
@@ -119,12 +118,10 @@ export const DisclosureListPage = () => {
 
   return (
     <>
-      <Block display="flex" justifyContent="space-between" alignItems="center">
+      <div className="flex justify-between items-center">
         <HeadingLarge>Utleveringer</HeadingLarge>
-        <Block>
-          <LabelMedium marginBottom={theme.sizing.scale600}>
-            Filter behandlingsgrunnlag
-          </LabelMedium>
+        <div>
+          <LabelMedium marginBottom={theme.sizing.scale600}>Filter behandlingsgrunnlag</LabelMedium>
           <ButtonGroup selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2} mode="radio" shape="pill">
             <BButton
               onClick={() =>
@@ -154,37 +151,37 @@ export const DisclosureListPage = () => {
               Ufullstendig
             </BButton>
           </ButtonGroup>
-        </Block>
-      </Block>
-      <Block display="flex" width="100%" marginBottom="12px">
-        <Block display="flex" flex="1">
-          <Block display="flex" flex="1">
+        </div>
+      </div>
+      <div className="flex w-full mb-3">
+        <div className="flex flex-1">
+          <div className="flex flex-1">
             <SearchProcess selectedProcess={selectedProcess} setSelectedProcess={setSelectedProcess} />
-          </Block>
-          <Block marginLeft="8px" display="flex">
+          </div>
+          <div className="ml-8px flex">
             <Button size="compact" onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}>
               {' '}
-              {showAaregAvtaleTable ? "Skjul Aa-reg avtaler" : "Vis Aa-reg avtaler"}
+              {showAaregAvtaleTable ? 'Skjul Aa-reg avtaler' : 'Vis Aa-reg avtaler'}
             </Button>
-          </Block>
-        </Block>
-        <Block display="flex" flex="1" justifyContent="flex-end">
+          </div>
+        </div>
+        <div className="flex flex-1 justify-end">
           {user.canWrite() && (
             <Button
               size="compact"
               kind={KIND.tertiary}
               onClick={() => setShowCreateModal(true)}
               startEnhancer={() => (
-                <Block display="flex" justifyContent="center">
+                <div className="flex justify-center">
                   <Plus size={22} />
-                </Block>
+                </div>
               )}
             >
               Opprett ny utlevering
             </Button>
           )}
-        </Block>
-      </Block>
+        </div>
+      </div>
       {!showAaregAvtaleTable && (
         <Table
           emptyText="Utleveringer"
@@ -210,25 +207,25 @@ export const DisclosureListPage = () => {
                 </ObjectLink>
               </Cell>
               <Cell>
-                <Block display="flex" flexDirection="column">
+                <div className="flex flex-col">
                   {d.processes.map((p) => (
-                    <Block key={p.id} marginRight={theme.sizing.scale400}>
+                    <div key={p.id} className="mr-2.5">
                       <ObjectLink id={p.id} type={ObjectType.PROCESS}>
                         {p.purposes.map((pu) => pu.shortName).join(', ')}: {p.name}
                       </ObjectLink>
-                    </Block>
+                    </div>
                   ))}
-                </Block>
+                </div>
               </Cell>
-              <Cell>{d.legalBases ? "Ja" : "Nei"}</Cell>
+              <Cell>{d.legalBases ? 'Ja' : 'Nei'}</Cell>
             </Row>
           ))}
         </Table>
       )}
       {((selectedProcess && checkForAaregDispatcher(selectedProcess)) || showAaregAvtaleTable) && (
-        <Block marginTop="12px">
+        <div className="mt-3">
           <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
-        </Block>
+        </div>
       )}
       <ModalThirdParty
         title="Opprett utlevering til ekstern part"

@@ -72,17 +72,17 @@ const InformationtypePage = () => {
 
   return (
     <>
-      <Block display="flex" justifyContent="space-between">
+      <div className="flex justify-between">
         <HeadingMedium marginTop="0">Opplysningstyper</HeadingMedium>
-        <Block>
+        <div>
           {user.canWrite() && (
             <Button kind="outline" onClick={() => navigate('/informationtype/create')}>
               <FontAwesomeIcon icon={faPlusCircle} />
               &nbsp;Opprett ny opplysningstype
             </Button>
           )}
-        </Block>
-      </Block>
+        </div>
+      </div>
       {!categoryUsages && <Spinner size={theme.sizing.scale1200} />}
       {categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages} />}
     </>

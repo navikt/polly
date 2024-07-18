@@ -22,25 +22,6 @@ import { renderTagList } from '../common/TagList'
 import FieldDepartment from "../Process/common/FieldDepartment";
 import FieldProductTeam from "../common/form/FieldProductTeam";
 
-
-const modalBlockProps: BlockProps = {
-  width: '960px',
-  paddingRight: '2rem',
-  paddingLeft: '2rem',
-}
-
-const modalHeaderProps: BlockProps = {
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: '2rem',
-}
-
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-}
-
 const panelOverrides = {
   Header: {
     style: {
@@ -116,7 +97,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
   const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } = props
   return (
     <Modal onClose={onClose} isOpen={isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
-      <Block {...modalBlockProps}>
+      <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -130,51 +111,51 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
           {(formikBag: FormikProps<DisclosureFormValues>) => (
             <Form>
               <ModalHeader>
-                <Block {...modalHeaderProps}>{title}</Block>
+                <div className="flex jusify-center mb-8">{title}</div>
               </ModalHeader>
 
               <ModalBody>
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Mottaker' />
                   <FieldRecipient value={formikBag.values.recipient} disabled={disableRecipientField} />
-                </Block>
+                </div>
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Navn på utlevering'
                               tooltip='Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap.' />
                   <FieldInput fieldName="name" fieldValue={formikBag.values.name} />
-                </Block>
+                </div>
                 <Error fieldName="name" />
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Formål med utlevering'
                               tooltip='Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak.' />
                   <FieldTextarea fieldName="recipientPurpose" fieldValue={formikBag.values.recipientPurpose} />
-                </Block>
+                </div>
                 <Error fieldName="recipientPurpose" />
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Ytterligere beskrivelse'
                               tooltip='Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende.' />
                   <FieldTextarea fieldName="description" fieldValue={formikBag.values.description} />
-                </Block>
+                </div>
                 <Error fieldName="description" />
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Relaterte behandlinger' />
-                  <Block width="100%">
+                  <div className="w-full">
                     <SelectProcess formikBag={formikBag} />
-                  </Block>
-                </Block>
+                  </div>
+                </div>
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Opplysningstyper' />
-                  <Block width="100%">
+                  <div className="w-full">
                     <SelectInformationTypes formikBag={formikBag} />
-                  </Block>
-                </Block>
+                  </div>
+                </div>
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Dokument'
                               tooltip='En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper.' />
                   <Field
@@ -188,29 +169,29 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                       />
                     )}
                   />
-                </Block>
+                </div>
                 <Error fieldName="document" />
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Saksnummer i adminstrativt arkiv' />
                   <FieldInput fieldName="administrationArchiveCaseNumber" fieldValue={formikBag.values.administrationArchiveCaseNumber} />
-                </Block>
+                </div>
                 <Error fieldName="administrationArchiveCaseNumber" />
 
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label='Utleveres personopplysningene til utlandet?' />
                   <BoolField fieldName="abroad.abroad" value={formikBag.values.abroad.abroad} />
-                </Block>
+                </div>
 
                 {formikBag.values.abroad.abroad && (
                   <>
-                    <Block {...rowBlockProps}>
+                    <div className="flex w-full mt-4">
                       <ModalLabel label='Land' />
                       <FieldArray
                         name="abroad.countries"
                         render={(arrayHelpers: FieldArrayRenderProps) => (
-                          <Block width="100%">
-                            <Block>
+                          <div className="w-full">
+                            <div>
                               <Select
                                 clearable
                                 options={codelist
@@ -222,50 +203,50 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                 }}
                                 maxDropdownHeight={'400px'}
                               />
-                            </Block>
-                            <Block>
-                              <Block>
+                            </div>
+                            <div>
+                              <div>
                                 {renderTagList(
                                   formikBag.values.abroad.countries.map((c) => codelist.countryName(c)),
                                   arrayHelpers,
                                 )}
-                              </Block>
-                            </Block>
-                          </Block>
+                              </div>
+                            </div>
+                          </div>
                         )}
                       />
-                    </Block>
+                    </div>
 
-                    <Block {...rowBlockProps}>
+                    <div className="flex w-full mt-4">
                       <ModalLabel label='Oppgi referanse til trygdeavtale' />
                       <FieldInput fieldName="abroad.refToAgreement" fieldValue={formikBag.values.abroad.refToAgreement} />
-                    </Block>
+                    </div>
 
-                    <Block {...rowBlockProps}>
+                    <div className="flex w-full mt-4">
                       <ModalLabel label='Trygdeområde' />
                       <FieldInput fieldName="abroad.businessArea" fieldValue={formikBag.values.abroad.businessArea} />
-                    </Block>
+                    </div>
                   </>
                 )}
 
-                <Block>
-                  <Block {...rowBlockProps}>
+                <div>
+                  <div className="flex w-full mt-4">
                     <ModalLabel label='Hjemmel for unntak fra taushetsplikt er vurdert' />
                     <BoolField fieldName="assessedConfidentiality" value={formikBag.values.assessedConfidentiality} omitUndefined={true} />
-                  </Block>
+                  </div>
                   <Error fieldName="assessedConfidentiality" />
-                </Block>
+                </div>
                 {
                   formikBag.values.assessedConfidentiality !== undefined &&
                   (<>
-                    <Block>
-                      <Block {...rowBlockProps}>
+                    <div>
+                      <div className="flex w-full mt-4">
                         <ModalLabel label={formikBag.values.assessedConfidentiality ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
                           : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'} />
                         <FieldTextarea fieldName="confidentialityDescription" fieldValue={formikBag.values.confidentialityDescription} />
-                      </Block>
+                      </div>
                       <Error fieldName="confidentialityDescription" />
-                    </Block>
+                    </div>
 
                   </>)
                 }
@@ -284,29 +265,29 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     title={<ModalLabel label={<PanelTitle title='Organisering' expanded={isPanelExpanded} />} />}
                     overrides={{ ...panelOverrides }}
                   >
-                    <Block display="flex" width="100%" justifyContent="space-between">
-                      <Block width="48%">
+                    <div className="flex w-full justify-between">
+                      <div className="w-[48%]">
                         <ModalLabel label='Avdeling' tooltip='Angi hvilken avdeling som har hovedansvar for behandlingen.' />
-                      </Block>
-                    </Block>
+                      </div>
+                    </div>
 
-                    <Block display="flex" width="100%" justifyContent="space-between">
-                      <Block width="48%">
+                    <div className="flex w-full justify-between">
+                      <div className="w-[48%]">
                         <FieldDepartment department={formikBag.values.department} fieldName="department" />
-                      </Block>
-                    </Block>
+                      </div>
+                    </div>
 
-                    <Block display="flex" width="100%" justifyContent="space-between" marginTop={theme.sizing.scale400}>
-                      <Block width="48%">
+                    <div className="flex w-full justify-between mt-2.5">
+                      <div className="w-[48%]">
                         <ModalLabel label='Team (Oppslag i Teamkatalogen)' tooltip='Angi hvilke team som har forvaltningsansvaret for IT-systemene.' fullwidth={true} />
-                      </Block>
-                    </Block>
+                      </div>
+                    </div>
 
-                    <Block display="flex" width="100%" justifyContent="space-between">
-                      <Block width="48%">
+                    <div className="flex w-full justify-between">
+                      <div className="w-[48%]">
                         <FieldProductTeam productTeams={formikBag.values.productTeams || []} fieldName="productTeams" />
-                      </Block>
-                    </Block>
+                      </div>
+                    </div>
                   </Panel>
                   <Panel
                     title={<PanelTitle title='Behandlingsgrunnlag' expanded={isPanelExpanded} />}
@@ -316,27 +297,27 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     }}
                     overrides={{ ...panelOverrides }}
                   >
-                    <Block marginTop={'1rem'}>
+                    <div className="mt-4">
                       <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
-                    </Block>
+                    </div>
                     <Error fieldName="legalBasesOpen" fullWidth={true} />
                   </Panel>
                 </Accordion>
               </ModalBody>
 
               <ModalFooter style={{ borderTop: 0 }}>
-                <Block display="flex" justifyContent="flex-end">
-                  <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
+                <div className="flex justify-end">
+                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
                   <Button type="button" kind="tertiary" onClick={() => onClose()}>
                     Avbryt
                   </Button>
                   <ModalButton type="submit">Lagre</ModalButton>
-                </Block>
+                </div>
               </ModalFooter>
             </Form>
           )}
         </Formik>
-      </Block>
+      </div>
     </Modal>
   )
 }

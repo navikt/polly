@@ -31,12 +31,12 @@ export const LegalPage = () => {
   }, [gdprArticle, nationalLaw])
 
   return (
-    <Block>
+    <div>
       <HeadingLarge>
         Søk behandlingsgrunnlag
       </HeadingLarge>
-      <Block display={'flex'}>
-        <Block width="40%">
+      <div className="flex">
+        <div className="w-[40%]">
           <HeadingSmall>Velg GDPR artikkel</HeadingSmall>
           <Select
             maxDropdownHeight="400px"
@@ -44,8 +44,8 @@ export const LegalPage = () => {
             options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
             onChange={(p) => navigate(location.pathname + '?' + queryString.stringify({ gdprArticle: val(p.value), nationalLaw }, { skipNull: true }))}
           />
-        </Block>
-        <Block width="40%" marginLeft={theme.sizing.scale400}>
+        </div>
+        <div className="w-[40%] ml-2.5">
           <HeadingSmall>
             og/eller nasjonal lov
           </HeadingSmall>
@@ -55,18 +55,18 @@ export const LegalPage = () => {
             options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
             onChange={(p) => navigate(location.pathname + '?' + queryString.stringify({ gdprArticle, nationalLaw: val(p.value) }, { skipNull: true }))}
           />
-        </Block>
-      </Block>
+        </div>
+      </div>
       <ProcessTable processes={processes} />
-    </Block>
+    </div>
   )
 }
 
 const ProcessTable = (props: { processes: Process[] }) => (
-  <Block display={'flex'} flexDirection={'column'}>
+  <div className="flex flex-col">
     <HeadingMedium>
       Behandlinger ({props.processes.length})
     </HeadingMedium>
     <SimpleProcessTable title={"Behandlinger" + ' (' + props.processes.length + ')'} processes={props.processes} />
-  </Block>
+  </div>
 )
