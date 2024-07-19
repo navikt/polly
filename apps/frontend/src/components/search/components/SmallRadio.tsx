@@ -41,7 +41,7 @@ export const SmallRadio = (value: SearchType, text: string) => {
         },
       }}
     >
-      <Block font="ParagraphXSmall">{text}</Block>
+      <div className="text-xs">{text}</div>
     </Radio>
   )
 }

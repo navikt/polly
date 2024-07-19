@@ -37,7 +37,7 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TablePr
   if (isLoading) return <Spinner size={theme.sizing.scale1200} />
 
   return (
-    <Block marginBottom={theme.sizing.scale1200}>
+    <div className="mb-12">
       <HeadingXLarge>
         {title} ({informationTypeList.length})
       </HeadingXLarge>
@@ -66,6 +66,6 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TablePr
           </Row>
         ))}
       </Table>
-    </Block>
+    </div>
   )
 }

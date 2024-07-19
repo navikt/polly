@@ -1,12 +1,10 @@
-import * as React from 'react'
 import { Select, Value } from 'baseui/select'
-import { codelist, ListName } from '../../../service/Codelist'
 import { Field, FieldProps } from 'formik'
+import * as React from 'react'
 import { ProcessFormValues } from '../../../constants'
-import { Block } from 'baseui/block'
+import { codelist, ListName } from '../../../service/Codelist'
 
-
-const FieldDepartment = (props: { department?: string, fieldName?: string }) => {
+const FieldDepartment = (props: { department?: string; fieldName?: string }) => {
   const { department } = props
   const [value, setValue] = React.useState<Value>(
     department
@@ -21,19 +19,19 @@ const FieldDepartment = (props: { department?: string, fieldName?: string }) => 
 
   return (
     <Field
-      name={props.fieldName ? props.fieldName : "affiliation.department"}
+      name={props.fieldName ? props.fieldName : 'affiliation.department'}
       render={({ form }: FieldProps<ProcessFormValues>) => (
-        <Block width={'100%'}>
+        <div className="w-full">
           <Select
             options={codelist.getParsedOptions(ListName.DEPARTMENT)}
             onChange={({ value }) => {
               setValue(value)
-              form.setFieldValue(props.fieldName ? props.fieldName :'affiliation.department', value.length > 0 ? value[0].id : '')
+              form.setFieldValue(props.fieldName ? props.fieldName : 'affiliation.department', value.length > 0 ? value[0].id : '')
             }}
             value={value}
             overrides={{ Placeholder: { style: { color: 'black' } } }}
           />
-        </Block>
+        </div>
       )}
     />
   )

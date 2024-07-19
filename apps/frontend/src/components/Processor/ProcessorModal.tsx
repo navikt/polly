@@ -31,18 +31,6 @@ type ModalProcessorProps = {
   onClose: () => void
 }
 
-const modalBlockProps: BlockProps = {
-  width: '960px',
-  paddingRight: '2rem',
-  paddingLeft: '2rem',
-}
-
-const modalHeaderProps: BlockProps = {
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: '2rem',
-}
-
 const panelOverrides: PanelOverrides = {
   Header: {
     style: {
@@ -57,12 +45,6 @@ const panelOverrides: PanelOverrides = {
   ToggleIcon: {
     component: () => null,
   },
-}
-
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
 }
 
 const ProcessorModal = (props: ModalProcessorProps) => {
@@ -82,7 +64,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
 
   return (
     <Modal onClose={props.onClose} isOpen={props.isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
-      <Block {...modalBlockProps}>
+      <div className="w-[960px] px-8">
         <Formik
           onSubmit={(values) => {
             props.submit(values)
@@ -90,10 +72,11 @@ const ProcessorModal = (props: ModalProcessorProps) => {
           initialValues={props.initialValues}
           validationSchema={dataProcessorSchema()}
         >
+
           {(formikBag) => (
             <Form onKeyDown={disableEnter}>
               <ModalHeader>
-                <Block {...modalHeaderProps}>{props.title}</Block>
+                <div className="flex justify-center mb-8">{props.title}</div>
               </ModalHeader>
               <ModalBody>
                 <CustomizedModalBlock>
@@ -142,32 +125,33 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                   expanded={expanded}
                   onChange={(e) => setExpanded(e.expanded)}
                 >
+
                   <Panel key={'transfer'} title={<PanelTitle title='Overføres data til utlandet' expanded={expanded.indexOf('transfer') >= 0} />} overrides={{ ...panelOverrides }}>
-                    <Block {...rowBlockProps} marginTop={0}>
+                    <div className="flex w-full mt-0">
                       <ModalLabel label='Behandler databehandler personopplysninger utenfor EU/EØS?' />
                       <BoolField fieldName="outsideEU" value={formikBag.values.outsideEU} />
-                    </Block>
+                    </div>
 
                     {formikBag.values.outsideEU && (
                       <>
-                        <Block {...rowBlockProps}>
+                        <div className="flex w-full mt-4">
                           <ModalLabel label='Overføringsgrunnlag for behandling utenfor EU/EØS'/>
                           <FieldTransferGroundsOutsideEU code={formikBag.values.transferGroundsOutsideEU} />
-                        </Block>
+                        </div>
                         <Error fieldName="transferGroundsOutsideEU" />
 
                         {formikBag.values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
-                          <Block {...rowBlockProps}>
+                          <div className="flex w-full mt-4">
                             <ModalLabel label='Andre overføringsgrunnlag' tooltip='Du har valgt at overføringsgrunnlaget er "annet", spesifiser grunnlaget her.' />
                             <FieldTransferGroundsOutsideEUOther />
-                          </Block>
+                          </div>
                         )}
                         <Error fieldName="transferGroundsOutsideEUOther" />
 
-                        <Block {...rowBlockProps}>
+                        <div className="flex w-full mt-4">
                           <ModalLabel label='Land' tooltip='I hvilke(t) land lagrer databehandleren personopplysninger i?' />
                           <FieldCountries formikBag={formikBag} />
-                        </Block>
+                        </div>
                         <Error fieldName="countries" />
                       </>
                     )}
@@ -179,18 +163,18 @@ const ProcessorModal = (props: ModalProcessorProps) => {
                   borderTop: 0,
                 }}
               >
-                <Block display="flex" justifyContent="flex-end">
-                  <Block alignSelf="flex-end">{props.errorMessage && <p>{props.errorMessage}</p>}</Block>
+                <div className="flex justify-end">
+                  <div className="self-end">{props.errorMessage && <p>{props.errorMessage}</p>}</div>
                   <Button type="button" kind={KIND.tertiary} onClick={props.onClose}>
                     Avbryt
                   </Button>
                   <ModalButton type="submit">Lagre</ModalButton>
-                </Block>
+                </div>
               </ModalFooter>
             </Form>
           )}
         </Formik>
-      </Block>
+      </div>
     </Modal>
   )
 }

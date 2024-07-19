@@ -11,8 +11,8 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
     <FieldArray
       name="affiliation.subDepartments"
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <Block width="100%">
-          <Block width="100%">
+        <div className="w-full">
+          <div className="w-full">
             <Select
               clearable
               options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT).filter((o) => !props.formikBag.values.affiliation.subDepartments.includes(o.id))}
@@ -21,16 +21,16 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
               }}
               overrides={{ Placeholder: { style: { color: 'black' } } }}
             />
-          </Block>
-          <Block>
-            <Block>
+          </div>
+          <div>
+            <div>
               {renderTagList(
                 props.formikBag.values.affiliation.subDepartments.map((p) => codelist.getShortname(ListName.SUB_DEPARTMENT, p)),
                 arrayHelpers,
               )}
-            </Block>
-          </Block>
-        </Block>
+            </div>
+          </div>
+        </div>
       )}
     />
   )

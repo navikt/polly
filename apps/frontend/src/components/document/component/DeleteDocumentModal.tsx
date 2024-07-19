@@ -30,14 +30,14 @@ const DeleteDocumentModal = ({ title, documentName = '', isOpen, onClose, submit
       </ModalBody>
 
       <ModalFooter>
-        <Block display="flex" justifyContent="flex-end">
+        <div className="flex justify-end">
           <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
             Avbryt
           </Button>
           <Button onClick={() => submit()} disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}>
             Slett
           </Button>
-        </Block>
+        </div>
       </ModalFooter>
     </Modal>
   )

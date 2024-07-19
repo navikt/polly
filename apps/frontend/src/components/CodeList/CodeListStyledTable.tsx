@@ -86,7 +86,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
             <Cell small>{row.shortName}</Cell>
             <Cell $style={{ width: '55%' }}>{row.description}</Cell>
             <Cell small>
-              <Block display="flex" justifyContent="flex-end" width="100%">
+              <div className="flex justify-end w-full">
                 <Button
                   tooltip='Vis bruk'
                   size={ButtonSize.compact}
@@ -121,7 +121,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
-              </Block>
+              </div>
             </Cell>
           </Row>
         ))}

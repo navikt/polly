@@ -1,17 +1,17 @@
-import * as React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleExclamation, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { ARTWORK_SIZES, ListItem } from 'baseui/list'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Block } from 'baseui/block'
 import { Button } from 'baseui/button'
+import { ARTWORK_SIZES, ListItem } from 'baseui/list'
+import * as React from 'react'
 
+import { StyledLink } from 'baseui/link'
+import { ParagraphMedium } from 'baseui/typography'
 import { LegalBasis, LegalBasisFormValues, PolicyAlert } from '../../constants'
 import { codelist, ListName, SensitivityLevel } from '../../service/Codelist'
-import { processString } from '../../util/string-processor'
 import { theme } from '../../util'
-import { StyledLink } from 'baseui/link'
 import { env } from '../../util/env'
-import { ParagraphMedium } from 'baseui/typography'
+import { processString } from '../../util/string-processor'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 export const LegalBasisView = (props: { legalBasis?: LegalBasis; legalBasisForm?: LegalBasisFormValues }) => {
@@ -70,52 +70,43 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
 }
 
 export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
-  const color = theme.colors.negative300
   const warningIcon = (
     <span>
-      <FontAwesomeIcon icon={faCircleExclamation} color={color} />
+      <FontAwesomeIcon icon={faCircleExclamation} color="{color}" />
       &nbsp;
     </span>
   )
   return (
-    <Block color={color}>
-      <Block>
+    <div className="text-[#E85C4A]">
+      <div>
         {props.alert?.missingLegalBasis && (
-          <CustomizedStatefulTooltip content='Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.'>
-            <span>
-              {warningIcon} Behandlingsgrunnlag er ikke avklart
-            </span>
+          <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
+            <span>{warningIcon} Behandlingsgrunnlag er ikke avklart</span>
           </CustomizedStatefulTooltip>
         )}
-      </Block>
-      <Block>
+      </div>
+      <div>
         {props.alert?.excessInfo && (
           <CustomizedStatefulTooltip content={'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'}>
-            <span>
-              {warningIcon} Overskuddsinformasjon
-            </span>
+            <span>{warningIcon} Overskuddsinformasjon</span>
           </CustomizedStatefulTooltip>
         )}
-      </Block>
-      <Block>
+      </div>
+      <div>
         {props.alert?.missingArt6 && (
-          <CustomizedStatefulTooltip content='Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.'>
-            <span>
-              {warningIcon} Behandlingsgrunnlag for artikkel 6 mangler
-            </span>
+          <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
+            <span>{warningIcon} Behandlingsgrunnlag for artikkel 6 mangler</span>
           </CustomizedStatefulTooltip>
         )}
-      </Block>
-      <Block>
+      </div>
+      <div>
         {props.alert?.missingArt9 && (
-          <CustomizedStatefulTooltip content='Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9'>
-            <span>
-              {warningIcon} Behandlingsgrunnlag for artikkel 9 mangler
-            </span>
+          <CustomizedStatefulTooltip content="Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9">
+            <span>{warningIcon} Behandlingsgrunnlag for artikkel 9 mangler</span>
           </CustomizedStatefulTooltip>
         )}
-      </Block>
-    </Block>
+      </div>
+    </div>
   )
 }
 
@@ -153,7 +144,7 @@ export const ListLegalBases = (props: {
               ArtworkContainer: {},
             }}
             endEnhancer={() => (
-              <Block minWidth="100px">
+              <div className="w-full">
                 <Button
                   type="button"
                   kind="tertiary"
@@ -174,7 +165,7 @@ export const ListLegalBases = (props: {
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
-              </Block>
+              </div>
             )}
             sublist
             key={i}
@@ -191,16 +182,16 @@ export const ListLegalBases = (props: {
 export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
   const { legalBases } = props
   return (
-    <Block>
+    <div>
       <ul style={{ listStyle: 'none', paddingInlineStart: 0, marginTop: 0, marginBottom: 0 }}>
         {legalBases.map((legalBasis, i) => (
-          <Block marginBottom="8px" key={i}>
+          <div className="mb-2" key={i}>
             <li>
               <LegalBasisView legalBasis={legalBasis} />
             </li>
-          </Block>
+          </div>
         ))}
       </ul>
-    </Block>
+    </div>
   )
 }

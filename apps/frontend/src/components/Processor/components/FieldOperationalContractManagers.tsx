@@ -29,8 +29,8 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
     <FieldArray name="operationalContractManagers">
       {(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <Block width="100%">
-            <Block width="100%">
+          <div className="w-full">
+            <div className="w-full">
               <Select
                 clearable
                 options={teamResourceSearchResult.filter((r) => !props.formikBag.values.operationalContractManagers?.map((ocm) => ocm).includes(r.id ? r.id.toString() : ''))}
@@ -43,8 +43,8 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
                 onInputChange={(event) => setTeamResourceSearch(event.currentTarget.value)}
                 isLoading={teamResourceSearchLoading}
               />
-            </Block>
-            <Block>
+            </div>
+            <div>
               {props.formikBag.values.operationalContractManagers &&
                 renderTagList(
                   props.formikBag.values.operationalContractManagers.map((ocm) => {
@@ -58,8 +58,8 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
                   }),
                   arrayHelpers,
                 )}
-            </Block>
-          </Block>
+            </div>
+          </div>
         </>
       )}
     </FieldArray>

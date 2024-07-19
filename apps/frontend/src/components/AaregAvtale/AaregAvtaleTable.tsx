@@ -18,14 +18,13 @@ type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
 }
 
-const marginBottom = '1rem'
 const marginTop = '2rem'
 
 const CustomPanelLabel = ({ text }: { text: any }) => {
   return (
-    <Block width="100%" marginBottom={marginBottom} $style={{ boderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: '#AFAFAF' }}>
+    <div className="w-full mb-4 border-b border-solid border-[#AFAFAF]">
       <LabelLarge marginTop={marginTop}>{text}</LabelLarge>
-    </Block>
+    </div>
   )
 }
 
@@ -77,7 +76,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
               <Panel
                 key={a.avtalenummer}
                 title={
-                  <Block width="100%">
+                  <div className="w-full">
                     <LabelLarge color={theme.colors.primary}>
                       {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
                       <span> </span>
@@ -85,7 +84,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                         {a.virksomhet} - (Avtalenummer-{a.avtalenummer.replace('AVT-', '')})
                       </span>
                     </LabelLarge>
-                  </Block>
+                  </div>
                 }
                 overrides={{
                   ToggleIcon: {
@@ -103,12 +102,9 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                   },
                 }}
               >
-                <Block
-                  $style={{
-                    outline: `4px ${theme.colors.primary200} solid`,
-                  }}
+                <div className="outline-4 outline-[#99c2e8] outline"
                 >
-                  <Block paddingBottom={theme.sizing.scale800} paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
+                  <div className="p-1">
                     <CustomPanelLabel text='Konsument' />
                     <DataText label='Navn' text={a.virksomhet || 'Ikke angitt'} />
                     <DataText label='Organisasjonsnummer' text={a.organisasjonsnummer || 'Ikke angitt'} />
@@ -130,14 +126,14 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                     <CustomPanelLabel text='Databehandler' />
                     <DataText label='Organisasjonsnummer' text={a.databehandler_organisasjonsnummer || 'Ikke angitt'} />
                     <DataText label='Navn' text={a.databehandler_navn || 'Ikke angitt'} />
-                  </Block>
-                </Block>
+                  </div>
+                </div>
               </Panel>
             )
           })}
       </StatelessAccordion>
 
-      <Block display="flex" justifyContent="space-between" marginTop="1rem">
+      <div className="flex justify-between mt-1">
         <StatefulPopover
           placement={PLACEMENT.bottom}
           content={({ close }) => (
@@ -165,7 +161,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
           onPageChange={(a) => setPage(a.nextPage)}
           labels={{ nextButton: 'Neste', preposition: 'av', prevButton: 'Forrige' }}
         />
-      </Block>
+      </div>
     </>
   )
 }

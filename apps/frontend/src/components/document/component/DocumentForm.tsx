@@ -20,11 +20,6 @@ import { StyledLink } from 'baseui/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 
-const rowBlockProps: BlockProps = {
-  width: '50%',
-  marginBottom: '2rem',
-}
-
 const labelProps: BlockProps = {
   marginBottom: '1rem',
 }
@@ -74,29 +69,29 @@ const DocumentForm = (props: DocumentFormProps) => {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={createDocumentSchema()}>
       {(formikProps: FormikProps<DocumentFormValues>) => (
         <Form onKeyDown={disableEnter}>
-          <Block {...rowBlockProps}>
-            <Block>
+          <div className="w-[50%] mb-8">
+            <div>
               <LabelMedium {...labelProps}>Navn</LabelMedium>
               <Field name="name">{(props: FieldProps) => <Input type="text" size={SIZE.default} {...props.field} />}</Field>
               <Error fieldName="name" fullWidth={true} />
-            </Block>
-          </Block>
-          <Block {...rowBlockProps}>
+            </div>
+          </div>
+          <div className="w-[50%] mb-8">
             <LabelMedium {...labelProps}>Beskrivelse</LabelMedium>
             <Field name="description">{(props: FieldProps) => <Textarea {...props.field} />}</Field>
             <Error fieldName="description" fullWidth={true} />
-          </Block>
+          </div>
 
-          <Block {...rowBlockProps}>
+          <div className="w-[50%] mb-8">
             <Field
               name="dataAccessClass"
               render={({ form }: FieldProps<DocumentFormValues>) => (
-                <Block>
-                  <Block {...labelProps}>
+                <div>
+                  <div className="mb-4">
                     <ModalLabel
                       label='Datatilgangsklasse'
                       tooltip={
-                        <Block>
+                        <div>
                           Mer informasjon finner du
                           <StyledLink target="_blank" rel="noopener noreferrer" href={'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'}>
                             her
@@ -104,10 +99,10 @@ const DocumentForm = (props: DocumentFormProps) => {
                               <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
                             </span>
                           </StyledLink>
-                        </Block>
+                        </div>
                       }
                     />
-                  </Block>
+                  </div>
 
                   <Select
                     options={codelist.getParsedOptions(ListName.DATA_ACCESS_CLASS)}
@@ -120,21 +115,21 @@ const DocumentForm = (props: DocumentFormProps) => {
                     }}
                     error={!!form.errors.dataAccessClass && !!form.submitCount}
                   />
-                </Block>
+                </div>
               )}
             />
             <Error fieldName="dataAccessClass" fullWidth={true} />
-          </Block>
+          </div>
 
-          <Block marginTop="3rem">
+          <div className="mt-12">
             <LabelMedium marginBottom="2rem">Opplysningstyper i dokumentet</LabelMedium>
             <FieldArray name="informationTypes" render={(arrayHelpers: FieldArrayRenderProps) => <InformationTypesTable arrayHelpers={arrayHelpers} />} />
-          </Block>
-          <Block display="flex" justifyContent="flex-end" marginTop="10px">
+          </div>
+          <div className="flex justify-end mt-2.5">
             {errorMessage && (
-              <Block marginRight="scale800">
+              <div className="mr-6">
                 <Notification kind="negative">{errorMessage}</Notification>
-              </Block>
+              </div>
             )}
 
             <Button type="button" kind="secondary" onClick={() => window.history.back()}>
@@ -144,7 +139,7 @@ const DocumentForm = (props: DocumentFormProps) => {
             <Button type="submit" kind="primary" marginLeft marginRight>
               Lagre
             </Button>
-          </Block>
+          </div>
         </Form>
       )}
     </Formik>

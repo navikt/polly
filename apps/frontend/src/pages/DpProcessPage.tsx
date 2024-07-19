@@ -52,17 +52,17 @@ const DpProcessPage = () => {
 
   return (
     <>
-      <Block display="flex" justifyContent="space-between">
+      <div className="flex justify-between">
         <HeadingMedium marginTop="0">Behandlinger hvor NAV er databehandler</HeadingMedium>
-        <Block>
+        <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
             <Button kind="outline" onClick={() => toggleModal()}>
               <FontAwesomeIcon icon={faPlusCircle} />
               &nbsp;Opprett ny behandling
             </Button>
           )}
-        </Block>
-      </Block>
+        </div>
+      </div>
       <DpProcessModal isOpen={showModal} onClose={toggleModal} initialValues={dpProcessToFormValues({})} submit={handleCreateDpProcess} errorOnCreate={errorDpProcessModal} />
       {!isLoading ? <DpProcessTable dpProcesses={dpProcesses} /> : <Spinner $size={30} />}
     </>

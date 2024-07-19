@@ -25,26 +25,26 @@ export const LastEvents = () => {
   }, [table, action])
 
   const content = events?.content.map((event, index) => (
-    <Block key={event.id} marginBottom={theme.sizing.scale200}>
+    <div key={event.id} className="mb-1.5">
       <ObjectLink id={event.tableId} type={event.table} disable={event.action === AuditAction.DELETE} hideUnderline>
-        <Block width="100%" display="flex" justifyContent="space-between">
-          <Block paddingRight={theme.sizing.scale300} $style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+        <div className="w-full flex justify-between">
+          <div className="pr-2 overflow-hidden whitespace-nowrap text-ellipsis">
             <AuditActionIcon action={event.action} />
             {event.name}
-          </Block>
-          <Block minWidth={'125px'} $style={{ textAlign: 'right' }}>
+          </div>
+          <div className="min-w-32 text-right">
             <CustomizedStatefulTooltip content={moment(event.time).format('lll')}>{moment(event.time).fromNow()}</CustomizedStatefulTooltip>
-          </Block>
-        </Block>
+          </div>
+        </div>
       </ObjectLink>
-    </Block>
+    </div>
   ))
 
   return (
-    <Block>
-      <Block display="flex" justifyContent="space-between" alignItems="center" width="100%">
+    <div>
+      <div className="flex justify-between items-center w-full">
         <HeadingXLarge>Siste hendelser</HeadingXLarge>
-        <Block display="flex" justifyContent="space-between" alignItems="center">
+        <div className="flex justify-between items-center">
           <LabelMedium marginRight={theme.sizing.scale300}>Hendelsestype</LabelMedium>
           <StatefulSelect
             size="compact"
@@ -61,9 +61,9 @@ export const LastEvents = () => {
               },
             }}
           />
-        </Block>
-      </Block>
-      <Block>
+        </div>
+      </div>
+      <div>
         <StatefulTabs onChange={(args) => setTable(args.activeKey as ObjectType)}>
           {[ObjectType.PROCESS, ObjectType.INFORMATION_TYPE, ObjectType.DISCLOSURE, ObjectType.DOCUMENT].map((tableName) => (
             <Tab key={tableName} title={(tekster as any)[tableName] || tableName}>
@@ -71,7 +71,7 @@ export const LastEvents = () => {
             </Tab>
           ))}
         </StatefulTabs>
-      </Block>
-    </Block>
+      </div>
+    </div>
   )
 }

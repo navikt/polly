@@ -1,34 +1,33 @@
+import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { SIZE as ButtonSize, KIND } from 'baseui/button'
+import { Plus } from 'baseui/icon'
+import { Modal, ModalBody, SIZE } from 'baseui/modal'
+import { Spinner } from 'baseui/spinner'
+import { LabelMedium } from 'baseui/typography'
 import * as React from 'react'
 import { useEffect } from 'react'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { Spinner } from 'baseui/spinner'
-import { Block } from 'baseui/block'
-import { LabelMedium } from 'baseui/typography'
-import { theme } from '../../../util'
-import { user } from '../../../service/User'
-import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
-import ModalProcess from './ModalProcess'
-import ModalPolicy from './ModalPolicy'
-import TablePolicy from './TablePolicy'
+import { useNavigate, useParams } from 'react-router-dom'
 import { convertProcessToFormValues, getDisclosuresByProcessId, getResourceById } from '../../../api'
+import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
+import { RequestRevisionPage } from '../../../pages/admin/RequestRevisionPage'
+import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { PathParams } from '../../../pages/ProcessPage'
-import { AddDocumentModal } from './AddDocumentModal'
+import { user } from '../../../service/User'
+import { theme } from '../../../util'
+import { lastModifiedDate } from '../../../util/date-formatter'
 import Button from '../../common/Button'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
-import ProcessData from './ProcessData'
-import { lastModifiedDate } from '../../../util/date-formatter'
-import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { canViewAlerts } from '../../../pages/AlertEventPage'
-import { DeleteProcessModal } from './DeleteProcessModal'
-import { ProcessCreatedModal } from './ProcessCreatedModal'
-import { useNavigate, useParams } from 'react-router-dom'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
-import { Modal, ModalBody, SIZE } from 'baseui/modal'
-import { RequestRevisionPage } from '../../../pages/admin/RequestRevisionPage'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { AddDocumentModal } from './AddDocumentModal'
 import DeleteAllPolicyModal from './DeleteAllPolicyModal'
+import { DeleteProcessModal } from './DeleteProcessModal'
+import ModalPolicy from './ModalPolicy'
+import ModalProcess from './ModalProcess'
+import { ProcessCreatedModal } from './ProcessCreatedModal'
+import ProcessData from './ProcessData'
+import TablePolicy from './TablePolicy'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -83,14 +82,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   const renderCreatePolicyButton = () => (
     <Button
-      tooltip='Legg til én informasjonstype'
+      tooltip="Legg til én informasjonstype"
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowCreatePolicyModal(true)}
       startEnhancer={
-        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+        <div className="flex justify-center mr-1">
           <Plus size={22} />
-        </Block>
+        </div>
       }
     >
       Opplysningstype
@@ -104,9 +103,9 @@ const AccordionProcess = (props: AccordionProcessProps) => {
       kind={KIND.tertiary}
       onClick={() => setShowDeleteAllPolicyModal(true)}
       startEnhancer={
-        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
-          <FontAwesomeIcon title='Slett' icon={faTrash}/>
-        </Block>
+        <div className="flex justify-center mr-1">
+          <FontAwesomeIcon title="Slett" icon={faTrash} />
+        </div>
       }
     >
       Slett hele tabelen
@@ -115,14 +114,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   const renderAddDocumentButton = () => (
     <Button
-      tooltip='Legg til en samling av opplysningstyper'
+      tooltip="Legg til en samling av opplysningstyper"
       size={ButtonSize.compact}
       kind={KIND.tertiary}
       onClick={() => setShowAddDocumentModal(true)}
       startEnhancer={
-        <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}>
+        <div className="flex justify-center mr-1">
           <Plus size={22} />
-        </Block>
+        </div>
       }
     >
       Dokument
@@ -159,20 +158,18 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   }
 
   return (
-    <Block>
+    <div>
       <StatelessAccordion onChange={({ expanded }) => onChangeProcess(expanded.length ? (expanded[0] as string) : undefined)} expanded={params.processId ? [params.processId] : []}>
         {props.processList &&
           props.processList
-            .sort((a, b) =>{
+            .sort((a, b) => {
               if (today < a.end && today > b.end) return -1
               else if (today > a.end && today < b.end) return 1
-
 
               const aname = a.purposes[0].shortName + ': ' + a.name.trim()
               const bname = b.purposes[0].shortName + ': ' + b.name.trim()
 
               return aname.localeCompare(bname)
-
             })
             .map((p: ProcessShort) => {
               const expanded = params.processId === p.id
@@ -206,56 +203,50 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                   }}
                 >
                   {isLoading && (
-                    <Block padding={theme.sizing.scale400}>
+                    <div className="p-2.5">
                       <Spinner $size={theme.sizing.scale1200} />
-                    </Block>
+                    </div>
                   )}
 
                   {!isLoading && currentProcess && (
-                    <Block
-                      $style={{
-                        outline: `4px ${theme.colors.primary200} solid`,
-                      }}
-                    >
-                      <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
+                    <div className="outline outline-4 outline-[#E2E2E2]">
+                      <div className="px-6 pt-6">
                         <ProcessData process={currentProcess} disclosures={disclosures} />
 
-                        <Block>
-                          <Block display="flex" justifyContent="flex-end">
+                        <div>
+                          <div className="flex justify-end">
                             <span>
-                              <i>
-                                {`Sist endret av ${currentProcess.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcess.changeStamp?.lastModifiedDate)}`}
-                              </i>
+                              <i>{`Sist endret av ${currentProcess.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcess.changeStamp?.lastModifiedDate)}`}</i>
                             </span>
-                          </Block>
-                        </Block>
-                        <Block display="flex" paddingTop={theme.sizing.scale800} width="100%" justifyContent="space-between">
-                          <Block display="flex">
+                          </div>
+                        </div>
+                        <div className="flex pt-6 w-full justify-between">
+                          <div className="flex">
                             {canViewAlerts() && (
-                              <Block marginRight="auto">
+                              <div className="mr-auto">
                                 <Button type="button" kind="tertiary" size="compact" icon={faExclamationCircle} onClick={() => history(`/alert/events/process/${p.id}`)}>
                                   Varsler
                                 </Button>
-                              </Block>
+                              </div>
                             )}
                             {(user.isAdmin() || user.isSuper()) && (
-                              <Block marginRight="auto">
+                              <div className="mr-auto">
                                 <Button type="button" kind="tertiary" size="compact" icon={faGavel} onClick={() => setShowRevisionModal(true)}>
                                   Ny revidering
                                 </Button>
-                              </Block>
+                              </div>
                             )}
-                          </Block>
+                          </div>
                           {hasAccess() && (
-                            <Block display="flex" justifyContent="center">
+                            <div className="flex justify-center">
                               <div ref={InformationTypeRef} />
                               {renderAddDocumentButton()}
                               {renderCreatePolicyButton()}
                               {renderDeleteAllPolicyButton()}
-                            </Block>
+                            </div>
                           )}
-                        </Block>
-                      </Block>
+                        </div>
+                      </div>
 
                       <TablePolicy
                         process={currentProcess}
@@ -265,23 +256,19 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                         submitEditPolicy={submitEditPolicy}
                         submitDeletePolicy={submitDeletePolicy}
                       />
-                    </Block>
+                    </div>
                   )}
                 </Panel>
               )
             })}
       </StatelessAccordion>
-      {!props.processList.length && (
-        <LabelMedium margin="1rem">
-          Ingen behandlinger
-        </LabelMedium>
-      )}
+      {!props.processList.length && <LabelMedium margin="1rem">Ingen behandlinger</LabelMedium>}
 
       {!!currentProcess && (
         <>
           <ModalProcess
             key={currentProcess.id}
-            title='Redigér behandling'
+            title="Redigér behandling"
             onClose={() => setShowEditProcessModal(false)}
             isOpen={showEditProcessModal}
             submit={async (values: ProcessFormValues) => {
@@ -292,7 +279,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             initialValues={{ ...convertProcessToFormValues(currentProcess), disclosures: disclosures }}
           />
           <ModalPolicy
-            title='Legg til opplysningstyper brukt i behandlingen'
+            title="Legg til opplysningstyper brukt i behandlingen"
             initialValues={{
               legalBasesOpen: false,
               informationType: undefined,
@@ -374,14 +361,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             onClose={closeRevision}
           >
             <ModalBody>
-              <Block width="600px">
+              <div className="w-[600px]">
                 <RequestRevisionPage processId={currentProcess.id} close={closeRevision} />
-              </Block>
+              </div>
             </ModalBody>
           </Modal>
         </>
       )}
-    </Block>
+    </div>
   )
 }
 

@@ -1,11 +1,9 @@
-import * as React from 'react'
-import RouteLink from '../common/RouteLink'
-import { Block } from 'baseui/block'
-import { ParagraphMedium } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ParagraphMedium } from 'baseui/typography'
 import { useLocation } from 'react-router-dom'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
+import RouteLink from '../common/RouteLink'
 
 interface NavItemProps {
   text: string
@@ -22,10 +20,10 @@ const checkCurrentLocationIsTheSameAsSideBarItem = (currentLocationUrl: string, 
 
 const NavItem = (props: NavItemProps) => (
   <RouteLink href={props.to} style={{ textDecoration: 'none' }}>
-    <Block display="flex" alignItems="center" height={'35px'}>
-      <Block marginRight="scale400">
+    <div className="flex items-center h-[35px]">
+      <div className="mr-2.5">
         <FontAwesomeIcon icon={checkCurrentLocationIsTheSameAsSideBarItem(useLocation().pathname, props.to) ? faChevronDown : faChevronRight} color="white" size="lg" />
-      </Block>
+      </div>
       {!!props.tooltip ? (
         <CustomizedStatefulTooltip content={props.tooltip} ignoreBoundary={false}>
           <ParagraphMedium color="white">{props.text}</ParagraphMedium>
@@ -33,7 +31,7 @@ const NavItem = (props: NavItemProps) => (
       ) : (
         <ParagraphMedium color="white">{props.text}</ParagraphMedium>
       )}
-    </Block>
+    </div>
   </RouteLink>
 )
 

@@ -24,7 +24,7 @@ const FieldContractOwner = (props: { contractOwner?: string }) => {
   return (
     <Field name="contractOwner">
       {({ form, field }: FieldProps<ProcessorFormValues>) => (
-        <Block width={'100%'}>
+        <div className="w-full">
           <Select
             options={teamResourceSearchResult}
             onChange={({ value }) => {
@@ -35,7 +35,7 @@ const FieldContractOwner = (props: { contractOwner?: string }) => {
             value={value}
             isLoading={teamResourceSearchLoading}
           />
-        </Block>
+        </div>
       )}
     </Field>
   )

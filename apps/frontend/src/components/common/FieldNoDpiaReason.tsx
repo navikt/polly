@@ -16,8 +16,8 @@ const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
       name="dpia.noDpiaReasons"
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <Block width="100%">
-            <Block width="100%">
+          <div className="w-full">
+            <div className="w-full">
               <Select
                 clearable
                 placeholder='Velg en eller flere begrunnelser'
@@ -33,14 +33,14 @@ const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
                   arrayHelpers.form.setFieldValue('dpia.noDpiaReasons', [...props.formikBag.values.dpia.noDpiaReasons, ...value.map((v) => v.id)])
                 }}
               />
-            </Block>
-            <Block>
+            </div>
+            <div>
               {renderTagList(
                 props.formikBag.values.dpia.noDpiaReasons.map((p) => getNoDpiaLabel(p)),
                 arrayHelpers,
               )}
-            </Block>
-          </Block>
+            </div>
+          </div>
         </>
       )}
     />

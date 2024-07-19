@@ -55,8 +55,8 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <RouteLink href={props.to} hideUnderline={true}>
         <Card overrides={cardOverrides(hover)}>
-          <Block>
-            <Block display="flex" justifyContent="center">
+          <div>
+            <div className="flex justify-center">
               <ParagraphLarge
                 marginTop={theme.sizing.scale300}
                 marginBottom={theme.sizing.scale200}
@@ -70,12 +70,12 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
               >
                 {props.title}
               </ParagraphLarge>
-            </Block>
+            </div>
 
-            <Block display="flex" justifyContent="center" width="100%">
+            <div className="flex justify-center w-full">
               <ParagraphMedium>{props.subtitle}</ParagraphMedium>
-            </Block>
-          </Block>
+            </div>
+          </div>
         </Card>
       </RouteLink>
     </div>
@@ -84,12 +84,12 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
 
 const ShortcutNav = () => {
   return (
-    <Block display="flex" justifyContent="space-between" flexWrap>
+    <div className="flex justify-between flex-wrap">
       <ShortcutCard title="Behandlinger" subtitle="Se og endre behandlinger" to="/process" />
       <ShortcutCard title="Opplysningstyper" subtitle="Se og endre opplysningstyper" to="/informationtype" />
       <ShortcutCard title="Eksterne parter" subtitle="Se alle eksterne parter" to="/thirdparty" />
       <ShortcutCard title="Dashboard" subtitle="Se statistikk over behandlinger" to="/dashboard" />
-    </Block>
+    </div>
   )
 }
 

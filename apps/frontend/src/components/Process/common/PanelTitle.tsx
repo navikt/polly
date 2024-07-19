@@ -9,13 +9,13 @@ const PanelTitle = (props: { title: string; expanded: boolean }) => {
   const { title, expanded } = props
   return (
     <>
-      <Block>
+      <div>
         <LabelLarge color={theme.colors.primary}>
           {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
           <span> </span>
           <span>{title}</span>
         </LabelLarge>
-      </Block>
+      </div>
     </>
   )
 }

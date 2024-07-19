@@ -71,8 +71,8 @@ const CodeListPage = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <Block display="flex" justifyContent="space-between" width="100%">
-          <Block width="600px">
+        <div className="flex justify-between w-full">
+          <div className="w-[600px]">
             <StatefulSelect
               options={codelist.makeIdLabelForAllCodeLists()}
               onChange={({ value }) => setListname(value[0].id as string)}
@@ -80,21 +80,21 @@ const CodeListPage = () => {
               placeholder="Velg kodeverk"
               initialState={{ value: listname ? [{ id: listname, label: listname }] : [] }}
             />
-          </Block>
+          </div>
           {listname && (
-            <Block>
+            <div>
               <Button icon={faPlus} size={ButtonSize.compact} kind={KIND.tertiary} onClick={() => setCreateCodeListModal(!createCodeListModal)}>
                 Opprett ny kode
               </Button>
-            </Block>
+            </div>
           )}
-        </Block>
+        </div>
       )}
 
       {!loading && currentCodelist && (
-        <Block marginTop={theme.sizing.scale600}>
+        <div className="mt-4">
           <CodeListTable tableData={currentCodelist || []} refresh={update} />
-        </Block>
+        </div>
       )}
 
       <CreateCodeListModal

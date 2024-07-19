@@ -50,8 +50,8 @@ const SelectProcess = (props: SelectProcessProps) => {
     <FieldArray
       name="processes"
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <Block width="100%">
-          <Block width="100%">
+        <div className="w-full">
+          <div className="w-full">
             <Select
               options={processList}
               isLoading={isLoading}
@@ -65,15 +65,15 @@ const SelectProcess = (props: SelectProcessProps) => {
               labelKey="namePurpose"
               onChange={({ value }) => arrayHelpers.form.setFieldValue('processes', [...props.formikBag.values.processes, ...value.map((v) => v)])}
             />
-          </Block>
+          </div>
 
-          <Block>
+          <div>
             {renderTagList(
               formikBag.values.processes.map((p) => 'B' + p.number + ' ' +  p.purposes[0].shortName + ': ' + p.name),
               arrayHelpers,
             )}
-          </Block>
-        </Block>
+          </div>
+        </div>
       )}
     />
   )

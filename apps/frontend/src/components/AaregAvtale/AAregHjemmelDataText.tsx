@@ -14,7 +14,7 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
   const processorList = rawData.filter((d) => d.match('Behandlingsgrunnlag:')).map((a) => a.replace('Behandlingsgrunnlag:', ''))
 
   return (
-    <Block>
+    <div>
       <Table
         emptyText='Ikke angitt'
         headers={
@@ -28,18 +28,18 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
         {purposeList.map((a, i) => (
           <Row key={a + '_' + i}>
             <Cell>
-              <Block>{a}</Block>
+              <div>{a}</div>
             </Cell>
             <Cell>
-              <Block>{authoryList[i]}</Block>
+              <div>{authoryList[i]}</div>
             </Cell>
             <Cell>
-              <Block>{processorList[i]}</Block>
+              <div>{processorList[i]}</div>
             </Cell>
           </Row>
         ))}
       </Table>
-    </Block>
+    </div>
   )
 }
 export default AAregHjemmelDataText

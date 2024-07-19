@@ -26,15 +26,15 @@ export const DashboardPage = () => {
   }, [dashboardStatus])
 
   return (
-    <Block marginBottom={theme.sizing.scale1200} display="flex" flexWrap>
-      <Block display="flex" justifyContent="space-between" width="100%">
+    <div className="mb-12 flex flex-wrap">
+      <div className="flex justify-between w-full">
         <HeadingMedium marginTop="0">Dashboard</HeadingMedium>
         <FilterDashboardStatus setFilter={setDashboardStatus} />
-      </Block>
+      </div>
 
       {dashboardData && <Departments data={dashboardData} />}
       {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />}
       {!dashboardData && <Spinner size={theme.sizing.scale600} />}
-    </Block>
+    </div>
   )
 }

@@ -102,8 +102,8 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
           </ModalBody>
 
           <ModalFooter>
-            <Block display="flex" justifyContent="flex-end">
-              <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
+            <div className="flex justify-end">
+              <div className="self-end">{errorModal && <p>{errorModal}</p>}</div>
               <Button kind="secondary" onClick={() => setShowDeleteModal(false)} marginLeft marginRight>
                 Avbryt
               </Button>
@@ -122,7 +122,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
               >
                 Slett
               </Button>
-            </Block>
+            </div>
           </ModalFooter>
         </Modal>
       )}
@@ -169,7 +169,7 @@ const DisclosureRow = (props: {
         )}
 
         {editable && (
-          <Block width="100%" display="flex" justifyContent="flex-end">
+          <div className="w-full flex justify-end">
             <Button
               tooltip='Rediger'
               size={SIZE.compact}
@@ -191,7 +191,7 @@ const DisclosureRow = (props: {
               }}
               icon={faTrash}
             />
-          </Block>
+          </div>
         )}
       </Cell>
     </Row>

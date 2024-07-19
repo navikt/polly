@@ -12,9 +12,9 @@ const DocumentMetadata = (props: DocumentMetadata) => {
 
   return (
     <React.Fragment>
-      <Block>
+      <div>
         <DocumentInfoTypeTable list={document.informationTypes} />
-      </Block>
+      </div>
     </React.Fragment>
   )
 }

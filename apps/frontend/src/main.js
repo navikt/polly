@@ -26,19 +26,19 @@ const Main = (props) => {
       <StyletronProvider value={engine}>
         <BaseProvider theme={theme}>
           <Router history={history}>
-            <Block display="flex" height="100%" minHeight={'100vh'} width={'100%'} backgroundColor="#F1F1F1">
-              <Block minWidth={'240px'} minHeight={'100%'}>
+            <div className="flex h-full min-h-screen w-full bg-[#F1F1F1]"  >
+              <div className="min-w-60 min-h-full">
                 <SideBar />
-              </Block>
-              <Block minHeight={'100%'} width={'100%'} marginBottom={'200px'}>
-                <Block>
+              </div>
+              <div className="min-h-full w-full mb-48">
+                <div>
                   <Header/>
-                </Block>
-                <Block marginTop={'4rem'} paddingRight={'30px'} paddingLeft={'30px'}>
+                </div>
+                <div className="mt-16 px-7">
                   <AppRoutes />
-                </Block>
-              </Block>
-            </Block>
+                </div>
+              </div>
+            </div>
           </Router>
         </BaseProvider>
       </StyletronProvider>

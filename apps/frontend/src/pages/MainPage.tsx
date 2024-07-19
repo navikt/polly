@@ -1,26 +1,23 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { DashboardData, Settings } from '../constants'
-import { getSettings } from '../api/SettingsApi'
 import { Card } from 'baseui/card'
-import { cardShadow } from '../components/common/Style'
-import { getDashboard } from '../api'
-import { LastEvents } from '../components/audit/LastEvents'
-import { Markdown } from '../components/common/Markdown'
-import { RecentEditsByUser } from '../components/audit/RecentEditsByUser'
-import { user } from '../service/User'
 import { HeadingXXLarge } from 'baseui/typography'
+import { useEffect, useState } from 'react'
+import { getDashboard } from '../api'
+import { getSettings } from '../api/SettingsApi'
+import { LastEvents } from '../components/audit/LastEvents'
+import { RecentEditsByUser } from '../components/audit/RecentEditsByUser'
+import { Markdown } from '../components/common/Markdown'
+import { cardShadow } from '../components/common/Style'
 import ShortcutNav from '../components/Main/ShortcutNav'
-import { theme } from '../util'
-import {ampli} from "../service/Amplitude";
+import { DashboardData, Settings } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { user } from '../service/User'
 
 export const MainPage = () => {
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<DashboardData>()
 
-  ampli.logEvent("besøk", {side: 'Hovedside', url: '/', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Hovedside', url: '/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {
@@ -48,47 +45,42 @@ export const MainPage = () => {
   }
 
   return (
-    <Block display="flex" flexWrap overrides={{ Block: { props: { role: 'main' } } }}>
+    <div className="flex flex-wrap" role="main">
       {!isLoading && dashboardData && (
         <>
-          <Block width="100%" display="flex" flexDirection="column">
-            <Block display="flex" justifyContent="center">
+          <div className="w-full flex flex-col">
+            <div className="flex justify-center">
               <HeadingXXLarge>Hva vil du gjøre?</HeadingXXLarge>
-            </Block>
+            </div>
             <ShortcutNav />
-          </Block>
+          </div>
 
-          <Block width="100%" display="flex" justifyContent="center" marginTop={theme.sizing.scale1200} marginBottom={theme.sizing.scale800}>
+          <div className="w-full flex justify-center mt-12 mb-6">
             <HeadingXXLarge>Hva har endret seg i det siste?</HeadingXXLarge>
-          </Block>
+          </div>
 
-          <Block width="100%" display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale800} flexWrap>
+          <div className="w-full flex justify-between mb-6 flex-wrap">
             {user.isLoggedIn() && (
-              <Block display="flex" width="48%" marginBottom={theme.sizing.scale800} minHeight="550px">
+              <div className="flex w-[48%] mb-6 min-h-[550px]">
                 <Card overrides={cardOverrides}>
                   <RecentEditsByUser />
                 </Card>
-              </Block>
+              </div>
             )}
-            <Block display="flex" width="48%" marginBottom={theme.sizing.scale800} minHeight="550px">
+            <div className="flex w-[48%] mb-6 min-h-[550px]">
               <Card overrides={cardOverrides}>
                 <LastEvents />
               </Card>
-            </Block>
+            </div>
 
-            <Block
-              minHeight="550px"
-              width={user.isLoggedIn() ? '100%' : '48%'}
-              marginTop={user.isLoggedIn() ? theme.sizing.scale1200 : theme.sizing.scale0}
-              marginBottom={user.isLoggedIn() ? theme.sizing.scale0 : theme.sizing.scale800}
-            >
+            <div className={`min-h-[550px] ${user.isLoggedIn() ? 'w-full mt-12 mb-[2px]' : 'w-[48%] mt-[2px] mb-6'}`}>
               <Card overrides={cardShadow}>
                 <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim />
               </Card>
-            </Block>
-          </Block>
+            </div>
+          </div>
         </>
       )}
-    </Block>
+    </div>
   )
 }

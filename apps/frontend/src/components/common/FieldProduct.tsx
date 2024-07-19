@@ -1,10 +1,8 @@
-import * as React from 'react'
 import { Select } from 'baseui/select'
-import { codelist, ListName } from '../../service/Codelist'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { DpProcessFormValues, ProcessFormValues } from '../../constants'
+import { codelist, ListName } from '../../service/Codelist'
 import { renderTagList } from './TagList'
-import { Block } from 'baseui/block'
 
 type fieldProductsProps = {
   formikBag: FormikProps<ProcessFormValues> | FormikProps<DpProcessFormValues>
@@ -16,8 +14,8 @@ const FieldProduct = (props: fieldProductsProps) => {
       name="affiliation.products"
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <Block width="100%">
-            <Block width="100%">
+          <div className="w-full">
+            <div className="w-full">
               <Select
                 clearable
                 options={codelist.getParsedOptions(ListName.SYSTEM).filter((o) => !props.formikBag.values.affiliation.products.includes(o.id))}
@@ -26,14 +24,14 @@ const FieldProduct = (props: fieldProductsProps) => {
                 }}
                 overrides={{ Placeholder: { style: { color: 'black' } } }}
               />
-            </Block>
-            <Block>
+            </div>
+            <div>
               {renderTagList(
                 props.formikBag.values.affiliation.products.map((p) => codelist.getShortname(ListName.SYSTEM, p)),
                 arrayHelpers,
               )}
-            </Block>
-          </Block>
+            </div>
+          </div>
         </>
       )}
     />

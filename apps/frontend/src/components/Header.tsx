@@ -29,17 +29,17 @@ const LoggedInHeader = () => {
   return (
     <StatefulPopover
       content={
-        <Block padding={theme.sizing.scale400}>
+        <div className="p-2">
           <LabelMedium {...blockStyle}>
             Navn: {user.getName()}
           </LabelMedium>
           <LabelMedium {...blockStyle}>
             Grupper: {user.getGroupsHumanReadable().join(', ')}
           </LabelMedium>
-          <Block {...blockStyle}>
+          <div className="flex w-full p-1">
             <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</StyledLink>
-          </Block>
-        </Block>
+          </div>
+        </div>
       }
     >
       <Button kind="tertiary" startEnhancer={() => <FontAwesomeIcon icon={faUser} />}>
@@ -88,7 +88,7 @@ const AdminOptions = () => {
 
 const Header = () => {
   return (
-    <Block paddingRight={'30px'} paddingLeft={'30px'}>
+    <div className="px-7">
       <HeaderNavigation overrides={{ Root: { style: { paddingBottom: 0, borderBottomStyle: 'none' } } }}>
         <NavigationList $align={ALIGN.left}>
           <NavigationItem $style={{ paddingLeft: 0 }}>
@@ -96,7 +96,7 @@ const Header = () => {
           </NavigationItem>
         </NavigationList>
 
-        <Block marginLeft={'auto'}>
+        <div className="ml-auto">
           <NavigationList $align={ALIGN.right}>
             {(user.isAdmin() || user.isSuper()) && (
               <NavigationItem $style={{ paddingLeft: 0 }}>
@@ -115,9 +115,9 @@ const Header = () => {
               </NavigationItem>
             )}
           </NavigationList>
-        </Block>
+        </div>
       </HeaderNavigation>
-    </Block>
+    </div>
   )
 }
 
