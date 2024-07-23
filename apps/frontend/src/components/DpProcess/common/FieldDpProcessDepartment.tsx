@@ -22,7 +22,7 @@ const FieldDpProcessDepartment = (props: { department?: string }) => {
     <Field
       name="affiliation.department"
       render={({ form }: FieldProps<DpProcessFormValues>) => (
-        <Block width={'100%'}>
+        <div className="w-full">
           <Select
             options={codelist.getParsedOptions(ListName.DEPARTMENT)}
             onChange={({ value }) => {
@@ -31,7 +31,7 @@ const FieldDpProcessDepartment = (props: { department?: string }) => {
             }}
             value={value}
           />
-        </Block>
+        </div>
       )}
     />
   )

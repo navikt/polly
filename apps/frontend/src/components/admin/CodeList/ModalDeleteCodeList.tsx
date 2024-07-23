@@ -26,13 +26,13 @@ const DeleteCodeListModal = ({ title, initialValues, isOpen, errorOnDelete, subm
       </ModalBody>
 
       <ModalFooter>
-        <Block display="flex" justifyContent="flex-end">
-          <Block marginRight="auto">{errorOnDelete && <p>{errorOnDelete}</p>}</Block>
+        <div className="flex justify-end">
+          <div className="mr-auto">{errorOnDelete && <p>{errorOnDelete}</p>}</div>
           <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
             Avbryt
           </Button>
           <Button onClick={() => submit({ list: initialValues.list, code: initialValues.code })}>Slett</Button>
-        </Block>
+        </div>
       </ModalFooter>
     </Modal>
   )

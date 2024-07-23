@@ -34,8 +34,8 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
       <FieldArray
         name={fieldName}
         render={(arrayHelpers: FieldArrayRenderProps) => (
-          <Block width={'100%'}>
-            <Block width={'100%'}>
+          <div className="w-full">
+            <div className="w-full">
               <Select
                 clearable
                 options={teamSearchResult}
@@ -46,11 +46,11 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
                 isLoading={teamSearchLoading}
                 overrides={{ Placeholder: { style: { color: 'black' } } }}
               />
-            </Block>
-            <Block>
-              <Block>{renderTagList(values.map((v) => v.label) as string[], arrayHelpers)}</Block>
-            </Block>
-          </Block>
+            </div>
+            <div>
+              <div>{renderTagList(values.map((v) => v.label) as string[], arrayHelpers)}</div>
+            </div>
+          </div>
         )}
       />
       <Error fieldName={fieldName} fullWidth />

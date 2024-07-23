@@ -14,9 +14,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.common.utils.DateUtil;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
+import no.nav.data.polly.disclosure.dto.DisclosureAbroadResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureSummaryResponse;
@@ -51,6 +52,7 @@ public class Disclosure extends Auditable {
     @Column(name = "DATA", nullable = false)
     private DisclosureData data = new DisclosureData();
 
+    // TODO: Snu avhengigheten innover
     public Disclosure convertFromRequest(DisclosureRequest request) {
         if (!request.isUpdate()) {
             setId(UUID.randomUUID());
@@ -75,12 +77,13 @@ public class Disclosure extends Auditable {
         return this;
     }
 
+    // TODO: Snu avhengigheten innover
     public DisclosureResponse convertToResponse() {
         return DisclosureResponse.builder()
                 .id(id)
                 .name(data.getName())
                 .description(data.getDescription())
-                .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
+                .recipient(CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
                 .recipientPurpose(data.getRecipientPurpose())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .start(data.getStart())
@@ -88,12 +91,12 @@ public class Disclosure extends Auditable {
                 .documentId(data.getDocumentId())
                 .informationTypeIds(copyOf(data.getInformationTypeIds()))
                 .processIds(copyOf(data.getProcessIds()))
-                .abroad(data.getAbroad().convertToResponse())
+                .abroad(DisclosureAbroadResponse.buildFrom(data.getAbroad() != null ? data.getAbroad() : new DisclosureAbroad()))
                 .administrationArchiveCaseNumber(data.getAdministrationArchiveCaseNumber())
                 .thirdCountryReceiver(data.getThirdCountryReceiver())
                 .assessedConfidentiality(data.getAssessedConfidentiality())
                 .confidentialityDescription(data.getConfidentialityDescription())
-                .department(CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment()))
+                .department(CodelistStaticService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment()))
                 .productTeams(copyOf(data.getProductTeams()))
                 .changeStamp(convertChangeStampResponse())
                 .build();
@@ -107,7 +110,7 @@ public class Disclosure extends Auditable {
         return DisclosureSummaryResponse.builder()
                 .id(id)
                 .name(data.getName())
-                .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
+                .recipient(CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
                 .processes(convert(processes, ProcessVeryShort::toResponse))
                 .legalBases(data.getLegalBases().size())
                 .build();

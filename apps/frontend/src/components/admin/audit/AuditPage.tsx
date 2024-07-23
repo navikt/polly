@@ -55,7 +55,7 @@ export const AuditPage = () => {
   return (
     <>
       <HeadingMedium>Versjonering</HeadingMedium>
-      <Block marginBottom="1rem">
+      <div className="mb-4">
         <Label label="Søk etter Id">
           <Input
             size="compact"
@@ -65,7 +65,7 @@ export const AuditPage = () => {
             onChange={(e) => setIdInput(format((e.target as HTMLInputElement).value))}
           />
         </Label>
-      </Block>
+      </div>
 
       {error && <ParagraphMedium>{_.escape(error)}</ParagraphMedium>}
       {idInput && <AuditView auditLog={auditLog} auditId={params.auditId} loading={loading} viewId={lookupVersion} />}

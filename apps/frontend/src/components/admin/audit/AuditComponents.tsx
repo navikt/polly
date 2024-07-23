@@ -16,14 +16,14 @@ const labelBlockProps: BlockProps = {
 
 export const AuditLabel = (props: { label: string; children: any }) => {
   return (
-    <Block display={['flex', 'block', 'block', 'flex']}>
-      <Block {...labelBlockProps}>
+    <div className="flex lg:flex md:block sm:block">
+      <div className="flex lg:flex md:block sm:block w-[20%] lg:w-[20%] md:w-full sm:w-full self-start">
         <LabelMedium>{props.label}</LabelMedium>
-      </Block>
-      <Block>
+      </div>
+      <div>
         <LabelSmall>{props.children}</LabelSmall>
-      </Block>
-    </Block>
+      </div>
+    </div>
   )
 }
 
@@ -34,9 +34,9 @@ export const AuditActionIcon = (props: { action: AuditAction; withText?: boolean
 
   return (
     <CustomizedStatefulTooltip content={() => tekster[props.action] }>
-      <Block marginRight=".5rem" display="inline">
+      <div className="ml-2 inline">
         <FontAwesomeIcon icon={icon.icon!} color={icon.color} /> {props.withText && tekster[props.action]}
-      </Block>
+      </div>
     </CustomizedStatefulTooltip>
   )
 }

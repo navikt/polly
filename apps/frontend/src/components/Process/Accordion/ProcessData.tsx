@@ -92,7 +92,7 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
   )
 
   return (
-    <Block>
+    <div>
       <DataText label='Behandlingsnummer'text={'B' + process.number} />
 
       <DataText label='Formål med behandlingen' text={process.description} />
@@ -108,9 +108,9 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
           {process.legalBases
             .sort((a, b) => codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
             .map((legalBasis, index) => (
-              <Block key={index}>
+              <div key={index}>
                 <LegalBasisView legalBasis={legalBasis} />
-              </Block>
+              </div>
             ))}
         </DataText>
       ) : (
@@ -149,32 +149,32 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
 
       <DataText label='Organisering' text={''}>
         {process.affiliation.department ? (
-          <Block>
+          <div>
             <span>Avdeling: </span>
             <span>
               <DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist />{' '}
             </span>
-          </Block>
+          </div>
         ) : (
           <span>
             Avdeling: Ikke utfylt
           </span>
         )}
         {!!process.affiliation.subDepartments.length && (
-          <Block>
-            <Block display="flex">
+          <div>
+            <div className="flex">
               <span>Linja: </span>
               <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist />
-            </Block>
-          </Block>
+            </div>
+          </div>
         )}
 
-        <Block display="flex">
+        <div className="flex">
           <span>Team: </span>
           {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams} /> : 'Ikke utfylt'}
-        </Block>
+        </div>
 
-        <Block>
+        <div>
           <span>Felles behandlingsansvarlig: </span>
           <span>
             {!!process.commonExternalProcessResponsible ? (
@@ -183,7 +183,7 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
               'Nei'
             )}
           </span>
-        </Block>
+        </div>
       </DataText>
 
       <DataText label='System' text={''}>
@@ -191,14 +191,14 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
       </DataText>
 
       <DataText label='Automatisering og profilering' text={''}>
-        <Block>
+        <div>
           <span>Helautomatisk behandling: </span>
           <span>{boolToText(process.automaticProcessing)}</span>
-        </Block>
-        <Block>
+        </div>
+        <div>
           <span>Profilering: </span>
           <span>{boolToText(process.profiling)}</span>
-        </Block>
+        </div>
       </DataText>
 
       <DataText label='Databehandler' text={''}>
@@ -208,25 +208,25 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
         </>
         <>
           {process.dataProcessing?.dataProcessor && (
-            <Block>
-              <Block>Databehandler benyttes</Block>
-              <Block>
+            <div>
+              <div>Databehandler benyttes</div>
+              <div>
                 {processors && (
-                  <Block display="flex" alignItems="center">
-                    <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }}></Block>
-                    <Block display="flex" flexWrap>
+                  <div className="flex items-center">
+                    <div className="whitespace-nowrap mt-4 mr-0"></div>
+                    <div className="flex flex-wrap">
                       {processors.map((dp, i) => (
-                        <Block key={dp.id} marginRight={i < processors.length ? theme.sizing.scale200 : 0}>
+                        <div key={dp.id} className={i < processors.length ? 'mr-1.5' : ''}>
                           <DotTag key={dp.id}>
                             <RouteLink href={'/processor/' + dp.id}>{dp.name}</RouteLink>
                           </DotTag>
-                        </Block>
+                        </div>
                       ))}
-                    </Block>
-                  </Block>
+                    </div>
+                  </div>
                 )}
-              </Block>
-            </Block>
+              </div>
+            </div>
           )}
         </>
       </DataText>
@@ -238,24 +238,24 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
         </>
         <>
           {process.retention?.retentionPlan && (
-            <Block>
-              <Block>Omfattes av NAVs bevarings- og kassasjonsvedtak</Block>
-            </Block>
+            <div>
+              <div>Omfattes av NAVs bevarings- og kassasjonsvedtak</div>
+            </div>
           )}
-          <Block>
+          <div>
             <RetentionView retention={process.retention} />
-          </Block>
-          <Block>
+          </div>
+          <div>
             <span>{process.retention?.retentionDescription && 'Begrunnelse: '}</span>
             {process.retention?.retentionDescription && shortenLinksInText(process.retention?.retentionDescription)}
-          </Block>
+          </div>
         </>
       </DataText>
 
       <DataText label='Er det behov for PVK?' text={''}>
-        <Block>
+        <div>
           <span>{showDpiaRequiredField(process.dpia)}</span>
-        </Block>
+        </div>
       </DataText>
 
       {props.process.affiliation.disclosureDispatchers.length !== 0 && (
@@ -266,7 +266,7 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
 
       {(props.disclosures.length !== 0 || checkForAaregDispatcher(props.process)) && (
         <DataText label='Utleveringer' text={''}>
-          <Block>
+          <div>
             {checkForAaregDispatcher(props.process) ? (
               <>
                 <RouteLink href={'/disclosure?process=' + props.process.id}>Lenke til side for utleveringer</RouteLink>
@@ -281,7 +281,7 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
                 </>
               ))
             )}
-          </Block>
+          </div>
         </DataText>
       )}
       <Completeness process={process} />
@@ -290,7 +290,7 @@ const ProcessData = (props: { process: Process; disclosures: Disclosure[] }) => 
         {processStatusText(process.status)}
         {process.revisionText && `: ${process.revisionText}`}
       </DataText>
-    </Block>
+    </div>
   )
 }
 
@@ -323,7 +323,7 @@ const Completeness = (props: { process: Process }) => {
     <DataText label='Kompletthet' text={''}>
       <CustomizedStatefulTooltip
         content={
-          <Block>
+          <div>
             <p>{completed === completables ? 'Godkjent' : 'Ikke utfylt:'}</p>
             <p>{!completeness.dpia && 'Behov for PVK'}</p>
             <p>{!completeness.dpiaReference && 'Ref. til PVK'}</p>
@@ -335,12 +335,12 @@ const Completeness = (props: { process: Process }) => {
             <p>{!completeness.dataProcessors && 'Ref. til databehandleravtale'}</p>
             <p>{!completeness.policies && 'Opplysningstyper'}</p>
             <p>{!completeness.completed && 'Status på utfylling'}</p>
-          </Block>
+          </div>
         }
       >
-        <Block $style={{ cursor: 'help' }} height={theme.sizing.scale800} display="flex" alignItems="center">
+        <div className="flex h-6 items-center cursor-help">
           <ProgressBar value={completed} successValue={completables} overrides={barOverrides} />
-        </Block>
+        </div>
       </CustomizedStatefulTooltip>
     </DataText>
   )

@@ -12,7 +12,7 @@ import { HeadingMedium } from 'baseui/typography'
 import { user } from '../service/User'
 import { useNavigate } from 'react-router-dom'
 import { Spinner } from 'baseui/spinner'
-import {ampli} from "../service/Amplitude";
+import {ampli} from '../service/Amplitude'
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
@@ -21,7 +21,7 @@ const DpProcessPage = () => {
   const [isLoading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'NAV som databehandler', url: '/dpprocess', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', {side: 'NAV som databehandler', url: '/dpprocess', app: 'Behandlingskatalogen'})
 
   useEffect(() => {
     ;(async () => {
@@ -43,7 +43,7 @@ const DpProcessPage = () => {
       toggleModal()
     } catch (err: any) {
       if (err.response.data.message.includes('already exists')) {
-        setErrorDpProcessModal("Databehandlingen eksisterer allerede")
+        setErrorDpProcessModal('Databehandlingen eksisterer allerede')
         return
       }
       setErrorDpProcessModal(err.response.data.message)
@@ -52,17 +52,17 @@ const DpProcessPage = () => {
 
   return (
     <>
-      <Block display="flex" justifyContent="space-between">
+      <div className="flex justify-between">
         <HeadingMedium marginTop="0">Behandlinger hvor NAV er databehandler</HeadingMedium>
-        <Block>
+        <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
             <Button kind="outline" onClick={() => toggleModal()}>
               <FontAwesomeIcon icon={faPlusCircle} />
               &nbsp;Opprett ny behandling
             </Button>
           )}
-        </Block>
-      </Block>
+        </div>
+      </div>
       <DpProcessModal isOpen={showModal} onClose={toggleModal} initialValues={dpProcessToFormValues({})} submit={handleCreateDpProcess} errorOnCreate={errorDpProcessModal} />
       {!isLoading ? <DpProcessTable dpProcesses={dpProcesses} /> : <Spinner $size={30} />}
     </>

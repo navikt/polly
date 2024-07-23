@@ -31,6 +31,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "GENERIC_STORAGE")
 public class GenericStorage extends Auditable {
+    
+    // TODO: Klassen bør types
 
     @Id
     @Column(name = "ID")

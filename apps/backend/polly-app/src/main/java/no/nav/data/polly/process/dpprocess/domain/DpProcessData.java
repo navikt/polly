@@ -35,6 +35,8 @@ public class DpProcessData {
 
     private String purposeDescription;
     private String description;
+
+    private int dpProcessNumber;
     private Boolean art9;
     private Boolean art10;
 

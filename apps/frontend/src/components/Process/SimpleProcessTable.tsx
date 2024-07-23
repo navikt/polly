@@ -58,8 +58,8 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: st
   })
 
   return (
-    <Block>
-      <Block display="flex" justifyContent="flex-end">
+    <div>
+      <div className="flex justify-end">
         <Button
           kind={KIND.tertiary}
           size={ButtonSize.compact}
@@ -70,7 +70,7 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: st
         >
           Eksportér
         </Button>
-      </Block>
+      </div>
       <Table
         emptyText='Ingen behandlinger'
         headers={
@@ -114,6 +114,6 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: st
           </Row>
         ))}
       </Table>
-    </Block>
+    </div>
   )
 }

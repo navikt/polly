@@ -1,7 +1,7 @@
 package no.nav.data.polly.disclosure;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
@@ -68,15 +68,15 @@ class DisclosureControllerIT extends IntegrationTestBase {
         disclosureResponse.setChangeStamp(null);
 
         InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
-                CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
+                CodelistStaticService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
 
-       CodelistResponse department = CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP");
+       CodelistResponse department = CodelistStaticService.getCodelistResponse(ListName.DEPARTMENT, "DEP");
 
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
                 .name("disc name")
                 .description("disc desc")
-                .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, disclosureResponse.getRecipient().getCode()))
+                .recipient(CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, disclosureResponse.getRecipient().getCode()))
                 .recipientPurpose("recipient purpose")
                 .start(LocalDate.now())
                 .end(LocalDate.now())
@@ -91,7 +91,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
                         .informationTypes(List.of(DocumentInfoTypeUseResponse.builder()
                                 .informationTypeId(infoTypeRes.getId())
                                 .informationType(infoTypeRes)
-                                .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, "BRUKER")).build()))
+                                .subjectCategory(CodelistStaticService.getCodelistResponse(ListName.SUBJECT_CATEGORY, "BRUKER")).build()))
                         .build())
                 .informationTypeIds(List.of())
                 .processIds(List.of())
@@ -121,7 +121,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         DisclosureRequest request = buildDisclosure();
         request.setProcessIds(List.of(process.getId().toString()));
         var d1 = restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
-        var d2 = restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         var resp = restTemplate.getForEntity("/disclosure/summary", DisclosureSummaryPage.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);

@@ -46,6 +46,7 @@ public abstract class Auditable {
     @Column(name = "LAST_MODIFIED_DATE")
     protected LocalDateTime lastModifiedDate;
 
+    // TODO: Snu avhengigheten innover
     public ChangeStampResponse convertChangeStampResponse() {
         return ChangeStampResponse.builder()
                 .lastModifiedBy(getLastModifiedBy())

@@ -44,15 +44,6 @@ public class Codelist extends Auditable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    public CodelistResponse convertToResponse() {
-        return CodelistResponse.builder()
-                .list(list)
-                .code(code)
-                .shortName(shortName)
-                .description(description)
-                .build();
-    }
-
     @Override
     public UUID getId() {
         throw new NotImplementedException("does not apply");
@@ -60,10 +51,8 @@ public class Codelist extends Auditable {
 
     @Data
     static class IdClass implements Serializable {
-
         private ListName list;
         private String code;
-
     }
 
 }

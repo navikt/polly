@@ -9,13 +9,12 @@ import { getAll } from '../../../api'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 
 type FieldDpProcessSubDataProcessorProps = {
-  rowBlockProps: BlockProps
   formikBag: FormikProps<DpProcessFormValues>
   initialValues: DpProcessFormValues
 }
 
 const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorProps) => {
-  const { rowBlockProps, formikBag } = props
+  const { formikBag } = props
   const [processorList, setProcessorList] = React.useState<Processor[]>([])
   const [subDataProcessors, setSubDataProcessors] = React.useState(new Map<string, string>())
 
@@ -41,14 +40,14 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
 
   return (
     <>
-      <Block {...rowBlockProps} marginTop={0}>
+      <div className="flex w-full">
         <ModalLabel label='Benyttes underdatabehandler(e)?' tooltip='En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler.' />
         <BoolField fieldName="subDataProcessing.dataProcessor" value={formikBag.values.subDataProcessing.dataProcessor} />
-      </Block>
+      </div>
 
       {formikBag.values.subDataProcessing.dataProcessor && (
         <>
-          <Block {...rowBlockProps}>
+          <div className="flex w-full mt-4">
             <ModalLabel label='Databehandler' />
             <FieldDpDataProcessors
               formikBag={formikBag}
@@ -60,7 +59,7 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
                 }
               })}
             />
-          </Block>
+          </div>
           <Error fieldName="subDataProcessing.procesors" />
         </>
       )}

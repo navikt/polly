@@ -43,7 +43,7 @@ const SearchProcess = (props: SearchProcessProps) => {
   }, [search])
 
   return (
-    <Block width="100%">
+    <div className="w-full">
       <Select
         options={processList}
         isLoading={isLoading}
@@ -69,7 +69,7 @@ const SearchProcess = (props: SearchProcessProps) => {
           props.setSelectedProcess(params.value[0] as Process)
         }}
       />
-    </Block>
+    </div>
   )
 }
 

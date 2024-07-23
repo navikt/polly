@@ -284,8 +284,8 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
 
   return (
     <>
-      <Block display={'flex'} flexDirection={'row-reverse'} alignItems={'center'}>
-        <Block>
+      <div className="flex flex-row-reverse items-center">
+        <div>
           <Button onClick={() => setIsExportModalOpen(true)} kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
             Eksportér
           </Button>
@@ -294,7 +294,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
               Opprett ny behandling
             </Button>
           )}
-        </Block>
+        </div>
         <Modal closeable animate autoFocus size={ModalSize.auto} role={ROLE.dialog} isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)}>
           <ModalHeader>Velg eksport metode</ModalHeader>
           <ModalBody>
@@ -310,7 +310,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
             </StyledLink>
           </ModalBody>
         </Modal>
-        <Block width={'25%'}>
+        <div className="w-1/4">
           <StatefulSelect
             backspaceRemoves={false}
             clearable={false}
@@ -327,20 +327,20 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
             searchable={false}
             onChange={(params: any) => navigate(genProcessPath(section, code, undefined, params.value[0].id))}
           />
-        </Block>
-        <Block>
+        </div>
+        <div>
           <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
             Filter
           </LabelMedium>
-        </Block>
-        <Block marginRight="auto">
+        </div>
+        <div className="mr-auto">
           {!hideTitle && (
             <HeadingXLarge>
               {titleOverride || "Behandlinger"} ({processList.length})
             </HeadingXLarge>
           )}
-        </Block>
-      </Block>
+        </div>
+      </div>
 
       {isLoadingProcessList && <Spinner $size={theme.sizing.scale2400} />}
 

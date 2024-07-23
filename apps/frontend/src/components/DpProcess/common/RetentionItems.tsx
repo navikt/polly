@@ -27,12 +27,6 @@ function sliderOverride(suffix: string) {
   }
 }
 
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-}
-
 const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) => {
   const { formikBag } = props
 
@@ -47,13 +41,13 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
   return (
     <>
       <>
-        <Block {...rowBlockProps}>
+        <div className="flex w-full mt-4">
           <ModalLabel label='Lagringsbehov for NAV' tooltip='Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige.' />
           <Field
             name="retention.retentionMonths"
             render={({ field, form }: FieldProps<string, ProcessFormValues>) => (
               <>
-                <Block width={'50%'} marginRight={'25px'}>
+                <div className="w-1/2 mt-[25px]">
                   <Slider
                     overrides={sliderOverride('År')}
                     min={0}
@@ -61,8 +55,8 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
                     value={[retentionYears]}
                     onChange={({ value }) => setRetention(value[0] * 12 + retentionMonths)}
                   />
-                </Block>
-                <Block width={'50%'} marginLeft={'25px'}>
+                </div>
+                <div className="w-1/2 mt-[25px]">
                   <Slider
                     overrides={sliderOverride('Måneder')}
                     min={0}
@@ -70,19 +64,19 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
                     value={[retentionMonths]}
                     onChange={({ value }) => setRetention(value[0] + retentionYears * 12)}
                   />
-                </Block>
+                </div>
               </>
             )}
           />
-        </Block>
+        </div>
         <Error fieldName="retention.retentionMonths" />
 
-        <Block {...rowBlockProps}>
+        <div className="flex w-full mt-4">
           <ModalLabel label='Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse' />
-          <Block width={'100%'}>
+          <div className="w-full">
             <FieldInput fieldName="retention.retentionStart" fieldValue={formikBag.values.retention.retentionStart} />
-          </Block>
-        </Block>
+          </div>
+        </div>
         <Error fieldName="retention.retentionStart" />
       </>
     </>

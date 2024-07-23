@@ -28,6 +28,8 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 @RequiredArgsConstructor
 public class ProcessorService extends RequestValidator<ProcessorRequest> {
 
+    // TODO: Denne klassen skal ikke subklasse RequestValidator. Flytt dette ut til en egen komponent (XxxRequestValidator).
+
     private final ProcessorRepository repository;
     private final ProcessRepository processRepository;
     private final ResourceService resourceService;
@@ -53,6 +55,7 @@ public class ProcessorService extends RequestValidator<ProcessorRequest> {
         repository.deleteById(uuid);
     }
 
+    // TODO: Snu avhengigheten innover Ikke trivielt å flytte ut (men heller ikke så vanskelig)
     public void validateRequest(ProcessorRequest request, boolean update) {
         initialize(List.of(request), update);
 

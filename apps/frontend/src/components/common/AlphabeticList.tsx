@@ -1,9 +1,6 @@
-import * as React from 'react'
-import { Block } from 'baseui/block'
-import { theme } from '../../util'
-import { primitives } from '../../util/theme'
-import { LabelLarge } from 'baseui/typography'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
+import { LabelLarge } from 'baseui/typography'
+import { theme } from '../../util'
 import RouteLink from './RouteLink'
 import { margin } from './Style'
 
@@ -22,23 +19,15 @@ const AlphabeticList = (props: { items: Opt[]; baseUrl: string }) => {
   return (
     <>
       {Object.keys(items).map((letter) => (
-        <Block key={letter} marginBottom={theme.sizing.scale800}>
-          <Block display="flex" alignItems="center" marginBottom={theme.sizing.scale800}>
-            <Block
-              width={theme.sizing.scale900}
-              height={theme.sizing.scale900}
-              backgroundColor={primitives.primary150}
-              $style={{ borderRadius: '50%' }}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
+        <div className="mb-12" key={letter}>
+          <div className="flex items-center mb-6">
+            <div className="w-8 h-8 bg-[#C1DBF2] rounded-[50%] flex items-center justify-center">
               <LabelLarge $style={{ fontSize: '1.2em' }}>{letter}</LabelLarge>
-            </Block>
+            </div>
 
-            <Block marginBottom={theme.sizing.scale800} marginRight={theme.sizing.scale400} />
-            <Block width="100%" $style={{ borderBottomStyle: 'solid', borderBottomColor: theme.colors.mono500, borderBottomWidth: '2px' }} />
-          </Block>
+            <div className="mb-6 mr-2.5" />
+            <div className="w-full border-b-2 border-[#CBCBCB] border-solid" />
+          </div>
 
           <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
             {items[letter].map((item) => (
@@ -58,7 +47,7 @@ const AlphabeticList = (props: { items: Opt[]; baseUrl: string }) => {
               </FlexGridItem>
             ))}
           </FlexGrid>
-        </Block>
+        </div>
       ))}
     </>
   )

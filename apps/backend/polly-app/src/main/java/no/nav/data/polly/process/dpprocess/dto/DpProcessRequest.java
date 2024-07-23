@@ -52,6 +52,7 @@ public class DpProcessRequest implements RequestElement {
     private Boolean art10;
 
     private DpRetentionRequest retention;
+    private int newDpProcessNmber;
 
     private boolean update;
     private int requestIndex;

@@ -1,30 +1,29 @@
-import React, {useEffect} from 'react'
-import {useNavigate, useParams} from 'react-router-dom'
-import {Block} from 'baseui/block'
-import {deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor} from '../api'
-import {Document, Process} from '../constants'
-import DocumentMetadata from '../components/document/DocumentMetadata'
-import {user} from '../service/User'
-import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
-import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
-import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
-import {Notification} from 'baseui/notification'
-import {HeadingMedium, LabelMedium, ParagraphMedium} from 'baseui/typography'
-import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import {Tab} from 'baseui/tabs'
-import {CustomizedTabs} from '../components/common/CustomizedTabs'
-import Button from '../components/common/Button'
-import {AuditButton} from '../components/admin/audit/AuditButton'
-import {SIZE as ButtonSize} from 'baseui/button'
-import {tabOverride} from '../components/common/Style'
+import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { Notification } from 'baseui/notification'
+import { Tab } from 'baseui/tabs'
+import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
+import React, { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor } from '../api'
+import { AuditButton } from '../components/audit/AuditButton'
 import AlphabeticList from '../components/common/AlphabeticList'
-import {ampli} from "../service/Amplitude";
+import Button from '../components/common/Button'
+import { CustomizedTabs } from '../components/common/CustomizedTabs'
+import { tabOverride } from '../components/common/Style'
+import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
+import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
+import DocumentMetadata from '../components/document/DocumentMetadata'
+import { Document, Process } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { user } from '../service/User'
 
 const renderTextWithLabel = (label: string, text: string) => (
-  <Block marginTop="scale1000">
+  <div className="mt-10">
     <LabelMedium font="font400">{label}</LabelMedium>
     <ParagraphMedium>{text}</ParagraphMedium>
-  </Block>
+  </div>
 )
 
 const DocumentPage = () => {
@@ -39,7 +38,7 @@ const DocumentPage = () => {
   const [activeKey, setActiveKey] = React.useState<string | number | bigint>('containsInformationType')
   const [documents, setDocuments] = React.useState<Document[]>([])
 
-  ampli.logEvent("besøk", {side: 'Dokumenter', url: '/document/', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Dokumenter', url: '/document/', app: 'Behandlingskatalogen' })
 
   useEffect(() => setDocumentId(params.id), [params.id])
 
@@ -81,12 +80,12 @@ const DocumentPage = () => {
   return (
     <>
       <>
-        <Block width="100%">
+        <div className="w-full">
           <HeadingMedium>Dokumenter</HeadingMedium>
-        </Block>
-        <Block display="flex" flexDirection="row-reverse" marginTop="10px">
+        </div>
+        <div className="flex flex-row-reverse mt-2.5">
           {user.canWrite() && (
-            <Block>
+            <div>
               {currentDocument && <AuditButton id={currentDocument.id} />}
 
               {currentDocument && (
@@ -101,28 +100,19 @@ const DocumentPage = () => {
                 </Button>
               )}
 
-              <Button kind="outline" size={ButtonSize.compact} icon={faPlusCircle}  onClick={() => navigate('/document/create')} marginLeft>
+              <Button kind="outline" size={ButtonSize.compact} icon={faPlusCircle} onClick={() => navigate('/document/create')} marginLeft>
                 Opprett ny
               </Button>
-            </Block>
+            </div>
           )}
-        </Block>
+        </div>
         {!currentDocument && <AlphabeticList items={documents.map((d) => ({ id: d.id, label: d.name }))} baseUrl={'/document/'} />}
         {currentDocument && (
-          <Block
-            overrides={{
-              Block: {
-                style: {
-                  padding: '5px',
-                  marginTop: '5px',
-                },
-              },
-            }}
-          >
-            {renderTextWithLabel("Navn", currentDocument.name)}
-            {renderTextWithLabel("Beskrivelse", currentDocument.description)}
-            {renderTextWithLabel("Datatilgangsklasse", currentDocument.dataAccessClass ? currentDocument.dataAccessClass.shortName : "Ikke angitt")}
-          </Block>
+          <div className="p-[5px] mt-[5px]">
+            {renderTextWithLabel('Navn', currentDocument.name)}
+            {renderTextWithLabel('Beskrivelse', currentDocument.description)}
+            {renderTextWithLabel('Datatilgangsklasse', currentDocument.dataAccessClass ? currentDocument.dataAccessClass.shortName : 'Ikke angitt')}
+          </div>
         )}
 
         {currentDocument && (
@@ -133,16 +123,16 @@ const DocumentPage = () => {
             activeKey={activeKey as React.Key}
           >
             <Tab key={'containsInformationType'} title="Inneholder opplysningstyper" overrides={tabOverride}>
-              <Block>
+              <div>
                 <DocumentMetadata document={currentDocument} />
-              </Block>
+              </div>
             </Tab>
             <>
               {documentUsages && documentUsages.length > 0 && (
                 <Tab key={'containsProcesses'} title="Brukes i behandlinger" overrides={tabOverride}>
-                  <Block>
+                  <div>
                     <DocumentProcessesTable documentUsages={documentUsages} />
-                  </Block>
+                  </div>
                 </Tab>
               )}
             </>

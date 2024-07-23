@@ -53,6 +53,8 @@ import static no.nav.data.common.utils.StreamUtils.filter;
 @RequiredArgsConstructor
 public class DisclosureController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final DisclosureRepository repository;
     private final DisclosureService service;
 
@@ -173,7 +175,7 @@ public class DisclosureController {
     @Operation(summary = "Delete Disclosure")
     @ApiResponse(description = "Disclosure deleted")
     @DeleteMapping("/{id}")
-    @Transactional
+    @Transactional // TODO: Flytt til tjenestelaget
     public ResponseEntity<DisclosureResponse> deleteDisclosureById(@PathVariable UUID id) {
         log.info("Received a request to delete Disclosure with id={}", id);
         Optional<Disclosure> fromRepository = repository.findById(id);
@@ -203,10 +205,9 @@ public class DisclosureController {
     }
 
     static class DisclosureSummaryPage extends RestResponsePage<DisclosureSummaryResponse> {
-
     }
 
     static class DisclosurePage extends RestResponsePage<DisclosureResponse> {
-
     }
+
 }

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertRepository;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.dashboard.dto.DashResponse;
 import no.nav.data.polly.dashboard.dto.DashResponse.Counter;
@@ -56,6 +56,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Tag(name = "Dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
+    
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
 
     private final ProcessRepository processRepository;
     private final DpProcessRepository dpProcessRepository;
@@ -76,7 +78,7 @@ public class DashboardController {
     private DashResponse calcDash(ProcessStatusFilter filter) {
         var dash = new DashResponse();
         // init all departments and load teamId -> productArea mapping
-        CodelistService.getCodelist(ListName.DEPARTMENT).forEach(d -> dash.department(d.getCode()));
+        CodelistStaticService.getCodelist(ListName.DEPARTMENT).forEach(d -> dash.department(d.getCode()));
         teamService.getAllTeams().forEach(t -> dash.registerTeam(t.getId(), t.getProductAreaId()));
 
         doPaged(processRepository, 50, processes -> {

@@ -13,7 +13,7 @@ import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import { Spinner } from '../common/Spinner'
 
 const TextWithNumber = (props: { label: string; number: number }) => (
-  <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
+  <div className="flex w-fit mb-0 justify-center">
     <ParagraphMedium margin="0">
       {props.label}{' '}
       <b
@@ -24,7 +24,7 @@ const TextWithNumber = (props: { label: string; number: number }) => (
         {props.number}
       </b>
     </ParagraphMedium>
-  </Block>
+  </div>
 )
 
 const parsedDepartmentName = (department: string) => {
@@ -40,9 +40,9 @@ const DepartmentCard = (props: DepartmentCardProps) => {
 
   return (
     <CustomizedStatefulTooltip content={codelist.getCode(ListName.DEPARTMENT, department.department)?.shortName}>
-      <Block>
+      <div>
         <Card overrides={cardShadow}>
-          <Block display="flex" flexDirection="column" alignItems="center" justifyContent="space-around" width="95px" height="95px">
+          <div className="flex flex-col items-center justify-around w-24 h-24">
             <RouteLink href={genProcessPath(Section.department, department.department, undefined)} style={{ textDecoration: 'none' }}>
               <LabelLarge color={theme.colors.accent300} $style={{ textAlign: 'center' }}>
                 {parsedDepartmentName(department.department)}
@@ -58,9 +58,9 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.NEEDS_REVISION)} style={{ textDecoration: 'none' }}>
               <TextWithNumber label='Revidering' number={department.processesNeedsRevision} />
             </RouteLink>
-          </Block>
+          </div>
         </Card>
-      </Block>
+      </div>
     </CustomizedStatefulTooltip>
   )
 }
@@ -80,13 +80,13 @@ const Departments = (props: DepartmentsProps) => {
   const sortedData = () => data.departments.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
 
   return (
-    <Block width="100%" display="flex" flexWrap justifyContent="space-between">
+    <div className="w-full flex flex-wrap justify-between">
       {sortedData().map((department: DepartmentProcess, i: number) => (
-        <Block key={i} marginTop={theme.sizing.scale600}>
+        <div key={i} className="mt-4">
           <DepartmentCard department={department} />
-        </Block>
+        </div>
       ))}
-    </Block>
+    </div>
   )
 }
 

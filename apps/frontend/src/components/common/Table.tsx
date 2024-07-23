@@ -133,7 +133,7 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
           component: () => (
             <span>
               <SortDirectionIcon direction={table.direction[column]} />
-              <Block marginRight={theme.sizing.scale200} display="inline" />
+              <div className="inline mr-1.5" />
               {title}
             </span>
           ),

@@ -1,37 +1,23 @@
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Button, KIND } from 'baseui/button'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process } from '../../../constants'
-import { Block, BlockProps } from 'baseui/block'
-import { ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { useDebouncedState } from '../../../util'
-import { addDocumentToProcessSchema } from '../../common/schema'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { Option, Select, TYPE } from 'baseui/select'
-import { getDefaultProcessDocument, searchDocuments } from '../../../api'
-import { ListItem } from 'baseui/list'
-import { useStyletron } from 'baseui'
-import { codelist, ListName } from '../../../service/Codelist'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
-import { Sensitivity } from '../../InformationType/Sensitivity'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useStyletron } from 'baseui'
+import { Button, KIND } from 'baseui/button'
+import { ListItem } from 'baseui/list'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Option, Select, TYPE } from 'baseui/select'
 import { ParagraphSmall } from 'baseui/typography'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import { Spinner } from '../../common/Spinner'
+import { ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
+import { useEffect, useState } from 'react'
+import { getDefaultProcessDocument, searchDocuments } from '../../../api'
+import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process } from '../../../constants'
+import { codelist, ListName } from '../../../service/Codelist'
+import { useDebouncedState } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
-
-const modalBlockProps: BlockProps = {
-  width: '750px',
-  paddingRight: '2rem',
-  paddingLeft: '2rem',
-}
-
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-}
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { addDocumentToProcessSchema } from '../../common/schema'
+import { Spinner } from '../../common/Spinner'
+import { Sensitivity } from '../../InformationType/Sensitivity'
 
 type AddDocumentProps = {
   isOpen: boolean
@@ -51,16 +37,16 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[]; 
     <ul className={css({ paddingLeft: 0, width: '100%' })}>
       {informationTypes.map((informationType, index) => (
         <ListItem key={informationType.informationTypeId} sublist>
-          <Block display="flex" width="100%" justifyContent="space-between">
-            <Block display="flex" justifyContent="space-between" width="90%" alignItems="center">
-              <Block>
+          <div className="flex w-full justify-between">
+            <div className="flex justify-between w-[90%] items-center">
+              <div>
                 <Sensitivity sensitivity={informationType.informationType.sensitivity} />
                 &nbsp;
                 {informationType.informationType.name}
-              </Block>
-              <Block $style={{ opacity: '80%' }}>{informationType.subjectCategories.map((s) => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}</Block>
-            </Block>
-            <CustomizedStatefulTooltip content='Fjern'>
+              </div>
+              <div className="opacity-80">{informationType.subjectCategories.map((s) => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}</div>
+            </div>
+            <CustomizedStatefulTooltip content="Fjern">
               <Button
                 size="compact"
                 kind="tertiary"
@@ -77,7 +63,7 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[]; 
                 <FontAwesomeIcon icon={faMinusCircle} />{' '}
               </Button>
             </CustomizedStatefulTooltip>
-          </Block>
+          </div>
         </ListItem>
       ))}
     </ul>
@@ -157,9 +143,9 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
               <Form onKeyDown={disableEnter}>
                 <ModalHeader>Legg til opplysningstyper fra dokument</ModalHeader>
                 <ModalBody>
-                  <Block {...modalBlockProps}>
-                    <Block {...rowBlockProps}>
-                      <ModalLabel label='Dokument' />
+                  <div className="w-[750px] px-8">
+                    <div className="flex w-full mt-4">
+                      <ModalLabel label="Dokument" />
                       <Field
                         name="document"
                         render={({ form }: FieldProps<AddDocumentToProcessFormValues>) => (
@@ -168,12 +154,12 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                               clearable={false}
                               isLoading={searchLoading}
                               autoFocus
-                              noResultsMsg='Ingen'
+                              noResultsMsg="Ingen"
                               maxDropdownHeight="400px"
                               searchable={true}
                               type={TYPE.search}
                               options={documents}
-                              placeholder='Søk dokumenter'
+                              placeholder="Søk dokumenter"
                               value={form.values.document ? [form.values.document as Option] : []}
                               onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
                               onChange={(params) => {
@@ -193,34 +179,34 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                           </>
                         )}
                       />
-                    </Block>
+                    </div>
                     <Error fieldName="document" />
 
                     {!!formik.values.document && (
                       <>
                         <ParagraphSmall>{formik.values.document.description}</ParagraphSmall>
-                        <Block {...rowBlockProps}>
-                          <ModalLabel label='Opplysningstyper' />
+                        <div className="flex w-full mt-4">
+                          <ModalLabel label="Opplysningstyper" />
                           <FieldArray
                             name="informationTypes"
                             render={(arrayHelpers: FieldArrayRenderProps) => (
                               <ListInformationTypes informationTypes={formik.values.informationTypes} formik={formik} arrayHelpers={arrayHelpers} />
                             )}
                           />
-                        </Block>
+                        </div>
                       </>
                     )}
                     <Error fieldName="informationTypes" />
-                  </Block>
+                  </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Block display="flex" justifyContent="flex-end">
-                    <Block alignSelf="flex-end">{props.error && <p>{props.error}</p>}</Block>
+                  <div className="flex justify-end">
+                    <div className="self-end">{props.error && <p>{props.error}</p>}</div>
                     <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
                       Avbryt
                     </Button>
                     <ModalButton type="submit">Legg til</ModalButton>
-                  </Block>
+                  </div>
                 </ModalFooter>
               </Form>
             )

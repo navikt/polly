@@ -65,15 +65,15 @@ export const AuditRecentTable = (props: { show: boolean }) => {
 
   return (
     <>
-      <Block display="flex" justifyContent="space-between" marginBottom=".5rem">
+      <div className="flex justify-between mb-2">
         <LabelLarge>Siste endringer</LabelLarge>
-        <Block width="300px" display="flex" justifyContent="space-between">
+        <div className="w-72 flex justify-between">
           <LabelSmall alignSelf="center" marginRight=".5rem">
             Tabellnavn:{' '}
           </LabelSmall>
           <StatefulSelect size="compact" options={Object.keys(ObjectType).map((ot) => ({ id: ot, label: ot }))} onChange={(p) => setTable(p?.value[0]?.id as ObjectType)} />
-        </Block>
-      </Block>
+        </div>
+      </div>
 
       <Table
         emptyText='Ingen versjonering'
@@ -92,7 +92,7 @@ export const AuditRecentTable = (props: { show: boolean }) => {
           return (
             <Row key={audit.id}>
               <Cell $style={{ maxWidth: '13%' }}>
-                <Block marginRight={theme.sizing.scale400}>{rowNum}</Block>
+                <div className="mr-2">{rowNum}</div>
                 <AuditButton kind="tertiary" id={audit.tableId} auditId={audit.id}>
                   <CustomizedStatefulTooltip content={audit.time}>{moment(audit.time).fromNow()}</CustomizedStatefulTooltip>
                 </AuditButton>
@@ -102,12 +102,12 @@ export const AuditRecentTable = (props: { show: boolean }) => {
               </Cell>
               <Cell>
                 <CustomizedStatefulTooltip content={audit.tableId}>
-                  <Block color={colors[audit.tableId]}>{_.truncate(audit.tableId, { length })}</Block>
+                  <div className={`text-[${colors[audit.tableId]}]`} >{_.truncate(audit.tableId, { length })}</div>
                 </CustomizedStatefulTooltip>
               </Cell>
               <Cell $style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Block>{audit.user}</Block>
-                <Block>
+                <div>{audit.user}</div>
+                <div>
                   <ObjectLink id={audit.tableId} type={audit.table} audit={audit}>
                     <Button size="compact" shape="round" kind="tertiary">
                       <FontAwesomeIcon icon={faBinoculars} />
@@ -118,14 +118,14 @@ export const AuditRecentTable = (props: { show: boolean }) => {
                       <FontAwesomeIcon icon={faCode} />
                     </Button>
                   </StatefulPopover>
-                </Block>
+                </div>
               </Cell>
             </Row>
           )
         })}
       </Table>
 
-      <Block display="flex" justifyContent="space-between" marginTop="1rem">
+      <div className="flex justify-between mt-4">
         <StatefulPopover
           content={({ close }) => (
             <StatefulMenu
@@ -151,7 +151,7 @@ export const AuditRecentTable = (props: { show: boolean }) => {
           onPageChange={({ nextPage }) => handlePageChange(nextPage)}
           labels={{ nextButton: 'Neste', preposition: 'av', prevButton: 'Fordige' }}
         />
-      </Block>
+      </div>
     </>
   )
 }

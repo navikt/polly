@@ -107,10 +107,10 @@ export const ObjectLink = (props: ObjectLinkProps) => {
   )
 
   return props.withHistory ? (
-    <Block display="flex" justifyContent="space-between" width="100%" alignItems="center">
+    <div className="flex justify-between w-full items-center">
       {link}
       <AuditButton id={props.id} kind={KIND.tertiary} />
-    </Block>
+    </div>
   ) : (
     link
   )

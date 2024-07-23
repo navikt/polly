@@ -6,18 +6,8 @@ import { SmallRadio } from './SmallRadio'
 import { default as React } from 'react'
 
 export const SelectType = (props: { type: SearchType; setType: (type: SearchType) => void }) => (
-  <Block
-    font="ParagraphSmall"
-    position="absolute"
-    marginTop="-4px"
-    backgroundColor={theme.colors.primary50}
-    width="40vw"
-    $style={{
-      borderBottomLeftRadius: '8px',
-      borderBottomRightRadius: '8px',
-    }}
-  >
-    <Block marginLeft="3px" marginRight="3px" marginBottom="3px">
+  <div className="text-sm absolute mt-[-4px] bg-[#F6F6F6] w-[40vw] rounded-l-lg rounded-r-lg">
+    <div className="mx-[3px] mb-[3px]">
       <RadioGroup onChange={(e) => props.setType(e.target.value as SearchType)} align="horizontal" value={props.type}>
         {SmallRadio('all', 'Alle')}
         {SmallRadio('informationType', 'Opplysningstype')}
@@ -34,6 +24,6 @@ export const SelectType = (props: { type: SearchType; setType: (type: SearchType
         {SmallRadio('nationalLaw', 'Nasjonal lov')}
         {SmallRadio('gdprArticle', 'GDPR artikkel')}
       </RadioGroup>
-    </Block>
-  </Block>
+    </div>
+  </div>
 )

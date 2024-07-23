@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.codelist.CodelistService.getCodelistResponseList;
+import static no.nav.data.polly.codelist.CodelistStaticService.getCodelistResponseList;
 
 @Data
 @Builder
@@ -85,6 +85,7 @@ public class Policy extends Auditable {
         }
     }
 
+    // TODO: Snu avhengigheten innover
     public static Policy mapRequestToPolicy(PolicyRequest policyRequest) {
         Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : Policy.builder().generateId().data(new PolicyData()).build();
         policyRequest.getInformationType().addPolicy(policy);
@@ -97,6 +98,7 @@ public class Policy extends Auditable {
         return policy;
     }
 
+    // TODO: Snu avhengigheten innover
     public PolicyResponse convertToResponse(boolean includeProcess) {
         return PolicyResponse.builder()
                 .id(getId())
@@ -112,10 +114,12 @@ public class Policy extends Auditable {
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public UsedInInstancePurpose getInstanceIdentification() {
         return UsedInInstancePurpose.builder().id(id.toString()).processId(process.getId().toString()).name(informationTypeName).purposes(getData().getPurposes()).build();
     }
 
+    // TODO: Snu avhengigheten innover
     private InformationTypeShortResponse convertInformationTypeShortResponse() {
         return getInformationType() == null ? null :
                 new InformationTypeShortResponse(getInformationTypeId(), getInformationTypeName(), getInformationType().getData().sensitivityCode());
@@ -123,7 +127,6 @@ public class Policy extends Auditable {
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class PolicyBuilder {
-
 
         public PolicyBuilder generateId() {
             id = UUID.randomUUID();

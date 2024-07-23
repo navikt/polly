@@ -16,7 +16,7 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.common.security.SecurityUtils;
 import no.nav.data.common.security.dto.UserInfo;
 import no.nav.data.common.utils.JsonUtils;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
@@ -63,6 +63,8 @@ import static no.nav.data.common.utils.StreamUtils.filter;
 @RequiredArgsConstructor
 public class ProcessReadController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final TeamService teamService;
     private final ProcessRepository repository;
     private final ProcessService processService;
@@ -71,7 +73,7 @@ public class ProcessReadController {
     @Operation(summary = "Get Process with InformationTypes for Id or process number")
     @ApiResponse(description = "Process fetched")
     @GetMapping("/{id}")
-    @Transactional
+    @Transactional // TODO: Flytt til tjenestelaget
     public ResponseEntity<ProcessResponse> findForId(@PathVariable @Parameter(description = "Treated as process number if numeric") String id) {
         log.info("Received request for Process with id/number={}", id);
         Optional<Process> process;
@@ -143,10 +145,10 @@ public class ProcessReadController {
     @Operation(summary = "Get Processes for Purpose")
     @ApiResponse(description = "Processes fetched")
     @GetMapping("/purpose/{purpose}")
-    @Transactional
+    @Transactional // TODO: Flytt til tjenestelaget
     public ResponseEntity<RestResponsePage<ProcessResponse>> getPurpose(@PathVariable String purpose) {
         log.info("Get processes for purpose={}", purpose);
-        Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
+        Codelist codelist = CodelistStaticService.getCodelist(ListName.PURPOSE, purpose);
         if (codelist == null) {
             return ResponseEntity.notFound().build();
         }
@@ -195,7 +197,7 @@ public class ProcessReadController {
             repository.searchByProcessNumber(search).ifPresent(processes::addAll);
         }
         if (includePurpose) {
-            var purposes = filter(CodelistService.getCodelist(ListName.PURPOSE), c -> StringUtils.containsIgnoreCase(c.getShortName(), search));
+            var purposes = filter(CodelistStaticService.getCodelist(ListName.PURPOSE), c -> StringUtils.containsIgnoreCase(c.getShortName(), search));
             purposes.sort(comparing(Codelist::getShortName, startsWith(search)));
             if (!purposes.isEmpty()) {
                 processes.addAll(repository.findByPurpose(purposes.get(0).getCode()));
@@ -248,11 +250,9 @@ public class ProcessReadController {
     }
 
     static class ProcessPage extends RestResponsePage<ProcessResponse> {
-
     }
 
     static class LastEditedPage extends RestResponsePage<LastEditedResponse> {
-
     }
 
 }

@@ -1,6 +1,6 @@
 package no.nav.data.polly.process.domain.repo;
 
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 
 import java.util.List;
@@ -36,6 +36,6 @@ public interface ProcessCount {
     }
 
     static void fillCountsWithZero(Map<String, Long> counts, ListName listName) {
-        CodelistService.getCodelist(listName).stream().filter(c -> !counts.containsKey(c.getCode())).forEach(c -> counts.put(c.getCode(), 0L));
+        CodelistStaticService.getCodelist(listName).stream().filter(c -> !counts.containsKey(c.getCode())).forEach(c -> counts.put(c.getCode(), 0L));
     }
 }

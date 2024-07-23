@@ -43,6 +43,7 @@ public class DpProcessResponse {
     private Boolean art10;
 
     private DpRetentionResponse retention;
+    private int dpProcessNumber;
 
     private ChangeStampResponse changeStamp;
 

@@ -22,7 +22,7 @@ const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string }
     <Field
       name="externalProcessResponsible"
       render={({ form }: FieldProps<DpProcessFormValues>) => (
-        <Block width={'100%'}>
+        <div className="w-full">
           <Select
             options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
             onChange={({ value }) => {
@@ -32,7 +32,7 @@ const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string }
             value={value}
             placeholder=""
           />
-        </Block>
+        </div>
       )}
     />
   )

@@ -5,8 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.teams.domain.ProductArea;
 
 import java.util.List;
+
+import static no.nav.data.common.utils.StreamUtils.convert;
+
 
 @Data
 @Builder
@@ -21,5 +25,19 @@ public class ProductAreaResponse {
     private List<String> tags;
     private List<MemberResponse> members;
 
+    public static ProductAreaResponse buildFrom(ProductArea pa) {
+        return ProductAreaResponse.builder()
+                .id(pa.getId())
+                .name(pa.getName())
+                .description(pa.getDescription())
+                .tags(pa.getTags())
+                .build();
+    }
+
+    public static ProductAreaResponse buildFromWithMembers(ProductArea pa) {
+        var resp = buildFrom(pa);
+        resp.setMembers(convert(pa.getMembers(), MemberResponse::buildFrom));
+        return resp;
+    }
 
 }

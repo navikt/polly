@@ -5,7 +5,7 @@ import no.nav.data.common.security.azure.AzureConstants;
 import no.nav.data.common.security.azure.AzureUserInfo;
 import no.nav.data.common.utils.MdcUtils;
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
@@ -68,13 +68,13 @@ class ProcessControllerIT extends IntegrationTestBase {
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
                         .processId(policy.getProcess().getId())
-                        .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
+                        .purpose(CodelistStaticService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                         .informationTypeId(createAndSaveInformationType().getId())
                         .informationType(
                                 new InformationTypeShortResponse(createAndSaveInformationType().getId(), INFORMATION_TYPE_NAME,
                                         createAndSaveInformationType().getData().sensitivityCode()))
                         .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
-                        .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getData().getSubjectCategories().get(0)))
+                        .subjectCategory(CodelistStaticService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getData().getSubjectCategories().get(0)))
                         .legalBasis(legalBasisResponse())
                         .documentIds(policy.getData().getDocumentIds())
                         .build())
@@ -232,11 +232,11 @@ class ProcessControllerIT extends IntegrationTestBase {
             assertThat(processPage.getContent()).contains(
                     processResponseBuilder(policy.getProcess().getId())
                             .name("Auto_" + PURPOSE_CODE1)
-                            .purposes(List.of(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1)))
+                            .purposes(List.of(CodelistStaticService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1)))
                             .build(),
                     processResponseBuilder(policy2.getProcess().getId())
                             .name("Auto_" + PURPOSE_CODE1 + 2)
-                            .purposes(List.of(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2)))
+                            .purposes(List.of(CodelistStaticService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2)))
                             .build()
             );
             assertThat(processPage.getContent().get(0).getNumber()).isEqualTo(policy2.getProcess().getData().getNumber());

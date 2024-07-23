@@ -1,26 +1,24 @@
-import React, { useState } from 'react'
-import { Block, BlockProps } from 'baseui/block'
-import { HeadingMedium } from 'baseui/typography'
-import { theme } from '../../../util'
-import { Spinner } from '../../common/Spinner'
-import { useNavigate } from 'react-router-dom'
-import { codelist, ListName } from '../../../service/Codelist'
-import { useAllAreas, useProcessSearch } from '../../../api'
 import axios from 'axios'
-import { env } from '../../../util/env'
-import * as yup from 'yup'
-import { Field, Form, Formik } from 'formik'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { ButtonGroup } from 'baseui/button-group'
 import { Button as BButton } from 'baseui/button'
-import Button from '../../common/Button'
-import { RadioBoolButton } from '../../common/Radio'
-import { Select, TYPE } from 'baseui/select'
-import { Process } from '../../../constants'
+import { ButtonGroup } from 'baseui/button-group'
 import { Combobox } from 'baseui/combobox'
 import { Notification } from 'baseui/notification'
-import { FieldTextarea } from '../../Process/common/FieldTextArea'
-import {ampli} from "../../../service/Amplitude";
+import { Select, TYPE } from 'baseui/select'
+import { HeadingMedium } from 'baseui/typography'
+import { Field, Form, Formik } from 'formik'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
+import { useAllAreas, useProcessSearch } from '../../api'
+import Button from '../../components/common/Button'
+import { Error, ModalLabel } from '../../components/common/ModalSchema'
+import { RadioBoolButton } from '../../components/common/Radio'
+import { Spinner } from '../../components/common/Spinner'
+import { FieldTextarea } from '../../components/Process/common/FieldTextArea'
+import { Process } from '../../constants'
+import { ampli } from '../../service/Amplitude'
+import { codelist, ListName } from '../../service/Codelist'
+import { env } from '../../util/env'
 
 enum ProcessSelection {
   ONE = 'ONE',
@@ -48,7 +46,7 @@ const initialValues: ProcessRevisionRequest = {
 }
 
 const schema: () => yup.ObjectSchema<ProcessRevisionRequest> = () => {
-  const requiredString = yup.string().required("Feltet er påkrevd")
+  const requiredString = yup.string().required('Feltet er påkrevd')
   return yup.object({
     processSelection: yup.mixed<ProcessSelection>().oneOf(Object.values(ProcessSelection)).required(),
     processId: yup.string().when('processSelection', { is: ProcessSelection.ONE, then: () => requiredString }),
@@ -62,11 +60,6 @@ const schema: () => yup.ObjectSchema<ProcessRevisionRequest> = () => {
 const requestRevision = async (request: ProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
 }
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-}
 
 const formatProcessName = (process: Process) => process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
 
@@ -76,7 +69,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
-  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/request-revision', app: 'Behandlingskatalogen', type:  'Trenger revidering'})
+  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/request-revision', app: 'Behandlingskatalogen', type: 'Trenger revidering' })
 
   const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
   const areas = useAllAreas()
@@ -109,22 +102,22 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
   }
 
   return (
-    <Block>
+    <div>
       <HeadingMedium>Trenger revidering</HeadingMedium>
       {loading ? <Spinner /> : error && <Notification kind={'negative'}>{error}</Notification>}
 
       {done ? (
-        <Block>
+        <div>
           <Notification kind={'positive'}>Revidering etterspurt</Notification>
           <Button type="button" kind="secondary" onClick={abort} marginRight>
-            {modalView ? "Lukk" : "Tilbake"}
+            {modalView ? 'Lukk' : 'Tilbake'}
           </Button>
           {!props.close && (
             <Button type="button" onClick={reset}>
               Ny revidering
             </Button>
           )}
-        </Block>
+        </div>
       ) : (
         <Formik
           initialValues={{
@@ -138,11 +131,11 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
           {(formikBag) => (
             <Form>
               {!modalView && (
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label="Behandlinger" />
                   <Field name="processSelection">
                     {() => {
-                      const button = (s: ProcessSelection, text: string = "Alle") => {
+                      const button = (s: ProcessSelection, text: string = 'Alle') => {
                         const onClick = () => formikBag.setFieldValue('processSelection', s)
                         return (
                           <BButton type="button" onClick={onClick}>
@@ -151,33 +144,33 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                         )
                       }
                       return (
-                        <Block>
+                        <div>
                           <ButtonGroup selected={Object.values(ProcessSelection).indexOf(formikBag.values.processSelection)}>
-                            {button(ProcessSelection.ONE, "Én")}
-                            {button(ProcessSelection.ALL, "Alle")}
-                            {button(ProcessSelection.DEPARTMENT, "Avdeling")}
-                            {button(ProcessSelection.PRODUCT_AREA, "Område")}
+                            {button(ProcessSelection.ONE, 'Én')}
+                            {button(ProcessSelection.ALL, 'Alle')}
+                            {button(ProcessSelection.DEPARTMENT, 'Avdeling')}
+                            {button(ProcessSelection.PRODUCT_AREA, 'Område')}
                           </ButtonGroup>
-                        </Block>
+                        </div>
                       )
                     }}
                   </Field>
-                </Block>
+                </div>
               )}
               <Error fieldName="processSelection" fullWidth />
 
               {!modalView && (
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label="Bare fullførte" />
                   <Field name="completedOnly">
                     {() => <RadioBoolButton setValue={(b) => formikBag.setFieldValue('completedOnly', b)} value={formikBag.values.completedOnly} omitUndefined />}
                   </Field>
-                </Block>
+                </div>
               )}
               <Error fieldName="completedOnly" fullWidth />
 
               {formikBag.values.processSelection === ProcessSelection.ONE && !modalView && (
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label="Behandling" />
                   <Select
                     noResultsMsg="Ingen"
@@ -196,58 +189,58 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                     labelKey="name"
                     getOptionLabel={({ option }) => formatProcessName(option as Process)}
                   />
-                </Block>
+                </div>
               )}
               <Error fieldName="processId" fullWidth />
 
               {formikBag.values.processSelection === ProcessSelection.DEPARTMENT && (
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label="Avdeling" />
-                  <Block width="100%">
+                  <div className="w-full">
                     <Combobox
                       mapOptionToString={(o) => o.label}
                       options={departments}
                       value={formikBag.values.department!}
                       onChange={(code) => formikBag.setFieldValue('department', code)}
                     />
-                  </Block>
-                </Block>
+                  </div>
+                </div>
               )}
               <Error fieldName="department" fullWidth />
 
               {formikBag.values.processSelection === ProcessSelection.PRODUCT_AREA && (
-                <Block {...rowBlockProps}>
+                <div className="flex w-full mt-4">
                   <ModalLabel label="Område" />
-                  <Block width="100%">
+                  <div className="w-full">
                     <Combobox
                       mapOptionToString={(o) => o.name}
                       options={areas}
                       value={formikBag.values.productAreaId!}
                       onChange={(code) => formikBag.setFieldValue('productAreaId', code)}
                     />
-                  </Block>
-                </Block>
+                  </div>
+                </div>
               )}
               <Error fieldName="productAreaId" fullWidth />
 
-              <Block {...rowBlockProps}>
+              <div className="flex w-full mt-4">
                 <ModalLabel label="Revideringstekst" />
                 <FieldTextarea fieldName="revisionText" placeHolder="Revideringstekst" rows={6} />
-              </Block>
+              </div>
               <Error fieldName="revisionText" fullWidth />
 
-              <Block>
-                <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
+              <div>
+                <div className="flex justify-end mt-6">
                   <Button type="button" kind="secondary" onClick={abort} marginRight>
                     Avbryt
                   </Button>
                   <Button type="submit">Lagre</Button>
-                </Block>
-              </Block>
+                </div>
+              </div>
             </Form>
           )}
         </Formik>
       )}
-    </Block>
+    </div>
   )
 }

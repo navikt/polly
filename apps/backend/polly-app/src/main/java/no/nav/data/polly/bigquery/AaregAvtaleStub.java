@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Component
 @ConditionalOnMissingBean(AaregAvtaleService.class)
-public class AaregAvtaleStub implements AaregAvtaleService{
+public class AaregAvtaleStub implements AaregAvtaleService {
+
     @Override
     public List<PollyAaregAvtale> searchAaregAvtale(String searchString) {
         return List.of();
@@ -19,4 +20,5 @@ public class AaregAvtaleStub implements AaregAvtaleService{
     public Optional<PollyAaregAvtale> getAaregAvtale(String avtaleId) {
         return Optional.empty();
     }
+
 }

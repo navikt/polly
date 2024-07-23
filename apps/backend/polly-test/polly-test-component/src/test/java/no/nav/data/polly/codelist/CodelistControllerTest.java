@@ -8,6 +8,7 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,8 @@ class CodelistControllerTest {
     @MockBean
     private CodelistService service;
     @MockBean
+    private CodelistRequestValidator requestValidator;
+    @MockBean
     private CommonCodeService commonCodeService;
 
     @BeforeEach
@@ -76,8 +79,8 @@ class CodelistControllerTest {
 
             assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
             assertThat(returnedCodelist.getCodelist().size()).isEqualTo(ListName.values().length);
-            assertThat(returnedCodelist.getCodelist().get(ListName.THIRD_PARTY).size()).isEqualTo(CodelistService.getCodelist(ListName.THIRD_PARTY).size());
-            assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
+            assertThat(returnedCodelist.getCodelist().get(ListName.THIRD_PARTY).size()).isEqualTo(CodelistStaticService.getCodelist(ListName.THIRD_PARTY).size());
+            assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistStaticService.getCodelist(ListName.CATEGORY).size());
         }
 
         @Test
@@ -88,7 +91,7 @@ class CodelistControllerTest {
 
             @SuppressWarnings("unchecked")
             List<Map<?, ?>> mappedResponse = JsonUtils.toObject(response.getContentAsString(), ArrayList.class);
-            assertThat(mappedResponse).hasSize(CodelistService.getCodelist(ListName.THIRD_PARTY).size());
+            assertThat(mappedResponse).hasSize(CodelistStaticService.getCodelist(ListName.THIRD_PARTY).size());
         }
 
         @Test
@@ -99,14 +102,14 @@ class CodelistControllerTest {
                     .andExpect(status().isOk())
                     .andReturn().getResponse();
 
-            assertThat(response.getContentAsString()).isEqualTo(JsonUtils.toJson(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "ARBEIDSGIVER")));
+            assertThat(response.getContentAsString()).isEqualTo(JsonUtils.toJson(CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, "ARBEIDSGIVER")));
         }
 
         @Test
         void getByListName_shouldReturnNotFound_whenUnknownListName() throws Exception {
             String uri = "/codelist/UNKNOWN_LISTNAME";
             doThrow(new CodelistNotFoundException("Codelist with listName=UNKNOWN_LISTNAME does not exist"))
-                    .when(service).validateListName("UNKNOWN_LISTNAME");
+                    .when(requestValidator).validateListName("UNKNOWN_LISTNAME");
 
             Exception exception = mvc.perform(get(uri))
                     .andExpect(status().isNotFound())
@@ -120,7 +123,7 @@ class CodelistControllerTest {
         void getByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {
             String uri = "/codelist/THIRD_PARTY/UNKNOWN_CODE";
             doThrow(new CodelistNotFoundException("The code=UNKNOWN_CODE does not exist in the list=THIRD_PARTY."))
-                    .when(service).validateListNameAndCode("THIRD_PARTY", "UNKNOWN_CODE");
+                    .when(requestValidator).validateListNameAndCode("THIRD_PARTY", "UNKNOWN_CODE");
 
             Exception exception = mvc.perform(get(uri))
                     .andExpect(status().isNotFound())
@@ -146,7 +149,7 @@ class CodelistControllerTest {
                     .content(inputJson))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.length()").value(2));
-            verify(service).save(requests);
+            verify(service).save(CodelistRequest.convertToCodelists(requests));
         }
 
         @Test

@@ -65,17 +65,17 @@ export const DeleteModal = (props: { id: string; showDeleteModal: boolean; close
       </ModalBody>
 
       <ModalFooter>
-        <Block display="flex" justifyContent="flex-end">
-          <Block alignSelf="flex-end">{errorProcessModal && <p>{errorProcessModal}</p>}</Block>
-          <Block display="inline" marginLeft={theme.sizing.scale400} />
+        <div className="flex justify-end">
+          <div className="self-end">{errorProcessModal && <p>{errorProcessModal}</p>}</div>
+          <div className="inline ml-2.5" />
           <Button kind="secondary" onClick={props.closeModal}>
             Avbryt
           </Button>
-          <Block display="inline" marginLeft={theme.sizing.scale400} />
+          <div className="inline ml-2.5" />
           <Button onClick={submitDeleteProcess} disabled={!canDelete}>
             Slett
           </Button>
-        </Block>
+        </div>
       </ModalFooter>
     </Modal>
   )
@@ -88,7 +88,7 @@ export const InformationTypeBannerButtons = (props: { id: string }) => {
 
   return (
     <>
-      <Block alignSelf="center" display="flex">
+      <div className="self-center flex">
         <AuditButton id={props.id} marginRight />
 
         <RouteLink href={`/informationtype/${props.id}/edit`} className={link}>
@@ -100,7 +100,7 @@ export const InformationTypeBannerButtons = (props: { id: string }) => {
         <Button size={ButtonSize.compact} kind="outline" onClick={() => setShowDeleteModal(true)} icon={faTrash}>
           Slett
         </Button>
-      </Block>
+      </div>
       <DeleteModal id={props.id} showDeleteModal={showDeleteModal} closeModal={() => setShowDeleteModal(false)} />
     </>
   )

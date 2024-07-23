@@ -30,7 +30,7 @@ const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps)
           return (
             <React.Fragment key={index}>
               <Row>
-                <Block display="flex" width="100%" justifyContent="space-between">
+                <div className="flex w-full justify-between">
                   <Cell $style={{ maxWidth: '25%' }}>
                     <RouteLink href={`/process/purpose/${row.purposes[0].code}`}>{row.purposes[0].shortName}</RouteLink>
                   </Cell>
@@ -43,15 +43,15 @@ const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps)
                     <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>{row.affiliation.department?.shortName}</RouteLink>
                   </Cell>
                   <Cell $style={{ maxWidth: '25%' }}>
-                    <Block>
+                    <div>
                       {row.affiliation.products.map((s) => (
-                        <Block marginRight={'10%'}>
+                        <div className="mr-[10%]">
                           <RouteLink href={`/process/system/${s.code}`}>{s.shortName}</RouteLink>
-                        </Block>
+                        </div>
                       ))}
-                    </Block>
+                    </div>
                   </Cell>
-                </Block>
+                </div>
               </Row>
             </React.Fragment>
           )

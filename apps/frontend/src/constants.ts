@@ -378,6 +378,7 @@ export interface Process extends IDurationed {
 export interface DpProcess extends IDurationed {
   id: string
   name: string
+  dpProcessNumber: number
   description?: string
   purposeDescription?: string
   affiliation: Affiliation
@@ -393,6 +394,7 @@ export interface DpProcess extends IDurationed {
 export interface DpProcessWithEmail extends IDurationed {
   id: string
   name: string
+  dpProcessNumber: number
   description?: string
   purposeDescription?: string
   affiliation: Affiliation

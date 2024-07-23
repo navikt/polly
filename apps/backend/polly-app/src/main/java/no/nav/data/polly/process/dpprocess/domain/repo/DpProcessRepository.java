@@ -24,5 +24,10 @@ public interface DpProcessRepository extends JpaRepository<DpProcess, UUID>, DpP
     @Query(value = "select * from dp_process where data ->> 'externalProcessResponsible' = ?1", nativeQuery = true)
     List<DpProcess> findByExternalProcessResponsible(String thirdParty);
 
+    @Query(value = "select * from dp_process where data ->> 'dpProcessNumber' like %?1%", nativeQuery = true)
+    Optional<List<DpProcess>> searchByDpProcessNumber(String number);
+
+    @Query(value = "select nextval('dp_process_number')", nativeQuery = true)
+    int nextDpProcessNumber();
 
 }

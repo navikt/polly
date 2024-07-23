@@ -32,8 +32,8 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
       name="subDataProcessing.processors"
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <Block width="100%">
-            <Block width="100%">
+          <div className="w-full">
+            <div className="w-full">
               <Select
                 clearable
                 noResultsMsg='Databehandler er ikke registrert i løsningen. Registrer databehandleren først.'
@@ -50,8 +50,8 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
                   ])
                 }}
               />
-            </Block>
-            <Block>
+            </div>
+            <div>
               {props.formikBag.values.subDataProcessing.processors &&
                 renderTagList(
                   props.formikBag.values.subDataProcessing.processors.map((dp) => {
@@ -65,8 +65,8 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
                   }),
                   arrayHelpers,
                 )}
-            </Block>
-          </Block>
+            </div>
+          </div>
         </>
       )}
     />

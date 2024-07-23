@@ -13,10 +13,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import no.nav.data.common.auditing.dto.AuditResponse;
 import no.nav.data.common.auditing.event.EventResponse;
 import no.nav.data.common.utils.JsonUtils;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.policy.domain.Policy;
@@ -67,18 +66,7 @@ public class AuditVersion {
     @Column(name = "DATA", nullable = false, updatable = false)
     private String data;
 
-    public AuditResponse convertToResponse() {
-        return AuditResponse.builder()
-                .id(id.toString())
-                .action(action)
-                .table(table)
-                .tableId(tableId)
-                .time(time)
-                .user(user)
-                .data(JsonUtils.toJsonNode(data))
-                .build();
-    }
-
+    // TODO: Snu avhengigheten innover (ikke triviell). Flytt all forretningslogikk i domeneklassen ut til tjenestelaget.
     public EventResponse convertToEventResponse() {
         return EventResponse.builder()
                 .id(id.toString())
@@ -121,7 +109,7 @@ public class AuditVersion {
         var purposes = purposesNewFormat.isEmpty() ? Optional.ofNullable(json.get("purposeCode")).map(JsonNode::textValue).map(List::of).orElse(List.of()) : purposesNewFormat;
         return purposes.stream()
                 .map(purpose -> {
-                    Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
+                    Codelist codelist = CodelistStaticService.getCodelist(ListName.PURPOSE, purpose);
                     return codelist == null ? purpose : codelist.getShortName();
                 })
                 .collect(Collectors.toList());

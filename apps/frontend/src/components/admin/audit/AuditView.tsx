@@ -51,44 +51,44 @@ export const AuditView = (props: AuditViewProps) => {
 
       {logFound && (
         <>
-          <Block display="flex" justifyContent="space-between">
-            <Block width="90%">
+          <div className="flex justify-between">
+            <div className="w-[90%]">
               <Label label='ID:'>{auditLog?.id}</Label>
               <Label label='Tabellnavn:'>{newestAudit?.table}</Label>
               <Label label='Versjoneringer:'>{auditLog?.audits.length}</Label>
-            </Block>
-            <Block display="flex">
+            </div>
+            <div className="flex">
               <Button size="compact" kind="tertiary" marginRight onClick={() => setOpen(auditLog!.audits.map(() => true))}>
                 Åpne alle
               </Button>
               {newestAudit?.action !== AuditAction.DELETE && (
                 <CustomizedStatefulTooltip content={() => 'Vis'}>
-                  <Block>
+                  <div>
                     <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table} audit={newestAudit}>
                       <Button size="compact" shape="round" kind="tertiary">
                         <FontAwesomeIcon icon={faBinoculars} />
                       </Button>
                     </ObjectLink>
-                  </Block>
+                  </div>
                 </CustomizedStatefulTooltip>
               )}
               <CustomizedStatefulTooltip content={() => 'Lukk'}>
-                <Block>
+                <div>
                   <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId('')}>
                     <FontAwesomeIcon icon={faTimes} />
                   </Button>
-                </Block>
+                </div>
               </CustomizedStatefulTooltip>
-            </Block>
-          </Block>
+            </div>
+          </div>
 
           {auditLog &&
             auditLog.audits.map((audit, index) => {
               const time = moment(audit.time)
               return (
-                <Block key={audit.id} ref={refs[audit.id]} marginBottom="1rem" marginTop=".5rem" backgroundColor={audit.id === props.auditId ? theme.colors.mono200 : undefined}>
-                  <Block display="flex" justifyContent="space-between">
-                    <Block width="90%">
+                <div className={`mb-4 mt-2 ${audit.id === props.auditId ? 'bg-[#F6F6F6]' : ''}`} key={audit.id} ref={refs[audit.id]}>
+                  <div className="flex justify-center">
+                    <div className="w-[90%]">
                       <Label label='Versjon #:'>{auditLog.audits.length - index}</Label>
                       <Label label='Handling:'>
                         <AuditActionIcon action={audit.action} withText={true} />
@@ -97,8 +97,8 @@ export const AuditView = (props: AuditViewProps) => {
                         {time.format('LL')} {time.format('HH:mm:ss.SSS Z')}
                       </Label>
                       <Label label='Bruker'>{audit.user}</Label>
-                    </Block>
-                    <Block>
+                    </div>
+                    <div>
                       <StatefulPopover
                         placement={PLACEMENT.left}
                         content={() => (
@@ -127,8 +127,8 @@ export const AuditView = (props: AuditViewProps) => {
                           </Button>
                         </div>
                       </StatefulPopover>
-                    </Block>
-                  </Block>
+                    </div>
+                  </div>
                   <ReactJson
                     src={audit.data}
                     name={null}
@@ -137,7 +137,7 @@ export const AuditView = (props: AuditViewProps) => {
                       ;(sel.name === 'id' || sel.name?.endsWith('Id')) && viewId(sel.value as string)
                     }}
                   />
-                </Block>
+                </div>
               )
             })}
         </>

@@ -1,8 +1,8 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
-import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistUsageResponse;
 import no.nav.data.polly.codelist.dto.ReplaceCodelistRequest;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Objects;
 
-import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
+import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodeUsageControllerIT extends IntegrationTestBase {
@@ -162,7 +162,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         })
         void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents, int processors) {
             String newCode = "REPLACECODE";
-            codelistService.save(List.of(createCodelistRequest(list, newCode)));
+            codelistService.save(List.of(createCodelist(list, newCode)));
 
             var noactions = replaceCode(list, newCode, code);
             assertThat(noactions.isInUse()).isFalse();
@@ -231,39 +231,39 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
     }
 
     private void createCodelistsByRequests() {
-        List<CodelistRequest> requests = List.of(
-                createCodelistRequest("CATEGORY", "PERSONALIA"),
-                createCodelistRequest("CATEGORY", "ARBEIDSFORHOLD"),
+        List<Codelist> requests = List.of(
+                createCodelist("CATEGORY", "PERSONALIA"),
+                createCodelist("CATEGORY", "ARBEIDSFORHOLD"),
 
-                createCodelistRequest("DEPARTMENT", "YTA"),
-                createCodelistRequest("DEPARTMENT", "OTHER_DEP"),
+                createCodelist("DEPARTMENT", "YTA"),
+                createCodelist("DEPARTMENT", "OTHER_DEP"),
 
-                createCodelistRequest("GDPR_ARTICLE", "ART61E"),
-                createCodelistRequest("GDPR_ARTICLE", "ART92A"),
+                createCodelist("GDPR_ARTICLE", "ART61E"),
+                createCodelist("GDPR_ARTICLE", "ART92A"),
 
-                createCodelistRequest("NATIONAL_LAW", "FTRL"),
-                createCodelistRequest("NATIONAL_LAW", "OTHER_LAW"),
+                createCodelist("NATIONAL_LAW", "FTRL"),
+                createCodelist("NATIONAL_LAW", "OTHER_LAW"),
 
-                createCodelistRequest("PURPOSE", "DAGPENGER"),
-                createCodelistRequest("PURPOSE", "BARNETRYGD"),
-                createCodelistRequest("PURPOSE", "OTHER_PURP"),
+                createCodelist("PURPOSE", "DAGPENGER"),
+                createCodelist("PURPOSE", "BARNETRYGD"),
+                createCodelist("PURPOSE", "OTHER_PURP"),
 
-                createCodelistRequest("SENSITIVITY", "POL"),
-                createCodelistRequest("SENSITIVITY", "OTHER_SENS"),
+                createCodelist("SENSITIVITY", "POL"),
+                createCodelist("SENSITIVITY", "OTHER_SENS"),
 
-                createCodelistRequest("THIRD_PARTY", "SKATTEETATEN"),
-                createCodelistRequest("THIRD_PARTY", "ARBEIDSGIVER"),
+                createCodelist("THIRD_PARTY", "SKATTEETATEN"),
+                createCodelist("THIRD_PARTY", "ARBEIDSGIVER"),
 
-                createCodelistRequest("SUB_DEPARTMENT", "NAY"),
+                createCodelist("SUB_DEPARTMENT", "NAY"),
 
-                createCodelistRequest("SUBJECT_CATEGORY", "BRUKER"),
-                createCodelistRequest("SUBJECT_CATEGORY", "OTHER_SUBCAT"),
+                createCodelist("SUBJECT_CATEGORY", "BRUKER"),
+                createCodelist("SUBJECT_CATEGORY", "OTHER_SUBCAT"),
 
-                createCodelistRequest("SYSTEM", "TPS"),
-                createCodelistRequest("SYSTEM", "AA_REG"),
+                createCodelist("SYSTEM", "TPS"),
+                createCodelist("SYSTEM", "AA_REG"),
 
-                createCodelistRequest("TRANSFER_GROUNDS_OUTSIDE_EU", "APPROVED_THIRD_COUNTRY"),
-                createCodelistRequest("TRANSFER_GROUNDS_OUTSIDE_EU", "OTHER"));
+                createCodelist("TRANSFER_GROUNDS_OUTSIDE_EU", "APPROVED_THIRD_COUNTRY"),
+                createCodelist("TRANSFER_GROUNDS_OUTSIDE_EU", "OTHER"));
 
         codelistService.save(requests);
     }

@@ -54,28 +54,28 @@ export const ProcessorListPage = () => {
   ) : (
     <>
       <HeadingMedium>Databehandlere</HeadingMedium>
-      <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
-        <Block>
+      <div className="flex w-full justify-between">
+        <div>
           <LabelLarge>Databehandlere</LabelLarge>
-        </Block>
+        </div>
 
-        <Block marginTop={'auto'}>
+        <div className="mt-auto">
           {hasAccess() && (
             <Button kind="outline" onClick={() => setShowCreateProcessorModal(true)}>
               <FontAwesomeIcon icon={faPlusCircle} />
               &nbsp;Opprett ny databehandler
             </Button>
           )}
-        </Block>
-      </Block>
-      <Block>
+        </div>
+      </div>
+      <div>
         <AlphabeticList
           items={processors.map((value) => {
             return { id: value.id, label: value.name }
           })}
           baseUrl={'/processor/'}
         />
-      </Block>
+      </div>
       <ProcessorModal
         title="Opprett ny databehandler"
         isOpen={showCreateProcessorModal}

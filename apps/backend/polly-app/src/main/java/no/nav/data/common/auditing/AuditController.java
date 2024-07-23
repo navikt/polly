@@ -39,6 +39,8 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Tag(name = "Audit")
 @RequiredArgsConstructor
 public class AuditController {
+    
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk og *Repository-aksess til tjenestelaget. 
 
     private final AuditVersionRepository repository;
     private final StorageService storage;
@@ -52,9 +54,9 @@ public class AuditController {
         Pageable pageable = paging.createSortedPageByFieldDescending(AuditVersion.Fields.time);
         Page<AuditResponse> page;
         if (table != null) {
-            page = repository.findAll(exampleFrom(AuditVersion.builder().table(table).build()), pageable).map(AuditVersion::convertToResponse);
+            page = repository.findAll(exampleFrom(AuditVersion.builder().table(table).build()), pageable).map(AuditResponse::buildFrom);
         } else {
-            page = repository.findAll(pageable).map(AuditVersion::convertToResponse);
+            page = repository.findAll(pageable).map(AuditResponse::buildFrom);
         }
         return new ResponseEntity<>(new RestResponsePage<>(page), HttpStatus.OK);
     }
@@ -65,7 +67,7 @@ public class AuditController {
     public ResponseEntity<AuditLogResponse> findForId(@PathVariable String id) {
         log.info("Received request for Audit with the id={}", id);
         List<AuditVersion> log = repository.findByTableIdOrderByTimeDesc(id);
-        return new ResponseEntity<>(new AuditLogResponse(id, convert(log, AuditVersion::convertToResponse)), HttpStatus.OK);
+        return new ResponseEntity<>(new AuditLogResponse(id, convert(log, AuditResponse::buildFrom)), HttpStatus.OK);
     }
 
     @Operation(summary = "Get mail log")

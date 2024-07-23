@@ -54,13 +54,13 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
         <Row key={index}>
           {showPurpose && (
             <Cell>
-              <Block display="flex" flexDirection="column">
+              <div className="flex flex-col">
                 {row.purposes.map((p, i) => (
-                  <Block key={i}>
+                  <div key={i}>
                     <RouteLink href={`/process/purpose/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>
-                  </Block>
+                  </div>
                 ))}
-              </Block>
+              </div>
             </Cell>
           )}
 
@@ -72,7 +72,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
           <Cell>{row.subjectCategories.map((sc) => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(', ')}</Cell>
 
           <Cell>
-            <Block>
+            <div>
               {row.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && row.legalBases && row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
 
               {!(row.legalBasesUse === LegalBasesUse.EXCESS_INFO || row.legalBasesUse === LegalBasesUse.UNRESOLVED) && row.process.legalBases && (
@@ -80,7 +80,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
               )}
 
               <LegalBasesNotClarified alert={alerts && alerts[row.id]} />
-            </Block>
+            </div>
           </Cell>
 
           <Cell>

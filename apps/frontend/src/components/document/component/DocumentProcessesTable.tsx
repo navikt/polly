@@ -55,13 +55,13 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
         {table.data.map((process, index) => (
           <Row key={index}>
             <Cell>
-              <Block display="flex" flexDirection="column">
+              <div className="flex flex-col">
                 {process.purposes.map((p, i) => (
-                  <Block key={i}>
+                  <div key={i}>
                     <RouteLink href={`/process/purpose/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>
-                  </Block>
+                  </div>
                 ))}
-              </Block>
+              </div>
             </Cell>
             <Cell>
               {/* todo multipurpose url */}
@@ -69,13 +69,13 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
             </Cell>
             <Cell>{process.department ? <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink> : ''}</Cell>
             <Cell>
-              <Block display="flex" flexDirection="column">
+              <div className="flex flex-col">
                 {process.products.map((p, i) => (
-                  <Block key={i}>
+                  <div key={i}>
                     <RouteLink href={`/system/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>
-                  </Block>
+                  </div>
                 ))}
-              </Block>
+              </div>
             </Cell>
           </Row>
         ))}

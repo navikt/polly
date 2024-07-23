@@ -42,9 +42,11 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @Tag(name = "Policy", description = "Data Catalog Policies")
 @RequestMapping("/policy")
-@Transactional
+@Transactional // TODO: Flytt dette inn til tjenestelaget
 public class PolicyRestController {
 
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    
     private final PolicyService service;
     private final PolicyRepository policyRepository;
 
@@ -189,6 +191,6 @@ public class PolicyRestController {
     }
 
     public static final class PolicyPage extends RestResponsePage<PolicyResponse> {
-
     }
+
 }

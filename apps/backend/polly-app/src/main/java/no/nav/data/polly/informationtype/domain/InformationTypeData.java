@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 
@@ -33,7 +33,7 @@ public class InformationTypeData {
     private String suggest;
 
     public CodelistResponse sensitivityCode() {
-        return CodelistService.getCodelistResponse(ListName.SENSITIVITY, sensitivity);
+        return CodelistStaticService.getCodelistResponse(ListName.SENSITIVITY, sensitivity);
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

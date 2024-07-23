@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.codelist.commoncode.CommonCodeService;
@@ -16,6 +17,7 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,21 +35,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
 @RestController
 @RequestMapping("/codelist")
 @Tag(name = "Codelist", description = "REST API for common list of values")
+@RequiredArgsConstructor
 public class CodelistController {
 
     private final CodelistService service;
     private final CommonCodeService commonCodeService;
-
-    public CodelistController(CodelistService service, CommonCodeService commonCodeService) {
-        this.service = service;
-        this.commonCodeService = commonCodeService;
-    }
+    private final CodelistRequestValidator requestValidator;
 
     @Operation(summary = "Get the entire Codelist")
     @ApiResponse(description = "Entire Codelist fetched")
@@ -57,7 +57,7 @@ public class CodelistController {
         if (refresh) {
             service.refreshCache();
         }
-        return new AllCodelistResponse(CodelistService.getAll().stream().map(Codelist::convertToResponse).collect(Collectors.groupingBy(CodelistResponse::getList)));
+        return new AllCodelistResponse(CodelistStaticService.getAll().stream().map(CodelistResponse::buildFrom).collect(Collectors.groupingBy(CodelistResponse::getList)));
     }
 
     @Operation(summary = "Get codes and descriptions for listName")
@@ -66,8 +66,8 @@ public class CodelistController {
     public List<CodelistResponse> getByListName(@PathVariable String listName) {
         String listUpper = toUpperCaseAndTrim(listName);
         log.info("Received a request for all codelists with listName={}", listUpper);
-        service.validateListName(listUpper);
-        return CodelistService.getCodelistResponseList(ListName.valueOf(listUpper));
+        requestValidator.validateListName(listUpper);
+        return CodelistResponse.convertToCodelistResponses(CodelistStaticService.getCodelists(ListName.valueOf(listUpper)));
     }
 
     @Operation(summary = "Get for code in listName")
@@ -77,8 +77,8 @@ public class CodelistController {
         String listUpper = toUpperCaseAndTrim(listName);
         String codeUpper = toUpperCaseAndTrim(code);
         log.info("Received a request for the codelist with the code={} in listName={}", codeUpper, listUpper);
-        service.validateListNameAndCode(listUpper, codeUpper);
-        return CodelistService.getCodelistResponse(ListName.valueOf(listUpper), codeUpper);
+        requestValidator.validateListNameAndCode(listUpper, codeUpper);
+        return CodelistStaticService.getCodelistResponse(ListName.valueOf(listUpper), codeUpper);
     }
 
     @Operation(summary = "Create Codelist")
@@ -88,9 +88,9 @@ public class CodelistController {
     public List<CodelistResponse> save(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a requests to create codelists");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, false);
+        requestValidator.validateRequest(requests, false);
 
-        return service.save(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
+        return CodelistResponse.convertToCodelistResponses(service.save(CodelistRequest.convertToCodelists(requests)));
     }
 
     @Operation(summary = "Update Codelist")
@@ -99,9 +99,9 @@ public class CodelistController {
     public List<CodelistResponse> update(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a request to update codelists");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, true);
+        requestValidator.validateRequest(requests, true);
 
-        return service.update(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
+        return CodelistResponse.convertToCodelistResponses(service.update(requests));
     }
 
     @Operation(summary = "Delete Codelist")

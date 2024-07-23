@@ -51,10 +51,10 @@ export const ProductAreaPage = () => {
 
             {!isLoading && chartData && (
               <Tabs.Panel value="dashboard">
-                <Block marginBottom="240px">
+                <div className="mb-60">
                   <HeadingSmall>Oversikt</HeadingSmall>
                   <Charts chartData={chartData} processStatus={ProcessStatusFilter.All} type={Section.productarea} productAreaId={productAreaId} />
-                </Block>
+                </div>
               </Tabs.Panel>
             )}
           </Tabs>

@@ -25,7 +25,7 @@ const FieldRiskOwner = (props: { riskOwner?: string }) => {
     <Field
       name="dpia.riskOwner"
       render={({ form, field }: FieldProps<ProcessFormValues>) => (
-        <Block width={'100%'}>
+        <div className="w-full">
           <Select
             options={teamResourceSearchResult}
             onChange={({ value }) => {
@@ -36,7 +36,7 @@ const FieldRiskOwner = (props: { riskOwner?: string }) => {
             value={value}
             isLoading={teamResourceSearchLoading}
           />
-        </Block>
+        </div>
       )}
     />
   )

@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.disclosure.dto.DisclosureAbroadRequest;
-import no.nav.data.polly.disclosure.dto.DisclosureAbroadResponse;
 
 import java.util.List;
 
@@ -22,15 +21,7 @@ public class DisclosureAbroad {
     private String refToAgreement;
     private String businessArea;
 
-    public DisclosureAbroadResponse convertToResponse() {
-        return DisclosureAbroadResponse.builder()
-                .abroad(abroad)
-                .countries(copyOf(countries))
-                .refToAgreement(refToAgreement)
-                .businessArea(businessArea)
-                .build();
-    }
-
+    // TODO: Snu avhengigheten innover
     public static DisclosureAbroad convertAbroad(DisclosureAbroadRequest request) {
         if (request == null) {
             return new DisclosureAbroad();

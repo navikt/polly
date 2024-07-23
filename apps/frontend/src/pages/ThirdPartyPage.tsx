@@ -101,6 +101,8 @@ const ThirdPartyPage = () => {
     abroad: { abroad: false, countries: [], refToAgreement: '', businessArea: '' },
     processIds: [],
     administrationArchiveCaseNumber: '',
+    assessedConfidentiality: undefined,
+    confidentialityDescription: ''
   }
 
   useEffect(() => {
@@ -122,10 +124,10 @@ const ThirdPartyPage = () => {
       {!isLoading && codelist && (
         <>
           {params.thirdPartyCode && (
-            <Block marginBottom="3rem">
+            <div className="mb-12">
               <HeadingMedium>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</HeadingMedium>
               <ParagraphMedium>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</ParagraphMedium>
-            </Block>
+            </div>
           )}
 
           <Accordion
@@ -141,22 +143,22 @@ const ThirdPartyPage = () => {
             initialState={{ expanded: params.section ? [params.section] : [] }}
           >
             <Panel title={`Utleveringer til ekstern part (${disclosureList?.length || 0})`} key="disclosure">
-              <Block display="flex" justifyContent="flex-end">
+              <div className="flex justify-end">
                 {user.canWrite() && (
                   <Button
                     size="compact"
                     kind={KIND.tertiary}
                     onClick={() => setShowCreateModal(true)}
                     startEnhancer={() => (
-                      <Block display="flex" justifyContent="center">
+                      <div className="flex justify-center">
                         <Plus size={22} />
-                      </Block>
+                      </div>
                     )}
                   >
                     Opprett ny
                   </Button>
                 )}
-              </Block>
+              </div>
               <AccordionDisclosure
                 disclosureList={disclosureList}
                 showRecipient={false}

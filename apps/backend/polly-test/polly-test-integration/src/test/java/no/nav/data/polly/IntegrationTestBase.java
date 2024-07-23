@@ -3,12 +3,14 @@ package no.nav.data.polly;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
 import no.nav.data.AppStarter;
+import no.nav.data.common.auditing.AuditVersionListener;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureData;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
@@ -58,8 +60,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -76,8 +81,7 @@ import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static no.nav.data.polly.codelist.CodelistService.getCodelistResponse;
-import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
+import static no.nav.data.polly.codelist.CodelistStaticService.getCodelist;
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
 import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 
@@ -278,13 +282,13 @@ public abstract class IntegrationTestBase {
                                         .name("Auto_" + purpose).purpose(purpose)
                                         .description("process description")
                                         .additionalDescription("additional description")
-                                        .affiliation(Affiliation.convertAffiliation(affiliationRequest()))
+                                        .affiliation(affiliationRequest().convertToAffiliation())
                                         .commonExternalProcessResponsible("SKATT")
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .usesAllInformationTypes(true)
                                         .automaticProcessing(true)
                                         .profiling(true)
-                                        .dataProcessing(convertDataProcessing(dataProcessingRequest()))
+                                        .dataProcessing(DataProcessingRequest.convertToDataProcessingNullSafe(dataProcessingRequest()))
                                         .retention(convertRetention(retentionRequest()))
                                         .dpia(convertDpia(dpiaRequest()))
                                         .status(ProcessStatus.IN_PROGRESS)
@@ -385,9 +389,9 @@ public abstract class IntegrationTestBase {
                 .name("Auto_" + PURPOSE_CODE1)
                 .description("process description")
                 .additionalDescription("additional description")
-                .purposes(List.of(getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1)))
+                .purposes(List.of(CodelistResponse.buildFrom(getCodelist(ListName.PURPOSE, PURPOSE_CODE1))))
                 .affiliation(affiliationResponse())
-                .commonExternalProcessResponsible(getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
+                .commonExternalProcessResponsible(CodelistResponse.buildFrom(getCodelist(ListName.THIRD_PARTY, "SKATT")))
                 .start(LocalDate.now())
                 .end(LocalDate.now())
                 .legalBasis(legalBasisResponse())
@@ -403,10 +407,10 @@ public abstract class IntegrationTestBase {
 
     protected AffiliationResponse affiliationResponse() {
         return AffiliationResponse.builder()
-                .department(getCodelistResponse(ListName.DEPARTMENT, "DEP"))
-                .subDepartment(getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
+                .department(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")))
+                .subDepartment(CodelistResponse.buildFrom(getCodelist(ListName.SUB_DEPARTMENT, "SUBDEP")))
                 .productTeam("teamid1")
-                .product(getCodelistResponse(ListName.SYSTEM, "PESYS"))
+                .product(CodelistResponse.buildFrom(getCodelist(ListName.SYSTEM, "PESYS")))
                 .build();
     }
 
@@ -458,6 +462,7 @@ public abstract class IntegrationTestBase {
 
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            configurableApplicationContext.addApplicationListener(new AppListener()); 
             TestPropertyValues.of(
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
@@ -466,4 +471,19 @@ public abstract class IntegrationTestBase {
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
+    
+    /*
+     * Dette er et lite vakkert men nødvendig hæck. Ellers er det ikke sikkert AuditVersionListener.setRepo blir kalt. JpaConfig har kode som kaller
+     * AuditVersionListener.setRepo. Men i test er det av ukjent grunn ikke alltid den koden er kjørt før testene kjøres (ca. 2 av 3 ganger), noe som resulterer
+     * i NPE. Hæcket må fjernes når det ikke trengs lenger, siden dette er oppførsel som skiller den fra prod (kan teoretisk medføre maskering av bugs).
+     * TODO: Fjern dette hæcket når det ikke trengs lenger.
+     */
+    public static class AppListener implements ApplicationListener<ContextRefreshedEvent> {
+    @Override
+        public void onApplicationEvent(ContextRefreshedEvent event) {
+            ApplicationContext ctx = event.getApplicationContext();
+            AuditVersionListener.setRepo(ctx.getBean(AuditVersionRepository.class));
+        }
+    }
+    
 }

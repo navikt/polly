@@ -9,7 +9,7 @@ import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.dto.Resource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import static no.nav.data.common.utils.StreamUtils.toMap;
 
 @Slf4j
-@Service
+@Component
 @ConditionalOnProperty("client.teamcat-resource.enabled")
 public class TeamcatResourceClient implements ResourceService {
 
@@ -33,8 +33,7 @@ public class TeamcatResourceClient implements ResourceService {
     private final LoadingCache<String, RestResponsePage<Resource>> searchCache;
     private final LoadingCache<String, Resource> cache;
 
-    public TeamcatResourceClient(RestTemplate restTemplate,
-            TeamcatProperties properties) {
+    public TeamcatResourceClient(RestTemplate restTemplate, TeamcatProperties properties) {
         this.restTemplate = restTemplate;
         this.properties = properties;
 
@@ -92,6 +91,5 @@ public class TeamcatResourceClient implements ResourceService {
     }
 
     static class ResourcePage extends RestResponsePage<Resource> {
-
     }
 }

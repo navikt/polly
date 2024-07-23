@@ -13,12 +13,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
-import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
-import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.hibernate.annotations.Type;
@@ -47,6 +46,8 @@ public class Document extends Auditable {
     @Column(name = "DATA", nullable = false)
     private DocumentData data = new DocumentData();
 
+    // TODO: Snu avhengigheten innover
+    // TODO: Dette er ikke en ren convert...
     public Document convertFromRequest(DocumentRequest request) {
         if (!request.isUpdate()) {
             setId(UUID.randomUUID());
@@ -58,23 +59,15 @@ public class Document extends Auditable {
         return this;
     }
 
-    public DocumentResponse convertToResponse() {
-        return DocumentResponse.builder()
-                .id(id)
-                .name(data.getName())
-                .description(data.getDescription())
-                .informationTypes(convert(data.getInformationTypes(), Document::convertToInfoTypeUseResponse))
-                .dataAccessClass(CodelistService.getCodelistResponse(ListName.DATA_ACCESS_CLASS,data.getDataAccessClass()))
-                .build();
-    }
-
+    // TODO: Snu avhengigheten innover
     public static DocumentInfoTypeUseResponse convertToInfoTypeUseResponse(DocumentData.InformationTypeUse informationTypeUse) {
         return DocumentInfoTypeUseResponse.builder()
                 .informationTypeId(informationTypeUse.getInformationTypeId())
-                .subjectCategories(CodelistService.getCodelistResponseList(ListName.SUBJECT_CATEGORY, informationTypeUse.getSubjectCategories()))
+                .subjectCategories(CodelistStaticService.getCodelistResponseList(ListName.SUBJECT_CATEGORY, informationTypeUse.getSubjectCategories()))
                 .build();
     }
 
+    // TODO: Snu avhengigheten innover
     public static InformationTypeShortResponse convertToInformationTypeResponse(InformationType informationType) {
         return new InformationTypeShortResponse(informationType.getId(), informationType.getData().getName(), informationType.getData().sensitivityCode());
     }
