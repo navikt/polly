@@ -4,8 +4,6 @@ import { CodeListFormValues } from '../../../constants'
 import { codeListSchema } from '../../common/schema'
 import { BodyShort, Button, Modal, Textarea, TextField} from "@navikt/ds-react";
 
-
-
 type ModalCreateProps = {
   title: string
   list: string
@@ -18,7 +16,7 @@ type ModalCreateProps = {
 const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, submit }: ModalCreateProps) => {
 
   return (
-    <Modal className="px-8" width="medium" open={isOpen} header={{heading:title}}  onClose={()=>onClose()}>
+    <Modal className="px-8" width="medium" open={isOpen} header={{heading:title, closeButton:false}}  onClose={()=>onClose()}>
       <div>
         <Formik
           validateOnChange={false}

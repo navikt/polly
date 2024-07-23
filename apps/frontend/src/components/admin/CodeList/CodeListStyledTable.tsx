@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Code } from '../../../service/Codelist'
-import { KIND} from 'baseui/button'
 import UpdateCodeListModal from './ModalUpdateCodeList'
 import DeleteCodeListModal from './ModalDeleteCodeList'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../../api'
 import { Usage } from './CodeListUsage'
 import { CodeListFormValues, CodeUsage } from '../../../constants'
-import { AuditButton } from '../audit/AuditButton'
+import { AuditButtonDS } from '../audit/AuditButtonDS'
 import {Button, SortState, Table, Tooltip} from "@navikt/ds-react";
 import {DocPencilIcon, GlassesIcon, TrashIcon} from "@navikt/aksel-icons";
 import {handleSort} from "../../../util/handleTableSort";
@@ -91,25 +90,17 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
         >
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader sortKey="code" className="w-[15%]" sortable>
-              ICode
-            </Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="navn" className="w-[25%]" sortable>
-              Navn
-            </Table.ColumnHeader>
-            <Table.ColumnHeader className="w-1/2 break-all">
-              Beskrivelse
-            </Table.ColumnHeader>
-            <Table.ColumnHeader/>
+            <Table.ColumnHeader sortKey="code" className="w-[15%]" sortable>Kode</Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="navn" className="w-[25%]" sortable>Navn</Table.ColumnHeader>
+            <Table.ColumnHeader className="w-1/2 break-all">Beskrivelse</Table.ColumnHeader>
+            <Table.ColumnHeader aria-hidden/>
           </Table.Row>
           </Table.Header>
         <Table.Body>
           {sortedData.map((row, index) => {
             return (
             <Table.Row key={index}>
-              <Table.DataCell className="w-[15%] break-all" scope="row">
-                {row.code}
-              </Table.DataCell>
+              <Table.DataCell className="w-[15%] break-all"> {row.code}</Table.DataCell>
               <Table.DataCell>{row.shortName}</Table.DataCell>
               <Table.DataCell className="w-[15%] break-all">{row.description}</Table.DataCell>
               <Table.DataCell>
@@ -125,7 +116,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
                     />
                   </Tooltip>
 
-                  <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary} />
+                  <AuditButtonDS id={`${row.list}-${row.code}`} variant="tertiary" />
 
                   <Tooltip content="Redigér">
                     <Button
