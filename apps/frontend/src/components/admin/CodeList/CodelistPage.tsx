@@ -53,11 +53,14 @@ const CodeListPage = () => {
   }, [listname, lists])
 
   if (!user.isAdmin() || !lists) {
-    return <Loader size="2xlarge" />
+    return <div role="main">
+              <Loader size="2xlarge" />
+          </div>
   }
 
   return (
     <>
+      <div role="main">
       <Heading size="large" level="1">Administrering av kodeverk</Heading>
       {loading ? (
         <Loader />
@@ -65,7 +68,7 @@ const CodeListPage = () => {
         <div className="flex justify-between w-full" >
             <Select label="Velg kodeverk"
                     hideLabel
-                    onChange={(event) => setListname(event.target.value as string)}
+                    onChange={(event) => setListname(event.target.value)}
             >
               <option value="">Velg kodeverk</option>
               {codelist.makeIdLabelForAllCodeLists().map((value)=> {
@@ -78,7 +81,7 @@ const CodeListPage = () => {
             </Select>
           {listname && (
             <div>
-              <Button icon={<PlusIcon />}  onClick={() => setCreateCodeListModal(!createCodeListModal)}>
+              <Button icon={<PlusIcon aria-hidden />} variant="tertiary"  onClick={() => setCreateCodeListModal(!createCodeListModal)}>
                 Opprett ny kode
               </Button>
             </div>
@@ -103,6 +106,7 @@ const CodeListPage = () => {
         }}
         submit={handleCreateCodelist}
       />
+      </div>
     </>
   )
 }
