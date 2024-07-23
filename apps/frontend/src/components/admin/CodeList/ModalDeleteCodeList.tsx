@@ -1,9 +1,5 @@
-import * as React from 'react'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { ParagraphMedium } from 'baseui/typography'
-import { Button } from 'baseui/button'
-import { Block } from 'baseui/block'
 import { CodeListFormValues } from '../../../constants'
+import {BodyShort, Button, Modal} from "@navikt/ds-react";
 
 type ModalDeleteProps = {
   title: string
@@ -16,24 +12,22 @@ type ModalDeleteProps = {
 
 const DeleteCodeListModal = ({ title, initialValues, isOpen, errorOnDelete, submit, onClose }: ModalDeleteProps) => {
   return (
-    <Modal onClose={onClose} isOpen={isOpen} autoFocus animate size="default">
-      <ModalHeader>{title}</ModalHeader>
-      <ModalBody>
-        <ParagraphMedium>
-          {' '}
-          Bekreft sletting av code "{initialValues.code}" fra "{initialValues.list}".
-        </ParagraphMedium>
-      </ModalBody>
+    <Modal onClose={onClose} open={isOpen} header={{heading: title, closeButton:false}}>
+      <Modal.Body>
+        <BodyShort>
+          Bekreft sletting av kode "{initialValues.code}" fra "{initialValues.list}".
+        </BodyShort>
+      </Modal.Body>
 
-      <ModalFooter>
+      <Modal.Footer>
         <div className="flex justify-end">
           <div className="mr-auto">{errorOnDelete && <p>{errorOnDelete}</p>}</div>
-          <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
+          <Button className="mr-4" variant="secondary" onClick={() => onClose()}>
             Avbryt
           </Button>
           <Button onClick={() => submit({ list: initialValues.list, code: initialValues.code })}>Slett</Button>
         </div>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   )
 }
