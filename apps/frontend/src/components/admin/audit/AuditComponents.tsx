@@ -1,5 +1,3 @@
-import { Block, BlockProps } from 'baseui/block'
-import { LabelMedium, LabelSmall } from 'baseui/typography'
 import React from 'react'
 import { AuditAction } from '../../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,22 +5,16 @@ import { faInfoCircle, faMinusCircle, faPlusCircle } from '@fortawesome/free-sol
 import { theme } from '../../../util'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import {tekster} from "../../../util/codeToFineText";
+import {Label} from "@navikt/ds-react";
 
-const labelBlockProps: BlockProps = {
-  display: ['flex', 'block', 'block', 'flex'],
-  width: ['20%', '100%', '100%', '20%'],
-  alignSelf: 'flex-start',
-}
 
 export const AuditLabel = (props: { label: string; children: any }) => {
   return (
-    <div className="flex lg:flex md:block sm:block">
-      <div className="flex lg:flex md:block sm:block w-[20%] lg:w-[20%] md:w-full sm:w-full self-start">
-        <LabelMedium>{props.label}</LabelMedium>
+    <div className="flex">
+      <div className="flex w-1/5 self-center">
+        <Label>{props.label}</Label>
       </div>
-      <div>
-        <LabelSmall>{props.children}</LabelSmall>
-      </div>
+      {props.children}
     </div>
   )
 }

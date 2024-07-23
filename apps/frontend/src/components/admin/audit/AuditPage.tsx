@@ -1,16 +1,14 @@
-import { Block } from 'baseui/block'
 import React, { useEffect, useState } from 'react'
 import { useDebouncedState } from '../../../util'
-import { Input } from 'baseui/input'
 import _ from 'lodash'
 import { AuditView } from './AuditView'
-import { AuditLabel as Label } from './AuditComponents'
+import {AuditLabel} from './AuditComponents'
 import { getAuditLog } from '../../../api/AuditApi'
 import { AuditLog } from '../../../constants'
 import { AuditRecentTable } from './AuditRecentTable'
-import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
 import { useNavigate, useParams } from 'react-router-dom'
 import {ampli} from "../../../service/Amplitude";
+import {BodyLong, Heading, TextField} from "@navikt/ds-react";
 
 const format = (id: string) => _.trim(id, '"')
 
@@ -53,23 +51,24 @@ export const AuditPage = () => {
   useEffect(() => lookupVersion(idSearch), [idSearch])
 
   return (
-    <>
-      <HeadingMedium>Versjonering</HeadingMedium>
+    <div role="main">
+      <Heading size="medium" level="1">Versjonering</Heading>
       <div className="mb-4">
-        <Label label="Søk etter Id">
-          <Input
-            size="compact"
+        <AuditLabel label="Søk etter ID">
+          <TextField
+            className="w-72"
+            label="Søk etter ID"
+            hideLabel
             value={idInput}
-            overrides={{ Input: { style: { width: '300px' } } }}
-            placeholder="Id"
+            placeholder="ID"
             onChange={(e) => setIdInput(format((e.target as HTMLInputElement).value))}
           />
-        </Label>
+        </AuditLabel>
       </div>
 
-      {error && <ParagraphMedium>{_.escape(error)}</ParagraphMedium>}
+      {error && <BodyLong>{_.escape(error)}</BodyLong>}
       {idInput && <AuditView auditLog={auditLog} auditId={params.auditId} loading={loading} viewId={lookupVersion} />}
       <AuditRecentTable show={!idInput} />
-    </>
+    </div>
   )
 }
