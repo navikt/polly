@@ -7,9 +7,9 @@ import { Button, KIND } from 'baseui/button'
 import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
-import { CodeListFormValues, ProcessFormValues } from '../../constants'
-import { Error } from '../common/ModalSchema'
-import { codeListSchema } from '../common/schema'
+import { CodeListFormValues, ProcessFormValues } from '../../../constants'
+import { Error } from '../../common/ModalSchema'
+import { codeListSchema } from '../../common/schema'
 
 const rowBlockProps: BlockProps = {
   display: 'flex',

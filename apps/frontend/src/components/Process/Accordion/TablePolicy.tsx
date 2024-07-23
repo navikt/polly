@@ -13,7 +13,7 @@ import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert }
 import { codelist, ListName } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
-import { AuditButton } from '../../audit/AuditButton'
+import { AuditButton } from '../../admin/audit/AuditButton'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import RouteLink from '../../common/RouteLink'
