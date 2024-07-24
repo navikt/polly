@@ -17,6 +17,7 @@
     "core-js": "^3.7.0",
     "flag-icon-css": "^4.1.6",
     "formik": "^2.2.4",
+    "json-diff-kit": "^1.0.29",
     "lodash": "^4.17.19",
     "moment": "2.30.1",
     "query-string": "^9.0.0",

@@ -1,22 +1,13 @@
 import moment from 'moment'
-import { Block } from 'baseui/block'
-import { theme } from '../../../util'
-import ReactJson from 'react-json-view'
+import { JsonView }  from 'react-json-view-lite'
 import React, { useEffect, useState } from 'react'
-import { AuditAction, AuditLog } from '../../../constants'
-import { LabelLarge } from 'baseui/typography'
-import { AuditActionIcon, AuditLabel as Label } from './AuditComponents'
-import { Card } from 'baseui/card'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBinoculars, faExchangeAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { PLACEMENT } from 'baseui/tooltip'
+import {AuditAction, AuditItem, AuditLog} from '../../../constants'
+import {AuditActionIcon, AuditLabel} from './AuditComponents'
 import { ObjectLink } from '../../common/RouteLink'
-import { StatefulPopover } from 'baseui/popover'
-import DiffViewer from 'react-diff-viewer'
+import { Differ, Viewer } from 'json-diff-kit'
 import { useRefs } from '../../../util/hooks'
-import { Spinner } from 'baseui/spinner'
-import Button from '../../common/Button'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import {Box, Button, Label, Loader, Modal, Tooltip} from "@navikt/ds-react";
+import {ArrowRightLeftIcon, XMarkIcon} from "@navikt/aksel-icons";
 
 type AuditViewProps = {
   auditLog?: AuditLog
@@ -24,7 +15,11 @@ type AuditViewProps = {
   loading: boolean
   viewId: (id: string) => void
 }
-
+type ComparisonViewProps = {
+  auditLog: AuditLog
+  audit: AuditItem
+  index: number
+}
 function initialOpen(auditLog?: AuditLog, auditId?: string) {
   return auditLog?.audits.map((o, i) => i === 0 || o.id === auditId) || []
 }
@@ -45,40 +40,34 @@ export const AuditView = (props: AuditViewProps) => {
   const newestAudit = auditLog?.audits[0]
 
   return (
-    <Card>
-      {loading && <Spinner $size={theme.sizing.scale2400} />}
-      {!loading && auditLog && !logFound && <LabelLarge>Fant ingen versjonering</LabelLarge>}
+    <Box>
+      {loading && <Loader size="large" />}
+      {!loading && auditLog && !logFound && <Label>Fant ingen versjonering</Label>}
 
       {logFound && (
         <>
           <div className="flex justify-between">
             <div className="w-[90%]">
-              <Label label='ID:'>{auditLog?.id}</Label>
-              <Label label='Tabellnavn:'>{newestAudit?.table}</Label>
-              <Label label='Versjoneringer:'>{auditLog?.audits.length}</Label>
+              <AuditLabel label='ID:'>{auditLog?.id}</AuditLabel>
+              <AuditLabel label='Tabellnavn:'>{newestAudit?.table}</AuditLabel>
+              <AuditLabel label='Versjoneringer:'>{auditLog?.audits.length}</AuditLabel>
             </div>
             <div className="flex">
-              <Button size="compact" kind="tertiary" marginRight onClick={() => setOpen(auditLog!.audits.map(() => true))}>
+              <Button variant="tertiary" onClick={() => setOpen(auditLog!.audits.map(() => true))}>
                 Åpne alle
               </Button>
               {newestAudit?.action !== AuditAction.DELETE && (
-                <CustomizedStatefulTooltip content={() => 'Vis'}>
-                  <div>
-                    <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table} audit={newestAudit}>
-                      <Button size="compact" shape="round" kind="tertiary">
-                        <FontAwesomeIcon icon={faBinoculars} />
-                      </Button>
-                    </ObjectLink>
-                  </div>
-                </CustomizedStatefulTooltip>
+                <ObjectLink
+                  id={newestAudit!.tableId}
+                  type={newestAudit!.table}
+                  audit={newestAudit}
+                  >
+                  <Button variant="tertiary">Vis bruk</Button>
+                </ObjectLink>
               )}
-              <CustomizedStatefulTooltip content={() => 'Lukk'}>
-                <div>
-                  <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId('')}>
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Button>
-                </div>
-              </CustomizedStatefulTooltip>
+              <Tooltip content="Lukk" placement="top">
+                  <Button variant="tertiary" onClick={() => viewId('')} icon={<XMarkIcon title="Lukk"/>}/>
+              </Tooltip>
             </div>
           </div>
 
@@ -87,61 +76,70 @@ export const AuditView = (props: AuditViewProps) => {
               const time = moment(audit.time)
               return (
                 <div className={`mb-4 mt-2 ${audit.id === props.auditId ? 'bg-[#F6F6F6]' : ''}`} key={audit.id} ref={refs[audit.id]}>
-                  <div className="flex justify-center">
-                    <div className="w-[90%]">
-                      <Label label='Versjon #:'>{auditLog.audits.length - index}</Label>
-                      <Label label='Handling:'>
+                  <div className="flex justify-between">
+                    <div className="w-11/12">
+                      <AuditLabel label='Versjon #:'>{auditLog.audits.length - index}</AuditLabel>
+                      <AuditLabel label='Handling:'>
                         <AuditActionIcon action={audit.action} withText={true} />
-                      </Label>
-                      <Label label='Tidspunkt: '>
+                      </AuditLabel>
+                      <AuditLabel label='Tidspunkt: '>
                         {time.format('LL')} {time.format('HH:mm:ss.SSS Z')}
-                      </Label>
-                      <Label label='Bruker'>{audit.user}</Label>
+                      </AuditLabel>
+                      <AuditLabel label='Bruker'>{audit.user}</AuditLabel>
                     </div>
-                    <div>
-                      <StatefulPopover
-                        placement={PLACEMENT.left}
-                        content={() => (
-                          <Card>
-                            <DiffViewer
-                              leftTitle="Previous"
-                              rightTitle="Current"
-                              oldValue={JSON.stringify(auditLog?.audits[index + 1]?.data, null, 2)}
-                              newValue={JSON.stringify(audit.data, null, 2)}
-                            />
-                          </Card>
-                        )}
-                        overrides={{
-                          Body: {
-                            style: () => ({
-                              width: '80%',
-                              maxHeight: '80%',
-                              overflowY: 'scroll',
-                            }),
-                          },
-                        }}
-                      >
-                        <div>
-                          <Button size="compact" shape="round" kind="tertiary">
-                            <FontAwesomeIcon icon={faExchangeAlt} />
-                          </Button>
-                        </div>
-                      </StatefulPopover>
+                    <ComparisonView auditLog={auditLog} audit={audit} index={index} />
                     </div>
-                  </div>
-                  <ReactJson
-                    src={audit.data}
-                    name={null}
-                    shouldCollapse={(p) => p.name === null && !open[index]}
-                    onSelect={(sel) => {
-                      ;(sel.name === 'id' || sel.name?.endsWith('Id')) && viewId(sel.value as string)
-                    }}
-                  />
+                    <JsonView
+                      data={audit.data}
+                      shouldExpandNode={() => {
+                        if (open) {
+                          return true
+                        } else {
+                          return index === 0 ? true : false
+                        }
+                      }}
+                    />
                 </div>
               )
             })}
         </>
       )}
-    </Card>
+    </Box>
   )
 }
+const ComparisonView = (props: ComparisonViewProps) => {
+  const { auditLog, audit, index } = props
+  const [modalOpen, setModalOpen] = useState(false)
+
+  return (
+    <div>
+      <Button
+        key={audit.id}
+        onClick={() => setModalOpen(!modalOpen)}
+        variant="tertiary"
+        icon={<ArrowRightLeftIcon title="Se differansen" />}
+      />
+      <Modal
+        key={audit.id}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        width="75%"
+        className="h-3/4 overflow-y-scroll"
+        header={{ heading: 'Sammenligning' }}
+      >
+        <Modal.Body>
+          <Viewer
+            diff={new Differ().diff(
+              auditLog && auditLog.audits[index + 1] ? auditLog.audits[index + 1].data : {},
+              audit.data
+            )}
+            highlightInlineDiff={true}
+            lineNumbers={true}
+            indent={4}
+          />
+        </Modal.Body>
+      </Modal>
+    </div>
+  )
+}
+
