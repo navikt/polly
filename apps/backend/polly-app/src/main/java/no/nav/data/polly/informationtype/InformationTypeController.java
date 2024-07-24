@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -12,6 +13,7 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
+import no.nav.data.polly.informationtype.dto.InformationTypeRequestValidator;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.teams.TeamService;
@@ -44,20 +46,15 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @RestController
 @RequestMapping("/informationtype")
 @Tag(name = "InformationType", description = "REST API for InformationType")
+@RequiredArgsConstructor
 public class InformationTypeController {
 
     // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
     
     private final InformationTypeRepository repository;
     private final InformationTypeService service;
+    private final InformationTypeRequestValidator requestValidator;
     private final TeamService teamService;
-
-    public InformationTypeController(InformationTypeRepository informationTypeRepository,
-            InformationTypeService informationTypeService, TeamService teamService) {
-        this.repository = informationTypeRepository;
-        this.service = informationTypeService;
-        this.teamService = teamService;
-    }
 
     @Operation(summary = "Get InformationType")
     @ApiResponse(description = "InformationType fetched")
@@ -146,7 +143,7 @@ public class InformationTypeController {
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> createInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to create InformationTypes");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, false);
+        requestValidator.validateRequest(requests, false);
 
         List<InformationTypeResponse> responses = service.saveAll(requests).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
@@ -158,7 +155,7 @@ public class InformationTypeController {
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> updateInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to update InformationTypes");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, true);
+        requestValidator.validateRequest(requests, true);
 
         List<InformationTypeResponse> responses = service.updateAll(requests).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
         return ResponseEntity.ok(new RestResponsePage<>(responses));
@@ -177,7 +174,7 @@ public class InformationTypeController {
             log.info("Cannot find InformationType with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequest(List.of(request), true);
+        requestValidator.validateRequest(List.of(request), true);
 
         InformationType informationType = service.update(request);
 

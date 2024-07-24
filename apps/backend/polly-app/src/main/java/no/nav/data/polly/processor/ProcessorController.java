@@ -13,6 +13,7 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
+import no.nav.data.polly.processor.dto.ProcessorRequestValidator;
 import no.nav.data.polly.processor.dto.ProcessorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class ProcessorController {
     
     private final ProcessorRepository repository;
     private final ProcessorService service;
+    private final ProcessorRequestValidator requestValidator;
 
     @Operation(summary = "Get ProcessorTypes")
     @ApiResponse(description = "Processor fetched")
@@ -82,7 +84,7 @@ public class ProcessorController {
     @PostMapping
     public ResponseEntity<ProcessorResponse> create(@RequestBody ProcessorRequest request) {
         log.info("Received requests to create Processor");
-        service.validateRequest(request, false);
+        requestValidator.validateRequest(request, false);
 
         Processor processor = service.save(new Processor().convertFromRequest(request));
         return new ResponseEntity<>(ProcessorResponse.buidFrom(processor), HttpStatus.CREATED);
@@ -101,7 +103,7 @@ public class ProcessorController {
             log.info("Cannot find Processor with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequest(request, true);
+        requestValidator.validateRequest(request, true);
         return ResponseEntity.ok(ProcessorResponse.buidFrom(service.update(request)));
     }
 
