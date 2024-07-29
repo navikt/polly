@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.storage.domain.LastModified;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import no.nav.data.polly.process.dto.ProcessRequestValidator;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessRevisionRequest;
 import no.nav.data.polly.teams.TeamService;
@@ -38,19 +40,15 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 @Transactional // TODO: Flytt dette inn til tjenestelaget
 @Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
+@RequiredArgsConstructor
 public class ProcessWriteController {
 
     // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
     
     private final ProcessService service;
+    private final ProcessRequestValidator requestValidator;
     private final ProcessRepository repository;
     private final TeamService teamService;
-
-    public ProcessWriteController(ProcessService service, ProcessRepository repository, TeamService teamService) {
-        this.service = service;
-        this.repository = repository;
-        this.teamService = teamService;
-    }
 
     @Operation(summary = "Create Processes")
     @ApiResponse(responseCode = "201", description = "Processes to be created successfully accepted")
@@ -58,7 +56,7 @@ public class ProcessWriteController {
     public ResponseEntity<ProcessResponse> createProcesses(@RequestBody ProcessRequest request) {
         log.info("Received requests to create Process");
 
-        service.validateRequest(request, false);
+        requestValidator.validateRequest(request, false);
 
         request.setNewProcessNumber(repository.nextProcessNumber());
         Process process = service.save(new Process().convertFromRequest(request));
@@ -78,7 +76,7 @@ public class ProcessWriteController {
             log.info("Cannot find Process with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequest(request, true);
+        requestValidator.validateRequest(request, true);
         return ResponseEntity.ok(service.update(request).convertToResponseWithPolicies());
     }
 

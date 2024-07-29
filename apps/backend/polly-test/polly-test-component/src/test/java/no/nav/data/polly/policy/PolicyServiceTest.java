@@ -10,6 +10,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
+import no.nav.data.polly.policy.dto.PolicyRequestValidator;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,9 @@ class PolicyServiceTest {
     @InjectMocks
     private PolicyService service;
 
+    @InjectMocks
+    private PolicyRequestValidator requestValidator;
+    
     @BeforeEach
     void setUp() {
         CodelistStub.initializeCodelist();
@@ -65,14 +69,14 @@ class PolicyServiceTest {
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6e").description(LEGALBASISDESCRIPTION).build()))
                 .purpose(PURPOSE)
                 .build();
-        service.validateRequests(List.of(request), false);
+        requestValidator.validateRequests(List.of(request), false);
     }
 
     @Test
     void shouldThrowAllNullValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder().build();
         try {
-            service.validateRequests(List.of(request), false);
+            requestValidator.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
             assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
@@ -95,7 +99,7 @@ class PolicyServiceTest {
         when(processRepository.findById(UUID.fromString(PROCESS_ID_1))).thenReturn(Optional.empty());
         when(informationTypeRepository.findById(UUID.fromString(INFTYPE_ID_1))).thenReturn(Optional.empty());
         try {
-            service.validateRequests(List.of(request), false);
+            requestValidator.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
             assertThat(e.getMessage()).contains("purposes[0]: WRONG code not found in codelist PURPOSE");
@@ -107,7 +111,7 @@ class PolicyServiceTest {
     void shouldThrowAllNullValidationExceptionOnUpdate() {
         PolicyRequest request = PolicyRequest.builder().build();
         try {
-            service.validateRequests(List.of(request), true);
+            requestValidator.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
             assertAll(
@@ -133,7 +137,7 @@ class PolicyServiceTest {
         when(processRepository.findById(UUID.fromString(PROCESS_ID_1))).thenReturn(Optional.empty());
         when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().data(PolicyData.builder().purpose("WRONG").build()).build()));
         try {
-            service.validateRequests(List.of(request), true);
+            requestValidator.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
             assertEquals(3, e.get().size(), JsonUtils.toJson(e.get()));
@@ -158,7 +162,7 @@ class PolicyServiceTest {
         when(policyRepository.findById(UUID.fromString(request.getId())))
                 .thenReturn(Optional.of(Policy.builder().data(PolicyData.builder().purpose("OTHERPURPOSE").build()).build()));
         try {
-            service.validateRequests(List.of(request), true);
+            requestValidator.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
@@ -178,6 +182,6 @@ class PolicyServiceTest {
         when(processRepository.findById(UUID.fromString(PROCESS_ID_1))).thenReturn(Optional.of(Process.builder().id(UUID.fromString(PROCESS_ID_1)).build()));
         when(informationTypeRepository.findById(UUID.fromString(INFTYPE_ID_1))).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
 
-        service.validateRequests(List.of(request), false);
+        requestValidator.validateRequests(List.of(request), false);
     }
 }

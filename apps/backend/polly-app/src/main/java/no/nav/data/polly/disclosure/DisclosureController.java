@@ -13,6 +13,7 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
+import no.nav.data.polly.disclosure.dto.DisclosureRequestValidator;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureSummaryResponse;
 import no.nav.data.polly.document.DocumentService;
@@ -57,6 +58,7 @@ public class DisclosureController {
     
     private final DisclosureRepository repository;
     private final DisclosureService service;
+    private final DisclosureRequestValidator requestValidator;
 
     private final DocumentService documentService;
     private final InformationTypeRepository informationTypeRepository;
@@ -160,6 +162,7 @@ public class DisclosureController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DisclosureResponse> createPolicy(@Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to create Disclosure");
+        requestValidator.validateRequest(request, false);
         return new ResponseEntity<>(convertAndAddObjects(service.save(request)), HttpStatus.CREATED);
     }
 
@@ -169,6 +172,7 @@ public class DisclosureController {
     public ResponseEntity<DisclosureResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to update Disclosure");
         Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
+        requestValidator.validateRequest(request, true);
         return ResponseEntity.ok(convertAndAddObjects(service.update(request)));
     }
 

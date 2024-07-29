@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
@@ -14,6 +15,7 @@ import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
+import no.nav.data.polly.policy.dto.PolicyRequestValidator;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -43,17 +45,14 @@ import static java.util.stream.Collectors.toList;
 @Tag(name = "Policy", description = "Data Catalog Policies")
 @RequestMapping("/policy")
 @Transactional // TODO: Flytt dette inn til tjenestelaget
+@RequiredArgsConstructor
 public class PolicyRestController {
 
     // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
     
     private final PolicyService service;
+    private final PolicyRequestValidator requestValidator;
     private final PolicyRepository policyRepository;
-
-    public PolicyRestController(PolicyService service, PolicyRepository policyRepository) {
-        this.service = service;
-        this.policyRepository = policyRepository;
-    }
 
     @Operation(summary = "Get all Policies, filtered  request will always return all policies")
     @ApiResponse(description = "All policies fetched")
@@ -119,7 +118,7 @@ public class PolicyRestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<RestResponsePage<PolicyResponse>> createPolicy(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received request to create Policies");
-        service.validateRequests(policyRequests, false);
+        requestValidator.validateRequests(policyRequests, false);
         List<Policy> policies = policyRequests.stream().map(Policy::mapRequestToPolicy).collect(toList());
         List<PolicyResponse> responses = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
@@ -168,7 +167,7 @@ public class PolicyRestController {
         if (policyRepository.findById(uuid).isEmpty()) {
             throw notFoundError(uuid);
         }
-        service.validateRequests(List.of(policyRequest), true);
+        requestValidator.validateRequests(List.of(policyRequest), true);
         Policy policy = Policy.mapRequestToPolicy(policyRequest);
         return ResponseEntity.ok(service.saveAll(List.of(policy)).get(0).convertToResponse(true));
     }
@@ -178,7 +177,7 @@ public class PolicyRestController {
     @PutMapping
     public ResponseEntity<RestResponsePage<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received requests to update Policies");
-        service.validateRequests(policyRequests, true);
+        requestValidator.validateRequests(policyRequests, true);
         List<Policy> policies = policyRequests.stream().map(Policy::mapRequestToPolicy).collect(toList());
         List<PolicyResponse> response = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
         return ResponseEntity.ok(new RestResponsePage<>(response));
