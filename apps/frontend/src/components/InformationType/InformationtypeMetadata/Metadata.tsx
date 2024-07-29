@@ -1,20 +1,18 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { InformationType } from '../../../constants'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { theme } from '../../../util'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt, faUserShield } from '@fortawesome/free-solid-svg-icons'
-import { Code, ListName } from '../../../service/Codelist'
-import { sensitivityColor } from '../Sensitivity'
-import { getTerm, mapTermToOption } from '../../../api'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { StyledLink } from 'baseui/link'
-import { DotTags } from '../../common/DotTag'
+import { useEffect, useState } from 'react'
+import { getTerm, mapTermToOption } from '../../../api'
+import { InformationType } from '../../../constants'
+import { Code, ListName } from '../../../service/Codelist'
+import { theme } from '../../../util'
 import { termUrl } from '../../../util/config'
-import { TeamList } from '../../common/Team'
+import { DotTags } from '../../common/DotTag'
 import { Markdown } from '../../common/Markdown'
+import { TeamList } from '../../common/Team'
 import TextWithLabel from '../../common/TextWithLabel'
+import { sensitivityColor } from '../Sensitivity'
 
 const DescriptionData = (props: { termId?: string; description?: string; keywords: string[] }) => {
   const [term, setTerm] = useState(props.termId)
@@ -39,9 +37,8 @@ const DescriptionData = (props: { termId?: string; description?: string; keyword
   return (
     <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
       <FlexGridItem>
-        <div className="flex"/>
-        <TextWithLabel label='Begrepsdefinisjon' text={term || 'Ingen begrepsdefinisjon oppgitt'}
-                       error={termError ? 'Kunne ikke finne begrepsdefinisjon' : undefined} />
+        <div className="flex" />
+        <TextWithLabel label="Begrepsdefinisjon" text={term || 'Ingen begrepsdefinisjon oppgitt'} error={termError ? 'Kunne ikke finne begrepsdefinisjon' : undefined} />
         {props.termId && (
           <StyledLink target="_blank" rel="noopener noreferrer" href={termUrl(props.termId)}>
             <FontAwesomeIcon icon={faExternalLinkAlt} />
@@ -49,10 +46,10 @@ const DescriptionData = (props: { termId?: string; description?: string; keyword
         )}
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label='Søkeord' text={<DotTags items={props.keywords} />} />
+        <TextWithLabel label="Søkeord" text={<DotTags items={props.keywords} />} />
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label='Nyttig å vite om opplysningstypen'>
+        <TextWithLabel label="Nyttig å vite om opplysningstypen">
           <Markdown source={props.description} />
         </TextWithLabel>
       </FlexGridItem>
@@ -63,26 +60,26 @@ const DescriptionData = (props: { termId?: string; description?: string; keyword
 const PropertyData = (props: { orgMaster?: Code; sources: Code[]; categories: Code[]; productTeams: string[]; keywords: string[]; sensitivity: Code }) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label='Master i NAV'>
+      <TextWithLabel label="Master i NAV">
         <DotTags list={ListName.SYSTEM} codes={props.orgMaster ? [props.orgMaster] : []} linkCodelist commaSeparator />
       </TextWithLabel>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label='Kilder'>
+      <TextWithLabel label="Kilder">
         <DotTags list={ListName.THIRD_PARTY} codes={props.sources} linkCodelist commaSeparator />
       </TextWithLabel>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label='Team' text={props.productTeams.length ? <TeamList teamIds={props.productTeams} /> : 'Ikke angitt'} />
+      <TextWithLabel label="Team" text={props.productTeams.length ? <TeamList teamIds={props.productTeams} /> : 'Ikke angitt'} />
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label='Kategorier'>
+      <TextWithLabel label="Kategorier">
         <DotTags list={ListName.CATEGORY} codes={props.categories} linkCodelist commaSeparator />
       </TextWithLabel>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel
-        label='Type personopplysning'
+        label="Type personopplysning"
         text={props.sensitivity ? props.sensitivity.shortName : ''}
         icon={faUserShield}
         iconColor={sensitivityColor(props.sensitivity.code)}

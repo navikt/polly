@@ -1,18 +1,17 @@
-import { ProcessShort, ProcessStatus } from '../../../constants'
-import { Block } from 'baseui/block'
-import { LabelLarge } from 'baseui/typography'
-import { theme } from '../../../util'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight, faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { codelist, ListName } from '../../../service/Codelist'
-import { AuditButton } from '../../admin/audit/AuditButton'
-import { StyledLink } from 'baseui/link'
-import { env } from '../../../util/env'
-import Button from '../../common/Button'
-import { SIZE as ButtonSize } from 'baseui/button'
-import * as React from 'react'
-import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tag } from '@navikt/ds-react'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { StyledLink } from 'baseui/link'
+import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { LabelLarge } from 'baseui/typography'
+import { Ref, createRef, useState } from 'react'
+import { ProcessShort, ProcessStatus } from '../../../constants'
+import { ListName, codelist } from '../../../service/Codelist'
+import { theme } from '../../../util'
+import { env } from '../../../util/env'
+import { AuditButton } from '../../admin/audit/AuditButton'
+import Button from '../../common/Button'
 
 type AccordionTitleProps = {
   process: ProcessShort
@@ -20,24 +19,21 @@ type AccordionTitleProps = {
   hasAccess: boolean
   editProcess: () => void
   deleteProcess: () => void
-  forwardRef?: React.Ref<any>
+  forwardRef?: Ref<any>
 }
 
-export const InformationTypeRef = React.createRef<HTMLDivElement>()
+export const InformationTypeRef = createRef<HTMLDivElement>()
 
 const AccordionTitle = (props: AccordionTitleProps) => {
-  const { process, expanded, hasAccess } = props
-  const [isExportModalOpen, setIsExportModalOpen] = React.useState<boolean>(false)
+  const { process, expanded, hasAccess, forwardRef } = props
+  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const today = new Date().toISOString().split('T')[0]
 
   const isActive = today < process.end
 
-
-
-
   return (
     <>
-      <div ref={props.forwardRef}>
+      <div ref={forwardRef}>
         <LabelLarge color={theme.colors.primary}>
           {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
           <span> </span>
@@ -48,8 +44,8 @@ const AccordionTitle = (props: AccordionTitleProps) => {
         </LabelLarge>
       </div>
       <div
-        onClick={(e) => {
-          e.stopPropagation()
+        onClick={(event) => {
+          event.stopPropagation()
         }}
       >
         {expanded && (

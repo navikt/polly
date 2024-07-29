@@ -1,18 +1,17 @@
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Spinner } from 'baseui/spinner'
+import { HeadingMedium } from 'baseui/typography'
 import * as React from 'react'
 import { useEffect, useReducer, useState } from 'react'
-import Button from '../components/common/Button'
-import DpProcessModal from '../components/DpProcess/DpProcessModal'
-import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
-import { DpProcess, DpProcessFormValues } from '../constants'
-import DpProcessTable from '../components/DpProcess/DpProcessTable'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { Block } from 'baseui/block'
-import { HeadingMedium } from 'baseui/typography'
-import { user } from '../service/User'
 import { useNavigate } from 'react-router-dom'
-import { Spinner } from 'baseui/spinner'
-import {ampli} from '../service/Amplitude'
+import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
+import DpProcessModal from '../components/DpProcess/DpProcessModal'
+import DpProcessTable from '../components/DpProcess/DpProcessTable'
+import Button from '../components/common/Button'
+import { DpProcess, DpProcessFormValues } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { user } from '../service/User'
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
@@ -21,7 +20,7 @@ const DpProcessPage = () => {
   const [isLoading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
 
-  ampli.logEvent('besøk', {side: 'NAV som databehandler', url: '/dpprocess', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'NAV som databehandler', url: '/dpprocess', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {
@@ -41,12 +40,12 @@ const DpProcessPage = () => {
       setErrorDpProcessModal('')
       navigate(`/dpprocess/${response.id}`)
       toggleModal()
-    } catch (err: any) {
-      if (err.response.data.message.includes('already exists')) {
+    } catch (error: any) {
+      if (error.response.data.message.includes('already exists')) {
         setErrorDpProcessModal('Databehandlingen eksisterer allerede')
         return
       }
-      setErrorDpProcessModal(err.response.data.message)
+      setErrorDpProcessModal(error.response.data.message)
     }
   }
 

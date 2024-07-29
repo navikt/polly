@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import { Code, codelist } from '../../../service/Codelist'
+import { useState } from 'react'
 import { Process } from '../../../constants'
+import { Code, codelist } from '../../../service/Codelist'
 import { ColumnCompares, useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
-import { Block } from 'baseui/block'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 type DocumentProcessesProps = {
   documentUsages: Process[]
@@ -42,13 +41,13 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
   return (
     <>
       <Table
-        emptyText='Ingen behandlinger'
+        emptyText="Ingen behandlinger"
         headers={
           <>
-            <HeadCell title='Overordnet behandlingsaktivitet' column="purposes" tableState={[table, sortColumn]} />
-            <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} />
-            <HeadCell title='Avdeling' column="department" tableState={[table, sortColumn]} />
-            <HeadCell title='System' column="products" tableState={[table, sortColumn]} />
+            <HeadCell title="Overordnet behandlingsaktivitet" column="purposes" tableState={[table, sortColumn]} />
+            <HeadCell title="Behandling" column="name" tableState={[table, sortColumn]} />
+            <HeadCell title="Avdeling" column="department" tableState={[table, sortColumn]} />
+            <HeadCell title="System" column="products" tableState={[table, sortColumn]} />
           </>
         }
       >

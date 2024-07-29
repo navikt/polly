@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { faEnvelope, faTimesCircle, faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Card, StyledBody } from 'baseui/card'
+import { StyledLink } from 'baseui/link'
+import { ListItem, ListItemLabel, ListOverrides } from 'baseui/list'
+import { LabelSmall, ParagraphSmall } from 'baseui/typography'
+import { useEffect, useState } from 'react'
 import { getTeam } from '../../api'
 import { Team } from '../../constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope, faTimesCircle, faUser } from '@fortawesome/free-solid-svg-icons'
 import { copyToClipboard, theme } from '../../util'
-import { Card, StyledBody } from 'baseui/card'
-import { ListItem, ListItemLabel, ListOverrides } from 'baseui/list'
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
-import { LabelSmall, ParagraphSmall } from 'baseui/typography'
-import Button from './Button'
-import { SlackLink } from './SlackLink'
-import { StyledLink } from 'baseui/link'
 import { env } from '../../util/env'
+import Button from './Button'
+import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
+import { DotTag } from './DotTag'
 import { Markdown } from './Markdown'
 import { ObjectLink } from './RouteLink'
-import { Block } from 'baseui/block'
-import { DotTag } from './DotTag'
-import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
+import { SlackLink } from './SlackLink'
 
 const defaultTeam = (teamId: string) => ({ id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: [] })
 
@@ -65,11 +64,7 @@ const TeamContent = (props: { team: Team }) => (
           key={index}
           overrides={listOverrides}
           endEnhancer={() => (
-            <CustomizedStatefulTooltip
-              content={`Epost ${member.email} kopiert!`}
-              triggerType="click"
-              onOpen={() => copyToClipboard(member.email || 'Ikke angitt')}
-            >
+            <CustomizedStatefulTooltip content={`Epost ${member.email} kopiert!`} triggerType="click" onOpen={() => copyToClipboard(member.email || 'Ikke angitt')}>
               <span>
                 <Button size="compact" shape="pill" kind="secondary">
                   <SmallIcon icon={faEnvelope} /> Epost
@@ -113,7 +108,7 @@ const TeamView = (props: { teamId: string }) => {
           {team.name}
         </ObjectLink>
       ) : (
-        <CustomizedStatefulTooltip content='Kunne ikke finne team'>
+        <CustomizedStatefulTooltip content="Kunne ikke finne team">
           <span>
             <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500} /> {team.name}
           </span>

@@ -1,9 +1,6 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import { Block } from 'baseui/block'
-import * as React from 'react'
 import { Processor } from '../../constants'
-import { theme } from '../../util'
 import Button from '../common/Button'
 
 interface DeleteProcessProps {
@@ -23,13 +20,11 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
       <ModalHeader>Bekreft sletting</ModalHeader>
       <ModalBody>
         {usageCount === 0 ? (
-          <>
-            <ParagraphMedium>Er du sikker på at du vil slette {processor.name}?</ParagraphMedium>
-          </>
+          <ParagraphMedium>Er du sikker på at du vil slette {processor.name}?</ParagraphMedium>
         ) : (
-          <>
-            <ParagraphMedium>Kan ikke slette {processor.name} siden den er knyttet til {usageCount} behandling(er)</ParagraphMedium>
-          </>
+          <ParagraphMedium>
+            Kan ikke slette {processor.name} siden den er knyttet til {usageCount} behandling(er)
+          </ParagraphMedium>
         )}
       </ModalBody>
 
@@ -39,7 +34,7 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
           <Button kind="secondary" onClick={onClose}>
             Avbryt
           </Button>
-          <div className="inline mr-3"/>
+          <div className="inline mr-3" />
           <Button onClick={() => submitDeleteProcessor(processor).then(onClose)} disabled={usageCount > 0}>
             Slett
           </Button>

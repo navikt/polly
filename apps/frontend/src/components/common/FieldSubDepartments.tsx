@@ -1,9 +1,7 @@
-import * as React from 'react'
 import { Select } from 'baseui/select'
-import { codelist, ListName } from '../../service/Codelist'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { DpProcessFormValues, ProcessFormValues } from '../../constants'
-import { Block } from 'baseui/block'
+import { codelist, ListName } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> | FormikProps<DpProcessFormValues> }) => {

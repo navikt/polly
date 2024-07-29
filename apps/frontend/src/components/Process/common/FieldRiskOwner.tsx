@@ -1,14 +1,16 @@
-import * as React from 'react'
-import { useEffect } from 'react'
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
-import { ProcessFormValues } from '../../../constants'
-import { Block } from 'baseui/block'
+import { useEffect, useState } from 'react'
 import { getResourceById, useTeamResourceSearch } from '../../../api'
+import { ProcessFormValues } from '../../../constants'
 
-const FieldRiskOwner = (props: { riskOwner?: string }) => {
+interface IProps {
+  riskOwner?: string
+}
+
+const FieldRiskOwner = (props: IProps) => {
   const { riskOwner } = props
-  const [value, setValue] = React.useState<Value>()
+  const [value, setValue] = useState<Value>()
   const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] = useTeamResourceSearch()
 
   useEffect(() => {

@@ -1,16 +1,14 @@
-import * as React from 'react'
-import { useState } from 'react'
 import { Card } from 'baseui/card'
-import { cardShadow } from '../common/Style'
-import { Block } from 'baseui/block'
 import { LabelLarge, ParagraphMedium } from 'baseui/typography'
-import { theme, useAwait } from '../../util'
+import { useState } from 'react'
 import { DashboardData, DepartmentDashCount as DepartmentProcess, ProcessStatus } from '../../constants'
-import { codelist, ListName } from '../../service/Codelist'
-import RouteLink from '../common/RouteLink'
-import { genProcessPath, Section } from '../../pages/ProcessPage'
+import { Section, genProcessPath } from '../../pages/ProcessPage'
+import { ListName, codelist } from '../../service/Codelist'
+import { theme, useAwait } from '../../util'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
+import RouteLink from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
+import { cardShadow } from '../common/Style'
 
 const TextWithNumber = (props: { label: string; number: number }) => (
   <div className="flex w-fit mb-0 justify-center">
@@ -50,13 +48,13 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             </RouteLink>
 
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)} style={{ textDecoration: 'none' }}>
-              <TextWithNumber label='Godkjent' number={department.processesCompleted} />
+              <TextWithNumber label="Godkjent" number={department.processesCompleted} />
             </RouteLink>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.IN_PROGRESS)} style={{ textDecoration: 'none' }}>
-              <TextWithNumber label='Under arbeid' number={department.processesInProgress} />
+              <TextWithNumber label="Under arbeid" number={department.processesInProgress} />
             </RouteLink>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.NEEDS_REVISION)} style={{ textDecoration: 'none' }}>
-              <TextWithNumber label='Revidering' number={department.processesNeedsRevision} />
+              <TextWithNumber label="Revidering" number={department.processesNeedsRevision} />
             </RouteLink>
           </div>
         </Card>

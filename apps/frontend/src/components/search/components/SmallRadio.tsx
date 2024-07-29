@@ -1,9 +1,7 @@
 import { Radio } from 'baseui/radio'
-import { paddingZero } from '../../common/Style'
-import { theme } from '../../../util'
-import { Block } from 'baseui/block'
-import { default as React } from 'react'
 import { SearchType } from '../../../constants'
+import { theme } from '../../../util'
+import { paddingZero } from '../../common/Style'
 
 type RadioProps = {
   $isHovered: boolean

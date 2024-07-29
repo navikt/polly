@@ -1,24 +1,29 @@
-import { Cell, HeadCell, Row, Table } from '../common/Table'
-import RouteLink from '../common/RouteLink'
-import { ProcessShort, ProcessShortWithEmail } from '../../constants'
-import React, { useEffect, useState } from 'react'
-import { useTable } from '../../util/hooks'
-import { StyleObject } from 'styletron-standard'
-import { processStatusText } from './Accordion/ProcessData'
-import { getResourceById } from '../../api'
-import { StyledLink } from 'baseui/link'
-import { Block } from 'baseui/block'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import Button from '../common/Button'
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
+import { SIZE as ButtonSize, KIND } from 'baseui/button'
+import { StyledLink } from 'baseui/link'
+import { useEffect, useState } from 'react'
+import { StyleObject } from 'styletron-standard'
+import { getResourceById } from '../../api'
+import { ProcessShort, ProcessShortWithEmail } from '../../constants'
 import handleExcelExport from '../../util/excelExport'
+import { useTable } from '../../util/hooks'
+import Button from '../common/Button'
+import RouteLink from '../common/RouteLink'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
+import { processStatusText } from './Accordion/ProcessData'
 
 const cellStyle: StyleObject = {
   wordBreak: 'break-word',
 }
 
-export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: string; showCommonExternalProcessResponsible?: boolean }) => {
-  const { processes } = props
+interface IProps {
+  processes: ProcessShort[]
+  title: string
+  showCommonExternalProcessResponsible?: boolean
+}
+
+export const SimpleProcessTable = (props: IProps) => {
+  const { processes, showCommonExternalProcessResponsible, title } = props
   const [processesWithEmail, setProcessesWithEmail] = useState<ProcessShortWithEmail[]>(processes)
 
   useEffect(() => {
@@ -26,17 +31,17 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: st
       if (processes) {
         const newProcessesList: ProcessShortWithEmail[] = []
         await Promise.all(
-          processes.map(async (p) => {
-            const userIdent = p.changeStamp.lastModifiedBy.split(' ')[0]
+          processes.map(async (process) => {
+            const userIdent = process.changeStamp.lastModifiedBy.split(' ')[0]
             if (userIdent !== 'migration') {
-              await getResourceById(userIdent).then((res) => {
+              await getResourceById(userIdent).then((result) => {
                 newProcessesList.push({
-                  ...p,
-                  lastModifiedEmail: res.email,
+                  ...process,
+                  lastModifiedEmail: result.email,
                 })
               })
             } else {
-              newProcessesList.push({ ...p })
+              newProcessesList.push({ ...process })
             }
           }),
         ).then(() => setProcessesWithEmail(newProcessesList))
@@ -60,28 +65,21 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: st
   return (
     <div>
       <div className="flex justify-end">
-        <Button
-          kind={KIND.tertiary}
-          size={ButtonSize.compact}
-          icon={faFileExcel}
-          tooltip='Eksportér'
-          marginRight
-          onClick={() => handleExcelExport(processesWithEmail, props.title)}
-        >
+        <Button kind={KIND.tertiary} size={ButtonSize.compact} icon={faFileExcel} tooltip="Eksportér" marginRight onClick={() => handleExcelExport(processesWithEmail, title)}>
           Eksportér
         </Button>
       </div>
       <Table
-        emptyText='Ingen behandlinger'
+        emptyText="Ingen behandlinger"
         headers={
           <>
-            <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} $style={cellStyle} />
-            <HeadCell title='Avdeling' column="affiliation" tableState={[table, sortColumn]} $style={cellStyle} />
-            {props.showCommonExternalProcessResponsible && (
-              <HeadCell title='Felles behandlingsansvarlig' column="commonExternalProcessResponsible" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title="Behandling" column="name" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title="Avdeling" column="affiliation" tableState={[table, sortColumn]} $style={cellStyle} />
+            {showCommonExternalProcessResponsible && (
+              <HeadCell title="Felles behandlingsansvarlig" column="commonExternalProcessResponsible" tableState={[table, sortColumn]} $style={cellStyle} />
             )}
-            <HeadCell title='Status' column="status" tableState={[table, sortColumn]} $style={cellStyle} />
-            <HeadCell title='Sist endret av' column="lastModifiedEmail" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title="Status" column="status" tableState={[table, sortColumn]} $style={cellStyle} />
+            <HeadCell title="Sist endret av" column="lastModifiedEmail" tableState={[table, sortColumn]} $style={cellStyle} />
           </>
         }
       >
@@ -98,7 +96,7 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[]; title: st
                 <RouteLink href={`/process/department/${process.affiliation.department?.code}`}>{process.affiliation.department?.shortName}</RouteLink>
               )}
             </Cell>
-            {props.showCommonExternalProcessResponsible && (
+            {showCommonExternalProcessResponsible && (
               <Cell $style={cellStyle}>
                 {process.commonExternalProcessResponsible === null ? (
                   ''

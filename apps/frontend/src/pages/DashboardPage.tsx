@@ -1,23 +1,21 @@
-import { FilterDashboardStatus } from '../components/Dashboard/FilterDashboardStatus'
-import Charts from '../components/Charts/Charts'
-import * as React from 'react'
+import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { theme } from '../util'
-import { DashboardData, ProcessStatusFilter } from '../constants'
 import { useParams } from 'react-router-dom'
 import { getDashboard } from '../api'
-import { Spinner } from '../components/common/Spinner'
-import { HeadingMedium } from 'baseui/typography'
+import Charts from '../components/Charts/Charts'
 import Departments from '../components/Dashboard/Departments'
-import {ampli} from "../service/Amplitude";
+import { FilterDashboardStatus } from '../components/Dashboard/FilterDashboardStatus'
+import { Spinner } from '../components/common/Spinner'
+import { DashboardData, ProcessStatusFilter } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { theme } from '../util'
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData>()
   const { processStatus } = useParams<{ processStatus: ProcessStatusFilter }>()
   const [dashboardStatus, setDashboardStatus] = useState<ProcessStatusFilter>(processStatus ? (processStatus as ProcessStatusFilter) : ProcessStatusFilter.All)
 
-  ampli.logEvent("besøk", {side: 'Dashboard', url: '/dashboard/', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Dashboard', url: '/dashboard/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {

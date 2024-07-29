@@ -1,23 +1,22 @@
+import { Button, SHAPE } from 'baseui/button'
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
+import { Plus } from 'baseui/icon'
+import { Input } from 'baseui/input'
+import { Option, Select, TYPE, Value } from 'baseui/select'
+import { Textarea } from 'baseui/textarea'
+import { LabelMedium } from 'baseui/typography'
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
 import * as React from 'react'
 import { useEffect } from 'react'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
-import { LabelMedium } from 'baseui/typography'
-import { Input } from 'baseui/input'
-import { Block, BlockProps } from 'baseui/block'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { Textarea } from 'baseui/textarea'
-import { Button, SHAPE } from 'baseui/button'
-import { Plus } from 'baseui/icon'
-import { Option, Select, TYPE, Value } from 'baseui/select'
 
-import { codelist, ListName } from '../../service/Codelist'
-import { InformationtypeFormValues } from '../../constants'
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
+import { InformationtypeFormValues } from '../../constants'
+import { codelist, ListName } from '../../service/Codelist'
+import { disableEnter } from '../../util/helper-functions'
+import FieldProductTeam from '../common/form/FieldProductTeam'
+import { Error } from '../common/ModalSchema'
 import { infoTypeSchema } from '../common/schema'
 import { renderTagList } from '../common/TagList'
-import { Error } from '../common/ModalSchema'
-import FieldProductTeam from '../common/form/FieldProductTeam'
-import { disableEnter } from '../../util/helper-functions'
 
 type FormProps = {
   formInitialValues: InformationtypeFormValues
@@ -93,7 +92,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
   const onSubmit = async (values: InformationtypeFormValues, actions: FormikHelpers<InformationtypeFormValues>) => {
     const searchResults = (await searchInformationType(values.name!)).content.filter((it) => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
     if (searchResults.length > 0) {
-      actions.setFieldError('name', "Informasjonstypen eksisterer allerede")
+      actions.setFieldError('name', 'Informasjonstypen eksisterer allerede')
     } else {
       submit(values)
       actions.setSubmitting(false)

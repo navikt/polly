@@ -1,17 +1,16 @@
-import { Block, BlockProps } from 'baseui/block'
-import { Button } from 'baseui/button'
-import { Field, FieldProps } from 'formik'
-import { Datepicker } from 'baseui/datepicker'
-import moment from 'moment'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button } from 'baseui/button'
+import { Datepicker } from 'baseui/datepicker'
+import nb from 'date-fns/locale/nb'
+import { Field, FieldProps } from 'formik'
+import moment from 'moment'
 import * as React from 'react'
-import { theme } from '../../util'
 import { ProcessFormValues } from '../../constants'
+import { theme } from '../../util'
+import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import { Error } from '../common/ModalSchema'
 import { padding } from '../common/Style'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
-import nb from 'date-fns/locale/nb';
 
 interface DateModalProps {
   showDates: boolean
@@ -35,12 +34,12 @@ const LabelWithTooltip = (props: { text: string; tooltip: string }) => (
 
 export const DateFieldsProcessModal = (props: DateModalProps) => {
   const [showDates, setShowDates] = React.useState<boolean>(props.showDates)
-  const {showLabels } = props
+  const { showLabels } = props
 
   return (
     <>
       {!showDates ? (
-        <div className="flex w-full mt-4" >
+        <div className="flex w-full mt-4">
           <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
             Velg datoer
           </Button>
@@ -50,9 +49,16 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
           <div className="w-full">
             <div className="flex w-full">
               <div className="w-1/2 mr-4">
-                {showLabels && <LabelWithTooltip text='Fom dato' tooltip='Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.'/>}
+                {showLabels && (
+                  <LabelWithTooltip
+                    text="Fom dato"
+                    tooltip="Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
+                  />
+                )}
               </div>
-              <div className="w-1/2">{showLabels && <LabelWithTooltip text='Tom dato' tooltip='Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato.' />}</div>
+              <div className="w-1/2">
+                {showLabels && <LabelWithTooltip text="Tom dato" tooltip="Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato." />}
+              </div>
             </div>
             <div className="flex w-full">
               <div className="w-1/2 mr-4">
@@ -60,7 +66,7 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
                   <Field name="start">
                     {({ field, form }: FieldProps<string, ProcessFormValues>) => (
                       <Datepicker
-                        placeholder='Velg fra og med dato'
+                        placeholder="Velg fra og med dato"
                         value={field.value ? new Date(field.value) : undefined}
                         onChange={({ date }) => {
                           form.setFieldValue('start', dateToDateString(date))
@@ -87,7 +93,7 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
                   <Field name="end">
                     {({ field, form }: FieldProps<string, ProcessFormValues>) => (
                       <Datepicker
-                        placeholder='Velg til og med dato'
+                        placeholder="Velg til og med dato"
                         value={field.value ? new Date(field.value) : undefined}
                         onChange={({ date }) => {
                           form.setFieldValue('end', dateToDateString(date))

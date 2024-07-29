@@ -1,13 +1,12 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Block } from 'baseui/block'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api'
 import { convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor } from '../../api/ProcessorApi'
-import { Process, Processor, ProcessorFormValues, TeamResource, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
+import { Process, Processor, ProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER, TeamResource } from '../../constants'
 import { ampli } from '../../service/Amplitude'
 import { codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
@@ -18,9 +17,9 @@ import Button from '../common/Button'
 import { boolToText } from '../common/Radio'
 import { Spinner } from '../common/Spinner'
 import TextWithLabel from '../common/TextWithLabel'
-import RelatedProcessesTable from './components/RelatedProcessesTable'
 import { DeleteProcessorModal } from './DeleteProcessorModal'
 import ProcessorModal from './ProcessorModal'
+import RelatedProcessesTable from './components/RelatedProcessesTable'
 
 const ProcessorView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -58,8 +57,8 @@ const ProcessorView = () => {
         setIsLoading(false)
       })()
       setShowEditProcessorModal(false)
-    } catch (err: any) {
-      setModalErrorMessage(err.response.data.message)
+    } catch (error: any) {
+      setModalErrorMessage(error.response.data.message)
     }
   }
 
@@ -68,8 +67,8 @@ const ProcessorView = () => {
       await deleteProcessor(processor.id)
       navigate('/processor/')
       return true
-    } catch (err: any) {
-      setModalErrorMessage(err.response.data.message)
+    } catch (error: any) {
+      setModalErrorMessage(error.response.data.message)
       setShowDeleteProcessorModal(true)
       return false
     }
@@ -126,101 +125,98 @@ const ProcessorView = () => {
           )}
         </div>
       </div>
-      {!isLoading ? (
-        currentProcessor && (
-          <>
-            <div className="flex mb-4">
-              <div className="w-[40%] pr-24">
-                <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
-                  <FlexGridItem>
-                    <TextWithLabel label="Ref. på databehandleravtale" text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : 'Ikke utfylt'} />
-                  </FlexGridItem>
-                  <FlexGridItem>
-                    <TextWithLabel label="Avtaleeier" text={currentProcessor.contractOwner ? contractOwner?.fullName : 'Ikke utfylt'} />
-                  </FlexGridItem>
-                  <FlexGridItem>
-                    <TextWithLabel
-                      label="Fagansvarlig"
-                      text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map((r) => r.fullName).join(', ') : 'Ikke utfylt'}
-                    />
-                  </FlexGridItem>
-                </FlexGrid>
-              </div>
-              <div className="w-[60%] pl-24 border-l-[1px] border-solid border-[#AFAFAF]">
-                <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
-                  <FlexGridItem>
-                    <TextWithLabel label="Merknad" text={currentProcessor.note ? currentProcessor.note : 'Ikke utfylt'} />
-                  </FlexGridItem>
-                  <FlexGridItem>
-                    <TextWithLabel label="Behandler databehandler personopplysninger utenfor EU/EØS?" text={''}>
-                      <div className="flex whitespace-pre-wrap m-0 text-base">
-                        {currentProcessor?.outsideEU === null && 'Uavklart'}
-                        {currentProcessor.outsideEU === false && 'Nei'}
-                      </div>
-                      <>
-                        {currentProcessor.outsideEU && (
-                          <div>
-                            <div className="flex whitespace-pre-wrap m-0 text-base">
-                              <span>{boolToText(currentProcessor.outsideEU)}</span>
-                            </div>
+      {isLoading && <Spinner size={theme.sizing.scale1200} />}
+      {!isLoading && currentProcessor && (
+        <>
+          <div className="flex mb-4">
+            <div className="w-[40%] pr-24">
+              <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
+                <FlexGridItem>
+                  <TextWithLabel label="Ref. på databehandleravtale" text={currentProcessor.contract ? shortenLinksInText(currentProcessor.contract) : 'Ikke utfylt'} />
+                </FlexGridItem>
+                <FlexGridItem>
+                  <TextWithLabel label="Avtaleeier" text={currentProcessor.contractOwner ? contractOwner?.fullName : 'Ikke utfylt'} />
+                </FlexGridItem>
+                <FlexGridItem>
+                  <TextWithLabel
+                    label="Fagansvarlig"
+                    text={currentProcessor.operationalContractManagers.length > 0 ? operationalContractManagers.map((r) => r.fullName).join(', ') : 'Ikke utfylt'}
+                  />
+                </FlexGridItem>
+              </FlexGrid>
+            </div>
+            <div className="w-[60%] pl-24 border-l-[1px] border-solid border-[#AFAFAF]">
+              <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
+                <FlexGridItem>
+                  <TextWithLabel label="Merknad" text={currentProcessor.note ? currentProcessor.note : 'Ikke utfylt'} />
+                </FlexGridItem>
+                <FlexGridItem>
+                  <TextWithLabel label="Behandler databehandler personopplysninger utenfor EU/EØS?" text={''}>
+                    <div className="flex whitespace-pre-wrap m-0 text-base">
+                      {currentProcessor?.outsideEU === null && 'Uavklart'}
+                      {currentProcessor.outsideEU === false && 'Nei'}
+                    </div>
+                    <>
+                      {currentProcessor.outsideEU && (
+                        <div>
+                          <div className="flex whitespace-pre-wrap m-0 text-base">
+                            <span>{boolToText(currentProcessor.outsideEU)}</span>
                           </div>
-                        )}
-                        {currentProcessor.outsideEU && (
-                          <>
-                            <TextWithLabel label="Overføringsgrunnlag for behandling utenfor EU/EØS" text={''}>
+                        </div>
+                      )}
+                      {currentProcessor.outsideEU && (
+                        <>
+                          <TextWithLabel label="Overføringsgrunnlag for behandling utenfor EU/EØS" text={''}>
+                            <div className="flex whitespace-pre-wrap m-0 text-base">
+                              {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
+                              {!currentProcessor.transferGroundsOutsideEU && <span>Ikke angitt</span>}
+                              {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther && (
+                                <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>
+                              )}
+                            </div>
+                          </TextWithLabel>
+                          {currentProcessor.countries && !!currentProcessor?.countries.length && (
+                            <TextWithLabel label="Land" text={''}>
                               <div className="flex whitespace-pre-wrap m-0 text-base">
-                                {currentProcessor.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(currentProcessor.transferGroundsOutsideEU)} </span>}
-                                {!currentProcessor.transferGroundsOutsideEU && <span>Ikke angitt</span>}
-                                {currentProcessor.transferGroundsOutsideEU?.code === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && currentProcessor.transferGroundsOutsideEUOther && (
-                                  <span>: {currentProcessor.transferGroundsOutsideEUOther}</span>
-                                )}
+                                <span>{currentProcessor.countries.map((c) => codelist.countryName(c)).join(', ')}</span>
                               </div>
                             </TextWithLabel>
-                            {currentProcessor.countries && !!currentProcessor?.countries.length && (
-                              <TextWithLabel label="Land" text={''}>
-                                <div className="flex whitespace-pre-wrap m-0 text-base">
-                                  <span>{currentProcessor.countries.map((c) => codelist.countryName(c)).join(', ')}</span>
-                                </div>
-                              </TextWithLabel>
-                            )}
-                          </>
-                        )}
-                      </>
-                    </TextWithLabel>
-                  </FlexGridItem>
-                </FlexGrid>
-                <div className="flex justify-end">
-                  {currentProcessor.changeStamp && (
-                    <ParagraphSmall>
-                      <i>{`Sist endret av ${currentProcessor.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcessor.changeStamp?.lastModifiedDate)}`}</i>
-                    </ParagraphSmall>
-                  )}
-                </div>
-                <ProcessorModal
-                  title="Databehandler"
-                  isOpen={showEditProcessorModal}
-                  initialValues={convertProcessorToFormValues(currentProcessor)}
-                  submit={handleEditDataProcessor}
-                  errorMessage={modalErrorMessage}
-                  onClose={() => setShowEditProcessorModal(false)}
-                />
-                <DeleteProcessorModal
-                  isOpen={showDeleteProcessorModal}
-                  processor={currentProcessor}
-                  submitDeleteProcessor={handleDeleteDataProcessor}
-                  onClose={() => setShowDeleteProcessorModal(false)}
-                  errorProcessorModal={modalErrorMessage}
-                  usageCount={usageCount}
-                />
+                          )}
+                        </>
+                      )}
+                    </>
+                  </TextWithLabel>
+                </FlexGridItem>
+              </FlexGrid>
+              <div className="flex justify-end">
+                {currentProcessor.changeStamp && (
+                  <ParagraphSmall>
+                    <i>{`Sist endret av ${currentProcessor.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcessor.changeStamp?.lastModifiedDate)}`}</i>
+                  </ParagraphSmall>
+                )}
               </div>
+              <ProcessorModal
+                title="Databehandler"
+                isOpen={showEditProcessorModal}
+                initialValues={convertProcessorToFormValues(currentProcessor)}
+                submit={handleEditDataProcessor}
+                errorMessage={modalErrorMessage}
+                onClose={() => setShowEditProcessorModal(false)}
+              />
+              <DeleteProcessorModal
+                isOpen={showDeleteProcessorModal}
+                processor={currentProcessor}
+                submitDeleteProcessor={handleDeleteDataProcessor}
+                onClose={() => setShowDeleteProcessorModal(false)}
+                errorProcessorModal={modalErrorMessage}
+                usageCount={usageCount}
+              />
             </div>
-            <div>
-              <RelatedProcessesTable relatedProcesses={relatedProcesses} />
-            </div>
-          </>
-        )
-      ) : (
-        <Spinner size={theme.sizing.scale1200} />
+          </div>
+          <div>
+            <RelatedProcessesTable relatedProcesses={relatedProcesses} />
+          </div>
+        </>
       )}
     </>
   )

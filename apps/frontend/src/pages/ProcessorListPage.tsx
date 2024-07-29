@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import { convertProcessorToFormValues, createProcessor, getProcessorsByPageAndPageSize } from '../api/ProcessorApi'
-import { Processor, ProcessorFormValues } from '../constants'
-import { theme } from '../util'
-import { HeadingMedium, LabelLarge } from 'baseui/typography'
-import { Block } from 'baseui/block'
-import Button from '../components/common/Button'
-import { user } from '../service/User'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { getAll } from '../api'
-import AlphabeticList from '../components/common/AlphabeticList'
-import { Spinner } from '../components/common/Spinner'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { HeadingMedium, LabelLarge } from 'baseui/typography'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getAll } from '../api'
+import { convertProcessorToFormValues, createProcessor, getProcessorsByPageAndPageSize } from '../api/ProcessorApi'
 import ProcessorModal from '../components/Processor/ProcessorModal'
-import {ampli} from "../service/Amplitude";
+import AlphabeticList from '../components/common/AlphabeticList'
+import Button from '../components/common/Button'
+import { Spinner } from '../components/common/Spinner'
+import { Processor, ProcessorFormValues } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { user } from '../service/User'
+import { theme } from '../util'
 
 export const ProcessorListPage = () => {
   const [processors, setProcessors] = useState<Processor[]>([])
   const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
 
-  ampli.logEvent("besøk", {side: 'Databehandlere', url: '/processor', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Databehandlere', url: '/processor', app: 'Behandlingskatalogen' })
 
   const handleCreateProcessor = (processor: ProcessorFormValues) => {
     if (!processor) return
@@ -49,42 +48,46 @@ export const ProcessorListPage = () => {
     })()
   }, [])
 
-  return isLoading ? (
-    <Spinner size={theme.sizing.scale1200} />
-  ) : (
+  return (
     <>
-      <HeadingMedium>Databehandlere</HeadingMedium>
-      <div className="flex w-full justify-between">
-        <div>
-          <LabelLarge>Databehandlere</LabelLarge>
-        </div>
+      {isLoading && <Spinner size={theme.sizing.scale1200} />}
+      {!isLoading && (
+        <>
+          <HeadingMedium>Databehandlere</HeadingMedium>
+          <div className="flex w-full justify-between">
+            <div>
+              <LabelLarge>Databehandlere</LabelLarge>
+            </div>
 
-        <div className="mt-auto">
-          {hasAccess() && (
-            <Button kind="outline" onClick={() => setShowCreateProcessorModal(true)}>
-              <FontAwesomeIcon icon={faPlusCircle} />
-              &nbsp;Opprett ny databehandler
-            </Button>
-          )}
-        </div>
-      </div>
-      <div>
-        <AlphabeticList
-          items={processors.map((value) => {
-            return { id: value.id, label: value.name }
-          })}
-          baseUrl={'/processor/'}
-        />
-      </div>
-      <ProcessorModal
-        title="Opprett ny databehandler"
-        isOpen={showCreateProcessorModal}
-        initialValues={convertProcessorToFormValues({})}
-        submit={handleCreateProcessor}
-        errorMessage={modalErrorMessage}
-        onClose={() => setShowCreateProcessorModal(false)}
-      />
+            <div className="mt-auto">
+              {hasAccess() && (
+                <Button kind="outline" onClick={() => setShowCreateProcessorModal(true)}>
+                  <FontAwesomeIcon icon={faPlusCircle} />
+                  &nbsp;Opprett ny databehandler
+                </Button>
+              )}
+            </div>
+          </div>
+          <div>
+            <AlphabeticList
+              items={processors.map((value) => {
+                return { id: value.id, label: value.name }
+              })}
+              baseUrl={'/processor/'}
+            />
+          </div>
+          <ProcessorModal
+            title="Opprett ny databehandler"
+            isOpen={showCreateProcessorModal}
+            initialValues={convertProcessorToFormValues({})}
+            submit={handleCreateProcessor}
+            errorMessage={modalErrorMessage}
+            onClose={() => setShowCreateProcessorModal(false)}
+          />
+        </>
+      )}
     </>
   )
 }
+
 export default ProcessorListPage

@@ -1,29 +1,27 @@
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { Spinner } from 'baseui/spinner'
+import { HeadingMedium } from 'baseui/typography'
 import React, { useEffect, useReducer, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
+import { getResourceById } from '../../api'
 import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
-import { Spinner } from 'baseui/spinner'
-import { Block } from 'baseui/block'
-import { HeadingMedium } from 'baseui/typography'
-import { theme } from '../../util'
-import { DotTag, DotTags } from '../common/DotTag'
-import DataText from '../common/DataText'
-import { codelist, ListName } from '../../service/Codelist'
-import { TeamList } from '../common/Team'
+import { getProcessorsByIds } from '../../api/ProcessorApi'
+import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
+import { ampli } from '../../service/Amplitude'
+import { ListName, codelist } from '../../service/Codelist'
+import { user } from '../../service/User'
+import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
+import Button from '../common/Button'
+import DataText from '../common/DataText'
+import { DotTag, DotTags } from '../common/DotTag'
 import { ActiveIndicator } from '../common/Durations'
 import { boolToText } from '../common/Radio'
 import RouteLink from '../common/RouteLink'
-import Button from '../common/Button'
-import DpProcessModal from './DpProcessModal'
+import { TeamList } from '../common/Team'
 import { DpProcessDeleteModal } from './DpProcessDeleteModal'
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { SIZE as ButtonSize } from 'baseui/button'
-import { user } from '../../service/User'
-import { getProcessorsByIds } from '../../api/ProcessorApi'
-import { lastModifiedDate } from '../../util/date-formatter'
-import { getResourceById } from '../../api'
-import { ampli } from '../../service/Amplitude'
+import DpProcessModal from './DpProcessModal'
 
 const DpProcessView = () => {
   const navigate = useNavigate()
@@ -206,7 +204,7 @@ const DpProcessView = () => {
                   <div>
                     {processors && (
                       <div className="flex items-center">
-                        <div className="whitespace-nowrap mt-4 mr-0"/>
+                        <div className="whitespace-nowrap mt-4 mr-0" />
                         <div className="flex flexWrap">
                           {processors.map((dp, i) => (
                             <div className={i < processors.length ? 'mr-1.5' : ''}>
@@ -224,15 +222,15 @@ const DpProcessView = () => {
             </>
           </DataText>
           {dpProcess && (
-              <div className="flex justify-end">
-                <span>
-                  <i>
-                    {`Sist endret av `}
-                    <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
-                    {` ${lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}`}
-                  </i>
-                </span>
-              </div>  
+            <div className="flex justify-end">
+              <span>
+                <i>
+                  {`Sist endret av `}
+                  <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
+                  {` ${lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}`}
+                </i>
+              </span>
+            </div>
           )}
           <DpProcessModal
             isOpen={showModal}

@@ -1,11 +1,10 @@
-import { Field, FieldProps, FormikProps } from 'formik'
-import { DpProcessFormValues, ProcessFormValues } from '../../../constants'
-import { default as React, useEffect, useState } from 'react'
-import { Block, BlockProps } from 'baseui/block'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { theme } from '../../../util'
 import { Slider } from 'baseui/slider'
+import { Field, FieldProps, FormikProps } from 'formik'
+import { useEffect, useState } from 'react'
+import { DpProcessFormValues, ProcessFormValues } from '../../../constants'
+import { theme } from '../../../util'
 import FieldInput from '../../Process/common/FieldInput'
+import { Error, ModalLabel } from '../../common/ModalSchema'
 
 function sliderOverride(suffix: string) {
   return {
@@ -42,28 +41,19 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
     <>
       <>
         <div className="flex w-full mt-4">
-          <ModalLabel label='Lagringsbehov for NAV' tooltip='Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige.' />
+          <ModalLabel
+            label="Lagringsbehov for NAV"
+            tooltip="Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige."
+          />
           <Field
             name="retention.retentionMonths"
             render={({ field, form }: FieldProps<string, ProcessFormValues>) => (
               <>
                 <div className="w-1/2 mt-[25px]">
-                  <Slider
-                    overrides={sliderOverride('År')}
-                    min={0}
-                    max={100}
-                    value={[retentionYears]}
-                    onChange={({ value }) => setRetention(value[0] * 12 + retentionMonths)}
-                  />
+                  <Slider overrides={sliderOverride('År')} min={0} max={100} value={[retentionYears]} onChange={({ value }) => setRetention(value[0] * 12 + retentionMonths)} />
                 </div>
                 <div className="w-1/2 mt-[25px]">
-                  <Slider
-                    overrides={sliderOverride('Måneder')}
-                    min={0}
-                    max={11}
-                    value={[retentionMonths]}
-                    onChange={({ value }) => setRetention(value[0] + retentionYears * 12)}
-                  />
+                  <Slider overrides={sliderOverride('Måneder')} min={0} max={11} value={[retentionMonths]} onChange={({ value }) => setRetention(value[0] + retentionYears * 12)} />
                 </div>
               </>
             )}
@@ -72,7 +62,7 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
         <Error fieldName="retention.retentionMonths" />
 
         <div className="flex w-full mt-4">
-          <ModalLabel label='Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse' />
+          <ModalLabel label="Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse" />
           <div className="w-full">
             <FieldInput fieldName="retention.retentionStart" fieldValue={formikBag.values.retention.retentionStart} />
           </div>

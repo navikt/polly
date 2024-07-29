@@ -1,19 +1,17 @@
-import { useStyletron } from 'baseui'
-import { Block } from 'baseui/block'
-import { AuditButton } from '../admin/audit/AuditButton'
-import RouteLink from '../common/RouteLink'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { useStyletron } from 'baseui'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { Spinner } from 'baseui/spinner'
+import { ParagraphMedium } from 'baseui/typography'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { theme } from '../../util'
-import { ParagraphMedium } from 'baseui/typography'
 import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
 import { InformationType } from '../../constants'
-import { Spinner } from 'baseui/spinner'
+import { AuditButton } from '../admin/audit/AuditButton'
 import Button from '../common/Button'
+import RouteLink from '../common/RouteLink'
 
 export const DeleteModal = (props: { id: string; showDeleteModal: boolean; closeModal: () => void }) => {
   const [errorProcessModal, setErrorProcessModal] = React.useState(false)
@@ -50,11 +48,7 @@ export const DeleteModal = (props: { id: string; showDeleteModal: boolean; close
       <ModalHeader>Bekreft sletting</ModalHeader>
       <ModalBody>
         {!infoType && <Spinner />}
-        {canDelete && (
-          <ParagraphMedium>
-            Bekreft sletting av opplysningstypen {infoType?.name}
-          </ParagraphMedium>
-        )}
+        {canDelete && <ParagraphMedium>Bekreft sletting av opplysningstypen {infoType?.name}</ParagraphMedium>}
         {infoType && !canDelete && (
           <ParagraphMedium>
             {`Kan ikke slette opplysningstypen ${infoType.name} da den er knyttet til:`}

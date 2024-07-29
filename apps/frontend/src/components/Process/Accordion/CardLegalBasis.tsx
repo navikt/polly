@@ -1,24 +1,22 @@
-import * as React from 'react'
-import { Select, TYPE, Value } from 'baseui/select'
-import { Block, BlockProps } from 'baseui/block'
+import { faExclamationCircle, faPen } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
 import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input'
-import { LabelMedium } from 'baseui/typography'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { codelist, ListName, SensitivityLevel } from '../../../service/Codelist'
-import { theme } from '../../../util'
-import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import { KIND as NKIND, Notification } from 'baseui/notification'
-import { LegalBasisFormValues } from '../../../constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationCircle, faPen } from '@fortawesome/free-solid-svg-icons'
-import { legalBasisSchema } from '../../common/schema'
-import { LegalBasisView } from '../../common/LegalBasis'
-import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
-import { paddingZero } from '../../common/Style'
+import { Select, TYPE, Value } from 'baseui/select'
+import { LabelMedium } from 'baseui/typography'
+import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
+import * as React from 'react'
 import shortid from 'shortid'
+import { LegalBasisFormValues } from '../../../constants'
+import { ListName, SensitivityLevel, codelist } from '../../../service/Codelist'
+import { theme } from '../../../util'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-
+import { LegalBasisView } from '../../common/LegalBasis'
+import { paddingZero } from '../../common/Style'
+import { legalBasisSchema } from '../../common/schema'
+import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
 
 const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
@@ -32,19 +30,22 @@ const Error = (props: { fieldName: string }) => (
   </ErrorMessage>
 )
 
-const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => {
-  return (
-    <div className="flex">
-      <CustomizedStatefulTooltip content={sensitivityLevel === SensitivityLevel.ART6 ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
-        : 'Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'}>
-        <div className="flex">
-          <LabelMedium>{text}</LabelMedium>
-          <FontAwesomeIcon style={{ marginLeft: '.25rem' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
-        </div>
-      </CustomizedStatefulTooltip>
-    </div>
-  )
-}
+const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => (
+  <div className="flex">
+    <CustomizedStatefulTooltip
+      content={
+        sensitivityLevel === SensitivityLevel.ART6
+          ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
+          : 'Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'
+      }
+    >
+      <div className="flex">
+        <LabelMedium>{text}</LabelMedium>
+        <FontAwesomeIcon style={{ marginLeft: '.25rem' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
+      </div>
+    </CustomizedStatefulTooltip>
+  </div>
+)
 
 interface CardLegalBasisProps {
   initValue: LegalBasisFormValues
@@ -117,7 +118,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
                 render={() => (
                   <Select
                     options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-                    placeholder='Velg lov eller forskrift'
+                    placeholder="Velg lov eller forskrift"
                     maxDropdownHeight="300px"
                     type={TYPE.search}
                     onChange={({ value }) => {
@@ -131,7 +132,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
               />
             </div>
             <Error fieldName="nationalLaw" />
-            <div className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex': 'hidden'}`}>
+            <div className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}>
               <Field
                 name="description"
                 render={({ field }: FieldProps<string, LegalBasisFormValues>) => (

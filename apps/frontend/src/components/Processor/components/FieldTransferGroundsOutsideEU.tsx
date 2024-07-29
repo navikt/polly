@@ -1,13 +1,16 @@
-import * as React from 'react'
 import { Select, Value } from 'baseui/select'
-import { codelist, ListName } from '../../../service/Codelist'
 import { Field, FieldProps } from 'formik'
+import { useState } from 'react'
 import { ProcessorFormValues } from '../../../constants'
-import { Block } from 'baseui/block'
+import { ListName, codelist } from '../../../service/Codelist'
 
-const FieldTransferGroundsOutsideEU = (props: { code?: string }) => {
+interface IProps {
+  code?: string
+}
+
+const FieldTransferGroundsOutsideEU = (props: IProps) => {
   const { code } = props
-  const [value, setValue] = React.useState<Value>(
+  const [value, setValue] = useState<Value>(
     code
       ? [
           {

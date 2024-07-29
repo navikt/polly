@@ -1,13 +1,11 @@
-import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
-import { codelist, ListName } from '../../../service/Codelist'
-import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
-import { useTable } from '../../../util/hooks'
-import RouteLink from '../../common/RouteLink'
-import { RetentionView } from '../../Process/Retention'
 import { getAlertForInformationType } from '../../../api/AlertApi'
-import { Block } from 'baseui/block'
+import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
+import { ListName, codelist } from '../../../service/Codelist'
+import { useTable } from '../../../util/hooks'
+import { RetentionView } from '../../Process/Retention'
+import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
+import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 type TableInformationtypeProps = {
@@ -39,14 +37,14 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
 
   return (
     <Table
-      emptyText='Ingen behandlinger'
+      emptyText="Ingen behandlinger"
       headers={
         <>
-          <HeadCell title='Overordnet behandlingsaktivitet' column={'purposes'} tableState={[table, sortColumn]} />
-          <HeadCell title='Behandling' column={'process'} tableState={[table, sortColumn]} />
-          <HeadCell title='Personkategori' column={'subjectCategories'} tableState={[table, sortColumn]} />
-          <HeadCell title='Behandlingsgrunnlag' column={'legalBases'} tableState={[table, sortColumn]} />
-          <HeadCell title='Lagringsbehov' />
+          <HeadCell title="Overordnet behandlingsaktivitet" column={'purposes'} tableState={[table, sortColumn]} />
+          <HeadCell title="Behandling" column={'process'} tableState={[table, sortColumn]} />
+          <HeadCell title="Personkategori" column={'subjectCategories'} tableState={[table, sortColumn]} />
+          <HeadCell title="Behandlingsgrunnlag" column={'legalBases'} tableState={[table, sortColumn]} />
+          <HeadCell title="Lagringsbehov" />
         </>
       }
     >

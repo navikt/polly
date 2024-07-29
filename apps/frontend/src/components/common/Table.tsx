@@ -1,15 +1,14 @@
+import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { withStyle } from 'baseui'
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from 'baseui/table'
-import { theme } from '../../util'
+import { LabelMedium } from 'baseui/typography'
 import * as React from 'react'
 import { ReactElement, ReactNode, useContext } from 'react'
-import { withStyle } from 'baseui'
-import { TableState } from '../../util/hooks'
 import { StyleObject } from 'styletron-standard'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
-import { Block } from 'baseui/block'
+import { theme } from '../../util'
+import { TableState } from '../../util/hooks'
 import { paddingAll } from './Style'
-import { LabelMedium } from 'baseui/typography'
 
 type TableProps = {
   backgroundColor?: string

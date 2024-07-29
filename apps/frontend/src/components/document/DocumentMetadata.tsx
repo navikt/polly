@@ -1,5 +1,4 @@
 import React from 'react'
-import { Block } from 'baseui/block'
 import { Document } from '../../constants'
 import DocumentInfoTypeTable from './DocumentInfoTypeTable'
 

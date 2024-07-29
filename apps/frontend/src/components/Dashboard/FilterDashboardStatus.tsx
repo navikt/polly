@@ -1,10 +1,8 @@
-import * as React from 'react'
-import { ProcessStatusFilter } from '../../constants'
 import { StatefulSelect } from 'baseui/select'
-import { theme } from '../../util'
-import { Block } from 'baseui/block'
-import { useNavigate, useParams } from 'react-router-dom'
 import { LabelMedium } from 'baseui/typography'
+import { useNavigate, useParams } from 'react-router-dom'
+import { ProcessStatusFilter } from '../../constants'
+import { theme } from '../../util'
 
 export const FilterDashboardStatus = (props: { setFilter: Function }) => {
   const navigate = useNavigate()

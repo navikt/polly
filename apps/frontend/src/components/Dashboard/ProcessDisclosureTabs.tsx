@@ -1,5 +1,4 @@
 import { BodyShort, Spacer, Tabs } from '@navikt/ds-react'
-import { Block } from 'baseui/block'
 import { Button, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { HeadingXLarge } from 'baseui/typography'
@@ -97,7 +96,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     processIds: [],
     administrationArchiveCaseNumber: '',
     assessedConfidentiality: undefined,
-    confidentialityDescription: ''
+    confidentialityDescription: '',
   }
 
   return (

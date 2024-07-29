@@ -1,12 +1,11 @@
-import React, { ReactNode } from 'react'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { Block } from 'baseui/block'
-import { theme } from '../../util'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Code, codelist, ListName } from '../../service/Codelist'
+import React, { ReactNode } from 'react'
 import { NavigableItem } from '../../constants'
-import RouteLink, { urlForObject } from './RouteLink'
+import { Code, codelist, ListName } from '../../service/Codelist'
+import { theme } from '../../util'
 import { Markdown } from './Markdown'
+import RouteLink, { urlForObject } from './RouteLink'
 
 export const DotTag = (props: { children: ReactNode; wrapText?: boolean }) => {
   if (props.wrapText) {
@@ -25,7 +24,7 @@ export const DotTag = (props: { children: ReactNode; wrapText?: boolean }) => {
   return (
     <div className="mx-1 flex items-center">
       <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
-      <div className="inline mr-1"/>
+      <div className="inline mr-1" />
       <div className=" whitespace-nowrap">{props.children}</div>
     </div>
   )

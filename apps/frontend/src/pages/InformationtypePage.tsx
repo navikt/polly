@@ -1,20 +1,19 @@
-import * as React from 'react'
-import { useEffect } from 'react'
-import { Block } from 'baseui/block'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useNavigate, useParams } from 'react-router-dom'
 import { HeadingMedium } from 'baseui/typography'
-import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
-import { theme } from '../util'
-import { CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
-import { ListName } from '../service/Codelist'
-import { user } from '../service/User'
+import * as React from 'react'
+import { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../api'
+import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
 import { Spinner } from '../components/common/Spinner'
-import {ampli} from "../service/Amplitude";
+import { CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { ListName } from '../service/Codelist'
+import { user } from '../service/User'
+import { theme } from '../util'
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -30,7 +29,7 @@ const InformationtypePage = () => {
   const [documents, setDocuments] = React.useState<Document[]>()
   const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
 
-  ampli.logEvent("besøk", {side: 'Opplysningstyper', url: '/informationtype/', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {
@@ -51,8 +50,8 @@ const InformationtypePage = () => {
         setPolicies((await getPoliciesForInformationType(informationTypeId)).content)
         setDisclosures(await getDisclosuresByInformationTypeId(informationTypeId))
         setDocuments((await getDocumentsForInformationType(informationTypeId)).content)
-      } catch (err: any) {
-        setError(err.message)
+      } catch (error: any) {
+        setError(error.message)
       }
 
       if (!params.id) navigate(`/informationtype/${informationTypeId}`)

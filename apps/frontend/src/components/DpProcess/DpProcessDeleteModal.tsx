@@ -1,7 +1,5 @@
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import * as React from 'react'
-import { Block } from 'baseui/block'
 import { Button } from 'baseui/button'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 
 export const DpProcessDeleteModal = (props: { errorOnDeletion: string; isOpen: boolean; onClose: () => void; onSubmit: Function; title: String }) => {

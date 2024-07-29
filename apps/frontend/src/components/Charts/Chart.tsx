@@ -1,13 +1,12 @@
-import React, { useReducer, useState } from 'react'
-import { Block } from 'baseui/block'
-import { theme } from '../../util'
-import { LabelLarge } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChartBar, faChartPie, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Card } from 'baseui/card'
-import { hideBorder, marginAll } from '../common/Style'
+import { LabelLarge } from 'baseui/typography'
 import * as _ from 'lodash'
+import React, { useReducer, useState } from 'react'
+import { theme } from '../../util'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
+import { hideBorder, marginAll } from '../common/Style'
 
 const cursor = { cursor: 'pointer' }
 
@@ -155,21 +154,15 @@ const Visualization = (props: VisualizationProps) => {
                 {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover} />}
               </div>
             )}
-            <div className={`mx-1.5 ${noChartData ? 'mt-2.5': ''}`}>
+            <div className={`mx-1.5 ${noChartData ? 'mt-2.5' : ''}`}>
               <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
               {!noChartData &&
                 data.map((d, idx) => (
                   <div key={idx} onMouseOver={() => setHover(idx)} onClick={d.onClick}>
-                    <div className={`${idx===hover ? 'bg-[#EFF3FE]' :'bg-white'} cursor-pointer flex items-center`}>
+                    <div className={`${idx === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}>
                       <FontAwesomeIcon icon={faCircle} color={d.color} />
-                      <div className="min-w-10 flex justify-end">
-                        {d.size}
-                      </div>
-                      {!hidePercent && (
-                        <div className="min-w-10 flex justify-end">
-                          {(d.fraction * 100).toFixed(0)}%
-                        </div>
-                      )}
+                      <div className="min-w-10 flex justify-end">{d.size}</div>
+                      {!hidePercent && <div className="min-w-10 flex justify-end">{(d.fraction * 100).toFixed(0)}%</div>}
                       <div className="ml-2.5">{d.label}</div>
                     </div>
                   </div>

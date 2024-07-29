@@ -1,9 +1,17 @@
-import { Block } from 'baseui/block'
-import { default as React } from 'react'
+interface IProps {
+  name: string
+  type: string
+  backgroundColor?: string
+  foregroundColor?: string
+}
 
-export const SearchLabel = (props: { name: string; type: string; backgroundColor?: string; foregroundColor?: string }) => (
-  <div className="flex justify-between w-full">
-    <span style={{ padding: '5px' }}>{props.name}</span>
-    <div className={`p-[5px] m-[5px] border-r-[5px] ${props.backgroundColor ? `{bg-[${props.backgroundColor}]}` : ''}`}>{props.type}</div>
-  </div>
-)
+export const SearchLabel = (props: IProps) => {
+  const { name, type, backgroundColor, foregroundColor } = props
+
+  return (
+    <div className="flex justify-between w-full">
+      <span style={{ padding: '5px' }}>{name}</span>
+      <div className={`p-[5px] m-[5px] border-r-[5px] ${backgroundColor ? `{bg-[${backgroundColor}]}` : ''}`}>{type}</div>
+    </div>
+  )
+}

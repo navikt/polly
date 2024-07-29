@@ -1,8 +1,6 @@
+import { Button } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import { Block } from 'baseui/block'
-import { Button } from 'baseui/button'
-import * as React from 'react'
 
 type ModalDeleteProps = {
   title: string
@@ -19,12 +17,9 @@ const DeleteDocumentModal = ({ title, documentName = '', isOpen, onClose, submit
       <ModalHeader>{title}</ModalHeader>
       <ModalBody>
         {!!!documentUsageCount ? (
-          <ParagraphMedium>
-            {' '}
-            Bekreft sletting av dokument "{documentName}"
-          </ParagraphMedium>
+          <ParagraphMedium> Bekreft sletting av dokument "{documentName}"</ParagraphMedium>
         ) : (
-         <ParagraphMedium>{`Kan ikke slette behandlingen ${documentName.toString()}
+          <ParagraphMedium>{`Kan ikke slette behandlingen ${documentName.toString()}
           den inneholder fortsatt ${documentUsageCount.toString()} opplysningstype(r)`}</ParagraphMedium>
         )}
       </ModalBody>

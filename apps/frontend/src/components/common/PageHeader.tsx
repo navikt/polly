@@ -1,20 +1,18 @@
-import { Block } from 'baseui/block'
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { StyledLink } from 'baseui/link'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
-import { theme } from '../../util'
-import { Markdown } from './Markdown'
 import * as React from 'react'
 import { useEffect } from 'react'
-import { codelist } from '../../service/Codelist'
-import { listNameForSection, Section } from '../../pages/ProcessPage'
-import { ProductArea, Team } from '../../constants'
 import { getProductArea, getTeam } from '../../api'
-import { Spinner } from './Spinner'
+import { ProductArea, Team } from '../../constants'
+import { Section, listNameForSection } from '../../pages/ProcessPage'
+import { codelist } from '../../service/Codelist'
+import { theme } from '../../util'
 import { productAreaLink, teamLink } from '../../util/config'
-import { StyledLink } from 'baseui/link'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
-
+import { Markdown } from './Markdown'
+import { Spinner } from './Spinner'
 
 export const PageHeader = (props: { section: Section; code: string }) => {
   const [isLoading, setLoading] = React.useState(false)
@@ -81,9 +79,9 @@ export const PageHeader = (props: { section: Section; code: string }) => {
     if (!url) return null
     return (
       <>
-        <div className="mr-12"/>
+        <div className="mr-12" />
         <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
-          <CustomizedStatefulTooltip content='Gå til side'>
+          <CustomizedStatefulTooltip content="Gå til side">
             <span>
               <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
             </span>

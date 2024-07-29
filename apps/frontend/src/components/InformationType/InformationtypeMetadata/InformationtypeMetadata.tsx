@@ -1,27 +1,26 @@
 import * as React from 'react'
 import { useState } from 'react'
-import { Block } from 'baseui/block'
 
-import AccordionInformationType from './AccordionInformationType'
-import { Disclosure, Document, InformationType, Policy } from '../../../constants'
-import { theme } from '../../../util'
-import Metadata from './Metadata'
-import InformationtypePolicyTable from './InformationtypePolicyTable'
-import TableDisclosure from '../../common/TableDisclosure'
-import { DocumentTable } from './DocumentTable'
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { Tab } from 'baseui/tabs'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
+import { useNavigate } from 'react-router-dom'
+import { Disclosure, Document, InformationType, Policy } from '../../../constants'
+import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { user } from '../../../service/User'
-import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
+import { theme } from '../../../util'
+import { lastModifiedDate } from '../../../util/date-formatter'
+import { useQueryParam } from '../../../util/hooks'
 import Button from '../../common/Button'
 import { CustomizedTabs } from '../../common/CustomizedTabs'
-import { tabOverride } from '../../common/Style'
-import { lastModifiedDate } from '../../../util/date-formatter'
-import { canViewAlerts } from '../../../pages/AlertEventPage'
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom'
 import { Spinner } from '../../common/Spinner'
-import { useQueryParam } from '../../../util/hooks'
+import { tabOverride } from '../../common/Style'
+import TableDisclosure from '../../common/TableDisclosure'
+import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
+import AccordionInformationType from './AccordionInformationType'
+import { DocumentTable } from './DocumentTable'
+import InformationtypePolicyTable from './InformationtypePolicyTable'
+import Metadata from './Metadata'
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType
@@ -90,20 +89,20 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
               </div>
             )}
             <ParagraphSmall>
-               <i>{`Sist endret av ${props.informationtype.changeStamp.lastModifiedBy}, ${lastModifiedDate(props.informationtype.changeStamp?.lastModifiedDate)}`}</i>
+              <i>{`Sist endret av ${props.informationtype.changeStamp.lastModifiedBy}, ${lastModifiedDate(props.informationtype.changeStamp?.lastModifiedDate)}`}</i>
             </ParagraphSmall>
           </div>
 
           <CustomizedTabs activeKey={activeTab} onChange={(args) => setActiveTab(args.activeKey as string)}>
-            <Tab key="purposes" title='Brukes til behandlingsaktivitet' overrides={tabOverride}>
+            <Tab key="purposes" title="Brukes til behandlingsaktivitet" overrides={tabOverride}>
               {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
               {props.policies && <Purposes policies={props.policies} />}
             </Tab>
-            <Tab key="disclose" title='Utleveringer til ekstern part' overrides={tabOverride}>
+            <Tab key="disclose" title="Utleveringer til ekstern part" overrides={tabOverride}>
               {!props.disclosures && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
               {props.disclosures && <Disclosures disclosures={props.disclosures} />}
             </Tab>
-            <Tab key="document" title='Dokumenter' overrides={tabOverride}>
+            <Tab key="document" title="Dokumenter" overrides={tabOverride}>
               {!props.documents && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
               {props.documents && <DocumentTable documents={props.documents} />}
             </Tab>

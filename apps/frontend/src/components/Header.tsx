@@ -1,17 +1,16 @@
-import * as React from 'react'
-import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList } from 'baseui/header-navigation'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { BlockProps } from 'baseui/block'
 import { Button } from 'baseui/button'
-import { Block, BlockProps } from 'baseui/block'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { theme } from '../util'
-import { user } from '../service/User'
+import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList } from 'baseui/header-navigation'
+import { TriangleDown } from 'baseui/icon'
 import { StyledLink } from 'baseui/link'
+import { StatefulMenu } from 'baseui/menu'
 import { StatefulPopover } from 'baseui/popover'
 import { LabelMedium } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { StatefulMenu } from 'baseui/menu'
-import { TriangleDown } from 'baseui/icon'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { user } from '../service/User'
+import { theme } from '../util'
 import { paddingAll } from './common/Style'
 import MainSearch from './search/MainSearch'
 
@@ -30,12 +29,8 @@ const LoggedInHeader = () => {
     <StatefulPopover
       content={
         <div className="p-2">
-          <LabelMedium {...blockStyle}>
-            Navn: {user.getName()}
-          </LabelMedium>
-          <LabelMedium {...blockStyle}>
-            Grupper: {user.getGroupsHumanReadable().join(', ')}
-          </LabelMedium>
+          <LabelMedium {...blockStyle}>Navn: {user.getName()}</LabelMedium>
+          <LabelMedium {...blockStyle}>Grupper: {user.getGroupsHumanReadable().join(', ')}</LabelMedium>
           <div className="flex w-full p-1">
             <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</StyledLink>
           </div>
@@ -60,11 +55,11 @@ const LoginButton = () => {
 const AdminOptions = () => {
   const navigate = useNavigate()
   const pages = [
-    { label: "Administrering av kodeverk", href: '/admin/codelist' },
-    { label: "Versjonering", href: '/admin/audit' },
-    { label: "Innstillinger", href: '/admin/settings' },
-    { label: "Mail log", href: '/admin/maillog' },
-    { label: "Trenger revidering", href: '/admin/request-revision', super: true },
+    { label: 'Administrering av kodeverk', href: '/admin/codelist' },
+    { label: 'Versjonering', href: '/admin/audit' },
+    { label: 'Innstillinger', href: '/admin/settings' },
+    { label: 'Mail log', href: '/admin/maillog' },
+    { label: 'Trenger revidering', href: '/admin/request-revision', super: true },
   ]
   return (
     <StatefulPopover

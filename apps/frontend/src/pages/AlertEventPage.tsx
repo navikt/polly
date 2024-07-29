@@ -1,26 +1,25 @@
-import React, { useEffect, useReducer } from 'react'
-import { AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse } from '../constants'
-import { getAlertEvents } from '../api/AlertApi'
-import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { theme } from '../util'
-import { Block } from 'baseui/block'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulMenu } from 'baseui/menu'
+import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { KIND } from 'baseui/button'
+import { StatefulMenu } from 'baseui/menu'
 import { Pagination } from 'baseui/pagination'
-import { ObjectLink } from '../components/common/RouteLink'
+import { PLACEMENT, StatefulPopover } from 'baseui/popover'
+import { StatefulSelect } from 'baseui/select'
+import { SORT_DIRECTION } from 'baseui/table'
+import { HeadingLarge, LabelMedium } from 'baseui/typography'
+import moment from 'moment'
+import { useEffect, useReducer } from 'react'
+import { useParams } from 'react-router-dom'
+import { getAlertEvents } from '../api/AlertApi'
 import { Sensitivity } from '../components/InformationType/Sensitivity'
 import Button from '../components/common/Button'
-import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { StatefulSelect } from 'baseui/select'
-import { HeadingLarge, LabelMedium } from 'baseui/typography'
-import { useParams } from 'react-router-dom'
-import { user } from '../service/User'
+import { ObjectLink } from '../components/common/RouteLink'
+import { Cell, HeadCell, Row, Table } from '../components/common/Table'
+import { AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse } from '../constants'
+import { ampli } from '../service/Amplitude'
 import { codelist } from '../service/Codelist'
-import moment from 'moment'
-import { SORT_DIRECTION } from 'baseui/table'
-import {ampli} from "../service/Amplitude";
-import {tekster} from "../util/codeToFineText";
+import { user } from '../service/User'
+import { theme } from '../util'
+import { tekster } from '../util/codeToFineText'
 
 type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
@@ -103,7 +102,7 @@ export const AlertEventPage = () => {
       dir: state.sort.column !== column ? SORT_DIRECTION.ASC : state.sort.dir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC,
     })
 
-  ampli.logEvent("besøk", {side: 'Varsler', url: '/alert/events/', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Varsler', url: '/alert/events/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId).then((a) =>
@@ -129,9 +128,9 @@ export const AlertEventPage = () => {
           <div className="flex items-center">
             <LabelMedium>Filter: </LabelMedium>
             <Button kind="secondary" size="compact" marginLeft marginRight iconEnd={faTimes} onClick={() => dispatch({ type: 'OBJECT_FILTER' })}>
-              {state.processId && "Behandling"}
-              {state.informationTypeId && "Opplysningstype"}
-              {state.disclosureId && "Utlevering"}
+              {state.processId && 'Behandling'}
+              {state.informationTypeId && 'Opplysningstype'}
+              {state.disclosureId && 'Utlevering'}
             </Button>
           </div>
         )}
@@ -230,8 +229,8 @@ export const AlertEventPage = () => {
         <Pagination
           currentPage={state.page}
           numPages={state.events.pages}
-          onPageChange={(a) => setPage(a.nextPage)}
-          labels={{ nextButton: "Neste", preposition: "av", prevButton: "Forrige" }}
+          onPageChange={(page) => setPage(page.nextPage)}
+          labels={{ nextButton: 'Neste', preposition: 'av', prevButton: 'Forrige' }}
         />
       </div>
     </>

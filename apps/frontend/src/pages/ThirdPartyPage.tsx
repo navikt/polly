@@ -1,26 +1,24 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { theme } from '../util'
-import { useParams } from 'react-router-dom'
-import { codelist, ListName } from '../service/Codelist'
-import { Plus } from 'baseui/icon'
-import { Block } from 'baseui/block'
-import { createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure } from '../api'
-import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
-import { Button, KIND } from 'baseui/button'
-import { user } from '../service/User'
-import { Disclosure, DisclosureFormValues, DpProcess, InformationType } from '../constants'
-import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import { Spinner } from 'baseui/spinner'
-import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
-import ProcessList from '../components/Process/ProcessList'
-import { Section } from './ProcessPage'
-import { getAllDpProcesses } from '../api/DpProcessApi'
-import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
-import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import { Accordion, Panel } from 'baseui/accordion'
+import { Button, KIND } from 'baseui/button'
+import { Plus } from 'baseui/icon'
+import { Spinner } from 'baseui/spinner'
+import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure } from '../api'
+import { getAllDpProcesses } from '../api/DpProcessApi'
+import ProcessList from '../components/Process/ProcessList'
+import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
+import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { toggleOverride } from '../components/common/Accordion'
-import {ampli} from "../service/Amplitude";
+import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
+import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
+import { Disclosure, DisclosureFormValues, DpProcess, InformationType } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { ListName, codelist } from '../service/Codelist'
+import { user } from '../service/User'
+import { theme } from '../util'
+import { Section } from './ProcessPage'
 
 export type PathParams = {
   thirdPartyCode: string
@@ -30,15 +28,15 @@ export type PathParams = {
 
 const ThirdPartyPage = () => {
   const params = useParams<PathParams>()
-  const [isLoading, setIsLoading] = React.useState<boolean>(true)
-  const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>([])
-  const [informationTypeList, setInformationTypeList] = React.useState<InformationType[]>()
-  const [showCreateModal, setShowCreateModal] = React.useState(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [disclosureList, setDisclosureList] = useState<Disclosure[]>([])
+  const [informationTypeList, setInformationTypeList] = useState<InformationType[]>()
+  const [showCreateModal, setShowCreateModal] = useState(false)
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
-  const [error, setError] = React.useState<string>()
-  const [processListCount, setProcessListCount] = React.useState<number>(0)
+  const [error, setError] = useState<string>()
+  const [processListCount, setProcessListCount] = useState<number>(0)
 
-  ampli.logEvent("besøk", {side: 'Eksterne parter', url: '/thirdparty/:thirdPartyCode/', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Eksterne parter', url: '/thirdparty/:thirdPartyCode/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {
@@ -102,7 +100,7 @@ const ThirdPartyPage = () => {
     processIds: [],
     administrationArchiveCaseNumber: '',
     assessedConfidentiality: undefined,
-    confidentialityDescription: ''
+    confidentialityDescription: '',
   }
 
   useEffect(() => {

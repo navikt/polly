@@ -1,7 +1,5 @@
-import { Block } from 'baseui/block'
 import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import * as React from 'react'
 import { useInfoTypeSearch } from '../../api'
 import { DisclosureFormValues } from '../../constants'
 import { renderTagList } from './TagList'
@@ -24,10 +22,10 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
               options={infoTypeSearchResult.filter((i) => !formikBag.values.informationTypes?.map((value) => value.id).includes(i.id))}
               clearable
               searchable={true}
-              noResultsMsg='Ingen'
+              noResultsMsg="Ingen"
               type={TYPE.search}
               maxDropdownHeight="400px"
-              placeholder='Søk opplysningersyper'
+              placeholder="Søk opplysningersyper"
               onInputChange={(event) => setInfoTypeSearch(event.currentTarget.value)}
               labelKey="name"
               onChange={({ value }) =>

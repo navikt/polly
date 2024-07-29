@@ -1,11 +1,9 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { Block } from 'baseui/block'
-import { DpProcessFormValues } from '../../../constants'
 import { Option, Select } from 'baseui/select'
-import { renderTagList } from '../../common/TagList'
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
+import { DpProcessFormValues } from '../../../constants'
+import { renderTagList } from '../../common/TagList'
 
 type fieldDpDataProcessorsProps = {
   formikBag: FormikProps<DpProcessFormValues>
@@ -36,7 +34,7 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
             <div className="w-full">
               <Select
                 clearable
-                noResultsMsg='Databehandler er ikke registrert i løsningen. Registrer databehandleren først.'
+                noResultsMsg="Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
                 options={props.options
                   .sort((a, b) => (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString()))
                   .filter((dp) => !props.formikBag.values.subDataProcessing.processors.includes(dp.id ? dp.id.toString() : ''))}

@@ -1,44 +1,43 @@
-import { default as React, ReactElement, useEffect, useState } from 'react'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { Select, TYPE, Value } from 'baseui/select'
+import { ReactElement, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam } from '../../api'
+import { searchDpProcess } from '../../api/DpProcessApi'
 import { NavigableItem, ObjectType, SearchType } from '../../constants'
-import { Block } from 'baseui/block'
-import { codelist, ListName } from '../../service/Codelist'
+import { ListName, codelist } from '../../service/Codelist'
+import { theme } from '../../util'
 import { useDebouncedState } from '../../util/hooks'
 import { prefixBiasedSort } from '../../util/sort'
-import { theme } from '../../util'
-import { searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam } from '../../api'
-import { Select, TYPE, Value } from 'baseui/select'
-import { urlForObject } from '../common/RouteLink'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import Button from '../common/Button'
 import { searchResultColor } from '../../util/theme'
+import Button from '../common/Button'
+import { urlForObject } from '../common/RouteLink'
 import { SearchLabel } from './components/SearchLabel'
 import { SelectType } from './components/SelectType'
-import { searchDpProcess } from '../../api/DpProcessApi'
 
 type SearchItem = { id: string; sortKey: string; label: ReactElement; type: NavigableItem; number?: number }
 
 const searchCodelist = (search: string, list: ListName & NavigableItem, typeName: string, backgroundColor: string) =>
   codelist
     .getCodes(list)
-    .filter((c) => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-    .map((c) => ({
-      id: c.code,
-      sortKey: c.shortName,
-      label: <SearchLabel name={c.shortName} type={typeName} backgroundColor={backgroundColor} />,
+    .filter((code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+    .map((code) => ({
+      id: code.code,
+      sortKey: code.shortName,
+      label: <SearchLabel name={code.shortName} type={typeName} backgroundColor={backgroundColor} />,
       type: list,
     }))
 
 const getCodelistByListnameAndType = (search: string, list: ListName, typeName: string) => {
   return codelist
     .getCodes(list)
-    .filter((c) => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+    .filter((code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
     .map(
-      (c) =>
+      (code) =>
         ({
-          id: c.code,
-          sortKey: c.shortName,
-          label: <SearchLabel name={c.shortName} type={typeName} />,
+          id: code.code,
+          sortKey: code.shortName,
+          label: <SearchLabel name={code.shortName} type={typeName} />,
           type: list,
         }) as SearchItem,
     )
@@ -46,8 +45,8 @@ const getCodelistByListnameAndType = (search: string, list: ListName, typeName: 
 
 const useMainSearch = () => {
   const [search, setSearch] = useDebouncedState<string>('', 500)
-  const [searchResult, setSearchResult] = React.useState<SearchItem[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [searchResult, setSearchResult] = useState<SearchItem[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   const [type, setType] = useState<SearchType>('all')
 
   useEffect(() => {
@@ -100,7 +99,7 @@ const useMainSearch = () => {
                   infoTypesRes.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type='Opplysningstype' backgroundColor={searchResultColor.informationTypeBackground} />,
+                    label: <SearchLabel name={it.name} type="Opplysningstype" backgroundColor={searchResultColor.informationTypeBackground} />,
                     type: ObjectType.INFORMATION_TYPE,
                   })),
                 )
@@ -118,7 +117,7 @@ const useMainSearch = () => {
                     return {
                       id: it.id,
                       sortKey: `${it.name} ${purposes}`,
-                      label: <SearchLabel name={`${purposes}: ${it.name}`} type='Behandling' backgroundColor={searchResultColor.processBackground} />,
+                      label: <SearchLabel name={`${purposes}: ${it.name}`} type="Behandling" backgroundColor={searchResultColor.processBackground} />,
                       type: ObjectType.PROCESS,
                       number: it.number,
                     }
@@ -137,7 +136,7 @@ const useMainSearch = () => {
                     return {
                       id: it.id,
                       sortKey: it.name,
-                      label: <SearchLabel name={it.name} type='NAV som databehandler' backgroundColor={searchResultColor.dpProcessBackground} />,
+                      label: <SearchLabel name={it.name} type="NAV som databehandler" backgroundColor={searchResultColor.dpProcessBackground} />,
                       type: ObjectType.DP_PROCESS,
                     }
                   }),
@@ -154,7 +153,7 @@ const useMainSearch = () => {
                   resTeams.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type='Team' backgroundColor={searchResultColor.teamBackground} />,
+                    label: <SearchLabel name={it.name} type="Team" backgroundColor={searchResultColor.teamBackground} />,
                     type: 'team',
                   })),
                 )
@@ -170,7 +169,7 @@ const useMainSearch = () => {
                   res.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type='Område' backgroundColor={searchResultColor.productAreaBackground} />,
+                    label: <SearchLabel name={it.name} type="Område" backgroundColor={searchResultColor.productAreaBackground} />,
                     type: 'productarea',
                   })),
                 )
@@ -186,7 +185,7 @@ const useMainSearch = () => {
                   resDocs.content.map((it) => ({
                     id: it.id,
                     sortKey: it.name,
-                    label: <SearchLabel name={it.name} type='Dokument' backgroundColor={searchResultColor.documentBackground} />,
+                    label: <SearchLabel name={it.name} type="Dokument" backgroundColor={searchResultColor.documentBackground} />,
                     type: ObjectType.DOCUMENT,
                   })),
                 )
@@ -214,15 +213,15 @@ export const MainSearch = () => {
     <div>
       <div className="flex items-center">
         <Select
-          noResultsMsg='Ingen'
+          noResultsMsg="Ingen"
           autoFocus={location.pathname === '/'}
           isLoading={loading}
           maxDropdownHeight="400px"
           searchable={true}
           type={TYPE.search}
           options={searchResult}
-          aria-label='Søk'
-          placeholder='Søk'
+          aria-label="Søk"
+          placeholder="Søk"
           value={value}
           onInputChange={(event) => {
             setSearch(event.currentTarget.value)
@@ -278,7 +277,7 @@ export const MainSearch = () => {
           marginLeft
           $style={{ height: theme.sizing.scale1000, width: theme.sizing.scale1000 }}
         >
-          <img aria-label='Filter'/>
+          <img aria-label="Filter" />
         </Button>
       </div>
       {filter && <SelectType type={type} setType={setType} />}

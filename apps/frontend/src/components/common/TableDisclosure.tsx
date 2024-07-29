@@ -1,22 +1,21 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { ListLegalBasesInTable } from './LegalBasis'
-import { theme } from '../../util'
-import { Disclosure, DisclosureAlert, DisclosureFormValues, disclosureSort } from '../../constants'
-import { useTable } from '../../util/hooks'
-import RouteLink from './RouteLink'
-import { KIND, SIZE } from 'baseui/button'
 import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { KIND, SIZE } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import { Block } from 'baseui/block'
-import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
-import { convertDisclosureToFormValues } from '../../api'
-import { Cell, HeadCell, Row, Table } from './Table'
-import { canViewAlerts } from '../../pages/AlertEventPage'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Button from './Button'
+import { convertDisclosureToFormValues } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
+import { Disclosure, DisclosureAlert, DisclosureFormValues, disclosureSort } from '../../constants'
+import { canViewAlerts } from '../../pages/AlertEventPage'
+import { theme } from '../../util'
+import { useTable } from '../../util/hooks'
+import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
+import Button from './Button'
+import { ListLegalBasesInTable } from './LegalBasis'
+import RouteLink from './RouteLink'
+import { Cell, HeadCell, Row, Table } from './Table'
 
 type TableDisclosureProps = {
   list: Array<Disclosure>
@@ -50,15 +49,15 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
   return (
     <React.Fragment>
       <Table
-        emptyText='Ingen utlevering'
+        emptyText="Ingen utlevering"
         headers={
           <>
-            {showRecipient && <HeadCell title='Mottaker' column={'recipient'} tableState={[table, sortColumn]} />}
-            <HeadCell title='Navn på utlevering' column={'name'} tableState={[table, sortColumn]} />
-            <HeadCell title='Dokument' column={'document'} tableState={[table, sortColumn]} />
-            <HeadCell title='Formål med utlevering' column={'recipientPurpose'} tableState={[table, sortColumn]} />
-            <HeadCell title='Ytterligere beskrivelse' column={'description'} tableState={[table, sortColumn]} />
-            <HeadCell title='Behandlingsgrunnlag' column={'legalBases'} tableState={[table, sortColumn]} />
+            {showRecipient && <HeadCell title="Mottaker" column={'recipient'} tableState={[table, sortColumn]} />}
+            <HeadCell title="Navn på utlevering" column={'name'} tableState={[table, sortColumn]} />
+            <HeadCell title="Dokument" column={'document'} tableState={[table, sortColumn]} />
+            <HeadCell title="Formål med utlevering" column={'recipientPurpose'} tableState={[table, sortColumn]} />
+            <HeadCell title="Ytterligere beskrivelse" column={'description'} tableState={[table, sortColumn]} />
+            <HeadCell title="Behandlingsgrunnlag" column={'legalBases'} tableState={[table, sortColumn]} />
             <HeadCell small />
           </>
         }
@@ -79,7 +78,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
 
       {editable && showEditModal && selectedDisclosure && (
         <ModalThirdParty
-          title='Rediger utlevering'
+          title="Rediger utlevering"
           isOpen={showEditModal}
           initialValues={convertDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => (submitEditDisclosure && (await submitEditDisclosure(values)) ? setShowEditModal(false) : setShowEditModal(true))}
@@ -96,9 +95,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
         <Modal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal} animate size="default">
           <ModalHeader>Bekreft sletting</ModalHeader>
           <ModalBody>
-            <ParagraphMedium>
-              Bekreft sletting av behandling for opplysningstypen {selectedDisclosure && selectedDisclosure.recipient.code}
-            </ParagraphMedium>
+            <ParagraphMedium>Bekreft sletting av behandling for opplysningstypen {selectedDisclosure && selectedDisclosure.recipient.code}</ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>
@@ -171,7 +168,7 @@ const DisclosureRow = (props: {
         {editable && (
           <div className="w-full flex justify-end">
             <Button
-              tooltip='Rediger'
+              tooltip="Rediger"
               size={SIZE.compact}
               kind={KIND.tertiary}
               onClick={() => {
@@ -182,7 +179,7 @@ const DisclosureRow = (props: {
             />
 
             <Button
-              tooltip='Slett'
+              tooltip="Slett"
               size={SIZE.compact}
               kind={KIND.tertiary}
               onClick={() => {

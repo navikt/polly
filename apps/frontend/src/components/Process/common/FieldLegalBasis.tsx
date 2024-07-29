@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react'
-import CardLegalBasis from '../Accordion/CardLegalBasis'
-import { Block } from 'baseui/block'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { SensitivityLevel } from '../../../service/Codelist'
+import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
-import { ListLegalBases } from '../../common/LegalBasis'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { useEffect, useState } from 'react'
 import { DisclosureFormValues, LegalBasisFormValues, PolicyFormValues, ProcessFormValues } from '../../../constants'
+import { SensitivityLevel } from '../../../service/Codelist'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import { ListLegalBases } from '../../common/LegalBasis'
+import CardLegalBasis from '../Accordion/CardLegalBasis'
 
 type fieldLegalBasisProps = {
   formikBag: FormikProps<ProcessFormValues> | FormikProps<PolicyFormValues> | FormikProps<DisclosureFormValues>
@@ -17,9 +16,9 @@ type fieldLegalBasisProps = {
 const FieldLegalBasis = (props: fieldLegalBasisProps) => {
   const { formikBag } = props
 
-  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
-  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
-  const [sensitivityLevel, setSensitivityLevel] = React.useState<SensitivityLevel>(SensitivityLevel.ART6)
+  const [selectedLegalBasis, setSelectedLegalBasis] = useState<LegalBasisFormValues>()
+  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = useState<number>()
+  const [sensitivityLevel, setSensitivityLevel] = useState<SensitivityLevel>(SensitivityLevel.ART6)
 
   // Open legalBases if this field is rendered and no legalBases exist.
   useEffect(() => {
@@ -33,7 +32,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
       name="legalBases"
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          {formikBag.values.legalBasesOpen ? (
+          {formikBag.values.legalBasesOpen && (
             <CardLegalBasis
               titleSubmitButton={selectedLegalBasis ? 'Oppdater' : 'Legg til'}
               initValue={selectedLegalBasis || {}}
@@ -53,10 +52,11 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
               }}
               sensitivityLevel={sensitivityLevel}
             />
-          ) : (
+          )}
+          {!formikBag.values.legalBasesOpen && (
             <div className="flex w-full">
               <div className="w-full">
-                <CustomizedStatefulTooltip content='Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'>
+                <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.">
                   <div>
                     <Button
                       size={ButtonSize.compact}
@@ -92,7 +92,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
               </div>
 
               <div className="w-full">
-                <CustomizedStatefulTooltip content='Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'>
+                <CustomizedStatefulTooltip content="Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.">
                   <div>
                     <Button
                       size={ButtonSize.compact}

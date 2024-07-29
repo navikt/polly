@@ -1,4 +1,3 @@
-import { Block } from 'baseui/block'
 import { Card, CardOverrides } from 'baseui/card'
 import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
 import * as React from 'react'

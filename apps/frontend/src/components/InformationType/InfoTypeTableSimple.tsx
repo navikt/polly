@@ -1,4 +1,3 @@
-import { Block } from 'baseui/block'
 import { HeadingXLarge } from 'baseui/typography'
 import React, { useEffect, useState } from 'react'
 import { InformationType, informationTypeSort } from '../../constants'
