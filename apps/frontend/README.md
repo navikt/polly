@@ -1,5 +1,44 @@
 [![Frontend](https://github.com/navikt/polly/workflows/Frontend/badge.svg?branch=master)](https://github.com/navikt/polly/actions)
 
+# Frontend for Behandlingskatalogen
+
+## Requires node 17
+
+### Install dependencies
+
+`yarn install`
+
+### Login with Google Cloud with @nav.no user
+
+Do this in Google Chrome as it doesn't always work in Firefox on Mac
+
+`gcloud auth login`
+
+Remember to flush sockets when you can't login
+
+`chrome://net-internals/#sockets`
+
+### Run locally, with port forward to dev-gcp
+
+`kubectl port-forward deployment/polly-backend`
+
+OR
+
+`kpfb`
+
+### Finally, run frontend
+
+`yarn run start`
+
+## Other
+
+### To use Yarn you need to
+
+1. `brew install yarn`
+2. `brew install node`
+
+--
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -50,4 +89,3 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-
