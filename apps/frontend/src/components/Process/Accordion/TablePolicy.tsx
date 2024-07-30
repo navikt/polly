@@ -3,22 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-
 import _ from 'lodash'
+import { Fragment, useEffect, useState } from 'react'
 import { convertPolicyToFormValues, getDocument } from '../../../api'
 import { getAlertForProcess } from '../../../api/AlertApi'
-import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from '../../../constants'
-import { codelist, ListName } from '../../../service/Codelist'
+import { Document, Policy, PolicyFormValues, Process, ProcessAlert, policySort } from '../../../constants'
+import { ListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
+import { Sensitivity } from '../../InformationType/Sensitivity'
 import { AuditButton } from '../../admin/audit/AuditButton'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import { Sensitivity } from '../../InformationType/Sensitivity'
 import ModalPolicy from './ModalPolicy'
 
 type TablePurposeProps = {
@@ -35,9 +33,9 @@ export type Docs = {
 }
 
 const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy }: TablePurposeProps) => {
-  const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
-  const [showEditModal, setShowEditModal] = React.useState(false)
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false)
+  const [currentPolicy, setCurrentPolicy] = useState<Policy>()
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [table, sortColumn] = useTable<Policy, keyof Policy>(process.policies, { sorting: policySort, initialSortColumn: 'informationType' })
   const [alert, setAlert] = useState<ProcessAlert>()
 
@@ -62,7 +60,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
   }, [process])
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Table
         emptyText={process.usesAllInformationTypes ? 'Bruker potensielt alle opplysningstyper' : 'Ingen opplysningstyper'}
         backgroundColor={theme.colors.primary100}
@@ -77,7 +75,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
       >
         {table.data.map((row: Policy, index: number) => {
           return (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <Row>
                 <Cell>
                   <div className="flex w-full justify-between">
@@ -138,7 +136,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                   </div>
                 </Cell>
               </Row>
-            </React.Fragment>
+            </Fragment>
           )
         })}
       </Table>
@@ -187,7 +185,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
           </ModalFooter>
         </Modal>
       )}
-    </React.Fragment>
+    </Fragment>
   )
 }
 

@@ -1,14 +1,14 @@
-import React from 'react'
-import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { DocumentInformationTypes, DocumentInfoTypeUse } from '../../../constants'
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { SIZE as ButtonSize, KIND } from 'baseui/button'
+import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
 import { FieldArrayRenderProps } from 'formik'
+import { Fragment, useEffect, useState } from 'react'
+import shortid from 'shortid'
+import { DocumentInfoTypeUse, DocumentInformationTypes } from '../../../constants'
+import Button from '../../common/Button'
+import { Error } from '../../common/ModalSchema'
 import FieldInformationType from './FieldInformationType'
 import FieldSubjectCategory from './FieldSubjectCategory'
-import { Error } from '../../common/ModalSchema'
-import shortid from 'shortid'
-import Button from '../../common/Button'
 
 type InformationTypesTableProps = {
   arrayHelpers: FieldArrayRenderProps
@@ -16,7 +16,7 @@ type InformationTypesTableProps = {
 type DocumentInfoTypeUseWithId = DocumentInfoTypeUse & { id: string }
 
 const InformationTypesTable = (props: InformationTypesTableProps) => {
-  const [tableContent, setTableContent] = React.useState<DocumentInfoTypeUseWithId[]>([])
+  const [tableContent, setTableContent] = useState<DocumentInfoTypeUseWithId[]>([])
   const { arrayHelpers } = props
 
   const newRow = () => ({
@@ -28,7 +28,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
 
   const showDeleteRowButton = arrayHelpers.form.values.informationTypes.length > 1
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (arrayHelpers.form.values.informationTypes.length < 1) arrayHelpers.push(newRow())
     setTableContent(arrayHelpers.form.values.informationTypes)
   }, [arrayHelpers])
@@ -46,7 +46,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
       </StyledHead>
 
       {tableContent.map((row: DocumentInfoTypeUseWithId, index: number) => (
-        <React.Fragment key={row.id}>
+        <Fragment key={row.id}>
           <StyledRow>
             <StyledCell style={{ maxWidth: '45%' }}>
               <FieldInformationType documentInformationType={row} handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)} />
@@ -78,7 +78,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
             </StyledCell>
             <StyledCell style={{ maxWidth: '10%', justifyContent: 'center' }} />
           </StyledRow>
-        </React.Fragment>
+        </Fragment>
       ))}
     </>
   )

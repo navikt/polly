@@ -1,8 +1,7 @@
-import * as React from 'react'
 import { InformationType, informationTypeSort } from '../../constants'
 import { useTable } from '../../util/hooks'
-import { Cell, HeadCell, Row, Table } from './Table'
 import RouteLink from './RouteLink'
+import { Cell, HeadCell, Row, Table } from './Table'
 
 type TableInformationTypes = {
   informationTypes: Array<InformationType>
@@ -17,15 +16,15 @@ const ThirdPartiesTable = ({ informationTypes, sortName }: TableInformationTypes
 
   return (
     <Table
-      emptyText='Ingen innhentinger fra ekstern part'
+      emptyText="Ingen innhentinger fra ekstern part"
       headers={
         <>
-          <HeadCell title='Navn' column={'name'} tableState={[table, sortColumn]} />
-          <HeadCell title='Master i NAV' column={'orgMaster'} tableState={[table, sortColumn]} />
+          <HeadCell title="Navn" column={'name'} tableState={[table, sortColumn]} />
+          <HeadCell title="Master i NAV" column={'orgMaster'} tableState={[table, sortColumn]} />
         </>
       }
     >
-      {table.data.map((row, index) => (
+      {table.data.map((row: InformationType, index: number) => (
         <Row key={index}>
           <Cell>{<RouteLink href={`/informationtype/${row.id}`}>{row.name}</RouteLink>}</Cell>
           <Cell>{row.orgMaster?.shortName && <RouteLink href={`/system/${row.orgMaster.code}`}>{row.orgMaster?.shortName}</RouteLink>}</Cell>

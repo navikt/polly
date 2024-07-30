@@ -1,18 +1,17 @@
-import { DocumentInfoTypeUse, InformationTypeShort } from '../../../constants'
-import { Select, TYPE } from 'baseui/select'
-import React from 'react'
-import { useInfoTypeSearch } from '../../../api'
 import { PLACEMENT } from 'baseui/popover'
+import { Select, TYPE } from 'baseui/select'
+import { useState } from 'react'
+import { useInfoTypeSearch } from '../../../api'
+import { DocumentInfoTypeUse, InformationTypeShort } from '../../../constants'
 
 const FieldInformationType = (props: { documentInformationType: DocumentInfoTypeUse; handleChange: Function }) => {
   const { documentInformationType, handleChange } = props
   const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch()
-
-  const [selectedInformationType, setSelectedInformationType] = React.useState<InformationTypeShort>(documentInformationType.informationType)
+  const [selectedInformationType, setSelectedInformationType] = useState<InformationTypeShort>(documentInformationType.informationType)
 
   return (
     <Select
-      noResultsMsg='Ingen'
+      noResultsMsg="Ingen"
       isLoading={isLoading}
       maxDropdownHeight="400px"
       searchable={true}

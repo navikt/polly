@@ -6,14 +6,13 @@ import { StyledLink } from 'baseui/link'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium, ParagraphSmall } from 'baseui/typography'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { Disclosure, DisclosureAbroad, DisclosureAlert, DisclosureFormValues, ObjectType } from '../../constants'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import { codelist, ListName } from '../../service/Codelist'
+import { ListName, codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme } from '../../util'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -23,9 +22,9 @@ import DataText from '../common/DataText'
 import { DotTags } from '../common/DotTag'
 import { LegalBasisView } from '../common/LegalBasis'
 import { TeamList } from '../common/Team'
+import ModalThirdParty from './ModalThirdPartyForm'
 import LinkListInformationType from './components/LinkListInformationType'
 import LinkListProcess from './components/LinkListProcess'
-import ModalThirdParty from './ModalThirdPartyForm'
 
 type AccordionDisclosureProps = {
   disclosureList: Array<Disclosure>
@@ -70,13 +69,13 @@ const showAbroad = (abroad: DisclosureAbroad) => {
 }
 
 const AccordionDisclosure = (props: AccordionDisclosureProps) => {
-  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
-  const [showEditModal, setShowEditModal] = React.useState<boolean>(false)
-  const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [showEditModal, setShowEditModal] = useState<boolean>(false)
+  const [selectedDisclosure, setSelectedDisclosure] = useState<Disclosure>()
   const [isLoading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const [hasAlert, setHasAlert] = useState<boolean>(false)
-  const [expanded, setExpanded] = useState<React.Key[]>(props.expand ? [props.expand] : [])
+  const [expanded, setExpanded] = useState<Key[]>(props.expand ? [props.expand] : [])
 
   const { disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal } = props
 
@@ -94,7 +93,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <StatelessAccordion
         onChange={(e) => {
           if (e.expanded.length > 0) {
@@ -335,7 +334,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
           </ModalFooter>
         </Modal>
       )}
-    </React.Fragment>
+    </Fragment>
   )
 }
 

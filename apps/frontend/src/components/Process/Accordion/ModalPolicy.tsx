@@ -4,8 +4,7 @@ import { Radio, RadioGroup } from 'baseui/radio'
 import { Select, StatefulSelect } from 'baseui/select'
 import { Tag, VARIANT } from 'baseui/tag'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { getInformationTypesShort } from '../../../api'
 import { InformationTypeShort, LegalBasesUse, PolicyFormValues } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
@@ -17,19 +16,19 @@ import FieldLegalBasis from '../common/FieldLegalBasis'
 import { Docs } from './TablePolicy'
 
 const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => (
-  <React.Fragment>
+  <Fragment>
     {list && list.length > 0
       ? list.map((item, index) => (
-          <React.Fragment key={index}>
+          <Fragment key={index}>
             {item ? (
               <Tag key={item} variant={VARIANT.outlined} onActionClick={() => arrayHelpers.remove(index)}>
                 {item}
               </Tag>
             ) : null}
-          </React.Fragment>
+          </Fragment>
         ))
       : null}
-  </React.Fragment>
+  </Fragment>
 )
 
 const FieldInformationType = () => {

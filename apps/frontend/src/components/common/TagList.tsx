@@ -1,13 +1,13 @@
-import {FieldArrayRenderProps} from 'formik'
-import * as React from 'react'
-import {Tag, VARIANT} from 'baseui/tag'
+import { Tag, VARIANT } from 'baseui/tag'
+import { FieldArrayRenderProps } from 'formik'
+import { Fragment } from 'react/jsx-runtime'
 
 export function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProps) {
   return (
-    <React.Fragment>
+    <Fragment>
       {list && list.length > 0
         ? list.map((item, index) => (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               {item ? (
                 <Tag
                   key={item}
@@ -24,9 +24,9 @@ export function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProp
                   {item}
                 </Tag>
               ) : null}
-            </React.Fragment>
+            </Fragment>
           ))
         : null}
-    </React.Fragment>
+    </Fragment>
   )
 }

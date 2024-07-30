@@ -1,5 +1,4 @@
 import { Document } from '../../../constants'
-import React from 'react'
 import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
@@ -18,16 +17,16 @@ export const DocumentTable = (props: DocumentTableProps) => {
 
   return (
     <Table
-      emptyText='Ingen dokumenter'
+      emptyText="Ingen dokumenter"
       headers={
         <>
-          <HeadCell title='Navn' tableState={[table, sortColumn]} />
-          <HeadCell title='Beskrivelse' tableState={[table, sortColumn]} />
-          <HeadCell title='Opplysningstyper' tableState={[table, sortColumn]} />
+          <HeadCell title="Navn" tableState={[table, sortColumn]} />
+          <HeadCell title="Beskrivelse" tableState={[table, sortColumn]} />
+          <HeadCell title="Opplysningstyper" tableState={[table, sortColumn]} />
         </>
       }
     >
-      {table.data.map((row, index) => (
+      {table.data.map((row: Document, index: number) => (
         <Row key={index}>
           <Cell>
             <RouteLink href={`/document/${row.id}`}>{row.name}</RouteLink>

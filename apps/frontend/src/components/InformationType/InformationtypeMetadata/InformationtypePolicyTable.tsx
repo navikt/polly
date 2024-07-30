@@ -48,7 +48,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
         </>
       }
     >
-      {table.data.map((row, index) => (
+      {table.data.map((row: Policy, index: number) => (
         <Row key={index}>
           {showPurpose && (
             <Cell>

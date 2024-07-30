@@ -1,8 +1,8 @@
-import * as React from 'react'
+import { Option, Select, TYPE } from 'baseui/select'
+import { useEffect, useState } from 'react'
+import { searchDocuments } from '../../api'
 import { Document, DocumentFormValues } from '../../constants'
 import { useDebouncedState } from '../../util'
-import { searchDocuments } from '../../api'
-import { Option, Select, TYPE } from 'baseui/select'
 
 type SelectDocumentProps = {
   document: DocumentFormValues | undefined
@@ -10,13 +10,13 @@ type SelectDocumentProps = {
 }
 
 const SelectDocument = (props: SelectDocumentProps) => {
-  const [documents, setDocuments] = React.useState<Document[]>([])
+  const [documents, setDocuments] = useState<Document[]>([])
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
-  const [isLoadingDocuments, setLoadingDocuments] = React.useState<boolean>(false)
+  const [isLoadingDocuments, setLoadingDocuments] = useState<boolean>(false)
 
   const { handleChange, document } = props
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
       if (documentSearch && documentSearch.length > 2) {
         setLoadingDocuments(true)
@@ -33,10 +33,10 @@ const SelectDocument = (props: SelectDocumentProps) => {
       isLoading={isLoadingDocuments}
       clearable
       searchable={true}
-      noResultsMsg='Ingen'
+      noResultsMsg="Ingen"
       type={TYPE.search}
       maxDropdownHeight="400px"
-      placeholder='Søk dokumenter'
+      placeholder="Søk dokumenter"
       value={document ? [document as Option] : []}
       onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
       onChange={(params) => handleChange(params.value[0] as Document)}

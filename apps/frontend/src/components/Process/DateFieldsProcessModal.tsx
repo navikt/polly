@@ -5,7 +5,7 @@ import { Datepicker } from 'baseui/datepicker'
 import nb from 'date-fns/locale/nb'
 import { Field, FieldProps } from 'formik'
 import moment from 'moment'
-import * as React from 'react'
+import { useState } from 'react'
 import { ProcessFormValues } from '../../constants'
 import { theme } from '../../util'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
@@ -43,7 +43,7 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
 
 export const DateFieldsProcessModal = (props: DateModalProps) => {
   const { showLabels } = props
-  const [showDates, setShowDates] = React.useState<boolean>(props.showDates)
+  const [showDates, setShowDates] = useState<boolean>(props.showDates)
 
   return (
     <>

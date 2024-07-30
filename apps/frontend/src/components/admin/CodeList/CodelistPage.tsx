@@ -1,28 +1,27 @@
-import * as React from 'react'
+import { PlusIcon } from '@navikt/aksel-icons'
+import { Button, Heading, Loader, Select } from '@navikt/ds-react'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Code, codelist } from '../../../service/Codelist'
-import CreateCodeListModal from './ModalCreateCodeList'
-import { user } from '../../../service/User'
-import CodeListTable from './CodeListStyledTable'
-import { useAwait, useForceUpdate } from '../../../util'
 import { createCodelist } from '../../../api'
 import { CodeListFormValues } from '../../../constants'
-import {ampli} from "../../../service/Amplitude";
-import {Button, Heading, Loader, Select} from "@navikt/ds-react";
-import {PlusIcon} from "@navikt/aksel-icons";
+import { ampli } from '../../../service/Amplitude'
+import { Code, codelist } from '../../../service/Codelist'
+import { user } from '../../../service/User'
+import { useAwait, useForceUpdate } from '../../../util'
+import CodeListTable from './CodeListStyledTable'
+import CreateCodeListModal from './ModalCreateCodeList'
 
 const CodeListPage = () => {
   const params = useParams<{ listname?: string }>()
   const havigate = useNavigate()
-  const [loading, setLoading] = React.useState(true)
-  const [listname, setListname] = React.useState(params.listname)
-  const [createCodeListModal, setCreateCodeListModal] = React.useState(false)
-  const [errorOnResponse, setErrorOnResponse] = React.useState(null)
+  const [loading, setLoading] = useState(true)
+  const [listname, setListname] = useState(params.listname)
+  const [createCodeListModal, setCreateCodeListModal] = useState(false)
+  const [errorOnResponse, setErrorOnResponse] = useState(null)
   const forceUpdate = useForceUpdate()
   useAwait(codelist.wait(), setLoading)
 
-  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/codelist/', app: 'Behandlingskatalogen', type:  'Kodeverk'})
+  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/codelist/', app: 'Behandlingskatalogen', type: 'Kodeverk' })
 
   const lists = codelist.lists?.codelist
   const currentCodelist = lists && listname ? lists[listname] : undefined
@@ -45,7 +44,6 @@ const CodeListPage = () => {
     forceUpdate()
   }
 
-
   useEffect(() => {
     if (listname && listname !== params.listname) {
       havigate(`/admin/codelist/${listname}`, { replace: true })
@@ -53,59 +51,62 @@ const CodeListPage = () => {
   }, [listname, lists])
 
   if (!user.isAdmin() || !lists) {
-    return <div role="main">
-              <Loader size="2xlarge" />
-          </div>
+    return (
+      <div role="main">
+        <Loader size="2xlarge" />
+      </div>
+    )
   }
 
   return (
     <>
       <div role="main">
-      <Heading size="large" level="1">Administrering av kodeverk</Heading>
-      {loading ? (
-        <Loader />
-      ) : (
-        <div className="flex justify-between w-full" >
-            <Select label="Velg kodeverk"
-                    hideLabel
-                    onChange={(event) => setListname(event.target.value)}
-            >
+        <Heading size="large" level="1">
+          Administrering av kodeverk
+        </Heading>
+        {loading ? (
+          <Loader />
+        ) : (
+          <div className="flex justify-between w-full">
+            <Select label="Velg kodeverk" hideLabel onChange={(event) => setListname(event.target.value)}>
               <option value="">Velg kodeverk</option>
-              {codelist.makeIdLabelForAllCodeLists().map((value)=> {
+              {codelist.makeIdLabelForAllCodeLists().map((value) => {
                 return (
                   <>
-                    <option key={value.id} value={value.id}>{value.label}</option>
+                    <option key={value.id} value={value.id}>
+                      {value.label}
+                    </option>
                   </>
                 )
               })}
             </Select>
-          {listname && (
-            <div>
-              <Button icon={<PlusIcon aria-hidden />} variant="tertiary"  onClick={() => setCreateCodeListModal(!createCodeListModal)}>
-                Opprett ny kode
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
+            {listname && (
+              <div>
+                <Button icon={<PlusIcon aria-hidden />} variant="tertiary" onClick={() => setCreateCodeListModal(!createCodeListModal)}>
+                  Opprett ny kode
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
 
-      {!loading && currentCodelist && (
-        <div className="mt-4" >
-          <CodeListTable tableData={currentCodelist || []} refresh={update} />
-        </div>
-      )}
+        {!loading && currentCodelist && (
+          <div className="mt-4">
+            <CodeListTable tableData={currentCodelist || []} refresh={update} />
+          </div>
+        )}
 
-      <CreateCodeListModal
-        title="Ny kode"
-        list={listname!}
-        isOpen={createCodeListModal}
-        errorOnCreate={errorOnResponse}
-        onClose={() => {
-          setCreateCodeListModal(false)
-          setErrorOnResponse(null)
-        }}
-        submit={handleCreateCodelist}
-      />
+        <CreateCodeListModal
+          title="Ny kode"
+          list={listname!}
+          isOpen={createCodeListModal}
+          errorOnCreate={errorOnResponse}
+          onClose={() => {
+            setCreateCodeListModal(false)
+            setErrorOnResponse(null)
+          }}
+          submit={handleCreateCodelist}
+        />
       </div>
     </>
   )

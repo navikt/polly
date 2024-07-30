@@ -1,4 +1,4 @@
-import React from 'react'
+import { Fragment } from 'react/jsx-runtime'
 import { Process, processSort } from '../../../constants'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
@@ -27,7 +27,7 @@ const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps)
         }
       >
         {table.data.map((row: Process, index: number) => (
-          <React.Fragment key={index}>
+          <Fragment key={index}>
             <Row>
               <div className="flex w-full justify-between">
                 <Cell $style={{ maxWidth: '25%' }}>
@@ -52,7 +52,7 @@ const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps)
                 </Cell>
               </div>
             </Row>
-          </React.Fragment>
+          </Fragment>
         ))}
       </Table>
     </>

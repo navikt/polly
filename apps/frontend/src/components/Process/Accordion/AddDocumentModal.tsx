@@ -10,32 +10,37 @@ import { ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, For
 import { useEffect, useState } from 'react'
 import { getDefaultProcessDocument, searchDocuments } from '../../../api'
 import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process } from '../../../constants'
-import { codelist, ListName } from '../../../service/Codelist'
+import { ListName, codelist } from '../../../service/Codelist'
 import { useDebouncedState } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
+import { Sensitivity } from '../../InformationType/Sensitivity'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { addDocumentToProcessSchema } from '../../common/schema'
 import { Spinner } from '../../common/Spinner'
-import { Sensitivity } from '../../InformationType/Sensitivity'
+import { addDocumentToProcessSchema } from '../../common/schema'
 
 type AddDocumentProps = {
   isOpen: boolean
   addDefaultDocument: boolean
   submit: (values: AddDocumentToProcessFormValues) => void
   onClose: () => void
-
   process: Process
   error: string | null
 }
 
-const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[]; formik: FormikProps<AddDocumentToProcessFormValues>; arrayHelpers: ArrayHelpers }) => {
+interface IListInformationTypesProps {
+  informationTypes: DocumentInfoTypeUse[]
+  formik: FormikProps<AddDocumentToProcessFormValues>
+  arrayHelpers: ArrayHelpers
+}
+
+const ListInformationTypes = (props: IListInformationTypesProps) => {
   const { informationTypes, formik, arrayHelpers } = props
   const [css] = useStyletron()
 
   return (
     <ul className={css({ paddingLeft: 0, width: '100%' })}>
-      {informationTypes.map((informationType, index) => (
+      {informationTypes.map((informationType: DocumentInfoTypeUse, index: number) => (
         <ListItem key={informationType.informationTypeId} sublist>
           <div className="flex w-full justify-between">
             <div className="flex justify-between w-[90%] items-center">
@@ -44,7 +49,9 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[]; 
                 &nbsp;
                 {informationType.informationType.name}
               </div>
-              <div className="opacity-80">{informationType.subjectCategories.map((s) => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}</div>
+              <div className="opacity-80">
+                {informationType.subjectCategories.map((subjectCategory) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}
+              </div>
             </div>
             <CustomizedStatefulTooltip content="Fjern">
               <Button

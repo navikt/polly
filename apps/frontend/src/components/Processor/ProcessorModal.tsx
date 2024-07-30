@@ -3,8 +3,7 @@ import { Button, KIND } from 'baseui/button'
 import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Field, FieldProps, Form, Formik } from 'formik'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 import { getResourcesByIds } from '../../api'
 import { ProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
 import { theme } from '../../util'
@@ -48,7 +47,7 @@ const panelOverrides: PanelOverrides = {
 
 const ProcessorModal = (props: ModalProcessorProps) => {
   const { title, isOpen, initialValues, errorMessage, submit, onClose } = props
-  const [expanded, setExpanded] = useState<React.Key[]>([])
+  const [expanded, setExpanded] = useState<Key[]>([])
   const [operationalContractManagers, setOperationalContractManagers] = useState(new Map<string, string>())
 
   useEffect(() => {

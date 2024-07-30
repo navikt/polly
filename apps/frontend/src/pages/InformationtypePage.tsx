@@ -1,8 +1,7 @@
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { HeadingMedium } from 'baseui/typography'
-import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../api'
 import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
@@ -21,13 +20,13 @@ const InformationtypePage = () => {
   const params = useParams<{ id?: string }>()
   const navigate = useNavigate()
 
-  const [error, setError] = React.useState(null)
-  const [informationTypeId, setInformationTypeId] = React.useState(params.id)
-  const [informationtype, setInformationtype] = React.useState<InformationType>()
-  const [policies, setPolicies] = React.useState<Policy[]>()
-  const [disclosures, setDisclosures] = React.useState<Disclosure[]>()
-  const [documents, setDocuments] = React.useState<Document[]>()
-  const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
+  const [error, setError] = useState(null)
+  const [informationTypeId, setInformationTypeId] = useState(params.id)
+  const [informationtype, setInformationtype] = useState<InformationType>()
+  const [policies, setPolicies] = useState<Policy[]>()
+  const [disclosures, setDisclosures] = useState<Disclosure[]>()
+  const [documents, setDocuments] = useState<Document[]>()
+  const [categoryUsages, setCategoryUsages] = useState<CodeUsage[]>()
 
   ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/', app: 'Behandlingskatalogen' })
 

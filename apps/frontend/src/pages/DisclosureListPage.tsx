@@ -2,15 +2,15 @@ import { Button as BButton, Button, KIND } from 'baseui/button'
 import { ButtonGroup } from 'baseui/button-group'
 import { Plus } from 'baseui/icon'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
+import { DisclosureSummary, createDisclosure, getAll, getDisclosureSummaries, getProcess } from '../api'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
+import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { ObjectLink } from '../components/common/RouteLink'
 import SearchProcess from '../components/common/SearchProcess'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { ListName } from '../service/Codelist'
@@ -25,9 +25,9 @@ enum FilterType {
 }
 
 export const DisclosureListPage = () => {
-  const [showCreateModal, setShowCreateModal] = React.useState(false)
-  const [newDisclosure, setNewDisclosure] = React.useState<Disclosure>()
-  const [error, setError] = React.useState<string>()
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [newDisclosure, setNewDisclosure] = useState<Disclosure>()
+  const [error, setError] = useState<string>()
   const [disclosures, setDisclosures] = useState<DisclosureSummary[]>([])
   const [selectedProcess, setSelectedProcess] = useState<Process>()
   const [table, sortColumn] = useTable<DisclosureSummary, keyof DisclosureSummary>(disclosures, {

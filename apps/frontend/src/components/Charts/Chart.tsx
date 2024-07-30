@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Card } from 'baseui/card'
 import { LabelLarge } from 'baseui/typography'
 import * as _ from 'lodash'
-import React, { useReducer, useState } from 'react'
+import { Fragment, useReducer, useState } from 'react'
 import { theme } from '../../util'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import { hideBorder, marginAll } from '../common/Style'
@@ -204,12 +204,12 @@ const BarChart = (props: IBarChartProps) => {
       <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="black" />
 
       {_.range(0, 11).map((i) => (
-        <React.Fragment key={i}>
+        <Fragment key={i}>
           <g transform={`translate(0 ${105 + i * 100})`}>
             <text>{(maxVal * i * 0.1).toFixed(0)}</text>
           </g>
           <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="black" />
-        </React.Fragment>
+        </Fragment>
       ))}
 
       {data.map((dataItem: ChartDataExpanded, index: number) => (

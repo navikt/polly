@@ -6,12 +6,11 @@ import { Plus } from 'baseui/icon'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { LabelMedium } from 'baseui/typography'
-import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { convertProcessToFormValues, getDisclosuresByProcessId, getResourceById } from '../../../api'
-import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
 import { RequestRevisionPage } from '../../../components/admin/revision/RequestRevisionPage'
+import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { PathParams } from '../../../pages/ProcessPage'
 import { user } from '../../../service/User'
@@ -62,17 +61,17 @@ const AccordionProcess = (props: AccordionProcessProps) => {
     submitDeleteAllPolicy,
   } = props
 
-  const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
-  const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
-  const [showAddBatchInfoTypesModal, setShowAddBatchInfoTypesModal] = React.useState(false)
-  const [addDefaultDocument, setAddDefaultDocument] = React.useState(false)
-  const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const [showRevisionModal, setShowRevisionModal] = React.useState(false)
-  const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = React.useState(false)
-  const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')
-  const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
-  const purposeRef = React.useRef<HTMLInputElement>(null)
+  const [showEditProcessModal, setShowEditProcessModal] = useState(false)
+  const [showCreatePolicyModal, setShowCreatePolicyModal] = useState(false)
+  const [showAddBatchInfoTypesModal, setShowAddBatchInfoTypesModal] = useState(false)
+  const [addDefaultDocument, setAddDefaultDocument] = useState(false)
+  const [showAddDocumentModal, setShowAddDocumentModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showRevisionModal, setShowRevisionModal] = useState(false)
+  const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
+  const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
+  const [disclosures, setDisclosures] = useState<Disclosure[]>([])
+  const purposeRef = useRef<HTMLInputElement>(null)
   const params = useParams<PathParams>()
   const history = useNavigate()
 

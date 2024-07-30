@@ -7,7 +7,7 @@ import { KIND as NKIND, Notification } from 'baseui/notification'
 import { Select, TYPE, Value } from 'baseui/select'
 import { LabelMedium } from 'baseui/typography'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
-import * as React from 'react'
+import { useState } from 'react'
 import shortid from 'shortid'
 import { LegalBasisFormValues } from '../../../constants'
 import { ListName, SensitivityLevel, codelist } from '../../../service/Codelist'
@@ -56,8 +56,8 @@ interface CardLegalBasisProps {
 }
 
 const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensitivityLevel }: CardLegalBasisProps) => {
-  const [gdpr, setGdpr] = React.useState<Value>(initValue.gdpr ? codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter((value) => value.id === initValue.gdpr) : [])
-  const [nationalLaw, setNationalLaw] = React.useState<Value>(
+  const [gdpr, setGdpr] = useState<Value>(initValue.gdpr ? codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter((value) => value.id === initValue.gdpr) : [])
+  const [nationalLaw, setNationalLaw] = useState<Value>(
     initValue.nationalLaw ? codelist.getParsedOptions(ListName.NATIONAL_LAW).filter((value) => value.id === initValue.nationalLaw) : [],
   )
   // Must be complete to achieve touched on submit

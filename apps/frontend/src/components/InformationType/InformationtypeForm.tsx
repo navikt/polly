@@ -7,15 +7,14 @@ import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
 import { Fragment, useEffect, useRef, useState } from 'react'
-
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
 import { InformationtypeFormValues } from '../../constants'
-import { codelist, ListName } from '../../service/Codelist'
+import { ListName, codelist } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
-import FieldProductTeam from '../common/form/FieldProductTeam'
 import { Error } from '../common/ModalSchema'
-import { infoTypeSchema } from '../common/schema'
 import { renderTagList } from '../common/TagList'
+import FieldProductTeam from '../common/form/FieldProductTeam'
+import { infoTypeSchema } from '../common/schema'
 
 type FormProps = {
   formInitialValues: InformationtypeFormValues

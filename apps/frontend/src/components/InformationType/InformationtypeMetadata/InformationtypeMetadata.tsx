@@ -1,9 +1,7 @@
-import * as React from 'react'
-import { useState } from 'react'
-
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { Tab } from 'baseui/tabs'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Disclosure, Document, InformationType, Policy } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
@@ -35,7 +33,7 @@ interface IPurposesProps {
 
 const Purposes = ({ policies }: IPurposesProps) => {
   const selectedPurpose = useQueryParam('purpose')
-  const [accordion, setAccordion] = React.useState(!!selectedPurpose)
+  const [accordion, setAccordion] = useState(!!selectedPurpose)
 
   return (
     <div>

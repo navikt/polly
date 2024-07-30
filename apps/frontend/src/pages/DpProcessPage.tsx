@@ -2,7 +2,6 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import * as React from 'react'
 import { useEffect, useReducer, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
@@ -15,7 +14,7 @@ import { user } from '../service/User'
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
-  const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
+  const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
   const [isLoading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()

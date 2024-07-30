@@ -5,16 +5,16 @@ import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } f
 import { Select, Value } from 'baseui/select'
 import { LabelMedium, LabelSmall } from 'baseui/typography'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
-import React, { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { getInformationTypesBy } from '../../../api'
 import { AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process } from '../../../constants'
-import { codelist, ListName } from '../../../service/Codelist'
+import { ListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
+import { Sensitivity } from '../../InformationType/Sensitivity'
 import Button from '../../common/Button'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
-import { Sensitivity } from '../../InformationType/Sensitivity'
 
 type AddBatchInformationTypesProps = {
   isOpen: boolean
@@ -124,8 +124,8 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                           )}
 
                           <div className="flex flex-col w-full mt-4">
-                            {added.map((it, idx) => (
-                              <React.Fragment key={it.informationType.id}>
+                            {added.map((it: DocumentInfoTypeUse, index: number) => (
+                              <Fragment key={it.informationType.id}>
                                 <div className="flex justify-between items-center my-1">
                                   <LabelMedium>
                                     <Sensitivity sensitivity={it.informationType.sensitivity} />
@@ -137,30 +137,30 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                                     <LabelSmall marginRight={theme.sizing.scale100}>Personkategori: </LabelSmall>
                                     <Select
                                       options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
-                                      value={it.subjectCategories.map((sc) => ({ id: sc.code }))}
+                                      value={it.subjectCategories.map((subjectCategory) => ({ id: subjectCategory.code }))}
                                       onChange={(params) => {
                                         const subjectCategories = params.value.map((option) => ({ code: option.id }))
-                                        informationTypesProps.replace(idx, { ...it, subjectCategories })
+                                        informationTypesProps.replace(index, { ...it, subjectCategories })
                                       }}
                                     />
-                                    <Button marginLeft size="compact" kind="tertiary" shape="round" tooltip="Fjern" onClick={() => informationTypesProps.remove(idx)}>
+                                    <Button marginLeft size="compact" kind="tertiary" shape="round" tooltip="Fjern" onClick={() => informationTypesProps.remove(index)}>
                                       <FontAwesomeIcon icon={faMinusCircle} />
                                     </Button>
                                   </div>
                                 </div>
                                 <div>
                                   {' '}
-                                  <Error fieldName={`informationTypes[${idx}]`} />{' '}
+                                  <Error fieldName={`informationTypes[${index}]`} />{' '}
                                 </div>
                                 <div>
                                   {' '}
-                                  <Error fieldName={`informationTypes[${idx}].informationType`} />{' '}
+                                  <Error fieldName={`informationTypes[${index}].informationType`} />{' '}
                                 </div>
                                 <div>
                                   {' '}
-                                  <Error fieldName={`informationTypes[${idx}].subjectCategories`} />{' '}
+                                  <Error fieldName={`informationTypes[${index}].subjectCategories`} />{' '}
                                 </div>
-                              </React.Fragment>
+                              </Fragment>
                             ))}
                           </div>
                         </>

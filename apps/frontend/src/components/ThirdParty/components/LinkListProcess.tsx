@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { Fragment } from 'react/jsx-runtime'
 import { ObjectType, ProcessShort } from '../../../constants'
 import { ObjectLink } from '../../common/RouteLink'
 
@@ -7,12 +7,12 @@ export const LinkListProcess = (items: ProcessShort[], baseUrl: string, objectTy
   return (
     <>
       {items.map((item, idx) => (
-        <React.Fragment key={idx}>
+        <Fragment key={idx}>
           <ObjectLink id={item.id} type={ObjectType.PROCESS}>
             {item.purposes.length > 0 ? item.purposes[0].shortName : ''}: {item.name}
           </ObjectLink>
           {idx < len - 1 && <span>, </span>}
-        </React.Fragment>
+        </Fragment>
       ))}
     </>
   )

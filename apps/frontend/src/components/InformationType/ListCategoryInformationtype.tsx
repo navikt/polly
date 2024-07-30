@@ -5,8 +5,8 @@ import { Accordion, Panel } from 'baseui/accordion'
 import { Heading, HeadingLevel } from 'baseui/heading'
 import { ListItem, ListItemLabel } from 'baseui/list'
 import { ParagraphLarge } from 'baseui/typography'
-import { CodeUsage } from '../../constants'
-import { codelist, ListName } from '../../service/Codelist'
+import { CodeUsage, Use } from '../../constants'
+import { ListName, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import { useQueryParam } from '../../util/hooks'
 import { toggleOverride } from '../common/Accordion'
@@ -26,7 +26,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
     return categoryUsages
       .filter((categoryUsage) => categoryUsage.informationTypes.length > 0)
       .sort((a, b) => codelist.getShortname(a.listName, a.code).localeCompare(codelist.getShortname(b.listName, b.code), 'nb'))
-      .map((categoryUsage) => {
+      .map((categoryUsage: CodeUsage) => {
         return (
           <Panel
             title={
@@ -55,7 +55,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
             >
               {categoryUsage.informationTypes
                 .sort((a, b) => a.name.localeCompare(b.name, 'nb'))
-                .map((informationType) => {
+                .map((informationType: Use) => {
                   return (
                     <ListItem
                       overrides={{

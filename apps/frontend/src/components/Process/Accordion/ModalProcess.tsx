@@ -5,8 +5,7 @@ import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } f
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
 import { Select, Value } from 'baseui/select'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 import { getAll, getDisclosuresByRecipient } from '../../../api'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
@@ -67,8 +66,8 @@ const panelOverrides: PanelOverrides = {
 }
 
 const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {
-  const [expanded, setExpanded] = useState<React.Key[]>([])
-  const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
+  const [expanded, setExpanded] = useState<Key[]>([])
+  const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(!!initialValues.commonExternalProcessResponsible)
 
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<Value>([])

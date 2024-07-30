@@ -1,23 +1,22 @@
-import * as React from 'react'
-
+import { Spinner } from 'baseui/spinner'
+import { HeadingMedium } from 'baseui/typography'
+import { Fragment, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import { InformationType, InformationtypeFormValues } from '../constants'
+import { ampli } from '../service/Amplitude'
 import { codelist } from '../service/Codelist'
-import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api'
-import { useNavigate, useParams } from 'react-router-dom'
-import { HeadingMedium } from 'baseui/typography'
-import { Spinner } from 'baseui/spinner'
-import {ampli} from "../service/Amplitude";
 
 const InformationtypeEditPage = () => {
-  const [isLoading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState(null)
-  const [errorSubmit, setErrorSubmit] = React.useState(null)
-  const [informationtype, setInformationType] = React.useState<InformationType>()
+  const [isLoading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [errorSubmit, setErrorSubmit] = useState(null)
+  const [informationtype, setInformationType] = useState<InformationType>()
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Opplysningstyper', url: '/informationtype/id:/edit', app: 'Behandlingskatalogen', type: 'Rediger opplysningstype'})
+  ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/id:/edit', app: 'Behandlingskatalogen', type: 'Rediger opplysningstype' })
 
   const handleAxiosError = (error: any) => {
     if (error.response) {
@@ -43,7 +42,7 @@ const InformationtypeEditPage = () => {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
       try {
@@ -61,24 +60,23 @@ const InformationtypeEditPage = () => {
   }, [])
 
   return (
-    <React.Fragment>
-      {isLoading ? (
-        <Spinner $size={30} />
-      ) : (
-        <React.Fragment>
+    <Fragment>
+      {isLoading && <Spinner $size={30} />}{' '}
+      {!isLoading && (
+        <Fragment>
           <HeadingMedium>Redigér</HeadingMedium>
 
           {!error && informationtype ? (
-            <React.Fragment>
+            <Fragment>
               <InformationtypeForm formInitialValues={mapInfoTypeToFormVals(informationtype)} isEdit submit={handleSubmit} />
               {errorSubmit && <p>{errorSubmit}</p>}
-            </React.Fragment>
+            </Fragment>
           ) : (
             <p>Kunne ikke laste inn siden</p>
           )}
-        </React.Fragment>
+        </Fragment>
       )}
-    </React.Fragment>
+    </Fragment>
   )
 }
 

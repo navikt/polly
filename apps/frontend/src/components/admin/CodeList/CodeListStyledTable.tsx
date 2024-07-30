@@ -1,15 +1,14 @@
-import * as React from 'react'
+import { DocPencilIcon, GlassesIcon, TrashIcon } from '@navikt/aksel-icons'
+import { Button, SortState, Table, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { Code } from '../../../service/Codelist'
-import UpdateCodeListModal from './ModalUpdateCodeList'
-import DeleteCodeListModal from './ModalDeleteCodeList'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../../api'
-import { Usage } from './CodeListUsage'
 import { CodeListFormValues, CodeUsage } from '../../../constants'
+import { Code } from '../../../service/Codelist'
+import { handleSort } from '../../../util/handleTableSort'
 import { AuditButtonDS } from '../audit/AuditButtonDS'
-import {Button, SortState, Table, Tooltip} from "@navikt/ds-react";
-import {DocPencilIcon, GlassesIcon, TrashIcon} from "@navikt/aksel-icons";
-import {handleSort} from "../../../util/handleTableSort";
+import { Usage } from './CodeListUsage'
+import DeleteCodeListModal from './ModalDeleteCodeList'
+import UpdateCodeListModal from './ModalUpdateCodeList'
 
 type TableCodelistProps = {
   tableData: Code[]
@@ -17,11 +16,11 @@ type TableCodelistProps = {
 }
 
 const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
-  const [selectedCode, setSelectedCode] = React.useState<Code>()
-  const [showUsage, setShowUsage] = React.useState(false)
-  const [showEditModal, setShowEditModal] = React.useState(false)
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const [errorOnResponse, setErrorOnResponse] = React.useState(null)
+  const [selectedCode, setSelectedCode] = useState<Code>()
+  const [showUsage, setShowUsage] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [errorOnResponse, setErrorOnResponse] = useState(null)
   const [usage, setUsage] = useState<CodeUsage>()
   const [sort, setSort] = useState<SortState>()
 
@@ -73,85 +72,80 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
 
   sortedData = sortedData.sort((a, b) => {
     if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
+      return sort.direction === 'ascending' ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy)
     }
     return 1
   })
 
   return (
     <>
-      <Table
-        size="large"
-        zebraStripes
-        sort={sort}
-        onSortChange={(sortKey)=> handleSort(sort, setSort, sortKey)}
-        >
+      <Table size="large" zebraStripes sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader sortKey="code" className="w-[15%]" sortable>Kode</Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="navn" className="w-[25%]" sortable>Navn</Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="code" className="w-[15%]" sortable>
+              Kode
+            </Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="navn" className="w-[25%]" sortable>
+              Navn
+            </Table.ColumnHeader>
             <Table.ColumnHeader className="w-1/2 break-all">Beskrivelse</Table.ColumnHeader>
-            <Table.ColumnHeader aria-hidden/>
+            <Table.ColumnHeader aria-hidden />
           </Table.Row>
-          </Table.Header>
+        </Table.Header>
         <Table.Body>
           {sortedData.map((row, index) => {
             return (
-            <Table.Row key={index}>
-              <Table.DataCell className="w-[15%] break-all"> {row.code}</Table.DataCell>
-              <Table.DataCell>{row.shortName}</Table.DataCell>
-              <Table.DataCell className="w-[15%] break-all">{row.description}</Table.DataCell>
-              <Table.DataCell>
-                <div className="flex justify-end w-full">
-                  <Tooltip content="Vis bruk">
-                    <Button
-                      variant={row === selectedCode  && showUsage ? "primary" : "tertiary"}
-                      onClick={() => {
-                        setSelectedCode(row)
-                        setShowUsage(true)
-                      }}
-                      icon={<GlassesIcon title="Vis bruk"/>}
-                    />
-                  </Tooltip>
+              <Table.Row key={index}>
+                <Table.DataCell className="w-[15%] break-all"> {row.code}</Table.DataCell>
+                <Table.DataCell>{row.shortName}</Table.DataCell>
+                <Table.DataCell className="w-[15%] break-all">{row.description}</Table.DataCell>
+                <Table.DataCell>
+                  <div className="flex justify-end w-full">
+                    <Tooltip content="Vis bruk">
+                      <Button
+                        variant={row === selectedCode && showUsage ? 'primary' : 'tertiary'}
+                        onClick={() => {
+                          setSelectedCode(row)
+                          setShowUsage(true)
+                        }}
+                        icon={<GlassesIcon title="Vis bruk" />}
+                      />
+                    </Tooltip>
 
-                  <AuditButtonDS id={`${row.list}-${row.code}`} variant="tertiary" />
+                    <AuditButtonDS id={`${row.list}-${row.code}`} variant="tertiary" />
 
-                  <Tooltip content="Redigér">
-                    <Button
-                      variant="tertiary"
-                      onClick={() => {
-                        setSelectedCode(row)
-                        setShowEditModal(true)
-                      }}
-                      icon={<DocPencilIcon title="Redigér"/>}
-                    />
-                  </Tooltip>
+                    <Tooltip content="Redigér">
+                      <Button
+                        variant="tertiary"
+                        onClick={() => {
+                          setSelectedCode(row)
+                          setShowEditModal(true)
+                        }}
+                        icon={<DocPencilIcon title="Redigér" />}
+                      />
+                    </Tooltip>
 
-                  <Tooltip content="Slett">
-                    <Button
-                      variant="tertiary"
-                      onClick={() => {
-                        setSelectedCode(row)
-                        setShowDeleteModal(true)
-                      }}
-                      icon={<TrashIcon title="Slett"/>}
-                    />
-                  </Tooltip>
-
-                </div>
-              </Table.DataCell>
-            </Table.Row>
-          )})}
-
+                    <Tooltip content="Slett">
+                      <Button
+                        variant="tertiary"
+                        onClick={() => {
+                          setSelectedCode(row)
+                          setShowDeleteModal(true)
+                        }}
+                        icon={<TrashIcon title="Slett" />}
+                      />
+                    </Tooltip>
+                  </div>
+                </Table.DataCell>
+              </Table.Row>
+            )
+          })}
         </Table.Body>
-
       </Table>
 
       {showEditModal && selectedCode && (
         <UpdateCodeListModal
-          title='Rediger kode'
+          title="Rediger kode"
           initialValues={{
             list: selectedCode.list ?? '',
             code: selectedCode.code ?? '',
@@ -169,7 +163,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
       )}
       {showDeleteModal && selectedCode && (
         <DeleteCodeListModal
-          title='Bekreft sletting'
+          title="Bekreft sletting"
           initialValues={{
             list: selectedCode.list ?? '',
             code: selectedCode.code ?? '',

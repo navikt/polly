@@ -4,16 +4,16 @@ import { Button, KIND } from 'baseui/button'
 import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Field, FieldProps, Form, Formik } from 'formik'
-import React, { useState } from 'react'
+import { Key, useState } from 'react'
 import { DpProcessFormValues } from '../../constants'
 import { theme } from '../../util'
 import { disableEnter } from '../../util/helper-functions'
+import BoolField from '../Process/common/BoolField'
+import PanelTitle from '../Process/common/PanelTitle'
 import CustomizedModalBlock from '../common/CustomizedModalBlock'
 import FieldProduct from '../common/FieldProduct'
 import { Error, ModalLabel } from '../common/ModalSchema'
 import { dpProcessSchema } from '../common/schema'
-import BoolField from '../Process/common/BoolField'
-import PanelTitle from '../Process/common/PanelTitle'
 import FieldDescription from './common/FieldDescription'
 import FieldDpProcessAffiliation from './common/FieldDpProcessAffiliation'
 import FieldDpProcessDataProcessingAgreements from './common/FieldDpProcessDataProcessingAgreements'
@@ -54,8 +54,8 @@ const panelOverrides: PanelOverrides = {
 }
 
 const DpProcessModal = (props: ModalDpProcessProps) => {
-  const [expanded, setExpanded] = useState<React.Key[]>([])
-  const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!props.initialValues.externalProcessResponsible)
+  const [expanded, setExpanded] = useState<Key[]>([])
+  const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(!!props.initialValues.externalProcessResponsible)
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose} animate size={SIZE.auto} role={ROLE.dialog}>

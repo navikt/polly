@@ -53,11 +53,11 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
           </>
         }
       >
-        {table.data.map((process, index) => (
+        {table.data.map((process: DataFormat, index: number) => (
           <Row key={index}>
             <Cell>
               <div className="flex flex-col">
-                {process.purposes.map((purpose, index) => (
+                {process.purposes.map((purpose: Code, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/process/purpose/${purpose.code}`}>{codelist.getShortnameForCode(purpose)}</RouteLink>
                   </div>
@@ -71,7 +71,7 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
             <Cell>{process.department ? <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink> : ''}</Cell>
             <Cell>
               <div className="flex flex-col">
-                {process.products.map((purpose, index) => (
+                {process.products.map((purpose: Code, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/system/${purpose.code}`}>{codelist.getShortnameForCode(purpose)}</RouteLink>
                   </div>

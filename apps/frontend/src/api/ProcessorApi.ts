@@ -1,10 +1,10 @@
 import axios from 'axios'
+import { Option } from 'baseui/select'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PageResponse, Processor, ProcessorFormValues } from '../constants'
+import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'
-import { useDebouncedState } from '../util'
-import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
-import { Option } from 'baseui/select'
 
 export const getProcessor = async (processorId: string) => {
   return (await axios.get<Processor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
@@ -99,8 +99,8 @@ export const convertFormValuesToProcessor = (values: ProcessorFormValues) => {
 
 export const useProcessorSearch = () => {
   const [processorSearch, setProcessorSearch] = useDebouncedState<string>('', 200)
-  const [processorSearchResult, setProcessorSearchResult] = React.useState<Option[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [processorSearchResult, setProcessorSearchResult] = useState<Option[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     ;(async () => {

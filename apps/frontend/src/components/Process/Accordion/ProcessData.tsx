@@ -1,6 +1,5 @@
 import { ProgressBar } from 'baseui/progress-bar'
 import { isNil, sum, uniqBy } from 'lodash'
-import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../../api'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -68,7 +67,7 @@ interface IProcessDataProps {
 
 const ProcessData = (props: IProcessDataProps) => {
   const { process, disclosures } = props
-  const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
+  const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<Processor[]>([])
 
   useEffect(() => {
