@@ -1,8 +1,8 @@
 import { Spinner } from 'baseui/icon'
 import { ParagraphLarge } from 'baseui/typography'
-import * as React from 'react'
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 
+import { useEffect, useState } from 'react'
 import { getDisclosure, getPolicy, getProcess } from './api'
 import PurposeTable from './components/Dashboard/PurposeTable'
 import DpProcessView from './components/DpProcess/DpProcessView'
@@ -132,9 +132,9 @@ const disclosureUrl = async (id: string) => {
 
 const Redirect = ({ to }: { to: (id: string) => Promise<string> }) => {
   const { id } = useParams<{ id: string }>()
-  const [url, setUrl] = React.useState('')
+  const [url, setUrl] = useState('')
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (id) {
       ;(async () => {
         to(id).then((url) => {

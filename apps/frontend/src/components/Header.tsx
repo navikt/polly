@@ -25,6 +25,7 @@ const LoggedInHeader = () => {
     width: '100%',
     ...paddingAll(theme.sizing.scale100),
   }
+
   return (
     <StatefulPopover
       content={
@@ -44,13 +45,11 @@ const LoggedInHeader = () => {
   )
 }
 
-const LoginButton = () => {
-  return (
-    <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
-      <Button style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>Logg inn</Button>
-    </StyledLink>
-  )
-}
+const LoginButton = () => (
+  <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
+    <Button style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>Logg inn</Button>
+  </StyledLink>
+)
 
 const AdminOptions = () => {
   const navigate = useNavigate()
@@ -61,6 +60,7 @@ const AdminOptions = () => {
     { label: 'Mail log', href: '/admin/maillog' },
     { label: 'Trenger revidering', href: '/admin/request-revision', super: true },
   ]
+
   return (
     <StatefulPopover
       content={({ close }) => (
@@ -81,39 +81,37 @@ const AdminOptions = () => {
   )
 }
 
-const Header = () => {
-  return (
-    <div className="px-7">
-      <HeaderNavigation overrides={{ Root: { style: { paddingBottom: 0, borderBottomStyle: 'none' } } }}>
-        <NavigationList $align={ALIGN.left}>
-          <NavigationItem $style={{ paddingLeft: 0 }}>
-            <MainSearch />
-          </NavigationItem>
+const Header = () => (
+  <div className="px-7">
+    <HeaderNavigation overrides={{ Root: { style: { paddingBottom: 0, borderBottomStyle: 'none' } } }}>
+      <NavigationList $align={ALIGN.left}>
+        <NavigationItem $style={{ paddingLeft: 0 }}>
+          <MainSearch />
+        </NavigationItem>
+      </NavigationList>
+
+      <div className="ml-auto">
+        <NavigationList $align={ALIGN.right}>
+          {(user.isAdmin() || user.isSuper()) && (
+            <NavigationItem $style={{ paddingLeft: 0 }}>
+              <AdminOptions />
+            </NavigationItem>
+          )}
+
+          {!user.isLoggedIn() && (
+            <NavigationItem $style={{ paddingLeft: 0 }}>
+              <LoginButton />
+            </NavigationItem>
+          )}
+          {user.isLoggedIn() && (
+            <NavigationItem $style={{ paddingLeft: 0 }}>
+              <LoggedInHeader />
+            </NavigationItem>
+          )}
         </NavigationList>
-
-        <div className="ml-auto">
-          <NavigationList $align={ALIGN.right}>
-            {(user.isAdmin() || user.isSuper()) && (
-              <NavigationItem $style={{ paddingLeft: 0 }}>
-                <AdminOptions />
-              </NavigationItem>
-            )}
-
-            {!user.isLoggedIn() && (
-              <NavigationItem $style={{ paddingLeft: 0 }}>
-                <LoginButton />
-              </NavigationItem>
-            )}
-            {user.isLoggedIn() && (
-              <NavigationItem $style={{ paddingLeft: 0 }}>
-                <LoggedInHeader />
-              </NavigationItem>
-            )}
-          </NavigationList>
-        </div>
-      </HeaderNavigation>
-    </div>
-  )
-}
+      </div>
+    </HeaderNavigation>
+  </div>
+)
 
 export default Header

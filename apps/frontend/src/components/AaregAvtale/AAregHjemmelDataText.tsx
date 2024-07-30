@@ -5,11 +5,12 @@ type AAregHjemmelDataTextProps = {
 }
 
 export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
-  const rawData = props.data ? prepareString(props.data).split('\n') : []
+  const { data } = props
+  const rawData = data ? prepareString(data).split('\n') : []
 
-  const purposeList = rawData.filter((d) => d.match('Formål:')).map((a) => a.replace('Formål:', ''))
-  const authoryList = rawData.filter((d) => d.match('Hjemmel:')).map((a) => a.replace('Hjemmel:', ''))
-  const processorList = rawData.filter((d) => d.match('Behandlingsgrunnlag:')).map((a) => a.replace('Behandlingsgrunnlag:', ''))
+  const purposeList = rawData.filter((data) => data.match('Formål:')).map((purpose) => purpose.replace('Formål:', ''))
+  const authoryList = rawData.filter((data) => data.match('Hjemmel:')).map((authory) => authory.replace('Hjemmel:', ''))
+  const processorList = rawData.filter((data) => data.match('Behandlingsgrunnlag:')).map((processor) => processor.replace('Behandlingsgrunnlag:', ''))
 
   return (
     <div>
@@ -23,16 +24,16 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
           </>
         }
       >
-        {purposeList.map((a, i) => (
-          <Row key={a + '_' + i}>
+        {purposeList.map((purpose: string, index: number) => (
+          <Row key={purpose + '_' + index}>
             <Cell>
-              <div>{a}</div>
+              <div>{purpose}</div>
             </Cell>
             <Cell>
-              <div>{authoryList[i]}</div>
+              <div>{authoryList[index]}</div>
             </Cell>
             <Cell>
-              <div>{processorList[i]}</div>
+              <div>{processorList[index]}</div>
             </Cell>
           </Row>
         ))}

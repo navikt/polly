@@ -1,11 +1,10 @@
 import { faCircleExclamation, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button } from 'baseui/button'
-import { ARTWORK_SIZES, ListItem } from 'baseui/list'
-import * as React from 'react'
-
 import { StyledLink } from 'baseui/link'
+import { ARTWORK_SIZES, ListItem } from 'baseui/list'
 import { ParagraphMedium } from 'baseui/typography'
+import { Fragment } from 'react/jsx-runtime'
 import { LegalBasis, LegalBasisFormValues, PolicyAlert } from '../../constants'
 import { ListName, SensitivityLevel, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
@@ -13,12 +12,18 @@ import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
-export const LegalBasisView = (props: { legalBasis?: LegalBasis; legalBasisForm?: LegalBasisFormValues }) => {
-  const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
+interface ILegalBasisViewProps {
+  legalBasis?: LegalBasis
+  legalBasisForm?: LegalBasisFormValues
+}
+
+export const LegalBasisView = (props: ILegalBasisViewProps) => {
+  const { legalBasis, legalBasisForm } = props
+  const input = legalBasis ? legalBasis : legalBasisForm
   if (!input) return null
   const { description } = input
-  const gdpr = props.legalBasis ? props.legalBasis.gdpr.code : props.legalBasisForm!.gdpr
-  const nationalLaw = props.legalBasis ? props.legalBasis?.nationalLaw?.code : props.legalBasisForm!.nationalLaw
+  const gdpr = legalBasis ? legalBasis.gdpr.code : legalBasisForm!.gdpr
+  const nationalLaw = legalBasis ? legalBasis?.nationalLaw?.code : legalBasisForm!.nationalLaw
 
   let gdprDisplay = gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, gdpr)
   let nationalLawDisplay = nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, nationalLaw)
@@ -33,7 +38,7 @@ export const LegalBasisView = (props: { legalBasis?: LegalBasis; legalBasisForm?
   )
 }
 
-const lovdataBase = (nationalLaw: string) =>
+const lovdataBase = (nationalLaw: string): string =>
   (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) + codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
 
 const legalBasisLinkProcessor = (law: string, text?: string) => {
@@ -68,38 +73,45 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
   ])(text)
 }
 
-export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
+interface ILegalBasesNotClarifiedProps {
+  alert?: PolicyAlert
+}
+
+export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
+  const { alert } = props
+
   const warningIcon = (
     <span>
       <FontAwesomeIcon icon={faCircleExclamation} color="{color}" />
       &nbsp;
     </span>
   )
+
   return (
     <div className="text-[#E85C4A]">
       <div>
-        {props.alert?.missingLegalBasis && (
+        {alert?.missingLegalBasis && (
           <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
             <span>{warningIcon} Behandlingsgrunnlag er ikke avklart</span>
           </CustomizedStatefulTooltip>
         )}
       </div>
       <div>
-        {props.alert?.excessInfo && (
+        {alert?.excessInfo && (
           <CustomizedStatefulTooltip content={'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'}>
             <span>{warningIcon} Overskuddsinformasjon</span>
           </CustomizedStatefulTooltip>
         )}
       </div>
       <div>
-        {props.alert?.missingArt6 && (
+        {alert?.missingArt6 && (
           <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
             <span>{warningIcon} Behandlingsgrunnlag for artikkel 6 mangler</span>
           </CustomizedStatefulTooltip>
         )}
       </div>
       <div>
-        {props.alert?.missingArt9 && (
+        {alert?.missingArt9 && (
           <CustomizedStatefulTooltip content="Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9">
             <span>{warningIcon} Behandlingsgrunnlag for artikkel 9 mangler</span>
           </CustomizedStatefulTooltip>
@@ -117,19 +129,23 @@ const isLegalBasisFilteredBySensitivity = (legalBasis: LegalBasisFormValues, sen
   )
 }
 
-export const ListLegalBases = (props: {
+interface IListLegalBasesProps {
   legalBases?: LegalBasisFormValues[]
   onRemove: (index: number) => void
   onEdit: (index: number) => void
   sensitivityLevel?: SensitivityLevel.ART6 | SensitivityLevel.ART9
-}) => {
+}
+
+export const ListLegalBases = (props: IListLegalBasesProps) => {
   const { legalBases, onRemove, onEdit, sensitivityLevel } = props
+
   if (!legalBases) return null
+
   return (
-    <React.Fragment>
+    <Fragment>
       {legalBases
-        .filter((l) => isLegalBasisFilteredBySensitivity(l, sensitivityLevel))
-        .map((legalBasis: LegalBasisFormValues, i: number) => (
+        .filter((legalBase: LegalBasisFormValues) => isLegalBasisFilteredBySensitivity(legalBase, sensitivityLevel))
+        .map((legalBasis: LegalBasisFormValues, index: number) => (
           <ListItem
             artworkSize={ARTWORK_SIZES.SMALL}
             overrides={{
@@ -149,7 +165,7 @@ export const ListLegalBases = (props: {
                   kind="tertiary"
                   size="compact"
                   onClick={() => {
-                    onEdit(legalBases?.findIndex((l) => l.key === legalBasis.key))
+                    onEdit(legalBases?.findIndex((legalBase: LegalBasisFormValues) => legalBase.key === legalBasis.key))
                   }}
                 >
                   <FontAwesomeIcon icon={faEdit} />
@@ -159,7 +175,7 @@ export const ListLegalBases = (props: {
                   kind="tertiary"
                   size="compact"
                   onClick={() => {
-                    onRemove(legalBases?.findIndex((l) => l.key === legalBasis.key))
+                    onRemove(legalBases?.findIndex((legalBase: LegalBasisFormValues) => legalBase.key === legalBasis.key))
                   }}
                 >
                   <FontAwesomeIcon icon={faTrash} />
@@ -167,24 +183,29 @@ export const ListLegalBases = (props: {
               </div>
             )}
             sublist
-            key={i}
+            key={index}
           >
             <ParagraphMedium $style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}>
               <LegalBasisView legalBasisForm={legalBasis} />
             </ParagraphMedium>
           </ListItem>
         ))}
-    </React.Fragment>
+    </Fragment>
   )
 }
 
-export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
+interface IListLegalBasesInTableProps {
+  legalBases: LegalBasis[]
+}
+
+export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
   const { legalBases } = props
+
   return (
     <div>
       <ul style={{ listStyle: 'none', paddingInlineStart: 0, marginTop: 0, marginBottom: 0 }}>
-        {legalBases.map((legalBasis, i) => (
-          <div className="mb-2" key={i}>
+        {legalBases.map((legalBasis: LegalBasis, index: number) => (
+          <div className="mb-2" key={index}>
             <li>
               <LegalBasisView legalBasis={legalBasis} />
             </li>

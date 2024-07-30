@@ -2,7 +2,7 @@ import { BodyShort, Spacer, Tabs } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { HeadingXLarge } from 'baseui/typography'
-import { ReactNode, useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api'
 import { Disclosure, DisclosureFormValues, ProcessStatus } from '../../constants'
 import { Section } from '../../pages/ProcessPage'
@@ -14,18 +14,14 @@ import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 
 interface IProps {
   disclosureData: Disclosure[]
-  setDisclosureData: React.Dispatch<React.SetStateAction<Disclosure[]>>
+  setDisclosureData: Dispatch<SetStateAction<Disclosure[]>>
   code: string
-
   section: Section
   isEditable: boolean
-
   moveScroll?: Function
-
   listName?: ListName
   processId?: string
   filter?: ProcessStatus
-
   thirdTabTitle?: string
   thirdTabContent?: ReactNode
 }
@@ -53,30 +49,31 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     try {
       let editedDisclosure = await updateDisclosure(disclosure)
 
-      const newDisclosureData = disclosureData.map((d: Disclosure) => {
-        if (d.id === editedDisclosure.id) {
+      const newDisclosureData = disclosureData.map((disclosure: Disclosure) => {
+        if (disclosure.id === editedDisclosure.id) {
           return editedDisclosure
-        } else return d
+        } else return disclosure
       })
 
       setDisclosureData(newDisclosureData)
 
       return true
-    } catch (err: any) {
-      setError(err.message)
+    } catch (error: any) {
+      setError(error.message)
       return false
     }
   }
 
   const handleDeleteDisclosure = async (disclosure: Disclosure) => {
     if (!disclosure) return false
+
     try {
       await deleteDisclosure(disclosure.id)
-      setDisclosureData([...disclosureData.filter((d: Disclosure) => d.id !== disclosure.id)])
+      setDisclosureData([...disclosureData.filter((disclosureData: Disclosure) => disclosureData.id !== disclosure.id)])
       setError(undefined)
       return true
-    } catch (err: any) {
-      setError(err.message)
+    } catch (error: any) {
+      setError(error.message)
       return false
     }
   }

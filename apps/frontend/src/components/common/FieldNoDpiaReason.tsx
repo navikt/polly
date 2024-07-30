@@ -9,6 +9,8 @@ type fieldNoDpiaReasonProps = {
 }
 
 const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
+  const { formikBag } = props
+
   return (
     <FieldArray
       name="dpia.noDpiaReasons"
@@ -20,21 +22,21 @@ const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
                 clearable
                 placeholder="Velg en eller flere begrunnelser"
                 options={Object.keys(NoDpiaReason)
-                  .filter((reason) => props.formikBag.values.dpia.noDpiaReasons.indexOf(reason) === -1)
-                  .map((reason) => {
+                  .filter((reason: string) => formikBag.values.dpia.noDpiaReasons.indexOf(reason) === -1)
+                  .map((reason: string) => {
                     return {
                       label: getNoDpiaLabel(reason),
                       id: reason,
                     }
                   })}
                 onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue('dpia.noDpiaReasons', [...props.formikBag.values.dpia.noDpiaReasons, ...value.map((v) => v.id)])
+                  arrayHelpers.form.setFieldValue('dpia.noDpiaReasons', [...formikBag.values.dpia.noDpiaReasons, ...value.map((value) => value.id)])
                 }}
               />
             </div>
             <div>
               {renderTagList(
-                props.formikBag.values.dpia.noDpiaReasons.map((p) => getNoDpiaLabel(p)),
+                formikBag.values.dpia.noDpiaReasons.map((reason: string) => getNoDpiaLabel(reason)),
                 arrayHelpers,
               )}
             </div>

@@ -7,7 +7,7 @@ import { ListItem, ListItemLabel, ListOverrides } from 'baseui/list'
 import { LabelSmall, ParagraphSmall } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { getTeam } from '../../api'
-import { Team } from '../../constants'
+import { Member, Team } from '../../constants'
 import { copyToClipboard, theme } from '../../util'
 import { env } from '../../util/env'
 import Button from './Button'
@@ -17,7 +17,16 @@ import { Markdown } from './Markdown'
 import { ObjectLink } from './RouteLink'
 import { SlackLink } from './SlackLink'
 
-const defaultTeam = (teamId: string) => ({ id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: [] })
+interface IDefaultTeamProps {
+  id: string
+  name: string
+  description: string
+  productarea: undefined
+  tags: []
+  members: []
+}
+
+const defaultTeam = (teamId: string): IDefaultTeamProps => ({ id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: [] })
 
 const listOverrides: ListOverrides = {
   Content: {
@@ -27,64 +36,84 @@ const listOverrides: ListOverrides = {
   },
 } as ListOverrides
 
-const SmallIcon = (props: { icon: IconProp }) => <FontAwesomeIcon icon={props.icon} size="sm" style={{ marginRight: '.5rem' }} />
+interface ISmallIconProps {
+  icon: IconProp
+}
 
-const TeamContent = (props: { team: Team }) => (
-  <Card
-    title={
-      <StyledLink target="_blank" rel="noopener noreferrer" href={`${env.teamKatBaseUrl}team/${props.team.id}`}>
-        {props.team.name}
-      </StyledLink>
-    }
-  >
-    <StyledBody>
-      <dl>
-        <dt>
-          <LabelSmall>Beskrivelse</LabelSmall>
-        </dt>
-        <dd>
-          <ParagraphSmall>
-            <Markdown source={props.team.description} />
-          </ParagraphSmall>
-        </dd>
-        {props.team.slackChannel && (
-          <>
-            <dt>
-              <LabelSmall>Slack-kanal</LabelSmall>
-            </dt>
-            <dd>
-              <SlackLink channel={props.team.slackChannel} />
-            </dd>
-          </>
-        )}
-      </dl>
+const SmallIcon = (props: ISmallIconProps) => {
+  const { icon } = props
 
-      {props.team.members.map((member, index) => (
-        <ListItem
-          key={index}
-          overrides={listOverrides}
-          endEnhancer={() => (
-            <CustomizedStatefulTooltip content={`Epost ${member.email} kopiert!`} triggerType="click" onOpen={() => copyToClipboard(member.email || 'Ikke angitt')}>
-              <span>
-                <Button size="compact" shape="pill" kind="secondary">
-                  <SmallIcon icon={faEnvelope} /> Epost
-                </Button>
-              </span>
-            </CustomizedStatefulTooltip>
+  return <FontAwesomeIcon icon={icon} size="sm" style={{ marginRight: '.5rem' }} />
+}
+
+interface ITeamContentProps {
+  team: Team
+}
+
+const TeamContent = (props: ITeamContentProps) => {
+  const { team } = props
+
+  return (
+    <Card
+      title={
+        <StyledLink target="_blank" rel="noopener noreferrer" href={`${env.teamKatBaseUrl}team/${team.id}`}>
+          {team.name}
+        </StyledLink>
+      }
+    >
+      <StyledBody>
+        <dl>
+          <dt>
+            <LabelSmall>Beskrivelse</LabelSmall>
+          </dt>
+          <dd>
+            <ParagraphSmall>
+              <Markdown source={team.description} />
+            </ParagraphSmall>
+          </dd>
+          {team.slackChannel && (
+            <>
+              <dt>
+                <LabelSmall>Slack-kanal</LabelSmall>
+              </dt>
+              <dd>
+                <SlackLink channel={team.slackChannel} />
+              </dd>
+            </>
           )}
-        >
-          <ListItemLabel>
-            <SmallIcon icon={faUser} /> {member.name || 'Uavklart'}
-          </ListItemLabel>
-        </ListItem>
-      ))}
-    </StyledBody>
-  </Card>
-)
+        </dl>
 
-const TeamView = (props: { teamId: string }) => {
-  const teamId = props.teamId
-  const [team, setTeam] = useState<Team>(defaultTeam(props.teamId))
+        {team.members.map((member: Member, index: number) => (
+          <ListItem
+            key={index}
+            overrides={listOverrides}
+            endEnhancer={() => (
+              <CustomizedStatefulTooltip content={`Epost ${member.email} kopiert!`} triggerType="click" onOpen={() => copyToClipboard(member.email || 'Ikke angitt')}>
+                <span>
+                  <Button size="compact" shape="pill" kind="secondary">
+                    <SmallIcon icon={faEnvelope} /> Epost
+                  </Button>
+                </span>
+              </CustomizedStatefulTooltip>
+            )}
+          >
+            <ListItemLabel>
+              <SmallIcon icon={faUser} /> {member.name || 'Uavklart'}
+            </ListItemLabel>
+          </ListItem>
+        ))}
+      </StyledBody>
+    </Card>
+  )
+}
+
+interface ITeamViewProps {
+  teamId: string
+}
+
+const TeamView = (props: ITeamViewProps) => {
+  const { teamId } = props
+  const [team, setTeam] = useState<Team>(defaultTeam(teamId))
   const [error, setError] = useState(false)
 
   useEffect(() => {
@@ -94,8 +123,8 @@ const TeamView = (props: { teamId: string }) => {
       setTeam(defaultTeam(teamId))
     }
     getTeam(teamId)
-      .then((resp) => update && setTeam(resp))
-      .catch((e) => setError(true))
+      .then((response: Team) => update && setTeam(response))
+      .catch((error) => setError(true))
     return () => {
       update = false
     }
@@ -103,11 +132,12 @@ const TeamView = (props: { teamId: string }) => {
 
   return (
     <>
-      {!error ? (
+      {!error && (
         <ObjectLink id={teamId} type={'team'} key={teamId}>
           {team.name}
         </ObjectLink>
-      ) : (
+      )}{' '}
+      {error && (
         <CustomizedStatefulTooltip content="Kunne ikke finne team">
           <span>
             <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500} /> {team.name}
@@ -118,12 +148,20 @@ const TeamView = (props: { teamId: string }) => {
   )
 }
 
-export const TeamList = (props: { teamIds: string[] }) => (
-  <div className="flex">
-    {props.teamIds.map((t, i) => (
-      <DotTag key={i}>
-        <TeamView teamId={t} />
-      </DotTag>
-    ))}
-  </div>
-)
+interface ITeamListProps {
+  teamIds: string[]
+}
+
+export const TeamList = (props: ITeamListProps) => {
+  const { teamIds } = props
+
+  return (
+    <div className="flex">
+      {teamIds.map((teamId: string, index: number) => (
+        <DotTag key={index}>
+          <TeamView teamId={teamId} />
+        </DotTag>
+      ))}
+    </div>
+  )
+}

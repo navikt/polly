@@ -1,4 +1,4 @@
-import React from 'react'
+import { Fragment } from 'react'
 import { Document } from '../../constants'
 import DocumentInfoTypeTable from './DocumentInfoTypeTable'
 
@@ -10,11 +10,11 @@ const DocumentMetadata = (props: DocumentMetadata) => {
   const { document } = props
 
   return (
-    <React.Fragment>
+    <Fragment>
       <div>
         <DocumentInfoTypeTable list={document.informationTypes} />
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }
 

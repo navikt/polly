@@ -1,6 +1,5 @@
 import { Select, TYPE } from 'baseui/select'
-import * as React from 'react'
-import { Dispatch, SetStateAction } from 'react'
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { Process } from '../../constants'
 import { ListName, codelist } from '../../service/Codelist'
@@ -12,27 +11,28 @@ type SearchProcessProps = {
 }
 
 const SearchProcess = (props: SearchProcessProps) => {
-  const [processList, setProcessList] = React.useState<Process[]>([])
+  const { selectedProcess, setSelectedProcess } = props
+  const [processList, setProcessList] = useState<Process[]>([])
   const [search, setSearch] = useDebouncedState<string>('', 400)
-  const [isLoading, setLoading] = React.useState<boolean>(false)
+  const [isLoading, setLoading] = useState<boolean>(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
       if (search && search.length > 2) {
         setLoading(true)
-        const res = await searchProcess(search)
-        let content = res.content
-        const purposes = codelist.getCodes(ListName.PURPOSE).filter((c) => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+        const result = await searchProcess(search)
+        let content = result.content
+        const purposes = codelist.getCodes(ListName.PURPOSE).filter((code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
         const processesPromise: Promise<any>[] = []
         for (let i = 0; i < purposes.length; i++) {
           processesPromise.push(getProcessesByPurpose(purposes[i].code))
         }
         content = [...content, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
         content = content
-          .map((v: Process) => {
-            return { ...v, namePurpose: 'B' + v.number + ' ' + (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
+          .map((process: Process) => {
+            return { ...process, namePurpose: 'B' + process.number + ' ' + (process.purposes !== undefined ? process.purposes[0].shortName : '') + ': ' + process.name }
           })
-          .filter((p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
+          .filter((p1: Process, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
 
         setProcessList(content)
         setLoading(false)
@@ -51,20 +51,20 @@ const SearchProcess = (props: SearchProcessProps) => {
         type={TYPE.search}
         maxDropdownHeight="400px"
         placeholder="Søk etter behandlinger"
-        onInputChange={(event) => setSearch(event.currentTarget.value)}
+        onInputChange={(event: ChangeEvent<HTMLInputElement>) => setSearch(event.currentTarget.value)}
         labelKey="namePurpose"
         value={
-          props.selectedProcess
+          selectedProcess
             ? [
                 {
-                  id: props.selectedProcess?.id,
-                  namePurpose: (props.selectedProcess?.purposes !== undefined ? props.selectedProcess?.purposes[0].shortName : '') + ': ' + props.selectedProcess?.name,
+                  id: selectedProcess?.id,
+                  namePurpose: (selectedProcess?.purposes !== undefined ? selectedProcess?.purposes[0].shortName : '') + ': ' + selectedProcess?.name,
                 },
               ]
             : []
         }
         onChange={(params) => {
-          props.setSelectedProcess(params.value[0] as Process)
+          setSelectedProcess(params.value[0] as Process)
         }}
       />
     </div>

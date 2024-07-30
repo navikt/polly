@@ -13,8 +13,8 @@ type RouteLinkProps = {
 }
 
 const RouteLink = (props: RouteLinkProps & any) => {
-  const navigate = useNavigate()
   const { hideUnderline, plain, ...restprops } = props
+  const navigate = useNavigate()
 
   const [useCss] = useStyletron()
   const css = useCss({
@@ -26,8 +26,8 @@ const RouteLink = (props: RouteLinkProps & any) => {
     <StyledLink
       className={css}
       {...restprops}
-      onClick={(e: Event) => {
-        e.preventDefault()
+      onClick={(event: Event) => {
+        event.preventDefault()
         navigate(props.href)
       }}
     />
@@ -93,21 +93,22 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
 }
 
 export const ObjectLink = (props: ObjectLinkProps) => {
+  const { disable, children, type, id, audit, hideUnderline, withHistory } = props
   const [useCss] = useStyletron()
   const linkCss = useCss({ textDecoration: 'none' })
 
-  const link = props.disable ? (
-    props.children
+  const link = disable ? (
+    children
   ) : (
-    <RouteLink href={urlForObject(props.type, props.id, props.audit)} className={props.hideUnderline ? linkCss : undefined}>
-      {props.children}
+    <RouteLink href={urlForObject(type, id, audit)} className={hideUnderline ? linkCss : undefined}>
+      {children}
     </RouteLink>
   )
 
-  return props.withHistory ? (
+  return withHistory ? (
     <div className="flex justify-between w-full items-center">
       {link}
-      <AuditButton id={props.id} kind={KIND.tertiary} />
+      <AuditButton id={id} kind={KIND.tertiary} />
     </div>
   ) : (
     link

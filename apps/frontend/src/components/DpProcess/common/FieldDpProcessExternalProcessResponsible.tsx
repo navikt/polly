@@ -1,12 +1,16 @@
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
-import * as React from 'react'
+import { useState } from 'react'
 import { DpProcessFormValues } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
 
-const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string }) => {
+interface IFieldDpProcessExternalProcessResponsible {
+  thirdParty?: string
+}
+
+const FieldDpProcessExternalProcessResponsible = (props: IFieldDpProcessExternalProcessResponsible) => {
   const { thirdParty } = props
-  const [value, setValue] = React.useState<Value>(
+  const [value, setValue] = useState<Value>(
     thirdParty
       ? [
           {

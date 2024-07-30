@@ -14,81 +14,100 @@ import { TeamList } from '../../common/Team'
 import TextWithLabel from '../../common/TextWithLabel'
 import { sensitivityColor } from '../Sensitivity'
 
-const DescriptionData = (props: { termId?: string; description?: string; keywords: string[] }) => {
-  const [term, setTerm] = useState(props.termId)
+interface IDescriptionDataProps {
+  termId?: string
+  description?: string
+  keywords: string[]
+}
+
+const DescriptionData = (props: IDescriptionDataProps) => {
+  const { termId, description, keywords } = props
+  const [term, setTerm] = useState(termId)
   const [termError, setTermError] = useState(false)
 
   useEffect(() => {
     ;(async () => {
-      if (props.termId) {
+      if (termId) {
         try {
-          const termResponse = await getTerm(props.termId)
+          const termResponse = await getTerm(termId)
           setTerm(mapTermToOption(termResponse).label)
-        } catch (e: any) {
-          console.error('couldnt find term', e)
+        } catch (error: any) {
+          console.error('couldnt find term', error)
           setTermError(true)
         }
       } else {
         setTerm('')
       }
     })()
-  }, [props.termId])
+  }, [termId])
 
   return (
     <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
       <FlexGridItem>
         <div className="flex" />
         <TextWithLabel label="Begrepsdefinisjon" text={term || 'Ingen begrepsdefinisjon oppgitt'} error={termError ? 'Kunne ikke finne begrepsdefinisjon' : undefined} />
-        {props.termId && (
-          <StyledLink target="_blank" rel="noopener noreferrer" href={termUrl(props.termId)}>
+        {termId && (
+          <StyledLink target="_blank" rel="noopener noreferrer" href={termUrl(termId)}>
             <FontAwesomeIcon icon={faExternalLinkAlt} />
           </StyledLink>
         )}
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label="Søkeord" text={<DotTags items={props.keywords} />} />
+        <TextWithLabel label="Søkeord" text={<DotTags items={keywords} />} />
       </FlexGridItem>
       <FlexGridItem>
         <TextWithLabel label="Nyttig å vite om opplysningstypen">
-          <Markdown source={props.description} />
+          <Markdown source={description} />
         </TextWithLabel>
       </FlexGridItem>
     </FlexGrid>
   )
 }
 
-const PropertyData = (props: { orgMaster?: Code; sources: Code[]; categories: Code[]; productTeams: string[]; keywords: string[]; sensitivity: Code }) => (
-  <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
-    <FlexGridItem>
-      <TextWithLabel label="Master i NAV">
-        <DotTags list={ListName.SYSTEM} codes={props.orgMaster ? [props.orgMaster] : []} linkCodelist commaSeparator />
-      </TextWithLabel>
-    </FlexGridItem>
-    <FlexGridItem>
-      <TextWithLabel label="Kilder">
-        <DotTags list={ListName.THIRD_PARTY} codes={props.sources} linkCodelist commaSeparator />
-      </TextWithLabel>
-    </FlexGridItem>
-    <FlexGridItem>
-      <TextWithLabel label="Team" text={props.productTeams.length ? <TeamList teamIds={props.productTeams} /> : 'Ikke angitt'} />
-    </FlexGridItem>
-    <FlexGridItem>
-      <TextWithLabel label="Kategorier">
-        <DotTags list={ListName.CATEGORY} codes={props.categories} linkCodelist commaSeparator />
-      </TextWithLabel>
-    </FlexGridItem>
-    <FlexGridItem>
-      <TextWithLabel
-        label="Type personopplysning"
-        text={props.sensitivity ? props.sensitivity.shortName : ''}
-        icon={faUserShield}
-        iconColor={sensitivityColor(props.sensitivity.code)}
-      />
-    </FlexGridItem>
-  </FlexGrid>
-)
+interface IPropertDataProps {
+  orgMaster?: Code
+  sources: Code[]
+  categories: Code[]
+  productTeams: string[]
+  keywords: string[]
+  sensitivity: Code
+}
 
-const Metadata = (props: { informationtype: InformationType }) => {
+const PropertyData = (props: IPropertDataProps) => {
+  const { orgMaster, sources, categories, productTeams, keywords, sensitivity } = props
+
+  return (
+    <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
+      <FlexGridItem>
+        <TextWithLabel label="Master i NAV">
+          <DotTags list={ListName.SYSTEM} codes={orgMaster ? [orgMaster] : []} linkCodelist commaSeparator />
+        </TextWithLabel>
+      </FlexGridItem>
+      <FlexGridItem>
+        <TextWithLabel label="Kilder">
+          <DotTags list={ListName.THIRD_PARTY} codes={sources} linkCodelist commaSeparator />
+        </TextWithLabel>
+      </FlexGridItem>
+      <FlexGridItem>
+        <TextWithLabel label="Team" text={productTeams.length ? <TeamList teamIds={productTeams} /> : 'Ikke angitt'} />
+      </FlexGridItem>
+      <FlexGridItem>
+        <TextWithLabel label="Kategorier">
+          <DotTags list={ListName.CATEGORY} codes={categories} linkCodelist commaSeparator />
+        </TextWithLabel>
+      </FlexGridItem>
+      <FlexGridItem>
+        <TextWithLabel label="Type personopplysning" text={sensitivity ? sensitivity.shortName : ''} icon={faUserShield} iconColor={sensitivityColor(sensitivity.code)} />
+      </FlexGridItem>
+    </FlexGrid>
+  )
+}
+
+interface IMetaDataProps {
+  informationtype: InformationType
+}
+
+const Metadata = (props: IMetaDataProps) => {
   const { informationtype } = props
 
   return (

@@ -2,8 +2,7 @@ import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-sv
 import { KIND, SIZE } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { convertDisclosureToFormValues } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
@@ -29,16 +28,16 @@ type TableDisclosureProps = {
 
 type Alerts = { [k: string]: DisclosureAlert }
 const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal }: TableDisclosureProps) => {
-  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
-  const [showEditModal, setShowEditModal] = React.useState<boolean>()
-  const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [showEditModal, setShowEditModal] = useState<boolean>()
+  const [selectedDisclosure, setSelectedDisclosure] = useState<Disclosure>()
   const [alerts, setAlerts] = useState<Alerts>({})
 
   const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, { sorting: disclosureSort, initialSortColumn: showRecipient ? 'recipient' : 'name' })
 
   useEffect(() => {
     ;(async () => {
-      const alertMap = (await Promise.all(list.map((d) => getAlertForDisclosure(d.id)))).reduce((acc: Alerts, alert) => {
+      const alertMap = (await Promise.all(list.map((list) => getAlertForDisclosure(list.id)))).reduce((acc: Alerts, alert) => {
         acc[alert.disclosureId] = alert
         return acc
       }, {} as Alerts)
@@ -47,7 +46,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
   }, [list])
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Table
         emptyText="Ingen utlevering"
         headers={
@@ -62,7 +61,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
           </>
         }
       >
-        {table.data.map((row, index) => (
+        {table.data.map((row: Disclosure, index: number) => (
           <DisclosureRow
             key={index}
             disclosure={row}
@@ -81,7 +80,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
           title="Rediger utlevering"
           isOpen={showEditModal}
           initialValues={convertDisclosureToFormValues(selectedDisclosure)}
-          submit={async (values) => (submitEditDisclosure && (await submitEditDisclosure(values)) ? setShowEditModal(false) : setShowEditModal(true))}
+          submit={async (values: DisclosureFormValues) => (submitEditDisclosure && (await submitEditDisclosure(values)) ? setShowEditModal(false) : setShowEditModal(true))}
           onClose={() => {
             onCloseModal && onCloseModal()
             setShowEditModal(false)
@@ -107,8 +106,8 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
               <Button
                 onClick={() => {
                   if (selectedDisclosure && submitDeleteDisclosure) {
-                    submitDeleteDisclosure(selectedDisclosure).then((res) => {
-                      if (res) {
+                    submitDeleteDisclosure(selectedDisclosure).then((result: boolean) => {
+                      if (result) {
                         setShowDeleteModal(false)
                       } else {
                         setShowDeleteModal(true)
@@ -123,11 +122,11 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
           </ModalFooter>
         </Modal>
       )}
-    </React.Fragment>
+    </Fragment>
   )
 }
 
-const DisclosureRow = (props: {
+interface IDisclosureRowProps {
   disclosure: Disclosure
   editable: boolean
   showRecipient: boolean
@@ -135,9 +134,11 @@ const DisclosureRow = (props: {
   setSelectedDisclosure: (d: Disclosure) => void
   showEditModal: () => void
   showDeleteModal: () => void
-}) => {
-  const navigate = useNavigate()
+}
+
+const DisclosureRow = (props: IDisclosureRowProps) => {
   const { disclosure, editable, alert, showRecipient, setSelectedDisclosure, showEditModal, showDeleteModal } = props
+  const navigate = useNavigate()
   const hasAlert = alert?.missingArt6
 
   return (

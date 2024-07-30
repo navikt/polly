@@ -1,5 +1,5 @@
 import { HeadingXLarge } from 'baseui/typography'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { InformationType, informationTypeSort } from '../../constants'
 import { ListName } from '../../service/Codelist'
 import { theme } from '../../util'
@@ -15,9 +15,10 @@ type TableProps = {
   informationTypes?: InformationType[]
   getInfoTypes?: () => Promise<InformationType[]>
 }
+
 export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TableProps) => {
   const [informationTypeList, setInformationTypeList] = useState<InformationType[]>(informationTypes || [])
-  const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const [table, sortColumn] = useTable<InformationType, keyof InformationType>(informationTypeList, {
     sorting: informationTypeSort,

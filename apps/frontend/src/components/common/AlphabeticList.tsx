@@ -5,7 +5,14 @@ import RouteLink from './RouteLink'
 import { margin } from './Style'
 
 type Opt = { id: string; label: string }
-const AlphabeticList = (props: { items: Opt[]; baseUrl: string }) => {
+
+interface IAlphabeticListProps {
+  items: Opt[]
+  baseUrl: string
+}
+
+const AlphabeticList = (props: IAlphabeticListProps) => {
+  const { baseUrl } = props
   const items = props.items
     .sort((a, b) => a.label.localeCompare(b.label))
     .reduce(
@@ -43,7 +50,7 @@ const AlphabeticList = (props: { items: Opt[]; baseUrl: string }) => {
                   },
                 }}
               >
-                <RouteLink href={`${props.baseUrl}${item.id}`}>{item.label}</RouteLink>
+                <RouteLink href={`${baseUrl}${item.id}`}>{item.label}</RouteLink>
               </FlexGridItem>
             ))}
           </FlexGrid>

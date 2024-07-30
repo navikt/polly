@@ -25,7 +25,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
       if (infoTypeId) {
         const infoTypeAlert = await getAlertForInformationType(infoTypeId)
         const reduced: Alerts = infoTypeAlert.processes
-          .flatMap((p) => p.policies)
+          .flatMap((process) => process.policies)
           .reduce((agg, policy) => {
             agg[policy.policyId] = policy
             return agg
@@ -53,9 +53,9 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
           {showPurpose && (
             <Cell>
               <div className="flex flex-col">
-                {row.purposes.map((p, i) => (
-                  <div key={i}>
-                    <RouteLink href={`/process/purpose/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>
+                {row.purposes.map((purpose, index) => (
+                  <div key={index}>
+                    <RouteLink href={`/process/purpose/${purpose.code}`}>{codelist.getShortnameForCode(purpose)}</RouteLink>
                   </div>
                 ))}
               </div>
@@ -67,7 +67,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
             <RouteLink href={`/process/purpose/${row.purposes[0].code}/${row.process.id}`}>{row.process && row.process.name}</RouteLink>
           </Cell>
 
-          <Cell>{row.subjectCategories.map((sc) => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(', ')}</Cell>
+          <Cell>{row.subjectCategories.map((subjectCategory) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}</Cell>
 
           <Cell>
             <div>

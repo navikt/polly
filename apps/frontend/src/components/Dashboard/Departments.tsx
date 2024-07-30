@@ -10,20 +10,29 @@ import RouteLink from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
 import { cardShadow } from '../common/Style'
 
-const TextWithNumber = (props: { label: string; number: number }) => (
-  <div className="flex w-fit mb-0 justify-center">
-    <ParagraphMedium margin="0">
-      {props.label}{' '}
-      <b
-        style={{
-          textDecoration: 'underline',
-        }}
-      >
-        {props.number}
-      </b>
-    </ParagraphMedium>
-  </div>
-)
+interface ITextWithNumberProps {
+  label: string
+  number: number
+}
+
+const TextWithNumber = (props: ITextWithNumberProps) => {
+  const { label, number } = props
+
+  return (
+    <div className="flex w-fit mb-0 justify-center">
+      <ParagraphMedium margin="0">
+        {label}{' '}
+        <b
+          style={{
+            textDecoration: 'underline',
+          }}
+        >
+          {number}
+        </b>
+      </ParagraphMedium>
+    </div>
+  )
+}
 
 const parsedDepartmentName = (department: string) => {
   if (department === 'OESA') return 'ØSA'
@@ -33,6 +42,7 @@ const parsedDepartmentName = (department: string) => {
 type DepartmentCardProps = {
   department: DepartmentProcess
 }
+
 const DepartmentCard = (props: DepartmentCardProps) => {
   const { department } = props
 
@@ -79,8 +89,8 @@ const Departments = (props: DepartmentsProps) => {
 
   return (
     <div className="w-full flex flex-wrap justify-between">
-      {sortedData().map((department: DepartmentProcess, i: number) => (
-        <div key={i} className="mt-4">
+      {sortedData().map((department: DepartmentProcess, index: number) => (
+        <div key={index} className="mt-4">
           <DepartmentCard department={department} />
         </div>
       ))}

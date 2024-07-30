@@ -1,5 +1,5 @@
 import { FormikProps } from 'formik'
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { getAll } from '../../../api'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { DpProcessFormValues, Processor } from '../../../constants'
@@ -14,25 +14,25 @@ type FieldDpProcessSubDataProcessorProps = {
 
 const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorProps) => {
   const { formikBag } = props
-  const [processorList, setProcessorList] = React.useState<Processor[]>([])
-  const [subDataProcessors, setSubDataProcessors] = React.useState(new Map<string, string>())
+  const [processorList, setProcessorList] = useState<Processor[]>([])
+  const [subDataProcessors, setSubDataProcessors] = useState(new Map<string, string>())
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
       if (props.initialValues.subDataProcessing.processors.length > 0) {
-        const res = await getProcessorsByIds(props.initialValues.subDataProcessing.processors)
+        const result = await getProcessorsByIds(props.initialValues.subDataProcessing.processors)
         const newProcs = new Map<string, string>()
-        res.forEach((d) => newProcs.set(d.id, d.name))
+        result.forEach((processor) => newProcs.set(processor.id, processor.name))
         setSubDataProcessors(newProcs)
       }
     })()
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
-      const res = await getAll(getProcessorsByPageAndPageSize)()
-      if (res) {
-        setProcessorList(res)
+      const result = await getAll(getProcessorsByPageAndPageSize)()
+      if (result) {
+        setProcessorList(result)
       }
     })()
   }, [])
@@ -54,10 +54,10 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
             <FieldDpDataProcessors
               formikBag={formikBag}
               subDataProcessors={subDataProcessors}
-              options={processorList.map((p) => {
+              options={processorList.map((processor) => {
                 return {
-                  id: p.id,
-                  label: p.name,
+                  id: processor.id,
+                  label: processor.name,
                 }
               })}
             />

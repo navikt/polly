@@ -29,9 +29,14 @@ interface InformationtypeMetadataProps {
   documents?: Document[]
 }
 
-const Purposes = ({ policies }: { policies: Policy[] }) => {
+interface IPurposesProps {
+  policies: Policy[]
+}
+
+const Purposes = ({ policies }: IPurposesProps) => {
   const selectedPurpose = useQueryParam('purpose')
   const [accordion, setAccordion] = React.useState(!!selectedPurpose)
+
   return (
     <div>
       <div className="flex justify-end">
@@ -56,55 +61,55 @@ const Purposes = ({ policies }: { policies: Policy[] }) => {
   )
 }
 
-const Disclosures = ({ disclosures }: { disclosures: Disclosure[] }) => {
-  return <TableDisclosure list={disclosures} showRecipient editable={false} onCloseModal={() => console.log('skal fjerrens også!')} />
+interface IDisclosuresProps {
+  disclosures: Disclosure[]
 }
 
+const Disclosures = ({ disclosures }: IDisclosuresProps) => (
+  <TableDisclosure list={disclosures} showRecipient editable={false} onCloseModal={() => console.log('skal fjerrens også!')} />
+)
+
 export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
+  const { informationtype, policies, disclosures, documents } = props
   const [activeTab, setActiveTab] = useState('purposes')
   const navigate = useNavigate()
+
   return (
     <>
-      {props.informationtype && (
+      {informationtype && (
         <>
           <div className="flex justify-between">
-            <HeadingMedium marginTop="0">{props.informationtype.name}</HeadingMedium>
-            {user.canWrite() && <InformationTypeBannerButtons id={props.informationtype.id} />}
+            <HeadingMedium marginTop="0">{informationtype.name}</HeadingMedium>
+            {user.canWrite() && <InformationTypeBannerButtons id={informationtype.id} />}
           </div>
 
-          <Metadata informationtype={props.informationtype} />
+          <Metadata informationtype={informationtype} />
 
           <div className="flex justify-end mb-4">
             {canViewAlerts() && (
               <div className="mr-auto">
-                <Button
-                  type="button"
-                  kind="tertiary"
-                  size="compact"
-                  icon={faExclamationCircle}
-                  onClick={() => navigate(`/alert/events/informationtype/${props.informationtype.id}`)}
-                >
+                <Button type="button" kind="tertiary" size="compact" icon={faExclamationCircle} onClick={() => navigate(`/alert/events/informationtype/${informationtype.id}`)}>
                   Varsler
                 </Button>
               </div>
             )}
             <ParagraphSmall>
-              <i>{`Sist endret av ${props.informationtype.changeStamp.lastModifiedBy}, ${lastModifiedDate(props.informationtype.changeStamp?.lastModifiedDate)}`}</i>
+              <i>{`Sist endret av ${informationtype.changeStamp.lastModifiedBy}, ${lastModifiedDate(informationtype.changeStamp?.lastModifiedDate)}`}</i>
             </ParagraphSmall>
           </div>
 
           <CustomizedTabs activeKey={activeTab} onChange={(args) => setActiveTab(args.activeKey as string)}>
             <Tab key="purposes" title="Brukes til behandlingsaktivitet" overrides={tabOverride}>
-              {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
-              {props.policies && <Purposes policies={props.policies} />}
+              {!policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
+              {policies && <Purposes policies={policies} />}
             </Tab>
             <Tab key="disclose" title="Utleveringer til ekstern part" overrides={tabOverride}>
-              {!props.disclosures && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
-              {props.disclosures && <Disclosures disclosures={props.disclosures} />}
+              {!disclosures && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
+              {disclosures && <Disclosures disclosures={disclosures} />}
             </Tab>
             <Tab key="document" title="Dokumenter" overrides={tabOverride}>
-              {!props.documents && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
-              {props.documents && <DocumentTable documents={props.documents} />}
+              {!documents && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />}
+              {documents && <DocumentTable documents={documents} />}
             </Tab>
           </CustomizedTabs>
         </>

@@ -23,28 +23,38 @@ function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | nu
   return moment1.format(moment.HTML5_FMT.DATE)
 }
 
-const LabelWithTooltip = (props: { text: string; tooltip: string }) => (
-  <CustomizedStatefulTooltip content={props.tooltip}>
-    <div className="flex">
-      {props.text}
-      <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faQuestionCircle} color={theme.colors.primary300} size="sm" />
-    </div>
-  </CustomizedStatefulTooltip>
-)
+interface ILabelWithTooltipProps {
+  text: string
+  tooltip: string
+}
+
+const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
+  const { text, tooltip } = props
+
+  return (
+    <CustomizedStatefulTooltip content={tooltip}>
+      <div className="flex">
+        {text}
+        <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faQuestionCircle} color={theme.colors.primary300} size="sm" />
+      </div>
+    </CustomizedStatefulTooltip>
+  )
+}
 
 export const DateFieldsProcessModal = (props: DateModalProps) => {
-  const [showDates, setShowDates] = React.useState<boolean>(props.showDates)
   const { showLabels } = props
+  const [showDates, setShowDates] = React.useState<boolean>(props.showDates)
 
   return (
     <>
-      {!showDates ? (
+      {!showDates && (
         <div className="flex w-full mt-4">
           <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
             Velg datoer
           </Button>
         </div>
-      ) : (
+      )}{' '}
+      {showDates && (
         <>
           <div className="w-full">
             <div className="flex w-full">

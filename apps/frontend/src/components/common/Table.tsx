@@ -3,8 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { withStyle } from 'baseui'
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from 'baseui/table'
 import { LabelMedium } from 'baseui/typography'
-import * as React from 'react'
-import { ReactElement, ReactNode, useContext } from 'react'
+import { ReactElement, ReactNode, createContext, useContext } from 'react'
 import { StyleObject } from 'styletron-standard'
 import { theme } from '../../util'
 import { TableState } from '../../util/hooks'
@@ -65,43 +64,51 @@ const tableStyle = {
   ...paddingAll(theme.sizing.scale600),
 }
 
-const TableContext = React.createContext<Partial<TableProps>>({})
+const TableContext = createContext<Partial<TableProps>>({})
 
 export const Table = (props: TableProps) => {
+  const { headers, children, emptyText } = props
   const StyleTable = withStyle(StyledTable, { ...tableStyle, backgroundColor: props.backgroundColor || tableStyle.backgroundColor })
+
   return (
     <TableContext.Provider value={props}>
       <StyleTable>
-        <StyledHeader>{props.headers}</StyledHeader>
+        <StyledHeader>{headers}</StyledHeader>
         <StyledBody>
-          {props.children}
-          {(!props.children || (Array.isArray(props.children) && !props.children.length)) && <LabelMedium margin="1rem">{props.emptyText}</LabelMedium>}
+          {children}
+          {(!children || (Array.isArray(children) && !children.length)) && <LabelMedium margin="1rem">{emptyText}</LabelMedium>}
         </StyledBody>
       </StyleTable>
     </TableContext.Provider>
   )
 }
 export const Row = (props: RowProps) => {
+  const { inactiveRow, infoRow, selectedRow, $style, children } = props
   const tableProps = useContext(TableContext)
   const styleProps: StyleObject = {
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
     borderBottomColor: theme.colors.mono600,
-    opacity: props.inactiveRow ? '.5' : undefined,
-    backgroundColor: props.infoRow ? theme.colors.primary50 : undefined,
+    opacity: inactiveRow ? '.5' : undefined,
+    backgroundColor: infoRow ? theme.colors.primary50 : undefined,
     borderLeftColor: theme.colors.primary200,
-    borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : '0',
+    borderLeftWidth: infoRow || selectedRow ? theme.sizing.scale300 : '0',
     borderLeftStyle: 'solid',
     ':hover': {
-      backgroundColor: tableProps.hoverColor || (props.infoRow ? theme.colors.mono100 : theme.colors.primary50),
+      backgroundColor: tableProps.hoverColor || (infoRow ? theme.colors.mono100 : theme.colors.primary50),
     },
-    ...props.$style,
+    ...$style,
   }
   const StyleRow = withStyle(StyledRow, styleProps)
-  return <StyleRow>{props.children}</StyleRow>
+
+  return <StyleRow>{children}</StyleRow>
 }
 
-const SortDirectionIcon = (props: { direction: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC | null }) => {
+interface ISortDirectionIconProps {
+  direction: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC | null
+}
+
+const SortDirectionIcon = (props: ISortDirectionIconProps) => {
   switch (props?.direction) {
     case SORT_DIRECTION.ASC:
       return <FontAwesomeIcon icon={faSortDown} />
@@ -147,7 +154,15 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
   )
 }
 
-export const Cell = (props: { small?: boolean; $style?: StyleObject; children?: ReactNode }) => {
-  const widthStyle = props.small ? { maxWidth: '15%' } : {}
-  return <StyledCell $style={{ ...props.$style, ...widthStyle }}>{props.children}</StyledCell>
+interface ICellProps {
+  small?: boolean
+  $style?: StyleObject
+  children?: ReactNode
+}
+
+export const Cell = (props: ICellProps) => {
+  const { small, $style, children } = props
+  const widthStyle = small ? { maxWidth: '15%' } : {}
+
+  return <StyledCell $style={{ ...$style, ...widthStyle }}>{children}</StyledCell>
 }

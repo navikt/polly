@@ -133,6 +133,7 @@ const Visualization = (props: VisualizationProps) => {
   const [type, toggle] = useReducer((old) => (old === 'bar' ? 'pie' : 'bar'), props.type)
 
   let noChartData = !data.length || !data.reduce((p, c) => p + c.size, 0)
+
   return (
     <div className="relative">
       <Card
@@ -157,13 +158,13 @@ const Visualization = (props: VisualizationProps) => {
             <div className={`mx-1.5 ${noChartData ? 'mt-2.5' : ''}`}>
               <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
               {!noChartData &&
-                data.map((d, idx) => (
-                  <div key={idx} onMouseOver={() => setHover(idx)} onClick={d.onClick}>
-                    <div className={`${idx === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}>
-                      <FontAwesomeIcon icon={faCircle} color={d.color} />
-                      <div className="min-w-10 flex justify-end">{d.size}</div>
-                      {!hidePercent && <div className="min-w-10 flex justify-end">{(d.fraction * 100).toFixed(0)}%</div>}
-                      <div className="ml-2.5">{d.label}</div>
+                data.map((data: ChartDataExpanded, index) => (
+                  <div key={index} onMouseOver={() => setHover(index)} onClick={data.onClick}>
+                    <div className={`${index === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}>
+                      <FontAwesomeIcon icon={faCircle} color={data.color} />
+                      <div className="min-w-10 flex justify-end">{data.size}</div>
+                      {!hidePercent && <div className="min-w-10 flex justify-end">{(data.fraction * 100).toFixed(0)}%</div>}
+                      <div className="ml-2.5">{data.label}</div>
                     </div>
                   </div>
                 ))}
@@ -184,14 +185,21 @@ const Visualization = (props: VisualizationProps) => {
   )
 }
 
-const BarChart = (props: { data: ChartDataExpanded[]; size: number; hover: number; setHover: (i: number) => void }) => {
+interface IBarChartProps {
+  data: ChartDataExpanded[]
+  size: number
+  hover: number
+  setHover: (i: number) => void
+}
+
+const BarChart = (props: IBarChartProps) => {
   const { data, size, hover, setHover } = props
-  const max = _.max(data.map((d) => d.sizeFraction))!
-  const maxVal = _.max(data.map((d) => d.size))!
+  const max = _.max(data.map((data) => data.sizeFraction))!
+  const maxVal = _.max(data.map((data) => data.size))!
+
   return (
     <svg height={size * 3} width={size * 3} viewBox="0 0 1150 1150" style={{ transform: 'scaleY(-1)' }}>
       <style>{'text {' + 'transform: scaleY(-1);' + 'font: italic 40px sans-serif;' + '}'}</style>
-
       <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="black" />
       <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="black" />
 
@@ -204,17 +212,17 @@ const BarChart = (props: { data: ChartDataExpanded[]; size: number; hover: numbe
         </React.Fragment>
       ))}
 
-      {data.map((d, idx) => (
+      {data.map((dataItem: ChartDataExpanded, index: number) => (
         <Bar
-          key={idx}
-          idx={idx}
-          size={d.sizeFraction * (1 / max)}
+          key={index}
+          idx={index}
+          size={dataItem.sizeFraction * (1 / max)}
           totalSize={data.length}
-          start={d.start}
-          color={d.color}
-          hover={idx === hover}
-          onMouseOver={() => setHover(idx)}
-          onClick={d.onClick}
+          start={dataItem.start}
+          color={dataItem.color}
+          hover={index === hover}
+          onMouseOver={() => setHover(index)}
+          onClick={dataItem.onClick}
         />
       ))}
     </svg>
@@ -246,19 +254,20 @@ const Bar = (props: PartProps) => {
 
 const PieChart = (props: { data: ChartDataExpanded[]; radius: number; hover: number; setHover: (i: number) => void }) => {
   const { data, radius, hover, setHover } = props
+
   return (
     <svg height={radius * 2} width={radius * 2} viewBox="-1.1 -1.1 2.2 2.2" style={{ transform: 'rotate(-90deg)' }}>
-      {data.map((d, idx) => (
+      {data.map((dataItem: ChartDataExpanded, index: number) => (
         <Wedge
-          key={idx}
-          idx={idx}
-          size={d.sizeFraction}
+          key={index}
+          idx={index}
+          size={dataItem.sizeFraction}
           totalSize={data.length}
-          start={d.start}
-          color={d.color}
-          onMouseOver={() => setHover(idx)}
-          onClick={d.onClick}
-          hover={idx === hover}
+          start={dataItem.start}
+          color={dataItem.color}
+          onMouseOver={() => setHover(index)}
+          onClick={dataItem.onClick}
+          hover={index === hover}
         />
       ))}
     </svg>
@@ -271,7 +280,6 @@ const tau = 2 * pi
 type PartProps = {
   idx: number
   totalSize: number
-
   size: number
   start: number
   color: string

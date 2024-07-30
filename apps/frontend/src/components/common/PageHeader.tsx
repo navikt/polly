@@ -2,8 +2,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { StyledLink } from 'baseui/link'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
-import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api'
 import { ProductArea, Team } from '../../constants'
 import { Section, listNameForSection } from '../../pages/ProcessPage'
@@ -14,11 +13,16 @@ import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 import { Markdown } from './Markdown'
 import { Spinner } from './Spinner'
 
-export const PageHeader = (props: { section: Section; code: string }) => {
-  const [isLoading, setLoading] = React.useState(false)
-  const [team, setTeam] = React.useState<Team>()
-  const [productArea, setProductArea] = React.useState<ProductArea>()
+interface IPageHeaderProps {
+  section: Section
+  code: string
+}
+
+export const PageHeader = (props: IPageHeaderProps) => {
   const { code, section } = props
+  const [isLoading, setLoading] = useState(false)
+  const [team, setTeam] = useState<Team>()
+  const [productArea, setProductArea] = useState<ProductArea>()
 
   useEffect(() => {
     ;(async () => {
@@ -77,6 +81,7 @@ export const PageHeader = (props: { section: Section; code: string }) => {
     if (section === Section.team) url = teamLink(code)
     else if (section === Section.productarea) url = productAreaLink(code)
     if (!url) return null
+
     return (
       <>
         <div className="mr-12" />

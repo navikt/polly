@@ -2,7 +2,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { SIZE as ButtonSize } from 'baseui/button'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import React, { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getResourceById } from '../../api'
 import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
@@ -34,8 +34,8 @@ const DpProcessView = () => {
 
   ampli.logEvent('besøk', { side: 'NAV som databehandler', url: 'dpprocess/:id', app: 'Behandlingskatalogen', type: 'view' })
 
-  const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
-  const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')
+  const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
+  const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
 
   const isDataProcessingAgreementsAvailable = !!dpProcess?.dataProcessingAgreements.length
 
@@ -48,12 +48,12 @@ const DpProcessView = () => {
       }
       setErrorDpProcessModal('')
       toggleModal()
-    } catch (err: any) {
-      if (err.response.data.message.includes('already exists')) {
+    } catch (error: any) {
+      if (error.response.data.message.includes('already exists')) {
         setErrorDpProcessModal('Databehandlingen eksisterer allerede.')
         return
       }
-      setErrorDpProcessModal(err.response.data.message)
+      setErrorDpProcessModal(error.response.data.message)
     }
   }
 
@@ -65,12 +65,12 @@ const DpProcessView = () => {
         toggleModal()
         navigate(`/dpprocess`)
       }
-    } catch (err: any) {
-      if (err.response.data.message.includes('already exists')) {
+    } catch (error: any) {
+      if (error.response.data.message.includes('already exists')) {
         setErrorDpProcessModal('Databehandlingen eksisterer allerede.')
         return
       }
-      setErrorDpProcessModal(err.response.data.message)
+      setErrorDpProcessModal(error.response.data.message)
     }
   }
 
@@ -87,22 +87,23 @@ const DpProcessView = () => {
   useEffect(() => {
     ;(async () => {
       if (dpProcess?.subDataProcessing.processors.length) {
-        const res = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
-        setProcessors([...res])
+        const result = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
+        setProcessors([...result])
       }
 
       if (dpProcess) {
         const userIdent = dpProcess.changeStamp.lastModifiedBy.split(' ')[0]
         await getResourceById(userIdent)
-          .then((res) => setLastModifiedUserEmail(res.email))
-          .catch((e) => console.log('Unable to get email for user that last modified'))
+          .then((result) => setLastModifiedUserEmail(result.email))
+          .catch((error) => console.log('Unable to get email for user that last modified'))
       }
     })()
   }, [dpProcess])
 
   return (
     <>
-      {!isLoading ? (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <>
           <div className="flex justify-between items-center">
             <HeadingMedium>{dpProcess?.name}</HeadingMedium>
@@ -171,25 +172,21 @@ const DpProcessView = () => {
             </div>
           </DataText>
           <DataText label="Lagringsbehov" text={''}>
-            <>
-              <div>
-                <RetentionView retention={dpProcess?.retention} />
-              </div>
-            </>
+            <div>
+              <RetentionView retention={dpProcess?.retention} />
+            </div>
           </DataText>
           <DataText label="Databehandleravtale med behandlingsansvarlig" text={''}>
-            <>
+            <div>
               <div>
-                <div>
-                  {isDataProcessingAgreementsAvailable && (
-                    <div className="flex items-center">
-                      <div className="whitespace-nowrap mt-1 mr-0">Ref. til databehandleravtale</div>
-                      <DotTags items={dpProcess?.dataProcessingAgreements} markdown />
-                    </div>
-                  )}
-                </div>
+                {isDataProcessingAgreementsAvailable && (
+                  <div className="flex items-center">
+                    <div className="whitespace-nowrap mt-1 mr-0">Ref. til databehandleravtale</div>
+                    <DotTags items={dpProcess?.dataProcessingAgreements} markdown />
+                  </div>
+                )}
               </div>
-            </>
+            </div>
           </DataText>
 
           <DataText label="Underdatabehandler" text={''}>
@@ -247,9 +244,7 @@ const DpProcessView = () => {
             errorOnDeletion={errorDpProcessModal}
           />
         </>
-      ) : (
-        <Spinner />
-      )}
+      )}{' '}
     </>
   )
 }

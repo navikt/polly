@@ -8,7 +8,7 @@ import { Option, Select, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
-import React from 'react'
+import { useState } from 'react'
 import { searchDocuments } from '../../../api'
 import { DocumentFormValues } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
@@ -30,21 +30,22 @@ type DocumentFormProps = {
 }
 
 const DocumentForm = (props: DocumentFormProps) => {
+  const { initialValues, handleSubmit } = props
   const initialValueDataAccessClass = () => {
-    if (!props.initialValues.dataAccessClass || !codelist.isLoaded()) return []
+    if (!initialValues.dataAccessClass || !codelist.isLoaded()) return []
+
     return [
       {
-        id: props.initialValues.dataAccessClass,
-        label: codelist.getShortname(ListName.DATA_ACCESS_CLASS, props.initialValues.dataAccessClass),
+        id: initialValues.dataAccessClass,
+        label: codelist.getShortname(ListName.DATA_ACCESS_CLASS, initialValues.dataAccessClass),
       },
     ]
   }
 
-  const [isLoading, setLoading] = React.useState(false)
-  const [errorMessage, setErrorMessage] = React.useState()
-  const [dataAccessClass, setDataAccessClass] = React.useState<Option>(initialValueDataAccessClass())
+  const [isLoading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState()
+  const [dataAccessClass, setDataAccessClass] = useState<Option>(initialValueDataAccessClass())
 
-  const { initialValues, handleSubmit } = props
   const hasAccess = () => user.canWrite()
   useAwait(user.wait(), setLoading)
 
@@ -55,8 +56,8 @@ const DocumentForm = (props: DocumentFormProps) => {
     } else {
       try {
         handleSubmit(values)
-      } catch (e: any) {
-        setErrorMessage(e.message)
+      } catch (error: any) {
+        setErrorMessage(error.message)
       }
     }
   }

@@ -23,18 +23,27 @@ function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | nu
   return moment1.format(moment.HTML5_FMT.DATE)
 }
 
-const LabelWithTooltip = (props: { text: string; tooltip: string }) => (
-  <CustomizedStatefulTooltip content={props.tooltip}>
-    <div className="flex">
-      {props.text}
-      <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
-    </div>
-  </CustomizedStatefulTooltip>
-)
+interface ILabelWithTooltipProps {
+  text: string
+  tooltip: string
+}
+
+const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
+  const { text, tooltip } = props
+
+  return (
+    <CustomizedStatefulTooltip content={tooltip}>
+      <div className="flex">
+        {text}
+        <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
+      </div>
+    </CustomizedStatefulTooltip>
+  )
+}
 
 export const FieldDpProcessDates = (props: DateModalProps) => {
-  const [showDates, setShowDates] = React.useState<boolean>(props.showDates)
   const { showLabels } = props
+  const [showDates, setShowDates] = React.useState<boolean>(props.showDates)
 
   return (
     <>

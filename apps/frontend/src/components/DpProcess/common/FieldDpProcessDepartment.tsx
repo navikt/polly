@@ -1,12 +1,16 @@
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
-import * as React from 'react'
+import { useState } from 'react'
 import { DpProcessFormValues } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
 
-const FieldDpProcessDepartment = (props: { department?: string }) => {
+interface IFieldDpProcessDepartment {
+  department?: string
+}
+
+const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
   const { department } = props
-  const [value, setValue] = React.useState<Value>(
+  const [value, setValue] = useState<Value>(
     department
       ? [
           {

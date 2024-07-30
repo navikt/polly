@@ -1,4 +1,4 @@
-import { Option, StatefulSelect, Value } from 'baseui/select'
+import { OnChangeParams, Option, StatefulSelect, Value } from 'baseui/select'
 import { StatefulTabs, Tab } from 'baseui/tabs'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import moment from 'moment'
@@ -22,7 +22,7 @@ export const LastEvents = () => {
     })()
   }, [table, action])
 
-  const content = events?.content.map((event, index) => (
+  const content = events?.content.map((event: Event, index: number) => (
     <div key={event.id} className="mb-1.5">
       <ObjectLink id={event.tableId} type={event.table} disable={event.action === AuditAction.DELETE} hideUnderline>
         <div className="w-full flex justify-between">
@@ -50,7 +50,7 @@ export const LastEvents = () => {
             searchable={false}
             options={Object.keys(AuditAction).map((auditAction) => ({ id: auditAction, label: tekster[auditAction as AuditAction] }))}
             initialState={{ value: action }}
-            onChange={(params) => setAction(params.value)}
+            onChange={(params: OnChangeParams) => setAction(params.value)}
             overrides={{
               Root: {
                 style: {

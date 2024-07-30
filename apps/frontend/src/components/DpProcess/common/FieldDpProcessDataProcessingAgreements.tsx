@@ -2,13 +2,18 @@ import { Button, SHAPE } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { Input } from 'baseui/input'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import * as React from 'react'
+import { useRef, useState } from 'react'
 import { DpProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
-const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<DpProcessFormValues> }) => {
-  const [currentKeywordValue, setCurrentKeywordValue] = React.useState('')
-  const agreementRef = React.useRef<HTMLInputElement>(null)
+interface IFieldDpProcessDataProcessingAgreementsProps {
+  formikBag: FormikProps<DpProcessFormValues>
+}
+
+const FieldDpProcessDataProcessingAgreements = (props: IFieldDpProcessDataProcessingAgreementsProps) => {
+  const { formikBag } = props
+  const [currentKeywordValue, setCurrentKeywordValue] = useState('')
+  const agreementRef = useRef<HTMLInputElement>(null)
 
   const onAddAgreement = (arrayHelpers: FieldArrayRenderProps) => {
     if (!currentKeywordValue) return
@@ -30,8 +35,8 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
             placeholder="(f.eks. lenke til Websak, Confluence e.l.)"
             value={currentKeywordValue}
             onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') onAddAgreement(arrayHelpers)
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') onAddAgreement(arrayHelpers)
             }}
             onBlur={() => onAddAgreement(arrayHelpers)}
             inputRef={agreementRef}
@@ -43,7 +48,7 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
               ),
             }}
           />
-          {renderTagList(props.formikBag.values.dataProcessingAgreements, arrayHelpers)}
+          {renderTagList(formikBag.values.dataProcessingAgreements, arrayHelpers)}
         </div>
       )}
     />

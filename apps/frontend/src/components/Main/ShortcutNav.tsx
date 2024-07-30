@@ -1,6 +1,6 @@
 import { Card, CardOverrides } from 'baseui/card'
 import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
-import * as React from 'react'
+import { useState } from 'react'
 import { theme } from '../../util'
 import { primitives } from '../../util/theme'
 import RouteLink from '../common/RouteLink'
@@ -48,11 +48,12 @@ type ShortcutCardProps = {
 }
 
 export const ShortcutCard = (props: ShortcutCardProps) => {
-  const [hover, setHover] = React.useState(false)
+  const { title, subtitle, to } = props
+  const [hover, setHover] = useState(false)
 
   return (
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <RouteLink href={props.to} hideUnderline={true}>
+      <RouteLink href={to} hideUnderline={true}>
         <Card overrides={cardOverrides(hover)}>
           <div>
             <div className="flex justify-center">
@@ -67,12 +68,12 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
                   fontWeight: 'bolder',
                 }}
               >
-                {props.title}
+                {title}
               </ParagraphLarge>
             </div>
 
             <div className="flex justify-center w-full">
-              <ParagraphMedium>{props.subtitle}</ParagraphMedium>
+              <ParagraphMedium>{subtitle}</ParagraphMedium>
             </div>
           </div>
         </Card>
@@ -81,15 +82,13 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
   )
 }
 
-const ShortcutNav = () => {
-  return (
-    <div className="flex justify-between flex-wrap">
-      <ShortcutCard title="Behandlinger" subtitle="Se og endre behandlinger" to="/process" />
-      <ShortcutCard title="Opplysningstyper" subtitle="Se og endre opplysningstyper" to="/informationtype" />
-      <ShortcutCard title="Eksterne parter" subtitle="Se alle eksterne parter" to="/thirdparty" />
-      <ShortcutCard title="Dashboard" subtitle="Se statistikk over behandlinger" to="/dashboard" />
-    </div>
-  )
-}
+const ShortcutNav = () => (
+  <div className="flex justify-between flex-wrap">
+    <ShortcutCard title="Behandlinger" subtitle="Se og endre behandlinger" to="/process" />
+    <ShortcutCard title="Opplysningstyper" subtitle="Se og endre opplysningstyper" to="/informationtype" />
+    <ShortcutCard title="Eksterne parter" subtitle="Se alle eksterne parter" to="/thirdparty" />
+    <ShortcutCard title="Dashboard" subtitle="Se statistikk over behandlinger" to="/dashboard" />
+  </div>
+)
 
 export default ShortcutNav

@@ -6,8 +6,7 @@ import { Option, Select, TYPE, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
-import * as React from 'react'
-import { useEffect } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
 import { InformationtypeFormValues } from '../../constants'
@@ -27,6 +26,7 @@ type FormProps = {
 const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) => {
   const initialValueSensitivity = () => {
     if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
+
     return [
       {
         id: formInitialValues.sensitivity,
@@ -34,8 +34,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
       },
     ]
   }
+
   const initialValueMaster = () => {
     if (!formInitialValues.orgMaster || !codelist) return []
+
     return [
       {
         id: formInitialValues.orgMaster,
@@ -43,25 +45,27 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
       },
     ]
   }
+
   const initialValueTerm = async () => {
     if (!formInitialValues.term || !codelist) return []
     return [mapTermToOption(await getTerm(formInitialValues.term))]
   }
-  const keywordsRef = React.useRef<HTMLInputElement>(null)
+
+  const keywordsRef = useRef<HTMLInputElement>(null)
 
   const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
-  const [sensitivityValue, setSensitivityValue] = React.useState<Option>(initialValueSensitivity())
-  const [termValue, setTermValue] = React.useState<Option>(formInitialValues.term ? [{ id: formInitialValues.term, label: formInitialValues.term }] : [])
-  const [masterValue, setMasterValue] = React.useState<Option>(initialValueMaster())
-  const [currentKeywordValue, setCurrentKeywordValue] = React.useState('')
+  const [sensitivityValue, setSensitivityValue] = useState<Option>(initialValueSensitivity())
+  const [termValue, setTermValue] = useState<Option>(formInitialValues.term ? [{ id: formInitialValues.term, label: formInitialValues.term }] : [])
+  const [masterValue, setMasterValue] = useState<Option>(initialValueMaster())
+  const [currentKeywordValue, setCurrentKeywordValue] = useState('')
 
   useEffect(() => {
     ;(async () => {
       try {
         setTermValue(await initialValueTerm())
-      } catch (e: any) {
-        console.error('failed to get term', e)
+      } catch (error: any) {
+        console.error('failed to get term', error)
       }
     })()
   }, [formInitialValues.term])
@@ -82,8 +86,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     if (!currentKeywordValue) {
       return
     }
+
     arrayHelpers.push(currentKeywordValue)
     setCurrentKeywordValue('')
+
     if (keywordsRef && keywordsRef.current) {
       keywordsRef.current.focus()
     }
@@ -99,7 +105,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     }
   }
   return (
-    <React.Fragment>
+    <Fragment>
       <Formik
         validationSchema={infoTypeSchema()}
         initialValues={formInitialValues}
@@ -214,8 +220,8 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         value={currentKeywordValue}
                         onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
                         onBlur={() => onAddKeyword(arrayHelpers)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') onAddKeyword(arrayHelpers)
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') onAddKeyword(arrayHelpers)
                         }}
                         inputRef={keywordsRef}
                         overrides={{
@@ -352,7 +358,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
           </Form>
         )}
       />
-    </React.Fragment>
+    </Fragment>
   )
 }
 
