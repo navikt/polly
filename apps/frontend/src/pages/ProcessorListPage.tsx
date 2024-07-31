@@ -32,8 +32,8 @@ export const ProcessorListPage = () => {
         navigate(`/processor/${newDataProcessor.id}`)
       })()
       setShowCreateProcessorModal(false)
-    } catch (err: any) {
-      setModalErrorMessage(err.response.data.message)
+    } catch (error: any) {
+      setModalErrorMessage(error.response.data.message)
     }
   }
 

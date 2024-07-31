@@ -2,13 +2,13 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../api'
 import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
 import { Spinner } from '../components/common/Spinner'
-import { CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
+import { CategoryUsage, CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { ListName } from '../service/Codelist'
 import { user } from '../service/User'
@@ -18,7 +18,7 @@ export type PurposeMap = { [purpose: string]: Policy[] }
 
 const InformationtypePage = () => {
   const params = useParams<{ id?: string }>()
-  const navigate = useNavigate()
+  const navigate: NavigateFunction = useNavigate()
 
   const [error, setError] = useState(null)
   const [informationTypeId, setInformationTypeId] = useState(params.id)
@@ -32,7 +32,7 @@ const InformationtypePage = () => {
 
   useEffect(() => {
     ;(async () => {
-      let response = await getCodelistUsageByListName(ListName.CATEGORY)
+      let response: CategoryUsage = await getCodelistUsageByListName(ListName.CATEGORY)
       setCategoryUsages(response.codesInUse)
     })()
   }, [])

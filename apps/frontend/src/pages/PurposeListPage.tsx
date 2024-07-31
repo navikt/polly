@@ -28,11 +28,11 @@ export const PurposeListPage = () => {
       setShowCreateProcessModal(false)
       // todo multipurpose url
       navigate(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
-      process.disclosures.forEach((d) => {
-        updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id] }))
+      process.disclosures.forEach((disclosureItem) => {
+        updateDisclosure(convertDisclosureToFormValues({ ...disclosureItem, processIds: [...disclosureItem.processIds, newProcess.id] }))
       })
-    } catch (err: any) {
-      setErrorProcessModal(err.message)
+    } catch (error: any) {
+      setErrorProcessModal(error.message)
     }
   }
 

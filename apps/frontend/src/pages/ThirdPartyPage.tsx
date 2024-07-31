@@ -55,19 +55,19 @@ const ThirdPartyPage = () => {
       else if (disclosureList && createdDisclosure) setDisclosureList([...disclosureList, createdDisclosure])
 
       setShowCreateModal(false)
-    } catch (err: any) {
+    } catch (error: any) {
       setShowCreateModal(true)
-      setError(err.message)
+      setError(error.message)
     }
   }
 
   const handleEditDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
       let updatedDisclosure = await updateDisclosure(disclosure)
-      setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== updatedDisclosure.id), updatedDisclosure])
+      setDisclosureList([...disclosureList.filter((disclosureItem: Disclosure) => disclosureItem.id !== updatedDisclosure.id), updatedDisclosure])
       return true
-    } catch (err: any) {
-      setError(err.message)
+    } catch (error: any) {
+      setError(error.message)
       return false
     }
   }
@@ -76,11 +76,11 @@ const ThirdPartyPage = () => {
     if (!disclosure) return false
     try {
       await deleteDisclosure(disclosure.id)
-      setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== disclosure.id)])
+      setDisclosureList([...disclosureList.filter((disclosureItem: Disclosure) => disclosureItem.id !== disclosure.id)])
       setError(undefined)
       return true
-    } catch (err: any) {
-      setError(err.message)
+    } catch (error: any) {
+      setError(error.message)
       return false
     }
   }

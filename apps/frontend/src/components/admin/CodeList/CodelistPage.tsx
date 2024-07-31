@@ -1,6 +1,6 @@
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createCodelist } from '../../../api'
 import { CodeListFormValues } from '../../../constants'

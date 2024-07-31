@@ -1,11 +1,11 @@
-import { Select, Value } from 'baseui/select'
+import { OnChangeParams, Select, Value } from 'baseui/select'
 import { HeadingLarge, HeadingMedium, HeadingSmall } from 'baseui/typography'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getProcessesFor } from '../api'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
-import { Process } from '../constants'
+import { PageResponse, Process } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { ListName, codelist } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
@@ -25,7 +25,7 @@ export const LegalPage = () => {
     if (!gdprArticle && !nationalLaw) {
       return setProcesses([])
     }
-    getProcessesFor({ gdprArticle, nationalLaw }).then((result) => setProcesses(result.content))
+    getProcessesFor({ gdprArticle, nationalLaw }).then((result: PageResponse<Process>) => setProcesses(result.content))
   }, [gdprArticle, nationalLaw])
 
   return (
@@ -38,7 +38,7 @@ export const LegalPage = () => {
             maxDropdownHeight="400px"
             value={gdprArticle ? [{ id: gdprArticle }] : []}
             options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
-            onChange={(event) => navigate(location.pathname + '?' + queryString.stringify({ gdprArticle: value(event.value), nationalLaw }, { skipNull: true }))}
+            onChange={(event: OnChangeParams) => navigate(location.pathname + '?' + queryString.stringify({ gdprArticle: value(event.value), nationalLaw }, { skipNull: true }))}
           />
         </div>
         <div className="w-[40%] ml-2.5">
@@ -47,7 +47,7 @@ export const LegalPage = () => {
             maxDropdownHeight="400px"
             value={nationalLaw ? [{ id: nationalLaw }] : []}
             options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-            onChange={(event) => navigate(location.pathname + '?' + queryString.stringify({ gdprArticle, nationalLaw: value(event.value) }, { skipNull: true }))}
+            onChange={(event: OnChangeParams) => navigate(location.pathname + '?' + queryString.stringify({ gdprArticle, nationalLaw: value(event.value) }, { skipNull: true }))}
           />
         </div>
       </div>

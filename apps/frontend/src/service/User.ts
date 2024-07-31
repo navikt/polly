@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
-import { UserInfo } from '../constants'
 import { getUserInfo } from '../api'
-import {tekster} from "../util/codeToFineText";
+import { UserInfo } from '../constants'
+import { tekster } from '../util/codeToFineText'
 
 export enum Group {
   READ = 'READ',
@@ -23,8 +23,8 @@ class UserService {
   private fetchData = async () => {
     return getUserInfo()
       .then(this.handleGetResponse)
-      .catch((err) => {
-        this.error = err.message
+      .catch((error) => {
+        this.error = error.message
         this.loaded = true
       })
   }
