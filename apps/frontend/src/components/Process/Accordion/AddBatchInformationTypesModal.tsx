@@ -2,13 +2,13 @@ import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Select, Value } from 'baseui/select'
+import { OnChangeParams, Select, Value } from 'baseui/select'
 import { LabelMedium, LabelSmall } from 'baseui/typography'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
 import { getInformationTypesBy } from '../../../api'
-import { AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process } from '../../../constants'
-import { ListName, codelist } from '../../../service/Codelist'
+import { AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, PageResponse, Process } from '../../../constants'
+import { Code, ListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
@@ -25,6 +25,7 @@ type AddBatchInformationTypesProps = {
 }
 
 export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesProps) => {
+  const { isOpen, submit, onClose, process, error } = props
   const [infoTypes, setInfoTypes] = useState<InformationType[]>([])
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
   const [system, setSystem] = useState<Value>([])
@@ -33,8 +34,8 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
     ;(async () => {
       if (!system.length) return
       setSearchLoading(true)
-      const r = await getInformationTypesBy({ orgMaster: system[0].id as string })
-      setInfoTypes(r.content)
+      const response: PageResponse<InformationType> = await getInformationTypesBy({ orgMaster: system[0].id as string })
+      setInfoTypes(response.content)
       setSearchLoading(false)
     })()
   }, [system])
@@ -42,22 +43,23 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
   const onCloseModal = () => {
     setSystem([])
     setInfoTypes([])
-    props.onClose()
+    onClose()
   }
 
-  const mapToUse = (it: InformationType): DocumentInfoTypeUse => {
+  const mapToUse = (informationType: InformationType): DocumentInfoTypeUse => {
     const userCode = codelist.getCode(ListName.SUBJECT_CATEGORY, 'BRUKER')
+
     return {
-      informationType: it,
-      informationTypeId: it.id,
+      informationType: informationType,
+      informationTypeId: informationType.id,
       subjectCategories: userCode ? [userCode] : [],
     }
   }
 
   return (
-    <Modal onClose={onCloseModal} isOpen={props.isOpen} animate size={SIZE.auto} role={ROLE.dialog}>
+    <Modal onClose={onCloseModal} isOpen={isOpen} animate size={SIZE.auto} role={ROLE.dialog}>
       <Formik
-        onSubmit={props.submit}
+        onSubmit={submit}
         initialValues={
           {
             informationTypes: [],
@@ -65,7 +67,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
             linkDocumentToPolicies: false,
           } as AddDocumentToProcessFormValues
         }
-        validationSchema={addBatchInfoTypesToProcessSchema(props.process.policies)}
+        validationSchema={addBatchInfoTypesToProcessSchema(process.policies)}
         render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
           return (
             <Form onKeyDown={disableEnter}>
@@ -81,7 +83,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                       maxDropdownHeight="400px"
                       value={system}
                       placeholder="System"
-                      onChange={(params) => {
+                      onChange={(params: OnChangeParams) => {
                         setSystem(params.value)
                       }}
                     />
@@ -92,8 +94,10 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                   <FieldArray
                     name="informationTypes"
                     render={(informationTypesProps: FieldArrayRenderProps) => {
-                      const addable = infoTypes.filter((it) => !formik.values.informationTypes.find((it2) => it2.informationTypeId === it.id))
-                      const added = formik.values.informationTypes
+                      const addable = infoTypes.filter(
+                        (infoType: InformationType) => !formik.values.informationTypes.find((it2: DocumentInfoTypeUse) => it2.informationTypeId === infoType.id),
+                      )
+                      const added: DocumentInfoTypeUse[] = formik.values.informationTypes
 
                       return (
                         <>
@@ -104,10 +108,16 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                                   <div className="flex flex-col">
                                     <LabelMedium marginTop={theme.sizing.scale600}>Opplysningstyper ja</LabelMedium>
                                     <div className="flex flex-col w-full mt-4">
-                                      {addable.map((it) => (
-                                        <div key={it.id} className="flex items-center my-1">
+                                      {addable.map((informationType: InformationType) => (
+                                        <div key={informationType.id} className="flex items-center my-1">
                                           <LabelMedium>{it.name}</LabelMedium>
-                                          <Button size="compact" kind="tertiary" shape="round" tooltip="Legg til" onClick={() => informationTypesProps.push(mapToUse(it))}>
+                                          <Button
+                                            size="compact"
+                                            kind="tertiary"
+                                            shape="round"
+                                            tooltip="Legg til"
+                                            onClick={() => informationTypesProps.push(mapToUse(informationType))}
+                                          >
                                             <FontAwesomeIcon icon={faPlusCircle} />
                                           </Button>
                                         </div>
@@ -124,21 +134,21 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                           )}
 
                           <div className="flex flex-col w-full mt-4">
-                            {added.map((it: DocumentInfoTypeUse, index: number) => (
-                              <Fragment key={it.informationType.id}>
+                            {added.map((informationTypeMap: DocumentInfoTypeUse, index: number) => (
+                              <Fragment key={informationTypeMap.informationType.id}>
                                 <div className="flex justify-between items-center my-1">
                                   <LabelMedium>
-                                    <Sensitivity sensitivity={it.informationType.sensitivity} />
+                                    <Sensitivity sensitivity={informationTypeMap.informationType.sensitivity} />
                                     &nbsp;
-                                    {it.informationType.name}
+                                    {informationTypeMap.informationType.name}
                                   </LabelMedium>
 
                                   <div className="w-[60%] flex item-center">
                                     <LabelSmall marginRight={theme.sizing.scale100}>Personkategori: </LabelSmall>
                                     <Select
                                       options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
-                                      value={it.subjectCategories.map((subjectCategory) => ({ id: subjectCategory.code }))}
-                                      onChange={(params) => {
+                                      value={informationTypeMap.subjectCategories.map((subjectCategory: Code) => ({ id: subjectCategory.code }))}
+                                      onChange={(params: OnChangeParams) => {
                                         const subjectCategories = params.value.map((option) => ({ code: option.id }))
                                         informationTypesProps.replace(index, { ...it, subjectCategories })
                                       }}
@@ -171,7 +181,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
               </ModalBody>
               <ModalFooter>
                 <div className="flex justify-end">
-                  <div className="self-end">{props.error && <p>{props.error}</p>}</div>
+                  <div className="self-end">{error && <p>{error}</p>}</div>
                   <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
                     Avbryt
                   </Button>

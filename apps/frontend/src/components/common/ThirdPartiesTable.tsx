@@ -19,7 +19,7 @@ const ThirdPartiesTable = ({ informationTypes, sortName }: TableInformationTypes
       emptyText="Ingen innhentinger fra ekstern part"
       headers={
         <>
-          <HeadCell title="Navn" column={'name'} tableState={[table, sortColumn]} />
+          <HeadCell title="Navn" column="name" tableState={[table, sortColumn]} />
           <HeadCell title="Master i NAV" column={'orgMaster'} tableState={[table, sortColumn]} />
         </>
       }

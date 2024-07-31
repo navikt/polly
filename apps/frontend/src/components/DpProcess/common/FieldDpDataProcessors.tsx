@@ -1,4 +1,4 @@
-import { Option, Select } from 'baseui/select'
+import { OnChangeParams, Option, Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -18,9 +18,9 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
   useEffect(() => {
     ;(async () => {
       if (formikBag.values.subDataProcessing.processors?.length) {
-        const result = await getProcessorsByIds(formikBag.values.subDataProcessing.processors)
+        const response = await getProcessorsByIds(formikBag.values.subDataProcessing.processors)
         const resDataProcessors = new Map<string, string>()
-        result.forEach((process) => resDataProcessors.set(process.id, process.name))
+        response.forEach((process) => resDataProcessors.set(process.id, process.name))
         setSubDataProcessors(resDataProcessors)
       }
     })()
@@ -39,7 +39,7 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
                 options={options
                   .sort((a, b) => (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString()))
                   .filter((dataProcessing) => !formikBag.values.subDataProcessing.processors.includes(dataProcessing.id ? dataProcessing.id.toString() : ''))}
-                onChange={(params) => {
+                onChange={(params: OnChangeParams) => {
                   if (params.value[0].id && params.value[0].label) {
                     subDataProcessors.set(params.value[0].id.toString(), params.value[0].label.toString())
                   }
@@ -53,7 +53,7 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
             <div>
               {formikBag.values.subDataProcessing.processors &&
                 renderTagList(
-                  formikBag.values.subDataProcessing.processors.map((dataProcessing) => {
+                  formikBag.values.subDataProcessing.processors.map((dataProcessing: string) => {
                     let subDataProcessorName = ''
                     if (dataProcessing) {
                       if (subDataProcessors.has(dataProcessing)) {

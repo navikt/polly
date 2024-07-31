@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api'
 import { convertProcessorToFormValues, deleteProcessor, getProcessor, updateProcessor } from '../../api/ProcessorApi'
-import { Process, Processor, ProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER, TeamResource } from '../../constants'
+import { PageResponse, Process, Processor, ProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER, TeamResource } from '../../constants'
 import { ampli } from '../../service/Amplitude'
 import { codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
@@ -34,15 +34,19 @@ const ProcessorView = () => {
 
   ampli.logEvent('besøk', { side: 'Databehandlere', url: '/processor/:id', app: 'Behandlingskatalogen', type: 'view' })
 
-  const hasAccess = () => user.canWrite()
-  const navigate = useNavigate()
-  const params = useParams<{ id?: string }>()
+  const hasAccess = (): boolean => user.canWrite()
+  const navigate: NavigateFunction = useNavigate()
+  const params: Readonly<
+    Partial<{
+      id?: string
+    }>
+  > = useParams<{ id?: string }>()
 
   useEffect(() => {
     ;(async () => {
       if (params.id && showDeleteProcessorModal === true) {
-        let res = await getProcessesByProcessor(params.id)
-        setUsageCount(res.numberOfElements)
+        let response: PageResponse<Process> = await getProcessesByProcessor(params.id)
+        setUsageCount(response.numberOfElements)
       }
     })()
   }, [showDeleteProcessorModal])

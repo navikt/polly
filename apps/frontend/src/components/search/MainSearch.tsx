@@ -1,11 +1,11 @@
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { Select, TYPE, Value } from 'baseui/select'
-import { ReactElement, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { OnChangeParams, Select, TYPE, Value } from 'baseui/select'
+import { ChangeEvent, ReactElement, useEffect, useState } from 'react'
+import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 import { searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam } from '../../api'
 import { searchDpProcess } from '../../api/DpProcessApi'
-import { NavigableItem, ObjectType, SearchType } from '../../constants'
-import { ListName, codelist } from '../../service/Codelist'
+import { Document, DpProcess, NavigableItem, ObjectType, PageResponse, Process, ProductArea, SearchType } from '../../constants'
+import { Code, ListName, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import { useDebouncedState } from '../../util/hooks'
 import { prefixBiasedSort } from '../../util/sort'
@@ -20,8 +20,8 @@ type SearchItem = { id: string; sortKey: string; label: ReactElement; type: Navi
 const searchCodelist = (search: string, list: ListName & NavigableItem, typeName: string, backgroundColor: string) =>
   codelist
     .getCodes(list)
-    .filter((code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-    .map((code) => ({
+    .filter((code: Code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+    .map((code: Code) => ({
       id: code.code,
       sortKey: code.shortName,
       label: <SearchLabel name={code.shortName} type={typeName} backgroundColor={backgroundColor} />,
@@ -31,9 +31,9 @@ const searchCodelist = (search: string, list: ListName & NavigableItem, typeName
 const getCodelistByListnameAndType = (search: string, list: ListName, typeName: string) => {
   return codelist
     .getCodes(list)
-    .filter((code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+    .filter((code: Code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
     .map(
-      (code) =>
+      (code: Code) =>
         ({
           id: code.code,
           sortKey: code.shortName,
@@ -70,12 +70,14 @@ const useMainSearch = () => {
         if (search && search.replace(/ /g, '').length > 2) {
           let results: SearchItem[] = []
           let searches: Promise<any>[] = []
-          const compareFn = (a: SearchItem, b: SearchItem) => {
+
+          const compareFn: (a: SearchItem, b: SearchItem) => number = (a: SearchItem, b: SearchItem) => {
             if (a.type === ObjectType.PROCESS && a.number === parseInt(search)) return -1
             else if (b.type === ObjectType.PROCESS && b.number === parseInt(search)) return 1
             return prefixBiasedSort(search, a.sortKey, b.sortKey)
           }
-          const add = (items: SearchItem[]) => {
+
+          const add: (items: SearchItem[]) => void = (items: SearchItem[]) => {
             results = [...results, ...items].sort(compareFn)
             setSearchResult(results)
           }
@@ -110,16 +112,18 @@ const useMainSearch = () => {
           if (type === 'all' || type === 'process') {
             searches.push(
               (async () => {
-                const resProcess = await searchProcess(search)
+                const resProcess: PageResponse<Process> = await searchProcess(search)
+
                 add(
-                  resProcess.content.map((it) => {
-                    const purposes = it.purposes.map((p) => codelist.getShortnameForCode(p)).join(', ')
+                  resProcess.content.map((content) => {
+                    const purposes: string = content.purposes.map((purpose) => codelist.getShortnameForCode(purpose)).join(', ')
+
                     return {
-                      id: it.id,
-                      sortKey: `${it.name} ${purposes}`,
-                      label: <SearchLabel name={`${purposes}: ${it.name}`} type="Behandling" backgroundColor={searchResultColor.processBackground} />,
+                      id: content.id,
+                      sortKey: `${content.name} ${purposes}`,
+                      label: <SearchLabel name={`${purposes}: ${content.name}`} type="Behandling" backgroundColor={searchResultColor.processBackground} />,
                       type: ObjectType.PROCESS,
-                      number: it.number,
+                      number: content.number,
                     }
                   }),
                 )
@@ -130,13 +134,14 @@ const useMainSearch = () => {
           if (type === 'all' || type === 'dpprocess') {
             searches.push(
               (async () => {
-                const resProcess = await searchDpProcess(search)
+                const resProcess: PageResponse<DpProcess> = await searchDpProcess(search)
+
                 add(
-                  resProcess.content.map((it) => {
+                  resProcess.content.map((content) => {
                     return {
-                      id: it.id,
-                      sortKey: it.name,
-                      label: <SearchLabel name={it.name} type="NAV som databehandler" backgroundColor={searchResultColor.dpProcessBackground} />,
+                      id: content.id,
+                      sortKey: content.name,
+                      label: <SearchLabel name={content.name} type="NAV som databehandler" backgroundColor={searchResultColor.dpProcessBackground} />,
                       type: ObjectType.DP_PROCESS,
                     }
                   }),
@@ -150,10 +155,10 @@ const useMainSearch = () => {
               (async () => {
                 const resTeams = await searchTeam(search)
                 add(
-                  resTeams.content.map((it) => ({
-                    id: it.id,
-                    sortKey: it.name,
-                    label: <SearchLabel name={it.name} type="Team" backgroundColor={searchResultColor.teamBackground} />,
+                  resTeams.content.map((content) => ({
+                    id: content.id,
+                    sortKey: content.name,
+                    label: <SearchLabel name={content.name} type="Team" backgroundColor={searchResultColor.teamBackground} />,
                     type: 'team',
                   })),
                 )
@@ -164,12 +169,12 @@ const useMainSearch = () => {
           if (type === 'all' || type === 'productarea') {
             searches.push(
               (async () => {
-                const res = await searchProductArea(search)
+                const result: PageResponse<ProductArea> = await searchProductArea(search)
                 add(
-                  res.content.map((it) => ({
-                    id: it.id,
-                    sortKey: it.name,
-                    label: <SearchLabel name={it.name} type="Område" backgroundColor={searchResultColor.productAreaBackground} />,
+                  result.content.map((content) => ({
+                    id: content.id,
+                    sortKey: content.name,
+                    label: <SearchLabel name={content.name} type="Område" backgroundColor={searchResultColor.productAreaBackground} />,
                     type: 'productarea',
                   })),
                 )
@@ -180,12 +185,12 @@ const useMainSearch = () => {
           if (type === 'all' || type === 'document') {
             searches.push(
               (async () => {
-                const resDocs = await searchDocuments(search)
+                const resDocs: PageResponse<Document> = await searchDocuments(search)
                 add(
-                  resDocs.content.map((it) => ({
-                    id: it.id,
-                    sortKey: it.name,
-                    label: <SearchLabel name={it.name} type="Dokument" backgroundColor={searchResultColor.documentBackground} />,
+                  resDocs.content.map((content) => ({
+                    id: content.id,
+                    sortKey: content.name,
+                    label: <SearchLabel name={content.name} type="Dokument" backgroundColor={searchResultColor.documentBackground} />,
                     type: ObjectType.DOCUMENT,
                   })),
                 )
@@ -206,8 +211,8 @@ export const MainSearch = () => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
   const [filter, setFilter] = useState(false)
   const [value, setValue] = useState<Value>()
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate: NavigateFunction = useNavigate()
+  const location: Location<any> = useLocation()
 
   return (
     <div>
@@ -223,11 +228,11 @@ export const MainSearch = () => {
           aria-label="Søk"
           placeholder="Søk"
           value={value}
-          onInputChange={(event) => {
+          onInputChange={(event: ChangeEvent<HTMLInputElement>) => {
             setSearch(event.currentTarget.value)
             setValue([{ id: event.currentTarget.value, label: event.currentTarget.value }])
           }}
-          onChange={(params) => {
+          onChange={(params: OnChangeParams) => {
             const item = params.value[0] as SearchItem
             ;(async () => {
               if (item) {
@@ -237,7 +242,7 @@ export const MainSearch = () => {
               }
             })()
           }}
-          filterOptions={(options) => options}
+          filterOptions={(options: Value) => options}
           overrides={{
             SearchIcon: {
               style: {

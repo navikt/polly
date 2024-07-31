@@ -1,6 +1,6 @@
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { getResourceById, useTeamResourceSearch } from '../../../api'
 import { ProcessFormValues } from '../../../constants'
 
@@ -34,7 +34,7 @@ const FieldRiskOwner = (props: IProps) => {
               setValue(value)
               form.setFieldValue('dpia.riskOwner', value && value.length > 0 ? value[0].id : '')
             }}
-            onInputChange={(event) => setTeamResourceSearch(event.currentTarget.value)}
+            onInputChange={(event: ChangeEvent<HTMLInputElement>) => setTeamResourceSearch(event.currentTarget.value)}
             value={value}
             isLoading={teamResourceSearchLoading}
           />

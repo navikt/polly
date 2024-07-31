@@ -12,13 +12,20 @@ type ModalCreateProps = {
   onClose: () => void
 }
 
+interface ISubmitValues {
+  list: string
+  code: string
+  shortName: string
+  description: string
+}
+
 const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, submit }: ModalCreateProps) => (
   <Modal className="px-8" width="medium" open={isOpen} header={{ heading: title, closeButton: false }} onClose={() => onClose()}>
     <div>
       <Formik
         validateOnChange={false}
         validateOnBlur={false}
-        onSubmit={(values) => {
+        onSubmit={(values: ISubmitValues) => {
           submit(values)
           onClose()
         }}

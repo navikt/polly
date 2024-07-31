@@ -4,7 +4,7 @@ import { Button } from 'baseui/button'
 import { Datepicker } from 'baseui/datepicker'
 import nb from 'date-fns/locale/nb'
 import { Field, FieldProps } from 'formik'
-import moment from 'moment'
+import moment, { Moment } from 'moment'
 import { useState } from 'react'
 import { ProcessFormValues } from '../../constants'
 import { theme } from '../../util'
@@ -19,7 +19,8 @@ interface DateModalProps {
 
 function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | null | undefined) {
   if (!date) return undefined
-  const moment1 = moment(date as Date)
+
+  const moment1: Moment = moment(date as Date)
   return moment1.format(moment.HTML5_FMT.DATE)
 }
 

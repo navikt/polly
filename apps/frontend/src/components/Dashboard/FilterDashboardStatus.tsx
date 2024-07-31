@@ -1,6 +1,6 @@
 import { StatefulSelect } from 'baseui/select'
 import { LabelMedium } from 'baseui/typography'
-import { useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { ProcessStatusFilter } from '../../constants'
 import { theme } from '../../util'
 
@@ -10,7 +10,7 @@ interface IFilterDashboardStatusProps {
 
 export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
   const { setFilter } = props
-  const navigate = useNavigate()
+  const navigate: NavigateFunction = useNavigate()
   const { processStatus } = useParams<{ processStatus: ProcessStatusFilter }>()
 
   return (

@@ -1,6 +1,6 @@
 import { PLACEMENT } from 'baseui/popover'
-import { Select, TYPE } from 'baseui/select'
-import { useState } from 'react'
+import { OnChangeParams, Select, TYPE } from 'baseui/select'
+import { ChangeEvent, useState } from 'react'
 import { useInfoTypeSearch } from '../../../api'
 import { DocumentInfoTypeUse, InformationTypeShort } from '../../../constants'
 
@@ -28,8 +28,8 @@ const FieldInformationType = (props: { documentInformationType: DocumentInfoType
         },
       }}
       value={selectedInformationType as any}
-      onInputChange={(event) => setSearchKeyword(event.currentTarget.value)}
-      onChange={(params) => {
+      onInputChange={(event: ChangeEvent<HTMLInputElement>) => setSearchKeyword(event.currentTarget.value)}
+      onChange={(params: OnChangeParams) => {
         setSelectedInformationType(params.value[0] as InformationTypeShort)
         handleChange({ ...documentInformationType, informationTypeId: !params.value[0] ? '' : params.value[0].id })
       }}

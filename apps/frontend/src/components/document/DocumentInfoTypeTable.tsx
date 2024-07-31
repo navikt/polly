@@ -26,7 +26,7 @@ const DocumentInfoTypeTable = (props: DocumentInfoTypeTableProps) => {
           <Cell>
             <RouteLink href={`/informationtype/${row.informationType.id}`}>{row.informationType.name}</RouteLink>
           </Cell>
-          <Cell>{row.subjectCategories && row.subjectCategories.map((sc) => sc.shortName).join(', ')}</Cell>
+          <Cell>{row.subjectCategories && row.subjectCategories.map((subjectCategory) => subjectCategory.shortName).join(', ')}</Cell>
         </Row>
       ))}
     </Table>

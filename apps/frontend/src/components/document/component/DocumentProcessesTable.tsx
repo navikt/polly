@@ -18,16 +18,16 @@ interface DataFormat {
 }
 
 const sorting: ColumnCompares<DataFormat> = {
-  name: (a, b) => a.name.localeCompare(b.name),
-  purposes: (a, b) => (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || ''),
-  department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
-  products: (a, b) => ((a.products.length && a.products[0].shortName) || '').localeCompare((b.products.length && b.products[0].shortName) || ''),
+  name: (a: DataFormat, b: DataFormat) => a.name.localeCompare(b.name),
+  purposes: (a: DataFormat, b: DataFormat) => (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || ''),
+  department: (a: DataFormat, b: DataFormat) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
+  products: (a: DataFormat, b: DataFormat) => ((a.products.length && a.products[0].shortName) || '').localeCompare((b.products.length && b.products[0].shortName) || ''),
 }
 
 const DocumentProcessesTable = (props: DocumentProcessesProps) => {
   const { documentUsages } = props
   const [processes] = useState(
-    documentUsages.map((documentUsage) => ({
+    documentUsages.map((documentUsage: Process) => ({
       id: documentUsage.id,
       name: documentUsage.name,
       purposes: documentUsage.purposes,

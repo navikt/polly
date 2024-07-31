@@ -14,10 +14,10 @@ interface IAlphabeticListProps {
 const AlphabeticList = (props: IAlphabeticListProps) => {
   const { baseUrl } = props
   const items = props.items
-    .sort((a, b) => a.label.localeCompare(b.label))
+    .sort((a: Opt, b: Opt) => a.label.localeCompare(b.label))
     .reduce(
-      (acc, cur) => {
-        const letter = cur.label.toUpperCase()[0]
+      (acc, cur: Opt) => {
+        const letter: string = cur.label.toUpperCase()[0]
         acc[letter] = [...(acc[letter] || []), cur]
         return acc
       },
@@ -25,7 +25,7 @@ const AlphabeticList = (props: IAlphabeticListProps) => {
     )
   return (
     <>
-      {Object.keys(items).map((letter) => (
+      {Object.keys(items).map((letter: string) => (
         <div className="mb-12" key={letter}>
           <div className="flex items-center mb-6">
             <div className="w-8 h-8 bg-[#C1DBF2] rounded-[50%] flex items-center justify-center">
@@ -37,7 +37,7 @@ const AlphabeticList = (props: IAlphabeticListProps) => {
           </div>
 
           <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
-            {items[letter].map((item) => (
+            {items[letter].map((item: Opt) => (
               <FlexGridItem
                 key={item.id}
                 minWidth={'fit-content'}

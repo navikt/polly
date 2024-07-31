@@ -1,7 +1,7 @@
-import { Option, Select, TYPE } from 'baseui/select'
-import { useEffect, useState } from 'react'
+import { OnChangeParams, Option, Select, TYPE } from 'baseui/select'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { searchDocuments } from '../../api'
-import { Document, DocumentFormValues } from '../../constants'
+import { Document, DocumentFormValues, PageResponse } from '../../constants'
 import { useDebouncedState } from '../../util'
 
 type SelectDocumentProps = {
@@ -20,8 +20,8 @@ const SelectDocument = (props: SelectDocumentProps) => {
     ;(async () => {
       if (documentSearch && documentSearch.length > 2) {
         setLoadingDocuments(true)
-        const res = await searchDocuments(documentSearch)
-        setDocuments(res.content)
+        const response: PageResponse<Document> = await searchDocuments(documentSearch)
+        setDocuments(response.content)
         setLoadingDocuments(false)
       }
     })()
@@ -38,8 +38,8 @@ const SelectDocument = (props: SelectDocumentProps) => {
       maxDropdownHeight="400px"
       placeholder="Søk dokumenter"
       value={document ? [document as Option] : []}
-      onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
-      onChange={(params) => handleChange(params.value[0] as Document)}
+      onInputChange={(event: ChangeEvent<HTMLInputElement>) => setDocumentSearch(event.currentTarget.value)}
+      onChange={(params: OnChangeParams) => handleChange(params.value[0] as Document)}
       labelKey="name"
     />
   )

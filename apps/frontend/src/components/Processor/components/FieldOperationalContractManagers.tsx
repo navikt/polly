@@ -1,6 +1,6 @@
-import { Select } from 'baseui/select'
+import { OnChangeParams, Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { getResourcesByIds, useTeamResourceSearch } from '../../../api'
 import { ProcessorFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
@@ -38,7 +38,7 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
                       ?.map((operationalContractManagers) => operationalContractManagers)
                       .includes(result.id ? result.id.toString() : ''),
                 )}
-                onChange={(params) => {
+                onChange={(params: OnChangeParams) => {
                   if (params.value[0].id && params.value[0].label) {
                     resources.set(params.value[0].id.toString(), params.value[0].label.toString())
                   }
@@ -47,7 +47,7 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
                     ...params.value.map((value) => value.id),
                   ])
                 }}
-                onInputChange={(event) => setTeamResourceSearch(event.currentTarget.value)}
+                onInputChange={(event: ChangeEvent<HTMLInputElement>) => setTeamResourceSearch(event.currentTarget.value)}
                 isLoading={teamResourceSearchLoading}
               />
             </div>

@@ -34,8 +34,8 @@ const RetentionItems = (props: IRetentionItemsProps) => {
   const { formikBag } = props
 
   const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
-  const retentionYears = Math.floor(retention / 12)
-  const retentionMonths = retention - retentionYears * 12
+  const retentionYears: number = Math.floor(retention / 12)
+  const retentionMonths: number = retention - retentionYears * 12
 
   useEffect(() => {
     ;(() => formikBag.setFieldValue('retention.retentionMonths', retention === 0 ? undefined : retention))()

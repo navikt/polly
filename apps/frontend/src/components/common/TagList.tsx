@@ -6,7 +6,7 @@ export function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProp
   return (
     <Fragment>
       {list && list.length > 0
-        ? list.map((item, index) => (
+        ? list.map((item: string, index: number) => (
             <Fragment key={index}>
               {item ? (
                 <Tag

@@ -3,7 +3,7 @@ import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { DisclosureFormValues, Process, ProcessShort } from '../../constants'
-import { ListName, codelist } from '../../service/Codelist'
+import { Code, ListName, codelist } from '../../service/Codelist'
 import { useDebouncedState } from '../../util'
 import { renderTagList } from './TagList'
 
@@ -21,8 +21,8 @@ const SelectProcess = (props: SelectProcessProps) => {
     ;(async () => {
       if (search && search.length > 2) {
         setLoading(true)
-        let result = (await searchProcess(search)).content
-        const purposes = codelist.getCodes(ListName.PURPOSE).filter((c) => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+        let response: Process[] = (await searchProcess(search)).content
+        const purposes: Code[] = codelist.getCodes(ListName.PURPOSE).filter((code: Code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
 
         const processesPromise: Promise<any>[] = []
 
@@ -30,16 +30,16 @@ const SelectProcess = (props: SelectProcessProps) => {
           processesPromise.push(getProcessesByPurpose(purposes[i].code))
         }
 
-        result = [...result, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
+        response = [...response, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
 
-        result = result
+        response = response
           .map((purpose: Process) => {
             return { ...purpose, namePurpose: 'B' + purpose.number + ' ' + (purpose.purposes !== undefined ? purpose.purposes[0].shortName : '') + ': ' + purpose.name }
           })
-          .filter((p1: Process, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
+          .filter((p1: Process, index: number, self) => index === self.findIndex((p2) => p2.id === p1.id))
           .filter((p1: Process) => !formikBag.values.processes.map((value: ProcessShort) => value.id).includes(p1.id))
 
-        setProcessList(result)
+        setProcessList(response)
         setLoading(false)
       }
     })()

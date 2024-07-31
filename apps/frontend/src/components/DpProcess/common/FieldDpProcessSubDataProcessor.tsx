@@ -13,16 +13,16 @@ type FieldDpProcessSubDataProcessorProps = {
 }
 
 const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorProps) => {
-  const { formikBag } = props
+  const { formikBag, initialValues } = props
   const [processorList, setProcessorList] = useState<Processor[]>([])
   const [subDataProcessors, setSubDataProcessors] = useState(new Map<string, string>())
 
   useEffect(() => {
     ;(async () => {
-      if (props.initialValues.subDataProcessing.processors.length > 0) {
-        const result = await getProcessorsByIds(props.initialValues.subDataProcessing.processors)
+      if (initialValues.subDataProcessing.processors.length > 0) {
+        const response = await getProcessorsByIds(initialValues.subDataProcessing.processors)
         const newProcs = new Map<string, string>()
-        result.forEach((processor) => newProcs.set(processor.id, processor.name))
+        response.forEach((processor) => newProcs.set(processor.id, processor.name))
         setSubDataProcessors(newProcs)
       }
     })()
@@ -30,9 +30,9 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
 
   useEffect(() => {
     ;(async () => {
-      const result = await getAll(getProcessorsByPageAndPageSize)()
-      if (result) {
-        setProcessorList(result)
+      const response: Processor[] = await getAll(getProcessorsByPageAndPageSize)()
+      if (response) {
+        setProcessorList(response)
       }
     })()
   }, [])
@@ -54,7 +54,7 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
             <FieldDpDataProcessors
               formikBag={formikBag}
               subDataProcessors={subDataProcessors}
-              options={processorList.map((processor) => {
+              options={processorList.map((processor: Processor) => {
                 return {
                   id: processor.id,
                   label: processor.name,

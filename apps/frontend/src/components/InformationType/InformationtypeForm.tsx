@@ -2,13 +2,13 @@ import { Button, SHAPE } from 'baseui/button'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { Plus } from 'baseui/icon'
 import { Input } from 'baseui/input'
-import { Option, Select, TYPE, Value } from 'baseui/select'
+import { OnChangeParams, Option, Select, TYPE, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, Fragment, KeyboardEvent, RefObject, useEffect, useRef, useState } from 'react'
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
-import { InformationtypeFormValues } from '../../constants'
+import { InformationType, InformationtypeFormValues } from '../../constants'
 import { ListName, codelist } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
 import { Error } from '../common/ModalSchema'
@@ -50,7 +50,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     return [mapTermToOption(await getTerm(formInitialValues.term))]
   }
 
-  const keywordsRef = useRef<HTMLInputElement>(null)
+  const keywordsRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
 
   const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
@@ -81,7 +81,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     }
   }
 
-  const onAddKeyword = (arrayHelpers: FieldArrayRenderProps) => {
+  const onAddKeyword: (arrayHelpers: FieldArrayRenderProps) => void = (arrayHelpers: FieldArrayRenderProps) => {
     if (!currentKeywordValue) {
       return
     }
@@ -94,8 +94,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     }
   }
 
-  const onSubmit = async (values: InformationtypeFormValues, actions: FormikHelpers<InformationtypeFormValues>) => {
-    const searchResults = (await searchInformationType(values.name!)).content.filter((it) => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
+  const onSubmit = async (values: InformationtypeFormValues, actions: FormikHelpers<InformationtypeFormValues>): Promise<void> => {
+    const searchResults: InformationType[] = (await searchInformationType(values.name!)).content.filter(
+      (informationType) => informationType.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== informationType.id,
+    )
     if (searchResults.length > 0) {
       actions.setFieldError('name', 'Informasjonstypen eksisterer allerede')
     } else {
@@ -140,7 +142,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                       <Select
                         options={codelist.getParsedOptions(ListName.SYSTEM)}
                         value={masterValue as Value}
-                        onChange={(params) => {
+                        onChange={(params: OnChangeParams) => {
                           let master = params.value.length ? params.value[0] : undefined
                           setMasterValue(master as Option)
                           form.setFieldValue('orgMaster', master ? master.id : undefined)
@@ -169,7 +171,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         options={termSearchResult}
                         value={termValue as Value}
                         onInputChange={(event) => setTermSearch(event.currentTarget.value)}
-                        onChange={(params) => {
+                        onChange={(params: OnChangeParams) => {
                           let term = params.value.length ? params.value[0] : undefined
                           setTermValue(term ? [term as Option] : [])
                           form.setFieldValue('term', term ? term.id : undefined)
@@ -217,7 +219,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                       <Input
                         type="text"
                         value={currentKeywordValue}
-                        onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
+                        onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setCurrentKeywordValue(event.currentTarget.value)}
                         onBlur={() => onAddKeyword(arrayHelpers)}
                         onKeyDown={(event) => {
                           if (event.key === 'Enter') onAddKeyword(arrayHelpers)
@@ -280,8 +282,8 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         <LabelMedium>Nyttig å vite om opplysningstypen</LabelMedium>
                       </div>
                       <Textarea
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
+                        onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
+                          if (event.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
                         }}
                         {...field}
                         rows={5}
@@ -301,9 +303,9 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                       </div>
 
                       <Select
-                        options={codelist.getParsedOptions(ListName.SENSITIVITY).filter((s) => !s.label.includes('Ikke'))}
+                        options={codelist.getParsedOptions(ListName.SENSITIVITY).filter((sensitivity) => !sensitivity.label.includes('Ikke'))}
                         value={sensitivityValue as Value}
-                        onChange={(params) => {
+                        onChange={(params: OnChangeParams) => {
                           let sensitivity = params.value.length ? params.value[0] : undefined
                           setSensitivityValue(sensitivity as Option)
                           form.setFieldValue('sensitivity', sensitivity ? sensitivity.id : undefined)

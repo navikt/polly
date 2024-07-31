@@ -1,6 +1,6 @@
 import { Card } from 'baseui/card'
 import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { AllDashCount, DepartmentDashCount, ProcessField, ProcessState, ProcessStatusFilter, ProductAreaDashCount } from '../../constants'
 import { Section } from '../../pages/ProcessPage'
 import { clickOnPieChartSlice } from '../../util/dashboard'
@@ -22,9 +22,9 @@ type ChartsProps = {
 
 const Charts = (props: ChartsProps) => {
   const { chartData, processStatus, type, departmentCode, productAreaId } = props
-  const navigate = useNavigate()
+  const navigate: NavigateFunction = useNavigate()
 
-  const link = (processField: ProcessField, processState: ProcessState = ProcessState.UNKNOWN) => {
+  const link = (processField: ProcessField, processState: ProcessState = ProcessState.UNKNOWN): string => {
     if (!type) return `/dashboard/${processField}/${processState}/${processStatus}`
     else if (type === Section.department) return `/dashboard/${processField}/${processState}/${processStatus}?department=${departmentCode}`
     else return `/dashboard/${processField}/${processState}/${processStatus}?productarea=${productAreaId}`

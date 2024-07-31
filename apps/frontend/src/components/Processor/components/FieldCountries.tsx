@@ -1,7 +1,7 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { ProcessorFormValues } from '../../../constants'
-import { codelist } from '../../../service/Codelist'
+import { codelist, CountryCode } from '../../../service/Codelist'
 import { renderTagList } from '../../common/TagList'
 
 interface IProps {
@@ -10,7 +10,7 @@ interface IProps {
 
 const FieldCountries = (props: IProps) => {
   const { formikBag } = props
-  const countries = formikBag.values.countries
+  const countries: string[] = formikBag.values.countries
 
   return (
     <FieldArray name="countries">
@@ -21,7 +21,7 @@ const FieldCountries = (props: IProps) => {
               clearable
               options={codelist
                 .getCountryCodesOutsideEu()
-                .map((code) => ({ id: code.code, label: code.description }))
+                .map((code: CountryCode) => ({ id: code.code, label: code.description }))
                 .filter((code) => !countries.includes(code.id))}
               onChange={({ value }) => {
                 arrayHelpers.form.setFieldValue('countries', [...countries, ...value.map((value) => value.id)])
@@ -32,7 +32,7 @@ const FieldCountries = (props: IProps) => {
           <div>
             <div>
               {renderTagList(
-                countries.map((country) => codelist.countryName(country)),
+                countries.map((country: string) => codelist.countryName(country)),
                 arrayHelpers,
               )}
             </div>

@@ -69,19 +69,20 @@ const showAbroad = (abroad: DisclosureAbroad) => {
 }
 
 const AccordionDisclosure = (props: AccordionDisclosureProps) => {
+  const { expand } = props
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [showEditModal, setShowEditModal] = useState<boolean>(false)
   const [selectedDisclosure, setSelectedDisclosure] = useState<Disclosure>()
   const [isLoading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const [hasAlert, setHasAlert] = useState<boolean>(false)
-  const [expanded, setExpanded] = useState<Key[]>(props.expand ? [props.expand] : [])
+  const [expanded, setExpanded] = useState<Key[]>(expand ? [expand] : [])
 
   const { disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal } = props
 
   useEffect(() => {
-    props.expand && renewDisclosureDetails(props.expand)
-  }, [props.expand])
+    expand && renewDisclosureDetails(expand)
+  }, [expand])
 
   const renewDisclosureDetails = async (disclosureId: string) => {
     setLoading(true)
@@ -95,11 +96,11 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
   return (
     <Fragment>
       <StatelessAccordion
-        onChange={(e) => {
-          if (e.expanded.length > 0) {
-            renewDisclosureDetails(e.expanded[0].toString())
+        onChange={(event) => {
+          if (event.expanded.length > 0) {
+            renewDisclosureDetails(event.expanded[0].toString())
           }
-          setExpanded(e.expanded)
+          setExpanded(event.expanded)
         }}
         expanded={expanded}
       >

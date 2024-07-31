@@ -65,7 +65,7 @@ const ProcessorModal = (props: ModalProcessorProps) => {
     <Modal onClose={onClose} isOpen={isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
       <div className="w-[960px] px-8">
         <Formik
-          onSubmit={(values) => {
+          onSubmit={(values: ProcessorFormValues) => {
             submit(values)
           }}
           initialValues={initialValues}

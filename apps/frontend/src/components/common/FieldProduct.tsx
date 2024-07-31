@@ -9,6 +9,8 @@ type fieldProductsProps = {
 }
 
 const FieldProduct = (props: fieldProductsProps) => {
+  const { formikBag } = props
+
   return (
     <FieldArray
       name="affiliation.products"
@@ -18,16 +20,16 @@ const FieldProduct = (props: fieldProductsProps) => {
             <div className="w-full">
               <Select
                 clearable
-                options={codelist.getParsedOptions(ListName.SYSTEM).filter((o) => !props.formikBag.values.affiliation.products.includes(o.id))}
+                options={codelist.getParsedOptions(ListName.SYSTEM).filter((option) => !formikBag.values.affiliation.products.includes(option.id))}
                 onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue('affiliation.products', [...props.formikBag.values.affiliation.products, ...value.map((v) => v.id)])
+                  arrayHelpers.form.setFieldValue('affiliation.products', [...formikBag.values.affiliation.products, ...value.map((v) => v.id)])
                 }}
                 overrides={{ Placeholder: { style: { color: 'black' } } }}
               />
             </div>
             <div>
               {renderTagList(
-                props.formikBag.values.affiliation.products.map((p) => codelist.getShortname(ListName.SYSTEM, p)),
+                formikBag.values.affiliation.products.map((product: string) => codelist.getShortname(ListName.SYSTEM, product)),
                 arrayHelpers,
               )}
             </div>

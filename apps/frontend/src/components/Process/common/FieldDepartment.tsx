@@ -4,7 +4,12 @@ import { useState } from 'react'
 import { ProcessFormValues } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
 
-const FieldDepartment = (props: { department?: string; fieldName?: string }) => {
+interface IFieldDepartmentProps {
+  department?: string
+  fieldName?: string
+}
+
+const FieldDepartment = (props: IFieldDepartmentProps) => {
   const { department } = props
   const [value, setValue] = useState<Value>(
     department

@@ -1,6 +1,6 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 import Button from '../../common/Button'
 
 interface IProps {
@@ -10,8 +10,8 @@ interface IProps {
 
 export const ProcessCreatedModal = (props: IProps) => {
   const { openAddPolicy, openAddDocument } = props
-  const history = useNavigate()
-  const location = useLocation()
+  const history: NavigateFunction = useNavigate()
+  const location: Location<any> = useLocation()
   const closeModal = () => history(location.pathname)
 
   return (

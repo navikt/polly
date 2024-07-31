@@ -1,7 +1,7 @@
 import { Button, KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Radio, RadioGroup } from 'baseui/radio'
-import { Select, StatefulSelect } from 'baseui/select'
+import { OnChangeParams, Select, StatefulSelect } from 'baseui/select'
 import { Tag, VARIANT } from 'baseui/tag'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
@@ -18,7 +18,7 @@ import { Docs } from './TablePolicy'
 const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => (
   <Fragment>
     {list && list.length > 0
-      ? list.map((item, index) => (
+      ? list.map((item: string, index: number) => (
           <Fragment key={index}>
             {item ? (
               <Tag key={item} variant={VARIANT.outlined} onActionClick={() => arrayHelpers.remove(index)}>
@@ -35,8 +35,8 @@ const FieldInformationType = () => {
   const [infoTypes, setInfoTypes] = useState<InformationTypeShort[]>([])
 
   useEffect(() => {
-    getInformationTypesShort().then((its) => {
-      setInfoTypes([...its].sort((a, b) => a.name.localeCompare(b.name)))
+    getInformationTypesShort().then((informationTypeShort: InformationTypeShort[]) => {
+      setInfoTypes([...informationTypeShort].sort((a, b) => a.name.localeCompare(b.name)))
     })
   }, [])
 
@@ -50,7 +50,7 @@ const FieldInformationType = () => {
           options={infoTypes}
           placeholder={form.values.informationType ? '' : 'Søk opplysningsyper'}
           initialState={{ value: form.values.informationType }}
-          onChange={(params) => form.setFieldValue('informationType', params.value[0] as InformationTypeShort)}
+          onChange={(params: OnChangeParams) => form.setFieldValue('informationType', params.value[0] as InformationTypeShort)}
           error={!!form.errors.informationType && !!form.submitCount}
           labelKey="name"
         />
@@ -65,31 +65,29 @@ const FieldLegalBasesUse = (props: { legalBasesUse: LegalBasesUse }) => {
   return (
     <Field
       name="legalBasesUse"
-      render={({ form }: FieldProps<PolicyFormValues>) => {
-        return (
-          <div className="w-full">
-            <RadioGroup
-              value={value}
-              align="vertical"
-              error={!!form.errors.legalBasesUse && !!form.submitCount}
-              onChange={(event) => {
-                const selected = (event.target as HTMLInputElement).value
-                form.setFieldValue('legalBasesUse', selected)
-                setValue(selected as LegalBasesUse)
-              }}
-            >
-              <Radio value={LegalBasesUse.INHERITED_FROM_PROCESS}>Bruker behandlingens rettslige grunnlag</Radio>
-              <Radio value={LegalBasesUse.UNRESOLVED}>Uavklart</Radio>
-              <Radio value={LegalBasesUse.DEDICATED_LEGAL_BASES}>Har eget Behandlingsgrunnlag</Radio>
-              <Radio value={LegalBasesUse.EXCESS_INFO}>
-                <CustomizedStatefulTooltip content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.">
-                  Overskuddsinformasjon
-                </CustomizedStatefulTooltip>
-              </Radio>
-            </RadioGroup>
-          </div>
-        )
-      }}
+      render={({ form }: FieldProps<PolicyFormValues>) => (
+        <div className="w-full">
+          <RadioGroup
+            value={value}
+            align="vertical"
+            error={!!form.errors.legalBasesUse && !!form.submitCount}
+            onChange={(event) => {
+              const selected: string = (event.target as HTMLInputElement).value
+              form.setFieldValue('legalBasesUse', selected)
+              setValue(selected as LegalBasesUse)
+            }}
+          >
+            <Radio value={LegalBasesUse.INHERITED_FROM_PROCESS}>Bruker behandlingens rettslige grunnlag</Radio>
+            <Radio value={LegalBasesUse.UNRESOLVED}>Uavklart</Radio>
+            <Radio value={LegalBasesUse.DEDICATED_LEGAL_BASES}>Har eget Behandlingsgrunnlag</Radio>
+            <Radio value={LegalBasesUse.EXCESS_INFO}>
+              <CustomizedStatefulTooltip content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.">
+                Overskuddsinformasjon
+              </CustomizedStatefulTooltip>
+            </Radio>
+          </RadioGroup>
+        </div>
+      )}
     />
   )
 }
@@ -112,7 +110,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
       <Formik
         initialValues={initialValues}
         validationSchema={policySchema()}
-        onSubmit={(values) => {
+        onSubmit={(values: PolicyFormValues) => {
           submit(values)
           onClose()
         }}
@@ -167,7 +165,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                       render={(arrayHelpers: FieldArrayRenderProps) => (
                         <div className="w-full">
                           {renderTagList(
-                            formikBag.values.documentIds.map((id) => docs[id].name),
+                            formikBag.values.documentIds.map((id: string) => docs[id].name),
                             arrayHelpers,
                           )}
                         </div>

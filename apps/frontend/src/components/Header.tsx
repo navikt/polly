@@ -65,7 +65,7 @@ const AdminOptions = () => {
     <StatefulPopover
       content={({ close }) => (
         <StatefulMenu
-          items={pages.filter((p) => p.super || user.isAdmin())}
+          items={pages.filter((page) => page.super || user.isAdmin())}
           onItemSelect={(select) => {
             select.event?.preventDefault()
             close()

@@ -4,13 +4,13 @@ import { BlockProps } from 'baseui/block'
 import { Input, SIZE } from 'baseui/input'
 import { StyledLink } from 'baseui/link'
 import { Notification } from 'baseui/notification'
-import { Option, Select, Value } from 'baseui/select'
+import { OnChangeParams, Option, Select, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
 import { useState } from 'react'
 import { searchDocuments } from '../../../api'
-import { DocumentFormValues } from '../../../constants'
+import { Document, DocumentFormValues } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { useAwait } from '../../../util'
@@ -46,11 +46,14 @@ const DocumentForm = (props: DocumentFormProps) => {
   const [errorMessage, setErrorMessage] = useState()
   const [dataAccessClass, setDataAccessClass] = useState<Option>(initialValueDataAccessClass())
 
-  const hasAccess = () => user.canWrite()
+  const hasAccess = (): boolean => user.canWrite()
   useAwait(user.wait(), setLoading)
 
   const onSubmit = async (values: DocumentFormValues, actions: FormikHelpers<DocumentFormValues>) => {
-    const searchResults = (await searchDocuments(values.name)).content.filter((doc) => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id)
+    const searchResults: Document[] = (await searchDocuments(values.name)).content.filter(
+      (doc) => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id,
+    )
+
     if (searchResults.length > 0) {
       actions.setFieldError('name', 'Dokument med samme navn eksisterer allerede')
     } else {
@@ -109,7 +112,7 @@ const DocumentForm = (props: DocumentFormProps) => {
                     options={codelist.getParsedOptions(ListName.DATA_ACCESS_CLASS)}
                     value={dataAccessClass as Value}
                     placeholder={formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'}
-                    onChange={(params) => {
+                    onChange={(params: OnChangeParams) => {
                       let dac = params.value.length ? params.value[0] : undefined
                       setDataAccessClass(dac as Option)
                       form.setFieldValue('dataAccessClass', dac ? dac.id : undefined)

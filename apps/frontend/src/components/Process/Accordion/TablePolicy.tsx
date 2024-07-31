@@ -50,7 +50,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
   useEffect(() => {
     ;(async () => {
       const allIds = _.uniq(process.policies.flatMap((p) => p.documentIds)).filter((id) => !!id)
-      const docMap = (await Promise.all(allIds.map((id) => getDocument(id!)))).reduce((acc: Docs, doc) => {
+      const docMap: Docs = (await Promise.all(allIds.map((id) => getDocument(id!)))).reduce((acc: Docs, doc) => {
         acc[doc.id] = doc
         return acc
       }, {} as Docs)
@@ -73,72 +73,70 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
           </>
         }
       >
-        {table.data.map((row: Policy, index: number) => {
-          return (
-            <Fragment key={index}>
-              <Row>
-                <Cell>
-                  <div className="flex w-full justify-between">
-                    <div>
-                      <Sensitivity sensitivity={row.informationType.sensitivity} />
-                      &nbsp;
-                      <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
-                        {row.informationType.name}
-                      </RouteLink>
-                    </div>
-                    <div>
-                      <CustomizedStatefulTooltip content={() => 'Dokument'}>
-                        <div className="opacity-80">{!!row.documentIds?.length && '(' + row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') + ')'}</div>
-                      </CustomizedStatefulTooltip>
-                    </div>
-                  </div>
-                </Cell>
-
-                <Cell>{row.subjectCategories.map((sc) => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(', ')}</Cell>
-                <Cell>
+        {table.data.map((row: Policy, index: number) => (
+          <Fragment key={index}>
+            <Row>
+              <Cell>
+                <div className="flex w-full justify-between">
                   <div>
-                    <LegalBasesNotClarified alert={alert?.policies.filter((p) => p.policyId === row.id)[0]} />
+                    <Sensitivity sensitivity={row.informationType.sensitivity} />
+                    &nbsp;
+                    <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
+                      {row.informationType.name}
+                    </RouteLink>
+                  </div>
+                  <div>
+                    <CustomizedStatefulTooltip content={() => 'Dokument'}>
+                      <div className="opacity-80">{!!row.documentIds?.length && '(' + row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') + ')'}</div>
+                    </CustomizedStatefulTooltip>
+                  </div>
+                </div>
+              </Cell>
 
-                    {row.legalBases && row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
-                  </div>
-                </Cell>
-                <Cell small>
-                  <div className="flex justify-end w-full">
-                    <AuditButton id={row.id} kind="tertiary" />
-                    {hasAccess && (
-                      <>
-                        <CustomizedStatefulTooltip content="Redigér">
-                          <Button
-                            size={ButtonSize.compact}
-                            kind={KIND.tertiary}
-                            onClick={() => {
-                              setCurrentPolicy(row)
-                              setShowEditModal(true)
-                            }}
-                          >
-                            <FontAwesomeIcon title="Redigér" icon={faEdit} />
-                          </Button>
-                        </CustomizedStatefulTooltip>
-                        <CustomizedStatefulTooltip content="Slett">
-                          <Button
-                            size={ButtonSize.compact}
-                            kind={KIND.tertiary}
-                            onClick={() => {
-                              setCurrentPolicy(row)
-                              setShowDeleteModal(true)
-                            }}
-                          >
-                            <FontAwesomeIcon title="Slett" icon={faTrash} />
-                          </Button>
-                        </CustomizedStatefulTooltip>
-                      </>
-                    )}
-                  </div>
-                </Cell>
-              </Row>
-            </Fragment>
-          )
-        })}
+              <Cell>{row.subjectCategories.map((subjectCategory) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}</Cell>
+              <Cell>
+                <div>
+                  <LegalBasesNotClarified alert={alert?.policies.filter((policy) => policy.policyId === row.id)[0]} />
+
+                  {row.legalBases && row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
+                </div>
+              </Cell>
+              <Cell small>
+                <div className="flex justify-end w-full">
+                  <AuditButton id={row.id} kind="tertiary" />
+                  {hasAccess && (
+                    <>
+                      <CustomizedStatefulTooltip content="Redigér">
+                        <Button
+                          size={ButtonSize.compact}
+                          kind={KIND.tertiary}
+                          onClick={() => {
+                            setCurrentPolicy(row)
+                            setShowEditModal(true)
+                          }}
+                        >
+                          <FontAwesomeIcon title="Redigér" icon={faEdit} />
+                        </Button>
+                      </CustomizedStatefulTooltip>
+                      <CustomizedStatefulTooltip content="Slett">
+                        <Button
+                          size={ButtonSize.compact}
+                          kind={KIND.tertiary}
+                          onClick={() => {
+                            setCurrentPolicy(row)
+                            setShowDeleteModal(true)
+                          }}
+                        >
+                          <FontAwesomeIcon title="Slett" icon={faTrash} />
+                        </Button>
+                      </CustomizedStatefulTooltip>
+                    </>
+                  )}
+                </div>
+              </Cell>
+            </Row>
+          </Fragment>
+        ))}
       </Table>
 
       {showEditModal && currentPolicy && (
@@ -146,7 +144,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
           title="Rediger behandling for opplysningstype"
           initialValues={convertPolicyToFormValues(
             currentPolicy,
-            process.policies.filter((p) => p.id !== currentPolicy.id),
+            process.policies.filter((policy) => policy.id !== currentPolicy.id),
           )}
           docs={docs}
           onClose={() => {

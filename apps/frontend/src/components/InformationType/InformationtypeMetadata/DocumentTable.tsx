@@ -8,7 +8,8 @@ interface DocumentTableProps {
 }
 
 export const DocumentTable = (props: DocumentTableProps) => {
-  const [table, sortColumn] = useTable<Document, keyof Document>(props.documents, {
+  const { documents } = props
+  const [table, sortColumn] = useTable<Document, keyof Document>(documents, {
     sorting: {
       /*todo*/
     },
@@ -32,7 +33,7 @@ export const DocumentTable = (props: DocumentTableProps) => {
             <RouteLink href={`/document/${row.id}`}>{row.name}</RouteLink>
           </Cell>
           <Cell>{row.description}</Cell>
-          <Cell>{row.informationTypes.map((it) => it.informationType.name).join(', ')}</Cell>
+          <Cell>{row.informationTypes.map((informationType) => informationType.informationType.name).join(', ')}</Cell>
         </Row>
       ))}
     </Table>

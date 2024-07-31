@@ -38,8 +38,8 @@ const DocumentEditPage = () => {
     try {
       const res = await updateInformationTypesDocument(convertDocumentToFormRequest(values))
       navigate(`/document/${res.id}`)
-    } catch (err: any) {
-      console.log(err, 'ERR')
+    } catch (error: any) {
+      console.log(error, 'ERR')
     }
   }
 

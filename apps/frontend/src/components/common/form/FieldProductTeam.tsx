@@ -1,6 +1,6 @@
 import { Option, Select, Value } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps } from 'formik'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { getTeam, mapTeamToOption, useTeamSearch } from '../../../api'
 import { Error } from '../ModalSchema'
 import { renderTagList } from '../TagList'
@@ -13,7 +13,7 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
   useEffect(() => {
     ;(async () => {
       const vals: Option[] = []
-      const fs: Promise<void>[] = productTeams.map((team: string, index: number) =>
+      const response: Promise<void>[] = productTeams.map((team: string, index: number) =>
         (async () => {
           try {
             vals.push(mapTeamToOption(await getTeam(team), index))
@@ -22,7 +22,7 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
           }
         })(),
       )
-      await Promise.all(fs)
+      await Promise.all(response)
       setValues(vals.sort((value) => value.idx))
     })()
   }, [productTeams])
@@ -40,7 +40,7 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
                 onChange={({ value }) => {
                   arrayHelpers.form.setFieldValue(fieldName, [...productTeams, ...value.map((value) => value.id)])
                 }}
-                onInputChange={(event) => setTeamSearch(event.currentTarget.value)}
+                onInputChange={(event: ChangeEvent<HTMLInputElement>) => setTeamSearch(event.currentTarget.value)}
                 isLoading={teamSearchLoading}
                 overrides={{ Placeholder: { style: { color: 'black' } } }}
               />

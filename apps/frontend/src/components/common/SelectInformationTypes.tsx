@@ -2,7 +2,7 @@ import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { ChangeEvent } from 'react'
 import { useInfoTypeSearch } from '../../api'
-import { DisclosureFormValues } from '../../constants'
+import { DisclosureFormValues, InformationTypeShort } from '../../constants'
 import { renderTagList } from './TagList'
 
 type SelectInformationTypesProps = {
@@ -20,7 +20,9 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
         <div className="w-full">
           <div className="w-full">
             <Select
-              options={infoTypeSearchResult.filter((infoType) => !formikBag.values.informationTypes?.map((value) => value.id).includes(infoType.id))}
+              options={infoTypeSearchResult.filter(
+                (infoType: InformationTypeShort) => !formikBag.values.informationTypes?.map((value: InformationTypeShort) => value.id).includes(infoType.id),
+              )}
               clearable
               searchable={true}
               noResultsMsg="Ingen"
@@ -41,7 +43,7 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
           {formikBag.values.informationTypes && (
             <div>
               {renderTagList(
-                formikBag.values.informationTypes.map((informationType) => informationType.name),
+                formikBag.values.informationTypes.map((informationType: InformationTypeShort) => informationType.name),
                 arrayHelpers,
               )}
             </div>

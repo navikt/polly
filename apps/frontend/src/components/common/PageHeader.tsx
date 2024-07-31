@@ -5,8 +5,8 @@ import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api'
 import { ProductArea, Team } from '../../constants'
-import { Section, listNameForSection } from '../../pages/ProcessPage'
-import { codelist } from '../../service/Codelist'
+import { listNameForSection, Section } from '../../pages/ProcessPage'
+import { codelist, ListName } from '../../service/Codelist'
 import { theme } from '../../util'
 import { productAreaLink, teamLink } from '../../util/config'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
@@ -38,7 +38,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
   }, [code, section])
 
   const getTitle = () => {
-    let currentListName = listNameForSection(section)
+    let currentListName: ListName | undefined = listNameForSection(section)
     if (currentListName !== undefined) {
       return codelist.getShortname(currentListName, code)
     }
@@ -63,7 +63,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
   }
 
   const getDescription = () => {
-    let currentListName = listNameForSection(section)
+    let currentListName: ListName | undefined = listNameForSection(section)
     if (currentListName) {
       return codelist.getDescription(currentListName, code)
     }

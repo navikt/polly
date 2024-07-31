@@ -2,7 +2,7 @@ import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { Tab } from 'baseui/tabs'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { Disclosure, Document, InformationType, Policy } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { user } from '../../../service/User'
@@ -32,7 +32,7 @@ interface IPurposesProps {
 }
 
 const Purposes = ({ policies }: IPurposesProps) => {
-  const selectedPurpose = useQueryParam('purpose')
+  const selectedPurpose: string | undefined = useQueryParam('purpose')
   const [accordion, setAccordion] = useState(!!selectedPurpose)
 
   return (
@@ -70,7 +70,7 @@ const Disclosures = ({ disclosures }: IDisclosuresProps) => (
 export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
   const { informationtype, policies, disclosures, documents } = props
   const [activeTab, setActiveTab] = useState('purposes')
-  const navigate = useNavigate()
+  const navigate: NavigateFunction = useNavigate()
 
   return (
     <>

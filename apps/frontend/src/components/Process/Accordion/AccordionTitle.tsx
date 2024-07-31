@@ -5,7 +5,7 @@ import { SIZE as ButtonSize } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { LabelLarge } from 'baseui/typography'
-import { Ref, createRef, useState } from 'react'
+import { Ref, RefObject, createRef, useState } from 'react'
 import { ProcessShort, ProcessStatus } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
@@ -22,14 +22,14 @@ type AccordionTitleProps = {
   forwardRef?: Ref<any>
 }
 
-export const InformationTypeRef = createRef<HTMLDivElement>()
+export const InformationTypeRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
 
 const AccordionTitle = (props: AccordionTitleProps) => {
-  const { process, expanded, hasAccess, forwardRef } = props
+  const { process, expanded, hasAccess, forwardRef, editProcess, deleteProcess } = props
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
-  const today = new Date().toISOString().split('T')[0]
+  const today: string = new Date().toISOString().split('T')[0]
 
-  const isActive = today < process.end
+  const isActive: boolean = today < process.end
 
   return (
     <>
@@ -39,7 +39,7 @@ const AccordionTitle = (props: AccordionTitleProps) => {
           <span> </span>
           <Tag variant={isActive ? 'success' : 'warning'}>{isActive ? 'Aktiv' : 'Utgått'}</Tag>
           <span> </span>
-          <span>{process.purposes.map((p) => codelist.getShortname(ListName.PURPOSE, p.code)).join(', ')}: </span>
+          <span>{process.purposes.map((purpose) => codelist.getShortname(ListName.PURPOSE, purpose.code)).join(', ')}: </span>
           <span>{process.name}</span>
         </LabelLarge>
       </div>
@@ -51,7 +51,7 @@ const AccordionTitle = (props: AccordionTitleProps) => {
         {expanded && (
           <>
             <AuditButton id={process.id} marginRight />
-            <Button onClick={() => setIsExportModalOpen(true)} kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+            <Button onClick={() => setIsExportModalOpen(true)} kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
               Eksportér
             </Button>
           </>
@@ -61,12 +61,12 @@ const AccordionTitle = (props: AccordionTitleProps) => {
           <ModalHeader>Velg eksportmetode</ModalHeader>
           <ModalBody>
             <StyledLink style={{ textDecoration: 'none' }} href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
                 Eksport for intern bruk
               </Button>
             </StyledLink>
             <StyledLink style={{ textDecoration: 'none' }} href={`${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight disabled={process.status !== ProcessStatus.COMPLETED}>
+              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight disabled={process.status !== ProcessStatus.COMPLETED}>
                 Eksport for ekstern bruk
               </Button>
             </StyledLink>
@@ -75,12 +75,12 @@ const AccordionTitle = (props: AccordionTitleProps) => {
 
         {hasAccess && expanded && (
           <>
-            <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} onClick={props.editProcess} marginRight>
+            <Button kind="outline" size={ButtonSize.compact} icon={faEdit} onClick={editProcess} marginRight>
               Redigér
             </Button>
 
             <Button
-              kind={'outline'}
+              kind="outline"
               size={ButtonSize.compact}
               icon={faEdit}
               onClick={() => {
@@ -93,7 +93,7 @@ const AccordionTitle = (props: AccordionTitleProps) => {
               Rediger opplysningstyper
             </Button>
 
-            <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} onClick={props.deleteProcess}>
+            <Button kind="outline" size={ButtonSize.compact} icon={faTrash} onClick={deleteProcess}>
               Slett
             </Button>
           </>

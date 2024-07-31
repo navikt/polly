@@ -18,8 +18,8 @@ const PurposeTable = () => {
   const [filtered, setFiltered] = useState<ProcessShort[]>([])
   const [title, setTitle] = useState('')
   const { filterName, filterValue, filterStatus } = useParams<PathProps>()
-  const department = useQueryParam('department')
-  const productareaId = useQueryParam('productarea')
+  const department: string | undefined = useQueryParam('department')
+  const productareaId: string | undefined = useQueryParam('productarea')
 
   useEffect(() => {
     ;(async () => {
@@ -27,14 +27,14 @@ const PurposeTable = () => {
       changeTitle()
       if (filterName && filterValue) {
         if (department) {
-          let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
-          setFiltered(res)
+          let response: ProcessShort[] = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
+          setFiltered(response)
         } else if (productareaId) {
-          let res = await getProcessByStateAndStatusForProductArea(filterName, filterValue, filterStatus, productareaId)
-          setFiltered(res)
+          let response: ProcessShort[] = await getProcessByStateAndStatusForProductArea(filterName, filterValue, filterStatus, productareaId)
+          setFiltered(response)
         } else {
-          let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
-          setFiltered(res)
+          let response: ProcessShort[] = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
+          setFiltered(response)
         }
       }
       setLoading(false)

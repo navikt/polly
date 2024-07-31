@@ -11,7 +11,7 @@ export const RecentEditsByUser = () => {
 
   useEffect(() => {
     ;(async () => {
-      let data = await getRecentEditedProcesses()
+      let data: RecentEdits[] = await getRecentEditedProcesses()
       setRecentEdits(data)
     })()
   }, [])

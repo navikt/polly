@@ -5,7 +5,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
 import { InformationType } from '../../constants'
 import { AuditButton } from '../admin/audit/AuditButton'
@@ -24,7 +24,7 @@ export const DeleteModal = (props: IDeleteModalProps) => {
   const [infoType, setInfoType] = useState<InformationType>()
   const [policies, setPolicies] = useState<number>()
   const [documents, setDocuments] = useState<number>()
-  const navigate = useNavigate()
+  const navigate: NavigateFunction = useNavigate()
 
   useEffect(() => {
     ;(async () => {
@@ -36,7 +36,7 @@ export const DeleteModal = (props: IDeleteModalProps) => {
     })()
   }, [showDeleteModal, id, infoType])
 
-  const submitDeleteProcess = async () => {
+  const submitDeleteProcess = async (): Promise<void> => {
     try {
       await deleteInformationType(id)
       navigate('/informationtype', {
@@ -47,7 +47,7 @@ export const DeleteModal = (props: IDeleteModalProps) => {
     }
   }
 
-  const canDelete = infoType && !policies && !documents
+  const canDelete: boolean | undefined = infoType && !policies && !documents
 
   return (
     <Modal onClose={closeModal} isOpen={showDeleteModal} animate size="default">
@@ -88,7 +88,7 @@ interface IInformationTypeBannerButtonsProps {
 export const InformationTypeBannerButtons = (props: IInformationTypeBannerButtonsProps) => {
   const { id } = props
   const [useCss] = useStyletron()
-  const link = useCss({ textDecoration: 'none' })
+  const link: string = useCss({ textDecoration: 'none' })
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   return (

@@ -34,7 +34,7 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
   )
 }
 
-const parsedDepartmentName = (department: string) => {
+const parsedDepartmentName = (department: string): string => {
   if (department === 'OESA') return 'ØSA'
   return codelist.getCode(ListName.DEPARTMENT, department)?.code as string
 }

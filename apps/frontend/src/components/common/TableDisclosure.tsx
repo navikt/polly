@@ -3,7 +3,7 @@ import { KIND, SIZE } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { convertDisclosureToFormValues } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { Disclosure, DisclosureAlert, DisclosureFormValues, disclosureSort } from '../../constants'
@@ -37,7 +37,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
 
   useEffect(() => {
     ;(async () => {
-      const alertMap = (await Promise.all(list.map((list) => getAlertForDisclosure(list.id)))).reduce((acc: Alerts, alert) => {
+      const alertMap: Alerts = (await Promise.all(list.map((list: Disclosure) => getAlertForDisclosure(list.id)))).reduce((acc: Alerts, alert: DisclosureAlert) => {
         acc[alert.disclosureId] = alert
         return acc
       }, {} as Alerts)
@@ -51,12 +51,12 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
         emptyText="Ingen utlevering"
         headers={
           <>
-            {showRecipient && <HeadCell title="Mottaker" column={'recipient'} tableState={[table, sortColumn]} />}
-            <HeadCell title="Navn på utlevering" column={'name'} tableState={[table, sortColumn]} />
-            <HeadCell title="Dokument" column={'document'} tableState={[table, sortColumn]} />
-            <HeadCell title="Formål med utlevering" column={'recipientPurpose'} tableState={[table, sortColumn]} />
-            <HeadCell title="Ytterligere beskrivelse" column={'description'} tableState={[table, sortColumn]} />
-            <HeadCell title="Behandlingsgrunnlag" column={'legalBases'} tableState={[table, sortColumn]} />
+            {showRecipient && <HeadCell title="Mottaker" column="recipient" tableState={[table, sortColumn]} />}
+            <HeadCell title="Navn på utlevering" column="name" tableState={[table, sortColumn]} />
+            <HeadCell title="Dokument" column="document" tableState={[table, sortColumn]} />
+            <HeadCell title="Formål med utlevering" column="recipientPurpose" tableState={[table, sortColumn]} />
+            <HeadCell title="Ytterligere beskrivelse" column="description" tableState={[table, sortColumn]} />
+            <HeadCell title="Behandlingsgrunnlag" column="legalBases" tableState={[table, sortColumn]} />
             <HeadCell small />
           </>
         }
@@ -131,15 +131,15 @@ interface IDisclosureRowProps {
   editable: boolean
   showRecipient: boolean
   alert: DisclosureAlert
-  setSelectedDisclosure: (d: Disclosure) => void
+  setSelectedDisclosure: (disclosure: Disclosure) => void
   showEditModal: () => void
   showDeleteModal: () => void
 }
 
 const DisclosureRow = (props: IDisclosureRowProps) => {
   const { disclosure, editable, alert, showRecipient, setSelectedDisclosure, showEditModal, showDeleteModal } = props
-  const navigate = useNavigate()
-  const hasAlert = alert?.missingArt6
+  const navigate: NavigateFunction = useNavigate()
+  const hasAlert: boolean = alert?.missingArt6
 
   return (
     <Row>

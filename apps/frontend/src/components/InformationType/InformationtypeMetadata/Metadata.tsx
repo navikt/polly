@@ -4,7 +4,7 @@ import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { StyledLink } from 'baseui/link'
 import { useEffect, useState } from 'react'
 import { getTerm, mapTermToOption } from '../../../api'
-import { InformationType } from '../../../constants'
+import { InformationType, Term } from '../../../constants'
 import { Code, ListName } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { termUrl } from '../../../util/config'
@@ -29,7 +29,7 @@ const DescriptionData = (props: IDescriptionDataProps) => {
     ;(async () => {
       if (termId) {
         try {
-          const termResponse = await getTerm(termId)
+          const termResponse: Term = await getTerm(termId)
           setTerm(mapTermToOption(termResponse).label)
         } catch (error: any) {
           console.error('couldnt find term', error)

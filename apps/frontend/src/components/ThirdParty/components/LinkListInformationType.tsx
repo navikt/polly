@@ -7,12 +7,12 @@ export const LinkListInformationType = (items: InformationTypeShort[], baseUrl: 
 
   return (
     <>
-      {items.map((item, idx) => (
-        <Fragment key={idx}>
+      {items.map((item: InformationTypeShort, index: number) => (
+        <Fragment key={index}>
           <ObjectLink id={item.id} type={ObjectType.INFORMATION_TYPE}>
             {item.name}
           </ObjectLink>
-          {idx < len - 1 && <span>, </span>}
+          {index < len - 1 && <span>, </span>}
         </Fragment>
       ))}
     </>

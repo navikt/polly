@@ -138,7 +138,10 @@ export const AlertEventPage = () => {
       <div className="w-full flex mb-1.5">
         <div className="w-1/2 flex justify-start items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
-          <StatefulSelect options={Object.values(AlertEventType).map((t) => ({ id: t, label: tekster[t] }))} onChange={(params) => setType(params?.option?.id as AlertEventType)} />
+          <StatefulSelect
+            options={Object.values(AlertEventType).map((t: AlertEventType) => ({ id: t, label: tekster[t] }))}
+            onChange={(params) => setType(params?.option?.id as AlertEventType)}
+          />
         </div>
 
         <div className="w-1/2 flex justify-end items-center">
@@ -162,7 +165,7 @@ export const AlertEventPage = () => {
           </>
         }
       >
-        {state.events.content.map((event) => (
+        {state.events.content.map((event: AlertEvent) => (
           <Row key={event.id}>
             <Cell>
               {event.process ? (

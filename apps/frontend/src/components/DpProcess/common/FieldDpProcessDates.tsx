@@ -4,7 +4,7 @@ import { Button } from 'baseui/button'
 import { Datepicker } from 'baseui/datepicker'
 import nb from 'date-fns/locale/nb'
 import { Field, FieldProps } from 'formik'
-import moment from 'moment'
+import moment, { Moment } from 'moment'
 import { useState } from 'react'
 import { DpProcessFormValues } from '../../../constants'
 import { theme } from '../../../util'
@@ -19,7 +19,7 @@ interface DateModalProps {
 
 function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | null | undefined) {
   if (!date) return undefined
-  const moment1 = moment(date as Date)
+  const moment1: Moment = moment(date as Date)
   return moment1.format(moment.HTML5_FMT.DATE)
 }
 
@@ -47,13 +47,14 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
 
   return (
     <>
-      {!showDates ? (
+      {!showDates && (
         <div className="flex w-full mt-4">
           <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
             Velg datoer
           </Button>
         </div>
-      ) : (
+      )}
+      {showDates && (
         <>
           <div className="w-full">
             <div className="flex w-full">

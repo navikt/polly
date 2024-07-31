@@ -26,7 +26,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
     subjectCategories: [],
   })
 
-  const showDeleteRowButton = arrayHelpers.form.values.informationTypes.length > 1
+  const showDeleteRowButton: boolean = arrayHelpers.form.values.informationTypes.length > 1
 
   useEffect(() => {
     if (arrayHelpers.form.values.informationTypes.length < 1) arrayHelpers.push(newRow())

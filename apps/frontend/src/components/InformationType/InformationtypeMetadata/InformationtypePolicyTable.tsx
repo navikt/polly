@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getAlertForInformationType } from '../../../api/AlertApi'
-import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
-import { ListName, codelist } from '../../../service/Codelist'
+import { InformationTypeAlert, LegalBasesUse, Policy, PolicyAlert, policySort, ProcessAlert } from '../../../constants'
+import { Code, codelist, ListName } from '../../../service/Codelist'
 import { useTable } from '../../../util/hooks'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
@@ -23,10 +23,10 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
     ;(async () => {
       const infoTypeId = policies && policies.length && policies[0].informationType.id
       if (infoTypeId) {
-        const infoTypeAlert = await getAlertForInformationType(infoTypeId)
+        const infoTypeAlert: InformationTypeAlert = await getAlertForInformationType(infoTypeId)
         const reduced: Alerts = infoTypeAlert.processes
-          .flatMap((process) => process.policies)
-          .reduce((agg, policy) => {
+          .flatMap((process: ProcessAlert) => process.policies)
+          .reduce((agg: Alerts, policy: PolicyAlert) => {
             agg[policy.policyId] = policy
             return agg
           }, {} as Alerts)
@@ -40,10 +40,10 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
       emptyText="Ingen behandlinger"
       headers={
         <>
-          <HeadCell title="Overordnet behandlingsaktivitet" column={'purposes'} tableState={[table, sortColumn]} />
-          <HeadCell title="Behandling" column={'process'} tableState={[table, sortColumn]} />
-          <HeadCell title="Personkategori" column={'subjectCategories'} tableState={[table, sortColumn]} />
-          <HeadCell title="Behandlingsgrunnlag" column={'legalBases'} tableState={[table, sortColumn]} />
+          <HeadCell title="Overordnet behandlingsaktivitet" column="purposes" tableState={[table, sortColumn]} />
+          <HeadCell title="Behandling" column="process" tableState={[table, sortColumn]} />
+          <HeadCell title="Personkategori" column="subjectCategories" tableState={[table, sortColumn]} />
+          <HeadCell title="Behandlingsgrunnlag" column="legalBases" tableState={[table, sortColumn]} />
           <HeadCell title="Lagringsbehov" />
         </>
       }
@@ -53,7 +53,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
           {showPurpose && (
             <Cell>
               <div className="flex flex-col">
-                {row.purposes.map((purpose, index) => (
+                {row.purposes.map((purpose: Code, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/process/purpose/${purpose.code}`}>{codelist.getShortnameForCode(purpose)}</RouteLink>
                   </div>
@@ -67,7 +67,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
             <RouteLink href={`/process/purpose/${row.purposes[0].code}/${row.process.id}`}>{row.process && row.process.name}</RouteLink>
           </Cell>
 
-          <Cell>{row.subjectCategories.map((subjectCategory) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}</Cell>
+          <Cell>{row.subjectCategories.map((subjectCategory: Code) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}</Cell>
 
           <Cell>
             <div>

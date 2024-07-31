@@ -1,8 +1,8 @@
-import { Select, TYPE } from 'baseui/select'
+import { OnChangeParams, Select, TYPE } from 'baseui/select'
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api'
-import { Process } from '../../constants'
-import { ListName, codelist } from '../../service/Codelist'
+import { PageResponse, Process } from '../../constants'
+import { Code, ListName, codelist } from '../../service/Codelist'
 import { useDebouncedState } from '../../util'
 
 type SearchProcessProps = {
@@ -20,9 +20,9 @@ const SearchProcess = (props: SearchProcessProps) => {
     ;(async () => {
       if (search && search.length > 2) {
         setLoading(true)
-        const result = await searchProcess(search)
-        let content = result.content
-        const purposes = codelist.getCodes(ListName.PURPOSE).filter((code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+        const response: PageResponse<Process> = await searchProcess(search)
+        let content: Process[] = response.content
+        const purposes: Code[] = codelist.getCodes(ListName.PURPOSE).filter((code: Code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
         const processesPromise: Promise<any>[] = []
         for (let i = 0; i < purposes.length; i++) {
           processesPromise.push(getProcessesByPurpose(purposes[i].code))
@@ -32,7 +32,7 @@ const SearchProcess = (props: SearchProcessProps) => {
           .map((process: Process) => {
             return { ...process, namePurpose: 'B' + process.number + ' ' + (process.purposes !== undefined ? process.purposes[0].shortName : '') + ': ' + process.name }
           })
-          .filter((p1: Process, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
+          .filter((p1: Process, index: number, self) => index === self.findIndex((p2) => p2.id === p1.id))
 
         setProcessList(content)
         setLoading(false)
@@ -63,7 +63,7 @@ const SearchProcess = (props: SearchProcessProps) => {
               ]
             : []
         }
-        onChange={(params) => {
+        onChange={(params: OnChangeParams) => {
           setSelectedProcess(params.value[0] as Process)
         }}
       />

@@ -31,7 +31,7 @@ export const SimpleProcessTable = (props: IProps) => {
       if (processes) {
         const newProcessesList: ProcessShortWithEmail[] = []
         await Promise.all(
-          processes.map(async (process) => {
+          processes.map(async (process: ProcessShort) => {
             const userIdent = process.changeStamp.lastModifiedBy.split(' ')[0]
             if (userIdent !== 'migration') {
               await getResourceById(userIdent).then((result) => {
@@ -83,11 +83,13 @@ export const SimpleProcessTable = (props: IProps) => {
           </>
         }
       >
-        {table.data.map((process) => (
+        {table.data.map((process: ProcessShortWithEmail) => (
           <Row key={process.id}>
             <Cell $style={cellStyle}>
               {/* todo multipurpose url */}
-              <RouteLink href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>{process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name}</RouteLink>
+              <RouteLink href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
+                {process.purposes.map((purpose) => purpose.shortName).join(', ') + ': ' + process.name}
+              </RouteLink>
             </Cell>
             <Cell $style={cellStyle}>
               {process.affiliation.department === null ? (

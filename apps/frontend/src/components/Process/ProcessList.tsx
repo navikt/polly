@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { SIZE as ButtonSize, KIND } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
@@ -7,6 +5,7 @@ import { Modal, ModalBody, ModalHeader, SIZE as ModalSize, ROLE } from 'baseui/m
 import { StatefulSelect } from 'baseui/select'
 import { Spinner } from 'baseui/spinner'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   convertDisclosureToFormValues,
@@ -25,7 +24,7 @@ import {
   updatePolicy,
   updateProcess,
 } from '../../api'
-import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
+import { AddDocumentToProcessFormValues, LegalBasesUse, PageResponse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
 import { Section, genProcessPath } from '../../pages/ProcessPage'
 import { Code, ListName, codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
@@ -80,7 +79,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       setIsLoadingProcessList(false)
       if (moveScroll) moveScroll()
     })()
-    const pathName = current_location.pathname.split('/')[1]
+    const pathName: string = current_location.pathname.split('/')[1]
     if (pathName === 'productarea') {
       setExportHref(`${env.pollyBaseUrl}/export/process?productArea=${code}`)
     } else if (pathName === 'team') {
@@ -88,7 +87,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }, [code, filter])
 
-  const handleChangePanel = (process?: Partial<Process>) => {
+  const handleChangePanel: (process?: Partial<Process>) => void = (process?: Partial<Process>) => {
     if (process?.id !== currentProcess?.id) {
       navigate(genProcessPath(section, code, process, filter))
     }
@@ -99,7 +98,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
-  const hasAccess = () => user.canWrite()
+  const hasAccess = (): boolean => user.canWrite()
 
   const listNameToUrl = () =>
     listName &&
@@ -114,20 +113,20 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       } as { [l: string]: string }
     )[listName]
 
-  const getProcessList = async () => {
+  const getProcessList = async (): Promise<void> => {
     try {
       let list: ProcessShort[]
 
       if (current_location.pathname.includes('team')) {
-        let result = await getProcessesFor({ productTeam: code })
-        result.content ? (list = result.content as ProcessShort[]) : (list = [])
+        let response: PageResponse<Process> = await getProcessesFor({ productTeam: code })
+        response.content ? (list = response.content as ProcessShort[]) : (list = [])
       } else if (current_location.pathname.includes('productarea')) {
-        let result = await getProcessesFor({ productArea: code })
-        result.content ? (list = result.content as ProcessShort[]) : (list = [])
+        let response: PageResponse<Process> = await getProcessesFor({ productArea: code })
+        response.content ? (list = response.content as ProcessShort[]) : (list = [])
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
-      setProcessList(sortProcess(list).filter((process) => !filter || process.status === filter))
+      setProcessList(sortProcess(list).filter((process: ProcessShort) => !filter || process.status === filter))
     } catch (error: any) {
       console.log(error)
     }
@@ -143,7 +142,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     setIsLoadingProcess(false)
   }
 
-  const handleCreateProcess = async (process: ProcessFormValues) => {
+  const handleCreateProcess = async (process: ProcessFormValues): Promise<void> => {
     if (!process) return
     try {
       const newProcess = await createProcess(process)
@@ -165,7 +164,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
-  const handleEditProcess = async (values: ProcessFormValues) => {
+  const handleEditProcess = async (values: ProcessFormValues): Promise<boolean> => {
     try {
       const updatedProcess = await updateProcess(values)
       const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
@@ -184,7 +183,8 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       return false
     }
   }
-  const handleDeleteProcess = async (process: Process) => {
+
+  const handleDeleteProcess = async (process: Process): Promise<boolean> => {
     try {
       await deleteProcess(process.id)
       setProcessList(sortProcess(processList.filter((process: ProcessShort) => process.id !== process.id)))
@@ -200,11 +200,11 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
-  const handleCreatePolicy = async (values: PolicyFormValues) => {
+  const handleCreatePolicy = async (values: PolicyFormValues): Promise<boolean> => {
     if (!values || !currentProcess) return false
 
     try {
-      const policy = await createPolicy(values)
+      const policy: Policy = await createPolicy(values)
       await getProcessById(policy.process.id)
       setErrorPolicyModal(null)
       return true
@@ -215,7 +215,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
   }
   const handleEditPolicy = async (values: PolicyFormValues) => {
     try {
-      const policy = await updatePolicy(values)
+      const policy: Policy = await updatePolicy(values)
       if (currentProcess) {
         setCurrentProcess({
           ...currentProcess,
@@ -229,7 +229,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       return false
     }
   }
-  const handleDeletePolicy = async (policy?: Policy) => {
+  const handleDeletePolicy = async (policy?: Policy): Promise<boolean> => {
     if (!policy) return false
     try {
       await deletePolicy(policy.id)
@@ -244,7 +244,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
-  const handleDeleteAllPolicies = async (processId: string) => {
+  const handleDeleteAllPolicies = async (processId: string): Promise<boolean> => {
     if (!processId) return false
     try {
       await deletePoliciesByProcessId(processId)
@@ -259,7 +259,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
-  const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
+  const handleAddDocument = async (formValues: AddDocumentToProcessFormValues): Promise<boolean> => {
     try {
       const policies: PolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
         subjectCategories: infoType.subjectCategories.map((category) => category.code),
@@ -298,12 +298,12 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
           <ModalHeader>Velg eksport metode</ModalHeader>
           <ModalBody>
             <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
                 Eksport for intern bruk
               </Button>
             </StyledLink>
             <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
                 Eksport for ekstern bruk
               </Button>
             </StyledLink>

@@ -25,10 +25,10 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   const gdpr = legalBasis ? legalBasis.gdpr.code : legalBasisForm!.gdpr
   const nationalLaw = legalBasis ? legalBasis?.nationalLaw?.code : legalBasisForm!.nationalLaw
 
-  let gdprDisplay = gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, gdpr)
-  let nationalLawDisplay = nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, nationalLaw)
+  let gdprDisplay: string | undefined = gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, gdpr)
+  let nationalLawDisplay: string | undefined = nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, nationalLaw)
 
-  let descriptionText = codelist.valid(ListName.NATIONAL_LAW, nationalLaw) ? legalBasisLinkProcessor(nationalLaw!, description) : description
+  let descriptionText: string | JSX.Element[] | undefined = codelist.valid(ListName.NATIONAL_LAW, nationalLaw) ? legalBasisLinkProcessor(nationalLaw!, description) : description
 
   return (
     <span>
@@ -42,7 +42,7 @@ const lovdataBase = (nationalLaw: string): string =>
   (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) + codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
 
 const legalBasisLinkProcessor = (law: string, text?: string) => {
-  const lawCode = codelist.getDescription(ListName.NATIONAL_LAW, law)
+  const lawCode: string = codelist.getDescription(ListName.NATIONAL_LAW, law)
   if (!lawCode.match(/^\d+.*/)) {
     return text
   }

@@ -35,7 +35,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
   }, [showUsage, selectedCode])
   useEffect(() => setShowUsage(false), [tableData])
 
-  const handleEditCodelist = async (values: CodeListFormValues) => {
+  const handleEditCodelist = async (values: CodeListFormValues): Promise<void> => {
     try {
       await updateCodelist({ ...values } as Code)
       refresh()
@@ -46,7 +46,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
     }
   }
 
-  const handleDeleteCodelist = async (values: { list: string; code: string }) => {
+  const handleDeleteCodelist = async (values: { list: string; code: string }): Promise<void> => {
     try {
       await deleteCodelist(values.list, values.code)
       refresh()
@@ -57,9 +57,9 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
     }
   }
 
-  let sortedData = tableData
+  let sortedData: Code[] = tableData
 
-  const comparator = (a: Code, b: Code, orderBy: string) => {
+  const comparator = (a: Code, b: Code, orderBy: string): number => {
     switch (orderBy) {
       case 'code':
         return a.code.localeCompare(b.code)
@@ -70,7 +70,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
     }
   }
 
-  sortedData = sortedData.sort((a, b) => {
+  sortedData = sortedData.sort((a: Code, b: Code) => {
     if (sort) {
       return sort.direction === 'ascending' ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy)
     }
@@ -93,53 +93,51 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {sortedData.map((row, index) => {
-            return (
-              <Table.Row key={index}>
-                <Table.DataCell className="w-[15%] break-all"> {row.code}</Table.DataCell>
-                <Table.DataCell>{row.shortName}</Table.DataCell>
-                <Table.DataCell className="w-[15%] break-all">{row.description}</Table.DataCell>
-                <Table.DataCell>
-                  <div className="flex justify-end w-full">
-                    <Tooltip content="Vis bruk">
-                      <Button
-                        variant={row === selectedCode && showUsage ? 'primary' : 'tertiary'}
-                        onClick={() => {
-                          setSelectedCode(row)
-                          setShowUsage(true)
-                        }}
-                        icon={<GlassesIcon title="Vis bruk" />}
-                      />
-                    </Tooltip>
+          {sortedData.map((row: Code, index: number) => (
+            <Table.Row key={index}>
+              <Table.DataCell className="w-[15%] break-all"> {row.code}</Table.DataCell>
+              <Table.DataCell>{row.shortName}</Table.DataCell>
+              <Table.DataCell className="w-[15%] break-all">{row.description}</Table.DataCell>
+              <Table.DataCell>
+                <div className="flex justify-end w-full">
+                  <Tooltip content="Vis bruk">
+                    <Button
+                      variant={row === selectedCode && showUsage ? 'primary' : 'tertiary'}
+                      onClick={() => {
+                        setSelectedCode(row)
+                        setShowUsage(true)
+                      }}
+                      icon={<GlassesIcon title="Vis bruk" />}
+                    />
+                  </Tooltip>
 
-                    <AuditButtonDS id={`${row.list}-${row.code}`} variant="tertiary" />
+                  <AuditButtonDS id={`${row.list}-${row.code}`} variant="tertiary" />
 
-                    <Tooltip content="Redigér">
-                      <Button
-                        variant="tertiary"
-                        onClick={() => {
-                          setSelectedCode(row)
-                          setShowEditModal(true)
-                        }}
-                        icon={<DocPencilIcon title="Redigér" />}
-                      />
-                    </Tooltip>
+                  <Tooltip content="Redigér">
+                    <Button
+                      variant="tertiary"
+                      onClick={() => {
+                        setSelectedCode(row)
+                        setShowEditModal(true)
+                      }}
+                      icon={<DocPencilIcon title="Redigér" />}
+                    />
+                  </Tooltip>
 
-                    <Tooltip content="Slett">
-                      <Button
-                        variant="tertiary"
-                        onClick={() => {
-                          setSelectedCode(row)
-                          setShowDeleteModal(true)
-                        }}
-                        icon={<TrashIcon title="Slett" />}
-                      />
-                    </Tooltip>
-                  </div>
-                </Table.DataCell>
-              </Table.Row>
-            )
-          })}
+                  <Tooltip content="Slett">
+                    <Button
+                      variant="tertiary"
+                      onClick={() => {
+                        setSelectedCode(row)
+                        setShowDeleteModal(true)
+                      }}
+                      icon={<TrashIcon title="Slett" />}
+                    />
+                  </Tooltip>
+                </div>
+              </Table.DataCell>
+            </Table.Row>
+          ))}
         </Table.Body>
       </Table>
 

@@ -3,7 +3,7 @@ import { isNil, sum, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../../api'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
-import { Disclosure, Dpia, ObjectType, Process, ProcessStatus, Processor } from '../../../constants'
+import { Disclosure, Dpia, LegalBasis, ObjectType, Process, ProcessStatus, Processor } from '../../../constants'
 import { ListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
@@ -110,7 +110,7 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
           {process.legalBases
             .sort((a, b) => codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-            .map((legalBasis, index) => (
+            .map((legalBasis: LegalBasis, index: number) => (
               <div key={index}>
                 <LegalBasisView legalBasis={legalBasis} />
               </div>
@@ -146,16 +146,15 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="Organisering" text={''}>
-        {process.affiliation.department ? (
+        {process.affiliation.department && (
           <div>
             <span>Avdeling: </span>
             <span>
               <DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist />{' '}
             </span>
           </div>
-        ) : (
-          <span>Avdeling: Ikke utfylt</span>
         )}
+        {!!process.affiliation.department && <span>Avdeling: Ikke utfylt</span>}
         {!!process.affiliation.subDepartments.length && (
           <div>
             <div className="flex">
@@ -211,10 +210,10 @@ const ProcessData = (props: IProcessDataProps) => {
                   <div className="flex items-center">
                     <div className="whitespace-nowrap mt-4 mr-0"></div>
                     <div className="flex flex-wrap">
-                      {processors.map((dp, i) => (
-                        <div key={dp.id} className={i < processors.length ? 'mr-1.5' : ''}>
-                          <DotTag key={dp.id}>
-                            <RouteLink href={'/processor/' + dp.id}>{dp.name}</RouteLink>
+                      {processors.map((processor: Processor, index: number) => (
+                        <div key={processor.id} className={index < processors.length ? 'mr-1.5' : ''}>
+                          <DotTag key={processor.id}>
+                            <RouteLink href={'/processor/' + processor.id}>{processor.name}</RouteLink>
                           </DotTag>
                         </div>
                       ))}
@@ -268,7 +267,7 @@ const ProcessData = (props: IProcessDataProps) => {
                 <RouteLink href={'/disclosure?process=' + process.id}>Lenke til side for utleveringer</RouteLink>
               </>
             ) : (
-              disclosures.map((value) => (
+              disclosures.map((value: Disclosure) => (
                 <>
                   <ObjectLink id={value.id} type={ObjectType.DISCLOSURE}>
                     {value.recipient.shortName}: {value.name}
@@ -308,8 +307,8 @@ const Completeness = (props: ICompletenessProps) => {
     policies: process.usesAllInformationTypes || !!process.policies.length,
     completed: process.status === ProcessStatus.COMPLETED,
   }
-  const completed = sum(Object.keys(completeness).map((k) => ((completeness as any)[k] ? 1 : 0)))
-  const completables = Object.keys(completeness).length
+  const completed: number = sum(Object.keys(completeness).map((k) => ((completeness as any)[k] ? 1 : 0)))
+  const completables: number = Object.keys(completeness).length
   const color = () => {
     const perc = completed / completables
     if (perc < 0.3) return theme.colors.negative400

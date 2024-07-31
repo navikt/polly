@@ -24,7 +24,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
   const panelList = () => {
     if (!categoryUsages) return
     return categoryUsages
-      .filter((categoryUsage) => categoryUsage.informationTypes.length > 0)
+      .filter((categoryUsage: CodeUsage) => categoryUsage.informationTypes.length > 0)
       .sort((a, b) => codelist.getShortname(a.listName, a.code).localeCompare(codelist.getShortname(b.listName, b.code), 'nb'))
       .map((categoryUsage: CodeUsage) => {
         return (

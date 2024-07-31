@@ -5,7 +5,7 @@ import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } f
 import { Select, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { useReducer, useState } from 'react'
+import { KeyboardEvent, useReducer, useState } from 'react'
 import { DisclosureFormValues, Document } from '../../constants'
 import { ListName, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
@@ -82,7 +82,7 @@ const FieldTextarea = (props: FieldTextareaProps) => {
           {...field}
           placeholder={placeholder}
           rows={4}
-          onKeyDown={(enter) => {
+          onKeyDown={(enter: KeyboardEvent<HTMLTextAreaElement>) => {
             if (enter.key === 'Enter') form.setFieldValue(fieldName, fieldValue + '\n')
           }}
         />

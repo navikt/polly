@@ -15,12 +15,12 @@ const ThirdPartiesDpProcessTable = ({ dpProcesses }: TableDpProcessType) => {
 
   useEffect(() => {
     ;(async () => {
-      let teamIds = dpProcesses.map((dp) => dp.affiliation.productTeams).flat()
+      let teamIds: string[] = dpProcesses.map((dp: DpProcess) => dp.affiliation.productTeams).flat()
       let teamsPromises: Promise<Team>[] = []
       teamIds.forEach((id) => teamsPromises.push((async () => await getTeam(id))()))
-      let totalResponse = await Promise.all(teamsPromises)
+      let totalResponse: Team[] = await Promise.all(teamsPromises)
       let tempDictionary: Map<string, Team> = new Map<string, Team>()
-      totalResponse.forEach((response) => {
+      totalResponse.forEach((response: Team) => {
         if (tempDictionary.get(response.id) === undefined) {
           tempDictionary.set(response.id, response)
         }

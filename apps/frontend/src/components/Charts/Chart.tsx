@@ -39,7 +39,7 @@ interface ChartProps {
 
 export const Chart = (props: ChartProps) => {
   const { headerTitle, size, total, data, chartTitle, leftLegend, hidePercent } = props
-  const totSize = data.map((d) => d.size).reduce((a, b) => a + b, 0)
+  const totSize = data.map((data: ChartData) => data.size).reduce((a, b) => a + b, 0)
   const totalFraction = total !== undefined ? total : totSize
 
   const colorsBase = [
@@ -86,8 +86,8 @@ export const Chart = (props: ChartProps) => {
     // '#66CBEC',
   ]
 
-  const splice = Math.random() * colorsBase.length
-  const colors = [...colorsBase.slice(splice), ...colorsBase.slice(0, splice)]
+  const splice: number = Math.random() * colorsBase.length
+  const colors: string[] = [...colorsBase.slice(splice), ...colorsBase.slice(0, splice)]
 
   let s = 0
   const expData: ChartDataExpanded[] = data.map((d, idx) => {

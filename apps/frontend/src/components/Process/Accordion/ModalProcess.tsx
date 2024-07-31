@@ -3,9 +3,9 @@ import { Button, KIND } from 'baseui/button'
 import { FlexGridItem } from 'baseui/flex-grid'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
-import { Select, Value } from 'baseui/select'
+import { OnChangeParams, Select, Value } from 'baseui/select'
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { Key, useEffect, useState } from 'react'
+import { ChangeEvent, Key, useEffect, useState } from 'react'
 import { getAll, getDisclosuresByRecipient } from '../../../api'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
@@ -74,7 +74,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
   const [disclosures, setDisclosures] = useState<Disclosure[]>([])
   const [processorList, setProcessorList] = useState<Processor[]>([])
 
-  const expand = (panelKey: string) => {
+  const expand: (panelKey: string) => void = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
       setExpanded([panelKey])
     }
@@ -102,9 +102,9 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
   useEffect(() => {
     ;(async () => {
-      const result = await getAll(getProcessorsByPageAndPageSize)()
-      if (result) {
-        setProcessorList(result)
+      const response: Processor[] = await getAll(getProcessorsByPageAndPageSize)()
+      if (response) {
+        setProcessorList(response)
       }
     })()
   }, [])
@@ -219,7 +219,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                           <RadioGroup
                             value={formikBag.values.status}
                             align={ALIGN.horizontal}
-                            onChange={(event) => form.setFieldValue('status', (event.target as HTMLInputElement).value)}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => form.setFieldValue('status', (event.target as HTMLInputElement).value)}
                           >
                             <Radio value={ProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
                             <Radio value={ProcessStatus.IN_PROGRESS}>Under arbeid</Radio>
@@ -333,7 +333,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                             <FieldDataProcessors
                               formikBag={formikBag}
                               dataProcessors={dataProcessors}
-                              options={processorList.map((processor) => {
+                              options={processorList.map((processor: Processor) => {
                                 return {
                                   id: processor.id,
                                   label: processor.name,
@@ -382,8 +382,10 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                   <Select
                                     disabled={thirdParty.length === 0}
                                     noResultsMsg="Ingen eksisterende utleveringer passer til søket. Opprett ny utlevering før du legger den til her."
-                                    options={disclosures.filter((disclosure) => !formikBag.values.disclosures.map((value) => value.id).includes(disclosure.id))}
-                                    onChange={(params) => {
+                                    options={disclosures.filter(
+                                      (disclosure: Disclosure) => !formikBag.values.disclosures.map((value: Disclosure) => value.id).includes(disclosure.id),
+                                    )}
+                                    onChange={(params: OnChangeParams) => {
                                       arrayHelpers.form.setFieldValue('disclosures', [...formikBag.values.disclosures, ...params.value.map((value) => value)])
                                     }}
                                     labelKey="name"
@@ -392,7 +394,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                   />
                                   <div>
                                     {renderTagList(
-                                      formikBag.values.disclosures.map((disclosure) => disclosure.recipient.shortName + ':' + disclosure.name),
+                                      formikBag.values.disclosures.map((disclosure: Disclosure) => disclosure.recipient.shortName + ':' + disclosure.name),
                                       arrayHelpers,
                                     )}
                                   </div>

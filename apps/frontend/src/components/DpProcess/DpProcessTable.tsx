@@ -27,7 +27,7 @@ const DpProcessTable = (props: DpProcessTableProps) => {
         const newDpProcessesList: DpProcessWithEmail[] = []
         await Promise.all(
           dpProcesses.map(async (dpp: DpProcess) => {
-            const userIdent = dpp.changeStamp.lastModifiedBy.split(' ')[0]
+            const userIdent: string = dpp.changeStamp.lastModifiedBy.split(' ')[0]
             if (userIdent !== 'migration') {
               await getResourceById(userIdent).then((res) => {
                 newDpProcessesList.push({
@@ -58,7 +58,7 @@ const DpProcessTable = (props: DpProcessTableProps) => {
         }
       >
         {table.data.map((process: DpProcessWithEmail, index: number) => {
-          const isActive = today < process.end
+          const isActive: boolean = today < process.end
 
           return (
             <Row key={index}>

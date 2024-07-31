@@ -40,7 +40,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                 formikBag.setFieldValue('legalBasesOpen', false)
                 setSelectedLegalBasis(undefined)
               }}
-              submit={(values) => {
+              submit={(values: LegalBasisFormValues) => {
                 if (!values) return
                 if (selectedLegalBasis) {
                   arrayHelpers.replace(selectedLegalBasisIndex!, values)
@@ -80,8 +80,8 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                   <ListLegalBases
                     sensitivityLevel={SensitivityLevel.ART6}
                     legalBases={formikBag.values.legalBases}
-                    onRemove={(index) => arrayHelpers.remove(index)}
-                    onEdit={(index) => {
+                    onRemove={(index: number) => arrayHelpers.remove(index)}
+                    onEdit={(index: number) => {
                       setSensitivityLevel(SensitivityLevel.ART6)
                       setSelectedLegalBasis(formikBag.values.legalBases[index])
                       setSelectedLegalBasisIndex(index)
@@ -115,7 +115,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                   <ListLegalBases
                     sensitivityLevel={SensitivityLevel.ART9}
                     legalBases={formikBag.values.legalBases}
-                    onRemove={(index) => {
+                    onRemove={(index: number) => {
                       arrayHelpers.remove(index)
                     }}
                     onEdit={(index) => {

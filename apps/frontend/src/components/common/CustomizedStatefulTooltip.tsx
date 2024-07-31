@@ -1,13 +1,14 @@
-import React from 'react'
 import { PLACEMENT, StatefulTooltip, StatefulTooltipProps } from 'baseui/tooltip'
 
 const CustomizedStatefulTooltip = (props: Partial<StatefulTooltipProps>) => {
+  const { ignoreBoundary, children } = props
+
   return (
     <StatefulTooltip
       {...props}
       placement={PLACEMENT.top}
       focusLock={false}
-      ignoreBoundary={props.ignoreBoundary === false ? props.ignoreBoundary : true}
+      ignoreBoundary={ignoreBoundary === false ? ignoreBoundary : true}
       overrides={{
         Body: {
           style: {
@@ -17,7 +18,7 @@ const CustomizedStatefulTooltip = (props: Partial<StatefulTooltipProps>) => {
         },
       }}
     >
-      {props.children}
+      {children}
     </StatefulTooltip>
   )
 }

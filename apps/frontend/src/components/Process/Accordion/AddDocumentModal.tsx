@@ -4,13 +4,13 @@ import { useStyletron } from 'baseui'
 import { Button, KIND } from 'baseui/button'
 import { ListItem } from 'baseui/list'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Option, Select, TYPE } from 'baseui/select'
+import { OnChangeParams, Option, Select, TYPE } from 'baseui/select'
 import { ParagraphSmall } from 'baseui/typography'
 import { ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { getDefaultProcessDocument, searchDocuments } from '../../../api'
 import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process } from '../../../constants'
-import { ListName, codelist } from '../../../service/Codelist'
+import { Code, ListName, codelist } from '../../../service/Codelist'
 import { useDebouncedState } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
@@ -50,7 +50,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 {informationType.informationType.name}
               </div>
               <div className="opacity-80">
-                {informationType.subjectCategories.map((subjectCategory) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}
+                {informationType.subjectCategories.map((subjectCategory: Code) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}
               </div>
             </div>
             <CustomizedStatefulTooltip content="Fjern">
@@ -78,12 +78,13 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
 }
 
 export const AddDocumentModal = (props: AddDocumentProps) => {
+  const { isOpen, submit, addDefaultDocument, onClose, process, error } = props
   const [defaultDoc, setDefaultDoc] = useState<Document | undefined>()
   const [documents, setDocuments] = useState<Document[]>([])
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
 
-  const loading = !defaultDoc
+  const loading: boolean = !defaultDoc
 
   useEffect(() => {
     ;(async () => {
@@ -113,10 +114,11 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
       .map((infoType) => {
         // remove subject categories already in use for this process
         const alreadyUsedSubjectCategoriies = existingPolicies
-          .filter((p) => p.informationType.id === infoType.informationTypeId)
-          .flatMap((p) => p.subjectCategories)
-          .map((c) => c.code)
-        const remainingSubjectCategories = infoType.subjectCategories.filter((c) => alreadyUsedSubjectCategoriies.indexOf(c.code) < 0)
+          .filter((policy) => policy.informationType.id === infoType.informationTypeId)
+          .flatMap((policy) => policy.subjectCategories)
+          .map((policy) => policy.code)
+        const remainingSubjectCategories: Code[] = infoType.subjectCategories.filter((subjectCategory) => alreadyUsedSubjectCategoriies.indexOf(subjectCategory.code) < 0)
+
         return { ...infoType, subjectCategories: remainingSubjectCategories }
       })
       .filter((infoType) => !!infoType.subjectCategories.length) // remove infoTypes with no set subjectCategories
@@ -125,25 +127,25 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
   }
 
   return (
-    <Modal onClose={onCloseModal} isOpen={props.isOpen} animate size={SIZE.auto} role={ROLE.dialog}>
+    <Modal onClose={onCloseModal} isOpen={isOpen} animate size={SIZE.auto} role={ROLE.dialog}>
       {loading && <Spinner />}
       {!loading && (
         <Formik
-          onSubmit={props.submit}
+          onSubmit={submit}
           initialValues={
             {
-              document: props.addDefaultDocument ? defaultDoc : undefined,
-              informationTypes: props.addDefaultDocument ? extractInfoTypes(defaultDoc!, props.process.policies) : [],
-              process: props.process,
-              linkDocumentToPolicies: !props.addDefaultDocument,
+              document: addDefaultDocument ? defaultDoc : undefined,
+              informationTypes: addDefaultDocument ? extractInfoTypes(defaultDoc!, process.policies) : [],
+              process: process,
+              linkDocumentToPolicies: !addDefaultDocument,
             } as AddDocumentToProcessFormValues
           }
           validationSchema={addDocumentToProcessSchema()}
           render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
-            const selectDocument = (document: Document, isDefault: boolean) => {
+            const selectDocument: (document: Document, isDefault: boolean) => void = (document: Document, isDefault: boolean) => {
               formik.setFieldValue('defaultDocument', isDefault)
               formik.setFieldValue('document', document)
-              formik.setFieldValue('informationTypes', extractInfoTypes(document, props.process.policies))
+              formik.setFieldValue('informationTypes', extractInfoTypes(document, process.policies))
             }
 
             return (
@@ -168,8 +170,8 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                               options={documents}
                               placeholder="Søk dokumenter"
                               value={form.values.document ? [form.values.document as Option] : []}
-                              onInputChange={(event) => setDocumentSearch(event.currentTarget.value)}
-                              onChange={(params) => {
+                              onInputChange={(event: ChangeEvent<HTMLInputElement>) => setDocumentSearch(event.currentTarget.value)}
+                              onChange={(params: OnChangeParams) => {
                                 let document = params.value[0] as Document
                                 formik.setFieldValue('defaultDocument', false)
                                 selectDocument(document, false)
@@ -208,7 +210,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                 </ModalBody>
                 <ModalFooter>
                   <div className="flex justify-end">
-                    <div className="self-end">{props.error && <p>{props.error}</p>}</div>
+                    <div className="self-end">{error && <p>{error}</p>}</div>
                     <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
                       Avbryt
                     </Button>

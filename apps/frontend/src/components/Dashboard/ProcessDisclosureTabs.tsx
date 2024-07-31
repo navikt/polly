@@ -31,25 +31,25 @@ export const ProcessDisclosureTabs = (props: IProps) => {
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
 
-  const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
+  const handleCreateDisclosure = async (disclosure: DisclosureFormValues): Promise<void> => {
     try {
-      let createdDisclosure = await createDisclosure(disclosure)
+      let createdDisclosure: Disclosure = await createDisclosure(disclosure)
 
       if (!disclosureData || disclosureData.length < 1) setDisclosureData([createdDisclosure])
       else if (disclosureData && createdDisclosure) setDisclosureData([...disclosureData, createdDisclosure])
 
       setShowCreateDisclosureModal(false)
-    } catch (err: any) {
+    } catch (error: any) {
       setShowCreateDisclosureModal(true)
-      setError(err.message)
+      setError(error.message)
     }
   }
 
-  const handleEditDisclosure = async (disclosure: DisclosureFormValues) => {
+  const handleEditDisclosure = async (disclosure: DisclosureFormValues): Promise<boolean> => {
     try {
       let editedDisclosure = await updateDisclosure(disclosure)
 
-      const newDisclosureData = disclosureData.map((disclosure: Disclosure) => {
+      const newDisclosureData: Disclosure[] = disclosureData.map((disclosure: Disclosure) => {
         if (disclosure.id === editedDisclosure.id) {
           return editedDisclosure
         } else return disclosure
@@ -64,7 +64,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     }
   }
 
-  const handleDeleteDisclosure = async (disclosure: Disclosure) => {
+  const handleDeleteDisclosure = async (disclosure: Disclosure): Promise<boolean> => {
     if (!disclosure) return false
 
     try {

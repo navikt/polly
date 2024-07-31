@@ -3,7 +3,7 @@ import { SIZE as ButtonSize } from 'baseui/button'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useReducer, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { getResourceById } from '../../api'
 import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
@@ -24,8 +24,12 @@ import { DpProcessDeleteModal } from './DpProcessDeleteModal'
 import DpProcessModal from './DpProcessModal'
 
 const DpProcessView = () => {
-  const navigate = useNavigate()
-  const params = useParams<{ id?: string }>()
+  const navigate: NavigateFunction = useNavigate()
+  const params: Readonly<
+    Partial<{
+      id?: string
+    }>
+  > = useParams<{ id?: string }>()
   const [dpProcess, setDpProcess] = useState<DpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
   const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
@@ -37,13 +41,13 @@ const DpProcessView = () => {
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
 
-  const isDataProcessingAgreementsAvailable = !!dpProcess?.dataProcessingAgreements.length
+  const isDataProcessingAgreementsAvailable: boolean = !!dpProcess?.dataProcessingAgreements.length
 
-  const handleEditDpProcess = async (dpProcess: DpProcessFormValues) => {
+  const handleEditDpProcess = async (dpProcess: DpProcessFormValues): Promise<void> => {
     if (!dpProcess) return
     try {
       if (dpProcess.id) {
-        const updatedDpProcess = await updateDpProcess(dpProcess.id, dpProcess)
+        const updatedDpProcess: DpProcess = await updateDpProcess(dpProcess.id, dpProcess)
         setDpProcess(updatedDpProcess)
       }
       setErrorDpProcessModal('')
@@ -57,7 +61,7 @@ const DpProcessView = () => {
     }
   }
 
-  const handleDeleteDpProcess = async (id?: string) => {
+  const handleDeleteDpProcess = async (id?: string): Promise<void> => {
     try {
       if (id) {
         await deleteDpProcess(id)
@@ -87,14 +91,14 @@ const DpProcessView = () => {
   useEffect(() => {
     ;(async () => {
       if (dpProcess?.subDataProcessing.processors.length) {
-        const result = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
-        setProcessors([...result])
+        const response = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
+        setProcessors([...response])
       }
 
       if (dpProcess) {
         const userIdent = dpProcess.changeStamp.lastModifiedBy.split(' ')[0]
         await getResourceById(userIdent)
-          .then((result) => setLastModifiedUserEmail(result.email))
+          .then((response) => setLastModifiedUserEmail(response.email))
           .catch((error) => console.log('Unable to get email for user that last modified'))
       }
     })()
@@ -121,7 +125,7 @@ const DpProcessView = () => {
           <div className="mt-4">
             <DataText label="Behandlingsnummer" text={'D' + dpProcess?.dpProcessNumber.toString()} />
           </div>
-          <DataText label="Behandlingsansvarlig" text={''}>
+          <DataText label="Behandlingsansvarlig" text="">
             <span>
               {!!dpProcess?.externalProcessResponsible ? (
                 <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>{codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}</RouteLink>
@@ -135,18 +139,18 @@ const DpProcessView = () => {
 
           <DataText label="Formål" text={dpProcess?.purposeDescription} />
 
-          <DataText label="Gyldighetsperiode for behandlingen" text={''}>
+          <DataText label="Gyldighetsperiode for behandlingen" text="">
             <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
           </DataText>
 
           <DataText label="Behandles det særlige kategorier av personopplysninger?" text={boolToText(dpProcess?.art9)} />
           <DataText label="Behandles det personopplysninger om straffedommer og lovovertredelser?" text={boolToText(dpProcess?.art10)} />
 
-          <DataText label="System" text={''}>
+          <DataText label="System" text="">
             {dpProcess && <DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist />}
           </DataText>
 
-          <DataText label="Organisering" text={''}>
+          <DataText label="Organisering" text="">
             {dpProcess?.affiliation.department ? (
               <div>
                 <span>Avdeling: </span>
@@ -171,12 +175,12 @@ const DpProcessView = () => {
               {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : 'Ikke utfylt'}
             </div>
           </DataText>
-          <DataText label="Lagringsbehov" text={''}>
+          <DataText label="Lagringsbehov" text="">
             <div>
               <RetentionView retention={dpProcess?.retention} />
             </div>
           </DataText>
-          <DataText label="Databehandleravtale med behandlingsansvarlig" text={''}>
+          <DataText label="Databehandleravtale med behandlingsansvarlig" text="">
             <div>
               <div>
                 {isDataProcessingAgreementsAvailable && (
@@ -189,7 +193,7 @@ const DpProcessView = () => {
             </div>
           </DataText>
 
-          <DataText label="Underdatabehandler" text={''}>
+          <DataText label="Underdatabehandler" text="">
             <>
               {dpProcess?.subDataProcessing?.dataProcessor === null && 'Uavklart om databehandler brukes'}
               {dpProcess?.subDataProcessing?.dataProcessor === false && 'Databehandler benyttes ikke'}
@@ -203,10 +207,10 @@ const DpProcessView = () => {
                       <div className="flex items-center">
                         <div className="whitespace-nowrap mt-4 mr-0" />
                         <div className="flex flexWrap">
-                          {processors.map((dp, i) => (
-                            <div className={i < processors.length ? 'mr-1.5' : ''}>
-                              <DotTag key={dp.id}>
-                                <RouteLink href={'/processor/' + dp.id}>{dp.name}</RouteLink>
+                          {processors.map((processor: Processor, index) => (
+                            <div className={index < processors.length ? 'mr-1.5' : ''}>
+                              <DotTag key={processor.id}>
+                                <RouteLink href={'/processor/' + processor.id}>{processor.name}</RouteLink>
                               </DotTag>
                             </div>
                           ))}
@@ -222,9 +226,8 @@ const DpProcessView = () => {
             <div className="flex justify-end">
               <span>
                 <i>
-                  {`Sist endret av `}
-                  <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
-                  {` ${lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}`}
+                  Sist endret av <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
+                  {lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}
                 </i>
               </span>
             </div>

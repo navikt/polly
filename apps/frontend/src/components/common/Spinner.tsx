@@ -2,7 +2,12 @@ import { withStyle } from 'baseui'
 import { Spinner as BaseUISpinner } from 'baseui/spinner'
 import { theme } from '../../util'
 
-export const Spinner = (props: { size?: string; margin?: string }) => {
+interface IProps {
+  size?: string
+  margin?: string
+}
+
+export const Spinner = (props: IProps) => {
   const { margin } = props
   const size = props.size || theme.sizing.scale1200
   const SpinnerStyled = withStyle(BaseUISpinner, { width: size, height: size })

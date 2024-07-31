@@ -82,95 +82,93 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
       onSubmit={(values, form) => submit(values)}
       validationSchema={legalBasisSchema()}
       initialValues={initialValues}
-      render={(form: FormikProps<LegalBasisFormValues>) => {
-        return (
-          <Card>
-            {renderCardHeader(
-              sensitivityLevel === SensitivityLevel.ART9 ? 'Behandlingsgrunnlag for særlige kategorier' : 'Behandlingsgrunnlag',
-              sensitivityLevel === SensitivityLevel.ART9 ? SensitivityLevel.ART9 : SensitivityLevel.ART6,
-            )}
-            <div className="flex mt-4 w-full">
-              <Field
-                name="gdpr"
-                render={() => (
-                  <Select
-                    autoFocus={true}
-                    options={getOptionsBySensitivityLevel()}
-                    placeholder={sensitivityLevel === SensitivityLevel.ART9 ? 'Velg fra artikkel 9' : 'Velg fra artikkel 6'}
-                    maxDropdownHeight="300px"
-                    type={TYPE.search}
-                    onChange={({ value }) => {
-                      setGdpr(value)
-                      form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
-                    }}
-                    value={gdpr}
-                    error={!!form.errors.gdpr && !!form.submitCount}
-                    overrides={{ Placeholder: { style: { color: 'black' } } }}
-                  />
-                )}
-              />
-            </div>
-            <Error fieldName="gdpr" />
+      render={(form: FormikProps<LegalBasisFormValues>) => (
+        <Card>
+          {renderCardHeader(
+            sensitivityLevel === SensitivityLevel.ART9 ? 'Behandlingsgrunnlag for særlige kategorier' : 'Behandlingsgrunnlag',
+            sensitivityLevel === SensitivityLevel.ART9 ? SensitivityLevel.ART9 : SensitivityLevel.ART6,
+          )}
+          <div className="flex mt-4 w-full">
+            <Field
+              name="gdpr"
+              render={() => (
+                <Select
+                  autoFocus={true}
+                  options={getOptionsBySensitivityLevel()}
+                  placeholder={sensitivityLevel === SensitivityLevel.ART9 ? 'Velg fra artikkel 9' : 'Velg fra artikkel 6'}
+                  maxDropdownHeight="300px"
+                  type={TYPE.search}
+                  onChange={({ value }) => {
+                    setGdpr(value)
+                    form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
+                  }}
+                  value={gdpr}
+                  error={!!form.errors.gdpr && !!form.submitCount}
+                  overrides={{ Placeholder: { style: { color: 'black' } } }}
+                />
+              )}
+            />
+          </div>
+          <Error fieldName="gdpr" />
 
-            <div className={`mt-4 w-full ${codelist.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}>
-              <Field
-                name="nationalLaw"
-                render={() => (
-                  <Select
-                    options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-                    placeholder="Velg lov eller forskrift"
-                    maxDropdownHeight="300px"
-                    type={TYPE.search}
-                    onChange={({ value }) => {
-                      setNationalLaw(value)
-                      form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
-                    }}
-                    value={nationalLaw}
-                    error={!!form.errors.nationalLaw && !!form.submitCount}
-                  />
-                )}
-              />
-            </div>
-            <Error fieldName="nationalLaw" />
-            <div className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}>
-              <Field
-                name="description"
-                render={({ field }: FieldProps<string, LegalBasisFormValues>) => (
-                  <StatefulInput
-                    {...field}
-                    initialState={{ value: initValue.description }}
-                    placeholder={customizeNationalLawPlaceholder(gdpr)}
-                    error={!!form.errors.description && !!form.submitCount}
-                    startEnhancer={() => (
-                      <span>
-                        <FontAwesomeIcon icon={faPen} />
-                      </span>
-                    )}
-                  />
-                )}
-              />
-            </div>
-            <Error fieldName="description" />
-            <div className="flex mt-4 w-full justify-end">
-              <Button type="button" kind={KIND.tertiary} size={ButtonSize.compact} onClick={() => hideCard()}>
-                Avbryt
-              </Button>
-              <Button type="button" kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
-                {titleSubmitButton}
-              </Button>
-            </div>
+          <div className={`mt-4 w-full ${codelist.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}>
+            <Field
+              name="nationalLaw"
+              render={() => (
+                <Select
+                  options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
+                  placeholder="Velg lov eller forskrift"
+                  maxDropdownHeight="300px"
+                  type={TYPE.search}
+                  onChange={({ value }) => {
+                    setNationalLaw(value)
+                    form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
+                  }}
+                  value={nationalLaw}
+                  error={!!form.errors.nationalLaw && !!form.submitCount}
+                />
+              )}
+            />
+          </div>
+          <Error fieldName="nationalLaw" />
+          <div className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}>
+            <Field
+              name="description"
+              render={({ field }: FieldProps<string, LegalBasisFormValues>) => (
+                <StatefulInput
+                  {...field}
+                  initialState={{ value: initValue.description }}
+                  placeholder={customizeNationalLawPlaceholder(gdpr)}
+                  error={!!form.errors.description && !!form.submitCount}
+                  startEnhancer={() => (
+                    <span>
+                      <FontAwesomeIcon icon={faPen} />
+                    </span>
+                  )}
+                />
+              )}
+            />
+          </div>
+          <Error fieldName="description" />
+          <div className="flex mt-4 w-full justify-end">
+            <Button type="button" kind={KIND.tertiary} size={ButtonSize.compact} onClick={() => hideCard()}>
+              Avbryt
+            </Button>
+            <Button type="button" kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
+              {titleSubmitButton}
+            </Button>
+          </div>
 
-            {form.values.gdpr && (
-              <>
-                <div className="flex mt-4 w-full">Forhåndsvisning</div>
-                <div className="flex mt-4 w-full ">
-                  <LegalBasisView legalBasisForm={form.values} />
-                </div>
-              </>
-            )}
-          </Card>
-        )
-      }}
+          {form.values.gdpr && (
+            <>
+              <div className="flex mt-4 w-full">Forhåndsvisning</div>
+              <div className="flex mt-4 w-full ">
+                <LegalBasisView legalBasisForm={form.values} />
+              </div>
+            </>
+          )}
+        </Card>
+      )}
     />
   )
 }

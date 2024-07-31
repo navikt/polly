@@ -1,7 +1,7 @@
 import { useStyletron } from 'baseui'
 import { KIND } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { AuditItem, NavigableItem, ObjectType } from '../../constants'
 import { ListName } from '../../service/Codelist'
 import { AuditButton } from '../admin/audit/AuditButton'
@@ -14,7 +14,7 @@ type RouteLinkProps = {
 
 const RouteLink = (props: RouteLinkProps & any) => {
   const { hideUnderline, plain, ...restprops } = props
-  const navigate = useNavigate()
+  const navigate: NavigateFunction = useNavigate()
 
   const [useCss] = useStyletron()
   const css = useCss({
