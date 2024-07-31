@@ -1,14 +1,16 @@
-import { Field, FieldProps } from 'formik'
 import { Input } from 'baseui/input'
-import * as React from 'react'
+import { Field, FieldProps } from 'formik'
 
-const FieldInput = (props: { fieldName: string; fieldValue?: string | number; placeHolder?: string }) => {
-  return (
-    <Field
-      name={props.fieldName}
-      render={({ field, form }: FieldProps<string>) => <Input {...field} size="compact" placeholder={!!props.placeHolder ? props.placeHolder : ''} />}
-    />
-  )
+interface IFieldInputProps {
+  fieldName: string
+  fieldValue?: string | number
+  placeHolder?: string
+}
+
+const FieldInput = (props: IFieldInputProps) => {
+  const { fieldName, placeHolder } = props
+
+  return <Field name={fieldName} render={({ field, form }: FieldProps<string>) => <Input {...field} size="compact" placeholder={!!placeHolder ? placeHolder : ''} />} />
 }
 
 export default FieldInput

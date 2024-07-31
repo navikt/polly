@@ -1,10 +1,10 @@
 import { StyledLink } from 'baseui/link'
-import * as React from 'react'
-import { KeyboardEvent } from 'react'
 import { StatefulTooltip } from 'baseui/tooltip'
+import { KeyboardEvent } from 'react'
 import { Process } from '../constants'
+import { Code } from '../service/Codelist'
 
-export const isLink = (text: string) => {
+export const isLink = (text: string): boolean => {
   const regex = /http[s]?:\/\/.*/gm
   if (!regex.test(text)) {
     return false
@@ -13,7 +13,7 @@ export const isLink = (text: string) => {
 }
 
 export const shortenLinksInText = (text: string) => {
-  return text.split(/\s+/).map((word, index) => {
+  return text.split(/\s+/).map((word: string, index: number) => {
     if (isLink(word)) {
       return (
         <span key={index}>
@@ -33,8 +33,8 @@ export const shortenLinksInText = (text: string) => {
 
 export const mapBool = (b?: boolean) => (b === true ? true : b === false ? false : undefined)
 
-export const disableEnter = (e: KeyboardEvent) => {
-  if (e.key === 'Enter') e.preventDefault()
+export const disableEnter = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') event.preventDefault()
 }
 
 export const getNoDpiaLabel = (id: string) => {
@@ -55,5 +55,5 @@ export const getNoDpiaLabel = (id: string) => {
 }
 
 export const checkForAaregDispatcher = (process: Process) => {
-  return process.affiliation.disclosureDispatchers.find((d) => d.shortName === 'Aa-reg')
+  return process.affiliation.disclosureDispatchers.find((disclosureDispatcher: Code) => disclosureDispatcher.shortName === 'Aa-reg')
 }

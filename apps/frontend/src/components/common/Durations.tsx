@@ -1,10 +1,9 @@
-import * as React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import moment from 'moment/min/moment-with-locales'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
-import moment from 'moment/min/moment-with-locales'
 
 const defaultStart = moment(env.defaultStartDate).locale('nb')
 const defaultEnd = moment('9999-12-31').locale('nb')
