@@ -6,11 +6,11 @@ type AAregHjemmelDataTextProps = {
 
 export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
   const { data } = props
-  const rawData = data ? prepareString(data).split('\n') : []
+  const rawData: string[] = data ? prepareString(data).split('\n') : []
 
-  const purposeList = rawData.filter((data) => data.match('Formål:')).map((purpose) => purpose.replace('Formål:', ''))
-  const authoryList = rawData.filter((data) => data.match('Hjemmel:')).map((authory) => authory.replace('Hjemmel:', ''))
-  const processorList = rawData.filter((data) => data.match('Behandlingsgrunnlag:')).map((processor) => processor.replace('Behandlingsgrunnlag:', ''))
+  const purposeList: string[] = rawData.filter((data) => data.match('Formål:')).map((purpose) => purpose.replace('Formål:', ''))
+  const authoryList: string[] = rawData.filter((data) => data.match('Hjemmel:')).map((authory) => authory.replace('Hjemmel:', ''))
+  const processorList: string[] = rawData.filter((data) => data.match('Behandlingsgrunnlag:')).map((processor) => processor.replace('Behandlingsgrunnlag:', ''))
 
   return (
     <div>
@@ -43,6 +43,6 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
 }
 export default AAregHjemmelDataText
 
-const prepareString = (text: string) => {
+const prepareString = (text: string): string => {
   return text.replace('\n\n', ' ').replace('\n\n\n', ' ')
 }

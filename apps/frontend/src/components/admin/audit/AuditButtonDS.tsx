@@ -9,19 +9,20 @@ interface IAuditButtonProps extends ButtonProps {
 
 export const AuditButtonDS = (props: IAuditButtonProps) => {
   const { id, auditId, children, ...restProps } = props
-  return user.isAdmin() ? (
-    <Link
-      href={`/admin/audit/${id}` + (auditId ? `/${auditId}` : '')}
-    >
-      {children ? (
-        children
-      ) : (
-        <>
-          <Tooltip content="Versjonering">
-            <Button {...restProps} icon={<ClockDashedIcon title="Versjonering" />} />
-          </Tooltip>
-        </>
+
+  return (
+    <>
+      {!user.isAdmin() && null}
+      {user.isAdmin() && (
+        <Link href={`/admin/audit/${id}` + (auditId ? `/${auditId}` : '')}>
+          {children && children}{' '}
+          {!children && (
+            <Tooltip content="Versjonering">
+              <Button {...restProps} icon={<ClockDashedIcon title="Versjonering" />} />
+            </Tooltip>
+          )}
+        </Link>
       )}
-    </Link>
-  ) : null
+    </>
+  )
 }

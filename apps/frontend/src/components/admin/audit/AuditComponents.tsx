@@ -1,33 +1,44 @@
-import React from 'react'
-import { AuditAction } from '../../../constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Label } from '@navikt/ds-react'
+import { AuditAction } from '../../../constants'
 import { theme } from '../../../util'
+import { tekster } from '../../../util/codeToFineText'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import {tekster} from "../../../util/codeToFineText";
-import {Label} from "@navikt/ds-react";
 
+interface IAuditLabelProps {
+  label: string
+  children: any
+}
 
-export const AuditLabel = (props: { label: string; children: any }) => {
+export const AuditLabel = (props: IAuditLabelProps) => {
+  const { label, children } = props
+
   return (
     <div className="flex">
       <div className="flex w-1/5 self-center">
-        <Label>{props.label}</Label>
+        <Label>{label}</Label>
       </div>
-      {props.children}
+      {children}
     </div>
   )
 }
 
-export const AuditActionIcon = (props: { action: AuditAction; withText?: boolean }) => {
-  const icon = (props.action === AuditAction.CREATE && { icon: faPlusCircle, color: theme.colors.positive300 }) ||
-    (props.action === AuditAction.UPDATE && { icon: faInfoCircle, color: theme.colors.warning300 }) ||
-    (props.action === AuditAction.DELETE && { icon: faMinusCircle, color: theme.colors.negative400 }) || { icon: undefined, color: undefined }
+interface IAuditActionIconProps {
+  action: AuditAction
+  withText?: boolean
+}
+
+export const AuditActionIcon = (props: IAuditActionIconProps) => {
+  const { action, withText } = props
+  const icon = (action === AuditAction.CREATE && { icon: faPlusCircle, color: theme.colors.positive300 }) ||
+    (action === AuditAction.UPDATE && { icon: faInfoCircle, color: theme.colors.warning300 }) ||
+    (action === AuditAction.DELETE && { icon: faMinusCircle, color: theme.colors.negative400 }) || { icon: undefined, color: undefined }
 
   return (
-    <CustomizedStatefulTooltip content={() => tekster[props.action] }>
+    <CustomizedStatefulTooltip content={() => tekster[action]}>
       <div className="ml-2 inline">
-        <FontAwesomeIcon icon={icon.icon!} color={icon.color} /> {props.withText && tekster[props.action]}
+        <FontAwesomeIcon icon={icon.icon!} color={icon.color} /> {withText && tekster[action]}
       </div>
     </CustomizedStatefulTooltip>
   )
