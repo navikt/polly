@@ -14,7 +14,6 @@ const DataText = (props: DataTextProps) => {
 
   return (
     <>
-      {hideComponent && null}
       {!hideComponent && (
         <div className="flex content-start mb-4 w-full">
           <div className="w-[40%] pr-2.5 max-w-[300px]">
