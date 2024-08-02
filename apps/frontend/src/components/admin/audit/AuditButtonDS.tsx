@@ -12,7 +12,6 @@ export const AuditButtonDS = (props: IAuditButtonProps) => {
 
   return (
     <>
-      {!user.isAdmin() && null}
       {user.isAdmin() && (
         <Link href={`/admin/audit/${id}` + (auditId ? `/${auditId}` : '')}>
           {children && children}{' '}
