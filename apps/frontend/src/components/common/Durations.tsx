@@ -52,7 +52,6 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
 
   return (
     <>
-      {!hasDates && null}
       {hasDates && (
         <CustomizedStatefulTooltip
           content={
