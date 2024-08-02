@@ -2,11 +2,11 @@ import { Fragment } from 'react'
 import { Document } from '../../constants'
 import DocumentInfoTypeTable from './DocumentInfoTypeTable'
 
-type DocumentMetadata = {
+type TDocumentMetadata = {
   document: Document
 }
 
-const DocumentMetadata = (props: DocumentMetadata) => {
+const DocumentMetadata = (props: TDocumentMetadata) => {
   const { document } = props
 
   return (

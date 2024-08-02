@@ -37,8 +37,8 @@ const InformationtypeEditPage = () => {
     try {
       await updateInformationType(body)
       navigate(`/informationtype/${params.id}`)
-    } catch (e: any) {
-      setErrorSubmit(e.message)
+    } catch (error: any) {
+      setErrorSubmit(error.message)
     }
   }
 
@@ -50,8 +50,8 @@ const InformationtypeEditPage = () => {
           const infoType = await getInformationType(params.id)
           setInformationType(infoType)
         }
-      } catch (e: any) {
-        handleAxiosError(e)
+      } catch (error: any) {
+        handleAxiosError(error)
       }
       await codelist.wait()
       setLoading(false)
