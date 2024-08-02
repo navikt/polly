@@ -24,10 +24,10 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
           </>
         }
       >
-        {purposeList.map((purpose: string, index: number) => (
-          <Row key={purpose + '_' + index}>
+        {purposeList.map((aaRegister: string, index: number) => (
+          <Row key={aaRegister + '_' + index}>
             <Cell>
-              <div>{purpose}</div>
+              <div>{aaRegister}</div>
             </Cell>
             <Cell>
               <div>{authoryList[index]}</div>

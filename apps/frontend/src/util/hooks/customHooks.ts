@@ -6,7 +6,7 @@ export function useDebouncedState<T>(initialValue: T, delay: number): [T, Dispat
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
   useEffect(() => {
-    const handler = setTimeout(() => {
+    const handler: NodeJS.Timeout = setTimeout(() => {
       setDebouncedValue(value)
     }, delay)
     return () => {
