@@ -136,7 +136,7 @@ const TeamView = (props: ITeamViewProps) => {
         <ObjectLink id={teamId} type={'team'} key={teamId}>
           {team.name}
         </ObjectLink>
-      )}{' '}
+      )}
       {error && (
         <CustomizedStatefulTooltip content="Kunne ikke finne team">
           <span>
