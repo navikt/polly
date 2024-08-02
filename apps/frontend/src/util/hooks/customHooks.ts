@@ -32,7 +32,7 @@ export function useUpdateOnChange(value: any) {
 }
 
 export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<boolean>>) {
-  const update = useForceUpdate()
+  const update: () => void = useForceUpdate()
 
   useEffect(() => {
     ;(async () => {
