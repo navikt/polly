@@ -8,9 +8,9 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
   const { data } = props
   const rawData: string[] = data ? prepareString(data).split('\n') : []
 
-  const purposeList: string[] = rawData.filter((data) => data.match('Formål:')).map((purpose) => purpose.replace('Formål:', ''))
-  const authoryList: string[] = rawData.filter((data) => data.match('Hjemmel:')).map((authory) => authory.replace('Hjemmel:', ''))
-  const processorList: string[] = rawData.filter((data) => data.match('Behandlingsgrunnlag:')).map((processor) => processor.replace('Behandlingsgrunnlag:', ''))
+  const purposeList: string[] = rawData.filter((data: string) => data.match('Formål:')).map((purpose: string) => purpose.replace('Formål:', ''))
+  const authoryList: string[] = rawData.filter((data: string) => data.match('Hjemmel:')).map((authory: string) => authory.replace('Hjemmel:', ''))
+  const processorList: string[] = rawData.filter((data: string) => data.match('Behandlingsgrunnlag:')).map((processor: string) => processor.replace('Behandlingsgrunnlag:', ''))
 
   return (
     <div>
