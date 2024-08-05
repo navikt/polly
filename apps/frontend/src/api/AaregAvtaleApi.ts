@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { AaregAvtale, PageResponse } from '../constants'
-import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
-import { useDebouncedState } from '../util'
 import { Option } from 'baseui/select'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { AaregAvtale, PageResponse } from '../constants'
+import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
 export const getAaregAvtale = async (avtalenummer: string) => {
@@ -17,8 +17,8 @@ export const mapAaregAvtaleToOption = (aaregAvtale: AaregAvtale) => ({ id: aareg
 
 export const useAaregAvtaleSearch = () => {
   const [aaregAvtaleSearch, setAaregAvtaleSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = React.useState<Option[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const search = async () => {

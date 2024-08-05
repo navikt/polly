@@ -1,14 +1,12 @@
-import * as React from 'react'
-import { useEffect } from 'react'
-
-import { Block } from 'baseui/block'
+import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { SIZE as ButtonSize, KIND } from 'baseui/button'
+import { StyledLink } from 'baseui/link'
+import { Modal, ModalBody, ModalHeader, SIZE as ModalSize, ROLE } from 'baseui/modal'
+import { StatefulSelect } from 'baseui/select'
+import { Spinner } from 'baseui/spinner'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
-import { theme, useAwait } from '../../util'
-import { user } from '../../service/User'
-import ModalProcess from './Accordion/ModalProcess'
-import AccordionProcess from './Accordion/AccordionProcess'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,
@@ -26,16 +24,15 @@ import {
   updatePolicy,
   updateProcess,
 } from '../../api'
-import { Spinner } from 'baseui/spinner'
-import { Code, codelist, ListName } from '../../service/Codelist'
-import { StyledLink } from 'baseui/link'
+import { AddDocumentToProcessFormValues, LegalBasesUse, PageResponse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus } from '../../constants'
+import { Section, genProcessPath } from '../../pages/ProcessPage'
+import { Code, ListName, codelist } from '../../service/Codelist'
+import { user } from '../../service/User'
+import { theme, useAwait } from '../../util'
 import { env } from '../../util/env'
-import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
-import { StatefulSelect } from 'baseui/select'
-import { genProcessPath, Section } from '../../pages/ProcessPage'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Modal, ModalBody, ModalHeader, ROLE, SIZE as ModalSize } from 'baseui/modal'
+import AccordionProcess from './Accordion/AccordionProcess'
+import ModalProcess from './Accordion/ModalProcess'
 
 type ProcessListProps = {
   section: Section
@@ -53,19 +50,19 @@ type ProcessListProps = {
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, 'nb'))
 
 const ProcessList = ({ code, listName, filter, processId, section, moveScroll, titleOverride, hideTitle, isEditable, getCount }: ProcessListProps) => {
-  const [processList, setProcessList] = React.useState<ProcessShort[]>([])
-  const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
-  const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
-  const [errorProcessModal, setErrorProcessModal] = React.useState<string>('')
-  const [errorPolicyModal, setErrorPolicyModal] = React.useState(null)
-  const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
-  const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
-  const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
+  const [processList, setProcessList] = useState<ProcessShort[]>([])
+  const [currentProcess, setCurrentProcess] = useState<Process | undefined>()
+  const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
+  const [errorProcessModal, setErrorProcessModal] = useState<string>('')
+  const [errorPolicyModal, setErrorPolicyModal] = useState(null)
+  const [errorDocumentModal, setErrorDocumentModal] = useState(null)
+  const [isLoadingProcessList, setIsLoadingProcessList] = useState(true)
+  const [isLoadingProcess, setIsLoadingProcess] = useState(true)
   const current_location = useLocation()
-  const [codelistLoading, setCodelistLoading] = React.useState(true)
+  const [codelistLoading, setCodelistLoading] = useState(true)
   const navigate = useNavigate()
-  const [exportHref, setExportHref] = React.useState<string>('')
-  const [isExportModalOpen, setIsExportModalOpen] = React.useState<boolean>(false)
+  const [exportHref, setExportHref] = useState<string>('')
+  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
 
   useAwait(codelist.wait(), setCodelistLoading)
 
@@ -82,7 +79,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       setIsLoadingProcessList(false)
       if (moveScroll) moveScroll()
     })()
-    const pathName = current_location.pathname.split('/')[1]
+    const pathName: string = current_location.pathname.split('/')[1]
     if (pathName === 'productarea') {
       setExportHref(`${env.pollyBaseUrl}/export/process?productArea=${code}`)
     } else if (pathName === 'team') {
@@ -90,7 +87,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }, [code, filter])
 
-  const handleChangePanel = (process?: Partial<Process>) => {
+  const handleChangePanel: (process?: Partial<Process>) => void = (process?: Partial<Process>) => {
     if (process?.id !== currentProcess?.id) {
       navigate(genProcessPath(section, code, process, filter))
     }
@@ -101,7 +98,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     }
   }
 
-  const hasAccess = () => user.canWrite()
+  const hasAccess = (): boolean => user.canWrite()
 
   const listNameToUrl = () =>
     listName &&
@@ -116,22 +113,22 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       } as { [l: string]: string }
     )[listName]
 
-  const getProcessList = async () => {
+  const getProcessList = async (): Promise<void> => {
     try {
       let list: ProcessShort[]
 
       if (current_location.pathname.includes('team')) {
-        let res = await getProcessesFor({ productTeam: code })
-        res.content ? (list = res.content as ProcessShort[]) : (list = [])
+        let response: PageResponse<Process> = await getProcessesFor({ productTeam: code })
+        response.content ? (list = response.content as ProcessShort[]) : (list = [])
       } else if (current_location.pathname.includes('productarea')) {
-        let res = await getProcessesFor({ productArea: code })
-        res.content ? (list = res.content as ProcessShort[]) : (list = [])
+        let response: PageResponse<Process> = await getProcessesFor({ productArea: code })
+        response.content ? (list = response.content as ProcessShort[]) : (list = [])
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
-      setProcessList(sortProcess(list).filter((p) => !filter || p.status === filter))
-    } catch (err: any) {
-      console.log(err)
+      setProcessList(sortProcess(list).filter((process: ProcessShort) => !filter || process.status === filter))
+    } catch (error: any) {
+      console.log(error)
     }
   }
 
@@ -139,13 +136,13 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
     try {
       setIsLoadingProcess(true)
       setCurrentProcess(await getProcess(id))
-    } catch (err: any) {
-      console.log(err)
+    } catch (error: any) {
+      console.log(error)
     }
     setIsLoadingProcess(false)
   }
 
-  const handleCreateProcess = async (process: ProcessFormValues) => {
+  const handleCreateProcess = async (process: ProcessFormValues): Promise<void> => {
     if (!process) return
     try {
       const newProcess = await createProcess(process)
@@ -158,93 +155,96 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       process.disclosures.forEach((d) => {
         updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id ? newProcess.id : ''] }))
       })
-    } catch (err: any) {
-      if (err.response.data.message && err.response.data.message.includes('already exists')) {
+    } catch (error: any) {
+      if (error.response.data.message && error.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
         return
       }
-      setErrorProcessModal(err.response.data.message)
+      setErrorProcessModal(error.response.data.message)
     }
   }
 
-  const handleEditProcess = async (values: ProcessFormValues) => {
+  const handleEditProcess = async (values: ProcessFormValues): Promise<boolean> => {
     try {
       const updatedProcess = await updateProcess(values)
       const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
-      const removedDisclosures = disclosures.filter((d) => !values.disclosures.map((value) => value.id).includes(d.id))
-      const addedDisclosures = values.disclosures.filter((d) => !disclosures.map((value) => value.id).includes(d.id))
-      removedDisclosures.forEach((d) => updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds.filter((p) => p !== updatedProcess.id)] })))
-      addedDisclosures.forEach((d) => updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, updatedProcess.id] })))
+      const removedDisclosures = disclosures.filter((disclosure) => !values.disclosures.map((value) => value.id).includes(disclosure.id))
+      const addedDisclosures = values.disclosures.filter((disclosure) => !disclosures.map((value) => value.id).includes(disclosure.id))
+      removedDisclosures.forEach((disclosure) =>
+        updateDisclosure(convertDisclosureToFormValues({ ...disclosure, processIds: [...disclosure.processIds.filter((process) => process !== updatedProcess.id)] })),
+      )
+      addedDisclosures.forEach((disclosure) => updateDisclosure(convertDisclosureToFormValues({ ...disclosure, processIds: [...disclosure.processIds, updatedProcess.id] })))
       setCurrentProcess(updatedProcess)
-      setProcessList(sortProcess([...processList.filter((p) => p.id !== updatedProcess.id), updatedProcess]))
+      setProcessList(sortProcess([...processList.filter((process) => process.id !== updatedProcess.id), updatedProcess]))
       handleChangePanel(updatedProcess)
       return true
-    } catch (err: any) {
-      console.log(err)
-      return false
-    }
-  }
-  const handleDeleteProcess = async (process: Process) => {
-    try {
-      await deleteProcess(process.id)
-      setProcessList(sortProcess(processList.filter((p: ProcessShort) => p.id !== process.id)))
-      setErrorProcessModal('')
-      return true
-    } catch (err: any) {
-      if (err.response.data.message.includes('disclosure(s)')) {
-        setErrorProcessModal("Du kan ikke slette behandlinger med eksisterende utleveringer.")
-        return false
-      }
-      setErrorProcessModal(err.response.data.message)
+    } catch (error: any) {
+      console.log(error)
       return false
     }
   }
 
-  const handleCreatePolicy = async (values: PolicyFormValues) => {
+  const handleDeleteProcess = async (process: Process): Promise<boolean> => {
+    try {
+      await deleteProcess(process.id)
+      setProcessList(sortProcess(processList.filter((process: ProcessShort) => process.id !== process.id)))
+      setErrorProcessModal('')
+      return true
+    } catch (error: any) {
+      if (error.response.data.message.includes('disclosure(s)')) {
+        setErrorProcessModal('Du kan ikke slette behandlinger med eksisterende utleveringer.')
+        return false
+      }
+      setErrorProcessModal(error.response.data.message)
+      return false
+    }
+  }
+
+  const handleCreatePolicy = async (values: PolicyFormValues): Promise<boolean> => {
     if (!values || !currentProcess) return false
 
     try {
-      const policy = await createPolicy(values)
+      const policy: Policy = await createPolicy(values)
       await getProcessById(policy.process.id)
       setErrorPolicyModal(null)
       return true
-    } catch (err: any) {
-      setErrorPolicyModal(err.message)
+    } catch (error: any) {
+      setErrorPolicyModal(error.message)
       return false
     }
   }
   const handleEditPolicy = async (values: PolicyFormValues) => {
     try {
-      const policy = await updatePolicy(values)
+      const policy: Policy = await updatePolicy(values)
       if (currentProcess) {
         setCurrentProcess({
           ...currentProcess,
-          policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id), policy],
+          policies: [...currentProcess.policies.filter((policy: Policy) => policy.id !== policy.id), policy],
         })
         setErrorPolicyModal(null)
       }
       return true
-    } catch (err: any) {
-      setErrorPolicyModal(err.message)
+    } catch (error: any) {
+      setErrorPolicyModal(error.message)
       return false
     }
   }
-  const handleDeletePolicy = async (policy?: Policy) => {
+  const handleDeletePolicy = async (policy?: Policy): Promise<boolean> => {
     if (!policy) return false
     try {
       await deletePolicy(policy.id)
       if (currentProcess) {
-        setCurrentProcess({ ...currentProcess, policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id)] })
+        setCurrentProcess({ ...currentProcess, policies: [...currentProcess.policies.filter((policy: Policy) => policy.id !== policy.id)] })
         setErrorPolicyModal(null)
       }
       return true
-    } catch (err: any) {
-      setErrorPolicyModal(err.message)
+    } catch (error: any) {
+      setErrorPolicyModal(error.message)
       return false
     }
   }
 
-  const handleDeleteAllPolicies = async (processId: string) => {
+  const handleDeleteAllPolicies = async (processId: string): Promise<boolean> => {
     if (!processId) return false
     try {
       await deletePoliciesByProcessId(processId)
@@ -253,20 +253,19 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
         setErrorPolicyModal(null)
       }
       return true
-    } catch (err: any) {
-      setErrorPolicyModal(err.message)
+    } catch (error: any) {
+      setErrorPolicyModal(error.message)
       return false
     }
   }
 
-
-  const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
+  const handleAddDocument = async (formValues: AddDocumentToProcessFormValues): Promise<boolean> => {
     try {
       const policies: PolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
-        subjectCategories: infoType.subjectCategories.map((c) => c.code),
+        subjectCategories: infoType.subjectCategories.map((category) => category.code),
         informationType: infoType.informationType,
         process: { ...formValues.process, legalBases: [] },
-        purposes: formValues.process.purposes.map((p) => p.code),
+        purposes: formValues.process.purposes.map((purpose) => purpose.code),
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
@@ -275,8 +274,8 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
       }))
       await createPolicies(policies)
       await getProcessById(formValues.process.id)
-    } catch (e: any) {
-      setErrorDocumentModal(e.message)
+    } catch (error: any) {
+      setErrorDocumentModal(error.message)
       return false
     }
     return true
@@ -299,12 +298,12 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
           <ModalHeader>Velg eksport metode</ModalHeader>
           <ModalBody>
             <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
                 Eksport for intern bruk
               </Button>
             </StyledLink>
             <StyledLink style={{ textDecoration: 'none' }} href={exportHref ? exportHref : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`}>
-              <Button kind={'outline'} size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
                 Eksport for ekstern bruk
               </Button>
             </StyledLink>
@@ -317,10 +316,10 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
             deleteRemoves={false}
             escapeClearsValue={false}
             options={[
-              { label: "Alle behandlinger", id: undefined },
-              { label: "Behandlinger under arbeid", id: ProcessStatus.IN_PROGRESS },
-              { label: "Trenger revidering", id: ProcessStatus.NEEDS_REVISION },
-              { label: "Ferdig dokumenterte behandlinger", id: ProcessStatus.COMPLETED },
+              { label: 'Alle behandlinger', id: undefined },
+              { label: 'Behandlinger under arbeid', id: ProcessStatus.IN_PROGRESS },
+              { label: 'Trenger revidering', id: ProcessStatus.NEEDS_REVISION },
+              { label: 'Ferdig dokumenterte behandlinger', id: ProcessStatus.COMPLETED },
             ]}
             initialState={{ value: [{ id: filter }] }}
             filterOutSelected={false}
@@ -336,7 +335,7 @@ const ProcessList = ({ code, listName, filter, processId, section, moveScroll, t
         <div className="mr-auto">
           {!hideTitle && (
             <HeadingXLarge>
-              {titleOverride || "Behandlinger"} ({processList.length})
+              {titleOverride || 'Behandlinger'} ({processList.length})
             </HeadingXLarge>
           )}
         </div>

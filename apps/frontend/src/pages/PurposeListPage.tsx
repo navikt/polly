@@ -1,22 +1,22 @@
 import { SIZE as ButtonSize } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
-import React from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { convertDisclosureToFormValues, convertProcessToFormValues, createProcess, updateDisclosure } from '../api'
-import Button from '../components/common/Button'
 import ModalProcess from '../components/Process/Accordion/ModalProcess'
+import Button from '../components/common/Button'
 import { ProcessFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 import { PurposeList } from './ListSearchPage'
-import { genProcessPath, Section } from './ProcessPage'
+import { Section, genProcessPath } from './ProcessPage'
 
 export const PurposeListPage = () => {
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
-  const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
-  const [errorProcessModal, setErrorProcessModal] = React.useState(null)
+  const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
+  const [errorProcessModal, setErrorProcessModal] = useState(null)
 
   ampli.logEvent('besøk', { side: 'Behandlinger', url: '/process', app: 'Behandlingskatalogen', type: 'Velg overordnet behandlingsaktivitet' })
 
@@ -28,11 +28,11 @@ export const PurposeListPage = () => {
       setShowCreateProcessModal(false)
       // todo multipurpose url
       navigate(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
-      process.disclosures.forEach((d) => {
-        updateDisclosure(convertDisclosureToFormValues({ ...d, processIds: [...d.processIds, newProcess.id] }))
+      process.disclosures.forEach((disclosureItem) => {
+        updateDisclosure(convertDisclosureToFormValues({ ...disclosureItem, processIds: [...disclosureItem.processIds, newProcess.id] }))
       })
-    } catch (err: any) {
-      setErrorProcessModal(err.message)
+    } catch (error: any) {
+      setErrorProcessModal(error.message)
     }
   }
 

@@ -3,22 +3,22 @@ import { Button as BButton } from 'baseui/button'
 import { ButtonGroup } from 'baseui/button-group'
 import { Combobox } from 'baseui/combobox'
 import { Notification } from 'baseui/notification'
-import { Select, TYPE } from 'baseui/select'
+import { Select, TYPE, Value } from 'baseui/select'
 import { HeadingMedium } from 'baseui/typography'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
-import { useAllAreas, useProcessSearch } from '../../api'
-import Button from '../../components/common/Button'
-import { Error, ModalLabel } from '../../components/common/ModalSchema'
-import { RadioBoolButton } from '../../components/common/Radio'
-import { Spinner } from '../../components/common/Spinner'
-import { FieldTextarea } from '../../components/Process/common/FieldTextArea'
-import { Process } from '../../constants'
-import { ampli } from '../../service/Amplitude'
-import { codelist, ListName } from '../../service/Codelist'
-import { env } from '../../util/env'
+import { useAllAreas, useProcessSearch } from '../../../api'
+import { Process, ProductArea } from '../../../constants'
+import { ampli } from '../../../service/Amplitude'
+import { codelist, ListName } from '../../../service/Codelist'
+import { env } from '../../../util/env'
+import Button from '../../common/Button'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { RadioBoolButton } from '../../common/Radio'
+import { Spinner } from '../../common/Spinner'
+import { FieldTextarea } from '../../Process/common/FieldTextArea'
 
 enum ProcessSelection {
   ONE = 'ONE',
@@ -61,10 +61,16 @@ const requestRevision = async (request: ProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
 }
 
-const formatProcessName = (process: Process) => process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
+const formatProcessName = (process: Process): string => process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
 
-export const RequestRevisionPage = (props: { close?: () => void; processId?: string }) => {
-  const navigate = useNavigate()
+interface IRequestRevisionPageProps {
+  close?: () => void
+  processId?: string
+}
+
+export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
+  const { close, processId } = props
+  const navigate: NavigateFunction = useNavigate()
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -72,14 +78,14 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
   ampli.logEvent('besøk', { side: 'Admin', url: '/admin/request-revision', app: 'Behandlingskatalogen', type: 'Trenger revidering' })
 
   const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
-  const areas = useAllAreas()
+  const areas: ProductArea[] = useAllAreas()
 
   const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
 
   const modalView = !!props.processId
-  const abort = () => {
-    if (props.close) {
-      props.close()
+  const abort = (): void => {
+    if (close) {
+      close()
     } else {
       navigate(-1)
     }
@@ -89,8 +95,8 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
     try {
       await requestRevision(request)
       setDone(true)
-    } catch (e: any) {
-      setError(e.message)
+    } catch (error: any) {
+      setError(error.message)
     }
     setLoading(false)
   }
@@ -112,7 +118,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
           <Button type="button" kind="secondary" onClick={abort} marginRight>
             {modalView ? 'Lukk' : 'Tilbake'}
           </Button>
-          {!props.close && (
+          {!close && (
             <Button type="button" onClick={reset}>
               Ny revidering
             </Button>
@@ -122,7 +128,7 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
         <Formik
           initialValues={{
             ...initialValues,
-            processId: props.processId || '',
+            processId: processId || '',
           }}
           validationSchema={schema()}
           onSubmit={save}
@@ -180,12 +186,12 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                     type={TYPE.search}
                     options={processSearchResult}
                     placeholder="Søk"
-                    value={processSearchResult.filter((r) => r.id === formikBag.values.processId)}
+                    value={processSearchResult.filter((process: Process) => process.id === formikBag.values.processId)}
                     onInputChange={(event) => setProcessSearch(event.currentTarget.value)}
                     onChange={(params) => {
                       formikBag.setFieldValue('processId', !params.value[0] ? '' : params.value[0].id)
                     }}
-                    filterOptions={(o) => o}
+                    filterOptions={(option: Value) => option}
                     labelKey="name"
                     getOptionLabel={({ option }) => formatProcessName(option as Process)}
                   />
@@ -198,10 +204,10 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                   <ModalLabel label="Avdeling" />
                   <div className="w-full">
                     <Combobox
-                      mapOptionToString={(o) => o.label}
+                      mapOptionToString={(option) => option.label}
                       options={departments}
                       value={formikBag.values.department!}
-                      onChange={(code) => formikBag.setFieldValue('department', code)}
+                      onChange={(code: string) => formikBag.setFieldValue('department', code)}
                     />
                   </div>
                 </div>
@@ -213,10 +219,10 @@ export const RequestRevisionPage = (props: { close?: () => void; processId?: str
                   <ModalLabel label="Område" />
                   <div className="w-full">
                     <Combobox
-                      mapOptionToString={(o) => o.name}
+                      mapOptionToString={(option: ProductArea) => option.name}
                       options={areas}
                       value={formikBag.values.productAreaId!}
-                      onChange={(code) => formikBag.setFieldValue('productAreaId', code)}
+                      onChange={(code: string) => formikBag.setFieldValue('productAreaId', code)}
                     />
                   </div>
                 </div>

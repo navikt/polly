@@ -1,17 +1,17 @@
-import React from 'react'
 import { Select, Value } from 'baseui/select'
-import { codelist, ListName } from '../../../service/Codelist'
+import { useEffect, useState } from 'react'
 import { DocumentInfoTypeUse } from '../../../constants'
+import { Code, ListName, codelist } from '../../../service/Codelist'
 
 const FieldSubjectCategory = (props: { documentInformationType: DocumentInfoTypeUse; handleChange: Function }) => {
   const { documentInformationType, handleChange } = props
-  const [value, setValue] = React.useState<Value>(
-    documentInformationType.subjectCategories.map((sc) => {
-      return { id: sc.code, label: sc.shortName }
+  const [value, setValue] = useState<Value>(
+    documentInformationType.subjectCategories.map((subjectCategory: Code) => {
+      return { id: subjectCategory.code, label: subjectCategory.shortName }
     }),
   )
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleChange({ ...documentInformationType, subjectCategories: [...value].map((category) => codelist.getCode(ListName.SUBJECT_CATEGORY, category.id as string)?.code) })
   }, [])
 

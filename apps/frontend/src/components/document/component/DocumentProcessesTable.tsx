@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import { Code, codelist } from '../../../service/Codelist'
+import { useState } from 'react'
 import { Process } from '../../../constants'
+import { Code, codelist } from '../../../service/Codelist'
 import { ColumnCompares, useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
-import { Block } from 'baseui/block'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 type DocumentProcessesProps = {
   documentUsages: Process[]
@@ -19,46 +18,48 @@ interface DataFormat {
 }
 
 const sorting: ColumnCompares<DataFormat> = {
-  name: (a, b) => a.name.localeCompare(b.name),
-  purposes: (a, b) => (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || ''),
-  department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
-  products: (a, b) => ((a.products.length && a.products[0].shortName) || '').localeCompare((b.products.length && b.products[0].shortName) || ''),
+  name: (a: DataFormat, b: DataFormat) => a.name.localeCompare(b.name),
+  purposes: (a: DataFormat, b: DataFormat) => (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || ''),
+  department: (a: DataFormat, b: DataFormat) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
+  products: (a: DataFormat, b: DataFormat) => ((a.products.length && a.products[0].shortName) || '').localeCompare((b.products.length && b.products[0].shortName) || ''),
 }
 
 const DocumentProcessesTable = (props: DocumentProcessesProps) => {
+  const { documentUsages } = props
   const [processes] = useState(
-    props.documentUsages.map((p) => ({
-      id: p.id,
-      name: p.name,
-      purposes: p.purposes,
-      department: p.affiliation.department,
-      products: p.affiliation.products,
+    documentUsages.map((documentUsage: Process) => ({
+      id: documentUsage.id,
+      name: documentUsage.name,
+      purposes: documentUsage.purposes,
+      department: documentUsage.affiliation.department,
+      products: documentUsage.affiliation.products,
     })),
   )
   const [table, sortColumn] = useTable<DataFormat, keyof DataFormat>(processes, {
     sorting: sorting,
     initialSortColumn: 'name',
   })
+
   return (
     <>
       <Table
-        emptyText='Ingen behandlinger'
+        emptyText="Ingen behandlinger"
         headers={
           <>
-            <HeadCell title='Overordnet behandlingsaktivitet' column="purposes" tableState={[table, sortColumn]} />
-            <HeadCell title='Behandling' column="name" tableState={[table, sortColumn]} />
-            <HeadCell title='Avdeling' column="department" tableState={[table, sortColumn]} />
-            <HeadCell title='System' column="products" tableState={[table, sortColumn]} />
+            <HeadCell title="Overordnet behandlingsaktivitet" column="purposes" tableState={[table, sortColumn]} />
+            <HeadCell title="Behandling" column="name" tableState={[table, sortColumn]} />
+            <HeadCell title="Avdeling" column="department" tableState={[table, sortColumn]} />
+            <HeadCell title="System" column="products" tableState={[table, sortColumn]} />
           </>
         }
       >
-        {table.data.map((process, index) => (
+        {table.data.map((process: DataFormat, index: number) => (
           <Row key={index}>
             <Cell>
               <div className="flex flex-col">
-                {process.purposes.map((p, i) => (
-                  <div key={i}>
-                    <RouteLink href={`/process/purpose/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>
+                {process.purposes.map((purpose: Code, index: number) => (
+                  <div key={index}>
+                    <RouteLink href={`/process/purpose/${purpose.code}`}>{codelist.getShortnameForCode(purpose)}</RouteLink>
                   </div>
                 ))}
               </div>
@@ -70,9 +71,9 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
             <Cell>{process.department ? <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink> : ''}</Cell>
             <Cell>
               <div className="flex flex-col">
-                {process.products.map((p, i) => (
-                  <div key={i}>
-                    <RouteLink href={`/system/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>
+                {process.products.map((purpose: Code, index: number) => (
+                  <div key={index}>
+                    <RouteLink href={`/system/${purpose.code}`}>{codelist.getShortnameForCode(purpose)}</RouteLink>
                   </div>
                 ))}
               </div>

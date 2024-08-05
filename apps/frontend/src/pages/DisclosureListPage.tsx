@@ -2,15 +2,15 @@ import { Button as BButton, Button, KIND } from 'baseui/button'
 import { ButtonGroup } from 'baseui/button-group'
 import { Plus } from 'baseui/icon'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createDisclosure, DisclosureSummary, getAll, getDisclosureSummaries, getProcess } from '../api'
+import { DisclosureSummary, createDisclosure, getAll, getDisclosureSummaries, getProcess } from '../api'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
+import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { ObjectLink } from '../components/common/RouteLink'
 import SearchProcess from '../components/common/SearchProcess'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { ListName } from '../service/Codelist'
@@ -25,9 +25,9 @@ enum FilterType {
 }
 
 export const DisclosureListPage = () => {
-  const [showCreateModal, setShowCreateModal] = React.useState(false)
-  const [newDisclosure, setNewDisclosure] = React.useState<Disclosure>()
-  const [error, setError] = React.useState<string>()
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [newDisclosure, setNewDisclosure] = useState<Disclosure>()
+  const [error, setError] = useState<string>()
   const [disclosures, setDisclosures] = useState<DisclosureSummary[]>([])
   const [selectedProcess, setSelectedProcess] = useState<Process>()
   const [table, sortColumn] = useTable<DisclosureSummary, keyof DisclosureSummary>(disclosures, {
@@ -102,9 +102,9 @@ export const DisclosureListPage = () => {
     try {
       setNewDisclosure(await createDisclosure(disclosure))
       setShowCreateModal(false)
-    } catch (err: any) {
+    } catch (error: any) {
       setShowCreateModal(true)
-      setError(err.message)
+      setError(error.message)
     }
   }
 
@@ -194,30 +194,30 @@ export const DisclosureListPage = () => {
             </>
           }
         >
-          {table.data.map((d) => (
-            <Row key={d.id}>
+          {table.data.map((data) => (
+            <Row key={data.id}>
               <Cell>
-                <ObjectLink id={d.id} type={ObjectType.DISCLOSURE}>
-                  {d.name}
+                <ObjectLink id={data.id} type={ObjectType.DISCLOSURE}>
+                  {data.name}
                 </ObjectLink>
               </Cell>
               <Cell>
-                <ObjectLink id={d.recipient.code} type={ListName.THIRD_PARTY}>
-                  {d.recipient.shortName}
+                <ObjectLink id={data.recipient.code} type={ListName.THIRD_PARTY}>
+                  {data.recipient.shortName}
                 </ObjectLink>
               </Cell>
               <Cell>
                 <div className="flex flex-col">
-                  {d.processes.map((p) => (
-                    <div key={p.id} className="mr-2.5">
-                      <ObjectLink id={p.id} type={ObjectType.PROCESS}>
-                        {p.purposes.map((pu) => pu.shortName).join(', ')}: {p.name}
+                  {data.processes.map((process) => (
+                    <div key={process.id} className="mr-2.5">
+                      <ObjectLink id={process.id} type={ObjectType.PROCESS}>
+                        {process.purposes.map((purpose) => purpose.shortName).join(', ')}: {process.name}
                       </ObjectLink>
                     </div>
                   ))}
                 </div>
               </Cell>
-              <Cell>{d.legalBases ? 'Ja' : 'Nei'}</Cell>
+              <Cell>{data.legalBases ? 'Ja' : 'Nei'}</Cell>
             </Row>
           ))}
         </Table>

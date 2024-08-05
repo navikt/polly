@@ -1,8 +1,7 @@
+import { SIZE as InputSIZE } from 'baseui/input'
+import { Textarea } from 'baseui/textarea'
 import { Field, FieldProps } from 'formik'
 import { ProcessorFormValues } from '../../../constants'
-import { Textarea } from 'baseui/textarea'
-import { SIZE as InputSIZE } from 'baseui/input'
-import * as React from 'react'
 
 const FieldNote = () => (
   <Field name="note">

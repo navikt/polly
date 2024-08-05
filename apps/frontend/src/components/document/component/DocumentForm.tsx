@@ -1,24 +1,24 @@
-import React from 'react'
-import { Block, BlockProps } from 'baseui/block'
-import { LabelMedium } from 'baseui/typography'
-import { useAwait } from '../../../util'
-import { Input, SIZE } from 'baseui/input'
-import { Textarea } from 'baseui/textarea'
-import { DocumentFormValues } from '../../../constants'
-import InformationTypesTable from './InformationTypesTable'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { user } from '../../../service/User'
-import { createDocumentSchema } from '../../common/schema'
-import { Notification } from 'baseui/notification'
-import { searchDocuments } from '../../../api'
-import Button from '../../common/Button'
-import { disableEnter } from '../../../util/helper-functions'
-import { Select, Value, Option } from 'baseui/select'
-import { ListName, codelist } from '../../../service/Codelist'
-import { StyledLink } from 'baseui/link'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { BlockProps } from 'baseui/block'
+import { Input, SIZE } from 'baseui/input'
+import { StyledLink } from 'baseui/link'
+import { Notification } from 'baseui/notification'
+import { OnChangeParams, Option, Select, Value } from 'baseui/select'
+import { Textarea } from 'baseui/textarea'
+import { LabelMedium } from 'baseui/typography'
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
+import { useState } from 'react'
+import { searchDocuments } from '../../../api'
+import { Document, DocumentFormValues } from '../../../constants'
+import { ListName, codelist } from '../../../service/Codelist'
+import { user } from '../../../service/User'
+import { useAwait } from '../../../util'
+import { disableEnter } from '../../../util/helper-functions'
+import Button from '../../common/Button'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { createDocumentSchema } from '../../common/schema'
+import InformationTypesTable from './InformationTypesTable'
 
 const labelProps: BlockProps = {
   marginBottom: '1rem',
@@ -30,33 +30,37 @@ type DocumentFormProps = {
 }
 
 const DocumentForm = (props: DocumentFormProps) => {
+  const { initialValues, handleSubmit } = props
   const initialValueDataAccessClass = () => {
-    if (!props.initialValues.dataAccessClass || !codelist.isLoaded()) return []
+    if (!initialValues.dataAccessClass || !codelist.isLoaded()) return []
+
     return [
       {
-        id: props.initialValues.dataAccessClass,
-        label: codelist.getShortname(ListName.DATA_ACCESS_CLASS, props.initialValues.dataAccessClass),
+        id: initialValues.dataAccessClass,
+        label: codelist.getShortname(ListName.DATA_ACCESS_CLASS, initialValues.dataAccessClass),
       },
     ]
   }
 
-  const [isLoading, setLoading] = React.useState(false)
-  const [errorMessage, setErrorMessage] = React.useState()
-  const [dataAccessClass, setDataAccessClass] = React.useState<Option>(initialValueDataAccessClass())
+  const [isLoading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState()
+  const [dataAccessClass, setDataAccessClass] = useState<Option>(initialValueDataAccessClass())
 
-  const { initialValues, handleSubmit } = props
-  const hasAccess = () => user.canWrite()
+  const hasAccess = (): boolean => user.canWrite()
   useAwait(user.wait(), setLoading)
 
   const onSubmit = async (values: DocumentFormValues, actions: FormikHelpers<DocumentFormValues>) => {
-    const searchResults = (await searchDocuments(values.name)).content.filter((doc) => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id)
+    const searchResults: Document[] = (await searchDocuments(values.name)).content.filter(
+      (doc) => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id,
+    )
+
     if (searchResults.length > 0) {
       actions.setFieldError('name', 'Dokument med samme navn eksisterer allerede')
     } else {
       try {
         handleSubmit(values)
-      } catch (e: any) {
-        setErrorMessage(e.message)
+      } catch (error: any) {
+        setErrorMessage(error.message)
       }
     }
   }
@@ -89,7 +93,7 @@ const DocumentForm = (props: DocumentFormProps) => {
                 <div>
                   <div className="mb-4">
                     <ModalLabel
-                      label='Datatilgangsklasse'
+                      label="Datatilgangsklasse"
                       tooltip={
                         <div>
                           Mer informasjon finner du
@@ -108,7 +112,7 @@ const DocumentForm = (props: DocumentFormProps) => {
                     options={codelist.getParsedOptions(ListName.DATA_ACCESS_CLASS)}
                     value={dataAccessClass as Value}
                     placeholder={formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'}
-                    onChange={(params) => {
+                    onChange={(params: OnChangeParams) => {
                       let dac = params.value.length ? params.value[0] : undefined
                       setDataAccessClass(dac as Option)
                       form.setFieldValue('dataAccessClass', dac ? dac.id : undefined)

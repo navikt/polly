@@ -1,12 +1,11 @@
-import React from 'react'
-import { Block, BlockProps } from 'baseui/block'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import BoolField from '../../Process/common/BoolField'
-import { DpProcessFormValues, Processor } from '../../../constants'
 import { FormikProps } from 'formik'
-import FieldDpDataProcessors from './FieldDpDataProcessors'
+import { useEffect, useState } from 'react'
 import { getAll } from '../../../api'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
+import { DpProcessFormValues, Processor } from '../../../constants'
+import BoolField from '../../Process/common/BoolField'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import FieldDpDataProcessors from './FieldDpDataProcessors'
 
 type FieldDpProcessSubDataProcessorProps = {
   formikBag: FormikProps<DpProcessFormValues>
@@ -14,26 +13,26 @@ type FieldDpProcessSubDataProcessorProps = {
 }
 
 const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorProps) => {
-  const { formikBag } = props
-  const [processorList, setProcessorList] = React.useState<Processor[]>([])
-  const [subDataProcessors, setSubDataProcessors] = React.useState(new Map<string, string>())
+  const { formikBag, initialValues } = props
+  const [processorList, setProcessorList] = useState<Processor[]>([])
+  const [subDataProcessors, setSubDataProcessors] = useState(new Map<string, string>())
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
-      if (props.initialValues.subDataProcessing.processors.length > 0) {
-        const res = await getProcessorsByIds(props.initialValues.subDataProcessing.processors)
+      if (initialValues.subDataProcessing.processors.length > 0) {
+        const response = await getProcessorsByIds(initialValues.subDataProcessing.processors)
         const newProcs = new Map<string, string>()
-        res.forEach((d) => newProcs.set(d.id, d.name))
+        response.forEach((processor) => newProcs.set(processor.id, processor.name))
         setSubDataProcessors(newProcs)
       }
     })()
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
-      const res = await getAll(getProcessorsByPageAndPageSize)()
-      if (res) {
-        setProcessorList(res)
+      const response: Processor[] = await getAll(getProcessorsByPageAndPageSize)()
+      if (response) {
+        setProcessorList(response)
       }
     })()
   }, [])
@@ -41,21 +40,24 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
   return (
     <>
       <div className="flex w-full">
-        <ModalLabel label='Benyttes underdatabehandler(e)?' tooltip='En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler.' />
+        <ModalLabel
+          label="Benyttes underdatabehandler(e)?"
+          tooltip="En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler."
+        />
         <BoolField fieldName="subDataProcessing.dataProcessor" value={formikBag.values.subDataProcessing.dataProcessor} />
       </div>
 
       {formikBag.values.subDataProcessing.dataProcessor && (
         <>
           <div className="flex w-full mt-4">
-            <ModalLabel label='Databehandler' />
+            <ModalLabel label="Databehandler" />
             <FieldDpDataProcessors
               formikBag={formikBag}
               subDataProcessors={subDataProcessors}
-              options={processorList.map((p) => {
+              options={processorList.map((processor: Processor) => {
                 return {
-                  id: p.id,
-                  label: p.name,
+                  id: processor.id,
+                  label: processor.name,
                 }
               })}
             />

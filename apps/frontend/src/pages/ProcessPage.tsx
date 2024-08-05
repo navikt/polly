@@ -1,7 +1,5 @@
-import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Block } from 'baseui/block/index'
 import { HeadingSmall } from 'baseui/typography'
 import queryString from 'query-string'
 import { generatePath, useLocation, useParams } from 'react-router-dom'
@@ -14,7 +12,6 @@ import { PageHeader } from '../components/common/PageHeader'
 import { DepartmentDashCount, Disclosure, Process, ProcessStatus, ProcessStatusFilter } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { ListName } from '../service/Codelist'
-import { theme } from '../util'
 import { useQueryParam } from '../util/hooks'
 
 export enum Section {
@@ -44,9 +41,9 @@ export type PathParams = {
 }
 
 const ProcessPage = () => {
-  const [isLoading, setIsLoading] = React.useState(true)
-  const [chartData, setChartData] = React.useState<DepartmentDashCount>()
-  const [disclosureData, setDisclosureData] = React.useState<Disclosure[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [chartData, setChartData] = useState<DepartmentDashCount>()
+  const [disclosureData, setDisclosureData] = useState<Disclosure[]>([])
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
   const { section, code, processId } = params

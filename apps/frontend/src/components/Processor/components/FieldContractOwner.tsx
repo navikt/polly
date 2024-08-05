@@ -1,14 +1,16 @@
-import * as React from 'react'
-import { useEffect } from 'react'
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
-import { ProcessorFormValues } from '../../../constants'
-import { Block } from 'baseui/block'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { getResourceById, useTeamResourceSearch } from '../../../api'
+import { ProcessorFormValues } from '../../../constants'
 
-const FieldContractOwner = (props: { contractOwner?: string }) => {
+interface IProps {
+  contractOwner?: string
+}
+
+const FieldContractOwner = (props: IProps) => {
   const { contractOwner } = props
-  const [value, setValue] = React.useState<Value>()
+  const [value, setValue] = useState<Value>()
   const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] = useTeamResourceSearch()
 
   useEffect(() => {
@@ -31,7 +33,7 @@ const FieldContractOwner = (props: { contractOwner?: string }) => {
               setValue(value)
               form.setFieldValue('contractOwner', value && value.length > 0 ? value[0].id : '')
             }}
-            onInputChange={(event) => setTeamResourceSearch(event.currentTarget.value)}
+            onInputChange={(event: ChangeEvent<HTMLInputElement>) => setTeamResourceSearch(event.currentTarget.value)}
             value={value}
             isLoading={teamResourceSearchLoading}
           />

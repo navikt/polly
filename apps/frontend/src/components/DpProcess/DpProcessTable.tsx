@@ -1,18 +1,19 @@
-import { useTable } from '../../util/hooks'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
-import { DpProcess, dpProcessSort, DpProcessWithEmail } from '../../constants'
-import RouteLink from '../common/RouteLink'
+import { Tag } from '@navikt/ds-react'
+import { StyledLink } from 'baseui/link'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../api'
-import { StyledLink } from 'baseui/link'
-import { Tag } from '@navikt/ds-react'
+import { DpProcess, DpProcessWithEmail, dpProcessSort } from '../../constants'
+import { useTable } from '../../util/hooks'
+import RouteLink from '../common/RouteLink'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
 
 type DpProcessTableProps = {
   dpProcesses: DpProcess[]
 }
 
 const DpProcessTable = (props: DpProcessTableProps) => {
-  const [dpProcessesWithEmail, setDpProcessesWithEmail] = useState<DpProcessWithEmail[]>(props.dpProcesses)
+  const { dpProcesses } = props
+  const [dpProcessesWithEmail, setDpProcessesWithEmail] = useState<DpProcessWithEmail[]>(dpProcesses)
   const [table, sortColumn] = useTable<DpProcessWithEmail, keyof DpProcessWithEmail>(dpProcessesWithEmail, {
     sorting: dpProcessSort,
     initialSortColumn: 'name',
@@ -22,11 +23,11 @@ const DpProcessTable = (props: DpProcessTableProps) => {
 
   useEffect(() => {
     ;(async () => {
-      if (props.dpProcesses) {
+      if (dpProcesses) {
         const newDpProcessesList: DpProcessWithEmail[] = []
         await Promise.all(
-          props.dpProcesses.map(async (dpp) => {
-            const userIdent = dpp.changeStamp.lastModifiedBy.split(' ')[0]
+          dpProcesses.map(async (dpp: DpProcess) => {
+            const userIdent: string = dpp.changeStamp.lastModifiedBy.split(' ')[0]
             if (userIdent !== 'migration') {
               await getResourceById(userIdent).then((res) => {
                 newDpProcessesList.push({
@@ -41,7 +42,7 @@ const DpProcessTable = (props: DpProcessTableProps) => {
         ).then(() => setDpProcessesWithEmail(newDpProcessesList))
       }
     })()
-  }, [props.dpProcesses])
+  }, [dpProcesses])
 
   return (
     <>
@@ -56,8 +57,8 @@ const DpProcessTable = (props: DpProcessTableProps) => {
           </>
         }
       >
-        {table.data.map((process, index) => {
-          const isActive = today < process.end
+        {table.data.map((process: DpProcessWithEmail, index: number) => {
+          const isActive: boolean = today < process.end
 
           return (
             <Row key={index}>

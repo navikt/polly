@@ -4,16 +4,16 @@ import { Button, KIND } from 'baseui/button'
 import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Field, FieldProps, Form, Formik } from 'formik'
-import React, { useState } from 'react'
+import { Key, useState } from 'react'
 import { DpProcessFormValues } from '../../constants'
 import { theme } from '../../util'
 import { disableEnter } from '../../util/helper-functions'
+import BoolField from '../Process/common/BoolField'
+import PanelTitle from '../Process/common/PanelTitle'
 import CustomizedModalBlock from '../common/CustomizedModalBlock'
 import FieldProduct from '../common/FieldProduct'
 import { Error, ModalLabel } from '../common/ModalSchema'
 import { dpProcessSchema } from '../common/schema'
-import BoolField from '../Process/common/BoolField'
-import PanelTitle from '../Process/common/PanelTitle'
 import FieldDescription from './common/FieldDescription'
 import FieldDpProcessAffiliation from './common/FieldDpProcessAffiliation'
 import FieldDpProcessDataProcessingAgreements from './common/FieldDpProcessDataProcessingAgreements'
@@ -54,17 +54,18 @@ const panelOverrides: PanelOverrides = {
 }
 
 const DpProcessModal = (props: ModalDpProcessProps) => {
-  const [expanded, setExpanded] = useState<React.Key[]>([])
-  const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!props.initialValues.externalProcessResponsible)
+  const { initialValues, errorOnCreate, isOpen, submit, onClose } = props
+  const [expanded, setExpanded] = useState<Key[]>([])
+  const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(!!props.initialValues.externalProcessResponsible)
 
   return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose} animate size={SIZE.auto} role={ROLE.dialog}>
+    <Modal isOpen={isOpen} onClose={onClose} animate size={SIZE.auto} role={ROLE.dialog}>
       <div className="w-[960px] pr-8 pl-8">
         <Formik
           onSubmit={(values) => {
-            props.submit(values)
+            submit(values)
           }}
-          initialValues={props.initialValues}
+          initialValues={initialValues}
           validationSchema={dpProcessSchema()}
         >
           {(formikBag) => (
@@ -144,7 +145,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     },
                   }}
                   expanded={expanded}
-                  onChange={(e) => setExpanded(e.expanded)}
+                  onChange={(event) => setExpanded(event.expanded)}
                 >
                   <Panel
                     key="organizing"
@@ -164,7 +165,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     title={<PanelTitle title="Underdatabehandler" expanded={expanded.indexOf('subDataProcessor') >= 0} />}
                     overrides={{ ...panelOverrides }}
                   >
-                    <FieldDpProcessSubDataProcessor formikBag={formikBag} initialValues={props.initialValues} />
+                    <FieldDpProcessSubDataProcessor formikBag={formikBag} initialValues={initialValues} />
                   </Panel>
 
                   <Panel key="retention" title={<PanelTitle title="Lagringsbehov" expanded={expanded.indexOf('retention') >= 0} />} overrides={{ ...panelOverrides }}>
@@ -178,8 +179,8 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                 }}
               >
                 <div className="flex justify-end">
-                  <div className="self-end">{props.errorOnCreate && <p>{props.errorOnCreate}</p>}</div>
-                  <Button type="button" kind={KIND.tertiary} onClick={props.onClose}>
+                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                  <Button type="button" kind={KIND.tertiary} onClick={onClose}>
                     Avbryt
                   </Button>
                   <ModalButton type="submit">Lagre</ModalButton>

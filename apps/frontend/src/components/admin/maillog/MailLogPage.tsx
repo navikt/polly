@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { HeadingMedium, HeadingXSmall } from 'baseui/typography'
 import axios from 'axios'
-import { env } from '../../util/env'
-import { PageResponse } from '../../constants'
-import { Block } from 'baseui/block'
-import { Card } from 'baseui/card'
-import moment from 'moment'
-import { theme } from '../../util'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulMenu } from 'baseui/menu'
 import { Button, KIND } from 'baseui/button'
+import { Card } from 'baseui/card'
 import { TriangleDown } from 'baseui/icon'
+import { StatefulMenu } from 'baseui/menu'
 import { Pagination } from 'baseui/pagination'
-import { Markdown } from '../../components/common/Markdown'
-import {ampli} from "../../service/Amplitude";
+import { PLACEMENT, StatefulPopover } from 'baseui/popover'
+import { HeadingMedium, HeadingXSmall } from 'baseui/typography'
+import moment from 'moment'
+import { useEffect, useState } from 'react'
+import { PageResponse } from '../../../constants'
+import { ampli } from '../../../service/Amplitude'
+import { theme } from '../../../util'
+import { env } from '../../../util/env'
+import { Markdown } from '../../common/Markdown'
 
 interface MailLog {
   time: string
@@ -22,7 +21,7 @@ interface MailLog {
   body: string
 }
 
-const getMailLog = async (start: number, count: number) => {
+const getMailLog = async (start: number, count: number): Promise<PageResponse<MailLog>> => {
   return (await axios.get<PageResponse<MailLog>>(`${env.pollyBaseUrl}/audit/maillog?pageNumber=${start}&pageSize=${count}`)).data
 }
 
@@ -31,13 +30,13 @@ export const MailLogPage = () => {
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(20)
 
-  ampli.logEvent("besøk", {side: 'Admin', url: '/admin/maillog', app: 'Behandlingskatalogen', type:  'Mail log'})
+  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/maillog', app: 'Behandlingskatalogen', type: 'Mail log' })
 
   useEffect(() => {
     getMailLog(page - 1, limit).then(setLog)
   }, [page, limit])
 
-  const handlePageChange = (nextPage: number) => {
+  const handlePageChange = (nextPage: number): void => {
     if (nextPage < 1) {
       return
     }
@@ -48,7 +47,7 @@ export const MailLogPage = () => {
   }
 
   useEffect(() => {
-    const nextPageNum = Math.ceil(log.totalElements / limit)
+    const nextPageNum: number = Math.ceil(log.totalElements / limit)
     if (log.totalElements && nextPageNum < page) {
       setPage(nextPageNum)
     }
@@ -57,24 +56,24 @@ export const MailLogPage = () => {
   return (
     <>
       <HeadingMedium>Mail log</HeadingMedium>
-      {log?.content.map((l, i) => {
-        let html = l.body
-        const bodyIdx = l.body.indexOf('<body>')
+      {log?.content.map((logList: MailLog, index: number) => {
+        let html: string = logList.body
+        const bodyIdx: number = logList.body.indexOf('<body>')
         if (bodyIdx >= 0) {
-          html = html.substring(l.body.indexOf('<body>') + 6)
+          html = html.substring(logList.body.indexOf('<body>') + 6)
           html = html.substring(0, html.lastIndexOf('</body>'))
         }
         // some odd bug in html parser didnt like newlines inside <ul>
         html = html.replace(/\n/g, '')
-        const rowNum = log.pageNumber * log.pageSize + i + 1
+        const rowNum: number = log.pageNumber * log.pageSize + index + 1
 
         return (
-          <div key={i} className="mb-6">
+          <div key={index} className="mb-6">
             <HeadingXSmall marginBottom={0}>
-              #{rowNum} Tid: {moment(l.time).format('lll')} Til: {l.to}
+              #{rowNum} Tid: {moment(logList.time).format('lll')} Til: {logList.to}
             </HeadingXSmall>
             <HeadingXSmall marginTop={0} marginBottom={theme.sizing.scale400}>
-              Emne: {l.subject}
+              Emne: {logList.subject}
             </HeadingXSmall>
             <Card>
               <Markdown source={html} escapeHtml={false} />
@@ -87,7 +86,7 @@ export const MailLogPage = () => {
         <StatefulPopover
           content={({ close }) => (
             <StatefulMenu
-              items={[5, 10, 20, 50, 100].map((i) => ({ label: i }))}
+              items={[5, 10, 20, 50, 100].map((items) => ({ label: items }))}
               onItemSelect={({ item }) => {
                 setLimit(item.label)
                 close()
@@ -103,12 +102,7 @@ export const MailLogPage = () => {
         >
           <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>{`${limit} Rader`}</Button>
         </StatefulPopover>
-        <Pagination
-          currentPage={page}
-          numPages={log.pages}
-          onPageChange={({ nextPage }) => handlePageChange(nextPage)}
-          labels={{ nextButton: "Neste", prevButton: "Forrige" }}
-        />
+        <Pagination currentPage={page} numPages={log.pages} onPageChange={({ nextPage }) => handlePageChange(nextPage)} labels={{ nextButton: 'Neste', prevButton: 'Forrige' }} />
       </div>
     </>
   )

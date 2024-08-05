@@ -1,13 +1,17 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { Block } from 'baseui/block'
-import Button from '../../common/Button'
-import * as React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 import { ParagraphMedium } from 'baseui/typography'
+import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
+import Button from '../../common/Button'
 
-export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddDocument: () => void }) => {
-  const history = useNavigate()
-  const location = useLocation()
+interface IProps {
+  openAddPolicy: () => void
+  openAddDocument: () => void
+}
+
+export const ProcessCreatedModal = (props: IProps) => {
+  const { openAddPolicy, openAddDocument } = props
+  const history: NavigateFunction = useNavigate()
+  const location: Location<any> = useLocation()
   const closeModal = () => history(location.pathname)
 
   return (
@@ -27,7 +31,7 @@ export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddD
             marginRight
             onClick={() => {
               closeModal()
-              props.openAddPolicy()
+              openAddPolicy()
             }}
           >
             Legg til opplysningstyper enkeltvis
@@ -37,7 +41,7 @@ export const ProcessCreatedModal = (props: { openAddPolicy: () => void; openAddD
             kind="primary"
             onClick={() => {
               closeModal()
-              props.openAddDocument()
+              openAddDocument()
             }}
           >
             Legg til standardopplysningstyper

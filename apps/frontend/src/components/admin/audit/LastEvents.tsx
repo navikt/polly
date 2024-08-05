@@ -1,22 +1,20 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { AuditAction, Event, ObjectType, PageResponse } from '../../constants'
-import { Option, StatefulSelect, Value } from 'baseui/select'
-import { theme } from '../../util'
-import { getEvents } from '../../api/AuditApi'
-import { Block } from 'baseui/block'
-import { ObjectLink } from '../common/RouteLink'
-import { AuditActionIcon } from './AuditComponents'
-import moment from 'moment'
-import { HeadingXLarge, LabelMedium } from 'baseui/typography'
+import { OnChangeParams, Option, StatefulSelect, Value } from 'baseui/select'
 import { StatefulTabs, Tab } from 'baseui/tabs'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
-import {tekster} from "../../util/codeToFineText";
+import { HeadingXLarge, LabelMedium } from 'baseui/typography'
+import moment from 'moment'
+import { useEffect, useState } from 'react'
+import { getEvents } from '../../../api/AuditApi'
+import { AuditAction, Event, ObjectType, PageResponse } from '../../../constants'
+import { theme } from '../../../util'
+import { tekster } from '../../../util/codeToFineText'
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import { ObjectLink } from '../../common/RouteLink'
+import { AuditActionIcon } from './AuditComponents'
 
 export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
   const [table, setTable] = useState<ObjectType>(ObjectType.PROCESS)
-  const [action, setAction] = useState<Value>([{ id: AuditAction.CREATE, label: "Opprett" } as Option])
+  const [action, setAction] = useState<Value>([{ id: AuditAction.CREATE, label: 'Opprett' } as Option])
 
   useEffect(() => {
     ;(async () => {
@@ -24,7 +22,7 @@ export const LastEvents = () => {
     })()
   }, [table, action])
 
-  const content = events?.content.map((event, index) => (
+  const content = events?.content.map((event: Event, index: number) => (
     <div key={event.id} className="mb-1.5">
       <ObjectLink id={event.tableId} type={event.table} disable={event.action === AuditAction.DELETE} hideUnderline>
         <div className="w-full flex justify-between">
@@ -50,9 +48,9 @@ export const LastEvents = () => {
             size="compact"
             clearable={false}
             searchable={false}
-            options={Object.keys(AuditAction).map((auditAction) => ({ id: auditAction, label: tekster[auditAction as AuditAction] }))}
+            options={Object.keys(AuditAction).map((auditAction: string) => ({ id: auditAction, label: tekster[auditAction as AuditAction] }))}
             initialState={{ value: action }}
-            onChange={(params) => setAction(params.value)}
+            onChange={(params: OnChangeParams) => setAction(params.value)}
             overrides={{
               Root: {
                 style: {

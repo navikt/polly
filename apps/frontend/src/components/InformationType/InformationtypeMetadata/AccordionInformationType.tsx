@@ -1,21 +1,21 @@
-import * as React from 'react'
+import { faUsersCog } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Panel } from 'baseui/accordion'
 import { ParagraphMedium } from 'baseui/typography'
-import InformationtypePolicyTable from './InformationtypePolicyTable'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUsersCog } from '@fortawesome/free-solid-svg-icons'
-import { codelist, ListName } from '../../../service/Codelist'
-import { PurposeMap } from '../../../pages/InformationtypePage'
-import { Policy } from '../../../constants'
-import { paddingZero } from '../../common/Style'
-import { useQueryParam } from '../../../util/hooks'
-import { useLocation, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
+import { Key } from 'react'
+import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
+import { Policy } from '../../../constants'
+import { PurposeMap } from '../../../pages/InformationtypePage'
+import { Code, ListName, codelist } from '../../../service/Codelist'
+import { useQueryParam } from '../../../util/hooks'
 import { toggleOverride } from '../../common/Accordion'
+import { paddingZero } from '../../common/Style'
+import InformationtypePolicyTable from './InformationtypePolicyTable'
 
 const reducePolicyList = (list: Policy[]) => {
-  return list.reduce((acc: PurposeMap, curr) => {
-    curr.purposes.forEach((purpose) => {
+  return list.reduce((acc: PurposeMap, curr: Policy) => {
+    curr.purposes.forEach((purpose: Code) => {
       if (!acc[purpose.code]) {
         acc[purpose.code] = [curr]
       } else {
@@ -34,24 +34,25 @@ export interface AccordionInformationtypeProps {
 const AccordionInformationType = (props: AccordionInformationtypeProps) => {
   const { policies } = props
   const selectedPurpose = useQueryParam('purpose')
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate: NavigateFunction = useNavigate()
+  const location: Location<any> = useLocation()
+
   if (!policies) return <ParagraphMedium>Fant ingen formål</ParagraphMedium>
   if (!codelist.isLoaded()) return <ParagraphMedium>Kunne ikke laste inn siden</ParagraphMedium>
 
-  const purposeMap = reducePolicyList(policies)
-  const getPolicylistForPurpose = (purpose: string) => (!purposeMap[purpose] ? [] : purposeMap[purpose])
+  const purposeMap: PurposeMap = reducePolicyList(policies)
+  const getPolicylistForPurpose = (purpose: string): Policy[] => (!purposeMap[purpose] ? [] : purposeMap[purpose])
 
   return (
     <Accordion
       initialState={{ expanded: selectedPurpose ? [selectedPurpose] : [] }}
       onChange={(key) => {
-        let pathname = location.pathname
-        let purpose = key.expanded[0]
+        let pathname: string = location.pathname
+        let purpose: Key = key.expanded[0]
         navigate(pathname + '?' + queryString.stringify({ purpose }, { skipNull: true }))
       }}
     >
-      {Object.keys(purposeMap).map((key) => (
+      {Object.keys(purposeMap).map((key: string) => (
         <Panel
           title={
             <span>

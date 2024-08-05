@@ -1,40 +1,38 @@
-import * as React from 'react'
-import { useEffect } from 'react'
-import { Block } from 'baseui/block'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useNavigate, useParams } from 'react-router-dom'
 import { HeadingMedium } from 'baseui/typography'
-import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
-import { theme } from '../util'
-import { CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
-import { ListName } from '../service/Codelist'
-import { user } from '../service/User'
+import { useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../api'
+import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
 import { Spinner } from '../components/common/Spinner'
-import {ampli} from "../service/Amplitude";
+import { CategoryUsage, CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { ListName } from '../service/Codelist'
+import { user } from '../service/User'
+import { theme } from '../util'
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
 const InformationtypePage = () => {
   const params = useParams<{ id?: string }>()
-  const navigate = useNavigate()
+  const navigate: NavigateFunction = useNavigate()
 
-  const [error, setError] = React.useState(null)
-  const [informationTypeId, setInformationTypeId] = React.useState(params.id)
-  const [informationtype, setInformationtype] = React.useState<InformationType>()
-  const [policies, setPolicies] = React.useState<Policy[]>()
-  const [disclosures, setDisclosures] = React.useState<Disclosure[]>()
-  const [documents, setDocuments] = React.useState<Document[]>()
-  const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
+  const [error, setError] = useState(null)
+  const [informationTypeId, setInformationTypeId] = useState(params.id)
+  const [informationtype, setInformationtype] = useState<InformationType>()
+  const [policies, setPolicies] = useState<Policy[]>()
+  const [disclosures, setDisclosures] = useState<Disclosure[]>()
+  const [documents, setDocuments] = useState<Document[]>()
+  const [categoryUsages, setCategoryUsages] = useState<CodeUsage[]>()
 
-  ampli.logEvent("besøk", {side: 'Opplysningstyper', url: '/informationtype/', app: 'Behandlingskatalogen'})
+  ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {
-      let response = await getCodelistUsageByListName(ListName.CATEGORY)
+      let response: CategoryUsage = await getCodelistUsageByListName(ListName.CATEGORY)
       setCategoryUsages(response.codesInUse)
     })()
   }, [])
@@ -51,8 +49,8 @@ const InformationtypePage = () => {
         setPolicies((await getPoliciesForInformationType(informationTypeId)).content)
         setDisclosures(await getDisclosuresByInformationTypeId(informationTypeId))
         setDocuments((await getDocumentsForInformationType(informationTypeId)).content)
-      } catch (err: any) {
-        setError(err.message)
+      } catch (error: any) {
+        setError(error.message)
       }
 
       if (!params.id) navigate(`/informationtype/${informationTypeId}`)

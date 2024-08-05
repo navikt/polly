@@ -1,11 +1,9 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { OnChangeParams, Option, Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { Block } from 'baseui/block'
-import { DpProcessFormValues } from '../../../constants'
-import { Option, Select } from 'baseui/select'
-import { renderTagList } from '../../common/TagList'
+import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
+import { DpProcessFormValues } from '../../../constants'
+import { renderTagList } from '../../common/TagList'
 
 type fieldDpDataProcessorsProps = {
   formikBag: FormikProps<DpProcessFormValues>
@@ -14,14 +12,15 @@ type fieldDpDataProcessorsProps = {
 }
 
 const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
+  const { formikBag, options } = props
   const [subDataProcessors, setSubDataProcessors] = useState(props.subDataProcessors ? props.subDataProcessors : new Map<string, string>())
 
   useEffect(() => {
     ;(async () => {
-      if (props.formikBag.values.subDataProcessing.processors?.length) {
-        const res = await getProcessorsByIds(props.formikBag.values.subDataProcessing.processors)
+      if (formikBag.values.subDataProcessing.processors?.length) {
+        const response = await getProcessorsByIds(formikBag.values.subDataProcessing.processors)
         const resDataProcessors = new Map<string, string>()
-        res.forEach((r) => resDataProcessors.set(r.id, r.name))
+        response.forEach((process) => resDataProcessors.set(process.id, process.name))
         setSubDataProcessors(resDataProcessors)
       }
     })()
@@ -36,29 +35,29 @@ const FieldDpDataProcessors = (props: fieldDpDataProcessorsProps) => {
             <div className="w-full">
               <Select
                 clearable
-                noResultsMsg='Databehandler er ikke registrert i løsningen. Registrer databehandleren først.'
-                options={props.options
+                noResultsMsg="Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
+                options={options
                   .sort((a, b) => (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString()))
-                  .filter((dp) => !props.formikBag.values.subDataProcessing.processors.includes(dp.id ? dp.id.toString() : ''))}
-                onChange={(params) => {
+                  .filter((dataProcessing) => !formikBag.values.subDataProcessing.processors.includes(dataProcessing.id ? dataProcessing.id.toString() : ''))}
+                onChange={(params: OnChangeParams) => {
                   if (params.value[0].id && params.value[0].label) {
                     subDataProcessors.set(params.value[0].id.toString(), params.value[0].label.toString())
                   }
                   arrayHelpers.form.setFieldValue('subDataProcessing.processors', [
-                    ...(props.formikBag.values.subDataProcessing.processors || []),
-                    ...params.value.map((v) => v.id),
+                    ...(formikBag.values.subDataProcessing.processors || []),
+                    ...params.value.map((value) => value.id),
                   ])
                 }}
               />
             </div>
             <div>
-              {props.formikBag.values.subDataProcessing.processors &&
+              {formikBag.values.subDataProcessing.processors &&
                 renderTagList(
-                  props.formikBag.values.subDataProcessing.processors.map((dp) => {
+                  formikBag.values.subDataProcessing.processors.map((dataProcessing: string) => {
                     let subDataProcessorName = ''
-                    if (dp) {
-                      if (subDataProcessors.has(dp)) {
-                        subDataProcessorName = subDataProcessors.get(dp) || ''
+                    if (dataProcessing) {
+                      if (subDataProcessors.has(dataProcessing)) {
+                        subDataProcessorName = subDataProcessors.get(dataProcessing) || ''
                       }
                     }
                     return subDataProcessorName

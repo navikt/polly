@@ -1,22 +1,29 @@
 import { StyledLink } from 'baseui/link'
-import * as React from 'react'
+import { Fragment } from 'react/jsx-runtime'
 import { slackRedirectUrl } from '../../util/config'
 
-export const SlackLink = (props: { channel: string }) => {
-  const channels = props.channel
+interface IProps {
+  channel: string
+}
+
+export const SlackLink = (props: IProps) => {
+  const { channel } = props
+
+  const channels = channel
     .replace(/#/g, '')
     .split(',')
     .map((c) => c.trim())
-  const len = channels.length
+  const len: number = channels.length
+
   return (
     <>
-      {channels.map((c, idx) => (
-        <React.Fragment key={idx}>
-          <StyledLink href={slackRedirectUrl(c)} target="_blank" rel="noopener noreferrer">
-            #{c}
+      {channels.map((channel: string, index: number) => (
+        <Fragment key={index}>
+          <StyledLink href={slackRedirectUrl(channel)} target="_blank" rel="noopener noreferrer">
+            #{channel}
           </StyledLink>
-          {idx < len - 1 && <span>, </span>}
-        </React.Fragment>
+          {index < len - 1 && <span>, </span>}
+        </Fragment>
       ))}
     </>
   )

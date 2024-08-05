@@ -1,26 +1,28 @@
-import { Block } from 'baseui/block'
-import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
-import { theme } from '../../util'
-import { Markdown } from './Markdown'
-import * as React from 'react'
-import { useEffect } from 'react'
-import { codelist } from '../../service/Codelist'
-import { listNameForSection, Section } from '../../pages/ProcessPage'
-import { ProductArea, Team } from '../../constants'
-import { getProductArea, getTeam } from '../../api'
-import { Spinner } from './Spinner'
-import { productAreaLink, teamLink } from '../../util/config'
-import { StyledLink } from 'baseui/link'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { StyledLink } from 'baseui/link'
+import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
+import { useEffect, useState } from 'react'
+import { getProductArea, getTeam } from '../../api'
+import { ProductArea, Team } from '../../constants'
+import { listNameForSection, Section } from '../../pages/ProcessPage'
+import { codelist, ListName } from '../../service/Codelist'
+import { theme } from '../../util'
+import { productAreaLink, teamLink } from '../../util/config'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
+import { Markdown } from './Markdown'
+import { Spinner } from './Spinner'
 
+interface IPageHeaderProps {
+  section: Section
+  code: string
+}
 
-export const PageHeader = (props: { section: Section; code: string }) => {
-  const [isLoading, setLoading] = React.useState(false)
-  const [team, setTeam] = React.useState<Team>()
-  const [productArea, setProductArea] = React.useState<ProductArea>()
+export const PageHeader = (props: IPageHeaderProps) => {
   const { code, section } = props
+  const [isLoading, setLoading] = useState(false)
+  const [team, setTeam] = useState<Team>()
+  const [productArea, setProductArea] = useState<ProductArea>()
 
   useEffect(() => {
     ;(async () => {
@@ -36,7 +38,7 @@ export const PageHeader = (props: { section: Section; code: string }) => {
   }, [code, section])
 
   const getTitle = () => {
-    let currentListName = listNameForSection(section)
+    let currentListName: ListName | undefined = listNameForSection(section)
     if (currentListName !== undefined) {
       return codelist.getShortname(currentListName, code)
     }
@@ -61,7 +63,7 @@ export const PageHeader = (props: { section: Section; code: string }) => {
   }
 
   const getDescription = () => {
-    let currentListName = listNameForSection(section)
+    let currentListName: ListName | undefined = listNameForSection(section)
     if (currentListName) {
       return codelist.getDescription(currentListName, code)
     }
@@ -79,11 +81,12 @@ export const PageHeader = (props: { section: Section; code: string }) => {
     if (section === Section.team) url = teamLink(code)
     else if (section === Section.productarea) url = productAreaLink(code)
     if (!url) return null
+
     return (
       <>
-        <div className="mr-12"/>
+        <div className="mr-12" />
         <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
-          <CustomizedStatefulTooltip content='Gå til side'>
+          <CustomizedStatefulTooltip content="Gå til side">
             <span>
               <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
             </span>

@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { PageResponse, ProductArea, Team, TeamResource } from '../constants'
-import { default as React, Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useDebouncedState } from '../util'
 import { Option } from 'baseui/select'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { PageResponse, ProductArea, Team, TeamResource } from '../constants'
+import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
 export const getAllTeams = async () => {
@@ -56,8 +56,8 @@ export const mapTeamToOption = (team: Team, idx?: number) => ({ id: team.id, lab
 
 export const useTeamSearch = () => {
   const [teamSearch, setTeamSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = React.useState<Option[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const search = async () => {
@@ -77,8 +77,8 @@ export const useTeamSearch = () => {
 
 export const useTeamResourceSearch = () => {
   const [teamResourceSearch, setTeamResourceSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = React.useState<Option[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const search = async () => {
