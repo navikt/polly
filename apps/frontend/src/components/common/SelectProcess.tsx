@@ -1,29 +1,28 @@
-import * as React from 'react'
-import { DisclosureFormValues, Process } from '../../constants'
-import { useDebouncedState } from '../../util'
-import { getProcessesByPurpose, searchProcess } from '../../api'
 import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { Block } from 'baseui/block'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { getProcessesByPurpose, searchProcess } from '../../api'
+import { DisclosureFormValues, Process, ProcessShort } from '../../constants'
+import { Code, ListName, codelist } from '../../service/Codelist'
+import { useDebouncedState } from '../../util'
 import { renderTagList } from './TagList'
-import { codelist, ListName } from '../../service/Codelist'
 
 type SelectProcessProps = {
   formikBag: FormikProps<DisclosureFormValues>
 }
 
 const SelectProcess = (props: SelectProcessProps) => {
-  const [processList, setProcessList] = React.useState<Process[]>([])
-  const [search, setSearch] = useDebouncedState<string>('', 400)
-  const [isLoading, setLoading] = React.useState<boolean>(false)
   const { formikBag } = props
+  const [processList, setProcessList] = useState<Process[]>([])
+  const [search, setSearch] = useDebouncedState<string>('', 400)
+  const [isLoading, setLoading] = useState<boolean>(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
       if (search && search.length > 2) {
         setLoading(true)
-        let res = (await searchProcess(search)).content
-        const purposes = codelist.getCodes(ListName.PURPOSE).filter((c) => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+        let response: Process[] = (await searchProcess(search)).content
+        const purposes: Code[] = codelist.getCodes(ListName.PURPOSE).filter((code: Code) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
 
         const processesPromise: Promise<any>[] = []
 
@@ -31,16 +30,16 @@ const SelectProcess = (props: SelectProcessProps) => {
           processesPromise.push(getProcessesByPurpose(purposes[i].code))
         }
 
-        res = [...res, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
+        response = [...response, ...(await Promise.all(processesPromise)).map((value) => value.content).flatMap((value) => value)]
 
-        res = res
-          .map((v: Process) => {
-            return { ...v, namePurpose:  'B' + v.number + ' ' + (v.purposes !== undefined ? v.purposes[0].shortName : '') + ': ' + v.name }
+        response = response
+          .map((purpose: Process) => {
+            return { ...purpose, namePurpose: 'B' + purpose.number + ' ' + (purpose.purposes !== undefined ? purpose.purposes[0].shortName : '') + ': ' + purpose.name }
           })
-          .filter((p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id))
-          .filter((p1) => !formikBag.values.processes.map((value) => value.id).includes(p1.id))
+          .filter((p1: Process, index: number, self) => index === self.findIndex((p2) => p2.id === p1.id))
+          .filter((p1: Process) => !formikBag.values.processes.map((value: ProcessShort) => value.id).includes(p1.id))
 
-        setProcessList(res)
+        setProcessList(response)
         setLoading(false)
       }
     })()
@@ -57,19 +56,19 @@ const SelectProcess = (props: SelectProcessProps) => {
               isLoading={isLoading}
               clearable
               searchable={true}
-              noResultsMsg='Ingen'
+              noResultsMsg="Ingen"
               type={TYPE.search}
               maxDropdownHeight="400px"
-              placeholder='Søk behandlinger'
-              onInputChange={(event) => setSearch(event.currentTarget.value)}
+              placeholder="Søk behandlinger"
+              onInputChange={(event: ChangeEvent<HTMLInputElement>) => setSearch(event.currentTarget.value)}
               labelKey="namePurpose"
-              onChange={({ value }) => arrayHelpers.form.setFieldValue('processes', [...props.formikBag.values.processes, ...value.map((v) => v)])}
+              onChange={({ value }) => arrayHelpers.form.setFieldValue('processes', [...formikBag.values.processes, ...value.map((value) => value)])}
             />
           </div>
 
           <div>
             {renderTagList(
-              formikBag.values.processes.map((p) => 'B' + p.number + ' ' +  p.purposes[0].shortName + ': ' + p.name),
+              formikBag.values.processes.map((process: ProcessShort) => 'B' + process.number + ' ' + process.purposes[0].shortName + ': ' + process.name),
               arrayHelpers,
             )}
           </div>

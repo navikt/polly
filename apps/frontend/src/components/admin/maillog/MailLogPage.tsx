@@ -36,7 +36,7 @@ export const MailLogPage = () => {
     getMailLog(page - 1, limit).then(setLog)
   }, [page, limit])
 
-  const handlePageChange = (nextPage: number) => {
+  const handlePageChange = (nextPage: number): void => {
     if (nextPage < 1) {
       return
     }
@@ -47,7 +47,7 @@ export const MailLogPage = () => {
   }
 
   useEffect(() => {
-    const nextPageNum = Math.ceil(log.totalElements / limit)
+    const nextPageNum: number = Math.ceil(log.totalElements / limit)
     if (log.totalElements && nextPageNum < page) {
       setPage(nextPageNum)
     }
@@ -56,9 +56,9 @@ export const MailLogPage = () => {
   return (
     <>
       <HeadingMedium>Mail log</HeadingMedium>
-      {log?.content.map((logList, index) => {
-        let html = logList.body
-        const bodyIdx = logList.body.indexOf('<body>')
+      {log?.content.map((logList: MailLog, index: number) => {
+        let html: string = logList.body
+        const bodyIdx: number = logList.body.indexOf('<body>')
         if (bodyIdx >= 0) {
           html = html.substring(logList.body.indexOf('<body>') + 6)
           html = html.substring(0, html.lastIndexOf('</body>'))

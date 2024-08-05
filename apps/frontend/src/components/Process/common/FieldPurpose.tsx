@@ -13,11 +13,11 @@ const FieldPurpose = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
         <div className="w-full">
           <Select
             value={codelist.getParsedOptionsForList(ListName.PURPOSE, formikBag.values.purposes)}
-            options={codelist.getParsedOptions(ListName.PURPOSE).filter((o) => !formikBag.values.purposes.includes(o.id))}
+            options={codelist.getParsedOptions(ListName.PURPOSE).filter((option) => !formikBag.values.purposes.includes(option.id))}
             onChange={({ value }) => {
               arrayHelpers.form.setFieldValue(
                 'purposes',
-                value.map((v) => v.id),
+                value.map((value) => value.id),
               )
             }}
             overrides={{ Placeholder: { style: { color: 'black' } } }}

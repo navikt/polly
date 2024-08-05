@@ -1,7 +1,6 @@
 import { Tabs } from '@navikt/ds-react'
-import { Block } from 'baseui/block'
 import { HeadingSmall } from 'baseui/typography'
-import React, { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getDashboard, getInformationTypesBy } from '../api'
 import Charts from '../components/Charts/Charts'
@@ -13,8 +12,8 @@ import { ampli } from '../service/Amplitude'
 import { Section } from './ProcessPage'
 
 export const ProductAreaPage = () => {
-  const [isLoading, setIsLoading] = React.useState(true)
-  const [chartData, setChartData] = React.useState<ProductAreaDashCount>()
+  const [isLoading, setIsLoading] = useState(true)
+  const [chartData, setChartData] = useState<ProductAreaDashCount>()
   const { productAreaId } = useParams<{ productAreaId: string }>()
 
   ampli.logEvent('besøk', { side: 'ProductAreaPage', url: '/productarea/:productAreaId', app: 'Behandlingskatalogen' })

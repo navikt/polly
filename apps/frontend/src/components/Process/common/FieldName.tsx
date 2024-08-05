@@ -1,7 +1,6 @@
+import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Field, FieldProps } from 'formik'
 import { ProcessFormValues } from '../../../constants'
-import { Input, SIZE as InputSIZE } from 'baseui/input'
-import * as React from 'react'
 
 const FieldName = () => (
   <Field

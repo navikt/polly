@@ -1,10 +1,10 @@
-import React from 'react'
+import { HeadingMedium } from 'baseui/typography'
+import { useNavigate } from 'react-router-dom'
+import { Fragment } from 'react/jsx-runtime'
+import { createInformationTypesDocument } from '../api'
 import DocumentForm from '../components/document/component/DocumentForm'
 import { DocumentFormValues } from '../constants'
-import { createInformationTypesDocument } from '../api'
-import { useNavigate } from 'react-router-dom'
-import { HeadingMedium } from 'baseui/typography'
-import {ampli} from "../service/Amplitude";
+import { ampli } from '../service/Amplitude'
 
 let initialCreateDocumentFormValues: DocumentFormValues = {
   name: '',
@@ -30,7 +30,7 @@ export const convertDocumentToFormRequest = (values: DocumentFormValues) => {
 const DocumentCreatePage = () => {
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Dokumenter', url: '/document/create', app: 'Behandlingskatalogen', type:'Opprett dokument'})
+  ampli.logEvent('besøk', { side: 'Dokumenter', url: '/document/create', app: 'Behandlingskatalogen', type: 'Opprett dokument' })
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
     try {
@@ -42,10 +42,10 @@ const DocumentCreatePage = () => {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <HeadingMedium>Opprett dokument</HeadingMedium>
       <DocumentForm initialValues={initialCreateDocumentFormValues} handleSubmit={handleCreateDocument} />
-    </React.Fragment>
+    </Fragment>
   )
 }
 

@@ -1,21 +1,33 @@
 import { Field, FieldProps } from 'formik'
 import { ProcessFormValues } from '../../../constants'
 import { RadioBoolButton } from '../../common/Radio'
-import * as React from 'react'
 
-const BoolField = (props: { value?: boolean; fieldName: string; omitUndefined?: boolean; firstButtonLabel?: string; secondButtonLabel?: string; justifyContent?: string }) => (
-  <Field
-    name={props.fieldName}
-    render={({ form }: FieldProps<ProcessFormValues>) => (
-      <RadioBoolButton
-        value={props.value}
-        setValue={(b) => form.setFieldValue(props.fieldName, b)}
-        omitUndefined={props.omitUndefined}
-        firstButtonLabel={props.firstButtonLabel}
-        justifyContent={props.justifyContent}
-      />
-    )}
-  />
-)
+interface IBoolFieldProps {
+  value?: boolean
+  fieldName: string
+  omitUndefined?: boolean
+  firstButtonLabel?: string
+  secondButtonLabel?: string
+  justifyContent?: string
+}
+
+const BoolField = (props: IBoolFieldProps) => {
+  const { fieldName, value, omitUndefined, firstButtonLabel, justifyContent } = props
+
+  return (
+    <Field
+      name={fieldName}
+      render={({ form }: FieldProps<ProcessFormValues>) => (
+        <RadioBoolButton
+          value={value}
+          setValue={(b) => form.setFieldValue(fieldName, b)}
+          omitUndefined={omitUndefined}
+          firstButtonLabel={firstButtonLabel}
+          justifyContent={justifyContent}
+        />
+      )}
+    />
+  )
+}
 
 export default BoolField

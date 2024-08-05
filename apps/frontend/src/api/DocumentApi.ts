@@ -1,9 +1,9 @@
-import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
 import axios from 'axios'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Document, DocumentFormValues, DocumentInformationTypes, PageResponse } from '../constants'
+import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { getSettings } from './SettingsApi'
-import { useDebouncedState } from '../util'
 
 export const getDocument = async (documentId: string) => {
   return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
@@ -56,8 +56,8 @@ const mapFormValuesToDocument = (document: DocumentFormValues) => ({
 
 export const useDocumentSearch = () => {
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 200)
-  const [documentSearchResult, setDocumentSearchResult] = React.useState<Document[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [documentSearchResult, setDocumentSearchResult] = useState<Document[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     ;(async () => {

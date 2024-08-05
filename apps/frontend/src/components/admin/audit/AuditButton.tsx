@@ -1,23 +1,37 @@
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { user } from '../../../service/User'
-import RouteLink from '../../common/RouteLink'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHistory } from '@fortawesome/free-solid-svg-icons'
-import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { SIZE as ButtonSize, KIND } from 'baseui/button'
+import { user } from '../../../service/User'
 import Button from '../../common/Button'
+import RouteLink from '../../common/RouteLink'
 
-export const AuditButton = (props: { id: string; auditId?: string; kind?: (typeof KIND)[keyof typeof KIND]; marginLeft?: boolean; marginRight?: boolean; children?: any }) => {
-  return user.isAdmin() ? (
-    <RouteLink href={`/admin/audit/${props.id}` + (props.auditId ? `/${props.auditId}` : '')}>
-      {props.children ? (
-        props.children
-      ) : (
-        <>
-          <Button tooltip='Versjonering' marginLeft={props.marginLeft} marginRight={props.marginRight} size={ButtonSize.compact} kind={props.kind || 'outline'}>
-            <FontAwesomeIcon title='Versjonering'  icon={faHistory} />
-          </Button>
-        </>
+interface IProps {
+  id: string
+  auditId?: string
+  kind?: (typeof KIND)[keyof typeof KIND]
+  marginLeft?: boolean
+  marginRight?: boolean
+  children?: any
+}
+
+export const AuditButton = (props: IProps) => {
+  const { id, auditId, kind, marginLeft, marginRight, children } = props
+
+  return (
+    <>
+      {!user.isAdmin() && null}
+      {user.isAdmin() && (
+        <RouteLink href={`/admin/audit/${id}` + (auditId ? `/${auditId}` : '')}>
+          {children && children}{' '}
+          {!children && (
+            <>
+              <Button tooltip="Versjonering" marginLeft={marginLeft} marginRight={marginRight} size={ButtonSize.compact} kind={kind || 'outline'}>
+                <FontAwesomeIcon title="Versjonering" icon={faHistory} />
+              </Button>
+            </>
+          )}
+        </RouteLink>
       )}
-    </RouteLink>
-  ) : null
+    </>
+  )
 }

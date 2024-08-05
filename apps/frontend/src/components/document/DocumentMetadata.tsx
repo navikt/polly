@@ -1,21 +1,20 @@
-import React from 'react'
-import { Block } from 'baseui/block'
+import { Fragment } from 'react'
 import { Document } from '../../constants'
 import DocumentInfoTypeTable from './DocumentInfoTypeTable'
 
-type DocumentMetadata = {
+type TDocumentMetadata = {
   document: Document
 }
 
-const DocumentMetadata = (props: DocumentMetadata) => {
+const DocumentMetadata = (props: TDocumentMetadata) => {
   const { document } = props
 
   return (
-    <React.Fragment>
+    <Fragment>
       <div>
         <DocumentInfoTypeTable list={document.informationTypes} />
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }
 

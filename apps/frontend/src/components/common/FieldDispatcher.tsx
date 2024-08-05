@@ -9,6 +9,8 @@ type fieldDispatcherProps = {
 }
 
 const FieldDispatcher = (props: fieldDispatcherProps) => {
+  const { formikBag } = props
+
   return (
     <FieldArray
       name="affiliation.disclosureDispatchers"
@@ -18,16 +20,16 @@ const FieldDispatcher = (props: fieldDispatcherProps) => {
             <div className="w-full">
               <Select
                 clearable
-                options={codelist.getParsedOptions(ListName.SYSTEM).filter((o) => !props.formikBag.values.affiliation.disclosureDispatchers.includes(o.id))}
+                options={codelist.getParsedOptions(ListName.SYSTEM).filter((option) => !formikBag.values.affiliation.disclosureDispatchers.includes(option.id))}
                 onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue('affiliation.disclosureDispatchers', [...props.formikBag.values.affiliation.disclosureDispatchers, ...value.map((v) => v.id)])
+                  arrayHelpers.form.setFieldValue('affiliation.disclosureDispatchers', [...formikBag.values.affiliation.disclosureDispatchers, ...value.map((value) => value.id)])
                 }}
                 overrides={{ Placeholder: { style: { color: 'black' } } }}
               />
             </div>
             <div>
               {renderTagList(
-                props.formikBag.values.affiliation.disclosureDispatchers.map((p) => codelist.getShortname(ListName.SYSTEM, p)),
+                formikBag.values.affiliation.disclosureDispatchers.map((disclosureDispatcher) => codelist.getShortname(ListName.SYSTEM, disclosureDispatcher)),
                 arrayHelpers,
               )}
             </div>

@@ -1,16 +1,14 @@
 import { BaseProvider } from 'baseui'
-import { Block } from 'baseui/block'
-import * as React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { Fragment } from 'react/jsx-runtime'
 import { Client as Styletron } from 'styletron-engine-atomic'
 import { Provider as StyletronProvider } from 'styletron-react'
+import AppRoutes from './AppRoutes'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
-import AppRoutes from './AppRoutes'
 import { codelist } from './service/Codelist'
 import { user } from './service/User'
 import { theme, useAwait } from './util'
-
 
 const engine = new Styletron()
 
@@ -22,7 +20,7 @@ const Main = (props) => {
   useAwait(user.wait())
 
   return (
-    <React.Fragment>
+    <Fragment>
       <StyletronProvider value={engine}>
         <BaseProvider theme={theme}>
           <Router history={history}>
@@ -42,7 +40,7 @@ const Main = (props) => {
           </Router>
         </BaseProvider>
       </StyletronProvider>
-    </React.Fragment>
+    </Fragment>
   )
 }
 

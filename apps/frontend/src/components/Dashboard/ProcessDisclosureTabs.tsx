@@ -1,9 +1,8 @@
 import { BodyShort, Spacer, Tabs } from '@navikt/ds-react'
-import { Block } from 'baseui/block'
 import { Button, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { HeadingXLarge } from 'baseui/typography'
-import { ReactNode, useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api'
 import { Disclosure, DisclosureFormValues, ProcessStatus } from '../../constants'
 import { Section } from '../../pages/ProcessPage'
@@ -15,18 +14,14 @@ import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 
 interface IProps {
   disclosureData: Disclosure[]
-  setDisclosureData: React.Dispatch<React.SetStateAction<Disclosure[]>>
+  setDisclosureData: Dispatch<SetStateAction<Disclosure[]>>
   code: string
-
   section: Section
   isEditable: boolean
-
   moveScroll?: Function
-
   listName?: ListName
   processId?: string
   filter?: ProcessStatus
-
   thirdTabTitle?: string
   thirdTabContent?: ReactNode
 }
@@ -36,48 +31,49 @@ export const ProcessDisclosureTabs = (props: IProps) => {
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
 
-  const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
+  const handleCreateDisclosure = async (disclosure: DisclosureFormValues): Promise<void> => {
     try {
-      let createdDisclosure = await createDisclosure(disclosure)
+      let createdDisclosure: Disclosure = await createDisclosure(disclosure)
 
       if (!disclosureData || disclosureData.length < 1) setDisclosureData([createdDisclosure])
       else if (disclosureData && createdDisclosure) setDisclosureData([...disclosureData, createdDisclosure])
 
       setShowCreateDisclosureModal(false)
-    } catch (err: any) {
+    } catch (error: any) {
       setShowCreateDisclosureModal(true)
-      setError(err.message)
+      setError(error.message)
     }
   }
 
-  const handleEditDisclosure = async (disclosure: DisclosureFormValues) => {
+  const handleEditDisclosure = async (disclosure: DisclosureFormValues): Promise<boolean> => {
     try {
       let editedDisclosure = await updateDisclosure(disclosure)
 
-      const newDisclosureData = disclosureData.map((d: Disclosure) => {
-        if (d.id === editedDisclosure.id) {
+      const newDisclosureData: Disclosure[] = disclosureData.map((disclosure: Disclosure) => {
+        if (disclosure.id === editedDisclosure.id) {
           return editedDisclosure
-        } else return d
+        } else return disclosure
       })
 
       setDisclosureData(newDisclosureData)
 
       return true
-    } catch (err: any) {
-      setError(err.message)
+    } catch (error: any) {
+      setError(error.message)
       return false
     }
   }
 
-  const handleDeleteDisclosure = async (disclosure: Disclosure) => {
+  const handleDeleteDisclosure = async (disclosure: Disclosure): Promise<boolean> => {
     if (!disclosure) return false
+
     try {
       await deleteDisclosure(disclosure.id)
-      setDisclosureData([...disclosureData.filter((d: Disclosure) => d.id !== disclosure.id)])
+      setDisclosureData([...disclosureData.filter((disclosureData: Disclosure) => disclosureData.id !== disclosure.id)])
       setError(undefined)
       return true
-    } catch (err: any) {
-      setError(err.message)
+    } catch (error: any) {
+      setError(error.message)
       return false
     }
   }
@@ -97,7 +93,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     processIds: [],
     administrationArchiveCaseNumber: '',
     assessedConfidentiality: undefined,
-    confidentialityDescription: ''
+    confidentialityDescription: '',
   }
 
   return (

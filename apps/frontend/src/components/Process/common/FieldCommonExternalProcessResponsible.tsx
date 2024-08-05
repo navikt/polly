@@ -1,12 +1,17 @@
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
-import * as React from 'react'
+import { useState } from 'react'
 import { ProcessFormValues } from '../../../constants'
-import { codelist, ListName } from '../../../service/Codelist'
+import { ListName, codelist } from '../../../service/Codelist'
 
-const FieldCommonExternalProcessResponsible = (props: { thirdParty?: string; hideSelect: () => void }) => {
-  const { thirdParty } = props
-  const [value, setValue] = React.useState<Value>(
+interface IFieldCommonExternalProcessResponsibleProps {
+  thirdParty?: string
+  hideSelect: () => void
+}
+
+const FieldCommonExternalProcessResponsible = (props: IFieldCommonExternalProcessResponsibleProps) => {
+  const { thirdParty, hideSelect } = props
+  const [value, setValue] = useState<Value>(
     thirdParty
       ? [
           {
@@ -25,7 +30,7 @@ const FieldCommonExternalProcessResponsible = (props: { thirdParty?: string; hid
           <Select
             options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
             onChange={({ value }) => {
-              if (!value.length) props.hideSelect()
+              if (!value.length) hideSelect()
               setValue(value)
               form.setFieldValue('commonExternalProcessResponsible', value.length > 0 ? value[0].id : '')
             }}

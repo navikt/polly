@@ -1,4 +1,4 @@
-import { Option, Select } from 'baseui/select'
+import { OnChangeParams, Option, Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -12,13 +12,14 @@ type fieldDataProcessorsProps = {
 }
 
 const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
+  const { formikBag, options } = props
   const [dataProcessors, setDataProcessors] = useState(props.dataProcessors ? props.dataProcessors : new Map<string, string>())
 
   useEffect(() => {
     ;(async () => {
-      if (props.formikBag.values.dataProcessing.processors?.length) {
-        const res = await getProcessorsByIds(props.formikBag.values.dataProcessing.processors)
-        res.forEach((r) => dataProcessors.set(r.id, r.name))
+      if (formikBag.values.dataProcessing.processors?.length) {
+        const response = await getProcessorsByIds(formikBag.values.dataProcessing.processors)
+        response.forEach((response) => dataProcessors.set(response.id, response.name))
       }
     })()
   }, [])
@@ -33,25 +34,25 @@ const FieldDataProcessors = (props: fieldDataProcessorsProps) => {
               <Select
                 clearable
                 noResultsMsg="Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
-                options={props.options
+                options={options
                   .sort((a, b) => (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString()))
-                  .filter((dp) => !props.formikBag.values.dataProcessing.processors.includes(dp.id ? dp.id.toString() : ''))}
-                onChange={(params) => {
+                  .filter((dataProcessing) => !formikBag.values.dataProcessing.processors.includes(dataProcessing.id ? dataProcessing.id.toString() : ''))}
+                onChange={(params: OnChangeParams) => {
                   if (params.value[0].id && params.value[0].label) {
                     dataProcessors.set(params.value[0].id.toString(), params.value[0].label.toString())
                   }
-                  arrayHelpers.form.setFieldValue('dataProcessing.processors', [...(props.formikBag.values.dataProcessing.processors || []), ...params.value.map((v) => v.id)])
+                  arrayHelpers.form.setFieldValue('dataProcessing.processors', [...(formikBag.values.dataProcessing.processors || []), ...params.value.map((value) => value.id)])
                 }}
               />
             </div>
             <div>
-              {props.formikBag.values.dataProcessing.processors &&
+              {formikBag.values.dataProcessing.processors &&
                 renderTagList(
-                  props.formikBag.values.dataProcessing.processors.map((dp) => {
+                  formikBag.values.dataProcessing.processors.map((processor) => {
                     let dataProcessorName = ''
-                    if (dp) {
-                      if (dataProcessors.has(dp)) {
-                        dataProcessorName = dataProcessors.get(dp) || ''
+                    if (processor) {
+                      if (dataProcessors.has(processor)) {
+                        dataProcessorName = dataProcessors.get(processor) || ''
                       }
                     }
                     return dataProcessorName

@@ -1,12 +1,16 @@
-import * as React from 'react'
 import { Select } from 'baseui/select'
-import { codelist, ListName } from '../../service/Codelist'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { DpProcessFormValues, ProcessFormValues } from '../../constants'
-import { Block } from 'baseui/block'
+import { ListName, codelist } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
-const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> | FormikProps<DpProcessFormValues> }) => {
+interface IFieldSubDepartmentsProps {
+  formikBag: FormikProps<ProcessFormValues> | FormikProps<DpProcessFormValues>
+}
+
+const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
+  const { formikBag } = props
+
   return (
     <FieldArray
       name="affiliation.subDepartments"
@@ -15,9 +19,9 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
           <div className="w-full">
             <Select
               clearable
-              options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT).filter((o) => !props.formikBag.values.affiliation.subDepartments.includes(o.id))}
+              options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT).filter((code) => !formikBag.values.affiliation.subDepartments.includes(code.id))}
               onChange={({ value }) => {
-                arrayHelpers.form.setFieldValue('affiliation.subDepartments', [...props.formikBag.values.affiliation.subDepartments, ...value.map((v) => v.id)])
+                arrayHelpers.form.setFieldValue('affiliation.subDepartments', [...formikBag.values.affiliation.subDepartments, ...value.map((value) => value.id)])
               }}
               overrides={{ Placeholder: { style: { color: 'black' } } }}
             />
@@ -25,7 +29,7 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
           <div>
             <div>
               {renderTagList(
-                props.formikBag.values.affiliation.subDepartments.map((p) => codelist.getShortname(ListName.SUB_DEPARTMENT, p)),
+                formikBag.values.affiliation.subDepartments.map((subDepartment: string) => codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment)),
                 arrayHelpers,
               )}
             </div>

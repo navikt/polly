@@ -1,7 +1,6 @@
-import * as React from 'react'
 import { Counter, ProcessField, ProcessState, ProcessStatusFilter } from '../../constants'
-import { Chart } from './Chart'
 import { chartColor } from '../../util/theme'
+import { Chart } from './Chart'
 
 const chartSize = 80
 

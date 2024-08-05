@@ -5,8 +5,13 @@ import { ModalLabel } from '../../common/ModalSchema'
 import BoolField from './BoolField'
 import FieldInput from './FieldInput'
 
-const DpiaItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
+interface IProps {
+  formikBag: FormikProps<ProcessFormValues>
+}
+
+const DpiaItems = (props: IProps) => {
   const { formikBag } = props
+
   return (
     <>
       <div className="flex w-full mt-0">

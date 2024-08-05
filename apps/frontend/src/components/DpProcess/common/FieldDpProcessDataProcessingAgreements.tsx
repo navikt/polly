@@ -1,15 +1,19 @@
-import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { DpProcessFormValues } from '../../../constants'
-import * as React from 'react'
-import { Block } from 'baseui/block'
-import { Input } from 'baseui/input'
 import { Button, SHAPE } from 'baseui/button'
 import { Plus } from 'baseui/icon'
+import { Input } from 'baseui/input'
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { KeyboardEvent, RefObject, useRef, useState } from 'react'
+import { DpProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
-const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<DpProcessFormValues> }) => {
-  const [currentKeywordValue, setCurrentKeywordValue] = React.useState('')
-  const agreementRef = React.useRef<HTMLInputElement>(null)
+interface IFieldDpProcessDataProcessingAgreementsProps {
+  formikBag: FormikProps<DpProcessFormValues>
+}
+
+const FieldDpProcessDataProcessingAgreements = (props: IFieldDpProcessDataProcessingAgreementsProps) => {
+  const { formikBag } = props
+  const [currentKeywordValue, setCurrentKeywordValue] = useState('')
+  const agreementRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
 
   const onAddAgreement = (arrayHelpers: FieldArrayRenderProps) => {
     if (!currentKeywordValue) return
@@ -28,11 +32,11 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
           <Input
             type="text"
             size="compact"
-            placeholder='(f.eks. lenke til Websak, Confluence e.l.)'
+            placeholder="(f.eks. lenke til Websak, Confluence e.l.)"
             value={currentKeywordValue}
             onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') onAddAgreement(arrayHelpers)
+            onKeyDown={(event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+              if (event.key === 'Enter') onAddAgreement(arrayHelpers)
             }}
             onBlur={() => onAddAgreement(arrayHelpers)}
             inputRef={agreementRef}
@@ -44,7 +48,7 @@ const FieldDpProcessDataProcessingAgreements = (props: { formikBag: FormikProps<
               ),
             }}
           />
-          {renderTagList(props.formikBag.values.dataProcessingAgreements, arrayHelpers)}
+          {renderTagList(formikBag.values.dataProcessingAgreements, arrayHelpers)}
         </div>
       )}
     />

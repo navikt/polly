@@ -2,8 +2,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button as BaseUIButton, KIND, SHAPE, SIZE } from 'baseui/button'
 import { Override } from 'baseui/overrides'
-import * as React from 'react'
-import { ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import { StyleObject } from 'styletron-react'
 import { theme } from '../../../util'
 import CustomizedStatefulTooltip from '../CustomizedStatefulTooltip'
@@ -28,7 +27,7 @@ interface ButtonProps {
 
 interface TooltipProps {
   tooltip?: string
-  children: React.ReactElement
+  children: ReactElement
 }
 
 const Tooltip = (props: TooltipProps) => (props.tooltip ? <CustomizedStatefulTooltip content={props.tooltip}>{props.children}</CustomizedStatefulTooltip> : props.children)

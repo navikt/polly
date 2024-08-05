@@ -6,14 +6,14 @@ import { Plus } from 'baseui/icon'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { LabelMedium } from 'baseui/typography'
-import * as React from 'react'
-import { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { RefObject, useEffect, useRef, useState } from 'react'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { convertProcessToFormValues, getDisclosuresByProcessId, getResourceById } from '../../../api'
-import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
 import { RequestRevisionPage } from '../../../components/admin/revision/RequestRevisionPage'
+import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { PathParams } from '../../../pages/ProcessPage'
+import { Code } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
@@ -60,25 +60,28 @@ const AccordionProcess = (props: AccordionProcessProps) => {
     errorPolicyModal,
     submitDeletePolicy,
     submitDeleteAllPolicy,
+    processList,
+    submitAddDocument,
+    errorDocumentModal,
   } = props
 
-  const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
-  const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
-  const [showAddBatchInfoTypesModal, setShowAddBatchInfoTypesModal] = React.useState(false)
-  const [addDefaultDocument, setAddDefaultDocument] = React.useState(false)
-  const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const [showRevisionModal, setShowRevisionModal] = React.useState(false)
-  const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = React.useState(false)
-  const [lastModifiedUserEmail, setLastModifiedUserEmail] = React.useState('')
-  const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
-  const purposeRef = React.useRef<HTMLInputElement>(null)
-  const params = useParams<PathParams>()
-  const history = useNavigate()
+  const [showEditProcessModal, setShowEditProcessModal] = useState(false)
+  const [showCreatePolicyModal, setShowCreatePolicyModal] = useState(false)
+  const [showAddBatchInfoTypesModal, setShowAddBatchInfoTypesModal] = useState(false)
+  const [addDefaultDocument, setAddDefaultDocument] = useState(false)
+  const [showAddDocumentModal, setShowAddDocumentModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showRevisionModal, setShowRevisionModal] = useState(false)
+  const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
+  const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
+  const [disclosures, setDisclosures] = useState<Disclosure[]>([])
+  const purposeRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
+  const params: Readonly<Partial<PathParams>> = useParams<PathParams>()
+  const history: NavigateFunction = useNavigate()
 
-  const hasAccess = () => user.canWrite()
+  const hasAccess = (): boolean => user.canWrite()
 
-  const today = new Date().toISOString().split('T')[0]
+  const today: string = new Date().toISOString().split('T')[0]
 
   const renderCreatePolicyButton = () => (
     <Button
@@ -144,7 +147,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   useEffect(() => {
     ;(async () => {
       if (currentProcess) {
-        const userIdent = currentProcess.changeStamp.lastModifiedBy.split(' ')[0]
+        const userIdent: string = currentProcess.changeStamp.lastModifiedBy.split(' ')[0]
         await getResourceById(userIdent)
           .then((res) => setLastModifiedUserEmail(res.email))
           .catch((e) => console.log('Unable to get email for user that last modified'))
@@ -152,7 +155,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
     })()
   }, [currentProcess])
 
-  const closeRevision = () => {
+  const closeRevision = (): void => {
     setShowRevisionModal(false)
     onChangeProcess(currentProcess?.id)
   }
@@ -160,8 +163,8 @@ const AccordionProcess = (props: AccordionProcessProps) => {
   return (
     <div>
       <StatelessAccordion onChange={({ expanded }) => onChangeProcess(expanded.length ? (expanded[0] as string) : undefined)} expanded={params.processId ? [params.processId] : []}>
-        {props.processList &&
-          props.processList
+        {processList &&
+          processList
             .sort((a, b) => {
               if (today < a.end && today > b.end) return -1
               else if (today > a.end && today < b.end) return 1
@@ -171,13 +174,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
               return aname.localeCompare(bname)
             })
-            .map((p: ProcessShort) => {
-              const expanded = params.processId === p.id
+            .map((process: ProcessShort) => {
+              const expanded = params.processId === process.id
+
               return (
                 <Panel
                   title={
                     <AccordionTitle
-                      process={p}
+                      process={process}
                       expanded={expanded}
                       hasAccess={hasAccess()}
                       editProcess={() => setShowEditProcessModal(true)}
@@ -185,7 +189,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                       forwardRef={expanded ? purposeRef : undefined}
                     />
                   }
-                  key={p.id}
+                  key={process.id}
                   overrides={{
                     ToggleIcon: {
                       component: () => null,
@@ -224,7 +228,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                           <div className="flex">
                             {canViewAlerts() && (
                               <div className="mr-auto">
-                                <Button type="button" kind="tertiary" size="compact" icon={faExclamationCircle} onClick={() => history(`/alert/events/process/${p.id}`)}>
+                                <Button type="button" kind="tertiary" size="compact" icon={faExclamationCircle} onClick={() => history(`/alert/events/process/${process.id}`)}>
                                   Varsler
                                 </Button>
                               </div>
@@ -262,7 +266,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               )
             })}
       </StatelessAccordion>
-      {!props.processList.length && <LabelMedium margin="1rem">Ingen behandlinger</LabelMedium>}
+      {!processList.length && <LabelMedium margin="1rem">Ingen behandlinger</LabelMedium>}
 
       {!!currentProcess && (
         <>
@@ -285,7 +289,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               informationType: undefined,
               legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
               process: currentProcess,
-              purposes: currentProcess.purposes.map((p) => p.code),
+              purposes: currentProcess.purposes.map((purpose: Code) => purpose.code),
               subjectCategories: [],
               legalBases: [],
               documentIds: [],
@@ -323,18 +327,18 @@ const AccordionProcess = (props: AccordionProcessProps) => {
               setShowAddDocumentModal(false)
             }}
             isOpen={showAddDocumentModal}
-            submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
+            submit={(formValues: AddDocumentToProcessFormValues) => submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
             process={currentProcess}
             addDefaultDocument={addDefaultDocument}
-            error={props.errorDocumentModal}
+            error={errorDocumentModal}
           />
 
           <AddBatchInformationTypesModal
             onClose={() => setShowAddBatchInfoTypesModal(false)}
             isOpen={showAddBatchInfoTypesModal}
-            submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddBatchInfoTypesModal(false))}
+            submit={(formValues) => submitAddDocument(formValues).then(() => setShowAddBatchInfoTypesModal(false))}
             process={currentProcess}
-            error={props.errorDocumentModal}
+            error={errorDocumentModal}
           />
 
           <DeleteProcessModal

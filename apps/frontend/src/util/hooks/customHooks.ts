@@ -1,4 +1,4 @@
-import React, { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction, createRef, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 export function useDebouncedState<T>(initialValue: T, delay: number): [T, Dispatch<SetStateAction<T>>, T] {
@@ -6,7 +6,7 @@ export function useDebouncedState<T>(initialValue: T, delay: number): [T, Dispat
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
   useEffect(() => {
-    const handler = setTimeout(() => {
+    const handler: NodeJS.Timeout = setTimeout(() => {
       setDebouncedValue(value)
     }, delay)
     return () => {
@@ -32,7 +32,7 @@ export function useUpdateOnChange(value: any) {
 }
 
 export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<boolean>>) {
-  const update = useForceUpdate()
+  const update: () => void = useForceUpdate()
 
   useEffect(() => {
     ;(async () => {
@@ -49,7 +49,7 @@ type Refs<T> = { [id: string]: RefObject<T> }
 export function useRefs<T>(ids: string[]) {
   const refs: Refs<T> =
     ids.reduce((acc, value) => {
-      acc[value] = React.createRef()
+      acc[value] = createRef()
       return acc
     }, {} as Refs<T>) || {}
 

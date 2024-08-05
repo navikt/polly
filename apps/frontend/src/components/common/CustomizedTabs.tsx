@@ -1,13 +1,14 @@
-import React from 'react'
 import { Tabs, TabsProps } from 'baseui/tabs'
 import { theme } from '../../util'
 import { paddingAll, paddingZero } from './Style'
 
 export const CustomizedTabs = (props: TabsProps) => {
+  const { onChange, activeKey, children } = props
+
   return (
     <Tabs
-      onChange={props.onChange}
-      activeKey={props.activeKey}
+      onChange={onChange}
+      activeKey={activeKey}
       overrides={{
         Root: {
           style: {
@@ -24,7 +25,7 @@ export const CustomizedTabs = (props: TabsProps) => {
         },
       }}
     >
-      {props.children}
+      {children}
     </Tabs>
   )
 }

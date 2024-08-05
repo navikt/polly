@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { InformationType, InformationtypeFormValues, InformationTypeShort, PageResponse, Policy } from '../constants'
-import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
+import queryString from 'query-string'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { InformationType, InformationTypeShort, InformationtypeFormValues, PageResponse, Policy } from '../constants'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
-import queryString from 'query-string'
 
 export const getInformationTypes = async (page: number, limit: number) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`)).data
@@ -39,8 +39,8 @@ export const updateInformationType = async (informationType: InformationtypeForm
 
 export const useInfoTypeSearch = () => {
   const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200)
-  const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<InformationTypeShort[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [infoTypeSearchResult, setInfoTypeSearchResult] = useState<InformationTypeShort[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const search = async () => {

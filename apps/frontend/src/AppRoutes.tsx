@@ -1,41 +1,39 @@
-import * as React from 'react'
-import { Route, Routes, useLocation, useParams, Navigate } from 'react-router-dom'
-import { Block } from 'baseui/block'
-import { ParagraphLarge } from 'baseui/typography'
 import { Spinner } from 'baseui/icon'
+import { ParagraphLarge } from 'baseui/typography'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 
+import { useEffect, useState } from 'react'
+import { getDisclosure, getPolicy, getProcess } from './api'
+import PurposeTable from './components/Dashboard/PurposeTable'
+import DpProcessView from './components/DpProcess/DpProcessView'
+import ProcessorView from './components/Processor/ProcessorView'
 import Root from './components/Root'
-import ProcessPage from './pages/ProcessPage'
+import CodelistPage from './components/admin/CodeList/CodelistPage'
+import { AuditPage } from './components/admin/audit/AuditPage'
+import { MailLogPage } from './components/admin/maillog/MailLogPage'
+import { RequestRevisionPage } from './components/admin/revision/RequestRevisionPage'
+import { SettingsPage } from './components/admin/settings/SettingsPage'
+import { AlertEventPage } from './pages/AlertEventPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { DisclosureListPage } from './pages/DisclosureListPage'
+import DocumentCreatePage from './pages/DocumentCreatePage'
+import DocumentEditPage from './pages/DocumentEditPage'
+import DocumentPage from './pages/DocumentPage'
+import DpProcessPage from './pages/DpProcessPage'
 import InformationtypeCreatePage from './pages/InformationtypeCreatePage'
 import InformationtypeEditPage from './pages/InformationtypeEditPage'
 import InformationtypePage from './pages/InformationtypePage'
+import { LegalPage } from './pages/LegalPage'
 import { SystemListPage, ThirdPartyListPage } from './pages/ListSearchPage'
-import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
 import { MainPage } from './pages/MainPage'
-import CodelistPage from './components/admin/CodeList/CodelistPage'
-import { AuditPage } from './components/admin/audit/AuditPage'
-import { theme } from './util'
-import notFound from './resources/notfound.svg'
-import { SettingsPage } from './components/admin/settings/SettingsPage'
-import DocumentCreatePage from './pages/DocumentCreatePage'
-import DocumentPage from './pages/DocumentPage'
-import DocumentEditPage from './pages/DocumentEditPage'
+import ProcessPage from './pages/ProcessPage'
+import ProcessorListPage from './pages/ProcessorListPage'
+import { ProductAreaPage } from './pages/ProductAreaPage'
 import { PurposeListPage } from './pages/PurposeListPage'
-import { AlertEventPage } from './pages/AlertEventPage'
-import { getDisclosure, getPolicy, getProcess } from './api'
-import PurposeTable from './components/Dashboard/PurposeTable'
 import { SystemPage } from './pages/SystemPage'
 import { TeamPage } from './pages/TeamPage'
-import { ProductAreaPage } from './pages/ProductAreaPage'
-import { LegalPage } from './pages/LegalPage'
-import DpProcessPage from './pages/DpProcessPage'
-import DpProcessView from './components/DpProcess/DpProcessView'
-import { RequestRevisionPage } from './components/admin/revision/RequestRevisionPage'
-import { MailLogPage } from './components/admin/maillog/MailLogPage'
-import { DashboardPage } from './pages/DashboardPage'
-import { DisclosureListPage } from './pages/DisclosureListPage'
-import ProcessorListPage from './pages/ProcessorListPage'
-import ProcessorView from './components/Processor/ProcessorView'
+import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
+import notFound from './resources/notfound.svg'
 
 export const processPath = '/process/:section/:code/:processId'
 export const processPathNoId = '/process/:section/:code/'
@@ -110,9 +108,7 @@ const AppRoutes = (): JSX.Element => (
 
 const NotFound = () => (
   <div className="flex justify-center content-center just mt-48">
-    <ParagraphLarge>
-      Oida 404! Fant ikke den siden der nei  - {useLocation().pathname}
-    </ParagraphLarge>
+    <ParagraphLarge>Oida 404! Fant ikke den siden der nei - {useLocation().pathname}</ParagraphLarge>
     <img src={notFound} alt="404 Finner ikke den siden" style={{ maxWidth: '65%' }} />
   </div>
 )
@@ -136,9 +132,9 @@ const disclosureUrl = async (id: string) => {
 
 const Redirect = ({ to }: { to: (id: string) => Promise<string> }) => {
   const { id } = useParams<{ id: string }>()
-  const [url, setUrl] = React.useState('')
+  const [url, setUrl] = useState('')
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (id) {
       ;(async () => {
         to(id).then((url) => {

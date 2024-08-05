@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getDisclosureByProductTeam, getInformationTypesBy } from '../api'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
@@ -10,7 +10,7 @@ import { Section } from './ProcessPage'
 
 export const TeamPage = () => {
   const { teamId } = useParams<{ teamId: string }>()
-  const [disclosureData, setDisclosureData] = React.useState<Disclosure[]>([])
+  const [disclosureData, setDisclosureData] = useState<Disclosure[]>([])
 
   useEffect(() => {
     if (teamId) {

@@ -1,23 +1,22 @@
-import * as React from 'react'
-
-import InformationtypeForm from '../components/InformationType/InformationtypeForm'
-import { codelist } from '../service/Codelist'
-import { InformationtypeFormValues } from '../constants'
-import { useAwait } from '../util'
-import { user } from '../service/User'
-import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
-import { createInformationType, mapInfoTypeToFormVals } from '../api'
-import { useNavigate } from 'react-router-dom'
-import { HeadingMedium } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
-import {ampli} from "../service/Amplitude";
+import { HeadingMedium } from 'baseui/typography'
+import { Fragment, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { createInformationType, mapInfoTypeToFormVals } from '../api'
+import InformationtypeForm from '../components/InformationType/InformationtypeForm'
+import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
+import { InformationtypeFormValues } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { codelist } from '../service/Codelist'
+import { user } from '../service/User'
+import { useAwait } from '../util'
 
 const InformationtypeCreatePage = () => {
-  const [isLoading, setLoading] = React.useState(true)
-  const [errorSubmit, setErrorSubmit] = React.useState(null)
+  const [isLoading, setLoading] = useState(true)
+  const [errorSubmit, setErrorSubmit] = useState(null)
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Opplysningstyper', url: '/informationtype/create', app: 'Behandlingskatalogen', type: 'Opprett opplysningstype'})
+  ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/create', app: 'Behandlingskatalogen', type: 'Opprett opplysningstype' })
 
   const handleSubmit = async (values: InformationtypeFormValues) => {
     if (!values) return
@@ -36,7 +35,7 @@ const InformationtypeCreatePage = () => {
   useAwait(codelist.wait(), setLoading)
 
   return (
-    <React.Fragment>
+    <Fragment>
       {!hasAccess() ? (
         <ErrorNotAllowed />
       ) : (
@@ -58,7 +57,7 @@ const InformationtypeCreatePage = () => {
           )}
         </>
       )}
-    </React.Fragment>
+    </Fragment>
   )
 }
 

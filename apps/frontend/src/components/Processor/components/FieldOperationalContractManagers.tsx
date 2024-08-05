@@ -1,10 +1,8 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { OnChangeParams, Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { Block } from 'baseui/block'
-import { ProcessorFormValues } from '../../../constants'
-import { Select } from 'baseui/select'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { getResourcesByIds, useTeamResourceSearch } from '../../../api'
+import { ProcessorFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
 type fieldOperationalContractManagersProps = {
@@ -13,14 +11,15 @@ type fieldOperationalContractManagersProps = {
 }
 
 const FieldOperationalContractManagers = (props: fieldOperationalContractManagersProps) => {
+  const { formikBag } = props
   const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] = useTeamResourceSearch()
   const [resources, setResources] = useState(props.resources ? props.resources : new Map<string, string>())
 
   useEffect(() => {
     ;(async () => {
-      if (props.formikBag.values.operationalContractManagers && props.formikBag.values.operationalContractManagers?.length > 0) {
-        const res = await getResourcesByIds(props.formikBag.values.operationalContractManagers)
-        res.forEach((r) => resources.set(r.navIdent, r.fullName))
+      if (formikBag.values.operationalContractManagers && formikBag.values.operationalContractManagers?.length > 0) {
+        const result = await getResourcesByIds(formikBag.values.operationalContractManagers)
+        result.forEach((resource) => resources.set(resource.navIdent, resource.fullName))
       }
     })()
   }, [])
@@ -33,25 +32,33 @@ const FieldOperationalContractManagers = (props: fieldOperationalContractManager
             <div className="w-full">
               <Select
                 clearable
-                options={teamResourceSearchResult.filter((r) => !props.formikBag.values.operationalContractManagers?.map((ocm) => ocm).includes(r.id ? r.id.toString() : ''))}
-                onChange={(params) => {
+                options={teamResourceSearchResult.filter(
+                  (result) =>
+                    !formikBag.values.operationalContractManagers
+                      ?.map((operationalContractManagers) => operationalContractManagers)
+                      .includes(result.id ? result.id.toString() : ''),
+                )}
+                onChange={(params: OnChangeParams) => {
                   if (params.value[0].id && params.value[0].label) {
                     resources.set(params.value[0].id.toString(), params.value[0].label.toString())
                   }
-                  arrayHelpers.form.setFieldValue('operationalContractManagers', [...(props.formikBag.values.operationalContractManagers || []), ...params.value.map((v) => v.id)])
+                  arrayHelpers.form.setFieldValue('operationalContractManagers', [
+                    ...(formikBag.values.operationalContractManagers || []),
+                    ...params.value.map((value) => value.id),
+                  ])
                 }}
-                onInputChange={(event) => setTeamResourceSearch(event.currentTarget.value)}
+                onInputChange={(event: ChangeEvent<HTMLInputElement>) => setTeamResourceSearch(event.currentTarget.value)}
                 isLoading={teamResourceSearchLoading}
               />
             </div>
             <div>
-              {props.formikBag.values.operationalContractManagers &&
+              {formikBag.values.operationalContractManagers &&
                 renderTagList(
-                  props.formikBag.values.operationalContractManagers.map((ocm) => {
+                  formikBag.values.operationalContractManagers.map((operationalContractManagers) => {
                     let fullName = ''
-                    if (ocm) {
-                      if (resources.has(ocm)) {
-                        fullName = resources.get(ocm) || ''
+                    if (operationalContractManagers) {
+                      if (resources.has(operationalContractManagers)) {
+                        fullName = resources.get(operationalContractManagers) || ''
                       }
                     }
                     return fullName

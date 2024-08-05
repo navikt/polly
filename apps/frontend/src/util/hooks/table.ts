@@ -5,7 +5,7 @@ type TableConfig<T, K extends keyof T> = {
   sorting?: ColumnCompares<T>
   useDefaultStringCompare?: boolean
   initialSortColumn?: K
-  showLast?: (p: T) => boolean
+  showLast?: (page: T) => boolean
 }
 
 type TableData<T, K extends keyof T> = {
@@ -62,7 +62,7 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
 
   useEffect(() => setData(sortTableData()), [sortColumn, sortDirection, initialData])
 
-  const sortTableData = () => {
+  const sortTableData = (): T[] => {
     if (sortColumn) {
       const sortFunct = getSortFunction(sortColumn, !!useDefaultStringCompare, sorting)
       if (!sortFunct) {
@@ -72,18 +72,18 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
           const sorted = initialData.slice(0).sort(sortFunct)
           let ordered = sortDirection === SORT_DIRECTION.ASC ? sorted : sorted.reverse()
           if (showLast && isInitialSort) {
-            ordered = [...ordered.filter((p) => !showLast(p)), ...ordered.filter(showLast)]
+            ordered = [...ordered.filter((order) => !showLast(order)), ...ordered.filter(showLast)]
           }
           return ordered
-        } catch (e: any) {
-          console.error('Error during sort of ', initialData, sortFunct, e)
+        } catch (error: any) {
+          console.error('Error during sort of ', initialData, sortFunct, error)
         }
       }
     }
     return initialData
   }
 
-  const sort = (sortColumnName: K) => {
+  const sort = (sortColumnName: K): void => {
     const { newDirection, newColumn } = newSort<T, K>(sortColumnName, sortColumn, sortDirection)
     setSortColumn(newColumn)
     setSortDirection(newDirection)

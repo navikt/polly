@@ -1,13 +1,15 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { CodeUsage, ObjectType } from '../../../constants'
-import { ObjectLink } from '../../common/RouteLink'
-import { codelist, ListName } from '../../../service/Codelist'
+import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
+import { ChangeEvent, createRef, RefObject, useEffect, useState } from 'react'
 import { replaceCodelistUsage } from '../../../api'
-import {Button, Label, Loader, Select, Table} from "@navikt/ds-react";
+import { CodeUsage, DpProcessShort, ObjectType, ProcessShort, Use, UseWithPurpose } from '../../../constants'
+import { codelist, ListName } from '../../../service/Codelist'
+import { ObjectLink } from '../../common/RouteLink'
 
+interface IProps {
+  usage: CodeUsage
+}
 
-const UsageTable = (props: { usage: CodeUsage }) => {
+const UsageTable = (props: IProps) => {
   const { usage } = props
   const informationTypes = !!usage.informationTypes.length
   const processes = !!usage.processes.length
@@ -43,107 +45,111 @@ const UsageTable = (props: { usage: CodeUsage }) => {
         </Table.Row>
       </Table.Header>
       <Table.Body>
+        {Array.from(Array(rows).keys()).map((index: number) => {
+          const informationTypes: Use = usage.informationTypes[index]
+          const policies: UseWithPurpose = usage.policies[index]
+          const processes: ProcessShort = usage.processes[index]
+          const processors: Use = usage.processors[index]
+          const dpProcesses: DpProcessShort = usage.dpProcesses[index]
+          const disclosures: Use = usage.disclosures[index]
+          const documents: Use = usage.documents[index]
 
-      {Array.from(Array(rows).keys()).map((index) => {
-        const it = usage.informationTypes[index]
-        const po = usage.policies[index]
-        const pr = usage.processes[index]
-        const pro = usage.processors[index]
-        const dpr = usage.dpProcesses[index]
-        const di = usage.disclosures[index]
-        const doc = usage.documents[index]
-        return (
-          <Table.Row key={index}>
-            {informationTypes && (
-              <Table.DataCell>
-                {it && (
-                  <ObjectLink id={it.id} type={ObjectType.INFORMATION_TYPE} withHistory={true}>
-                    {it.name}
-                  </ObjectLink>
-                )}
-              </Table.DataCell>
-            )}
-            {processes && (
-              <Table.DataCell>
-                {pr && (
-                  <ObjectLink id={pr.id} type={ObjectType.PROCESS} withHistory={true}>
-                    {codelist
-                      .getShortnames(
-                        ListName.PURPOSE,
-                        pr.purposes.map((p) => p.code),
-                      )
-                      .join(', ')}{' '}
-                    {pr.name}
-                  </ObjectLink>
-                )}
-              </Table.DataCell>
-            )}
-            {processors && (
-              <Table.DataCell>
-                {pr && (
-                  <ObjectLink id={pro.id} type={ObjectType.PROCESSOR} withHistory={true}>
-                    {pro.name}
-                  </ObjectLink>
-                )}
-              </Table.DataCell>
-            )}
-            {dpProcesses && (
-              <Table.DataCell>
-                {dpr && (
-                  <ObjectLink id={dpr.id} type={ObjectType.DP_PROCESS} withHistory={true}>
-                    {dpr.name}
-                  </ObjectLink>
-                )}
-              </Table.DataCell>
-            )}
-            {policies && (
-              <Table.DataCell>
-                {po && (
-                  <ObjectLink id={po.id} type={ObjectType.POLICY} withHistory={true}>
-                    {codelist.getShortnames(ListName.PURPOSE, po.purposes).join(', ')} {po.name}
-                  </ObjectLink>
-                )}
-              </Table.DataCell>
-            )}
-            {disclosures && (
-              <Table.DataCell>
-                {di && (
-                  <ObjectLink id={di.id} type={ObjectType.DISCLOSURE} withHistory={true}>
-                    {di.name}
-                  </ObjectLink>
-                )}
-              </Table.DataCell>
-            )}
-            {documents && (
-              <Table.DataCell>
-                {doc && (
-                  <ObjectLink id={doc.id} type={ObjectType.DOCUMENT} withHistory={true}>
-                    {doc.name}
-                  </ObjectLink>
-                )}
-              </Table.DataCell>
-            )}
-          </Table.Row>
-        )
-      })}
+          return (
+            <Table.Row key={index}>
+              {informationTypes && (
+                <Table.DataCell>
+                  {informationTypes && (
+                    <ObjectLink id={informationTypes.id} type={ObjectType.INFORMATION_TYPE} withHistory={true}>
+                      {informationTypes.name}
+                    </ObjectLink>
+                  )}
+                </Table.DataCell>
+              )}
+              {processes && (
+                <Table.DataCell>
+                  {processes && (
+                    <ObjectLink id={processes.id} type={ObjectType.PROCESS} withHistory={true}>
+                      {codelist
+                        .getShortnames(
+                          ListName.PURPOSE,
+                          processes.purposes.map((purpose) => purpose.code),
+                        )
+                        .join(', ')}{' '}
+                      {processes.name}
+                    </ObjectLink>
+                  )}
+                </Table.DataCell>
+              )}
+              {processors && (
+                <Table.DataCell>
+                  {processes && (
+                    <ObjectLink id={processors.id} type={ObjectType.PROCESSOR} withHistory={true}>
+                      {processors.name}
+                    </ObjectLink>
+                  )}
+                </Table.DataCell>
+              )}
+              {dpProcesses && (
+                <Table.DataCell>
+                  {dpProcesses && (
+                    <ObjectLink id={dpProcesses.id} type={ObjectType.DP_PROCESS} withHistory={true}>
+                      {dpProcesses.name}
+                    </ObjectLink>
+                  )}
+                </Table.DataCell>
+              )}
+              {policies && (
+                <Table.DataCell>
+                  {policies && (
+                    <ObjectLink id={policies.id} type={ObjectType.POLICY} withHistory={true}>
+                      {codelist.getShortnames(ListName.PURPOSE, policies.purposes).join(', ')} {policies.name}
+                    </ObjectLink>
+                  )}
+                </Table.DataCell>
+              )}
+              {disclosures && (
+                <Table.DataCell>
+                  {disclosures && (
+                    <ObjectLink id={disclosures.id} type={ObjectType.DISCLOSURE} withHistory={true}>
+                      {disclosures.name}
+                    </ObjectLink>
+                  )}
+                </Table.DataCell>
+              )}
+              {documents && (
+                <Table.DataCell>
+                  {documents && (
+                    <ObjectLink id={documents.id} type={ObjectType.DOCUMENT} withHistory={true}>
+                      {documents.name}
+                    </ObjectLink>
+                  )}
+                </Table.DataCell>
+              )}
+            </Table.Row>
+          )
+        })}
       </Table.Body>
     </Table>
   )
 }
 
-export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
+interface IUsageProps {
+  usage?: CodeUsage
+  refresh: () => void
+}
+
+export const Usage = (props: IUsageProps) => {
+  const { usage, refresh } = props
   const [showReplace, setShowReplace] = useState(false)
   const [newValue, setNewValue] = useState<string>()
-  const ref = React.createRef<HTMLDivElement>()
-
-  const { usage, refresh } = props
+  const ref: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
 
   useEffect(() => {
     setShowReplace(false)
     setTimeout(() => ref.current && window.scrollTo({ top: ref.current.offsetTop }), 200)
   }, [usage])
 
-  const replace = async () => {
+  const replace = async (): Promise<void> => {
     if (newValue) {
       await replaceCodelistUsage(usage!.listName, usage!.code, newValue).then(() => refresh())
     }
@@ -162,21 +168,13 @@ export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
 
       {showReplace && usage && usage.listName && (
         <div className="flex m-4 justify-end">
-          <Select
-            label='Velg ny verdi'
-            hideLabel
-            className="mr-4"
-            value={newValue}
-            onChange={(params) => setNewValue(params.target.value)}
-        >
-
+          <Select label="Velg ny verdi" hideLabel className="mr-4" value={newValue} onChange={(params: ChangeEvent<HTMLSelectElement>) => setNewValue(params.target.value)}>
             <option value="">Ny verdi</option>
-            {codelist.getParsedOptions(usage.listName).map((code, index) => (
+            {codelist.getParsedOptions(usage.listName).map((code, index: number) => (
               <option key={index + '_' + code.label} value={code.label}>
                 {code.label}
               </option>
             ))}
-
           </Select>
 
           <Button type="button" onClick={replace} disabled={!newValue}>
@@ -186,7 +184,7 @@ export const Usage = (props: { usage?: CodeUsage; refresh: () => void }) => {
       )}
 
       {usage && <UsageTable usage={usage} />}
-      {!usage && <Loader/>}
+      {!usage && <Loader />}
     </div>
   )
 }

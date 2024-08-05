@@ -1,5 +1,3 @@
-import { Block } from 'baseui/block'
-import React from 'react'
 import { Cell, HeadCell, Row, Table } from '../common/Table'
 
 type AAregHjemmelDataTextProps = {
@@ -7,34 +5,35 @@ type AAregHjemmelDataTextProps = {
 }
 
 export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
-  const rawData = props.data ? prepareString(props.data).split('\n') : []
+  const { data } = props
+  const rawData: string[] = data ? prepareString(data).split('\n') : []
 
-  const purposeList = rawData.filter((d) => d.match('Formål:')).map((a) => a.replace('Formål:', ''))
-  const authoryList = rawData.filter((d) => d.match('Hjemmel:')).map((a) => a.replace('Hjemmel:', ''))
-  const processorList = rawData.filter((d) => d.match('Behandlingsgrunnlag:')).map((a) => a.replace('Behandlingsgrunnlag:', ''))
+  const purposeList: string[] = rawData.filter((data: string) => data.match('Formål:')).map((purpose: string) => purpose.replace('Formål:', ''))
+  const authoryList: string[] = rawData.filter((data: string) => data.match('Hjemmel:')).map((authory: string) => authory.replace('Hjemmel:', ''))
+  const processorList: string[] = rawData.filter((data: string) => data.match('Behandlingsgrunnlag:')).map((processor: string) => processor.replace('Behandlingsgrunnlag:', ''))
 
   return (
     <div>
       <Table
-        emptyText='Ikke angitt'
+        emptyText="Ikke angitt"
         headers={
           <>
-            <HeadCell title='Formål med behandlingen' />
-            <HeadCell title='NAVs hjemmel for utlevering' />
-            <HeadCell title='Konsumentens hjemmel for behandlingen' />
+            <HeadCell title="Formål med behandlingen" />
+            <HeadCell title="NAVs hjemmel for utlevering" />
+            <HeadCell title="Konsumentens hjemmel for behandlingen" />
           </>
         }
       >
-        {purposeList.map((a, i) => (
-          <Row key={a + '_' + i}>
+        {purposeList.map((aaRegister: string, index: number) => (
+          <Row key={aaRegister + '_' + index}>
             <Cell>
-              <div>{a}</div>
+              <div>{aaRegister}</div>
             </Cell>
             <Cell>
-              <div>{authoryList[i]}</div>
+              <div>{authoryList[index]}</div>
             </Cell>
             <Cell>
-              <div>{processorList[i]}</div>
+              <div>{processorList[index]}</div>
             </Cell>
           </Row>
         ))}
@@ -44,6 +43,6 @@ export const AAregHjemmelDataText = (props: AAregHjemmelDataTextProps) => {
 }
 export default AAregHjemmelDataText
 
-const prepareString = (text: string) => {
+const prepareString = (text: string): string => {
   return text.replace('\n\n', ' ').replace('\n\n\n', ' ')
 }

@@ -1,5 +1,5 @@
 import { Button, Heading, Loader, Select, Textarea } from '@navikt/ds-react'
-import { FormEvent, useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { getDocument, getDocumentByPageAndPageSize } from '../../../api'
 import { getSettings, writeSettings } from '../../../api/SettingsApi'
 import { Document, Settings } from '../../../constants'
@@ -75,7 +75,7 @@ const DefaultProcessDocument = (props: DefaultProcessDocumentProps) => {
   useEffect(() => {
     ;(async () => {
       if (documentId && documentId !== document?.id) {
-        const doc = await getDocument(documentId)
+        const doc: Document = await getDocument(documentId)
         setDocument(doc)
       }
     })()
@@ -94,13 +94,13 @@ const DefaultProcessDocument = (props: DefaultProcessDocumentProps) => {
         <Select
           label="Dokument for standard informasjonstyper i behandling"
           value={documentId}
-          onChange={(event) => {
+          onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             setDocumentId(event.target.value)
           }}
         >
-          {documents.map((value) => (
-            <option key={value.id} value={value.id}>
-              {value.name}
+          {documents.map((document: Document) => (
+            <option key={document.id} value={document.id}>
+              {document.name}
             </option>
           ))}
         </Select>

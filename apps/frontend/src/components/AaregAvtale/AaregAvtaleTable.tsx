@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { AaregAvtale } from '../../constants'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
+import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { KIND } from 'baseui/button'
 import { StatefulMenu } from 'baseui/menu'
-import { Block } from 'baseui/block'
+import { Pagination } from 'baseui/pagination'
+import { PLACEMENT, StatefulPopover } from 'baseui/popover'
+import { HeadingLarge, LabelLarge } from 'baseui/typography'
+import { useEffect, useState } from 'react'
+import { AaregAvtale } from '../../constants'
 import { theme } from '../../util'
 import Button from '../common/Button'
-import { KIND } from 'baseui/button'
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { Pagination } from 'baseui/pagination'
-import { HeadingLarge, LabelLarge } from 'baseui/typography'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
 import DataText from '../common/DataText'
 import AAregHjemmelDataText from './AAregHjemmelDataText'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 type AaregAvtaleTableProps = {
   aaregAvtaler: AaregAvtale[]
@@ -20,16 +19,18 @@ type AaregAvtaleTableProps = {
 
 const marginTop = '2rem'
 
-const CustomPanelLabel = ({ text }: { text: any }) => {
-  return (
-    <div className="w-full mb-4 border-b border-solid border-[#AFAFAF]">
-      <LabelLarge marginTop={marginTop}>{text}</LabelLarge>
-    </div>
-  )
+interface ICustomPanelLabelProps {
+  text: any
 }
 
-export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]) => {
-  return aaregAvtaler.sort((a, b) => {
+const CustomPanelLabel = ({ text }: ICustomPanelLabelProps) => (
+  <div className="w-full mb-4 border-b border-solid border-[#AFAFAF]">
+    <LabelLarge marginTop={marginTop}>{text}</LabelLarge>
+  </div>
+)
+
+export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]): AaregAvtale[] => {
+  return aaregAvtaler.sort((a: AaregAvtale, b: AaregAvtale) => {
     if (a.virksomhet > b.virksomhet) {
       return 1
     } else if (a.virksomhet < b.virksomhet) {
@@ -47,17 +48,18 @@ export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]) => {
 }
 
 export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
+  const { aaregAvtaler } = props
   const [pageLimit, setPageLimit] = useState(10)
   const [page, setPage] = useState(1)
   const [sortedAaregAvtale, setSortedAaregAvtale] = useState<AaregAvtale[]>([])
   const [selectedAaregAvtale, setSelectedAaregAvtale] = useState<string>()
 
   useEffect(() => {
-    setSortedAaregAvtale(sortAaregAvtaleList(props.aaregAvtaler).slice(0, 10))
-  }, [props.aaregAvtaler])
+    setSortedAaregAvtale(sortAaregAvtaleList(aaregAvtaler).slice(0, 10))
+  }, [aaregAvtaler])
 
   useEffect(() => {
-    setSortedAaregAvtale(sortAaregAvtaleList(props.aaregAvtaler).slice((page - 1) * pageLimit, pageLimit * page))
+    setSortedAaregAvtale(sortAaregAvtaleList(aaregAvtaler).slice((page - 1) * pageLimit, pageLimit * page))
   }, [pageLimit, page])
 
   return (
@@ -70,18 +72,19 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
         expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
       >
         {sortedAaregAvtale &&
-          sortedAaregAvtale.map((a) => {
-            const expanded = selectedAaregAvtale === a.avtalenummer
+          sortedAaregAvtale.map((aaregisterAvtale) => {
+            const expanded: boolean = selectedAaregAvtale === aaregisterAvtale.avtalenummer
+
             return (
               <Panel
-                key={a.avtalenummer}
+                key={aaregisterAvtale.avtalenummer}
                 title={
                   <div className="w-full">
                     <LabelLarge color={theme.colors.primary}>
                       {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
                       <span> </span>
                       <span>
-                        {a.virksomhet} - (Avtalenummer-{a.avtalenummer.replace('AVT-', '')})
+                        {aaregisterAvtale.virksomhet} - (Avtalenummer-{aaregisterAvtale.avtalenummer.replace('AVT-', '')})
                       </span>
                     </LabelLarge>
                   </div>
@@ -102,30 +105,29 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                   },
                 }}
               >
-                <div className="outline-4 outline-[#99c2e8] outline"
-                >
+                <div className="outline-4 outline-[#99c2e8] outline">
                   <div className="p-1">
-                    <CustomPanelLabel text='Konsument' />
-                    <DataText label='Navn' text={a.virksomhet || 'Ikke angitt'} />
-                    <DataText label='Organisasjonsnummer' text={a.organisasjonsnummer || 'Ikke angitt'} />
+                    <CustomPanelLabel text="Konsument" />
+                    <DataText label="Navn" text={aaregisterAvtale.virksomhet || 'Ikke angitt'} />
+                    <DataText label="Organisasjonsnummer" text={aaregisterAvtale.organisasjonsnummer || 'Ikke angitt'} />
 
-                    <CustomPanelLabel text='Avtale' />
-                    <DataText label='Avtalenummer' text={a.avtalenummer || 'Ikke angitt'} />
-                    <DataText label='Dato opprettet' text={a.opprettet || 'Ikke angitt'} />
+                    <CustomPanelLabel text="Avtale" />
+                    <DataText label="Avtalenummer" text={aaregisterAvtale.avtalenummer || 'Ikke angitt'} />
+                    <DataText label="Dato opprettet" text={aaregisterAvtale.opprettet || 'Ikke angitt'} />
 
-                    <CustomPanelLabel text='Formål, Hjemmel og Behandlingsgrunnlag' />
+                    <CustomPanelLabel text="Formål, Hjemmel og Behandlingsgrunnlag" />
 
-                    <AAregHjemmelDataText data={a.hjemmel_behandlingsgrunnlag_formal} />
+                    <AAregHjemmelDataText data={aaregisterAvtale.hjemmel_behandlingsgrunnlag_formal} />
 
-                    <CustomPanelLabel text='Type tilgang' />
-                    <DataText label='API' text={a.integrert_oppslag_api ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
-                    <DataText label='Uttrekk' text={a.uttrekk ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
-                    <DataText label='Web-oppslag' text={a.web_oppslag ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
-                    <DataText label='Hendelser' text={a.hendelser ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <CustomPanelLabel text="Type tilgang" />
+                    <DataText label="API" text={aaregisterAvtale.integrert_oppslag_api ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <DataText label="Uttrekk" text={aaregisterAvtale.uttrekk ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <DataText label="Web-oppslag" text={aaregisterAvtale.web_oppslag ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <DataText label="Hendelser" text={aaregisterAvtale.hendelser ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
 
-                    <CustomPanelLabel text='Databehandler' />
-                    <DataText label='Organisasjonsnummer' text={a.databehandler_organisasjonsnummer || 'Ikke angitt'} />
-                    <DataText label='Navn' text={a.databehandler_navn || 'Ikke angitt'} />
+                    <CustomPanelLabel text="Databehandler" />
+                    <DataText label="Organisasjonsnummer" text={aaregisterAvtale.databehandler_organisasjonsnummer || 'Ikke angitt'} />
+                    <DataText label="Navn" text={aaregisterAvtale.databehandler_navn || 'Ikke angitt'} />
                   </div>
                 </div>
               </Panel>
@@ -138,7 +140,7 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
           placement={PLACEMENT.bottom}
           content={({ close }) => (
             <StatefulMenu
-              items={[5, 10, 20, 50, 100].map((i) => ({ label: i }))}
+              items={[5, 10, 20, 50, 100].map((item: number) => ({ label: item }))}
               onItemSelect={({ item }) => {
                 setPageLimit(item.label)
                 close()
@@ -157,8 +159,8 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
         </StatefulPopover>
         <Pagination
           currentPage={page}
-          numPages={Math.ceil(props.aaregAvtaler.length / pageLimit)}
-          onPageChange={(a) => setPage(a.nextPage)}
+          numPages={Math.ceil(aaregAvtaler.length / pageLimit)}
+          onPageChange={(page: { nextPage: number; prevPage: number }) => setPage(page.nextPage)}
           labels={{ nextButton: 'Neste', preposition: 'av', prevButton: 'Forrige' }}
         />
       </div>

@@ -4,7 +4,7 @@ import { SIZE as ButtonSize } from 'baseui/button'
 import { Notification } from 'baseui/notification'
 import { Tab } from 'baseui/tabs'
 import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
-import React, { useEffect } from 'react'
+import { Key, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor } from '../api'
 import { AuditButton } from '../components/admin/audit/AuditButton'
@@ -12,9 +12,9 @@ import AlphabeticList from '../components/common/AlphabeticList'
 import Button from '../components/common/Button'
 import { CustomizedTabs } from '../components/common/CustomizedTabs'
 import { tabOverride } from '../components/common/Style'
+import DocumentMetadata from '../components/document/DocumentMetadata'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import DocumentMetadata from '../components/document/DocumentMetadata'
 import { Document, Process } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
@@ -30,13 +30,13 @@ const DocumentPage = () => {
   const params = useParams<{ id?: string }>()
   const navigate = useNavigate()
 
-  const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>()
-  const [documentId, setDocumentId] = React.useState<string | undefined>(params.id)
-  const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false)
-  const [documentUsages, setDocumentUsages] = React.useState<Process[]>()
-  const [errorMessage, setErrorMessage] = React.useState<string>()
-  const [activeKey, setActiveKey] = React.useState<string | number | bigint>('containsInformationType')
-  const [documents, setDocuments] = React.useState<Document[]>([])
+  const [currentDocument, setCurrentDocument] = useState<Document | undefined>()
+  const [documentId, setDocumentId] = useState<string | undefined>(params.id)
+  const [isDeleteModalVisible, setDeleteModalVisibility] = useState(false)
+  const [documentUsages, setDocumentUsages] = useState<Process[]>()
+  const [errorMessage, setErrorMessage] = useState<string>()
+  const [activeKey, setActiveKey] = useState<string | number | bigint>('containsInformationType')
+  const [documents, setDocuments] = useState<Document[]>([])
 
   ampli.logEvent('besøk', { side: 'Dokumenter', url: '/document/', app: 'Behandlingskatalogen' })
 
@@ -120,7 +120,7 @@ const DocumentPage = () => {
             onChange={({ activeKey }) => {
               setActiveKey(activeKey)
             }}
-            activeKey={activeKey as React.Key}
+            activeKey={activeKey as Key}
           >
             <Tab key={'containsInformationType'} title="Inneholder opplysningstyper" overrides={tabOverride}>
               <div>

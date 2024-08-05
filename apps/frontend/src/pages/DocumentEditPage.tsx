@@ -1,13 +1,13 @@
-import React from 'react'
-import DocumentForm from '../components/document/component/DocumentForm'
-import { useNavigate, useParams } from 'react-router-dom'
-import { codelist } from '../service/Codelist'
-import { getDocument, updateInformationTypesDocument } from '../api'
-import { Document, DocumentFormValues, DocumentInfoTypeUse } from '../constants'
-import shortid from 'shortid'
 import { HeadingMedium } from 'baseui/typography'
+import { Fragment, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import shortid from 'shortid'
+import { getDocument, updateInformationTypesDocument } from '../api'
+import DocumentForm from '../components/document/component/DocumentForm'
+import { Document, DocumentFormValues, DocumentInfoTypeUse } from '../constants'
+import { ampli } from '../service/Amplitude'
+import { codelist } from '../service/Codelist'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
-import {ampli} from "../service/Amplitude";
 
 const convertToDocumentFormValues = (document: Document) => {
   return {
@@ -27,23 +27,23 @@ const convertToDocumentFormValues = (document: Document) => {
 }
 
 const DocumentEditPage = () => {
-  const [document, setDocument] = React.useState<Document>()
-  const [isLoading, setLoading] = React.useState(false)
+  const [document, setDocument] = useState<Document>()
+  const [isLoading, setLoading] = useState(false)
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  ampli.logEvent("besøk", {side: 'Dokumenter', url:'/document/:id/edit', app: 'Behandlingskatalogen', type: 'Rediger dokument'})
+  ampli.logEvent('besøk', { side: 'Dokumenter', url: '/document/:id/edit', app: 'Behandlingskatalogen', type: 'Rediger dokument' })
 
   const handleEditDocument = async (values: DocumentFormValues) => {
     try {
       const res = await updateInformationTypesDocument(convertDocumentToFormRequest(values))
       navigate(`/document/${res.id}`)
-    } catch (err: any) {
-      console.log(err, 'ERR')
+    } catch (error: any) {
+      console.log(error, 'ERR')
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(async () => {
       setLoading(true)
       await codelist.wait()
@@ -55,14 +55,14 @@ const DocumentEditPage = () => {
   }, [params.id])
 
   return (
-    <React.Fragment>
+    <Fragment>
       {!isLoading && document && (
-        <React.Fragment>
+        <Fragment>
           <HeadingMedium>Redigér dokument</HeadingMedium>
           <DocumentForm initialValues={convertToDocumentFormValues(document)} handleSubmit={handleEditDocument} />
-        </React.Fragment>
+        </Fragment>
       )}
-    </React.Fragment>
+    </Fragment>
   )
 }
 

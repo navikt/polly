@@ -1,8 +1,6 @@
+import { Button } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import { Block } from 'baseui/block'
-import { Button } from 'baseui/button'
-import * as React from 'react'
 
 type ModalDeleteProps = {
   title: string
@@ -13,34 +11,29 @@ type ModalDeleteProps = {
   onClose: () => void
 }
 
-const DeleteDocumentModal = ({ title, documentName = '', isOpen, onClose, submit, documentUsageCount }: ModalDeleteProps) => {
-  return (
-    <Modal onClose={onClose} isOpen={isOpen} autoFocus animate size="default">
-      <ModalHeader>{title}</ModalHeader>
-      <ModalBody>
-        {!!!documentUsageCount ? (
-          <ParagraphMedium>
-            {' '}
-            Bekreft sletting av dokument "{documentName}"
-          </ParagraphMedium>
-        ) : (
-         <ParagraphMedium>{`Kan ikke slette behandlingen ${documentName.toString()}
+const DeleteDocumentModal = ({ title, documentName = '', isOpen, onClose, submit, documentUsageCount }: ModalDeleteProps) => (
+  <Modal onClose={onClose} isOpen={isOpen} autoFocus animate size="default">
+    <ModalHeader>{title}</ModalHeader>
+    <ModalBody>
+      {!!!documentUsageCount ? (
+        <ParagraphMedium> Bekreft sletting av dokument "{documentName}"</ParagraphMedium>
+      ) : (
+        <ParagraphMedium>{`Kan ikke slette behandlingen ${documentName.toString()}
           den inneholder fortsatt ${documentUsageCount.toString()} opplysningstype(r)`}</ParagraphMedium>
-        )}
-      </ModalBody>
+      )}
+    </ModalBody>
 
-      <ModalFooter>
-        <div className="flex justify-end">
-          <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
-            Avbryt
-          </Button>
-          <Button onClick={() => submit()} disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}>
-            Slett
-          </Button>
-        </div>
-      </ModalFooter>
-    </Modal>
-  )
-}
+    <ModalFooter>
+      <div className="flex justify-end">
+        <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
+          Avbryt
+        </Button>
+        <Button onClick={() => submit()} disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}>
+          Slett
+        </Button>
+      </div>
+    </ModalFooter>
+  </Modal>
+)
 
 export default DeleteDocumentModal
