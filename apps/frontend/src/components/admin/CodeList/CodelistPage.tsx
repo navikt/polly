@@ -56,14 +56,14 @@ const CodeListPage = () => {
 
   return (
     <>
-      {!user.isAdmin() ||
-        (!lists && (
+      {!(user.isAdmin() ||
+        lists) && (
           <div role="main">
             <Loader size="2xlarge" />
           </div>
-        ))}
-      {user.isAdmin() ||
-        (lists && (
+        )}
+      {(user.isAdmin() &&
+        lists) && (
           <div role="main">
             <Heading size="large" level="1">
               Administrering av kodeverk
@@ -105,7 +105,7 @@ const CodeListPage = () => {
               submit={handleCreateCodelist}
             />
           </div>
-        ))}
+        )}
     </>
   )
 }
