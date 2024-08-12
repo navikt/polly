@@ -57,6 +57,7 @@ spec:
     sqlInstances:
       - name: behandlingskatalog
         type: POSTGRES_16
+        tier: db-custom-1-3840
         databases:
           - name: behandlingskatalogdb
             envVarPrefix: DB
