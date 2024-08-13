@@ -51,11 +51,11 @@ const Content = (props: IContentProps) => {
       {list && (
         <>
           {linkCodelist && <RouteLink href={urlForObject(list as ListName & NavigableItem, item)}>{codelist.getShortname(list as ListName & NavigableItem, item)}</RouteLink>}
-          <>{codelist.getShortname(list, item)}</>
+          {!linkCodelist && <>{codelist.getShortname(list, item)}</>}
         </>
       )}
-      {markdown && <Markdown source={item} singleWord />}
-      {item}
+      {!list && markdown && <Markdown source={item} singleWord />}
+      {!list && !markdown && item}
     </>
   )
 }
@@ -78,7 +78,7 @@ export const DotTags = (props: DotTagsParams) => {
   return (
     <>
       {!items.length && <>Ikke angitt</>}
-      {commaSeparator && (
+      {commaSeparator && items.length > 0 && (
         <div className="inline">
           {items.map((item: string, index: number) => (
             <Fragment key={index}>
@@ -88,16 +88,18 @@ export const DotTags = (props: DotTagsParams) => {
           ))}
         </div>
       )}
-      <div className={`${noFlex ? 'Block' : 'flex'} flex-wrap`}>
-        {items.map((item: string, index: number) => (
-          <div key={index} className={`${index < items.length && !commaSeparator ? 'mr-1.5' : '0px'}`}>
-            <DotTag wrapText={wrapText}>
-              {' '}
-              <Content {...props} item={item} />{' '}
-            </DotTag>
-          </div>
-        ))}
-      </div>
+      {!commaSeparator && items.length > 0 && (
+        <div className={`${noFlex ? 'Block' : 'flex'} flex-wrap`}>
+          {items.map((item: string, index: number) => (
+            <div key={index} className={`${index < items.length ? 'mr-1.5' : '0px'}`}>
+              <DotTag wrapText={wrapText}>
+                {' '}
+                <Content {...props} item={item} />{' '}
+              </DotTag>
+            </div>
+          ))}
+        </div>
+      )}
     </>
   )
 }
