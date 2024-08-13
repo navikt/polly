@@ -9,7 +9,7 @@ import { LabelMedium } from 'baseui/typography'
 import { RefObject, useEffect, useRef, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { convertProcessToFormValues, getDisclosuresByProcessId, getResourceById } from '../../../api'
-import { RequestRevisionPage } from '../../../components/admin/revision/RequestRevisionPage'
+import { RequestRevisionModal } from '../../../components/admin/revision/RequestRevisionModal'
 import { AddDocumentToProcessFormValues, Disclosure, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { PathParams } from '../../../pages/ProcessPage'
@@ -366,7 +366,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           >
             <ModalBody>
               <div className="w-[600px]">
-                <RequestRevisionPage processId={currentProcess.id} close={closeRevision} />
+                <RequestRevisionModal processId={currentProcess.id} close={closeRevision} />
               </div>
             </ModalBody>
           </Modal>
