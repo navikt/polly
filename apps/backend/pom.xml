@@ -27,7 +27,7 @@
         <springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
         <simpleclient.version>0.16.0</simpleclient.version>
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
-        <docx4j.version>11.4.11</docx4j.version>
+        <docx4j.version>11.5.0</docx4j.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
 
         <microsoft-graph.version>6.13.0</microsoft-graph.version>
