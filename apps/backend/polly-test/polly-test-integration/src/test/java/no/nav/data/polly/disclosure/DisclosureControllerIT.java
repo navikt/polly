@@ -11,9 +11,9 @@ import no.nav.data.polly.disclosure.dto.DisclosureAbroadResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.document.domain.Document;
-import no.nav.data.polly.document.dto.DocumentInfoTypeUseRequest;
+import no.nav.data.polly.document.domain.DocumentData;
+import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
-import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
@@ -295,10 +295,14 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     private Document createAndSaveDocument() {
         InformationType infoType = createAndSaveInformationType();
-        var document = new Document().convertFromRequest(DocumentRequest.builder()
-                .name("doc 1").description("desc")
-                .informationTypes(List.of(DocumentInfoTypeUseRequest.builder().informationTypeId(infoType.getId().toString()).subjectCategories(List.of("BRUKER")).build()))
-                .build());
+        var document = Document.builder()
+                .generateId()
+                .data(DocumentData.builder()
+                        .name("doc 1")
+                        .description("desc")
+                        .informationTypes(List.of(InformationTypeUse.builder().  informationTypeId(infoType.getId()).subjectCategories(List.of("BRUKER")).build()))
+                        .build())
+                .build();
         return documentRepository.save(document);
     }
 }

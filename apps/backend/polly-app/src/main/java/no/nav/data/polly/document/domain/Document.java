@@ -17,14 +17,11 @@ import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
-import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
-
-import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -47,19 +44,6 @@ public class Document extends Auditable {
     private DocumentData data = new DocumentData();
 
     // TODO: Snu avhengigheten innover
-    // TODO: Dette er ikke en ren convert...
-    public Document convertFromRequest(DocumentRequest request) {
-        if (!request.isUpdate()) {
-            setId(UUID.randomUUID());
-        }
-        data.setDescription(request.getDescription());
-        data.setName(request.getName());
-        data.setDataAccessClass(request.getDataAccessClass());
-        data.setInformationTypes(convert(request.getInformationTypes(), DocumentData.InformationTypeUse::convertFromRequest));
-        return this;
-    }
-
-    // TODO: Snu avhengigheten innover
     public static DocumentInfoTypeUseResponse convertToInfoTypeUseResponse(DocumentData.InformationTypeUse informationTypeUse) {
         return DocumentInfoTypeUseResponse.builder()
                 .informationTypeId(informationTypeUse.getInformationTypeId())
@@ -77,7 +61,6 @@ public class Document extends Auditable {
     }
 
     public static class DocumentBuilder {
-
         public Document.DocumentBuilder generateId() {
             id = UUID.randomUUID();
             return this;
