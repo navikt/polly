@@ -154,7 +154,7 @@ const ProcessData = (props: IProcessDataProps) => {
             </span>
           </div>
         )}
-        {!!process.affiliation.department && <span>Avdeling: Ikke utfylt</span>}
+        {!process.affiliation.department && <span>Avdeling: Ikke utfylt</span>}
         {!!process.affiliation.subDepartments.length && (
           <div>
             <div className="flex">

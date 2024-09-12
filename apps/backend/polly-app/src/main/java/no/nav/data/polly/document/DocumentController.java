@@ -116,7 +116,7 @@ public class DocumentController {
         log.debug("Received request to update Document");
         Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
         requestValidator.validateRequest(request, true);
-        return ResponseEntity.ok(convertToResponseWithInfoTypes(service.update(request)));
+        return ResponseEntity.ok(convertToResponseWithInfoTypes(service.update(request.convertToDocument())));
     }
 
     @Operation(summary = "Delete Document")

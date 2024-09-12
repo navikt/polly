@@ -7,6 +7,7 @@ import no.nav.data.common.auditing.AuditVersionListener;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.utils.JsonUtils;
+import no.nav.data.common.utils.SpringUtils;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -483,6 +484,7 @@ public abstract class IntegrationTestBase {
         public void onApplicationEvent(ContextRefreshedEvent event) {
             ApplicationContext ctx = event.getApplicationContext();
             AuditVersionListener.setRepo(ctx.getBean(AuditVersionRepository.class));
+            new SpringUtils().setApplicationContext(ctx);
         }
     }
     

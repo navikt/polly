@@ -3,6 +3,7 @@ package no.nav.data.polly.document;
 import lombok.RequiredArgsConstructor;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.utils.HibernateUtils;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
@@ -53,12 +54,24 @@ public class DocumentService {
     // TODO: Snu avhengigheten innover
     @Transactional
     public Document save(DocumentRequest request) {
-        return repository.save(new Document().convertFromRequest(request));
+        Document doc = request.convertToDocument();
+        if (!request.isUpdate()) {
+            doc.setId(UUID.randomUUID());
+        }
+        return repository.save(doc);
     }
 
-    // TODO: Fantastisk navn på denne metoden... Metoden gjør IKKE en update, men et oppslag og manipulering (uten å skrive til DB).
-    public Document update(DocumentRequest request) {
-        return repository.findById(request.getIdAsUUID()).orElseThrow().convertFromRequest(request);
+    @Transactional
+    public Document update(Document doc) {
+        Document existingDoc = repository.getById(doc.getId());
+        if (existingDoc == null) {
+            throw new NotFoundException("Couldn't find document " + doc.getId());
+        }
+        // Merge...
+        HibernateUtils.initialize(existingDoc); // I noen tester blir existingDoc av en eller annen grunn en detached proxy
+        existingDoc.setData(doc.getData());
+        // Save & return...
+        return repository.save(existingDoc);
     }
 
     @Transactional
