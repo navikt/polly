@@ -1,18 +1,20 @@
 import axios from 'axios'
 import { Notification } from 'baseui/notification'
 import {ErrorMessage, Field, Form, Formik} from 'formik'
-import {FormEvent, useState} from 'react'
+import {FormEvent, useEffect, useState} from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
-import { useAllAreas, useProcessSearch } from '../../../api'
+import {searchProcess, searchProcessOptions, useAllAreas, useProcessSearch} from '../../../api'
 import { Process, ProductArea } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { codelist, ListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Spinner } from '../../common/Spinner'
+import AsyncSelect from 'react-select/async'
 
-import {Button, Checkbox, CheckboxGroup, Heading, Label, Radio, RadioGroup, Select, Textarea} from '@navikt/ds-react'
+import {Button, Heading, Label, Radio, RadioGroup, Select, Textarea} from '@navikt/ds-react'
+
 
 enum RecipientType {
   ONE = 'ONE',
@@ -77,9 +79,6 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
 
 
-
-  const modalView = !!props.processId
-
   const abort = (): void => {
     if (close) {
       close()
@@ -104,6 +103,9 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     setProcessSearch('')
   }
 
+  useEffect(() => {
+    console.log(processSearchResult)
+  }, []);
   return (
     <div>
       <Heading level="1" size="large">Send anmodning om revidering</Heading>
@@ -113,7 +115,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
         <div>
           <Notification kind={'positive'}>Revidering etterspurt</Notification>
           <Button variant="secondary" onClick={abort}>
-            {modalView ? 'Lukk' : 'Tilbake'}
+
           </Button>
           {!close && (
             <Button type="button" onClick={reset}>
@@ -133,20 +135,10 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
         >
           {(formikBag) => (
             <Form>
-              {!modalView && (
                 <div className="flex w-full mt-4">
                   <Field name="processSelection">
                     {() => {
-                      const button = (s: RecipientType, text: string = 'Alle') => {
-                        const onClick = () => formikBag.setFieldValue('processSelection', s)
-                        return (
-                          <Button onClick={onClick}>
-                            {text}
-                          </Button>
-                        )
-                      }
                       return (
-                        <div>
                           <div className="min-w-fit">
                             <RadioGroup
                               value={formikBag.values.processSelection}
@@ -160,16 +152,13 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                               <Radio value={RecipientType.PRODUCT_AREA}>Område</Radio>
                             </RadioGroup>
                           </div>
-                        </div>
                       )
                     }}
                   </Field>
                 </div>
-              )}
               <Error fieldName="processSelection" fullWidth/>
 
-              {!modalView && (
-                <>
+              {formikBag.values.processSelection !== RecipientType.ONE && (
                 <RadioGroup
                   value={formikBag.values.completedOnly}
                   className="flex w-full mt-4"
@@ -179,10 +168,9 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   <Radio value={true}>Velg kun fullførte behandlinger</Radio>
                   <Radio value={false}>Velg alle behandlinger</Radio>
                 </RadioGroup>
-</>
               )}
 
-              {formikBag.values.processSelection === RecipientType.ONE && !modalView && (
+              {formikBag.values.processSelection === RecipientType.ONE && (
                 <div className="flex w-full mt-4">
                   <ModalLabel label="Behandling" />
 {/*
@@ -207,6 +195,35 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
 
 
 
+
+
+
+                        <div className="my-3">
+                          <Label>Legg til behandlinger fra Behandlingskatalogen</Label>
+                          <Label textColor="subtle">Skriv minst 3 tegn for å søke</Label>
+
+                          <div className="w-full">
+                            <AsyncSelect
+                              aria-label="Søk etter behandlinger"
+                              placeholder=""
+                              noOptionsMessage={()=>'Skriv minst 3 tegn for å søke'}
+                              loadingMessage={() => 'Søker...'}
+                              onInputChange={(val)=>console.log("val", val)}
+                              isClearable={false}
+                              loadOptions={searchProcessOptions}
+                              onChange={(val) => {
+                                if (val) {
+                                  formikBag.setFieldValue('processId', val)
+                                  console.log("vlaue", val)
+                                }
+
+
+
+                              }}
+
+                            />
+                          </div>
+                        </div>
                 </div>
               )}
               <Error fieldName="processId" fullWidth />
@@ -221,14 +238,13 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                 <option key="" value="">
                   Velg avdeling
                 </option>
-                {codelist.getParsedOptions(ListName.DEPARTMENT).map((codeListOption) => (
+                {departments.map((codeListOption) => (
                   <option key={`option_${codeListOption.id}`} value={codeListOption.label}>
                     {codeListOption.label}
                   </option>
                 ))}
               </Select>
               )}
-              <Error fieldName="department" fullWidth />
 
               {formikBag.values.processSelection === RecipientType.PRODUCT_AREA && (
               <Select
@@ -247,8 +263,6 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                 ))}
               </Select>
                 )}
-
-              <Error fieldName="productAreaId" fullWidth />
 
               <div className="flex w-full mt-4">
                   <Textarea
