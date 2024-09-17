@@ -2,7 +2,6 @@ import axios from 'axios'
 import { Notification } from 'baseui/notification'
 import {ErrorMessage, Field, Form, Formik} from 'formik'
 import {FormEvent, useEffect, useState} from 'react'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 import {searchProcess, searchProcessOptions, useAllAreas, useProcessSearch} from '../../../api'
 import { Process, ProductArea } from '../../../constants'
@@ -13,7 +12,7 @@ import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Spinner } from '../../common/Spinner'
 import AsyncSelect from 'react-select/async'
 
-import {Button, Heading, Label, Radio, RadioGroup, Select, Textarea} from '@navikt/ds-react'
+import {Alert, Button, Heading, Label, Radio, RadioGroup, Select, Textarea} from '@navikt/ds-react'
 
 
 enum RecipientType {
@@ -57,8 +56,6 @@ const requestRevision = async (request: ProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
 }
 
-const formatProcessName = (process: Process): string => process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
-
 interface IRequestRevisionPageProps {
   close?: () => void
   processId?: string
@@ -66,7 +63,6 @@ interface IRequestRevisionPageProps {
 
 export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const { close, processId } = props
-  const navigate: NavigateFunction = useNavigate()
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -76,16 +72,6 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
   const areas: ProductArea[] = useAllAreas()
 
-  const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
-
-
-  const abort = (): void => {
-    if (close) {
-      close()
-    } else {
-      navigate(-1)
-    }
-  }
   const save = async (request: ProcessRevisionRequest) => {
     setLoading(true)
     try {
@@ -96,34 +82,12 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     }
     setLoading(false)
   }
-  const reset = () => {
-    setDone(false)
-    setLoading(false)
-    setError(undefined)
-    setProcessSearch('')
-  }
 
-  useEffect(() => {
-    console.log(processSearchResult)
-  }, []);
   return (
     <div>
       <Heading level="1" size="large">Send anmodning om revidering</Heading>
       {loading ? <Spinner /> : error && <Notification kind={'negative'}>{error}</Notification>}
 
-      {done ? (
-        <div>
-          <Notification kind={'positive'}>Revidering etterspurt</Notification>
-          <Button variant="secondary" onClick={abort}>
-
-          </Button>
-          {!close && (
-            <Button type="button" onClick={reset}>
-              Ny revidering
-            </Button>
-          )}
-        </div>
-      ) : (
         <Formik
           initialValues={{
             ...initialValues,
@@ -135,6 +99,12 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
         >
           {(formikBag) => (
             <Form>
+              {done &&
+                <div>
+                  <Alert variant="success">Revidering etterspurt</Alert>
+                </div>
+              }
+
                 <div className="flex w-full mt-4">
                   <Field name="processSelection">
                     {() => {
@@ -171,59 +141,24 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
               )}
 
               {formikBag.values.processSelection === RecipientType.ONE && (
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Behandling" />
-{/*
-                  <Select
-                    noResultsMsg="Ingen"
-                    isLoading={processSearchLoading}
-                    maxDropdownHeight="400px"
-                    searchable={true}
-                    type={TYPE.search}
-                    options={processSearchResult}
-                    placeholder="Søk"
-                    value={processSearchResult.filter((process: Process) => process.id === formikBag.values.processId)}
-                    onInputChange={(event) => setProcessSearch(event.currentTarget.value)}
-                    onChange={(params) => {
-                      formikBag.setFieldValue('processId', !params.value[0] ? '' : params.value[0].id)
-                    }}
-                    filterOptions={(option: Value) => option}
-                    labelKey="name"
-                    getOptionLabel={({ option }) => formatProcessName(option as Process)}
-                  />
-*/}
-
-
-
-
-
-
+                <div className="flex w-full mt-4 my-3">
                         <div className="my-3">
-                          <Label>Legg til behandlinger fra Behandlingskatalogen</Label>
-                          <Label textColor="subtle">Skriv minst 3 tegn for å søke</Label>
+                          <Label>Legg til  en behandling fra Behandlingskatalogen</Label>
 
-                          <div className="w-full">
                             <AsyncSelect
                               aria-label="Søk etter behandlinger"
                               placeholder=""
                               noOptionsMessage={()=>'Skriv minst 3 tegn for å søke'}
                               loadingMessage={() => 'Søker...'}
-                              onInputChange={(val)=>console.log("val", val)}
                               isClearable={false}
                               loadOptions={searchProcessOptions}
                               onChange={(val) => {
                                 if (val) {
-                                  formikBag.setFieldValue('processId', val)
-                                  console.log("vlaue", val)
+                                  formikBag.setFieldValue('processId', val.value)
                                 }
-
-
-
                               }}
-
                             />
                           </div>
-                        </div>
                 </div>
               )}
               <Error fieldName="processId" fullWidth />
@@ -264,8 +199,9 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
               </Select>
                 )}
 
-              <div className="flex w-full mt-4">
+              <div className="flex mt-4">
                   <Textarea
+                    className="w-1/2"
                     name="revisionText"
                     label="Revideringstekst"
                     value={formikBag.values.revisionText}
@@ -273,18 +209,18 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     minRows={6}
                   />
               </div>
-              <div>
-                <div className="flex justify-end mt-6">
-                  <Button variant="secondary" onClick={()=>formikBag.resetForm()}>
+                <div className="flex justify-end mt-6 gap-2">
+                  <Button variant="secondary" type="reset" onClick={()=> {
+                    setDone(false)
+                    formikBag.resetForm()}
+                  }>
                     Tøm skjema
                   </Button>
                   <Button type="submit">Send</Button>
                 </div>
-              </div>
             </Form>
           )}
         </Formik>
-      )}
     </div>
   )
 }
