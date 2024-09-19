@@ -1,19 +1,16 @@
 import axios from 'axios'
-import { Notification } from 'baseui/notification'
-import {ErrorMessage, Field, Form, Formik} from 'formik'
-import {FormEvent, useEffect, useState} from 'react'
+import {Field, Form, Formik} from 'formik'
+import {useState} from 'react'
 import * as yup from 'yup'
-import {searchProcess, searchProcessOptions, useAllAreas, useProcessSearch} from '../../../api'
-import { Process, ProductArea } from '../../../constants'
+import {searchProcessOptions, useAllAreas} from '../../../api'
+import { ProductArea } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { codelist, ListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { Spinner } from '../../common/Spinner'
+import { Error } from '../../common/ModalSchema'
 import AsyncSelect from 'react-select/async'
 
-import {Alert, Button, Heading, Label, Radio, RadioGroup, Select, Textarea} from '@navikt/ds-react'
-
+import {Alert, Button, Heading, Label, Loader, Radio, RadioGroup, Select, Textarea} from '@navikt/ds-react'
 
 enum RecipientType {
   ONE = 'ONE',
@@ -62,7 +59,7 @@ interface IRequestRevisionPageProps {
 }
 
 export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
-  const { close, processId } = props
+  const { processId } = props
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -86,7 +83,8 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   return (
     <div>
       <Heading level="1" size="large">Send anmodning om revidering</Heading>
-      {loading ? <Spinner /> : error && <Notification kind={'negative'}>{error}</Notification>}
+
+      {loading ? <Loader size="xlarge" /> : error && <Alert variant={'error'}>{error}</Alert>}
 
         <Formik
           initialValues={{
@@ -162,6 +160,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                 </div>
               )}
               <Error fieldName="processId" fullWidth />
+
 
               {formikBag.values.processSelection === RecipientType.DEPARTMENT && (
               <Select
