@@ -5,22 +5,7 @@ import * as yup from 'yup'
 import { env } from '../../../util/env'
 
 import {Button, Heading, Textarea} from '@navikt/ds-react'
-
-enum RecipientType {
-  ONE = 'ONE',
-  ALL = 'ALL',
-  DEPARTMENT = 'DEPARTMENT',
-  PRODUCT_AREA = 'PRODUCT_AREA',
-}
-
-interface ProcessRevisionRequest {
-  processSelection: RecipientType
-  processId?: string
-  department?: string
-  productAreaId?: string
-  revisionText: string
-  completedOnly: boolean
-}
+import {ProcessRevisionRequest, RecipientType} from "../../../constants";
 
 const initialValues: ProcessRevisionRequest = {
   processSelection: RecipientType.ONE,
@@ -74,7 +59,8 @@ export const RequestRevisionModal = (props: IRequestRevisionPageProps) => {
           }}
           validationSchema={schema()}
           onSubmit={save}
-          validateOnBlur={true}
+          validateOnBlur={false}
+          validateOnChange={false}
         >
           {(formikBag) => (
             <Form>
@@ -86,6 +72,7 @@ export const RequestRevisionModal = (props: IRequestRevisionPageProps) => {
                   value={formikBag.values.revisionText}
                   onChange={(event)=>{formikBag.setFieldValue('revisionText', event.target.value)}}
                   minRows={6}
+                  error={formikBag.errors.revisionText}
                 />
                 <div className="flex justify-end mt-6 gap-4">
                   <Button variant="secondary" onClick={close}>

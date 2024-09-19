@@ -113,6 +113,12 @@ export enum NoDpiaReason {
   OTHER = 'OTHER',
 }
 
+export enum RecipientType {
+  ONE = 'ONE',
+  ALL = 'ALL',
+  DEPARTMENT = 'DEPARTMENT',
+  PRODUCT_AREA = 'PRODUCT_AREA',
+}
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
 export interface InformationtypeFormValues {
@@ -270,6 +276,15 @@ export interface Policy {
   legalBasesUse: LegalBasesUse
   legalBases: LegalBasis[]
   documentIds?: string[]
+}
+
+export interface ProcessRevisionRequest {
+  processSelection: RecipientType
+  processId?: string
+  department?: string
+  productAreaId?: string
+  revisionText: string
+  completedOnly: boolean
 }
 
 export const policySort: ColumnCompares<Policy> = {

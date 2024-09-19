@@ -3,7 +3,7 @@ import {Field, Form, Formik} from 'formik'
 import {useState} from 'react'
 import * as yup from 'yup'
 import {searchProcessOptions, useAllAreas} from '../../../api'
-import { ProductArea } from '../../../constants'
+import {ProcessRevisionRequest, ProductArea, RecipientType} from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { codelist, ListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
@@ -11,22 +11,6 @@ import { Error } from '../../common/ModalSchema'
 import AsyncSelect from 'react-select/async'
 
 import {Alert, Button, Heading, Label, Loader, Radio, RadioGroup, Select, Textarea} from '@navikt/ds-react'
-
-enum RecipientType {
-  ONE = 'ONE',
-  ALL = 'ALL',
-  DEPARTMENT = 'DEPARTMENT',
-  PRODUCT_AREA = 'PRODUCT_AREA',
-}
-
-interface ProcessRevisionRequest {
-  processSelection: RecipientType
-  processId?: string
-  department?: string
-  productAreaId?: string
-  revisionText: string
-  completedOnly: boolean
-}
 
 const initialValues: ProcessRevisionRequest = {
   processSelection: RecipientType.ONE,
@@ -80,6 +64,11 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     setLoading(false)
   }
 
+  const reset = ()=> {
+      setDone(false)
+      setError(undefined)
+  }
+
   return (
     <div>
       <Heading level="1" size="large">Send anmodning om revidering</Heading>
@@ -93,7 +82,9 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
           }}
           validationSchema={schema()}
           onSubmit={save}
-          validateOnBlur={true}
+          onReset={reset}
+          validateOnBlur={false}
+          validateOnChange={false}
         >
           {(formikBag) => (
             <Form>
@@ -113,6 +104,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                               legend="Velg omfang"
                               onChange={(val) => formikBag.setFieldValue('processSelection', val)}
                               name='processSelection'
+                              error={formikBag.errors.processSelection}
                             >
                               <Radio value={RecipientType.ONE}>Én behandling</Radio>
                               <Radio value={RecipientType.ALL}>Alle</Radio>
@@ -124,7 +116,6 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     }}
                   </Field>
                 </div>
-              <Error fieldName="processSelection" fullWidth/>
 
               {formikBag.values.processSelection !== RecipientType.ONE && (
                 <RadioGroup
@@ -132,6 +123,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   className="flex w-full mt-4"
                   legend="Velg kun fullførte behandlinger"
                   onChange={(value) => formikBag.setFieldValue('completedOnly', value)}
+                  error={formikBag.errors.completedOnly}
                 >
                   <Radio value={true}>Velg kun fullførte behandlinger</Radio>
                   <Radio value={false}>Velg alle behandlinger</Radio>
@@ -148,7 +140,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                               placeholder=""
                               noOptionsMessage={()=>'Skriv minst 3 tegn for å søke'}
                               loadingMessage={() => 'Søker...'}
-                              isClearable={false}
+                              isClearable={true}
                               loadOptions={searchProcessOptions}
                               onChange={(val) => {
                                 if (val) {
@@ -159,6 +151,8 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                           </div>
                 </div>
               )}
+              {error}
+              {formikBag.errors.processSelection}
               <Error fieldName="processId" fullWidth />
 
 
@@ -168,6 +162,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                 label="Avdeling"
                 onChange={(ev) => formikBag.setFieldValue('department', ev.currentTarget.value)}
                 value={formikBag.values.department!}
+                error={formikBag.errors.department}
               >
                 <option key="" value="">
                   Velg avdeling
@@ -186,6 +181,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                 label="Område"
                 onChange={(ev) => formikBag.setFieldValue('productAreaId', ev.currentTarget.value)}
                 value={formikBag.values.productAreaId!}
+                error={formikBag.errors.productAreaId}
               >
                 <option key="" value="">
                   Velg område
@@ -205,14 +201,14 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     label="Revideringstekst"
                     value={formikBag.values.revisionText}
                     onChange={(event)=>{formikBag.setFieldValue('revisionText', event.target.value)}}
+                    error={formikBag.errors.revisionText}
                     minRows={6}
                   />
+
               </div>
+
                 <div className="flex justify-end mt-6 gap-2">
-                  <Button variant="secondary" type="reset" onClick={()=> {
-                    setDone(false)
-                    formikBag.resetForm()}
-                  }>
+                  <Button variant="secondary" type="reset" >
                     Tøm skjema
                   </Button>
                   <Button type="submit">Send</Button>
