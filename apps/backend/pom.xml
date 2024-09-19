@@ -30,14 +30,14 @@
         <docx4j.version>11.5.0</docx4j.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
 
-        <microsoft-graph.version>6.15.0</microsoft-graph.version>
+        <microsoft-graph.version>6.16.0</microsoft-graph.version>
         <msal4j.version>1.17.1</msal4j.version>
 
         <!-- transitive versions -->
         <commons-compress.version>1.27.1</commons-compress.version>
         <commons-io.version>2.16.1</commons-io.version>
         <guava.version>33.3.0-jre</guava.version>
-        <jna.version>5.14.0</jna.version>
+        <jna.version>5.15.0</jna.version>
         <jetbrains.annotation.version>24.1.0</jetbrains.annotation.version>
         <stax2-api.version>4.2.2</stax2-api.version>
 
@@ -94,7 +94,7 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
-                <version>26.45.0</version>
+                <version>26.47.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
