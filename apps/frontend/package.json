@@ -17,7 +17,9 @@
     "core-js": "^3.7.0",
     "flag-icon-css": "^4.1.6",
     "formik": "^2.2.4",
+    "husky": "^9.1.6",
     "json-diff-kit": "^1.0.29",
+    "lint-staged": "^15.2.10",
     "lodash": "^4.17.19",
     "moment": "2.30.1",
     "query-string": "^9.0.0",
@@ -47,7 +49,15 @@
     "build": "craco build",
     "test": "craco test",
     "format": "prettier --write \"./src\"",
-    "prettier": "prettier --write \"./src\""
+    "prettier": "prettier --write \"./src\"",
+    "prepare": "cd ../../ && husky apps/frontend/.husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --list-different --write",
+      "eslint --max-warnings 0",
+      "bash -c 'yarn run type-check'"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app",
