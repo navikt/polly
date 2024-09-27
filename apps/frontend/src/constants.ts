@@ -1,5 +1,5 @@
-import {Code, codelist, ListName} from './service/Codelist'
-import {ColumnCompares} from './util/hooks'
+import { Code, codelist, ListName } from './service/Codelist'
+import { ColumnCompares } from './util/hooks'
 
 export enum LegalBasesUse {
   INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
@@ -304,13 +304,13 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
 export const processSort: ColumnCompares<Process> = {
   name: (a, b) => a.name.localeCompare(b.name),
   purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
-  affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
+  affiliation: (a) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
 }
 
 export const dpProcessSort: ColumnCompares<DpProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
   externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
-  affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
+  affiliation: (a) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
   description: (a, b) => (a.description || '').localeCompare(b.description || ''),
   changeStamp: (a, b) => (a.changeStamp.lastModifiedBy || '').localeCompare(b.changeStamp.lastModifiedBy || ''),
 }

@@ -2,6 +2,7 @@ import { Fragment } from 'react/jsx-runtime'
 import { InformationTypeShort, ObjectType } from '../../../constants'
 import { ObjectLink } from '../../common/RouteLink'
 
+// Disse verdiene blir sendt ned, men aldri brukt
 export const LinkListInformationType = (items: InformationTypeShort[], baseUrl: string, objectType: ObjectType) => {
   const len = items.length
 

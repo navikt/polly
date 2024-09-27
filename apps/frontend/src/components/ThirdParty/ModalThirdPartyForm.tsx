@@ -97,9 +97,9 @@ interface FieldInputProps {
 }
 
 const FieldInput = (props: FieldInputProps) => {
-  const { fieldName, fieldValue } = props
+  const { fieldName } = props
 
-  return <Field name={fieldName} render={({ field, form }: FieldProps<string, DisclosureFormValues>) => <Input {...field} />} />
+  return <Field name={fieldName} render={({ field }: FieldProps<string, DisclosureFormValues>) => <Input {...field} />} />
 }
 
 type ModalThirdPartyProps = {

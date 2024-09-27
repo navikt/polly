@@ -132,7 +132,7 @@ const ThirdPartyPage = () => {
             renderAll
             overrides={{
               Content: {
-                style: (p) => ({
+                style: () => ({
                   backgroundColor: theme.colors.white,
                 }),
               },

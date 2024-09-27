@@ -95,12 +95,7 @@ export const AlertEventPage = () => {
   const setLimit = (l: number) => dispatch({ type: 'LIMIT', value: l })
   const setType = (t?: AlertEventType) => dispatch({ type: 'EVENT_TYPE', value: t })
   const setLevel = (l?: AlertEventLevel) => dispatch({ type: 'EVENT_LEVEL', value: l })
-  const setSort = (column: SortCol) =>
-    dispatch({
-      type: 'SORT',
-      column,
-      dir: state.sort.column !== column ? SORT_DIRECTION.ASC : state.sort.dir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC,
-    })
+
 
   ampli.logEvent('besøk', { side: 'Varsler', url: '/alert/events/', app: 'Behandlingskatalogen' })
 
