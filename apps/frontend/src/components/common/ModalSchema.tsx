@@ -22,7 +22,10 @@ export const Error = (props: IErrorProps) => {
         <div className="flex w-full mt-1">
           {!fullWidth && <ModalLabel />}
           <div className="w-full">
-            <Notification overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }} kind={NKIND.negative}>
+            <Notification
+              overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }}
+              kind={NKIND.negative}
+            >
               {msg}
             </Notification>
           </div>
@@ -50,7 +53,12 @@ export const ModalLabel = (props: IModalLabelProps) => {
             <div className="flex">
               <div>{label}</div>
               <div className="self-center">
-                <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faQuestionCircle} color={theme.colors.primary300} size="sm" />
+                <FontAwesomeIcon
+                  style={{ marginLeft: '.5rem', alignSelf: 'center' }}
+                  icon={faQuestionCircle}
+                  color={theme.colors.primary300}
+                  size="sm"
+                />
               </div>
             </div>
           </LabelMedium>

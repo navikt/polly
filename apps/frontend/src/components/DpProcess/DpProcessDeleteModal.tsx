@@ -23,7 +23,11 @@ export const DpProcessDeleteModal = (props: IDpProcessDeleteModal) => {
         <ModalFooter>
           <div className="flex justify-end">
             <div className="self-end">{errorOnDeletion && <p>{errorOnDeletion}</p>}</div>
-            <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
+            <Button
+              kind="secondary"
+              onClick={() => onClose()}
+              overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}
+            >
               Avbryt
             </Button>
             <Button onClick={() => onSubmit()}>Slett</Button>

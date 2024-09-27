@@ -1,16 +1,16 @@
 import { OnChangeParams, Option, Select, TYPE } from 'baseui/select'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { searchDocuments } from '../../api'
-import { Document, DocumentFormValues, PageResponse } from '../../constants'
+import { IDocument, IDocumentFormValues, IPageResponse } from '../../constants'
 import { useDebouncedState } from '../../util'
 
-type SelectDocumentProps = {
-  document: DocumentFormValues | undefined
+type TSelectDocumentProps = {
+  document: IDocumentFormValues | undefined
   handleChange: Function
 }
 
-const SelectDocument = (props: SelectDocumentProps) => {
-  const [documents, setDocuments] = useState<Document[]>([])
+const SelectDocument = (props: TSelectDocumentProps) => {
+  const [documents, setDocuments] = useState<IDocument[]>([])
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
   const [isLoadingDocuments, setLoadingDocuments] = useState<boolean>(false)
 
@@ -20,7 +20,7 @@ const SelectDocument = (props: SelectDocumentProps) => {
     ;(async () => {
       if (documentSearch && documentSearch.length > 2) {
         setLoadingDocuments(true)
-        const response: PageResponse<Document> = await searchDocuments(documentSearch)
+        const response: IPageResponse<IDocument> = await searchDocuments(documentSearch)
         setDocuments(response.content)
         setLoadingDocuments(false)
       }
@@ -38,8 +38,10 @@ const SelectDocument = (props: SelectDocumentProps) => {
       maxDropdownHeight="400px"
       placeholder="Søk dokumenter"
       value={document ? [document as Option] : []}
-      onInputChange={(event: ChangeEvent<HTMLInputElement>) => setDocumentSearch(event.currentTarget.value)}
-      onChange={(params: OnChangeParams) => handleChange(params.value[0] as Document)}
+      onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
+        setDocumentSearch(event.currentTarget.value)
+      }
+      onChange={(params: OnChangeParams) => handleChange(params.value[0] as IDocument)}
       labelKey="name"
     />
   )

@@ -2,26 +2,26 @@ import { DocPencilIcon, GlassesIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Button, SortState, Table, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../../api'
-import { CodeListFormValues, CodeUsage } from '../../../constants'
-import { Code } from '../../../service/Codelist'
+import { ICodeListFormValues, ICodeUsage } from '../../../constants'
+import { ICode } from '../../../service/Codelist'
 import { handleSort } from '../../../util/handleTableSort'
 import { AuditButtonDS } from '../audit/AuditButtonDS'
 import { Usage } from './CodeListUsage'
 import DeleteCodeListModal from './ModalDeleteCodeList'
 import UpdateCodeListModal from './ModalUpdateCodeList'
 
-type TableCodelistProps = {
-  tableData: Code[]
+type TTableCodelistProps = {
+  tableData: ICode[]
   refresh: () => void
 }
 
-const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
-  const [selectedCode, setSelectedCode] = useState<Code>()
+const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
+  const [selectedCode, setSelectedCode] = useState<ICode>()
   const [showUsage, setShowUsage] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [errorOnResponse, setErrorOnResponse] = useState(null)
-  const [usage, setUsage] = useState<CodeUsage>()
+  const [usage, setUsage] = useState<ICodeUsage>()
   const [sort, setSort] = useState<SortState>()
 
   useEffect(() => {
@@ -35,9 +35,9 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
   }, [showUsage, selectedCode])
   useEffect(() => setShowUsage(false), [tableData])
 
-  const handleEditCodelist = async (values: CodeListFormValues): Promise<void> => {
+  const handleEditCodelist = async (values: ICodeListFormValues): Promise<void> => {
     try {
-      await updateCodelist({ ...values } as Code)
+      await updateCodelist({ ...values } as ICode)
       refresh()
       setShowEditModal(false)
     } catch (error: any) {
@@ -57,9 +57,9 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
     }
   }
 
-  let sortedData: Code[] = tableData
+  let sortedData: ICode[] = tableData
 
-  const comparator = (a: Code, b: Code, orderBy: string): number => {
+  const comparator = (a: ICode, b: ICode, orderBy: string): number => {
     switch (orderBy) {
       case 'code':
         return a.code.localeCompare(b.code)
@@ -70,16 +70,23 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
     }
   }
 
-  sortedData = sortedData.sort((a: Code, b: Code) => {
+  sortedData = sortedData.sort((a: ICode, b: ICode) => {
     if (sort) {
-      return sort.direction === 'ascending' ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy)
+      return sort.direction === 'ascending'
+        ? comparator(b, a, sort.orderBy)
+        : comparator(a, b, sort.orderBy)
     }
     return 1
   })
 
   return (
     <>
-      <Table size="large" zebraStripes sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
+      <Table
+        size="large"
+        zebraStripes
+        sort={sort}
+        onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}
+      >
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeader sortKey="code" className="w-[15%]" sortable>
@@ -93,7 +100,7 @@ const CodeListTable = ({ tableData, refresh }: TableCodelistProps) => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {sortedData.map((row: Code, index: number) => (
+          {sortedData.map((row: ICode, index: number) => (
             <Table.Row key={index}>
               <Table.DataCell className="w-[15%] break-all"> {row.code}</Table.DataCell>
               <Table.DataCell>{row.shortName}</Table.DataCell>

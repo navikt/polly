@@ -1,4 +1,9 @@
-import { faChevronRight, faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronRight,
+  faEdit,
+  faExclamationCircle,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Panel, StatelessAccordion } from 'baseui/accordion'
 import { SIZE as ButtonSize } from 'baseui/button'
@@ -10,9 +15,9 @@ import { Fragment, Key, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
-import { Disclosure, DisclosureAbroad, DisclosureAlert, DisclosureFormValues, ObjectType } from '../../constants'
+import { EObjectType, IDisclosure, IDisclosureAbroad, IDisclosureFormValues } from '../../constants'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import { ListName, codelist } from '../../service/Codelist'
+import { EListName, codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme } from '../../util'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -26,20 +31,18 @@ import ModalThirdParty from './ModalThirdPartyForm'
 import LinkListInformationType from './components/LinkListInformationType'
 import LinkListProcess from './components/LinkListProcess'
 
-type AccordionDisclosureProps = {
-  disclosureList: Array<Disclosure>
+type TAccordionDisclosureProps = {
+  disclosureList: Array<IDisclosure>
   showRecipient: boolean
   editable: boolean
-  submitDeleteDisclosure?: (disclosure: Disclosure) => Promise<boolean>
-  submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>
+  submitDeleteDisclosure?: (disclosure: IDisclosure) => Promise<boolean>
+  submitEditDisclosure?: (disclosure: IDisclosureFormValues) => Promise<boolean>
   errorModal?: string
   onCloseModal?: () => void
   expand?: string
 }
 
-type Alerts = { [k: string]: DisclosureAlert }
-
-const showAbroad = (abroad: DisclosureAbroad) => {
+const showAbroad = (abroad: IDisclosureAbroad) => {
   if (abroad.abroad === true) {
     if (abroad.refToAgreement) {
       return (
@@ -68,17 +71,25 @@ const showAbroad = (abroad: DisclosureAbroad) => {
   }
 }
 
-const AccordionDisclosure = (props: AccordionDisclosureProps) => {
+const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
   const { expand } = props
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [showEditModal, setShowEditModal] = useState<boolean>(false)
-  const [selectedDisclosure, setSelectedDisclosure] = useState<Disclosure>()
+  const [selectedDisclosure, setSelectedDisclosure] = useState<IDisclosure>()
   const [isLoading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const [hasAlert, setHasAlert] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<Key[]>(expand ? [expand] : [])
 
-  const { disclosureList, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal } = props
+  const {
+    disclosureList,
+    showRecipient,
+    submitDeleteDisclosure,
+    submitEditDisclosure,
+    errorModal,
+    editable,
+    onCloseModal,
+  } = props
 
   useEffect(() => {
     expand && renewDisclosureDetails(expand)
@@ -107,7 +118,7 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
         {disclosureList &&
           disclosureList
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((d: Disclosure) => {
+            .map((d: IDisclosure) => {
               return (
                 <Panel
                   title={
@@ -132,19 +143,38 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                                         size={ButtonSize.compact}
                                         icon={faExclamationCircle}
                                         marginRight
-                                        tooltip={hasAlert ? 'Varsler: Behandlingsgrunnlag for artikkel 6 mangler' : 'Varsler: Nei'}
-                                        onClick={() => navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)}
+                                        tooltip={
+                                          hasAlert
+                                            ? 'Varsler: Behandlingsgrunnlag for artikkel 6 mangler'
+                                            : 'Varsler: Nei'
+                                        }
+                                        onClick={() =>
+                                          navigate(
+                                            `/alert/events/disclosure/${selectedDisclosure.id}`
+                                          )
+                                        }
                                       >
                                         Varsler
                                       </Button>
                                     )}
                                     {user.isLoggedIn() && (
                                       <>
-                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faEdit} onClick={() => setShowEditModal(true)} marginRight>
+                                        <Button
+                                          kind={'outline'}
+                                          size={ButtonSize.compact}
+                                          icon={faEdit}
+                                          onClick={() => setShowEditModal(true)}
+                                          marginRight
+                                        >
                                           Redigér
                                         </Button>
 
-                                        <Button kind={'outline'} size={ButtonSize.compact} icon={faTrash} onClick={() => setShowDeleteModal(true)}>
+                                        <Button
+                                          kind={'outline'}
+                                          size={ButtonSize.compact}
+                                          icon={faTrash}
+                                          onClick={() => setShowDeleteModal(true)}
+                                        >
                                           Slett
                                         </Button>
                                       </>
@@ -182,20 +212,37 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                     <div className="outline outline-4 outline-[#E2E2E2]">
                       <div className="p-6">
                         <div className="w-full">
-                          {showRecipient && <DataText label="Mottaker" text={selectedDisclosure?.recipient.shortName} />}
+                          {showRecipient && (
+                            <DataText
+                              label="Mottaker"
+                              text={selectedDisclosure?.recipient.shortName}
+                            />
+                          )}
                           <DataText label="Navn på utlevering" text={selectedDisclosure?.name} />
-                          <DataText label="Formål med utlevering" text={selectedDisclosure?.recipientPurpose} />
-                          <DataText label="Ytterligere beskrivelse" text={selectedDisclosure?.description} />
+                          <DataText
+                            label="Formål med utlevering"
+                            text={selectedDisclosure?.recipientPurpose}
+                          />
+                          <DataText
+                            label="Ytterligere beskrivelse"
+                            text={selectedDisclosure?.description}
+                          />
 
                           <DataText label="Relaterte behandlinger">
-                            {LinkListProcess(selectedDisclosure?.processes ? selectedDisclosure?.processes : [], '/process/purpose', ObjectType.PROCESS)}
+                            {LinkListProcess(
+                              selectedDisclosure?.processes ? selectedDisclosure?.processes : [],
+                              '/process/purpose',
+                              EObjectType.PROCESS
+                            )}
                           </DataText>
 
                           <DataText label="Opplysningstyper">
                             {LinkListInformationType(
-                              selectedDisclosure?.informationTypes ? selectedDisclosure?.informationTypes.map((p) => p) : [],
+                              selectedDisclosure?.informationTypes
+                                ? selectedDisclosure?.informationTypes.map((p) => p)
+                                : [],
                               '/informationtype',
-                              ObjectType.INFORMATION_TYPE,
+                              EObjectType.INFORMATION_TYPE
                             )}
                           </DataText>
 
@@ -203,7 +250,11 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                             label="Dokument"
                             children={
                               selectedDisclosure?.documentId ? (
-                                <StyledLink href={`/document/${selectedDisclosure?.documentId}`} target="_blank" rel="noopener noreferrer">
+                                <StyledLink
+                                  href={`/document/${selectedDisclosure?.documentId}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
                                   {selectedDisclosure?.document?.name}
                                 </StyledLink>
                               ) : (
@@ -215,7 +266,13 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                           {selectedDisclosure?.legalBases.length ? (
                             <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
                               {selectedDisclosure.legalBases
-                                .sort((a, b) => codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+                                .sort((a, b) =>
+                                  codelist
+                                    .getShortname(EListName.GDPR_ARTICLE, a.gdpr.code)
+                                    .localeCompare(
+                                      codelist.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code)
+                                    )
+                                )
                                 .map((legalBasis, index) => (
                                   <div key={index}>
                                     <LegalBasisView legalBasis={legalBasis} />
@@ -224,7 +281,10 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                             </DataText>
                           ) : (
                             <>
-                              <DataText label="Behandlingsgrunnlag for hele behandlingen" text="Ikke angitt" />
+                              <DataText
+                                label="Behandlingsgrunnlag for hele behandlingen"
+                                text="Ikke angitt"
+                              />
                             </>
                           )}
                         </div>
@@ -233,7 +293,13 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                         <div>
                           <DataText
                             label="Hjemmel for unntak fra taushetsplikt er vurdert"
-                            text={d.assessedConfidentiality !== null ? (d.assessedConfidentiality ? 'Ja' : 'Nei') : 'Ikke angitt'}
+                            text={
+                              d.assessedConfidentiality !== null
+                                ? d.assessedConfidentiality
+                                  ? 'Ja'
+                                  : 'Nei'
+                                : 'Ikke angitt'
+                            }
                           />
 
                           {d.assessedConfidentiality !== null && (
@@ -245,18 +311,35 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
                               }
                               text=""
                             >
-                              {shortenLinksInText(d.confidentialityDescription ? d.confidentialityDescription : 'Ikke angitt')}
+                              {shortenLinksInText(
+                                d.confidentialityDescription
+                                  ? d.confidentialityDescription
+                                  : 'Ikke angitt'
+                              )}
                             </DataText>
                           )}
                         </div>
 
                         <div>
                           <DataText label="Avdeling">
-                            {d.department?.code && <DotTags list={ListName.DEPARTMENT} codes={[d.department]} commaSeparator linkCodelist />}
+                            {d.department?.code && (
+                              <DotTags
+                                list={EListName.DEPARTMENT}
+                                codes={[d.department]}
+                                commaSeparator
+                                linkCodelist
+                              />
+                            )}
                             {!d.department?.code && 'Ikke angitt'}
                           </DataText>
 
-                          <DataText label="Team">{!!d.productTeams?.length ? <TeamList teamIds={d.productTeams} /> : 'Ikke angitt'}</DataText>
+                          <DataText label="Team">
+                            {d.productTeams?.length ? (
+                              <TeamList teamIds={d.productTeams} />
+                            ) : (
+                              'Ikke angitt'
+                            )}
+                          </DataText>
                         </div>
                       </div>
                       <div className="flex justify-end mb-4 mr-4">
@@ -297,10 +380,17 @@ const AccordionDisclosure = (props: AccordionDisclosureProps) => {
         />
       )}
       {showDeleteModal && (
-        <Modal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal} animate size="default">
+        <Modal
+          onClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteModal}
+          animate
+          size="default"
+        >
           <ModalHeader>Bekreft sletting</ModalHeader>
           <ModalBody>
-            <ParagraphMedium>Bekreft sletting av utlevering {selectedDisclosure?.name}</ParagraphMedium>
+            <ParagraphMedium>
+              Bekreft sletting av utlevering {selectedDisclosure?.name}
+            </ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>

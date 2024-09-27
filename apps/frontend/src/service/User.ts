@@ -1,9 +1,9 @@
 import { AxiosResponse } from 'axios'
 import { getUserInfo } from '../api'
-import { UserInfo } from '../constants'
+import { IUserInfo } from '../constants'
 import { tekster } from '../util/codeToFineText'
 
-export enum Group {
+export enum EGroup {
   READ = 'READ',
   WRITE = 'WRITE',
   SUPER = 'SUPER',
@@ -12,7 +12,7 @@ export enum Group {
 
 class UserService {
   loaded = false
-  userInfo: UserInfo = { loggedIn: false, groups: [] }
+  userInfo: IUserInfo = { loggedIn: false, groups: [] }
   error?: string
   promise: Promise<any>
 
@@ -29,7 +29,7 @@ class UserService {
       })
   }
 
-  handleGetResponse = (response: AxiosResponse<UserInfo>) => {
+  handleGetResponse = (response: AxiosResponse<IUserInfo>) => {
     if (typeof response.data === 'object' && response.data !== null) {
       this.userInfo = response.data
     } else {
@@ -75,19 +75,19 @@ class UserService {
   }
 
   public canRead(): boolean {
-    return this.hasGroup(Group.READ)
+    return this.hasGroup(EGroup.READ)
   }
 
   public canWrite(): boolean {
-    return this.hasGroup(Group.WRITE)
+    return this.hasGroup(EGroup.WRITE)
   }
 
   public isSuper(): boolean {
-    return this.hasGroup(Group.SUPER)
+    return this.hasGroup(EGroup.SUPER)
   }
 
   public isAdmin(): boolean {
-    return this.hasGroup(Group.ADMIN)
+    return this.hasGroup(EGroup.ADMIN)
   }
 
   async wait() {

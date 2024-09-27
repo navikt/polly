@@ -1,7 +1,7 @@
 import { StatefulSelect } from 'baseui/select'
 import { LabelMedium } from 'baseui/typography'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import { ProcessStatusFilter } from '../../constants'
+import { EProcessStatusFilter } from '../../constants'
 import { theme } from '../../util'
 
 interface IFilterDashboardStatusProps {
@@ -11,7 +11,7 @@ interface IFilterDashboardStatusProps {
 export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
   const { setFilter } = props
   const navigate: NavigateFunction = useNavigate()
-  const { processStatus } = useParams<{ processStatus: ProcessStatusFilter }>()
+  const { processStatus } = useParams<{ processStatus: EProcessStatusFilter }>()
 
   return (
     <div className="w-full flex flex-row-reverse mt-4">
@@ -22,12 +22,20 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
           deleteRemoves={false}
           escapeClearsValue={false}
           options={[
-            { label: 'Alle', id: ProcessStatusFilter.All },
-            { label: 'Under arbeid', id: ProcessStatusFilter.IN_PROGRESS },
-            { label: 'Trenger revidering', id: ProcessStatusFilter.NEEDS_REVISION },
-            { label: 'Fullført', id: ProcessStatusFilter.COMPLETED },
+            { label: 'Alle', id: EProcessStatusFilter.All },
+            { label: 'Under arbeid', id: EProcessStatusFilter.IN_PROGRESS },
+            { label: 'Trenger revidering', id: EProcessStatusFilter.NEEDS_REVISION },
+            { label: 'Fullført', id: EProcessStatusFilter.COMPLETED },
           ]}
-          initialState={{ value: [{ id: processStatus ? (processStatus as ProcessStatusFilter) : ProcessStatusFilter.All }] }}
+          initialState={{
+            value: [
+              {
+                id: processStatus
+                  ? (processStatus as EProcessStatusFilter)
+                  : EProcessStatusFilter.All,
+              },
+            ],
+          }}
           filterOutSelected={false}
           searchable={false}
           onChange={(params: any) => {

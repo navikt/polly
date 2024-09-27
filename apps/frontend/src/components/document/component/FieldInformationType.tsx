@@ -2,12 +2,17 @@ import { PLACEMENT } from 'baseui/popover'
 import { OnChangeParams, Select, TYPE } from 'baseui/select'
 import { ChangeEvent, useState } from 'react'
 import { useInfoTypeSearch } from '../../../api'
-import { DocumentInfoTypeUse, InformationTypeShort } from '../../../constants'
+import { IDocumentInfoTypeUse, IInformationTypeShort } from '../../../constants'
 
-const FieldInformationType = (props: { documentInformationType: DocumentInfoTypeUse; handleChange: Function }) => {
+const FieldInformationType = (props: {
+  documentInformationType: IDocumentInfoTypeUse
+  handleChange: Function
+}) => {
   const { documentInformationType, handleChange } = props
   const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch()
-  const [selectedInformationType, setSelectedInformationType] = useState<InformationTypeShort>(documentInformationType.informationType)
+  const [selectedInformationType, setSelectedInformationType] = useState<IInformationTypeShort>(
+    documentInformationType.informationType
+  )
 
   return (
     <Select
@@ -28,10 +33,15 @@ const FieldInformationType = (props: { documentInformationType: DocumentInfoType
         },
       }}
       value={selectedInformationType as any}
-      onInputChange={(event: ChangeEvent<HTMLInputElement>) => setSearchKeyword(event.currentTarget.value)}
+      onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
+        setSearchKeyword(event.currentTarget.value)
+      }
       onChange={(params: OnChangeParams) => {
-        setSelectedInformationType(params.value[0] as InformationTypeShort)
-        handleChange({ ...documentInformationType, informationTypeId: !params.value[0] ? '' : params.value[0].id })
+        setSelectedInformationType(params.value[0] as IInformationTypeShort)
+        handleChange({
+          ...documentInformationType,
+          informationTypeId: !params.value[0] ? '' : params.value[0].id,
+        })
       }}
       filterOptions={(options) => options}
       labelKey="name"

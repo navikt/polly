@@ -1,16 +1,25 @@
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Document, DocumentFormValues, DocumentInformationTypes, PageResponse } from '../constants'
+import {
+  IDocument,
+  IDocumentFormValues,
+  IDocumentInformationTypes,
+  IPageResponse,
+} from '../constants'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { getSettings } from './SettingsApi'
 
 export const getDocument = async (documentId: string) => {
-  return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
+  return (await axios.get<IDocument>(`${env.pollyBaseUrl}/document/${documentId}`)).data
 }
 
 export const getDocumentByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
-  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+  return (
+    await axios.get<IPageResponse<IDocument>>(
+      `${env.pollyBaseUrl}/document?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    )
+  ).data
 }
 
 export const getDefaultProcessDocument = async () => {
@@ -19,28 +28,33 @@ export const getDefaultProcessDocument = async () => {
 }
 
 export const getDocumentsForInformationType = async (informationTypeId: string) => {
-  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document?informationTypeId=${informationTypeId}`)).data
+  return (
+    await axios.get<IPageResponse<IDocument>>(
+      `${env.pollyBaseUrl}/document?informationTypeId=${informationTypeId}`
+    )
+  ).data
 }
 
 export const searchDocuments = async (name: string) => {
-  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document/search/${name}`)).data
+  return (await axios.get<IPageResponse<IDocument>>(`${env.pollyBaseUrl}/document/search/${name}`))
+    .data
 }
 
-export const updateInformationTypesDocument = async (document: DocumentFormValues) => {
+export const updateInformationTypesDocument = async (document: IDocumentFormValues) => {
   const body = mapFormValuesToDocument(document)
-  return (await axios.put<Document>(`${env.pollyBaseUrl}/document/${document.id}`, body)).data
+  return (await axios.put<IDocument>(`${env.pollyBaseUrl}/document/${document.id}`, body)).data
 }
 
-export const createInformationTypesDocument = async (document: DocumentFormValues) => {
+export const createInformationTypesDocument = async (document: IDocumentFormValues) => {
   const body = mapFormValuesToDocument(document)
   return (await axios.post(`${env.pollyBaseUrl}/document`, body)).data
 }
 
 export const deleteDocument = async (id: string) => {
-  return (await axios.delete<Document>(`${env.pollyBaseUrl}/document/${id}`)).data
+  return (await axios.delete<IDocument>(`${env.pollyBaseUrl}/document/${id}`)).data
 }
 
-const mapFormValuesToDocument = (document: DocumentFormValues) => ({
+const mapFormValuesToDocument = (document: IDocumentFormValues) => ({
   id: document.id ? document.id : undefined,
   name: document.name,
   description: document.description,
@@ -49,14 +63,14 @@ const mapFormValuesToDocument = (document: DocumentFormValues) => ({
       ({
         informationTypeId: it.informationTypeId,
         subjectCategories: it.subjectCategories.map((sc) => sc.code),
-      }) as DocumentInformationTypes,
+      }) as IDocumentInformationTypes
   ),
   dataAccessClass: document.dataAccessClass,
 })
 
 export const useDocumentSearch = () => {
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 200)
-  const [documentSearchResult, setDocumentSearchResult] = useState<Document[]>([])
+  const [documentSearchResult, setDocumentSearchResult] = useState<IDocument[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -71,5 +85,9 @@ export const useDocumentSearch = () => {
     })()
   }, [documentSearch])
 
-  return [documentSearchResult, setDocumentSearch, loading] as [Document[], Dispatch<SetStateAction<string>>, boolean]
+  return [documentSearchResult, setDocumentSearch, loading] as [
+    IDocument[],
+    Dispatch<SetStateAction<string>>,
+    boolean,
+  ]
 }

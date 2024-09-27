@@ -6,8 +6,13 @@ import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
-import { InformationType } from '../../constants'
+import {
+  deleteInformationType,
+  getDocumentsForInformationType,
+  getInformationType,
+  getPoliciesForInformationType,
+} from '../../api'
+import { IInformationType } from '../../constants'
 import { AuditButton } from '../admin/audit/AuditButton'
 import Button from '../common/Button'
 import RouteLink from '../common/RouteLink'
@@ -21,7 +26,7 @@ interface IDeleteModalProps {
 export const DeleteModal = (props: IDeleteModalProps) => {
   const { showDeleteModal, id, closeModal } = props
   const [errorProcessModal, setErrorProcessModal] = useState(false)
-  const [infoType, setInfoType] = useState<InformationType>()
+  const [infoType, setInfoType] = useState<IInformationType>()
   const [policies, setPolicies] = useState<number>()
   const [documents, setDocuments] = useState<number>()
   const navigate: NavigateFunction = useNavigate()
@@ -54,7 +59,9 @@ export const DeleteModal = (props: IDeleteModalProps) => {
       <ModalHeader>Bekreft sletting</ModalHeader>
       <ModalBody>
         {!infoType && <Spinner />}
-        {canDelete && <ParagraphMedium>Bekreft sletting av opplysningstypen {infoType?.name}</ParagraphMedium>}
+        {canDelete && (
+          <ParagraphMedium>Bekreft sletting av opplysningstypen {infoType?.name}</ParagraphMedium>
+        )}
         {infoType && !canDelete && (
           <ParagraphMedium>
             {`Kan ikke slette opplysningstypen ${infoType.name} da den er knyttet til:`}
@@ -102,11 +109,20 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
           </Button>
         </RouteLink>
 
-        <Button size={ButtonSize.compact} kind="outline" onClick={() => setShowDeleteModal(true)} icon={faTrash}>
+        <Button
+          size={ButtonSize.compact}
+          kind="outline"
+          onClick={() => setShowDeleteModal(true)}
+          icon={faTrash}
+        >
           Slett
         </Button>
       </div>
-      <DeleteModal id={id} showDeleteModal={showDeleteModal} closeModal={() => setShowDeleteModal(false)} />
+      <DeleteModal
+        id={id}
+        showDeleteModal={showDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
+      />
     </>
   )
 }

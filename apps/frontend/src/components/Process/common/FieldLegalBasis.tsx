@@ -2,23 +2,33 @@ import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import { DisclosureFormValues, LegalBasisFormValues, PolicyFormValues, ProcessFormValues } from '../../../constants'
-import { SensitivityLevel } from '../../../service/Codelist'
+import {
+  IDisclosureFormValues,
+  ILegalBasisFormValues,
+  IPolicyFormValues,
+  IProcessFormValues,
+} from '../../../constants'
+import { ESensitivityLevel } from '../../../service/Codelist'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { ListLegalBases } from '../../common/LegalBasis'
 import CardLegalBasis from '../Accordion/CardLegalBasis'
 
-type fieldLegalBasisProps = {
-  formikBag: FormikProps<ProcessFormValues> | FormikProps<PolicyFormValues> | FormikProps<DisclosureFormValues>
+type TFieldLegalBasisProps = {
+  formikBag:
+    | FormikProps<IProcessFormValues>
+    | FormikProps<IPolicyFormValues>
+    | FormikProps<IDisclosureFormValues>
   openArt6OnEmpty?: boolean
 }
 
-const FieldLegalBasis = (props: fieldLegalBasisProps) => {
+const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
   const { formikBag } = props
 
-  const [selectedLegalBasis, setSelectedLegalBasis] = useState<LegalBasisFormValues>()
+  const [selectedLegalBasis, setSelectedLegalBasis] = useState<ILegalBasisFormValues>()
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = useState<number>()
-  const [sensitivityLevel, setSensitivityLevel] = useState<SensitivityLevel>(SensitivityLevel.ART6)
+  const [sensitivityLevel, setSensitivityLevel] = useState<ESensitivityLevel>(
+    ESensitivityLevel.ART6
+  )
 
   // Open legalBases if this field is rendered and no legalBases exist.
   useEffect(() => {
@@ -40,7 +50,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                 formikBag.setFieldValue('legalBasesOpen', false)
                 setSelectedLegalBasis(undefined)
               }}
-              submit={(values: LegalBasisFormValues) => {
+              submit={(values: ILegalBasisFormValues) => {
                 if (!values) return
                 if (selectedLegalBasis) {
                   arrayHelpers.replace(selectedLegalBasisIndex!, values)
@@ -63,7 +73,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                       kind={KIND.tertiary}
                       onClick={() => {
                         formikBag.setFieldValue('legalBasesOpen', true)
-                        setSensitivityLevel(SensitivityLevel.ART6)
+                        setSensitivityLevel(ESensitivityLevel.ART6)
                       }}
                       startEnhancer={() => (
                         <div className="flex justify-center">
@@ -78,11 +88,11 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
 
                 <div>
                   <ListLegalBases
-                    sensitivityLevel={SensitivityLevel.ART6}
+                    sensitivityLevel={ESensitivityLevel.ART6}
                     legalBases={formikBag.values.legalBases}
                     onRemove={(index: number) => arrayHelpers.remove(index)}
                     onEdit={(index: number) => {
-                      setSensitivityLevel(SensitivityLevel.ART6)
+                      setSensitivityLevel(ESensitivityLevel.ART6)
                       setSelectedLegalBasis(formikBag.values.legalBases[index])
                       setSelectedLegalBasisIndex(index)
                       formikBag.setFieldValue('legalBasesOpen', true)
@@ -99,7 +109,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                       kind={KIND.tertiary}
                       onClick={() => {
                         formikBag.setFieldValue('legalBasesOpen', true)
-                        setSensitivityLevel(SensitivityLevel.ART9)
+                        setSensitivityLevel(ESensitivityLevel.ART9)
                       }}
                       startEnhancer={() => (
                         <div className="flex justify-center">
@@ -113,13 +123,13 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                 </CustomizedStatefulTooltip>
                 <div>
                   <ListLegalBases
-                    sensitivityLevel={SensitivityLevel.ART9}
+                    sensitivityLevel={ESensitivityLevel.ART9}
                     legalBases={formikBag.values.legalBases}
                     onRemove={(index: number) => {
                       arrayHelpers.remove(index)
                     }}
                     onEdit={(index) => {
-                      setSensitivityLevel(SensitivityLevel.ART9)
+                      setSensitivityLevel(ESensitivityLevel.ART9)
                       setSelectedLegalBasis(formikBag.values.legalBases[index])
                       setSelectedLegalBasisIndex(index)
                       formikBag.setFieldValue('legalBasesOpen', true)

@@ -15,13 +15,17 @@ export const hasSpecifiedDate = (obj: { start?: string; end?: string }): boolean
   return checkDate(startDate, endDate).hasDates
 }
 
-interface CheckDateReturn {
+interface ICheckDateReturn {
   hasStart: boolean
   hasEnd: boolean
   hasDates: boolean
 }
 
-const checkDate = (startDate?: Moment, endDate?: Moment, alwaysShow?: boolean): CheckDateReturn => {
+const checkDate = (
+  startDate?: Moment,
+  endDate?: Moment,
+  alwaysShow?: boolean
+): ICheckDateReturn => {
   if (alwaysShow) {
     return { hasStart: true, hasEnd: true, hasDates: true }
   }
@@ -56,13 +60,17 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
         <CustomizedStatefulTooltip
           content={
             <>
-              {hasStart && 'Fra og med ' + startView} {hasStart && hasEnd && ' - '} {hasEnd && ' til og med ' + endView}
+              {hasStart && 'Fra og med ' + startView} {hasStart && hasEnd && ' - '}{' '}
+              {hasEnd && ' til og med ' + endView}
             </>
           }
         >
           <span>
             {preText && preText + ': '}
-            <FontAwesomeIcon icon={faClock} color={active ? theme.colors.positive300 : theme.colors.mono600} />
+            <FontAwesomeIcon
+              icon={faClock}
+              color={active ? theme.colors.positive300 : theme.colors.mono600}
+            />
             {showDates && (
               <>
                 {' '}

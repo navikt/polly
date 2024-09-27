@@ -14,39 +14,45 @@ import { Sensitivity } from '../components/InformationType/Sensitivity'
 import Button from '../components/common/Button'
 import { ObjectLink } from '../components/common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse } from '../constants'
+import {
+  EAlertEventLevel,
+  EAlertEventType,
+  EObjectType,
+  IAlertEvent,
+  IPageResponse,
+} from '../constants'
 import { ampli } from '../service/Amplitude'
 import { codelist } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
 import { tekster } from '../util/codeToFineText'
 
-type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
+type TSortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
-type State = {
-  events: PageResponse<AlertEvent>
+type TState = {
+  events: IPageResponse<IAlertEvent>
   page: number
   limit: number
-  level?: AlertEventLevel
-  type?: AlertEventType
+  level?: EAlertEventLevel
+  type?: EAlertEventType
   processId?: string
   informationTypeId?: string
   disclosureId?: string
-  sort: { column: SortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
+  sort: { column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 }
 
-type AlertObjectType = 'informationtype' | 'process' | 'disclosure'
+type TAlertObjectType = 'informationtype' | 'process' | 'disclosure'
 
-type Action =
-  | { type: 'EVENTS'; value: PageResponse<AlertEvent> }
+type TAction =
+  | { type: 'EVENTS'; value: IPageResponse<IAlertEvent> }
   | { type: 'PAGE'; value: number }
   | { type: 'LIMIT'; value: number }
-  | { type: 'EVENT_TYPE'; value?: AlertEventType }
-  | { type: 'EVENT_LEVEL'; value?: AlertEventLevel }
-  | { type: 'OBJECT_FILTER'; objectType?: AlertObjectType; id?: string }
-  | { type: 'SORT'; column: SortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
+  | { type: 'EVENT_TYPE'; value?: EAlertEventType }
+  | { type: 'EVENT_LEVEL'; value?: EAlertEventLevel }
+  | { type: 'OBJECT_FILTER'; objectType?: TAlertObjectType; id?: string }
+  | { type: 'SORT'; column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 
-const clampPage = (state: State, page: number, limit: number): number => {
+const clampPage = (state: TState, page: number, limit: number): number => {
   if (page < 1 || page > state.events.pages) {
     return state.page
   }
@@ -54,7 +60,7 @@ const clampPage = (state: State, page: number, limit: number): number => {
   return page > maxPage ? maxPage : page
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: TState, action: TAction): TState => {
   switch (action.type) {
     case 'OBJECT_FILTER':
       return {
@@ -64,7 +70,11 @@ const reducer = (state: State, action: Action): State => {
         disclosureId: action.objectType === 'disclosure' ? action.id : undefined,
       }
     case 'EVENTS':
-      return { ...state, events: action.value, page: clampPage({ ...state, events: action.value }, state.page, state.limit) }
+      return {
+        ...state,
+        events: action.value,
+        page: clampPage({ ...state, events: action.value }, state.page, state.limit),
+      }
     case 'PAGE':
       return { ...state, page: clampPage(state, action.value, state.limit) }
     case 'LIMIT':
@@ -79,9 +89,16 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const AlertEventPage = () => {
-  const { objectType, id } = useParams<{ objectType?: AlertObjectType; id?: string }>()
+  const { objectType, id } = useParams<{ objectType?: TAlertObjectType; id?: string }>()
   const [state, dispatch] = useReducer(reducer, {
-    events: { content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0 },
+    events: {
+      content: [],
+      numberOfElements: 0,
+      pageNumber: 0,
+      pages: 0,
+      pageSize: 1,
+      totalElements: 0,
+    },
     page: 1,
     limit: 50,
     level: undefined,
@@ -93,24 +110,43 @@ export const AlertEventPage = () => {
   })
   const setPage = (p: number) => dispatch({ type: 'PAGE', value: p })
   const setLimit = (l: number) => dispatch({ type: 'LIMIT', value: l })
-  const setType = (t?: AlertEventType) => dispatch({ type: 'EVENT_TYPE', value: t })
-  const setLevel = (l?: AlertEventLevel) => dispatch({ type: 'EVENT_LEVEL', value: l })
-
+  const setType = (t?: EAlertEventType) => dispatch({ type: 'EVENT_TYPE', value: t })
+  const setLevel = (l?: EAlertEventLevel) => dispatch({ type: 'EVENT_LEVEL', value: l })
 
   ampli.logEvent('besøk', { side: 'Varsler', url: '/alert/events/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
-    getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId).then((a) =>
-      dispatch({ type: 'EVENTS', value: a }),
-    )
-  }, [state.page, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId])
+    getAlertEvents(
+      state.page - 1,
+      state.limit,
+      state.type,
+      state.level,
+      state.processId,
+      state.informationTypeId,
+      state.disclosureId
+    ).then((a) => dispatch({ type: 'EVENTS', value: a }))
+  }, [
+    state.page,
+    state.limit,
+    state.type,
+    state.level,
+    state.processId,
+    state.informationTypeId,
+    state.disclosureId,
+  ])
 
   useEffect(() => {
     dispatch({ type: 'OBJECT_FILTER', objectType, id })
   }, [objectType, id])
 
-  const levelButton = (text: string, newLevel?: AlertEventLevel) => (
-    <Button type="button" marginRight kind={state.level === newLevel ? 'primary' : 'outline'} size="compact" onClick={() => setLevel(newLevel)}>
+  const levelButton = (text: string, newLevel?: EAlertEventLevel) => (
+    <Button
+      type="button"
+      marginRight
+      kind={state.level === newLevel ? 'primary' : 'outline'}
+      size="compact"
+      onClick={() => setLevel(newLevel)}
+    >
       {text}
     </Button>
   )
@@ -122,7 +158,14 @@ export const AlertEventPage = () => {
         {(state.informationTypeId || state.processId || state.disclosureId) && (
           <div className="flex items-center">
             <LabelMedium>Filter: </LabelMedium>
-            <Button kind="secondary" size="compact" marginLeft marginRight iconEnd={faTimes} onClick={() => dispatch({ type: 'OBJECT_FILTER' })}>
+            <Button
+              kind="secondary"
+              size="compact"
+              marginLeft
+              marginRight
+              iconEnd={faTimes}
+              onClick={() => dispatch({ type: 'OBJECT_FILTER' })}
+            >
               {state.processId && 'Behandling'}
               {state.informationTypeId && 'Opplysningstype'}
               {state.disclosureId && 'Utlevering'}
@@ -134,17 +177,20 @@ export const AlertEventPage = () => {
         <div className="w-1/2 flex justify-start items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
           <StatefulSelect
-            options={Object.values(AlertEventType).map((t: AlertEventType) => ({ id: t, label: tekster[t] }))}
-            onChange={(params) => setType(params?.option?.id as AlertEventType)}
+            options={Object.values(EAlertEventType).map((t: EAlertEventType) => ({
+              id: t,
+              label: tekster[t],
+            }))}
+            onChange={(params) => setType(params?.option?.id as EAlertEventType)}
           />
         </div>
 
         <div className="w-1/2 flex justify-end items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
           {levelButton('Alle')}
-          {levelButton('Info', AlertEventLevel.INFO)}
-          {levelButton('Advarsel', AlertEventLevel.WARNING)}
-          {levelButton('Feil', AlertEventLevel.ERROR)}
+          {levelButton('Info', EAlertEventLevel.INFO)}
+          {levelButton('Advarsel', EAlertEventLevel.WARNING)}
+          {levelButton('Feil', EAlertEventLevel.ERROR)}
         </div>
       </div>
       <Table
@@ -160,11 +206,11 @@ export const AlertEventPage = () => {
           </>
         }
       >
-        {state.events.content.map((event: AlertEvent) => (
+        {state.events.content.map((event: IAlertEvent) => (
           <Row key={event.id}>
             <Cell>
               {event.process ? (
-                <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
+                <ObjectLink id={event.process.id} type={EObjectType.PROCESS}>
                   {codelist.getShortnameForCodes(event.process.purposes)}: {event.process.name}
                 </ObjectLink>
               ) : (
@@ -174,7 +220,7 @@ export const AlertEventPage = () => {
 
             <Cell>
               {event.informationType ? (
-                <ObjectLink id={event.informationType.id} type={ObjectType.INFORMATION_TYPE}>
+                <ObjectLink id={event.informationType.id} type={EObjectType.INFORMATION_TYPE}>
                   <Sensitivity sensitivity={event.informationType.sensitivity} />
                   &nbsp;
                   {event.informationType.name}
@@ -186,7 +232,7 @@ export const AlertEventPage = () => {
 
             <Cell>
               {event.disclosure ? (
-                <ObjectLink id={event.disclosure.id} type={ObjectType.DISCLOSURE}>
+                <ObjectLink id={event.disclosure.id} type={EObjectType.DISCLOSURE}>
                   {event.disclosure.name}
                 </ObjectLink>
               ) : (

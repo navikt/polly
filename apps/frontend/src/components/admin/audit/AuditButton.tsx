@@ -25,7 +25,13 @@ export const AuditButton = (props: IProps) => {
           {children && children}{' '}
           {!children && (
             <>
-              <Button tooltip="Versjonering" marginLeft={marginLeft} marginRight={marginRight} size={ButtonSize.compact} kind={kind || 'outline'}>
+              <Button
+                tooltip="Versjonering"
+                marginLeft={marginLeft}
+                marginRight={marginRight}
+                size={ButtonSize.compact}
+                kind={kind || 'outline'}
+              >
                 <FontAwesomeIcon title="Versjonering" icon={faHistory} />
               </Button>
             </>

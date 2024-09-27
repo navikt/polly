@@ -1,19 +1,20 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
-import { Processor } from '../../constants'
+import { IProcessor } from '../../constants'
 import Button from '../common/Button'
 
-interface DeleteProcessProps {
+interface IDeleteProcessProps {
   onClose: () => void
   isOpen: boolean
-  processor: Processor
-  submitDeleteProcessor: (dp: Processor) => Promise<boolean>
+  processor: IProcessor
+  submitDeleteProcessor: (dp: IProcessor) => Promise<boolean>
   errorProcessorModal: undefined | any
   usageCount: number
 }
 
-export const DeleteProcessorModal = (props: DeleteProcessProps) => {
-  const { processor, onClose, isOpen, submitDeleteProcessor, errorProcessorModal, usageCount } = props
+export const DeleteProcessorModal = (props: IDeleteProcessProps) => {
+  const { processor, onClose, isOpen, submitDeleteProcessor, errorProcessorModal, usageCount } =
+    props
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} animate size="default">
@@ -35,7 +36,10 @@ export const DeleteProcessorModal = (props: DeleteProcessProps) => {
             Avbryt
           </Button>
           <div className="inline mr-3" />
-          <Button onClick={() => submitDeleteProcessor(processor).then(onClose)} disabled={usageCount > 0}>
+          <Button
+            onClick={() => submitDeleteProcessor(processor).then(onClose)}
+            disabled={usageCount > 0}
+          >
             Slett
           </Button>
         </div>

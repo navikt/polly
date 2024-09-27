@@ -1,8 +1,8 @@
 import _ from 'lodash'
-import { Retention } from '../../constants'
+import { IRetention } from '../../constants'
 
 interface IRetentionViewProps {
-  retention?: Retention
+  retention?: IRetention
 }
 
 export const RetentionView = (props: IRetentionViewProps) => {

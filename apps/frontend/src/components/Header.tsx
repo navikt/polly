@@ -2,7 +2,12 @@ import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { BlockProps } from 'baseui/block'
 import { Button } from 'baseui/button'
-import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList } from 'baseui/header-navigation'
+import {
+  ALIGN,
+  HeaderNavigation,
+  StyledNavigationItem as NavigationItem,
+  StyledNavigationList as NavigationList,
+} from 'baseui/header-navigation'
 import { TriangleDown } from 'baseui/icon'
 import { StyledLink } from 'baseui/link'
 import { StatefulMenu } from 'baseui/menu'
@@ -31,7 +36,9 @@ const LoggedInHeader = () => {
       content={
         <div className="p-2">
           <LabelMedium {...blockStyle}>Navn: {user.getName()}</LabelMedium>
-          <LabelMedium {...blockStyle}>Grupper: {user.getGroupsHumanReadable().join(', ')}</LabelMedium>
+          <LabelMedium {...blockStyle}>
+            Grupper: {user.getGroupsHumanReadable().join(', ')}
+          </LabelMedium>
           <div className="flex w-full p-1">
             <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</StyledLink>
           </div>
@@ -47,7 +54,16 @@ const LoggedInHeader = () => {
 
 const LoginButton = () => (
   <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
-    <Button style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>Logg inn</Button>
+    <Button
+      style={{
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+      }}
+    >
+      Logg inn
+    </Button>
   </StyledLink>
 )
 
@@ -83,7 +99,9 @@ const AdminOptions = () => {
 
 const Header = () => (
   <div className="px-7">
-    <HeaderNavigation overrides={{ Root: { style: { paddingBottom: 0, borderBottomStyle: 'none' } } }}>
+    <HeaderNavigation
+      overrides={{ Root: { style: { paddingBottom: 0, borderBottomStyle: 'none' } } }}
+    >
       <NavigationList $align={ALIGN.left}>
         <NavigationItem $style={{ paddingLeft: 0 }}>
           <MainSearch />

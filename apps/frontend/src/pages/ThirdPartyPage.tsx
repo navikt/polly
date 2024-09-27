@@ -5,7 +5,13 @@ import { Spinner } from 'baseui/spinner'
 import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure } from '../api'
+import {
+  createDisclosure,
+  deleteDisclosure,
+  getDisclosuresByRecipient,
+  getInformationTypesBy,
+  updateDisclosure,
+} from '../api'
 import { getAllDpProcesses } from '../api/DpProcessApi'
 import ProcessList from '../components/Process/ProcessList'
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
@@ -13,46 +19,53 @@ import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { toggleOverride } from '../components/common/Accordion'
 import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
-import { Disclosure, DisclosureFormValues, DpProcess, InformationType } from '../constants'
+import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { ListName, codelist } from '../service/Codelist'
+import { EListName, codelist } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
-import { Section } from './ProcessPage'
+import { ESection } from './ProcessPage'
 
-export type PathParams = {
+export type TPathParams = {
   thirdPartyCode: string
   section: 'disclosure' | 'dpprocess' | 'informationtype' | 'process' | undefined
   id?: string
 }
 
 const ThirdPartyPage = () => {
-  const params = useParams<PathParams>()
+  const params = useParams<TPathParams>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [disclosureList, setDisclosureList] = useState<Disclosure[]>([])
-  const [informationTypeList, setInformationTypeList] = useState<InformationType[]>()
+  const [disclosureList, setDisclosureList] = useState<IDisclosure[]>([])
+  const [informationTypeList, setInformationTypeList] = useState<IInformationType[]>()
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
+  const [dpProcesses, setDpProcesses] = useState<IDpProcess[]>([])
   const [error, setError] = useState<string>()
   const [processListCount, setProcessListCount] = useState<number>(0)
 
-  ampli.logEvent('besøk', { side: 'Eksterne parter', url: '/thirdparty/:thirdPartyCode/', app: 'Behandlingskatalogen' })
+  ampli.logEvent('besøk', {
+    side: 'Eksterne parter',
+    url: '/thirdparty/:thirdPartyCode/',
+    app: 'Behandlingskatalogen',
+  })
 
   useEffect(() => {
     ;(async () => {
-      let dps: DpProcess[] = await getAllDpProcesses()
+      const dps: IDpProcess[] = await getAllDpProcesses()
       if (dps) {
-        setDpProcesses(dps.filter((dp) => dp.externalProcessResponsible?.code === params.thirdPartyCode))
+        setDpProcesses(
+          dps.filter((dp) => dp.externalProcessResponsible?.code === params.thirdPartyCode)
+        )
       }
     })()
   }, [])
 
-  const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
+  const handleCreateDisclosure = async (disclosure: IDisclosureFormValues) => {
     try {
-      let createdDisclosure = await createDisclosure(disclosure)
+      const createdDisclosure = await createDisclosure(disclosure)
 
       if (!disclosureList || disclosureList.length < 1) setDisclosureList([createdDisclosure])
-      else if (disclosureList && createdDisclosure) setDisclosureList([...disclosureList, createdDisclosure])
+      else if (disclosureList && createdDisclosure)
+        setDisclosureList([...disclosureList, createdDisclosure])
 
       setShowCreateModal(false)
     } catch (error: any) {
@@ -61,10 +74,15 @@ const ThirdPartyPage = () => {
     }
   }
 
-  const handleEditDisclosure = async (disclosure: DisclosureFormValues) => {
+  const handleEditDisclosure = async (disclosure: IDisclosureFormValues) => {
     try {
-      let updatedDisclosure = await updateDisclosure(disclosure)
-      setDisclosureList([...disclosureList.filter((disclosureItem: Disclosure) => disclosureItem.id !== updatedDisclosure.id), updatedDisclosure])
+      const updatedDisclosure = await updateDisclosure(disclosure)
+      setDisclosureList([
+        ...disclosureList.filter(
+          (disclosureItem: IDisclosure) => disclosureItem.id !== updatedDisclosure.id
+        ),
+        updatedDisclosure,
+      ])
       return true
     } catch (error: any) {
       setError(error.message)
@@ -72,11 +90,15 @@ const ThirdPartyPage = () => {
     }
   }
 
-  const handleDeleteDisclosure = async (disclosure: Disclosure) => {
+  const handleDeleteDisclosure = async (disclosure: IDisclosure) => {
     if (!disclosure) return false
     try {
       await deleteDisclosure(disclosure.id)
-      setDisclosureList([...disclosureList.filter((disclosureItem: Disclosure) => disclosureItem.id !== disclosure.id)])
+      setDisclosureList([
+        ...disclosureList.filter(
+          (disclosureItem: IDisclosure) => disclosureItem.id !== disclosure.id
+        ),
+      ])
       setError(undefined)
       return true
     } catch (error: any) {
@@ -85,7 +107,7 @@ const ThirdPartyPage = () => {
     }
   }
 
-  const initialFormValues: DisclosureFormValues = {
+  const initialFormValues: IDisclosureFormValues = {
     name: '',
     recipient: params.thirdPartyCode,
     recipientPurpose: '',
@@ -109,7 +131,9 @@ const ThirdPartyPage = () => {
       await codelist.wait()
       if (params.thirdPartyCode) {
         setDisclosureList(await getDisclosuresByRecipient(params.thirdPartyCode))
-        setInformationTypeList((await getInformationTypesBy({ source: params.thirdPartyCode })).content)
+        setInformationTypeList(
+          (await getInformationTypesBy({ source: params.thirdPartyCode })).content
+        )
       }
       setIsLoading(false)
     })()
@@ -123,8 +147,12 @@ const ThirdPartyPage = () => {
         <>
           {params.thirdPartyCode && (
             <div className="mb-12">
-              <HeadingMedium>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</HeadingMedium>
-              <ParagraphMedium>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</ParagraphMedium>
+              <HeadingMedium>
+                {codelist.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)}
+              </HeadingMedium>
+              <ParagraphMedium>
+                {codelist.getDescription(EListName.THIRD_PARTY, params.thirdPartyCode)}
+              </ParagraphMedium>
             </div>
           )}
 
@@ -140,7 +168,10 @@ const ThirdPartyPage = () => {
             }}
             initialState={{ expanded: params.section ? [params.section] : [] }}
           >
-            <Panel title={`Utleveringer til ekstern part (${disclosureList?.length || 0})`} key="disclosure">
+            <Panel
+              title={`Utleveringer til ekstern part (${disclosureList?.length || 0})`}
+              key="disclosure"
+            >
               <div className="flex justify-end">
                 {user.canWrite() && (
                   <Button
@@ -169,25 +200,31 @@ const ThirdPartyPage = () => {
               />
             </Panel>
 
-            <Panel title={`Innhentinger fra ekstern part (${informationTypeList?.length || 0})`} key="informationtype">
+            <Panel
+              title={`Innhentinger fra ekstern part (${informationTypeList?.length || 0})`}
+              key="informationtype"
+            >
               <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true} />
             </Panel>
 
             {params.thirdPartyCode && (
               <Panel
                 key="dpprocess"
-                title={`NAV er databehandler for ${codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)} i følgende behandlinger (${dpProcesses?.length || 0})`}
+                title={`NAV er databehandler for ${codelist.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)} i følgende behandlinger (${dpProcesses?.length || 0})`}
               >
                 <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []} />
               </Panel>
             )}
 
-            <Panel key="process" title={`Felles behandlingsansvarlig med NAV (${processListCount})`}>
+            <Panel
+              key="process"
+              title={`Felles behandlingsansvarlig med NAV (${processListCount})`}
+            >
               {params.thirdPartyCode && (
                 <ProcessList
-                  section={Section.thirdparty}
+                  section={ESection.thirdparty}
                   code={params.thirdPartyCode}
-                  listName={ListName.THIRD_PARTY}
+                  listName={EListName.THIRD_PARTY}
                   isEditable={false}
                   hideTitle
                   getCount={setProcessListCount}

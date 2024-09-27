@@ -6,13 +6,13 @@ import nb from 'date-fns/locale/nb'
 import { Field, FieldProps } from 'formik'
 import moment, { Moment } from 'moment'
 import { useState } from 'react'
-import { ProcessFormValues } from '../../constants'
+import { IProcessFormValues } from '../../constants'
 import { theme } from '../../util'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import { Error } from '../common/ModalSchema'
 import { padding } from '../common/Style'
 
-interface DateModalProps {
+interface IDateModalProps {
   showDates: boolean
   showLabels?: boolean
 }
@@ -36,13 +36,18 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
     <CustomizedStatefulTooltip content={tooltip}>
       <div className="flex">
         {text}
-        <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faQuestionCircle} color={theme.colors.primary300} size="sm" />
+        <FontAwesomeIcon
+          style={{ marginLeft: '.5rem', alignSelf: 'center' }}
+          icon={faQuestionCircle}
+          color={theme.colors.primary300}
+          size="sm"
+        />
       </div>
     </CustomizedStatefulTooltip>
   )
 }
 
-export const DateFieldsProcessModal = (props: DateModalProps) => {
+export const DateFieldsProcessModal = (props: IDateModalProps) => {
   const { showLabels } = props
   const [showDates, setShowDates] = useState<boolean>(props.showDates)
 
@@ -50,7 +55,12 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
     <>
       {!showDates && (
         <div className="flex w-full mt-4">
-          <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
+          <Button
+            size="compact"
+            shape="pill"
+            overrides={{ BaseButton: { style: padding('6px', '8px') } }}
+            onClick={() => setShowDates(true)}
+          >
             Velg datoer
           </Button>
         </div>
@@ -68,14 +78,19 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
                 )}
               </div>
               <div className="w-1/2">
-                {showLabels && <LabelWithTooltip text="Tom dato" tooltip="Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato." />}
+                {showLabels && (
+                  <LabelWithTooltip
+                    text="Tom dato"
+                    tooltip="Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato."
+                  />
+                )}
               </div>
             </div>
             <div className="flex w-full">
               <div className="w-1/2 mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="start">
-                    {({ field, form }: FieldProps<string, ProcessFormValues>) => (
+                    {({ field, form }: FieldProps<string, IProcessFormValues>) => (
                       <Datepicker
                         placeholder="Velg fra og med dato"
                         value={field.value ? new Date(field.value) : undefined}
@@ -102,7 +117,7 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
               <div className="w-1/2">
                 <div className="flex w-full mt-4">
                   <Field name="end">
-                    {({ field, form }: FieldProps<string, ProcessFormValues>) => (
+                    {({ field, form }: FieldProps<string, IProcessFormValues>) => (
                       <Datepicker
                         placeholder="Velg til og med dato"
                         value={field.value ? new Date(field.value) : undefined}

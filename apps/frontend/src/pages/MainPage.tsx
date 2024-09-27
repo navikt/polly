@@ -3,19 +3,19 @@ import { HeadingXXLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { getDashboard } from '../api'
 import { getSettings } from '../api/SettingsApi'
+import ShortcutNav from '../components/Main/ShortcutNav'
 import { LastEvents } from '../components/admin/audit/LastEvents'
 import { RecentEditsByUser } from '../components/admin/audit/RecentEditsByUser'
 import { Markdown } from '../components/common/Markdown'
 import { cardShadow } from '../components/common/Style'
-import ShortcutNav from '../components/Main/ShortcutNav'
-import { DashboardData, Settings } from '../constants'
+import { IDashboardData, ISettings } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
 export const MainPage = () => {
-  const [settings, setSettings] = useState<Settings>()
+  const [settings, setSettings] = useState<ISettings>()
   const [isLoading, setLoading] = useState(true)
-  const [dashboardData, setDashboardData] = useState<DashboardData>()
+  const [dashboardData, setDashboardData] = useState<IDashboardData>()
 
   ampli.logEvent('besøk', { side: 'Hovedside', url: '/', app: 'Behandlingskatalogen' })
 
@@ -23,7 +23,7 @@ export const MainPage = () => {
     ;(async () => {
       setSettings(await getSettings())
       setLoading(false)
-      for (let key in localStorage) {
+      for (const key in localStorage) {
         if (key.indexOf('Yposition') === 0) {
           localStorage.removeItem(key)
         }
@@ -73,7 +73,9 @@ export const MainPage = () => {
               </Card>
             </div>
 
-            <div className={`min-h-[550px] ${user.isLoggedIn() ? 'w-full mt-12 mb-[2px]' : 'w-[48%] mt-[2px] mb-6'}`}>
+            <div
+              className={`min-h-[550px] ${user.isLoggedIn() ? 'w-full mt-12 mb-[2px]' : 'w-[48%] mt-[2px] mb-6'}`}
+            >
               <Card overrides={cardShadow}>
                 <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim />
               </Card>

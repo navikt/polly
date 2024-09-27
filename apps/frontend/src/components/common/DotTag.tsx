@@ -1,8 +1,8 @@
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, ReactNode } from 'react'
-import { NavigableItem } from '../../constants'
-import { Code, ListName, codelist } from '../../service/Codelist'
+import { TNavigableItem } from '../../constants'
+import { EListName, ICode, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import { Markdown } from './Markdown'
 import RouteLink, { urlForObject } from './RouteLink'
@@ -21,14 +21,22 @@ export const DotTag = (props: IDotTagProps) => {
         <div className="mx-1 flex items-center">
           <div className="flex whitespace-normal">
             <div className="mr-1 mt-[-3px]">
-              <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
+              <FontAwesomeIcon
+                icon={faCircle}
+                color={theme.colors.positive400}
+                style={{ fontSize: '.45rem' }}
+              />
             </div>
             <div>{children}</div>
           </div>
         </div>
       )}
       <div className="mx-1 flex items-center">
-        <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{ fontSize: '.45rem' }} />
+        <FontAwesomeIcon
+          icon={faCircle}
+          color={theme.colors.positive400}
+          style={{ fontSize: '.45rem' }}
+        />
         <div className="inline mr-1" />
         <div className=" whitespace-nowrap">{props.children}</div>
       </div>
@@ -38,7 +46,7 @@ export const DotTag = (props: IDotTagProps) => {
 
 interface IContentProps {
   item: string
-  list?: ListName
+  list?: EListName
   linkCodelist?: boolean
   markdown?: boolean
 }
@@ -50,7 +58,11 @@ const Content = (props: IContentProps) => {
     <>
       {list && (
         <>
-          {linkCodelist && <RouteLink href={urlForObject(list as ListName & NavigableItem, item)}>{codelist.getShortname(list as ListName & NavigableItem, item)}</RouteLink>}
+          {linkCodelist && (
+            <RouteLink href={urlForObject(list as EListName & TNavigableItem, item)}>
+              {codelist.getShortname(list as EListName & TNavigableItem, item)}
+            </RouteLink>
+          )}
           {!linkCodelist && <>{codelist.getShortname(list, item)}</>}
         </>
       )}
@@ -60,18 +72,18 @@ const Content = (props: IContentProps) => {
   )
 }
 
-type DotTagsParams = {
+type TDotTagsParams = {
   items?: string[]
-  codes?: Code[]
+  codes?: ICode[]
   commaSeparator?: boolean
   linkCodelist?: boolean
   markdown?: boolean
-  list?: ListName
+  list?: EListName
   noFlex?: boolean
   wrapText?: boolean
 }
 
-export const DotTags = (props: DotTagsParams) => {
+export const DotTags = (props: TDotTagsParams) => {
   const { commaSeparator, codes, noFlex, wrapText } = props
   const items = props.items || codes?.map((code) => code.code) || []
 

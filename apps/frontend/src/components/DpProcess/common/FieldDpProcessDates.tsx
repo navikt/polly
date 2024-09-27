@@ -6,13 +6,13 @@ import nb from 'date-fns/locale/nb'
 import { Field, FieldProps } from 'formik'
 import moment, { Moment } from 'moment'
 import { useState } from 'react'
-import { DpProcessFormValues } from '../../../constants'
+import { IDpProcessFormValues } from '../../../constants'
 import { theme } from '../../../util'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error } from '../../common/ModalSchema'
 import { padding } from '../../common/Style'
 
-interface DateModalProps {
+interface IDateModalProps {
   showDates: boolean
   showLabels?: boolean
 }
@@ -35,13 +35,18 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
     <CustomizedStatefulTooltip content={tooltip}>
       <div className="flex">
         {text}
-        <FontAwesomeIcon style={{ marginLeft: '.5rem', alignSelf: 'center' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
+        <FontAwesomeIcon
+          style={{ marginLeft: '.5rem', alignSelf: 'center' }}
+          icon={faExclamationCircle}
+          color={theme.colors.primary300}
+          size="sm"
+        />
       </div>
     </CustomizedStatefulTooltip>
   )
 }
 
-export const FieldDpProcessDates = (props: DateModalProps) => {
+export const FieldDpProcessDates = (props: IDateModalProps) => {
   const { showLabels } = props
   const [showDates, setShowDates] = useState<boolean>(props.showDates)
 
@@ -49,7 +54,12 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
     <>
       {!showDates && (
         <div className="flex w-full mt-4">
-          <Button size="compact" shape="pill" overrides={{ BaseButton: { style: padding('6px', '8px') } }} onClick={() => setShowDates(true)}>
+          <Button
+            size="compact"
+            shape="pill"
+            overrides={{ BaseButton: { style: padding('6px', '8px') } }}
+            onClick={() => setShowDates(true)}
+          >
             Velg datoer
           </Button>
         </div>
@@ -79,7 +89,7 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
               <div className="w-[50%] mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="start">
-                    {({ field, form }: FieldProps<string, DpProcessFormValues>) => (
+                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
                       <Datepicker
                         placeholder="Velg fra og med dato "
                         value={field.value ? new Date(field.value) : undefined}
@@ -106,7 +116,7 @@ export const FieldDpProcessDates = (props: DateModalProps) => {
               <div className="w-[50%]">
                 <div className="flex w-full mt-4">
                   <Field name="end">
-                    {({ field, form }: FieldProps<string, DpProcessFormValues>) => (
+                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
                       <Datepicker
                         placeholder="Velg til og med dato"
                         value={field.value ? new Date(field.value) : undefined}

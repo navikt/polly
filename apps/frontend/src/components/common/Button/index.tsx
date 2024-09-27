@@ -7,7 +7,7 @@ import { StyleObject } from 'styletron-react'
 import { theme } from '../../../util'
 import CustomizedStatefulTooltip from '../CustomizedStatefulTooltip'
 
-interface ButtonProps {
+interface IButtonProps {
   kind?: (typeof KIND)[keyof typeof KIND] | 'outline'
   type?: 'submit' | 'reset' | 'button'
   size?: (typeof SIZE)[keyof typeof SIZE]
@@ -25,12 +25,17 @@ interface ButtonProps {
   marginLeft?: boolean
 }
 
-interface TooltipProps {
+interface ITooltipProps {
   tooltip?: string
   children: ReactElement
 }
 
-const Tooltip = (props: TooltipProps) => (props.tooltip ? <CustomizedStatefulTooltip content={props.tooltip}>{props.children}</CustomizedStatefulTooltip> : props.children)
+const Tooltip = (props: ITooltipProps) =>
+  props.tooltip ? (
+    <CustomizedStatefulTooltip content={props.tooltip}>{props.children}</CustomizedStatefulTooltip>
+  ) : (
+    props.children
+  )
 
 const outlineWidth = '2px'
 const outlineStyle = 'solid'
@@ -49,12 +54,14 @@ const outlineOverride: Override<any> = {
   },
 }
 
-const Button = (props: ButtonProps) => {
+const Button = (props: IButtonProps) => {
   const baseuiKind = props.kind === 'outline' ? KIND.secondary : props.kind
   const overrides: Override<any> = {
     style: {
       ...(props.kind === 'outline' ? outlineOverride.style : {}),
-      ...(props.inline ? { paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100 } : {}),
+      ...(props.inline
+        ? { paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100 }
+        : {}),
       ...(props.$style || {}),
     },
   }
@@ -72,9 +79,19 @@ const Button = (props: ButtonProps) => {
           disabled={props.disabled}
           type={props.type}
         >
-          {props.icon && <FontAwesomeIcon icon={props.icon} style={{ marginRight: props.children ? '.5rem' : undefined }} />}
+          {props.icon && (
+            <FontAwesomeIcon
+              icon={props.icon}
+              style={{ marginRight: props.children ? '.5rem' : undefined }}
+            />
+          )}
           {props.children}
-          {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} style={{ marginLeft: props.children ? '.5rem' : undefined }} />}
+          {props.iconEnd && (
+            <FontAwesomeIcon
+              icon={props.iconEnd}
+              style={{ marginLeft: props.children ? '.5rem' : undefined }}
+            />
+          )}
         </BaseUIButton>
       </Tooltip>
       <div className={`inline ${props.marginRight ? 'mr-2.5' : ''}`} />

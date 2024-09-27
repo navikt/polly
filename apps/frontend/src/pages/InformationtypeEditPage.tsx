@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
-import { InformationType, InformationtypeFormValues } from '../constants'
+import { IInformationType, IInformationtypeFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { codelist } from '../service/Codelist'
 
@@ -12,27 +12,32 @@ const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [errorSubmit, setErrorSubmit] = useState(null)
-  const [informationtype, setInformationType] = useState<InformationType>()
+  const [informationtype, setInformationType] = useState<IInformationType>()
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/id:/edit', app: 'Behandlingskatalogen', type: 'Rediger opplysningstype' })
+  ampli.logEvent('besøk', {
+    side: 'Opplysningstyper',
+    url: '/informationtype/id:/edit',
+    app: 'Behandlingskatalogen',
+    type: 'Rediger opplysningstype',
+  })
 
   const handleAxiosError = (error: any) => {
     if (error.response) {
-      console.log(error.response.data)
-      console.log(error.response.status)
-      console.log(error.response.headers)
+      console.debug(error.response.data)
+      console.debug(error.response.status)
+      console.debug(error.response.headers)
     } else {
-      console.log(error.message)
+      console.debug(error.message)
       setError(error.message)
     }
   }
 
-  const handleSubmit = async (values: InformationtypeFormValues) => {
+  const handleSubmit = async (values: IInformationtypeFormValues) => {
     if (!values) return
     setErrorSubmit(null)
-    let body = { ...values }
+    const body = { ...values }
 
     try {
       await updateInformationType(body)
@@ -68,7 +73,11 @@ const InformationtypeEditPage = () => {
 
           {!error && informationtype ? (
             <Fragment>
-              <InformationtypeForm formInitialValues={mapInfoTypeToFormVals(informationtype)} isEdit submit={handleSubmit} />
+              <InformationtypeForm
+                formInitialValues={mapInfoTypeToFormVals(informationtype)}
+                isEdit
+                submit={handleSubmit}
+              />
               {errorSubmit && <p>{errorSubmit}</p>}
             </Fragment>
           ) : (

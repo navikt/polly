@@ -5,19 +5,23 @@ import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'
 import { ampli } from '../service/Amplitude'
-import { ListName } from '../service/Codelist'
-import { Section } from './ProcessPage'
+import { EListName } from '../service/Codelist'
+import { ESection } from './ProcessPage'
 
 export const SystemPage = () => {
   const { systemCode } = useParams<{ systemCode: string }>()
 
-  ampli.logEvent('besøk', { side: 'Systemer', url: '/system/:systemCode', app: 'Behandlingskatalogen' })
+  ampli.logEvent('besøk', {
+    side: 'Systemer',
+    url: '/system/:systemCode',
+    app: 'Behandlingskatalogen',
+  })
 
   return (
     <>
       {systemCode && (
         <>
-          <PageHeader section={Section.system} code={systemCode} />
+          <PageHeader section={ESection.system} code={systemCode} />
 
           <Tabs defaultValue="behandlinger">
             <Tabs.List>
@@ -25,10 +29,20 @@ export const SystemPage = () => {
               <Tabs.Tab value="opplysningstyper" label="opplysningstyper" />
             </Tabs.List>
             <Tabs.Panel value="behandlinger">
-              <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM} isEditable={false} />
+              <ProcessList
+                section={ESection.system}
+                code={systemCode}
+                listName={EListName.SYSTEM}
+                isEditable={false}
+              />
             </Tabs.Panel>
             <Tabs.Panel value="opplysningstyper">
-              <InfoTypeTable title="Opplysningstyper systemet er master for" getInfoTypes={async () => (await getInformationTypesBy({ orgMaster: systemCode })).content} />
+              <InfoTypeTable
+                title="Opplysningstyper systemet er master for"
+                getInfoTypes={async () =>
+                  (await getInformationTypesBy({ orgMaster: systemCode })).content
+                }
+              />
             </Tabs.Panel>
           </Tabs>
         </>

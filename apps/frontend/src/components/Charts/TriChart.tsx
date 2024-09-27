@@ -1,19 +1,19 @@
-import { Counter, ProcessField, ProcessState, ProcessStatusFilter } from '../../constants'
+import { EProcessField, EProcessState, EProcessStatusFilter, ICounter } from '../../constants'
 import { chartColor } from '../../util/theme'
 import { Chart } from './Chart'
 
 const chartSize = 80
 
-type TriChartProps = {
+type TTriChartProps = {
   title: string
   header?: string
-  counter: Counter
-  processField: ProcessField
-  processStatus: ProcessStatusFilter
+  counter: ICounter
+  processField: EProcessField
+  processStatus: EProcessStatusFilter
   onClickPieChartSlice: Function
 }
 
-const TriChart = (props: TriChartProps) => {
+const TriChart = (props: TTriChartProps) => {
   const { counter, title, header, processField, processStatus, onClickPieChartSlice } = props
 
   return (
@@ -26,19 +26,19 @@ const TriChart = (props: TriChartProps) => {
           label: 'Ja',
           size: counter.yes,
           color: chartColor.generalBlue,
-          onClick: onClickPieChartSlice(processField, ProcessState.YES, processStatus),
+          onClick: onClickPieChartSlice(processField, EProcessState.YES, processStatus),
         },
         {
           label: 'Nei',
           size: counter.no,
           color: chartColor.generalMustard,
-          onClick: onClickPieChartSlice(processField, ProcessState.NO, processStatus),
+          onClick: onClickPieChartSlice(processField, EProcessState.NO, processStatus),
         },
         {
           label: 'Uavklart',
           size: counter.unknown,
           color: chartColor.generalRed,
-          onClick: onClickPieChartSlice(processField, ProcessState.UNKNOWN, processStatus),
+          onClick: onClickPieChartSlice(processField, EProcessState.UNKNOWN, processStatus),
         },
       ]}
     />

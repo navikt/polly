@@ -2,17 +2,17 @@ import { useStyletron } from 'baseui'
 import { KIND } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { AuditItem, NavigableItem, ObjectType } from '../../constants'
-import { ListName } from '../../service/Codelist'
+import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
+import { EListName } from '../../service/Codelist'
 import { AuditButton } from '../admin/audit/AuditButton'
 
-type RouteLinkProps = {
+type TRouteLinkProps = {
   href: string
   hideUnderline?: boolean
   plain?: boolean
 }
 
-const RouteLink = (props: RouteLinkProps & any) => {
+const RouteLink = (props: TRouteLinkProps & any) => {
   const { hideUnderline, plain, ...restprops } = props
   const navigate: NavigateFunction = useNavigate()
 
@@ -36,63 +36,63 @@ const RouteLink = (props: RouteLinkProps & any) => {
 
 export default RouteLink
 
-type ObjectLinkProps = {
+type TObjectLinkProps = {
   id: string
-  type: NavigableItem
-  audit?: AuditItem
+  type: TNavigableItem
+  audit?: IAuditItem
   withHistory?: boolean
   children?: any
   disable?: boolean
   hideUnderline?: boolean
 }
 
-export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem) => {
+export const urlForObject = (type: TNavigableItem, id: string, audit?: IAuditItem) => {
   switch (type) {
-    case ObjectType.INFORMATION_TYPE:
+    case EObjectType.INFORMATION_TYPE:
       return `/informationtype/${id}`
-    case ListName.CATEGORY:
+    case EListName.CATEGORY:
       return `/informationtype?category=${id}`
-    case ObjectType.POLICY:
+    case EObjectType.POLICY:
       return `/policy/${id}`
-    case ObjectType.PROCESS:
+    case EObjectType.PROCESS:
       return `/process/${id}`
-    case ObjectType.PROCESSOR:
+    case EObjectType.PROCESSOR:
       return `/processor/${id}`
-    case ObjectType.DP_PROCESS:
+    case EObjectType.DP_PROCESS:
       return `/dpprocess/${id}`
-    case ObjectType.DISCLOSURE:
+    case EObjectType.DISCLOSURE:
       return `/disclosure/${id}`
-    case ObjectType.DOCUMENT:
+    case EObjectType.DOCUMENT:
       return `/document/${id}`
-    case ObjectType.CODELIST:
+    case EObjectType.CODELIST:
       return `/admin/codelist/${id.substring(0, id.indexOf('-'))}`
-    case ObjectType.GENERIC_STORAGE:
+    case EObjectType.GENERIC_STORAGE:
       if (audit && (audit.data as any)?.type === 'SETTINGS') {
         return '/admin/settings'
       }
       return '/'
-    case ListName.PURPOSE:
+    case EListName.PURPOSE:
       return `/process/purpose/${id}`
     case 'team':
       return `/team/${id}`
     case 'productarea':
       return `/productarea/${id}`
-    case ListName.DEPARTMENT:
+    case EListName.DEPARTMENT:
       return `/process/department/${id}`
-    case ListName.SUB_DEPARTMENT:
+    case EListName.SUB_DEPARTMENT:
       return `/process/subdepartment/${id}`
-    case ListName.THIRD_PARTY:
+    case EListName.THIRD_PARTY:
       return `/thirdparty/${id}`
-    case ListName.SYSTEM:
+    case EListName.SYSTEM:
       return `/system/${id}`
-    case ListName.GDPR_ARTICLE:
+    case EListName.GDPR_ARTICLE:
       return `/process/legal?gdprArticle=${id}`
-    case ListName.NATIONAL_LAW:
+    case EListName.NATIONAL_LAW:
       return `/process/legal?nationalLaw=${id}`
   }
 }
 
-export const ObjectLink = (props: ObjectLinkProps) => {
+export const ObjectLink = (props: TObjectLinkProps) => {
   const { disable, children, type, id, audit, hideUnderline, withHistory } = props
   const [useCss] = useStyletron()
   const linkCss = useCss({ textDecoration: 'none' })

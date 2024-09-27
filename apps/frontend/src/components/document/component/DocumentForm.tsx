@@ -7,11 +7,20 @@ import { Notification } from 'baseui/notification'
 import { OnChangeParams, Option, Select, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
+import {
+  Field,
+  FieldArray,
+  FieldArrayRenderProps,
+  FieldProps,
+  Form,
+  Formik,
+  FormikHelpers,
+  FormikProps,
+} from 'formik'
 import { useState } from 'react'
 import { searchDocuments } from '../../../api'
-import { Document, DocumentFormValues } from '../../../constants'
-import { ListName, codelist } from '../../../service/Codelist'
+import { IDocument, IDocumentFormValues } from '../../../constants'
+import { EListName, codelist } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { useAwait } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
@@ -24,12 +33,12 @@ const labelProps: BlockProps = {
   marginBottom: '1rem',
 }
 
-type DocumentFormProps = {
-  initialValues: DocumentFormValues
+type TDocumentFormProps = {
+  initialValues: IDocumentFormValues
   handleSubmit: Function
 }
 
-const DocumentForm = (props: DocumentFormProps) => {
+const DocumentForm = (props: TDocumentFormProps) => {
   const { initialValues, handleSubmit } = props
   const initialValueDataAccessClass = () => {
     if (!initialValues.dataAccessClass || !codelist.isLoaded()) return []
@@ -37,7 +46,7 @@ const DocumentForm = (props: DocumentFormProps) => {
     return [
       {
         id: initialValues.dataAccessClass,
-        label: codelist.getShortname(ListName.DATA_ACCESS_CLASS, initialValues.dataAccessClass),
+        label: codelist.getShortname(EListName.DATA_ACCESS_CLASS, initialValues.dataAccessClass),
       },
     ]
   }
@@ -49,9 +58,12 @@ const DocumentForm = (props: DocumentFormProps) => {
   const hasAccess = (): boolean => user.canWrite()
   useAwait(user.wait(), setLoading)
 
-  const onSubmit = async (values: DocumentFormValues, actions: FormikHelpers<DocumentFormValues>) => {
-    const searchResults: Document[] = (await searchDocuments(values.name)).content.filter(
-      (doc) => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id,
+  const onSubmit = async (
+    values: IDocumentFormValues,
+    actions: FormikHelpers<IDocumentFormValues>
+  ) => {
+    const searchResults: IDocument[] = (await searchDocuments(values.name)).content.filter(
+      (doc) => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id
     )
 
     if (searchResults.length > 0) {
@@ -70,13 +82,19 @@ const DocumentForm = (props: DocumentFormProps) => {
   }
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={createDocumentSchema()}>
-      {(formikProps: FormikProps<DocumentFormValues>) => (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={createDocumentSchema()}
+    >
+      {(formikProps: FormikProps<IDocumentFormValues>) => (
         <Form onKeyDown={disableEnter}>
           <div className="w-[50%] mb-8">
             <div>
               <LabelMedium {...labelProps}>Navn</LabelMedium>
-              <Field name="name">{(props: FieldProps) => <Input type="text" size={SIZE.default} {...props.field} />}</Field>
+              <Field name="name">
+                {(props: FieldProps) => <Input type="text" size={SIZE.default} {...props.field} />}
+              </Field>
               <Error fieldName="name" fullWidth={true} />
             </div>
           </div>
@@ -89,7 +107,7 @@ const DocumentForm = (props: DocumentFormProps) => {
           <div className="w-[50%] mb-8">
             <Field
               name="dataAccessClass"
-              render={({ form }: FieldProps<DocumentFormValues>) => (
+              render={({ form }: FieldProps<IDocumentFormValues>) => (
                 <div>
                   <div className="mb-4">
                     <ModalLabel
@@ -97,7 +115,13 @@ const DocumentForm = (props: DocumentFormProps) => {
                       tooltip={
                         <div>
                           Mer informasjon finner du
-                          <StyledLink target="_blank" rel="noopener noreferrer" href={'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'}>
+                          <StyledLink
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={
+                              'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'
+                            }
+                          >
                             her
                             <span>
                               <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
@@ -109,11 +133,13 @@ const DocumentForm = (props: DocumentFormProps) => {
                   </div>
 
                   <Select
-                    options={codelist.getParsedOptions(ListName.DATA_ACCESS_CLASS)}
+                    options={codelist.getParsedOptions(EListName.DATA_ACCESS_CLASS)}
                     value={dataAccessClass as Value}
-                    placeholder={formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'}
+                    placeholder={
+                      formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'
+                    }
                     onChange={(params: OnChangeParams) => {
-                      let dac = params.value.length ? params.value[0] : undefined
+                      const dac = params.value.length ? params.value[0] : undefined
                       setDataAccessClass(dac as Option)
                       form.setFieldValue('dataAccessClass', dac ? dac.id : undefined)
                     }}
@@ -127,7 +153,12 @@ const DocumentForm = (props: DocumentFormProps) => {
 
           <div className="mt-12">
             <LabelMedium marginBottom="2rem">Opplysningstyper i dokumentet</LabelMedium>
-            <FieldArray name="informationTypes" render={(arrayHelpers: FieldArrayRenderProps) => <InformationTypesTable arrayHelpers={arrayHelpers} />} />
+            <FieldArray
+              name="informationTypes"
+              render={(arrayHelpers: FieldArrayRenderProps) => (
+                <InformationTypesTable arrayHelpers={arrayHelpers} />
+              )}
+            />
           </div>
           <div className="flex justify-end mt-2.5">
             {errorMessage && (

@@ -2,14 +2,14 @@ import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { ChangeEvent } from 'react'
 import { useInfoTypeSearch } from '../../api'
-import { DisclosureFormValues, InformationTypeShort } from '../../constants'
+import { IDisclosureFormValues, IInformationTypeShort } from '../../constants'
 import { renderTagList } from './TagList'
 
-type SelectInformationTypesProps = {
-  formikBag: FormikProps<DisclosureFormValues>
+type TSelectInformationTypesProps = {
+  formikBag: FormikProps<IDisclosureFormValues>
 }
 
-const SelectInformationTypes = (props: SelectInformationTypesProps) => {
+const SelectInformationTypes = (props: TSelectInformationTypesProps) => {
   const { formikBag } = props
   const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
 
@@ -21,7 +21,10 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
           <div className="w-full">
             <Select
               options={infoTypeSearchResult.filter(
-                (infoType: InformationTypeShort) => !formikBag.values.informationTypes?.map((value: InformationTypeShort) => value.id).includes(infoType.id),
+                (infoType: IInformationTypeShort) =>
+                  !formikBag.values.informationTypes
+                    ?.map((value: IInformationTypeShort) => value.id)
+                    .includes(infoType.id)
               )}
               clearable
               searchable={true}
@@ -29,12 +32,16 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
               type={TYPE.search}
               maxDropdownHeight="400px"
               placeholder="Søk opplysningersyper"
-              onInputChange={(event: ChangeEvent<HTMLInputElement>) => setInfoTypeSearch(event.currentTarget.value)}
+              onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setInfoTypeSearch(event.currentTarget.value)
+              }
               labelKey="name"
               onChange={({ value }) =>
                 arrayHelpers.form.setFieldValue(
                   'informationTypes',
-                  formikBag.values.informationTypes ? [...formikBag.values.informationTypes, ...value.map((value) => value)] : value.map((value) => value),
+                  formikBag.values.informationTypes
+                    ? [...formikBag.values.informationTypes, ...value.map((value) => value)]
+                    : value.map((value) => value)
                 )
               }
             />
@@ -43,8 +50,10 @@ const SelectInformationTypes = (props: SelectInformationTypesProps) => {
           {formikBag.values.informationTypes && (
             <div>
               {renderTagList(
-                formikBag.values.informationTypes.map((informationType: InformationTypeShort) => informationType.name),
-                arrayHelpers,
+                formikBag.values.informationTypes.map(
+                  (informationType: IInformationTypeShort) => informationType.name
+                ),
+                arrayHelpers
               )}
             </div>
           )}

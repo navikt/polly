@@ -4,19 +4,19 @@ import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
 import { FieldArrayRenderProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
 import shortid from 'shortid'
-import { DocumentInfoTypeUse, DocumentInformationTypes } from '../../../constants'
+import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'
 import Button from '../../common/Button'
 import { Error } from '../../common/ModalSchema'
 import FieldInformationType from './FieldInformationType'
 import FieldSubjectCategory from './FieldSubjectCategory'
 
-type InformationTypesTableProps = {
+type TInformationTypesTableProps = {
   arrayHelpers: FieldArrayRenderProps
 }
-type DocumentInfoTypeUseWithId = DocumentInfoTypeUse & { id: string }
+type TDocumentInfoTypeUseWithId = IDocumentInfoTypeUse & { id: string }
 
-const InformationTypesTable = (props: InformationTypesTableProps) => {
-  const [tableContent, setTableContent] = useState<DocumentInfoTypeUseWithId[]>([])
+const InformationTypesTable = (props: TInformationTypesTableProps) => {
+  const [tableContent, setTableContent] = useState<TDocumentInfoTypeUseWithId[]>([])
   const { arrayHelpers } = props
 
   const newRow = () => ({
@@ -39,20 +39,36 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
         <StyledHeadCell style={{ maxWidth: '45%' }}>Opplysningstype</StyledHeadCell>
         <StyledHeadCell style={{ maxWidth: '45%' }}>Personkategori</StyledHeadCell>
         <StyledHeadCell style={{ maxWidth: '10%', justifyContent: 'center' }}>
-          <Button type="button" kind={KIND.secondary} size={ButtonSize.compact} icon={faPlus} onClick={() => arrayHelpers.push(newRow())}>
+          <Button
+            type="button"
+            kind={KIND.secondary}
+            size={ButtonSize.compact}
+            icon={faPlus}
+            onClick={() => arrayHelpers.push(newRow())}
+          >
             Legg til ny
           </Button>
         </StyledHeadCell>
       </StyledHead>
 
-      {tableContent.map((row: DocumentInfoTypeUseWithId, index: number) => (
+      {tableContent.map((row: TDocumentInfoTypeUseWithId, index: number) => (
         <Fragment key={row.id}>
           <StyledRow>
             <StyledCell style={{ maxWidth: '45%' }}>
-              <FieldInformationType documentInformationType={row} handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)} />
+              <FieldInformationType
+                documentInformationType={row}
+                handleChange={(values: IDocumentInformationTypes) =>
+                  arrayHelpers.replace(index, values)
+                }
+              />
             </StyledCell>
             <StyledCell style={{ maxWidth: '45%' }}>
-              <FieldSubjectCategory documentInformationType={row} handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)} />
+              <FieldSubjectCategory
+                documentInformationType={row}
+                handleChange={(values: IDocumentInformationTypes) =>
+                  arrayHelpers.replace(index, values)
+                }
+              />
             </StyledCell>
             <StyledCell style={{ maxWidth: '10%', justifyContent: 'center' }}>
               {showDeleteRowButton && (

@@ -3,11 +3,23 @@ import { isNil, sum, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../../api'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
-import { Disclosure, Dpia, LegalBasis, ObjectType, Process, ProcessStatus, Processor } from '../../../constants'
-import { ListName, codelist } from '../../../service/Codelist'
+import {
+  EObjectType,
+  EProcessStatus,
+  IDisclosure,
+  IDpia,
+  ILegalBasis,
+  IProcess,
+  IProcessor,
+} from '../../../constants'
+import { EListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
-import { checkForAaregDispatcher, getNoDpiaLabel, shortenLinksInText } from '../../../util/helper-functions'
+import {
+  checkForAaregDispatcher,
+  getNoDpiaLabel,
+  shortenLinksInText,
+} from '../../../util/helper-functions'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import DataText from '../../common/DataText'
 import { DotTag, DotTags } from '../../common/DotTag'
@@ -18,7 +30,7 @@ import RouteLink, { ObjectLink } from '../../common/RouteLink'
 import { TeamList } from '../../common/Team'
 import { RetentionView } from '../Retention'
 
-const showDpiaRequiredField = (dpia?: Dpia) => {
+const showDpiaRequiredField = (dpia?: IDpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
       return (
@@ -37,7 +49,9 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
           {'Nei. Begrunnelse: '}
           <DotTags
             items={dpia.noDpiaReasons.map((r) => {
-              return r === 'OTHER' && dpia?.grounds ? `${getNoDpiaLabel(r)} (${dpia.grounds})` : getNoDpiaLabel(r)
+              return r === 'OTHER' && dpia?.grounds
+                ? `${getNoDpiaLabel(r)} (${dpia.grounds})`
+                : getNoDpiaLabel(r)
             })}
           />
         </>
@@ -48,27 +62,27 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-export const processStatusText = (status: ProcessStatus | undefined) => {
+export const processStatusText = (status: EProcessStatus | undefined) => {
   switch (status) {
-    case ProcessStatus.COMPLETED:
+    case EProcessStatus.COMPLETED:
       return 'Ferdig dokumentert'
-    case ProcessStatus.NEEDS_REVISION:
+    case EProcessStatus.NEEDS_REVISION:
       return 'Trenger revidering'
-    case ProcessStatus.IN_PROGRESS:
+    case EProcessStatus.IN_PROGRESS:
     default:
       return 'Under arbeid'
   }
 }
 
 interface IProcessDataProps {
-  process: Process
-  disclosures: Disclosure[]
+  process: IProcess
+  disclosures: IDisclosure[]
 }
 
 const ProcessData = (props: IProcessDataProps) => {
   const { process, disclosures } = props
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
-  const [processors, setProcessors] = useState<Processor[]>([])
+  const [processors, setProcessors] = useState<IProcessor[]>([])
 
   useEffect(() => {
     ;(async () => {
@@ -91,7 +105,7 @@ const ProcessData = (props: IProcessDataProps) => {
 
   const subjectCategoriesSummarised = uniqBy(
     process.policies.flatMap((policy) => policy.subjectCategories),
-    'code',
+    'code'
   )
 
   return (
@@ -109,8 +123,12 @@ const ProcessData = (props: IProcessDataProps) => {
       {process.legalBases.length ? (
         <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
           {process.legalBases
-            .sort((a, b) => codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-            .map((legalBasis: LegalBasis, index: number) => (
+            .sort((a, b) =>
+              codelist
+                .getShortname(EListName.GDPR_ARTICLE, a.gdpr.code)
+                .localeCompare(codelist.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code))
+            )
+            .map((legalBasis: ILegalBasis, index: number) => (
               <div key={index}>
                 <LegalBasisView legalBasis={legalBasis} />
               </div>
@@ -130,7 +148,9 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText label="Risikoeier">
           <>
             <span>{process.dpia?.riskOwner ? riskOwnerFullName : 'Ikke utfylt'}</span>
-            {!!process.dpia?.riskOwnerFunction && <span> i funksjon {process.dpia.riskOwnerFunction}</span>}
+            {!!process.dpia?.riskOwnerFunction && (
+              <span> i funksjon {process.dpia.riskOwnerFunction}</span>
+            )}
           </>
         </DataText>
       )}
@@ -139,10 +159,19 @@ const ProcessData = (props: IProcessDataProps) => {
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
-      <DataText label="Personkategorier oppsummert" text={!subjectCategoriesSummarised.length && !process.usesAllInformationTypes ? 'Ikke utfylt' : ''}>
+      <DataText
+        label="Personkategorier oppsummert"
+        text={
+          !subjectCategoriesSummarised.length && !process.usesAllInformationTypes
+            ? 'Ikke utfylt'
+            : ''
+        }
+      >
         {process.usesAllInformationTypes
           ? 'Bruker potensielt alle personkategorier'
-          : !!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised} />}
+          : !!subjectCategoriesSummarised.length && (
+              <DotTags list={EListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised} />
+            )}
       </DataText>
 
       <DataText label="Organisering" text={''}>
@@ -150,7 +179,12 @@ const ProcessData = (props: IProcessDataProps) => {
           <div>
             <span>Avdeling: </span>
             <span>
-              <DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist />{' '}
+              <DotTags
+                list={EListName.DEPARTMENT}
+                codes={[process.affiliation.department]}
+                commaSeparator
+                linkCodelist
+              />{' '}
             </span>
           </div>
         )}
@@ -159,21 +193,31 @@ const ProcessData = (props: IProcessDataProps) => {
           <div>
             <div className="flex">
               <span>Linja: </span>
-              <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist />
+              <DotTags
+                list={EListName.SUB_DEPARTMENT}
+                codes={process.affiliation.subDepartments}
+                linkCodelist
+              />
             </div>
           </div>
         )}
 
         <div className="flex">
           <span>Team: </span>
-          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams} /> : 'Ikke utfylt'}
+          {process.affiliation.productTeams?.length ? (
+            <TeamList teamIds={process.affiliation.productTeams} />
+          ) : (
+            'Ikke utfylt'
+          )}
         </div>
 
         <div>
           <span>Felles behandlingsansvarlig: </span>
           <span>
-            {!!process.commonExternalProcessResponsible ? (
-              <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>{codelist.getShortnameForCode(process.commonExternalProcessResponsible)}</RouteLink>
+            {process.commonExternalProcessResponsible ? (
+              <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>
+                {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+              </RouteLink>
             ) : (
               'Nei'
             )}
@@ -182,7 +226,7 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="System" text={''}>
-        <DotTags list={ListName.SYSTEM} codes={process.affiliation.products} linkCodelist />
+        <DotTags list={EListName.SYSTEM} codes={process.affiliation.products} linkCodelist />
       </DataText>
 
       <DataText label="Automatisering og profilering" text={''}>
@@ -210,10 +254,15 @@ const ProcessData = (props: IProcessDataProps) => {
                   <div className="flex items-center">
                     <div className="whitespace-nowrap mt-4 mr-0"></div>
                     <div className="flex flex-wrap">
-                      {processors.map((processor: Processor, index: number) => (
-                        <div key={processor.id} className={index < processors.length ? 'mr-1.5' : ''}>
+                      {processors.map((processor: IProcessor, index: number) => (
+                        <div
+                          key={processor.id}
+                          className={index < processors.length ? 'mr-1.5' : ''}
+                        >
                           <DotTag key={processor.id}>
-                            <RouteLink href={'/processor/' + processor.id}>{processor.name}</RouteLink>
+                            <RouteLink href={'/processor/' + processor.id}>
+                              {processor.name}
+                            </RouteLink>
                           </DotTag>
                         </div>
                       ))}
@@ -228,8 +277,10 @@ const ProcessData = (props: IProcessDataProps) => {
 
       <DataText label="Lagringsbehov" text={''}>
         <>
-          {process.retention?.retentionPlan === null && 'Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak'}
-          {process.retention?.retentionPlan === false && 'Omfattes ikke av NAVs bevarings- og kassasjonsvedtak'}
+          {process.retention?.retentionPlan === null &&
+            'Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak'}
+          {process.retention?.retentionPlan === false &&
+            'Omfattes ikke av NAVs bevarings- og kassasjonsvedtak'}
         </>
         <>
           {process.retention?.retentionPlan && (
@@ -242,7 +293,8 @@ const ProcessData = (props: IProcessDataProps) => {
           </div>
           <div>
             <span>{process.retention?.retentionDescription && 'Begrunnelse: '}</span>
-            {process.retention?.retentionDescription && shortenLinksInText(process.retention?.retentionDescription)}
+            {process.retention?.retentionDescription &&
+              shortenLinksInText(process.retention?.retentionDescription)}
           </div>
         </>
       </DataText>
@@ -255,7 +307,7 @@ const ProcessData = (props: IProcessDataProps) => {
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
         <DataText label="Avsender" text={''}>
-          <DotTags list={ListName.SYSTEM} codes={process.affiliation.disclosureDispatchers} />
+          <DotTags list={EListName.SYSTEM} codes={process.affiliation.disclosureDispatchers} />
         </DataText>
       )}
 
@@ -264,12 +316,14 @@ const ProcessData = (props: IProcessDataProps) => {
           <div>
             {checkForAaregDispatcher(process) ? (
               <>
-                <RouteLink href={'/disclosure?process=' + process.id}>Lenke til side for utleveringer</RouteLink>
+                <RouteLink href={'/disclosure?process=' + process.id}>
+                  Lenke til side for utleveringer
+                </RouteLink>
               </>
             ) : (
-              disclosures.map((value: Disclosure) => (
+              disclosures.map((value: IDisclosure) => (
                 <>
-                  <ObjectLink id={value.id} type={ObjectType.DISCLOSURE}>
+                  <ObjectLink id={value.id} type={EObjectType.DISCLOSURE}>
                     {value.recipient.shortName}: {value.name}
                   </ObjectLink>
                   &nbsp;
@@ -290,7 +344,7 @@ const ProcessData = (props: IProcessDataProps) => {
 }
 
 interface ICompletenessProps {
-  process: Process
+  process: IProcess
 }
 
 const Completeness = (props: ICompletenessProps) => {
@@ -301,13 +355,18 @@ const Completeness = (props: ICompletenessProps) => {
     profiling: !isNil(process.profiling),
     automation: !isNil(process.automaticProcessing),
     retention: !isNil(process.retention?.retentionPlan),
-    retentionTime: !process.retention?.retentionPlan || (!!process.retention.retentionStart && !!process.retention.retentionMonths),
+    retentionTime:
+      !process.retention?.retentionPlan ||
+      (!!process.retention.retentionStart && !!process.retention.retentionMonths),
     dataProcessor: !isNil(process.dataProcessing?.dataProcessor),
-    dataProcessors: !process.dataProcessing?.dataProcessor || !!process.dataProcessing?.processors.length,
+    dataProcessors:
+      !process.dataProcessing?.dataProcessor || !!process.dataProcessing?.processors.length,
     policies: process.usesAllInformationTypes || !!process.policies.length,
-    completed: process.status === ProcessStatus.COMPLETED,
+    completed: process.status === EProcessStatus.COMPLETED,
   }
-  const completed: number = sum(Object.keys(completeness).map((k) => ((completeness as any)[k] ? 1 : 0)))
+  const completed: number = sum(
+    Object.keys(completeness).map((k) => ((completeness as any)[k] ? 1 : 0))
+  )
   const completables: number = Object.keys(completeness).length
   const color = () => {
     const perc = completed / completables
@@ -316,7 +375,10 @@ const Completeness = (props: ICompletenessProps) => {
     return theme.colors.warning400
   }
 
-  const barOverrides = { BarProgress: { style: { backgroundColor: color() } }, Bar: { style: { marginLeft: 0, marginRight: 0 } } }
+  const barOverrides = {
+    BarProgress: { style: { backgroundColor: color() } },
+    Bar: { style: { marginLeft: 0, marginRight: 0 } },
+  }
 
   return (
     <DataText label="Kompletthet" text={''}>

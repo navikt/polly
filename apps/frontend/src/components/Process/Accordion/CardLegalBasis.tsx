@@ -9,8 +9,8 @@ import { LabelMedium } from 'baseui/typography'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import { useState } from 'react'
 import shortid from 'shortid'
-import { LegalBasisFormValues } from '../../../constants'
-import { ListName, SensitivityLevel, codelist } from '../../../service/Codelist'
+import { ILegalBasisFormValues } from '../../../constants'
+import { EListName, ESensitivityLevel, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { LegalBasisView } from '../../common/LegalBasis'
@@ -22,7 +22,10 @@ const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
     {(msg: any) => (
       <div className="flex mt-4 w-full">
-        <Notification overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }} kind={NKIND.negative}>
+        <Notification
+          overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }}
+          kind={NKIND.negative}
+        >
           {msg}
         </Notification>
       </div>
@@ -30,38 +33,59 @@ const Error = (props: { fieldName: string }) => (
   </ErrorMessage>
 )
 
-const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => (
+const renderCardHeader = (text: string, sensitivityLevel: ESensitivityLevel) => (
   <div className="flex">
     <CustomizedStatefulTooltip
       content={
-        sensitivityLevel === SensitivityLevel.ART6
+        sensitivityLevel === ESensitivityLevel.ART6
           ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
           : 'Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'
       }
     >
       <div className="flex">
         <LabelMedium>{text}</LabelMedium>
-        <FontAwesomeIcon style={{ marginLeft: '.25rem' }} icon={faExclamationCircle} color={theme.colors.primary300} size="sm" />
+        <FontAwesomeIcon
+          style={{ marginLeft: '.25rem' }}
+          icon={faExclamationCircle}
+          color={theme.colors.primary300}
+          size="sm"
+        />
       </div>
     </CustomizedStatefulTooltip>
   </div>
 )
 
-interface CardLegalBasisProps {
-  initValue: LegalBasisFormValues
+interface ICardLegalBasisProps {
+  initValue: ILegalBasisFormValues
   hideCard: () => void
-  submit: (val: LegalBasisFormValues) => void
+  submit: (val: ILegalBasisFormValues) => void
   titleSubmitButton: string
-  sensitivityLevel?: SensitivityLevel
+  sensitivityLevel?: ESensitivityLevel
 }
 
-const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensitivityLevel }: CardLegalBasisProps) => {
-  const [gdpr, setGdpr] = useState<Value>(initValue.gdpr ? codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter((value) => value.id === initValue.gdpr) : [])
+const CardLegalBasis = ({
+  submit,
+  hideCard,
+  initValue,
+  titleSubmitButton,
+  sensitivityLevel,
+}: ICardLegalBasisProps) => {
+  const [gdpr, setGdpr] = useState<Value>(
+    initValue.gdpr
+      ? codelist
+          .getParsedOptions(EListName.GDPR_ARTICLE)
+          .filter((value) => value.id === initValue.gdpr)
+      : []
+  )
   const [nationalLaw, setNationalLaw] = useState<Value>(
-    initValue.nationalLaw ? codelist.getParsedOptions(ListName.NATIONAL_LAW).filter((value) => value.id === initValue.nationalLaw) : [],
+    initValue.nationalLaw
+      ? codelist
+          .getParsedOptions(EListName.NATIONAL_LAW)
+          .filter((value) => value.id === initValue.nationalLaw)
+      : []
   )
   // Must be complete to achieve touched on submit
-  const initialValues: LegalBasisFormValues = {
+  const initialValues: ILegalBasisFormValues = {
     gdpr: initValue.gdpr,
     nationalLaw: initValue.nationalLaw,
     description: initValue.description,
@@ -69,24 +93,28 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
   }
 
   const getOptionsBySensitivityLevel = () => {
-    if (sensitivityLevel === SensitivityLevel.ART6) {
-      return codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter((l) => codelist.isArt6(l.id))
-    } else if (sensitivityLevel === SensitivityLevel.ART9) {
-      return codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter((l) => codelist.isArt9(l.id))
+    if (sensitivityLevel === ESensitivityLevel.ART6) {
+      return codelist.getParsedOptions(EListName.GDPR_ARTICLE).filter((l) => codelist.isArt6(l.id))
+    } else if (sensitivityLevel === ESensitivityLevel.ART9) {
+      return codelist.getParsedOptions(EListName.GDPR_ARTICLE).filter((l) => codelist.isArt9(l.id))
     }
-    return codelist.getParsedOptions(ListName.GDPR_ARTICLE)
+    return codelist.getParsedOptions(EListName.GDPR_ARTICLE)
   }
 
   return (
     <Formik
-      onSubmit={(values, form) => submit(values)}
+      onSubmit={(values) => submit(values)}
       validationSchema={legalBasisSchema()}
       initialValues={initialValues}
-      render={(form: FormikProps<LegalBasisFormValues>) => (
+      render={(form: FormikProps<ILegalBasisFormValues>) => (
         <Card>
           {renderCardHeader(
-            sensitivityLevel === SensitivityLevel.ART9 ? 'Behandlingsgrunnlag for særlige kategorier' : 'Behandlingsgrunnlag',
-            sensitivityLevel === SensitivityLevel.ART9 ? SensitivityLevel.ART9 : SensitivityLevel.ART6,
+            sensitivityLevel === ESensitivityLevel.ART9
+              ? 'Behandlingsgrunnlag for særlige kategorier'
+              : 'Behandlingsgrunnlag',
+            sensitivityLevel === ESensitivityLevel.ART9
+              ? ESensitivityLevel.ART9
+              : ESensitivityLevel.ART6
           )}
           <div className="flex mt-4 w-full">
             <Field
@@ -95,7 +123,11 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
                 <Select
                   autoFocus={true}
                   options={getOptionsBySensitivityLevel()}
-                  placeholder={sensitivityLevel === SensitivityLevel.ART9 ? 'Velg fra artikkel 9' : 'Velg fra artikkel 6'}
+                  placeholder={
+                    sensitivityLevel === ESensitivityLevel.ART9
+                      ? 'Velg fra artikkel 9'
+                      : 'Velg fra artikkel 6'
+                  }
                   maxDropdownHeight="300px"
                   type={TYPE.search}
                   onChange={({ value }) => {
@@ -111,12 +143,14 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
           </div>
           <Error fieldName="gdpr" />
 
-          <div className={`mt-4 w-full ${codelist.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}>
+          <div
+            className={`mt-4 w-full ${codelist.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}
+          >
             <Field
               name="nationalLaw"
               render={() => (
                 <Select
-                  options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
+                  options={codelist.getParsedOptions(EListName.NATIONAL_LAW)}
                   placeholder="Velg lov eller forskrift"
                   maxDropdownHeight="300px"
                   type={TYPE.search}
@@ -131,10 +165,12 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
             />
           </div>
           <Error fieldName="nationalLaw" />
-          <div className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}>
+          <div
+            className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}
+          >
             <Field
               name="description"
-              render={({ field }: FieldProps<string, LegalBasisFormValues>) => (
+              render={({ field }: FieldProps<string, ILegalBasisFormValues>) => (
                 <StatefulInput
                   {...field}
                   initialState={{ value: initValue.description }}
@@ -151,10 +187,20 @@ const CardLegalBasis = ({ submit, hideCard, initValue, titleSubmitButton, sensit
           </div>
           <Error fieldName="description" />
           <div className="flex mt-4 w-full justify-end">
-            <Button type="button" kind={KIND.tertiary} size={ButtonSize.compact} onClick={() => hideCard()}>
+            <Button
+              type="button"
+              kind={KIND.tertiary}
+              size={ButtonSize.compact}
+              onClick={() => hideCard()}
+            >
               Avbryt
             </Button>
-            <Button type="button" kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
+            <Button
+              type="button"
+              kind={KIND.secondary}
+              size={ButtonSize.compact}
+              onClick={form.submitForm}
+            >
               {titleSubmitButton}
             </Button>
           </div>

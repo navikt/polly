@@ -7,7 +7,17 @@ import remarkGfm from 'remark-gfm'
 /**
  * singleWord true remove paragraph wrapper for content
  */
-export const Markdown = ({ singleWord, escapeHtml = true, verbatim, source }: { source?: string; escapeHtml?: boolean; singleWord?: boolean; verbatim?: boolean }) => {
+export const Markdown = ({
+  singleWord,
+  escapeHtml = true,
+  verbatim,
+  source,
+}: {
+  source?: string
+  escapeHtml?: boolean
+  singleWord?: boolean
+  verbatim?: boolean
+}) => {
   const renderers = {
     a: (linkProps: any) => {
       const { children, href } = linkProps
@@ -67,5 +77,12 @@ export const Markdown = ({ singleWord, escapeHtml = true, verbatim, source }: { 
     },
   }
   const htmlPlugins: any = escapeHtml ? [] : [rehypeRaw]
-  return <ReactMarkdown children={source || ''} components={renderers} remarkPlugins={[remarkGfm]} rehypePlugins={htmlPlugins} />
+  return (
+    <ReactMarkdown
+      children={source || ''}
+      components={renderers}
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={htmlPlugins}
+    />
+  )
 }

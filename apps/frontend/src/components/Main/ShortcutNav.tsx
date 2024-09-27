@@ -41,13 +41,13 @@ const cardOverrides = (hover: boolean) => {
   } as CardOverrides
 }
 
-type ShortcutCardProps = {
+type TShortcutCardProps = {
   title: string
   subtitle: string
   to: string
 }
 
-export const ShortcutCard = (props: ShortcutCardProps) => {
+export const ShortcutCard = (props: TShortcutCardProps) => {
   const { title, subtitle, to } = props
   const [hover, setHover] = useState(false)
 
@@ -85,7 +85,11 @@ export const ShortcutCard = (props: ShortcutCardProps) => {
 const ShortcutNav = () => (
   <div className="flex justify-between flex-wrap">
     <ShortcutCard title="Behandlinger" subtitle="Se og endre behandlinger" to="/process" />
-    <ShortcutCard title="Opplysningstyper" subtitle="Se og endre opplysningstyper" to="/informationtype" />
+    <ShortcutCard
+      title="Opplysningstyper"
+      subtitle="Se og endre opplysningstyper"
+      to="/informationtype"
+    />
     <ShortcutCard title="Eksterne parter" subtitle="Se alle eksterne parter" to="/thirdparty" />
     <ShortcutCard title="Dashboard" subtitle="Se statistikk over behandlinger" to="/dashboard" />
   </div>

@@ -5,16 +5,16 @@ import { StyledLink } from 'baseui/link'
 import { ARTWORK_SIZES, ListItem } from 'baseui/list'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment } from 'react/jsx-runtime'
-import { LegalBasis, LegalBasisFormValues, PolicyAlert } from '../../constants'
-import { ListName, SensitivityLevel, codelist } from '../../service/Codelist'
+import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
+import { EListName, ESensitivityLevel, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 interface ILegalBasisViewProps {
-  legalBasis?: LegalBasis
-  legalBasisForm?: LegalBasisFormValues
+  legalBasis?: ILegalBasis
+  legalBasisForm?: ILegalBasisFormValues
 }
 
 export const LegalBasisView = (props: ILegalBasisViewProps) => {
@@ -25,10 +25,17 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   const gdpr = legalBasis ? legalBasis.gdpr.code : legalBasisForm!.gdpr
   const nationalLaw = legalBasis ? legalBasis?.nationalLaw?.code : legalBasisForm!.nationalLaw
 
-  let gdprDisplay: string | undefined = gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, gdpr)
-  let nationalLawDisplay: string | undefined = nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, nationalLaw)
+  const gdprDisplay: string | undefined =
+    gdpr && codelist.getShortname(EListName.GDPR_ARTICLE, gdpr)
+  const nationalLawDisplay: string | undefined =
+    nationalLaw && codelist.getShortname(EListName.NATIONAL_LAW, nationalLaw)
 
-  let descriptionText: string | JSX.Element[] | undefined = codelist.valid(ListName.NATIONAL_LAW, nationalLaw) ? legalBasisLinkProcessor(nationalLaw!, description) : description
+  const descriptionText: string | JSX.Element[] | undefined = codelist.valid(
+    EListName.NATIONAL_LAW,
+    nationalLaw
+  )
+    ? legalBasisLinkProcessor(nationalLaw!, description)
+    : description
 
   return (
     <span>
@@ -39,10 +46,11 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
 }
 
 const lovdataBase = (nationalLaw: string): string =>
-  (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) + codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
+  (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) +
+  codelist.getDescription(EListName.NATIONAL_LAW, nationalLaw)
 
 const legalBasisLinkProcessor = (law: string, text?: string) => {
-  const lawCode: string = codelist.getDescription(ListName.NATIONAL_LAW, law)
+  const lawCode: string = codelist.getDescription(EListName.NATIONAL_LAW, law)
   if (!lawCode.match(/^\d+.*/)) {
     return text
   }
@@ -57,7 +65,12 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
       // tripe '§§§' is hidden, used as a trick in combination with rule 1 above
       regex: /§(§§)?(§)?\s*(\d+(-\d+)?)/g,
       fn: (key: string, result: string[]) => (
-        <StyledLink key={key} href={`${lovdataBase(law)}/§${result[3]}`} target="_blank" rel="noopener noreferrer">
+        <StyledLink
+          key={key}
+          href={`${lovdataBase(law)}/§${result[3]}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {!result[1] && !result[2] && '§'} {result[2] && '§§'} {result[3]}
         </StyledLink>
       ),
@@ -65,7 +78,12 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
     {
       regex: /kap(ittel)?\s*(\d+)/gi,
       fn: (key: string, result: string[]) => (
-        <StyledLink key={key} href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
+        <StyledLink
+          key={key}
+          href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Kapittel {result[2]}
         </StyledLink>
       ),
@@ -74,7 +92,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
 }
 
 interface ILegalBasesNotClarifiedProps {
-  alert?: PolicyAlert
+  alert?: IPolicyAlert
 }
 
 export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
@@ -98,7 +116,11 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
       </div>
       <div>
         {alert?.excessInfo && (
-          <CustomizedStatefulTooltip content={'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'}>
+          <CustomizedStatefulTooltip
+            content={
+              'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'
+            }
+          >
             <span>{warningIcon} Overskuddsinformasjon</span>
           </CustomizedStatefulTooltip>
         )}
@@ -121,19 +143,22 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
   )
 }
 
-const isLegalBasisFilteredBySensitivity = (legalBasis: LegalBasisFormValues, sensitivityLevel?: SensitivityLevel) => {
+const isLegalBasisFilteredBySensitivity = (
+  legalBasis: ILegalBasisFormValues,
+  sensitivityLevel?: ESensitivityLevel
+) => {
   return (
-    (sensitivityLevel === SensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
-    (sensitivityLevel === SensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr)) ||
+    (sensitivityLevel === ESensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
+    (sensitivityLevel === ESensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr)) ||
     !sensitivityLevel
   )
 }
 
 interface IListLegalBasesProps {
-  legalBases?: LegalBasisFormValues[]
+  legalBases?: ILegalBasisFormValues[]
   onRemove: (index: number) => void
   onEdit: (index: number) => void
-  sensitivityLevel?: SensitivityLevel.ART6 | SensitivityLevel.ART9
+  sensitivityLevel?: ESensitivityLevel.ART6 | ESensitivityLevel.ART9
 }
 
 export const ListLegalBases = (props: IListLegalBasesProps) => {
@@ -144,8 +169,10 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
   return (
     <Fragment>
       {legalBases
-        .filter((legalBase: LegalBasisFormValues) => isLegalBasisFilteredBySensitivity(legalBase, sensitivityLevel))
-        .map((legalBasis: LegalBasisFormValues, index: number) => (
+        .filter((legalBase: ILegalBasisFormValues) =>
+          isLegalBasisFilteredBySensitivity(legalBase, sensitivityLevel)
+        )
+        .map((legalBasis: ILegalBasisFormValues, index: number) => (
           <ListItem
             artworkSize={ARTWORK_SIZES.SMALL}
             overrides={{
@@ -165,7 +192,11 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
                   kind="tertiary"
                   size="compact"
                   onClick={() => {
-                    onEdit(legalBases?.findIndex((legalBase: LegalBasisFormValues) => legalBase.key === legalBasis.key))
+                    onEdit(
+                      legalBases?.findIndex(
+                        (legalBase: ILegalBasisFormValues) => legalBase.key === legalBasis.key
+                      )
+                    )
                   }}
                 >
                   <FontAwesomeIcon icon={faEdit} />
@@ -175,7 +206,11 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
                   kind="tertiary"
                   size="compact"
                   onClick={() => {
-                    onRemove(legalBases?.findIndex((legalBase: LegalBasisFormValues) => legalBase.key === legalBasis.key))
+                    onRemove(
+                      legalBases?.findIndex(
+                        (legalBase: ILegalBasisFormValues) => legalBase.key === legalBasis.key
+                      )
+                    )
                   }}
                 >
                   <FontAwesomeIcon icon={faTrash} />
@@ -185,7 +220,9 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
             sublist
             key={index}
           >
-            <ParagraphMedium $style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}>
+            <ParagraphMedium
+              $style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}
+            >
               <LegalBasisView legalBasisForm={legalBasis} />
             </ParagraphMedium>
           </ListItem>
@@ -195,7 +232,7 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
 }
 
 interface IListLegalBasesInTableProps {
-  legalBases: LegalBasis[]
+  legalBases: ILegalBasis[]
 }
 
 export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
@@ -204,7 +241,7 @@ export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
   return (
     <div>
       <ul style={{ listStyle: 'none', paddingInlineStart: 0, marginTop: 0, marginBottom: 0 }}>
-        {legalBases.map((legalBasis: LegalBasis, index: number) => (
+        {legalBases.map((legalBasis: ILegalBasis, index: number) => (
           <div className="mb-2" key={index}>
             <li>
               <LegalBasisView legalBasis={legalBasis} />

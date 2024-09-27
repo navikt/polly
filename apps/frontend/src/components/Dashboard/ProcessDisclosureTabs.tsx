@@ -4,39 +4,52 @@ import { Plus } from 'baseui/icon'
 import { HeadingXLarge } from 'baseui/typography'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api'
-import { Disclosure, DisclosureFormValues, ProcessStatus } from '../../constants'
-import { Section } from '../../pages/ProcessPage'
-import { ListName } from '../../service/Codelist'
+import { EProcessStatus, IDisclosure, IDisclosureFormValues } from '../../constants'
+import { ESection } from '../../pages/ProcessPage'
+import { EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 
 interface IProps {
-  disclosureData: Disclosure[]
-  setDisclosureData: Dispatch<SetStateAction<Disclosure[]>>
+  disclosureData: IDisclosure[]
+  setDisclosureData: Dispatch<SetStateAction<IDisclosure[]>>
   code: string
-  section: Section
+  section: ESection
   isEditable: boolean
   moveScroll?: Function
-  listName?: ListName
+  listName?: EListName
   processId?: string
-  filter?: ProcessStatus
+  filter?: EProcessStatus
   thirdTabTitle?: string
   thirdTabContent?: ReactNode
 }
 
 export const ProcessDisclosureTabs = (props: IProps) => {
-  const { disclosureData, setDisclosureData, code, listName, processId, filter, section, moveScroll, isEditable, thirdTabTitle, thirdTabContent } = props
+  const {
+    disclosureData,
+    setDisclosureData,
+    code,
+    listName,
+    processId,
+    filter,
+    section,
+    moveScroll,
+    isEditable,
+    thirdTabTitle,
+    thirdTabContent,
+  } = props
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
 
-  const handleCreateDisclosure = async (disclosure: DisclosureFormValues): Promise<void> => {
+  const handleCreateDisclosure = async (disclosure: IDisclosureFormValues): Promise<void> => {
     try {
-      let createdDisclosure: Disclosure = await createDisclosure(disclosure)
+      const createdDisclosure: IDisclosure = await createDisclosure(disclosure)
 
       if (!disclosureData || disclosureData.length < 1) setDisclosureData([createdDisclosure])
-      else if (disclosureData && createdDisclosure) setDisclosureData([...disclosureData, createdDisclosure])
+      else if (disclosureData && createdDisclosure)
+        setDisclosureData([...disclosureData, createdDisclosure])
 
       setShowCreateDisclosureModal(false)
     } catch (error: any) {
@@ -45,11 +58,11 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     }
   }
 
-  const handleEditDisclosure = async (disclosure: DisclosureFormValues): Promise<boolean> => {
+  const handleEditDisclosure = async (disclosure: IDisclosureFormValues): Promise<boolean> => {
     try {
-      let editedDisclosure = await updateDisclosure(disclosure)
+      const editedDisclosure = await updateDisclosure(disclosure)
 
-      const newDisclosureData: Disclosure[] = disclosureData.map((disclosure: Disclosure) => {
+      const newDisclosureData: IDisclosure[] = disclosureData.map((disclosure: IDisclosure) => {
         if (disclosure.id === editedDisclosure.id) {
           return editedDisclosure
         } else return disclosure
@@ -64,12 +77,16 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     }
   }
 
-  const handleDeleteDisclosure = async (disclosure: Disclosure): Promise<boolean> => {
+  const handleDeleteDisclosure = async (disclosure: IDisclosure): Promise<boolean> => {
     if (!disclosure) return false
 
     try {
       await deleteDisclosure(disclosure.id)
-      setDisclosureData([...disclosureData.filter((disclosureData: Disclosure) => disclosureData.id !== disclosure.id)])
+      setDisclosureData([
+        ...disclosureData.filter(
+          (disclosureData: IDisclosure) => disclosureData.id !== disclosure.id
+        ),
+      ])
       setError(undefined)
       return true
     } catch (error: any) {
@@ -78,7 +95,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     }
   }
 
-  const initialFormValues: DisclosureFormValues = {
+  const initialFormValues: IDisclosureFormValues = {
     name: '',
     recipient: '',
     recipientPurpose: '',
@@ -105,13 +122,23 @@ export const ProcessDisclosureTabs = (props: IProps) => {
       </Tabs.List>
       <Tabs.Panel value="behandlinger">
         <div className="my-2">
-          <ProcessList code={code} listName={listName} processId={processId} filter={filter} section={section} moveScroll={moveScroll} isEditable={isEditable} />
+          <ProcessList
+            code={code}
+            listName={listName}
+            processId={processId}
+            filter={filter}
+            section={section}
+            moveScroll={moveScroll}
+            isEditable={isEditable}
+          />
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="utleveringer">
         <div className="my-2">
           <div className="flex">
-            <HeadingXLarge>Utleveringer ({disclosureData ? disclosureData.length : 0})</HeadingXLarge>
+            <HeadingXLarge>
+              Utleveringer ({disclosureData ? disclosureData.length : 0})
+            </HeadingXLarge>
             <Spacer />
             {isEditable && (
               <div className="flex justify-end">
@@ -133,7 +160,9 @@ export const ProcessDisclosureTabs = (props: IProps) => {
             )}
           </div>
 
-          {disclosureData.length === 0 && <BodyShort className="my-4">Ingen utleveringer</BodyShort>}
+          {disclosureData.length === 0 && (
+            <BodyShort className="my-4">Ingen utleveringer</BodyShort>
+          )}
 
           {disclosureData.length > 0 && (
             <AccordionDisclosure
@@ -160,7 +189,9 @@ export const ProcessDisclosureTabs = (props: IProps) => {
           />
         </div>
       </Tabs.Panel>
-      {thirdTabTitle && thirdTabContent && <Tabs.Panel value={thirdTabTitle}>{thirdTabContent}</Tabs.Panel>}
+      {thirdTabTitle && thirdTabContent && (
+        <Tabs.Panel value={thirdTabTitle}>{thirdTabContent}</Tabs.Panel>
+      )}
     </Tabs>
   )
 }

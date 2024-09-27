@@ -1,9 +1,13 @@
 import { Card } from 'baseui/card'
 import { LabelLarge, ParagraphMedium } from 'baseui/typography'
 import { useState } from 'react'
-import { DashboardData, DepartmentDashCount as DepartmentProcess, ProcessStatus } from '../../constants'
-import { Section, genProcessPath } from '../../pages/ProcessPage'
-import { ListName, codelist } from '../../service/Codelist'
+import {
+  IDepartmentDashCount as DepartmentProcess,
+  EProcessStatus,
+  IDashboardData,
+} from '../../constants'
+import { ESection, genProcessPath } from '../../pages/ProcessPage'
+import { EListName, codelist } from '../../service/Codelist'
 import { theme, useAwait } from '../../util'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import RouteLink from '../common/RouteLink'
@@ -36,34 +40,63 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
 
 const parsedDepartmentName = (department: string): string => {
   if (department === 'OESA') return 'ØSA'
-  return codelist.getCode(ListName.DEPARTMENT, department)?.code as string
+  return codelist.getCode(EListName.DEPARTMENT, department)?.code as string
 }
 
-type DepartmentCardProps = {
+type TDepartmentCardProps = {
   department: DepartmentProcess
 }
 
-const DepartmentCard = (props: DepartmentCardProps) => {
+const DepartmentCard = (props: TDepartmentCardProps) => {
   const { department } = props
 
   return (
-    <CustomizedStatefulTooltip content={codelist.getCode(ListName.DEPARTMENT, department.department)?.shortName}>
+    <CustomizedStatefulTooltip
+      content={codelist.getCode(EListName.DEPARTMENT, department.department)?.shortName}
+    >
       <div>
         <Card overrides={cardShadow}>
           <div className="flex flex-col items-center justify-around w-24 h-24">
-            <RouteLink href={genProcessPath(Section.department, department.department, undefined)} style={{ textDecoration: 'none' }}>
+            <RouteLink
+              href={genProcessPath(ESection.department, department.department, undefined)}
+              style={{ textDecoration: 'none' }}
+            >
               <LabelLarge color={theme.colors.accent300} $style={{ textAlign: 'center' }}>
                 {parsedDepartmentName(department.department)}
               </LabelLarge>
             </RouteLink>
 
-            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)} style={{ textDecoration: 'none' }}>
+            <RouteLink
+              href={genProcessPath(
+                ESection.department,
+                department.department,
+                undefined,
+                EProcessStatus.COMPLETED
+              )}
+              style={{ textDecoration: 'none' }}
+            >
               <TextWithNumber label="Godkjent" number={department.processesCompleted} />
             </RouteLink>
-            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.IN_PROGRESS)} style={{ textDecoration: 'none' }}>
+            <RouteLink
+              href={genProcessPath(
+                ESection.department,
+                department.department,
+                undefined,
+                EProcessStatus.IN_PROGRESS
+              )}
+              style={{ textDecoration: 'none' }}
+            >
               <TextWithNumber label="Under arbeid" number={department.processesInProgress} />
             </RouteLink>
-            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.NEEDS_REVISION)} style={{ textDecoration: 'none' }}>
+            <RouteLink
+              href={genProcessPath(
+                ESection.department,
+                department.department,
+                undefined,
+                EProcessStatus.NEEDS_REVISION
+              )}
+              style={{ textDecoration: 'none' }}
+            >
               <TextWithNumber label="Revidering" number={department.processesNeedsRevision} />
             </RouteLink>
           </div>
@@ -73,10 +106,10 @@ const DepartmentCard = (props: DepartmentCardProps) => {
   )
 }
 
-type DepartmentsProps = {
-  data: DashboardData
+type TDepartmentsProps = {
+  data: IDashboardData
 }
-const Departments = (props: DepartmentsProps) => {
+const Departments = (props: TDepartmentsProps) => {
   const { data } = props
   const [loading, setLoading] = useState(true)
   useAwait(codelist.wait(), setLoading)
@@ -85,7 +118,10 @@ const Departments = (props: DepartmentsProps) => {
     return <Spinner />
   }
 
-  const sortedData = () => data.departments.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
+  const sortedData = () =>
+    data.departments.sort((a, b) =>
+      parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department))
+    )
 
   return (
     <div className="w-full flex flex-wrap justify-between">

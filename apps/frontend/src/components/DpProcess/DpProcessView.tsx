@@ -5,11 +5,16 @@ import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useReducer, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { getResourceById } from '../../api'
-import { deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess } from '../../api/DpProcessApi'
+import {
+  deleteDpProcess,
+  dpProcessToFormValues,
+  getDpProcess,
+  updateDpProcess,
+} from '../../api/DpProcessApi'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
-import { DpProcess, DpProcessFormValues, Processor } from '../../constants'
+import { IDpProcess, IDpProcessFormValues, IProcessor } from '../../constants'
 import { ampli } from '../../service/Amplitude'
-import { ListName, codelist } from '../../service/Codelist'
+import { EListName, codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
@@ -30,24 +35,29 @@ const DpProcessView = () => {
       id?: string
     }>
   > = useParams<{ id?: string }>()
-  const [dpProcess, setDpProcess] = useState<DpProcess>()
+  const [dpProcess, setDpProcess] = useState<IDpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
   const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
   const [showDeleteModal, toggleDeleteModal] = useReducer((prevState) => !prevState, false)
-  const [processors, setProcessors] = useState<Processor[]>([])
+  const [processors, setProcessors] = useState<IProcessor[]>([])
 
-  ampli.logEvent('besøk', { side: 'NAV som databehandler', url: 'dpprocess/:id', app: 'Behandlingskatalogen', type: 'view' })
+  ampli.logEvent('besøk', {
+    side: 'NAV som databehandler',
+    url: 'dpprocess/:id',
+    app: 'Behandlingskatalogen',
+    type: 'view',
+  })
 
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
 
   const isDataProcessingAgreementsAvailable: boolean = !!dpProcess?.dataProcessingAgreements.length
 
-  const handleEditDpProcess = async (dpProcess: DpProcessFormValues): Promise<void> => {
+  const handleEditDpProcess = async (dpProcess: IDpProcessFormValues): Promise<void> => {
     if (!dpProcess) return
     try {
       if (dpProcess.id) {
-        const updatedDpProcess: DpProcess = await updateDpProcess(dpProcess.id, dpProcess)
+        const updatedDpProcess: IDpProcess = await updateDpProcess(dpProcess.id, dpProcess)
         setDpProcess(updatedDpProcess)
       }
       setErrorDpProcessModal('')
@@ -99,7 +109,7 @@ const DpProcessView = () => {
         const userIdent = dpProcess.changeStamp.lastModifiedBy.split(' ')[0]
         await getResourceById(userIdent)
           .then((response) => setLastModifiedUserEmail(response.email))
-          .catch((error) => console.log('Unable to get email for user that last modified'))
+          .catch(() => console.debug('Unable to get email for user that last modified'))
       }
     })()
   }, [dpProcess])
@@ -113,22 +123,38 @@ const DpProcessView = () => {
             <HeadingMedium>{dpProcess?.name}</HeadingMedium>
             {user.canWrite() /*!env.disableDpProcess &&*/ && (
               <div>
-                <Button size="compact" kind="outline" icon={faEdit} marginRight onClick={toggleModal}>
+                <Button
+                  size="compact"
+                  kind="outline"
+                  icon={faEdit}
+                  marginRight
+                  onClick={toggleModal}
+                >
                   Redigér
                 </Button>
-                <Button size={ButtonSize.compact} kind="outline" onClick={toggleDeleteModal} icon={faTrash}>
+                <Button
+                  size={ButtonSize.compact}
+                  kind="outline"
+                  onClick={toggleDeleteModal}
+                  icon={faTrash}
+                >
                   Slett
                 </Button>
               </div>
             )}
           </div>
           <div className="mt-4">
-            <DataText label="Behandlingsnummer" text={'D' + dpProcess?.dpProcessNumber.toString()} />
+            <DataText
+              label="Behandlingsnummer"
+              text={'D' + dpProcess?.dpProcessNumber.toString()}
+            />
           </div>
           <DataText label="Behandlingsansvarlig" text="">
             <span>
               {!!dpProcess?.externalProcessResponsible ? (
-                <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>{codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}</RouteLink>
+                <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
+                  {codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}
+                </RouteLink>
               ) : (
                 'Nei'
               )}
@@ -143,11 +169,23 @@ const DpProcessView = () => {
             <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
           </DataText>
 
-          <DataText label="Behandles det særlige kategorier av personopplysninger?" text={boolToText(dpProcess?.art9)} />
-          <DataText label="Behandles det personopplysninger om straffedommer og lovovertredelser?" text={boolToText(dpProcess?.art10)} />
+          <DataText
+            label="Behandles det særlige kategorier av personopplysninger?"
+            text={boolToText(dpProcess?.art9)}
+          />
+          <DataText
+            label="Behandles det personopplysninger om straffedommer og lovovertredelser?"
+            text={boolToText(dpProcess?.art10)}
+          />
 
           <DataText label="System" text="">
-            {dpProcess && <DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist />}
+            {dpProcess && (
+              <DotTags
+                list={EListName.SYSTEM}
+                codes={dpProcess.affiliation.products}
+                linkCodelist
+              />
+            )}
           </DataText>
 
           <DataText label="Organisering" text="">
@@ -155,7 +193,12 @@ const DpProcessView = () => {
               <div>
                 <span>Avdeling: </span>
                 <span>
-                  <DotTags list={ListName.DEPARTMENT} codes={[dpProcess?.affiliation.department]} commaSeparator linkCodelist />{' '}
+                  <DotTags
+                    list={EListName.DEPARTMENT}
+                    codes={[dpProcess?.affiliation.department]}
+                    commaSeparator
+                    linkCodelist
+                  />{' '}
                 </span>
               </div>
             ) : (
@@ -165,14 +208,22 @@ const DpProcessView = () => {
               <div>
                 <div className="flex">
                   <span>Underavdeling: </span>
-                  <DotTags list={ListName.SUB_DEPARTMENT} codes={dpProcess?.affiliation.subDepartments} linkCodelist />
+                  <DotTags
+                    list={EListName.SUB_DEPARTMENT}
+                    codes={dpProcess?.affiliation.subDepartments}
+                    linkCodelist
+                  />
                 </div>
               </div>
             )}
 
             <div className="flex">
               <span>Team: </span>
-              {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams} /> : 'Ikke utfylt'}
+              {!!dpProcess?.affiliation.productTeams?.length ? (
+                <TeamList teamIds={dpProcess?.affiliation.productTeams} />
+              ) : (
+                'Ikke utfylt'
+              )}
             </div>
           </DataText>
           <DataText label="Lagringsbehov" text="">
@@ -195,8 +246,10 @@ const DpProcessView = () => {
 
           <DataText label="Underdatabehandler" text="">
             <>
-              {dpProcess?.subDataProcessing?.dataProcessor === null && 'Uavklart om databehandler brukes'}
-              {dpProcess?.subDataProcessing?.dataProcessor === false && 'Databehandler benyttes ikke'}
+              {dpProcess?.subDataProcessing?.dataProcessor === null &&
+                'Uavklart om databehandler brukes'}
+              {dpProcess?.subDataProcessing?.dataProcessor === false &&
+                'Databehandler benyttes ikke'}
             </>
             <>
               {dpProcess?.subDataProcessing.dataProcessor && (
@@ -207,10 +260,12 @@ const DpProcessView = () => {
                       <div className="flex items-center">
                         <div className="whitespace-nowrap mt-4 mr-0" />
                         <div className="flex flexWrap">
-                          {processors.map((processor: Processor, index) => (
+                          {processors.map((processor: IProcessor, index) => (
                             <div className={index < processors.length ? 'mr-1.5' : ''}>
                               <DotTag key={processor.id}>
-                                <RouteLink href={'/processor/' + processor.id}>{processor.name}</RouteLink>
+                                <RouteLink href={'/processor/' + processor.id}>
+                                  {processor.name}
+                                </RouteLink>
                               </DotTag>
                             </div>
                           ))}
@@ -226,7 +281,8 @@ const DpProcessView = () => {
             <div className="flex justify-end">
               <span>
                 <i>
-                  Sist endret av <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
+                  Sist endret av{' '}
+                  <a href={'mailto: ' + lastModifiedUserEmail}>{lastModifiedUserEmail}</a>
                   {lastModifiedDate(dpProcess?.changeStamp?.lastModifiedDate)}
                 </i>
               </span>

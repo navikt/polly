@@ -4,9 +4,9 @@ import { StyledLink } from 'baseui/link'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api'
-import { ProductArea, Team } from '../../constants'
-import { listNameForSection, Section } from '../../pages/ProcessPage'
-import { codelist, ListName } from '../../service/Codelist'
+import { IProductArea, ITeam } from '../../constants'
+import { ESection, listNameForSection } from '../../pages/ProcessPage'
+import { EListName, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import { productAreaLink, teamLink } from '../../util/config'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
@@ -14,15 +14,15 @@ import { Markdown } from './Markdown'
 import { Spinner } from './Spinner'
 
 interface IPageHeaderProps {
-  section: Section
+  section: ESection
   code: string
 }
 
 export const PageHeader = (props: IPageHeaderProps) => {
   const { code, section } = props
   const [isLoading, setLoading] = useState(false)
-  const [team, setTeam] = useState<Team>()
-  const [productArea, setProductArea] = useState<ProductArea>()
+  const [team, setTeam] = useState<ITeam>()
+  const [productArea, setProductArea] = useState<IProductArea>()
 
   useEffect(() => {
     ;(async () => {
@@ -38,39 +38,39 @@ export const PageHeader = (props: IPageHeaderProps) => {
   }, [code, section])
 
   const getTitle = () => {
-    let currentListName: ListName | undefined = listNameForSection(section)
+    const currentListName: EListName | undefined = listNameForSection(section)
     if (currentListName !== undefined) {
       return codelist.getShortname(currentListName, code)
     }
-    if (section === Section.team) {
+    if (section === ESection.team) {
       return team?.name || ''
     }
-    if (section === Section.productarea) {
+    if (section === ESection.productarea) {
       return productArea?.name || ''
     }
     return 'Feil'
   }
 
   const metadataTitle = () => {
-    if (section === Section.subdepartment) return 'Linja'
-    else if (section === Section.department) return 'Avdeling'
-    else if (section === Section.team) return 'Team'
-    else if (section === Section.productarea) return 'Produktområde'
-    else if (section === Section.system) return 'System'
-    else if (section === Section.processor) return 'Databehandler'
-    else if (section === Section.thirdparty) return `Felles behandlingsansvarlig med ekstern part}`
+    if (section === ESection.subdepartment) return 'Linja'
+    else if (section === ESection.department) return 'Avdeling'
+    else if (section === ESection.team) return 'Team'
+    else if (section === ESection.productarea) return 'Produktområde'
+    else if (section === ESection.system) return 'System'
+    else if (section === ESection.processor) return 'Databehandler'
+    else if (section === ESection.thirdparty) return `Felles behandlingsansvarlig med ekstern part}`
     return 'Overordnet behandlingsaktivitet'
   }
 
   const getDescription = () => {
-    let currentListName: ListName | undefined = listNameForSection(section)
+    const currentListName: EListName | undefined = listNameForSection(section)
     if (currentListName) {
       return codelist.getDescription(currentListName, code)
     }
-    if (section === Section.team) {
+    if (section === ESection.team) {
       return team?.description || ''
     }
-    if (section === Section.productarea) {
+    if (section === ESection.productarea) {
       return productArea?.description || ''
     }
     return ''
@@ -78,8 +78,8 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
   const externalLink = () => {
     let url
-    if (section === Section.team) url = teamLink(code)
-    else if (section === Section.productarea) url = productAreaLink(code)
+    if (section === ESection.team) url = teamLink(code)
+    else if (section === ESection.productarea) url = productAreaLink(code)
     if (!url) return null
 
     return (

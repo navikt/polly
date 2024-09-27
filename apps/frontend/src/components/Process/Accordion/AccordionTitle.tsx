@@ -1,4 +1,10 @@
-import { faChevronDown, faChevronRight, faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faChevronRight,
+  faEdit,
+  faFileWord,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tag } from '@navikt/ds-react'
 import { SIZE as ButtonSize } from 'baseui/button'
@@ -6,15 +12,15 @@ import { StyledLink } from 'baseui/link'
 import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { LabelLarge } from 'baseui/typography'
 import { Ref, RefObject, createRef, useState } from 'react'
-import { ProcessShort, ProcessStatus } from '../../../constants'
-import { ListName, codelist } from '../../../service/Codelist'
+import { EProcessStatus, IProcessShort } from '../../../constants'
+import { EListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import { AuditButton } from '../../admin/audit/AuditButton'
 import Button from '../../common/Button'
 
-type AccordionTitleProps = {
-  process: ProcessShort
+type TAccordionTitleProps = {
+  process: IProcessShort
   expanded: boolean
   hasAccess: boolean
   editProcess: () => void
@@ -24,7 +30,7 @@ type AccordionTitleProps = {
 
 export const InformationTypeRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
 
-const AccordionTitle = (props: AccordionTitleProps) => {
+const AccordionTitle = (props: TAccordionTitleProps) => {
   const { process, expanded, hasAccess, forwardRef, editProcess, deleteProcess } = props
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const today: string = new Date().toISOString().split('T')[0]
@@ -35,11 +41,20 @@ const AccordionTitle = (props: AccordionTitleProps) => {
     <>
       <div ref={forwardRef}>
         <LabelLarge color={theme.colors.primary}>
-          {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+          {expanded ? (
+            <FontAwesomeIcon icon={faChevronDown} />
+          ) : (
+            <FontAwesomeIcon icon={faChevronRight} />
+          )}
           <span> </span>
           <Tag variant={isActive ? 'success' : 'warning'}>{isActive ? 'Aktiv' : 'Utgått'}</Tag>
           <span> </span>
-          <span>{process.purposes.map((purpose) => codelist.getShortname(ListName.PURPOSE, purpose.code)).join(', ')}: </span>
+          <span>
+            {process.purposes
+              .map((purpose) => codelist.getShortname(EListName.PURPOSE, purpose.code))
+              .join(', ')}
+            :{' '}
+          </span>
           <span>{process.name}</span>
         </LabelLarge>
       </div>
@@ -51,22 +66,48 @@ const AccordionTitle = (props: AccordionTitleProps) => {
         {expanded && (
           <>
             <AuditButton id={process.id} marginRight />
-            <Button onClick={() => setIsExportModalOpen(true)} kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
+            <Button
+              onClick={() => setIsExportModalOpen(true)}
+              kind="outline"
+              size={ButtonSize.compact}
+              icon={faFileWord}
+              marginRight
+            >
               Eksportér
             </Button>
           </>
         )}
 
-        <Modal closeable animate autoFocus size={SIZE.auto} role={ROLE.dialog} isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)}>
+        <Modal
+          closeable
+          animate
+          autoFocus
+          size={SIZE.auto}
+          role={ROLE.dialog}
+          isOpen={isExportModalOpen}
+          onClose={() => setIsExportModalOpen(false)}
+        >
           <ModalHeader>Velg eksportmetode</ModalHeader>
           <ModalBody>
-            <StyledLink style={{ textDecoration: 'none' }} href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
+            <StyledLink
+              style={{ textDecoration: 'none' }}
+              href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}
+            >
               <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
                 Eksport for intern bruk
               </Button>
             </StyledLink>
-            <StyledLink style={{ textDecoration: 'none' }} href={`${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`}>
-              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight disabled={process.status !== ProcessStatus.COMPLETED}>
+            <StyledLink
+              style={{ textDecoration: 'none' }}
+              href={`${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`}
+            >
+              <Button
+                kind="outline"
+                size={ButtonSize.compact}
+                icon={faFileWord}
+                marginRight
+                disabled={process.status !== EProcessStatus.COMPLETED}
+              >
                 Eksport for ekstern bruk
               </Button>
             </StyledLink>
@@ -75,7 +116,13 @@ const AccordionTitle = (props: AccordionTitleProps) => {
 
         {hasAccess && expanded && (
           <>
-            <Button kind="outline" size={ButtonSize.compact} icon={faEdit} onClick={editProcess} marginRight>
+            <Button
+              kind="outline"
+              size={ButtonSize.compact}
+              icon={faEdit}
+              onClick={editProcess}
+              marginRight
+            >
               Redigér
             </Button>
 

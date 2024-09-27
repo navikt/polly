@@ -1,12 +1,12 @@
 import { FormikProps } from 'formik'
-import { ProcessFormValues } from '../../../constants'
+import { IProcessFormValues } from '../../../constants'
 import FieldNoDpiaReason from '../../common/FieldNoDpiaReason'
 import { ModalLabel } from '../../common/ModalSchema'
 import BoolField from './BoolField'
 import FieldInput from './FieldInput'
 
 interface IProps {
-  formikBag: FormikProps<ProcessFormValues>
+  formikBag: FormikProps<IProcessFormValues>
 }
 
 const DpiaItems = (props: IProps) => {
@@ -19,7 +19,11 @@ const DpiaItems = (props: IProps) => {
           label="Er det behov for PVK?"
           tooltip="Det er behov for å gjøre en PVK dersom det er sannsynlig at behandlingen vil medføre en høy risiko for den registrertes rettigheter og friheter"
         />
-        <BoolField fieldName="dpia.needForDpia" value={formikBag.values.dpia.needForDpia} omitUndefined={false} />
+        <BoolField
+          fieldName="dpia.needForDpia"
+          value={formikBag.values.dpia.needForDpia}
+          omitUndefined={false}
+        />
       </div>
       {formikBag.values.dpia?.needForDpia === undefined ? (
         <></>
@@ -27,7 +31,11 @@ const DpiaItems = (props: IProps) => {
         <>
           <div className="flex w-full mr-4">
             <ModalLabel label="Ref. til PVK" />
-            <FieldInput fieldName="dpia.refToDpia" fieldValue={formikBag.values.dpia?.refToDpia} placeHolder="(f.eks. lenke til Websak, Confluence e.l.)" />
+            <FieldInput
+              fieldName="dpia.refToDpia"
+              fieldValue={formikBag.values.dpia?.refToDpia}
+              placeHolder="(f.eks. lenke til Websak, Confluence e.l.)"
+            />
           </div>
         </>
       ) : (
@@ -37,7 +45,8 @@ const DpiaItems = (props: IProps) => {
             <FieldNoDpiaReason formikBag={formikBag} />
           </div>
 
-          {formikBag.values.dpia.noDpiaReasons.filter((reason) => reason === 'OTHER').length > 0 && (
+          {formikBag.values.dpia.noDpiaReasons.filter((reason) => reason === 'OTHER').length >
+            0 && (
             <div className="flex w-full mr-4">
               <ModalLabel label="Spesifiser ved annet" />
               <FieldInput fieldName="dpia.grounds" fieldValue={formikBag.values.dpia?.grounds} />
