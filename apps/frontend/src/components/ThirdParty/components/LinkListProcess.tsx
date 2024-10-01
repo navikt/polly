@@ -2,11 +2,8 @@ import { Fragment } from 'react/jsx-runtime'
 import { EObjectType, IProcessShort } from '../../../constants'
 import { ObjectLink } from '../../common/RouteLink'
 
-// Disse verdiene må være der fordi det blir sendt ned, men ikke brukt
 export const LinkListProcess = (
   items: IProcessShort[],
-  baseUrl: string,
-  objectType: EObjectType
 ) => {
   const len = items.length
 

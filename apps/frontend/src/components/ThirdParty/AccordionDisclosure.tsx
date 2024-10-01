@@ -15,7 +15,7 @@ import { Fragment, Key, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
-import { EObjectType, IDisclosure, IDisclosureAbroad, IDisclosureFormValues } from '../../constants'
+import { IDisclosure, IDisclosureAbroad, IDisclosureFormValues } from '../../constants'
 import { canViewAlerts } from '../../pages/AlertEventPage'
 import { EListName, codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
@@ -231,8 +231,6 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                           <DataText label="Relaterte behandlinger">
                             {LinkListProcess(
                               selectedDisclosure?.processes ? selectedDisclosure?.processes : [],
-                              '/process/purpose',
-                              EObjectType.PROCESS
                             )}
                           </DataText>
 
