@@ -45,4 +45,4 @@ const CodelistPage = (props: ICodeListPageProps) => {
 
 export const ThirdPartyListPage = () => <CodelistPage listName={EListName.THIRD_PARTY} baseUrl="/thirdparty/" title="Eksterne parter" />
 export const SystemListPage = () => <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" />
-export const PurposeList = <CodelistPage listName={EListName.PURPOSE} baseUrl="/process/purpose/" />
+export const PurposeList = () => <CodelistPage listName={EListName.PURPOSE} baseUrl="/process/purpose/" />
