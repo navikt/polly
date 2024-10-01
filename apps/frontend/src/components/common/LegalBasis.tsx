@@ -59,7 +59,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
     {
       // Replace '§§ 10 og 4' > '§§ 10 og §§§ 4', so that our rewriter picks up the 2nd part
       regex: /§§\s*(\d+(-\d+)?)\s*og\s*(\d+(-\d+)?)/gi,
-      fn: (key: string, result: string[]) => `§§ ${result[1]} og §§§ ${result[3]}`,
+      fn: (_key: string, result: string[]) => `§§ ${result[1]} og §§§ ${result[3]}`,
     },
     {
       // tripe '§§§' is hidden, used as a trick in combination with rule 1 above

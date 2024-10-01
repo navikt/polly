@@ -349,11 +349,11 @@ export const policySchema: () => yup.ObjectSchema<IPolicyFormValues> = () =>
       .test({
         name: 'duplicateSubjectCategory',
         message: 'placeholder',
-        test: function (val: string[], context: yup.TestContext<yup.AnyObject>) {
+        test: function (_val: string[], context: yup.TestContext<yup.AnyObject>) {
           const { parent, path } = this
           return subjectCategoryExists(path, parent, context)
         },
-      }),
+      }), 
     legalBasesUse: yup
       .mixed<ELegalBasesUse>()
       .oneOf(Object.values(ELegalBasesUse))

@@ -172,7 +172,7 @@ const Visualization = (props: TVisualizationProps) => {
               <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
               {!noChartData &&
                 data.map((data: IChartDataExpanded, index) => (
-                  <div key={index} onMouseOver={() => setHover(index)} onClick={data.onClick}>
+                  <div key={index} tabIndex={-1} role="button" onFocus={() => setHover(index)} onMouseOver={() => setHover(index)} onClick={data.onClick} onKeyDown={(event) => {if (event.key === 'Enter'){data.onClick}}}>
                     <div
                       className={`${index === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}
                     >

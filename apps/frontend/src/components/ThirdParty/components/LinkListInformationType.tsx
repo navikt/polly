@@ -5,8 +5,6 @@ import { ObjectLink } from '../../common/RouteLink'
 // Disse verdiene blir sendt ned, men aldri brukt
 export const LinkListInformationType = (
   items: IInformationTypeShort[],
-  baseUrl: string,
-  objectType: EObjectType
 ) => {
   const len = items.length
 

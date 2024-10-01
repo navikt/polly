@@ -144,7 +144,7 @@ const FrontpageMessage = (props: IFrontpageMessageProps) => {
           />
         </div>
         <div className="w-1/2 mt-8">
-          <Markdown source={message} escapeHtml={false} verbatim />
+          <Markdown source={message} escapeHtml={false} />
         </div>
       </div>
     </div>

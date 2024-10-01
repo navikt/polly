@@ -13,7 +13,7 @@ type TFieldDataProcessorsProps = {
 
 const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
   const { formikBag, options } = props
-  const [dataProcessors, setDataProcessors] = useState(
+  const [dataProcessors, _setDataProcessors] = useState(
     props.dataProcessors ? props.dataProcessors : new Map<string, string>()
   )
 

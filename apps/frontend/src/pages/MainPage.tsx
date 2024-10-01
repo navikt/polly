@@ -77,7 +77,7 @@ export const MainPage = () => {
               className={`min-h-[550px] ${user.isLoggedIn() ? 'w-full mt-12 mb-[2px]' : 'w-[48%] mt-[2px] mb-6'}`}
             >
               <Card overrides={cardShadow}>
-                <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim />
+                <Markdown source={settings?.frontpageMessage} escapeHtml={false} />
               </Card>
             </div>
           </div>

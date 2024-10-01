@@ -241,8 +241,6 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                               selectedDisclosure?.informationTypes
                                 ? selectedDisclosure?.informationTypes.map((p) => p)
                                 : [],
-                              '/informationtype',
-                              EObjectType.INFORMATION_TYPE
                             )}
                           </DataText>
 

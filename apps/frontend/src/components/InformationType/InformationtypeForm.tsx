@@ -372,7 +372,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                 kind="secondary"
                 overrides={{
                   BaseButton: {
-                    style: ({ $theme }: any) => {
+                    style: () => {
                       return {
                         alignContent: 'center',
                         paddingRight: '4rem',
@@ -389,7 +389,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                 type="submit"
                 overrides={{
                   BaseButton: {
-                    style: ({ $theme }: any) => {
+                    style: () => {
                       return {
                         alignContent: 'center',
                         marginLeft: '1rem',

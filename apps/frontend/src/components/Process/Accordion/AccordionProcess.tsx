@@ -86,7 +86,6 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showRevisionModal, setShowRevisionModal] = useState(false)
   const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
-  const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const purposeRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
@@ -162,7 +161,6 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       if (currentProcess) {
         const userIdent: string = currentProcess.changeStamp.lastModifiedBy.split(' ')[0]
         await getResourceById(userIdent)
-          .then((res) => setLastModifiedUserEmail(res.email))
           .catch(() => console.debug('Unable to get email for user that last modified'))
       }
     })()

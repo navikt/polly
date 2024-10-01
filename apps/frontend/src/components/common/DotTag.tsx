@@ -66,7 +66,7 @@ const Content = (props: IContentProps) => {
           {!linkCodelist && <>{codelist.getShortname(list, item)}</>}
         </>
       )}
-      {!list && markdown && <Markdown source={item} singleWord />}
+      {!list && markdown && <Markdown source={item} />}
       {!list && !markdown && item}
     </>
   )

@@ -4,20 +4,17 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
-/**
- * singleWord true remove paragraph wrapper for content
- */
-export const Markdown = ({
-  singleWord,
-  escapeHtml = true,
-  verbatim,
-  source,
-}: {
+
+interface IMarkdownProps {
   source?: string
   escapeHtml?: boolean
-  singleWord?: boolean
-  verbatim?: boolean
-}) => {
+}
+
+
+export const Markdown = ({
+  escapeHtml = true,
+  source,
+}: IMarkdownProps) => {
   const renderers = {
     a: (linkProps: any) => {
       const { children, href } = linkProps
