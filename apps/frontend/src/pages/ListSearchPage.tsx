@@ -6,7 +6,14 @@ import { ampli } from '../service/Amplitude'
 import { EListName, codelist } from '../service/Codelist'
 import { useAwait } from '../util'
 
-const CodelistPage = (listName: EListName, baseUrl: string, title?: string): JSX.Element => {
+interface ICodeListPageProps {
+  listName: EListName
+  baseUrl: string
+  title?: string
+}
+
+const CodelistPage = (props: ICodeListPageProps) => {
+  const {listName, baseUrl, title} = props
   const [isLoading, setIsLoading] = useState<boolean>(true)
   useAwait(codelist.wait(), setIsLoading)
 
@@ -36,10 +43,6 @@ const CodelistPage = (listName: EListName, baseUrl: string, title?: string): JSX
   )
 }
 
-export const ThirdPartyListPage = CodelistPage(
-  EListName.THIRD_PARTY,
-  '/thirdparty/',
-  'Eksterne parter'
-)
-export const SystemListPage = CodelistPage(EListName.SYSTEM, '/system/', 'Systemer')
-export const PurposeList = CodelistPage(EListName.PURPOSE, '/process/purpose/')
+export const ThirdPartyListPage = () => <CodelistPage listName={EListName.THIRD_PARTY} baseUrl="/thirdparty/" title="Eksterne parter" />
+export const SystemListPage = () => <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" />
+export const PurposeList = <CodelistPage listName={EListName.PURPOSE} baseUrl="/process/purpose/" />
