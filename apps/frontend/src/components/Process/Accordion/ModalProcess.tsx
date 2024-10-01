@@ -210,26 +210,6 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                     </div>
                   </CustomizedModalBlock>
 
-                  <CustomizedModalBlock>
-                    <ModalLabel label="Status på utfylling" />
-                    <div className="flex w-full mt-4">
-                      <Field
-                        name="status"
-                        render={({ form }: FieldProps<ProcessFormValues>) => (
-                          <RadioGroup
-                            value={formikBag.values.status}
-                            align={ALIGN.horizontal}
-                            onChange={(event: ChangeEvent<HTMLInputElement>) => form.setFieldValue('status', (event.target as HTMLInputElement).value)}
-                          >
-                            <Radio value={ProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
-                            <Radio value={ProcessStatus.IN_PROGRESS}>Under arbeid</Radio>
-                            {initialValues.status === ProcessStatus.NEEDS_REVISION && <Radio value={ProcessStatus.NEEDS_REVISION}>Trenger revidering</Radio>}
-                          </RadioGroup>
-                        )}
-                      />
-                    </div>
-                  </CustomizedModalBlock>
-
                   <StatelessAccordion
                     overrides={{
                       Root: {
@@ -406,6 +386,25 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                       />
                     </Panel>
                   </StatelessAccordion>
+                  <CustomizedModalBlock>
+                    <ModalLabel label="Status på utfylling" />
+                    <div className="flex w-full mt-4">
+                      <Field
+                        name="status"
+                        render={({ form }: FieldProps<ProcessFormValues>) => (
+                          <RadioGroup
+                            value={formikBag.values.status}
+                            align={ALIGN.horizontal}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => form.setFieldValue('status', (event.target as HTMLInputElement).value)}
+                          >
+                            <Radio value={ProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
+                            <Radio value={ProcessStatus.IN_PROGRESS}>Under arbeid</Radio>
+                            {initialValues.status === ProcessStatus.NEEDS_REVISION && <Radio value={ProcessStatus.NEEDS_REVISION}>Trenger revidering</Radio>}
+                          </RadioGroup>
+                        )}
+                      />
+                    </div>
+                  </CustomizedModalBlock>
                 </ModalBody>
 
                 <ModalFooter
