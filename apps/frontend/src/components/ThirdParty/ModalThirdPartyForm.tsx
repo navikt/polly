@@ -1,7 +1,6 @@
+import { Button, Modal } from '@navikt/ds-react'
 import { Accordion, Panel } from 'baseui/accordion'
-import { Button } from 'baseui/button'
 import { Input } from 'baseui/input'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Select, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import {
@@ -61,7 +60,6 @@ const FieldRecipient = (props: IFieldRecipientProps) => {
       name="recipient"
       render={({ form }: FieldProps<IDisclosureFormValues>) => (
         <Select
-          autoFocus
           options={codelist.getParsedOptions(EListName.THIRD_PARTY)}
           onChange={({ value }) => {
             setRecipientValue(value)
@@ -133,14 +131,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
   const [isPanelExpanded, togglePanel] = useReducer((prevState) => !prevState, false)
 
   return (
-    <Modal
-      onClose={onClose}
-      isOpen={isOpen}
-      closeable={false}
-      animate
-      size={SIZE.auto}
-      role={ROLE.dialog}
-    >
+    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width='992px'>
       <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
@@ -154,11 +145,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
         >
           {(formikBag: FormikProps<IDisclosureFormValues>) => (
             <Form>
-              <ModalHeader>
-                <div className="flex jusify-center mb-8">{title}</div>
-              </ModalHeader>
-
-              <ModalBody>
+              <Modal.Body>
                 <div className="flex w-full mt-4">
                   <ModalLabel label="Mottaker" />
                   <FieldRecipient
@@ -407,17 +394,17 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                     <Error fieldName="legalBasesOpen" fullWidth={true} />
                   </Panel>
                 </Accordion>
-              </ModalBody>
+              </Modal.Body>
 
-              <ModalFooter style={{ borderTop: 0 }}>
+              <Modal.Footer style={{ borderTop: 0 }}>
                 <div className="flex justify-end">
                   <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" kind="tertiary" onClick={() => onClose()}>
+                  <Button type="button" variant="tertiary" onClick={() => onClose()}>
                     Avbryt
                   </Button>
-                  <ModalButton type="submit">Lagre</ModalButton>
+                  <Button type="submit">Lagre</Button>
                 </div>
-              </ModalFooter>
+              </Modal.Footer>
             </Form>
           )}
         </Formik>

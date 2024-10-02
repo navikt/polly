@@ -1,8 +1,7 @@
 import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Accordion } from '@navikt/ds-react'
+import { Accordion, Modal } from '@navikt/ds-react'
 import { SIZE as ButtonSize } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium, ParagraphSmall } from 'baseui/typography'
 import { Fragment, Key, useEffect, useState } from 'react'
@@ -338,18 +337,16 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
       {showDeleteModal && (
         <Modal
           onClose={() => setShowDeleteModal(false)}
-          isOpen={showDeleteModal}
-          animate
-          size="default"
+          open={showDeleteModal}
+          header={{ heading: 'Bekreft sletting' }}
         >
-          <ModalHeader>Bekreft sletting</ModalHeader>
-          <ModalBody>
+          <Modal.Body>
             <ParagraphMedium>
               Bekreft sletting av utlevering {selectedDisclosure?.name}
             </ParagraphMedium>
-          </ModalBody>
+          </Modal.Body>
 
-          <ModalFooter>
+          <Modal.Footer>
             <div className="flex justify-end">
               <div className="self-end">{errorModal && <p>{errorModal}</p>}</div>
               <Button
@@ -378,7 +375,7 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                 Slett
               </Button>
             </div>
-          </ModalFooter>
+          </Modal.Footer>
         </Modal>
       )}
     </Fragment>
