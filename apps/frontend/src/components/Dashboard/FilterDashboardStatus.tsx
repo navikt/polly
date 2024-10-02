@@ -5,7 +5,7 @@ import { EProcessStatusFilter } from '../../constants'
 import { theme } from '../../util'
 
 interface IFilterDashboardStatusProps {
-  setFilter: Function
+  setFilter: React.Dispatch<React.SetStateAction<EProcessStatusFilter>>
 }
 
 export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
