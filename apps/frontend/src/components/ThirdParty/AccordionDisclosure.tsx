@@ -1,11 +1,5 @@
-import {
-  faChevronRight,
-  faEdit,
-  faExclamationCircle,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Accordion } from '@navikt/ds-react'
 import { SIZE as ButtonSize } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
@@ -59,7 +53,7 @@ const showAbroad = (abroad: IDisclosureAbroad) => {
     } else {
       return (
         <>
-          <DataText label="Utleveres personopplysningene til utlandet?" children="Ja" />
+          <DataText label="Utleveres personopplysningene til utlandet?">Ja</DataText>
           {abroad.businessArea && <DataText label="Trygdeområde" text={abroad.businessArea} />}
         </>
       )
@@ -106,146 +100,113 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
   return (
     <Fragment>
-      <StatelessAccordion
-        onChange={(event) => {
-          if (event.expanded.length > 0) {
-            renewDisclosureDetails(event.expanded[0].toString())
-          }
-          setExpanded(event.expanded)
-        }}
-        expanded={expanded}
-      >
+      <Accordion>
         {disclosureList &&
           disclosureList
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((d: IDisclosure) => {
               return (
-                <Panel
-                  title={
-                    <div className="flex w-full">
-                      <div>
-                        <FontAwesomeIcon icon={faChevronRight} />
-                      </div>
-                      <div className="ml-[5px]">{d.name}</div>
-                      <div className="ml-auto">
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation()
-                          }}
-                        >
-                          <>
-                            {d.id === expanded[0]
-                              ? editable && (
-                                  <>
-                                    {selectedDisclosure && hasAlert && canViewAlerts() && (
-                                      <Button
-                                        kind={'outline'}
-                                        size={ButtonSize.compact}
-                                        icon={faExclamationCircle}
-                                        marginRight
-                                        tooltip={
-                                          hasAlert
-                                            ? 'Varsler: Behandlingsgrunnlag for artikkel 6 mangler'
-                                            : 'Varsler: Nei'
-                                        }
-                                        onClick={() =>
-                                          navigate(
-                                            `/alert/events/disclosure/${selectedDisclosure.id}`
-                                          )
-                                        }
-                                      >
-                                        Varsler
-                                      </Button>
-                                    )}
-                                    {user.isLoggedIn() && (
-                                      <>
-                                        <Button
-                                          kind={'outline'}
-                                          size={ButtonSize.compact}
-                                          icon={faEdit}
-                                          onClick={() => setShowEditModal(true)}
-                                          marginRight
-                                        >
-                                          Redigér
-                                        </Button>
-
-                                        <Button
-                                          kind={'outline'}
-                                          size={ButtonSize.compact}
-                                          icon={faTrash}
-                                          onClick={() => setShowDeleteModal(true)}
-                                        >
-                                          Slett
-                                        </Button>
-                                      </>
-                                    )}
-                                  </>
-                                )
-                              : ''}
-                          </>
-                        </div>
-                      </div>
-                    </div>
-                  }
+                <Accordion.Item
                   key={d.id}
-                  overrides={{
-                    ToggleIcon: {
-                      component: () => null,
-                    },
-                    Content: {
-                      style: {
-                        backgroundColor: theme.colors.white,
-                        // Outline width
-                        paddingTop: '4px',
-                        paddingBottom: '4px',
-                        paddingLeft: '4px',
-                        paddingRight: '4px',
-                      },
-                    },
+                  open={d.id === expanded[0]}
+                  onOpenChange={(expanded) => {
+                    if (expanded) {
+                      renewDisclosureDetails(d.id)
+                      setExpanded([d.id])
+                    } else {
+                      setExpanded([])
+                    }
                   }}
                 >
-                  {isLoading ? (
-                    <div className="p-2.5">
-                      <Spinner $size={theme.sizing.scale1200} />
-                    </div>
-                  ) : (
-                    <div className="outline outline-4 outline-[#E2E2E2]">
-                      <div className="p-6">
-                        <div className="w-full">
-                          {showRecipient && (
+                  <Accordion.Header>{d.name}</Accordion.Header>
+                  <Accordion.Content>
+                    {editable && (
+                      <div className=" w-full flex justify-end mb-5">
+                        {selectedDisclosure && hasAlert && canViewAlerts() && (
+                          <Button
+                            kind={'outline'}
+                            size={ButtonSize.compact}
+                            icon={faExclamationCircle}
+                            marginRight
+                            tooltip={
+                              hasAlert
+                                ? 'Varsler: Behandlingsgrunnlag for artikkel 6 mangler'
+                                : 'Varsler: Nei'
+                            }
+                            onClick={() =>
+                              navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)
+                            }
+                          >
+                            Varsler
+                          </Button>
+                        )}
+                        {user.isLoggedIn() && (
+                          <>
+                            <Button
+                              kind={'outline'}
+                              size={ButtonSize.compact}
+                              icon={faEdit}
+                              onClick={() => setShowEditModal(true)}
+                              marginRight
+                            >
+                              Redigér
+                            </Button>
+
+                            <Button
+                              kind={'outline'}
+                              size={ButtonSize.compact}
+                              icon={faTrash}
+                              onClick={() => setShowDeleteModal(true)}
+                            >
+                              Slett
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                    {isLoading && (
+                      <div className="p-2.5">
+                        <Spinner $size={theme.sizing.scale1200} />
+                      </div>
+                    )}
+
+                    {!isLoading && (
+                      <div className="outline outline-4 outline-[#E2E2E2]">
+                        <div className="p-6">
+                          <div className="w-full">
+                            {showRecipient && (
+                              <DataText
+                                label="Mottaker"
+                                text={selectedDisclosure?.recipient.shortName}
+                              />
+                            )}
+                            <DataText label="Navn på utlevering" text={selectedDisclosure?.name} />
                             <DataText
-                              label="Mottaker"
-                              text={selectedDisclosure?.recipient.shortName}
+                              label="Formål med utlevering"
+                              text={selectedDisclosure?.recipientPurpose}
                             />
-                          )}
-                          <DataText label="Navn på utlevering" text={selectedDisclosure?.name} />
-                          <DataText
-                            label="Formål med utlevering"
-                            text={selectedDisclosure?.recipientPurpose}
-                          />
-                          <DataText
-                            label="Ytterligere beskrivelse"
-                            text={selectedDisclosure?.description}
-                          />
+                            <DataText
+                              label="Ytterligere beskrivelse"
+                              text={selectedDisclosure?.description}
+                            />
 
-                          <DataText label="Relaterte behandlinger">
-                            {LinkListProcess(
-                              selectedDisclosure?.processes ? selectedDisclosure?.processes : [],
-                            )}
-                          </DataText>
+                            <DataText label="Relaterte behandlinger">
+                              {LinkListProcess(
+                                selectedDisclosure?.processes ? selectedDisclosure?.processes : []
+                              )}
+                            </DataText>
 
-                          <DataText label="Opplysningstyper">
-                            {LinkListInformationType(
-                              selectedDisclosure?.informationTypes
-                                ? selectedDisclosure?.informationTypes.map((p) => p)
-                                : [],
-                            )}
-                          </DataText>
+                            <DataText label="Opplysningstyper">
+                              {LinkListInformationType(
+                                selectedDisclosure?.informationTypes
+                                  ? selectedDisclosure?.informationTypes.map((p) => p)
+                                  : []
+                              )}
+                            </DataText>
 
-                          <DataText
-                            label="Dokument"
-                            children={
-                              selectedDisclosure?.documentId ? (
+                            <DataText label="Dokument">
+                              {selectedDisclosure?.documentId && (
                                 <StyledLink
                                   href={`/document/${selectedDisclosure?.documentId}`}
                                   target="_blank"
@@ -253,107 +214,106 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                                 >
                                   {selectedDisclosure?.document?.name}
                                 </StyledLink>
-                              ) : (
-                                <>Ikke angitt</>
-                              )
-                            }
-                          />
-
-                          {selectedDisclosure?.legalBases.length ? (
-                            <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
-                              {selectedDisclosure.legalBases
-                                .sort((a, b) =>
-                                  codelist
-                                    .getShortname(EListName.GDPR_ARTICLE, a.gdpr.code)
-                                    .localeCompare(
-                                      codelist.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code)
-                                    )
-                                )
-                                .map((legalBasis, index) => (
-                                  <div key={index}>
-                                    <LegalBasisView legalBasis={legalBasis} />
-                                  </div>
-                                ))}
+                              )}
+                              {!selectedDisclosure?.documentId && 'Ikke angitt'}
                             </DataText>
-                          ) : (
-                            <>
-                              <DataText
-                                label="Behandlingsgrunnlag for hele behandlingen"
-                                text="Ikke angitt"
-                              />
-                            </>
-                          )}
-                        </div>
-                        {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
 
-                        <div>
-                          <DataText
-                            label="Hjemmel for unntak fra taushetsplikt er vurdert"
-                            text={
-                              d.assessedConfidentiality !== null
-                                ? d.assessedConfidentiality
-                                  ? 'Ja'
-                                  : 'Nei'
-                                : 'Ikke angitt'
-                            }
-                          />
+                            {selectedDisclosure?.legalBases.length ? (
+                              <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
+                                {selectedDisclosure.legalBases
+                                  .sort((a, b) =>
+                                    codelist
+                                      .getShortname(EListName.GDPR_ARTICLE, a.gdpr.code)
+                                      .localeCompare(
+                                        codelist.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code)
+                                      )
+                                  )
+                                  .map((legalBasis, index) => (
+                                    <div key={index}>
+                                      <LegalBasisView legalBasis={legalBasis} />
+                                    </div>
+                                  ))}
+                              </DataText>
+                            ) : (
+                              <>
+                                <DataText
+                                  label="Behandlingsgrunnlag for hele behandlingen"
+                                  text="Ikke angitt"
+                                />
+                              </>
+                            )}
+                          </div>
+                          {selectedDisclosure && showAbroad(selectedDisclosure?.abroad)}
 
-                          {d.assessedConfidentiality !== null && (
+                          <div>
                             <DataText
-                              label={
-                                d.assessedConfidentiality
-                                  ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
-                                  : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'
-                              }
-                              text=""
-                            >
-                              {shortenLinksInText(
-                                d.confidentialityDescription
-                                  ? d.confidentialityDescription
+                              label="Hjemmel for unntak fra taushetsplikt er vurdert"
+                              text={
+                                d.assessedConfidentiality !== null
+                                  ? d.assessedConfidentiality
+                                    ? 'Ja'
+                                    : 'Nei'
                                   : 'Ikke angitt'
+                              }
+                            />
+
+                            {d.assessedConfidentiality !== null && (
+                              <DataText
+                                label={
+                                  d.assessedConfidentiality
+                                    ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
+                                    : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'
+                                }
+                                text=""
+                              >
+                                {shortenLinksInText(
+                                  d.confidentialityDescription
+                                    ? d.confidentialityDescription
+                                    : 'Ikke angitt'
+                                )}
+                              </DataText>
+                            )}
+                          </div>
+
+                          <div>
+                            <DataText label="Avdeling">
+                              {d.department?.code && (
+                                <DotTags
+                                  list={EListName.DEPARTMENT}
+                                  codes={[d.department]}
+                                  commaSeparator
+                                  linkCodelist
+                                />
+                              )}
+                              {!d.department?.code && 'Ikke angitt'}
+                            </DataText>
+
+                            <DataText label="Team">
+                              {d.productTeams?.length ? (
+                                <TeamList teamIds={d.productTeams} />
+                              ) : (
+                                'Ikke angitt'
                               )}
                             </DataText>
-                          )}
+                          </div>
                         </div>
-
-                        <div>
-                          <DataText label="Avdeling">
-                            {d.department?.code && (
-                              <DotTags
-                                list={EListName.DEPARTMENT}
-                                codes={[d.department]}
-                                commaSeparator
-                                linkCodelist
-                              />
-                            )}
-                            {!d.department?.code && 'Ikke angitt'}
-                          </DataText>
-
-                          <DataText label="Team">
-                            {d.productTeams?.length ? (
-                              <TeamList teamIds={d.productTeams} />
-                            ) : (
-                              'Ikke angitt'
-                            )}
-                          </DataText>
-                        </div>
-                      </div>
-                      <div className="flex justify-end mb-4 mr-4">
-                        <ParagraphSmall>
-                          {selectedDisclosure && (
-                            <i>
-                              {`Sist endret av ${selectedDisclosure?.changeStamp?.lastModifiedBy} ,
+                        <div className="flex justify-end mb-4 mr-4">
+                          <ParagraphSmall>
+                            {selectedDisclosure && (
+                              <i>
+                                {`Sist endret av ${selectedDisclosure?.changeStamp?.lastModifiedBy} ,
                               ${lastModifiedDate(selectedDisclosure?.changeStamp?.lastModifiedDate)}`}
-                            </i>
-                          )}
-                        </ParagraphSmall>
+                              </i>
+                            )}
+                          </ParagraphSmall>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </Panel>
+                    )}
+                  </Accordion.Content>
+                </Accordion.Item>
               )
             })}
-      </StatelessAccordion>
+      </Accordion>
       {editable && showEditModal && selectedDisclosure && (
         <ModalThirdParty
           title="Rediger utlevering"
