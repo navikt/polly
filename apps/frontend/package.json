@@ -50,7 +50,8 @@
     "test": "craco test",
     "format": "prettier --write \"./src\"",
     "prettier": "prettier --write \"./src\"",
-    "prepare": "cd ../../ && husky apps/frontend/.husky"
+    "prepare": "cd ../../ && husky apps/frontend/.husky",
+    "type-check": "tsc --project tsconfig.json"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
