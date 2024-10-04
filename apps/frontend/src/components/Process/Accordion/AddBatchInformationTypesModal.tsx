@@ -85,7 +85,6 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                   <div className=" flex w-full mt-4 flex-row">
                     <ModalLabel label="Master i NAV" />
                     <Select
-                      autoFocus
                       isLoading={searchLoading}
                       options={codelist.getParsedOptions(EListName.SYSTEM)}
                       maxDropdownHeight="400px"

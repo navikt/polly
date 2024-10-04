@@ -65,8 +65,8 @@ const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps
                 </Cell>
                 <Cell $style={{ maxWidth: '25%' }}>
                   <div>
-                    {row.affiliation.products.map((product) => (
-                      <div className="mr-[10%]">
+                    {row.affiliation.products.map((product, index) => (
+                      <div className="mr-[10%]" key={index}>
                         <RouteLink href={`/process/system/${product.code}`}>
                           {product.shortName}
                         </RouteLink>

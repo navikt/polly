@@ -52,7 +52,7 @@ type TProcessListProps = {
   hideTitle?: boolean
   code: string
   listName?: EListName
-  moveScroll?: Function
+  moveScroll?: () => void
   isEditable: boolean
   getCount?: (i: number) => void
 }
@@ -376,7 +376,6 @@ const ProcessList = ({
         <Modal
           closeable
           animate
-          autoFocus
           size={ModalSize.auto}
           role={ROLE.dialog}
           isOpen={isExportModalOpen}

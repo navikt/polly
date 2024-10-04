@@ -103,7 +103,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
 
-  const loading: boolean = !defaultDoc
+  const loading = !defaultDoc
 
   useEffect(() => {
     ;(async () => {
@@ -188,7 +188,6 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                             <Select
                               clearable={false}
                               isLoading={searchLoading}
-                              autoFocus
                               noResultsMsg="Ingen"
                               maxDropdownHeight="400px"
                               searchable={true}

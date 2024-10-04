@@ -121,7 +121,6 @@ const CardLegalBasis = ({
               name="gdpr"
               render={() => (
                 <Select
-                  autoFocus={true}
                   options={getOptionsBySensitivityLevel()}
                   placeholder={
                     sensitivityLevel === ESensitivityLevel.ART9

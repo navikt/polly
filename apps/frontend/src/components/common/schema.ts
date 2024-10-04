@@ -28,9 +28,9 @@ const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
 
 const maxError = () => `Maks ${max} tegn`
-const requredMessage: string = 'Feltet er påkrevd'
-const incorrectDateMessage: string = 'Feil dato format, eksempel: 2018-08-22'
-const legalBasesOpenMessage: string = 'Lukk behandlingsgrunnlag redigering før lagring'
+const requredMessage = 'Feltet er påkrevd'
+const incorrectDateMessage = 'Feil dato format, eksempel: 2018-08-22'
+const legalBasesOpenMessage = 'Lukk behandlingsgrunnlag redigering før lagring'
 
 function ignore<T>(): yup.Schema<T> {
   return yup.object() as any as yup.Schema<T>
@@ -239,10 +239,10 @@ const missingArt9LegalBasisForSensitiveInfoType = (
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
   const reqArt9: boolean =
     informationType && codelist.requiresArt9(informationType.sensitivity.code)
-  const missingArt9: boolean = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
+  const missingArt9 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
     codelist.isArt9(legalBase.gdpr)
   ).length
-  const processMissingArt9: boolean = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
+  const processMissingArt9 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
     codelist.isArt9(legalBase.gdpr.code)
   ).length
   return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
@@ -252,10 +252,10 @@ const missingArt6LegalBasisForInfoType = (policy: IPolicyFormValues) => {
   const ownLegalBasis: boolean =
     policy.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES ||
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
-  const missingArt6: boolean = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
+  const missingArt6 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
     codelist.isArt6(legalBase.gdpr)
   ).length
-  const processMissingArt6: boolean = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
+  const processMissingArt6 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
     codelist.isArt6(legalBase.gdpr.code)
   ).length
   return ownLegalBasis && missingArt6 && processMissingArt6
@@ -430,7 +430,7 @@ export const disclosureSchema: () => yup.ObjectSchema<IDisclosureFormValues> = (
     end: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
     processes: yup.array<any>().required(),
     abroad: disclosureAbroadSchema().required(),
-    processIds: yup.array<String>().required(),
+    processIds: yup.array<any>().required(),
     informationTypes: yup.array<IInformationTypeShort>(),
     aaregContracts: yup.array().of(ignore().required()),
     aaregContractIds: yup.array(),
@@ -439,7 +439,7 @@ export const disclosureSchema: () => yup.ObjectSchema<IDisclosureFormValues> = (
     assessedConfidentiality: yup.boolean().required(requredMessage),
     confidentialityDescription: yup.string().required(requredMessage),
     department: yup.string(),
-    productTeams: yup.array<String>(),
+    productTeams: yup.array<any>(),
   })
 
 export const addDocumentToProcessSchema: () => yup.ObjectSchema<IAddDocumentToProcessFormValues> =

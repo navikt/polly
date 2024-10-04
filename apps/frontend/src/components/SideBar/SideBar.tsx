@@ -78,7 +78,7 @@ const SideBar = () => (
           </div>
         </div>
 
-        <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank">
+        <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
           <div className="flex justify-center pb-2.5 items-center">
             <CustomizedStatefulTooltip
               content="På navets personvernsider finner du informasjon til hjelp for utfylling."
@@ -88,7 +88,7 @@ const SideBar = () => (
             </CustomizedStatefulTooltip>
           </div>
         </a>
-        <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
+        <a href={datajegerSlackLink} style={{ textDecoration: 'none' } }>
           <div className="flex justify-center items-center">
             <img src={SlackLogo} width="60px" alt="slack logo" />
             <ParagraphXSmall color={theme.colors.white}>#behandlingskatalogen</ParagraphXSmall>

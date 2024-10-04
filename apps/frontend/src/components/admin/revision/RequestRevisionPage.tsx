@@ -156,7 +156,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   <ModalLabel label="Behandlinger" />
                   <Field name="processSelection">
                     {() => {
-                      const button = (s: EProcessSelection, text: string = 'Alle') => {
+                      const button = (s: EProcessSelection, text = 'Alle') => {
                         const onClick = () => formikBag.setFieldValue('processSelection', s)
                         return (
                           <BButton type="button" onClick={onClick}>

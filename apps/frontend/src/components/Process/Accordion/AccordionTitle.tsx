@@ -81,7 +81,6 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
         <Modal
           closeable
           animate
-          autoFocus
           size={SIZE.auto}
           role={ROLE.dialog}
           isOpen={isExportModalOpen}

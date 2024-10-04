@@ -97,7 +97,6 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                         {...field}
                         type="input"
                         size={InputSIZE.default}
-                        autoFocus
                         error={!!form.errors.name && form.touched.name}
                       />
                     )}

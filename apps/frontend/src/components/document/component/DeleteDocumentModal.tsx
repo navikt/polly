@@ -19,7 +19,7 @@ const DeleteDocumentModal = ({
   submit,
   documentUsageCount,
 }: TModalDeleteProps) => (
-  <Modal onClose={onClose} isOpen={isOpen} autoFocus animate size="default">
+  <Modal onClose={onClose} isOpen={isOpen} animate size="default">
     <ModalHeader>{title}</ModalHeader>
     <ModalBody>
       {!documentUsageCount ? (

@@ -51,7 +51,7 @@ const DpProcessView = () => {
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
 
-  const isDataProcessingAgreementsAvailable: boolean = !!dpProcess?.dataProcessingAgreements.length
+  const isDataProcessingAgreementsAvailable = !!dpProcess?.dataProcessingAgreements.length
 
   const handleEditDpProcess = async (dpProcess: IDpProcessFormValues): Promise<void> => {
     if (!dpProcess) return
@@ -151,7 +151,7 @@ const DpProcessView = () => {
           </div>
           <DataText label="Behandlingsansvarlig" text="">
             <span>
-              {!!dpProcess?.externalProcessResponsible ? (
+              {dpProcess?.externalProcessResponsible ? (
                 <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
                   {codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}
                 </RouteLink>
@@ -219,7 +219,7 @@ const DpProcessView = () => {
 
             <div className="flex">
               <span>Team: </span>
-              {!!dpProcess?.affiliation.productTeams?.length ? (
+              {dpProcess?.affiliation.productTeams?.length ? (
                 <TeamList teamIds={dpProcess?.affiliation.productTeams} />
               ) : (
                 'Ikke utfylt'
@@ -261,7 +261,7 @@ const DpProcessView = () => {
                         <div className="whitespace-nowrap mt-4 mr-0" />
                         <div className="flex flexWrap">
                           {processors.map((processor: IProcessor, index) => (
-                            <div className={index < processors.length ? 'mr-1.5' : ''}>
+                            <div key={processor.id} className={index < processors.length ? 'mr-1.5' : ''}>
                               <DotTag key={processor.id}>
                                 <RouteLink href={'/processor/' + processor.id}>
                                   {processor.name}
