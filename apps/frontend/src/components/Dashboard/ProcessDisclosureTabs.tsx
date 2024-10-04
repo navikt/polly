@@ -18,7 +18,7 @@ interface IProps {
   code: string
   section: ESection
   isEditable: boolean
-  moveScroll?: Function
+  moveScroll?: () => void
   listName?: EListName
   processId?: string
   filter?: EProcessStatus

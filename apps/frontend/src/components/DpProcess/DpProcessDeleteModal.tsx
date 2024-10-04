@@ -1,13 +1,11 @@
-import { Button } from 'baseui/button'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { ParagraphMedium } from 'baseui/typography'
+import { Button, Modal } from '@navikt/ds-react'
 
 interface IDpProcessDeleteModal {
   errorOnDeletion: string
   isOpen: boolean
   onClose: () => void
-  onSubmit: Function
-  title: String
+  onSubmit: () => void
+  title: string
 }
 
 export const DpProcessDeleteModal = (props: IDpProcessDeleteModal) => {
@@ -15,24 +13,17 @@ export const DpProcessDeleteModal = (props: IDpProcessDeleteModal) => {
 
   return (
     <>
-      <Modal autoFocus animate size="default" isOpen={isOpen} onClose={onClose}>
-        <ModalHeader>{title}</ModalHeader>
-        <ModalBody>
-          <ParagraphMedium>Bekreft sletting av behandlingen</ParagraphMedium>
-        </ModalBody>
-        <ModalFooter>
+      <Modal open={isOpen} onClose={onClose} header={{ heading: title }}>
+        <Modal.Body>Bekreft sletting av behandlingen</Modal.Body>
+        <Modal.Footer>
           <div className="flex justify-end">
             <div className="self-end">{errorOnDeletion && <p>{errorOnDeletion}</p>}</div>
-            <Button
-              kind="secondary"
-              onClick={() => onClose()}
-              overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}
-            >
+            <Button variant="secondary" onClick={() => onClose()}>
               Avbryt
             </Button>
             <Button onClick={() => onSubmit()}>Slett</Button>
           </div>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
     </>
   )
