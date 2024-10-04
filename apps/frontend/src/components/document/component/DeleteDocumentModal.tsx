@@ -1,6 +1,4 @@
-import { Button } from 'baseui/button'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { ParagraphMedium } from 'baseui/typography'
+import { Button, Modal } from '@navikt/ds-react'
 
 type TModalDeleteProps = {
   title: string
@@ -19,24 +17,21 @@ const DeleteDocumentModal = ({
   submit,
   documentUsageCount,
 }: TModalDeleteProps) => (
-  <Modal onClose={onClose} isOpen={isOpen} animate size="default">
-    <ModalHeader>{title}</ModalHeader>
-    <ModalBody>
+  <Modal onClose={onClose} open={isOpen} header={{ heading: title }}>
+    <Modal.Body>
       {!documentUsageCount ? (
-        <ParagraphMedium>{`Bekreft sletting av dokument "${documentName}"`}</ParagraphMedium>
+        <div>{`Bekreft sletting av dokument"${documentName}"`}</div>
       ) : (
-        <ParagraphMedium>{`Kan ikke slette behandlingen ${documentName.toString()}
-          den inneholder fortsatt ${documentUsageCount.toString()} opplysningstype(r)`}</ParagraphMedium>
+        <div>
+          {`Kan ikke slette behandlingen ${documentName.toString()}
+          den inneholder fortsatt ${documentUsageCount.toString()} opplysningstype(r)`}
+        </div>
       )}
-    </ModalBody>
+    </Modal.Body>
 
-    <ModalFooter>
+    <Modal.Footer>
       <div className="flex justify-end">
-        <Button
-          kind="secondary"
-          onClick={() => onClose()}
-          overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}
-        >
+        <Button className="mr-4" variant="secondary" onClick={() => onClose()}>
           Avbryt
         </Button>
         <Button
@@ -46,7 +41,7 @@ const DeleteDocumentModal = ({
           Slett
         </Button>
       </div>
-    </ModalFooter>
+    </Modal.Footer>
   </Modal>
 )
 
