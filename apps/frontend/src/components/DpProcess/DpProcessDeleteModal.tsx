@@ -18,7 +18,7 @@ export const DpProcessDeleteModal = (props: IDpProcessDeleteModal) => {
         <Modal.Footer>
           <div className="flex justify-end">
             <div className="self-end">{errorOnDeletion && <p>{errorOnDeletion}</p>}</div>
-            <Button variant="secondary" onClick={() => onClose()}>
+            <Button className="mr-4" variant="secondary" onClick={() => onClose()}>
               Avbryt
             </Button>
             <Button onClick={() => onSubmit()}>Slett</Button>
