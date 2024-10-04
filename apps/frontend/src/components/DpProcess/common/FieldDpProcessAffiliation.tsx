@@ -1,4 +1,3 @@
-import { BlockProps } from 'baseui/block'
 import { FormikProps } from 'formik'
 import { IDpProcessFormValues } from '../../../constants'
 import FieldSubDepartments from '../../common/FieldSubDepartments'
@@ -7,7 +6,6 @@ import FieldProductTeam from '../../common/form/FieldProductTeam'
 import FieldDpProcessDepartment from './FieldDpProcessDepartment'
 
 type TFieldDpProcessAffiliationProps = {
-  rowBlockProps: BlockProps
   formikBag: FormikProps<IDpProcessFormValues>
   showResponsibleSelect: boolean
   setShowResponsibleSelect: Function
