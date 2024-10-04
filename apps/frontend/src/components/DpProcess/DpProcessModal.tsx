@@ -28,9 +28,6 @@ type TModalDpProcessProps = {
 const DpProcessModal = (props: TModalDpProcessProps) => {
   const { initialValues, errorOnCreate, isOpen, submit, onClose } = props
   const [expanded, setExpanded] = useState<string>('')
-  const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(
-    !!props.initialValues.externalProcessResponsible
-  )
 
   const onOpenChangeAction = (open: boolean, key: string): void =>
     open ? setExpanded(key) : setExpanded('')
@@ -142,11 +139,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                   >
                     <Accordion.Header>Organisering</Accordion.Header>
                     <Accordion.Content>
-                      <FieldDpProcessAffiliation
-                        formikBag={formikBag}
-                        showResponsibleSelect={showResponsibleSelect}
-                        setShowResponsibleSelect={setShowResponsibleSelect}
-                      />
+                      <FieldDpProcessAffiliation formikBag={formikBag} />
                     </Accordion.Content>
                   </Accordion.Item>
 

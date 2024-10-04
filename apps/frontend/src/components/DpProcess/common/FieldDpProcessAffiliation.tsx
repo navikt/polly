@@ -7,8 +7,6 @@ import FieldDpProcessDepartment from './FieldDpProcessDepartment'
 
 type TFieldDpProcessAffiliationProps = {
   formikBag: FormikProps<IDpProcessFormValues>
-  showResponsibleSelect: boolean
-  setShowResponsibleSelect: Function
 }
 
 const FieldDpProcessAffiliation = (props: TFieldDpProcessAffiliationProps) => {
