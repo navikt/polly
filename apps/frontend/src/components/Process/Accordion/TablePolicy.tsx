@@ -1,8 +1,6 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { ParagraphMedium } from 'baseui/typography'
+import { Button, Modal } from '@navikt/ds-react'
 import _ from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
 import { convertPolicyToFormValues, getDocument } from '../../../api'
@@ -159,8 +157,7 @@ const TablePolicy = ({
                     <>
                       <CustomizedStatefulTooltip content="Redigér">
                         <Button
-                          size={ButtonSize.compact}
-                          kind={KIND.tertiary}
+                          variant="tertiary"
                           onClick={() => {
                             setCurrentPolicy(row)
                             setShowEditModal(true)
@@ -171,8 +168,7 @@ const TablePolicy = ({
                       </CustomizedStatefulTooltip>
                       <CustomizedStatefulTooltip content="Slett">
                         <Button
-                          size={ButtonSize.compact}
-                          kind={KIND.tertiary}
+                          variant="tertiary"
                           onClick={() => {
                             setCurrentPolicy(row)
                             setShowDeleteModal(true)
@@ -211,25 +207,21 @@ const TablePolicy = ({
       {showDeleteModal && currentPolicy && (
         <Modal
           onClose={() => setShowDeleteModal(false)}
-          isOpen={showDeleteModal}
-          animate
-          size="default"
+          open={showDeleteModal}
+          header={{ heading: 'Bekreft sletting' }}
         >
-          <ModalHeader>Bekreft sletting</ModalHeader>
-          <ModalBody>
-            <ParagraphMedium>
-              Bekreft sletting av opplysningstypen {currentPolicy.informationType.name} for denne
-              behandlingen
-            </ParagraphMedium>
-          </ModalBody>
+          <Modal.Body>
+            Bekreft sletting av opplysningstypen {currentPolicy.informationType.name} for denne
+            behandlingen
+          </Modal.Body>
 
-          <ModalFooter>
+          <Modal.Footer>
             <div className="flex justify-end">
               <div className="self-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</div>
               <Button
-                kind="secondary"
+                className="mr-4"
+                variant="secondary"
                 onClick={() => setShowDeleteModal(false)}
-                overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}
               >
                 Avbryt
               </Button>
@@ -243,7 +235,7 @@ const TablePolicy = ({
                 Slett
               </Button>
             </div>
-          </ModalFooter>
+          </Modal.Footer>
         </Modal>
       )}
     </Fragment>
