@@ -37,7 +37,7 @@ const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, subm
         }}
         validationSchema={codeListSchema()}
       >
-        {({ errors }) => (
+        {({ errors, submitForm }) => (
           <Form>
             <Modal.Body>
               <Field name="code" render={({ field }: FieldProps) => <TextField className="w-full" {...field} label="Kode" error={errors.code && <ErrorMessage name="code" />} />} />
@@ -58,7 +58,7 @@ const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, subm
                 <Button variant="secondary" type="button" onClick={() => onClose()}>
                   Avbryt
                 </Button>
-                <Button variant="primary" type="submit" >
+                <Button variant="primary" type="button" onClick={submitForm} >
                   Lagre
                 </Button>
               </div>
