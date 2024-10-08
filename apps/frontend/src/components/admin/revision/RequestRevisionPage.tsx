@@ -158,6 +158,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   <Select
                     className="w-1/2"
                     label="Avdeling"
+                    hideLabel
                     onChange={(ev) => formikBag.setFieldValue('department', ev.currentTarget.value)}
                     value={formikBag.values.department!}
                     error={formikBag.errors.department}
@@ -177,6 +178,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   <Select
                     className="w-1/2"
                     label="Område"
+                    hideLabel
                     onChange={(ev) => formikBag.setFieldValue('productAreaId', ev.currentTarget.value)}
                     value={formikBag.values.productAreaId!}
                     error={formikBag.errors.productAreaId}
