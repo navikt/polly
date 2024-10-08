@@ -7,7 +7,6 @@ import {ProcessRevisionRequest, ProductArea, RecipientType} from '../../../const
 import { ampli } from '../../../service/Amplitude'
 import { codelist, ListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
-import { Error } from '../../common/ModalSchema'
 import AsyncSelect from 'react-select/async'
 
 import {Alert, Button, Heading, Label, Loader, Radio, RadioGroup, Select, Tabs, Textarea} from '@navikt/ds-react'
@@ -149,7 +148,11 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                       />
                     </div>
                   </div>
-                  <Error fieldName="processId" fullWidth />
+                  {formikBag.errors.processId && (
+                    <p className="navds-error-message navds-label flex gap-2">
+                      <span>•</span>
+                      Feltet er påkrevd
+                    </p>)}
                 </Tabs.Panel>
                 <Tabs.Panel value={RecipientType.ALL} className="h-48 w-full p-4">
                   {selectOnlyCompleted(formikBag)}
