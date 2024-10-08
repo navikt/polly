@@ -123,7 +123,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
         </div>
       }
     >
-      Slett hele tabelen
+      Slett hele tabellen
     </Button>
   )
 
