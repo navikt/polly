@@ -4,17 +4,12 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
-
 interface IMarkdownProps {
   source?: string
   escapeHtml?: boolean
 }
 
-
-export const Markdown = ({
-  escapeHtml = true,
-  source,
-}: IMarkdownProps) => {
+export const Markdown = ({ escapeHtml = true, source }: IMarkdownProps) => {
   const renderers = {
     a: (linkProps: any) => {
       const { children, href } = linkProps
@@ -75,11 +70,8 @@ export const Markdown = ({
   }
   const htmlPlugins: any = escapeHtml ? [] : [rehypeRaw]
   return (
-    <ReactMarkdown
-      children={source || ''}
-      components={renderers}
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={htmlPlugins}
-    />
+    <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]} rehypePlugins={htmlPlugins}>
+      {source || ''}
+    </ReactMarkdown>
   )
 }
