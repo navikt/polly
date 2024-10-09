@@ -1,49 +1,59 @@
-import { OnChangeParams, Option, Select, TYPE } from 'baseui/select'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { Tag, VARIANT } from 'baseui/tag'
+import { FormikProps } from 'formik'
 import { searchDocuments } from '../../api'
-import { IDocument, IDocumentFormValues, IPageResponse } from '../../constants'
-import { useDebouncedState } from '../../util'
+import { IDocument } from '../../constants'
+import CustomSearchSelect from './AsyncSelectComponents'
 
 type TSelectDocumentProps = {
-  document: IDocumentFormValues | undefined
-  handleChange: Function
+  form: FormikProps<any>
+  handleChange: (document: IDocument | undefined) => void
 }
 
 const SelectDocument = (props: TSelectDocumentProps) => {
-  const [documents, setDocuments] = useState<IDocument[]>([])
-  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
-  const [isLoadingDocuments, setLoadingDocuments] = useState<boolean>(false)
+  const { handleChange, form } = props
 
-  const { handleChange, document } = props
+  const useSearchDocumentOption = async (searchParam: string) => {
+    if (searchParam && searchParam.length > 2) {
+      const dokumenter: IDocument[] = (await searchDocuments(searchParam)).content
 
-  useEffect(() => {
-    ;(async () => {
-      if (documentSearch && documentSearch.length > 2) {
-        setLoadingDocuments(true)
-        const response: IPageResponse<IDocument> = await searchDocuments(documentSearch)
-        setDocuments(response.content)
-        setLoadingDocuments(false)
-      }
-    })()
-  }, [documentSearch])
+      const searchResult = dokumenter.map((dokument) => {
+        return {
+          ...dokument,
+          value: dokument.id,
+          label: dokument.name,
+        }
+      })
+
+      return searchResult
+    }
+    return []
+  }
 
   return (
-    <Select
-      options={documents}
-      isLoading={isLoadingDocuments}
-      clearable
-      searchable={true}
-      noResultsMsg="Ingen"
-      type={TYPE.search}
-      maxDropdownHeight="400px"
-      placeholder="Søk dokumenter"
-      value={document ? [document as Option] : []}
-      onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-        setDocumentSearch(event.currentTarget.value)
-      }
-      onChange={(params: OnChangeParams) => handleChange(params.value[0] as IDocument)}
-      labelKey="name"
-    />
+    <div className="w-full">
+      <CustomSearchSelect
+        ariaLabel="Søk etter dokumenter"
+        placeholder=""
+        loadOptions={useSearchDocumentOption}
+        onChange={handleChange}
+      />
+
+      {form.values.document && (
+        <Tag
+          variant={VARIANT.outlined}
+          onActionClick={() => form.setFieldValue('document', null)}
+          overrides={{
+            Text: {
+              style: {
+                maxWidth: '550px',
+              },
+            },
+          }}
+        >
+          {form.values.document.name}
+        </Tag>
+      )}
+    </div>
   )
 }
 

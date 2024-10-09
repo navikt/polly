@@ -210,7 +210,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                     name="document"
                     render={({ form }: FieldProps<IDisclosureFormValues>) => (
                       <SelectDocument
-                        document={form.values.document}
+                        form={form}
                         handleChange={(document: IDocument | undefined) => {
                           formikBag.setFieldValue('document', document)
                         }}
