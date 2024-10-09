@@ -1,4 +1,4 @@
-import { Label } from '@navikt/ds-react'
+import { Detail, Label } from '@navikt/ds-react'
 import { KIND as NKIND, Notification } from 'baseui/notification'
 import { ErrorMessage } from 'formik'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
@@ -33,20 +33,29 @@ export const Error = (props: IErrorProps) => {
 
 interface IModalLabelProps {
   label?: any
+  description?: any
   tooltip?: string
   fullwidth?: boolean
 }
 
 export const ModalLabel = (props: IModalLabelProps) => {
-  const { label, tooltip, fullwidth } = props
+  const { label, tooltip, fullwidth, description } = props
 
   return (
     <div className={`self-center pr-4 ${fullwidth ? 'w-full' : 'min-w-[30%] max-w-[30%]'}`}>
-      {!tooltip && <Label size="small">{label}</Label>}
-      {tooltip && (
-        <div className="flex items-center w-full">
+      {!tooltip && (
+        <div>
           <Label size="small">{label}</Label>
-          <CustomizedStatefulTooltip content={tooltip} />
+          <Detail>{description}</Detail>
+        </div>
+      )}
+      {tooltip && (
+        <div className="w-full">
+          <div className="flex items-center w-full">
+            <Label size="small">{label}</Label>
+            <CustomizedStatefulTooltip content={tooltip} />
+          </div>
+          <Detail>{description}</Detail>
         </div>
       )}
     </div>

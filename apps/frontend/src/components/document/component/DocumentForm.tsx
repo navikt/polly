@@ -112,9 +112,9 @@ const DocumentForm = (props: TDocumentFormProps) => {
                   <div className="mb-4">
                     <ModalLabel
                       label="Datatilgangsklasse"
-                      tooltip={
+                      description={
                         <div>
-                          Mer informasjon finner du
+                          Mer informasjon finner du{' '}
                           <StyledLink
                             target="_blank"
                             rel="noopener noreferrer"
@@ -122,10 +122,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
                               'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'
                             }
                           >
-                            her
-                            <span>
-                              <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
-                            </span>
+                            her (åpnes i ny fane)
                           </StyledLink>
                         </div>
                       }
