@@ -1,10 +1,11 @@
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button } from '@navikt/ds-react'
 import { useStyletron } from 'baseui'
-import { Button, KIND } from 'baseui/button'
 import { ListItem } from 'baseui/list'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Modal, ModalBody, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { OnChangeParams, Option, Select, TYPE } from 'baseui/select'
+import { Tooltip } from 'baseui/tooltip'
 import { ParagraphSmall } from 'baseui/typography'
 import {
   ArrayHelpers,
@@ -29,7 +30,6 @@ import { EListName, ICode, codelist } from '../../../service/Codelist'
 import { useDebouncedState } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Spinner } from '../../common/Spinner'
 import { addDocumentToProcessSchema } from '../../common/schema'
@@ -72,11 +72,11 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                   .join(', ')}
               </div>
             </div>
-            <CustomizedStatefulTooltip content="Fjern">
+            <Tooltip content="Fjern">
               <Button
-                size="compact"
-                kind="tertiary"
-                shape="round"
+                size="small"
+                variant="tertiary"
+                type="button"
                 onClick={() => {
                   const length = formik.values.informationTypes.length
                   arrayHelpers.remove(index)
@@ -88,7 +88,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 {' '}
                 <FontAwesomeIcon icon={faMinusCircle} />{' '}
               </Button>
-            </CustomizedStatefulTooltip>
+            </Tooltip>
           </div>
         </ListItem>
       ))}
@@ -212,9 +212,8 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                             {!formik.values.document && defaultDoc && (
                               <Button
                                 type="button"
-                                kind="secondary"
-                                size="compact"
-                                style={{ marginLeft: '.5rem' }}
+                                variant="secondary"
+                                size="small"
                                 onClick={() => selectDocument(defaultDoc, true)}
                               >
                                 Standard opplysningstyper
@@ -250,10 +249,10 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                 <ModalFooter>
                   <div className="flex justify-end">
                     <div className="self-end">{error && <p>{error}</p>}</div>
-                    <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
+                    <Button type="button" variant="tertiary" onClick={onCloseModal}>
                       Avbryt
                     </Button>
-                    <ModalButton type="submit">Legg til</ModalButton>
+                    <Button type="submit">Legg til</Button>
                   </div>
                 </ModalFooter>
               </Form>

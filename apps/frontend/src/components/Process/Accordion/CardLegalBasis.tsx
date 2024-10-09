@@ -1,10 +1,11 @@
 import { faExclamationCircle, faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
+import { Button } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input'
 import { KIND as NKIND, Notification } from 'baseui/notification'
 import { Select, TYPE, Value } from 'baseui/select'
+import { Tooltip } from 'baseui/tooltip'
 import { LabelMedium } from 'baseui/typography'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import { useState } from 'react'
@@ -12,7 +13,6 @@ import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
 import { EListName, ESensitivityLevel, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { paddingZero } from '../../common/Style'
 import { legalBasisSchema } from '../../common/schema'
@@ -35,14 +35,14 @@ const Error = (props: { fieldName: string }) => (
 
 const renderCardHeader = (text: string, sensitivityLevel: ESensitivityLevel) => (
   <div className="flex">
-    <CustomizedStatefulTooltip
+    <Tooltip
       content={
         sensitivityLevel === ESensitivityLevel.ART6
           ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
           : 'Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'
       }
     >
-      <div className="flex">
+      <Button type="button" variant="tertiary-neutral" size="small">
         <LabelMedium>{text}</LabelMedium>
         <FontAwesomeIcon
           style={{ marginLeft: '.25rem' }}
@@ -50,8 +50,8 @@ const renderCardHeader = (text: string, sensitivityLevel: ESensitivityLevel) => 
           color={theme.colors.primary300}
           size="sm"
         />
-      </div>
-    </CustomizedStatefulTooltip>
+      </Button>
+    </Tooltip>
   </div>
 )
 
@@ -186,20 +186,10 @@ const CardLegalBasis = ({
           </div>
           <Error fieldName="description" />
           <div className="flex mt-4 w-full justify-end">
-            <Button
-              type="button"
-              kind={KIND.tertiary}
-              size={ButtonSize.compact}
-              onClick={() => hideCard()}
-            >
+            <Button type="button" variant="tertiary" size="xsmall" onClick={() => hideCard()}>
               Avbryt
             </Button>
-            <Button
-              type="button"
-              kind={KIND.secondary}
-              size={ButtonSize.compact}
-              onClick={form.submitForm}
-            >
+            <Button type="button" variant="secondary" size="xsmall" onClick={form.submitForm}>
               {titleSubmitButton}
             </Button>
           </div>

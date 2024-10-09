@@ -1,3 +1,4 @@
+import { Tooltip } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
 import { LabelLarge, ParagraphXSmall } from 'baseui/typography'
 import { canViewAlerts } from '../../pages/AlertEventPage'
@@ -6,7 +7,6 @@ import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import NavLogo from '../../resources/navlogo.svg'
 import { theme } from '../../util'
 import { datajegerSlackLink, helpLink } from '../../util/config'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import NavItem from './NavItem'
 
 const Brand = () => (
@@ -80,15 +80,12 @@ const SideBar = () => (
 
         <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
           <div className="flex justify-center pb-2.5 items-center">
-            <CustomizedStatefulTooltip
-              content="På navets personvernsider finner du informasjon til hjelp for utfylling."
-              ignoreBoundary={false}
-            >
+            <Tooltip content="På navets personvernsider finner du informasjon til hjelp for utfylling.">
               <ParagraphXSmall color={theme.colors.white}>Hjelp</ParagraphXSmall>
-            </CustomizedStatefulTooltip>
+            </Tooltip>
           </div>
         </a>
-        <a href={datajegerSlackLink} style={{ textDecoration: 'none' } }>
+        <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
           <div className="flex justify-center items-center">
             <img src={SlackLogo} width="60px" alt="slack logo" />
             <ParagraphXSmall color={theme.colors.white}>#behandlingskatalogen</ParagraphXSmall>

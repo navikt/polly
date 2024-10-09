@@ -35,12 +35,13 @@ export const LastEvents = () => {
         <div className="w-full flex justify-between">
           <div className="pr-2 overflow-hidden whitespace-nowrap text-ellipsis">
             <AuditActionIcon action={event.action} />
-            {event.name}
+            {event.name} TEST
           </div>
           <div className="min-w-32 text-right">
-            <CustomizedStatefulTooltip content={moment(event.time).format('lll')}>
-              {moment(event.time).fromNow()}
-            </CustomizedStatefulTooltip>
+            <CustomizedStatefulTooltip
+              content={moment(event.time).format('lll')}
+              text={moment(event.time).fromNow()}
+            />
           </div>
         </div>
       </ObjectLink>

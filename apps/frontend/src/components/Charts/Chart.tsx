@@ -172,7 +172,19 @@ const Visualization = (props: TVisualizationProps) => {
               <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
               {!noChartData &&
                 data.map((data: IChartDataExpanded, index) => (
-                  <div key={index} tabIndex={-1} role="button" onFocus={() => setHover(index)} onMouseOver={() => setHover(index)} onClick={data.onClick} onKeyDown={(event) => {if (event.key === 'Enter'){data.onClick}}}>
+                  <div
+                    key={index}
+                    tabIndex={-1}
+                    role="button"
+                    onFocus={() => setHover(index)}
+                    onMouseOver={() => setHover(index)}
+                    onClick={data.onClick}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        data.onClick
+                      }
+                    }}
+                  >
                     <div
                       className={`${index === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}
                     >
@@ -194,11 +206,10 @@ const Visualization = (props: TVisualizationProps) => {
       </Card>
 
       <div onClick={toggle} style={{ position: 'absolute', top: '5px', left: '5px' }}>
-        <CustomizedStatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
-          <div className="cursor-pointer">
-            <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
-          </div>
-        </CustomizedStatefulTooltip>
+        <CustomizedStatefulTooltip
+          content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}
+          icon={<FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />}
+        />
       </div>
     </div>
   )

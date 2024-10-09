@@ -1,17 +1,20 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button as BaseUIButton, KIND, SHAPE, SIZE } from 'baseui/button'
-import { Override } from 'baseui/overrides'
+import { Button as NavButton, Tooltip as NavTooltip } from '@navikt/ds-react'
 import { ReactElement, ReactNode } from 'react'
-import { StyleObject } from 'styletron-react'
-import { theme } from '../../../util'
-import CustomizedStatefulTooltip from '../CustomizedStatefulTooltip'
 
 interface IButtonProps {
-  kind?: (typeof KIND)[keyof typeof KIND] | 'outline'
+  kind?:
+    | 'primary'
+    | 'primary-neutral'
+    | 'secondary'
+    | 'secondary-neutral'
+    | 'tertiary'
+    | 'tertiary-neutral'
+    | 'danger'
+    | 'outline'
   type?: 'submit' | 'reset' | 'button'
-  size?: (typeof SIZE)[keyof typeof SIZE]
-  shape?: (typeof SHAPE)[keyof typeof SHAPE]
+  size?: 'small' | 'medium' | 'xsmall'
   icon?: IconDefinition
   iconEnd?: IconDefinition
   inline?: boolean
@@ -20,7 +23,6 @@ interface IButtonProps {
   onClick?: () => void
   startEnhancer?: ReactNode
   disabled?: boolean
-  $style?: StyleObject
   marginRight?: boolean
   marginLeft?: boolean
 }
@@ -31,51 +33,20 @@ interface ITooltipProps {
 }
 
 const Tooltip = (props: ITooltipProps) =>
-  props.tooltip ? (
-    <CustomizedStatefulTooltip content={props.tooltip}>{props.children}</CustomizedStatefulTooltip>
-  ) : (
-    props.children
-  )
-
-const outlineWidth = '2px'
-const outlineStyle = 'solid'
-const outlineOverride: Override<any> = {
-  style: {
-    borderColor: theme.colors.buttonPrimaryFill,
-    backgroundColor: 'inherit',
-    borderLeftWidth: outlineWidth,
-    borderRightWidth: outlineWidth,
-    borderTopWidth: outlineWidth,
-    borderBottomWidth: outlineWidth,
-    borderLeftStyle: outlineStyle,
-    borderRightStyle: outlineStyle,
-    borderTopStyle: outlineStyle,
-    borderBottomStyle: outlineStyle,
-  },
-}
+  props.tooltip ? <NavTooltip content={props.tooltip}>{props.children}</NavTooltip> : props.children
 
 const Button = (props: IButtonProps) => {
-  const baseuiKind = props.kind === 'outline' ? KIND.secondary : props.kind
-  const overrides: Override<any> = {
-    style: {
-      ...(props.kind === 'outline' ? outlineOverride.style : {}),
-      ...(props.inline
-        ? { paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100 }
-        : {}),
-      ...(props.$style || {}),
-    },
-  }
+  const baseuiKind = props.kind === 'outline' ? 'secondary' : props.kind
+
   return (
     <>
       <div className={`inline ${props.marginLeft ? 'ml-2.5' : ''}`} />
       <Tooltip tooltip={props.tooltip}>
-        <BaseUIButton
-          kind={baseuiKind}
+        <NavButton
+          variant={baseuiKind}
           size={props.size}
-          shape={props.shape}
           onClick={() => props.onClick?.()}
-          overrides={{ BaseButton: overrides }}
-          startEnhancer={props.startEnhancer}
+          icon={props.startEnhancer}
           disabled={props.disabled}
           type={props.type}
         >
@@ -92,7 +63,7 @@ const Button = (props: IButtonProps) => {
               style={{ marginLeft: props.children ? '.5rem' : undefined }}
             />
           )}
-        </BaseUIButton>
+        </NavButton>
       </Tooltip>
       <div className={`inline ${props.marginRight ? 'mr-2.5' : ''}`} />
     </>

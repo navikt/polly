@@ -1,8 +1,8 @@
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Tooltip } from '@navikt/ds-react'
 import { ParagraphMedium } from 'baseui/typography'
 import { useLocation } from 'react-router-dom'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import RouteLink from '../common/RouteLink'
 
 interface INavItemProps {
@@ -36,9 +36,9 @@ const NavItem = (props: INavItemProps) => (
         />
       </div>
       {props.tooltip ? (
-        <CustomizedStatefulTooltip content={props.tooltip} ignoreBoundary={false}>
+        <Tooltip content={props.tooltip}>
           <ParagraphMedium color="white">{props.text}</ParagraphMedium>
-        </CustomizedStatefulTooltip>
+        </Tooltip>
       ) : (
         <ParagraphMedium color="white">{props.text}</ParagraphMedium>
       )}

@@ -1,10 +1,10 @@
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getTeam } from '../../api'
 import { ITeam } from '../../constants'
 import { theme } from '../../util'
-import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 import { DotTag } from './DotTag'
 import { ObjectLink } from './RouteLink'
 
@@ -57,11 +57,11 @@ const TeamView = (props: ITeamViewProps) => {
         </ObjectLink>
       )}
       {error && (
-        <CustomizedStatefulTooltip content="Kunne ikke finne team">
-          <span>
+        <Tooltip content="Kunne ikke finne team">
+          <Button type="button" size="small" variant="tertiary-neutral">
             <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500} /> {team.name}
-          </span>
-        </CustomizedStatefulTooltip>
+          </Button>
+        </Tooltip>
       )}
     </>
   )

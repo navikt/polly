@@ -1,4 +1,4 @@
-import { Button, SIZE as ButtonSize, KIND } from 'baseui/button'
+import { Button, Tooltip } from '@navikt/ds-react'
 import { Plus } from 'baseui/icon'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
@@ -9,7 +9,6 @@ import {
   IProcessFormValues,
 } from '../../../constants'
 import { ESensitivityLevel } from '../../../service/Codelist'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { ListLegalBases } from '../../common/LegalBasis'
 import CardLegalBasis from '../Accordion/CardLegalBasis'
 
@@ -66,25 +65,26 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
           {!formikBag.values.legalBasesOpen && (
             <div className="flex w-full">
               <div className="w-full">
-                <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.">
+                <Tooltip content="Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.">
                   <div>
                     <Button
-                      size={ButtonSize.compact}
-                      kind={KIND.tertiary}
+                      size="xsmall"
+                      type="button"
+                      variant="tertiary"
                       onClick={() => {
                         formikBag.setFieldValue('legalBasesOpen', true)
                         setSensitivityLevel(ESensitivityLevel.ART6)
                       }}
-                      startEnhancer={() => (
+                      icon={
                         <div className="flex justify-center">
                           <Plus size={22} />
                         </div>
-                      )}
+                      }
                     >
                       Behandlingsgrunnlag
                     </Button>
                   </div>
-                </CustomizedStatefulTooltip>
+                </Tooltip>
 
                 <div>
                   <ListLegalBases
@@ -102,25 +102,24 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
               </div>
 
               <div className="w-full">
-                <CustomizedStatefulTooltip content="Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.">
-                  <div>
-                    <Button
-                      size={ButtonSize.compact}
-                      kind={KIND.tertiary}
-                      onClick={() => {
-                        formikBag.setFieldValue('legalBasesOpen', true)
-                        setSensitivityLevel(ESensitivityLevel.ART9)
-                      }}
-                      startEnhancer={() => (
-                        <div className="flex justify-center">
-                          <Plus size={22} />
-                        </div>
-                      )}
-                    >
-                      Behandlingsgrunnlag for særlige kategorier
-                    </Button>
-                  </div>
-                </CustomizedStatefulTooltip>
+                <Tooltip content="Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.">
+                  <Button
+                    size="xsmall"
+                    type="button"
+                    variant="tertiary"
+                    onClick={() => {
+                      formikBag.setFieldValue('legalBasesOpen', true)
+                      setSensitivityLevel(ESensitivityLevel.ART9)
+                    }}
+                    icon={
+                      <div className="flex justify-center">
+                        <Plus size={22} />
+                      </div>
+                    }
+                  >
+                    Behandlingsgrunnlag for særlige kategorier
+                  </Button>
+                </Tooltip>
                 <div>
                   <ListLegalBases
                     sensitivityLevel={ESensitivityLevel.ART9}

@@ -1,10 +1,6 @@
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Label } from '@navikt/ds-react'
 import { KIND as NKIND, Notification } from 'baseui/notification'
-import { LabelMedium } from 'baseui/typography'
 import { ErrorMessage } from 'formik'
-import { ReactElement } from 'react'
-import { theme } from '../../util'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 import { paddingZero } from './Style'
 
@@ -37,7 +33,7 @@ export const Error = (props: IErrorProps) => {
 
 interface IModalLabelProps {
   label?: any
-  tooltip?: string | ReactElement
+  tooltip?: string
   fullwidth?: boolean
 }
 
@@ -45,24 +41,13 @@ export const ModalLabel = (props: IModalLabelProps) => {
   const { label, tooltip, fullwidth } = props
 
   return (
-    <div className={`self-center pr-4 ${fullwidth ? 'w-full' : 'min-w-[25%] max-w-[25%]'}`}>
-      {!tooltip && <LabelMedium font="font300">{label}</LabelMedium>}
+    <div className={`self-center pr-4 ${fullwidth ? 'w-full' : 'min-w-[30%] max-w-[30%]'}`}>
+      {!tooltip && <Label size="small">{label}</Label>}
       {tooltip && (
-        <CustomizedStatefulTooltip content={tooltip}>
-          <LabelMedium font="font300" display="flex" width="100%" justifyContent="flex-start">
-            <div className="flex">
-              <div>{label}</div>
-              <div className="self-center">
-                <FontAwesomeIcon
-                  style={{ marginLeft: '.5rem', alignSelf: 'center' }}
-                  icon={faQuestionCircle}
-                  color={theme.colors.primary300}
-                  size="sm"
-                />
-              </div>
-            </div>
-          </LabelMedium>
-        </CustomizedStatefulTooltip>
+        <div className="flex items-center w-full">
+          <Label size="small">{label}</Label>
+          <CustomizedStatefulTooltip content={tooltip} />
+        </div>
       )}
     </div>
   )

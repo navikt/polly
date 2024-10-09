@@ -1,9 +1,9 @@
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Tooltip } from '@navikt/ds-react'
 import moment, { Moment } from 'moment/min/moment-with-locales'
 import { theme } from '../../util'
 import { env } from '../../util/env'
-import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 const defaultStart: Moment = moment(env.defaultStartDate).locale('nb')
 const defaultEnd: Moment = moment('9999-12-31').locale('nb')
@@ -54,18 +54,29 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
   const startView: string = startDate.locale('nb').format(dateFormat)
   const endView: string = endDate.locale('nb').format(dateFormat)
 
+  const getTooltipText = () => {
+    let content = ''
+
+    if (hasStart) {
+      content += `Fra og med ${startView}`
+    }
+    if (hasStart && hasEnd) {
+      content += ' - '
+    }
+
+    content += ' '
+
+    if (hasEnd) {
+      content += ` til og med ${endView}`
+    }
+    return content
+  }
+
   return (
     <>
       {hasDates && (
-        <CustomizedStatefulTooltip
-          content={
-            <>
-              {hasStart && 'Fra og med ' + startView} {hasStart && hasEnd && ' - '}{' '}
-              {hasEnd && ' til og med ' + endView}
-            </>
-          }
-        >
-          <span>
+        <Tooltip content={getTooltipText()}>
+          <Button type="button" size="small" variant="tertiary-neutral">
             {preText && preText + ': '}
             <FontAwesomeIcon
               icon={faClock}
@@ -77,8 +88,8 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
                 {startView} - {endView}
               </>
             )}
-          </span>
-        </CustomizedStatefulTooltip>
+          </Button>
+        </Tooltip>
       )}
     </>
   )

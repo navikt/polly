@@ -97,9 +97,10 @@ const FieldLegalBasesUse = (props: { legalBasesUse: ELegalBasesUse }) => {
             <Radio value={ELegalBasesUse.UNRESOLVED}>Uavklart</Radio>
             <Radio value={ELegalBasesUse.DEDICATED_LEGAL_BASES}>Har eget Behandlingsgrunnlag</Radio>
             <Radio value={ELegalBasesUse.EXCESS_INFO}>
-              <CustomizedStatefulTooltip content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.">
-                Overskuddsinformasjon
-              </CustomizedStatefulTooltip>
+              <CustomizedStatefulTooltip
+                content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen."
+                text="Overskuddsinformasjon"
+              />
             </Radio>
           </RadioGroup>
         </div>

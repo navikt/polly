@@ -34,9 +34,10 @@ export const RecentEditsByUser = () => {
                 {ps.process.name}
               </div>
               <div className="min-w-32 text-right">
-                <CustomizedStatefulTooltip content={moment(ps.time).format('lll')}>
-                  {moment(ps.time).fromNow()}
-                </CustomizedStatefulTooltip>
+                <CustomizedStatefulTooltip
+                  content={moment(ps.time).format('lll')}
+                  text={moment(ps.time).fromNow()}
+                />
               </div>
             </div>
           </ObjectLink>

@@ -1,8 +1,9 @@
 import { faCircleExclamation, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button } from 'baseui/button'
+import { Button } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
 import { ARTWORK_SIZES, ListItem } from 'baseui/list'
+import { Tooltip } from 'baseui/tooltip'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
@@ -10,7 +11,6 @@ import { EListName, ESensitivityLevel, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
-import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 interface ILegalBasisViewProps {
   legalBasis?: ILegalBasis
@@ -109,34 +109,42 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
     <div className="text-[#E85C4A]">
       <div>
         {alert?.missingLegalBasis && (
-          <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
-            <span>{warningIcon} Behandlingsgrunnlag er ikke avklart</span>
-          </CustomizedStatefulTooltip>
+          <Tooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
+            <Button type="button" variant="tertiary-neutral" size="small">
+              {warningIcon} Behandlingsgrunnlag er ikke avklart
+            </Button>
+          </Tooltip>
         )}
       </div>
       <div>
         {alert?.excessInfo && (
-          <CustomizedStatefulTooltip
+          <Tooltip
             content={
               'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'
             }
           >
-            <span>{warningIcon} Overskuddsinformasjon</span>
-          </CustomizedStatefulTooltip>
+            <Button type="button" variant="tertiary-neutral" size="small">
+              {warningIcon} Overskuddsinformasjon
+            </Button>
+          </Tooltip>
         )}
       </div>
       <div>
         {alert?.missingArt6 && (
-          <CustomizedStatefulTooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
-            <span>{warningIcon} Behandlingsgrunnlag for artikkel 6 mangler</span>
-          </CustomizedStatefulTooltip>
+          <Tooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
+            <Button type="button" variant="tertiary-neutral" size="small">
+              {warningIcon} Behandlingsgrunnlag for artikkel 6 mangler
+            </Button>
+          </Tooltip>
         )}
       </div>
       <div>
         {alert?.missingArt9 && (
-          <CustomizedStatefulTooltip content="Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9">
-            <span>{warningIcon} Behandlingsgrunnlag for artikkel 9 mangler</span>
-          </CustomizedStatefulTooltip>
+          <Tooltip content="Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9">
+            <Button type="button" variant="tertiary-neutral" size="small">
+              {warningIcon} Behandlingsgrunnlag for artikkel 9 mangler
+            </Button>
+          </Tooltip>
         )}
       </div>
     </div>
@@ -189,8 +197,8 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
               <div className="w-full">
                 <Button
                   type="button"
-                  kind="tertiary"
-                  size="compact"
+                  variant="tertiary"
+                  size="small"
                   onClick={() => {
                     onEdit(
                       legalBases?.findIndex(
@@ -203,8 +211,8 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
                 </Button>
                 <Button
                   type="button"
-                  kind="tertiary"
-                  size="compact"
+                  variant="tertiary"
+                  size="small"
                   onClick={() => {
                     onRemove(
                       legalBases?.findIndex(

@@ -15,10 +15,7 @@ export function sensitivityColor(code: string) {
 
 export const Sensitivity = (props: { sensitivity: ICode }) => (
   <CustomizedStatefulTooltip
-    content={() => `${codelist.getDescription(EListName.SENSITIVITY, props.sensitivity.code)}`}
-  >
-    <span>
-      <FontAwesomeIcon icon={faUserShield} color={sensitivityColor(props.sensitivity.code)} />
-    </span>
-  </CustomizedStatefulTooltip>
+    content={`${codelist.getDescription(EListName.SENSITIVITY, props.sensitivity.code)}`}
+    icon={<FontAwesomeIcon icon={faUserShield} color={sensitivityColor(props.sensitivity.code)} />}
+  />
 )

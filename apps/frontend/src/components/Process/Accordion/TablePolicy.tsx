@@ -1,6 +1,6 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Modal } from '@navikt/ds-react'
+import { Button, Modal, Tooltip } from '@navikt/ds-react'
 import _ from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
 import { convertPolicyToFormValues, getDocument } from '../../../api'
@@ -18,7 +18,6 @@ import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import { AuditButton } from '../../admin/audit/AuditButton'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
@@ -120,14 +119,14 @@ const TablePolicy = ({
                     </RouteLink>
                   </div>
                   <div>
-                    <CustomizedStatefulTooltip content={() => 'Dokument'}>
+                    <Tooltip content="Dokument">
                       <div className="opacity-80">
                         {!!row.documentIds?.length &&
                           '(' +
                             row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') +
                             ')'}
                       </div>
-                    </CustomizedStatefulTooltip>
+                    </Tooltip>
                   </div>
                 </div>
               </Cell>
@@ -155,7 +154,7 @@ const TablePolicy = ({
                   <AuditButton id={row.id} kind="tertiary" />
                   {hasAccess && (
                     <>
-                      <CustomizedStatefulTooltip content="Redigér">
+                      <Tooltip content="Redigér">
                         <Button
                           variant="tertiary"
                           onClick={() => {
@@ -165,8 +164,8 @@ const TablePolicy = ({
                         >
                           <FontAwesomeIcon title="Redigér" icon={faEdit} />
                         </Button>
-                      </CustomizedStatefulTooltip>
-                      <CustomizedStatefulTooltip content="Slett">
+                      </Tooltip>
+                      <Tooltip content="Slett">
                         <Button
                           variant="tertiary"
                           onClick={() => {
@@ -176,7 +175,7 @@ const TablePolicy = ({
                         >
                           <FontAwesomeIcon title="Slett" icon={faTrash} />
                         </Button>
-                      </CustomizedStatefulTooltip>
+                      </Tooltip>
                     </>
                   )}
                 </div>

@@ -86,11 +86,10 @@ export const PageHeader = (props: IPageHeaderProps) => {
       <>
         <div className="mr-12" />
         <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
-          <CustomizedStatefulTooltip content="Gå til side">
-            <span>
-              <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />
-            </span>
-          </CustomizedStatefulTooltip>
+          <CustomizedStatefulTooltip
+            content="Gå til side"
+            icon={<FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />}
+          />
         </StyledLink>
       </>
     )

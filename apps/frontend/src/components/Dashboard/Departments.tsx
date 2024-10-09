@@ -1,3 +1,4 @@
+import { Button, Tooltip } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { LabelLarge, ParagraphMedium } from 'baseui/typography'
 import { useState } from 'react'
@@ -9,7 +10,6 @@ import {
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
 import { EListName, codelist } from '../../service/Codelist'
 import { theme, useAwait } from '../../util'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import RouteLink from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
 import { cardShadow } from '../common/Style'
@@ -51,10 +51,10 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
   const { department } = props
 
   return (
-    <CustomizedStatefulTooltip
-      content={codelist.getCode(EListName.DEPARTMENT, department.department)?.shortName}
+    <Tooltip
+      content={codelist.getCode(EListName.DEPARTMENT, department.department)?.shortName || ''}
     >
-      <div>
+      <Button type="button" variant="tertiary-neutral">
         <Card overrides={cardShadow}>
           <div className="flex flex-col items-center justify-around w-24 h-24">
             <RouteLink
@@ -101,8 +101,8 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
             </RouteLink>
           </div>
         </Card>
-      </div>
-    </CustomizedStatefulTooltip>
+      </Button>
+    </Tooltip>
   )
 }
 

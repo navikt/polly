@@ -1,3 +1,4 @@
+import { Tooltip } from '@navikt/ds-react'
 import { ProgressBar } from 'baseui/progress-bar'
 import { isNil, sum, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
@@ -20,7 +21,6 @@ import {
   getNoDpiaLabel,
   shortenLinksInText,
 } from '../../../util/helper-functions'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import DataText from '../../common/DataText'
 import { DotTag, DotTags } from '../../common/DotTag'
 import { ActiveIndicator } from '../../common/Durations'
@@ -380,29 +380,29 @@ const Completeness = (props: ICompletenessProps) => {
     Bar: { style: { marginLeft: 0, marginRight: 0 } },
   }
 
+  const getContent = () => {
+    let content = ''
+    content += completed === completables ? 'Godkjent' : 'Ikke utfylt: '
+    if (!completeness.dpia) content += 'Behov for PVK, '
+    if (!completeness.dpiaReference) content += 'Ref. til PVK, '
+    if (!completeness.profiling) content += 'Profilering, '
+    if (!completeness.automation) content += 'Automatisering og profilering, '
+    if (!completeness.retention) content += 'Lagringsbehov, '
+    if (!completeness.retentionTime) content += 'Lagringsbehov for NAV, '
+    if (!completeness.dataProcessor) content += 'Databehandler, '
+    if (!completeness.dataProcessors) content += 'Ref. til databehandleravtale, '
+    if (!completeness.policies) content += 'Opplysningstyper, '
+    if (!completeness.completed) content += 'Status på utfylling'
+    return content
+  }
+
   return (
     <DataText label="Kompletthet" text={''}>
-      <CustomizedStatefulTooltip
-        content={
-          <div>
-            <p>{completed === completables ? 'Godkjent' : 'Ikke utfylt:'}</p>
-            <p>{!completeness.dpia && 'Behov for PVK'}</p>
-            <p>{!completeness.dpiaReference && 'Ref. til PVK'}</p>
-            <p>{!completeness.profiling && 'Profilering'}</p>
-            <p>{!completeness.automation && 'Automatisering og profilering'}</p>
-            <p>{!completeness.retention && 'Lagringsbehov'}</p>
-            <p>{!completeness.retentionTime && 'Lagringsbehov for NAV'}</p>
-            <p>{!completeness.dataProcessor && 'Databehandler'}</p>
-            <p>{!completeness.dataProcessors && 'Ref. til databehandleravtale'}</p>
-            <p>{!completeness.policies && 'Opplysningstyper'}</p>
-            <p>{!completeness.completed && 'Status på utfylling'}</p>
-          </div>
-        }
-      >
+      <Tooltip content={getContent()}>
         <div className="flex h-6 items-center cursor-help">
           <ProgressBar value={completed} successValue={completables} overrides={barOverrides} />
         </div>
-      </CustomizedStatefulTooltip>
+      </Tooltip>
     </DataText>
   )
 }

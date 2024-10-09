@@ -1,6 +1,5 @@
 import { faCalendar, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button } from 'baseui/button'
 import { Datepicker } from 'baseui/datepicker'
 import nb from 'date-fns/locale/nb'
 import { Field, FieldProps } from 'formik'
@@ -8,9 +7,9 @@ import moment, { Moment } from 'moment'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../constants'
 import { theme } from '../../util'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import { Error } from '../common/ModalSchema'
 import { padding } from '../common/Style'
+import { Button, Tooltip } from '@navikt/ds-react'
 
 interface IDateModalProps {
   showDates: boolean
@@ -33,8 +32,8 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
   const { text, tooltip } = props
 
   return (
-    <CustomizedStatefulTooltip content={tooltip}>
-      <div className="flex">
+    <Tooltip content={tooltip}>
+      <Button type="button" variant="tertiary-neutral" size="small">
         {text}
         <FontAwesomeIcon
           style={{ marginLeft: '.5rem', alignSelf: 'center' }}
@@ -42,8 +41,8 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
           color={theme.colors.primary300}
           size="sm"
         />
-      </div>
-    </CustomizedStatefulTooltip>
+      </Button>
+    </Tooltip>
   )
 }
 
@@ -56,9 +55,8 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
       {!showDates && (
         <div className="flex w-full mt-4">
           <Button
-            size="compact"
-            shape="pill"
-            overrides={{ BaseButton: { style: padding('6px', '8px') } }}
+            size="xsmall"
+            type="button"
             onClick={() => setShowDates(true)}
           >
             Velg datoer
