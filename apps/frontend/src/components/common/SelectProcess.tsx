@@ -1,9 +1,8 @@
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import AsyncSelect from 'react-select/async'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { IDisclosureFormValues, IProcess, IProcessShort } from '../../constants'
 import { EListName, ICode, codelist } from '../../service/Codelist'
-import { DropdownIndicator, noOptionMessage, selectOverrides } from './AsyncSelectComponents'
+import { CustomSearchSelect } from './AsyncSelectComponents'
 import { renderTagList } from './TagList'
 
 type TSelectProcessProps = {
@@ -71,24 +70,18 @@ const SelectProcess = (props: TSelectProcessProps) => {
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
           <div className="w-full">
-            <AsyncSelect
-              aria-label="Søk etter behandlinger"
+            <CustomSearchSelect
+              ariaLabel="Søk etter behandlinger"
               placeholder=""
-              components={{ DropdownIndicator }}
-              noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
-              controlShouldRenderValue={false}
-              loadingMessage={() => 'Søker...'}
-              isClearable={false}
               loadOptions={useSearchProcessOptions}
               onChange={(value: any) => {
                 if (value) {
                   arrayHelpers.form.setFieldValue('processes', [
                     ...formikBag.values.processes,
-                    value
+                    value,
                   ])
                 }
               }}
-              styles={selectOverrides}
             />
           </div>
 

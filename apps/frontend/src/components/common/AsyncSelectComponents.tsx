@@ -1,5 +1,41 @@
-import { MagnifyingGlassIcon } from "@navikt/aksel-icons"
-import { CSSObjectWithLabel, DropdownIndicatorProps, components } from "react-select"
+import { MagnifyingGlassIcon } from '@navikt/aksel-icons'
+import {
+  ActionMeta,
+  CSSObjectWithLabel,
+  DropdownIndicatorProps,
+  OnChangeValue,
+  OptionsOrGroups,
+  components,
+} from 'react-select'
+import AsyncSelect from 'react-select/async'
+
+interface ICustomSearchSelectProps {
+  ariaLabel: string
+  placeholder: string
+  onChange: (newValue: OnChangeValue<any, any>, actionMeta: ActionMeta<any>) => void
+  loadOptions?: (
+    inputValue: string,
+    callback: (options: OptionsOrGroups<any, any>) => void
+  ) => Promise<OptionsOrGroups<any, any>> | void
+}
+
+export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
+  const { ariaLabel, placeholder, onChange, loadOptions } = props
+  return (
+    <AsyncSelect
+      aria-label={ariaLabel}
+      placeholder={placeholder}
+      components={{ DropdownIndicator }}
+      noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
+      controlShouldRenderValue={false}
+      loadingMessage={() => 'Søker...'}
+      isClearable={false}
+      loadOptions={loadOptions}
+      onChange={onChange}
+      styles={selectOverrides}
+    />
+  )
+}
 
 export const DropdownIndicator = (props: DropdownIndicatorProps) => {
   return (
@@ -36,3 +72,5 @@ export const selectOverrides = {
       ':hover': { borderColor: 'var(--a-border-action)' },
     }) as CSSObjectWithLabel,
 }
+
+export default CustomSearchSelect
