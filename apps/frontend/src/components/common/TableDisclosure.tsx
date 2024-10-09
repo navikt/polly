@@ -1,5 +1,5 @@
 import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { KIND, SIZE } from 'baseui/button'
+import { KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment, useEffect, useState } from 'react'
@@ -13,7 +13,6 @@ import {
   disclosureSort,
 } from '../../constants'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import { theme } from '../../util'
 import { useTable } from '../../util/hooks'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 import Button from './Button'
@@ -225,12 +224,11 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
           <Button
             type="button"
             kind="tertiary"
-            size="compact"
+            size="xsmall"
             icon={faExclamationCircle}
             tooltip={
               hasAlert ? `Varsler: Behandlingsgrunnlag for artikkel 6 mangler` : `Varsler: Nei`
             }
-            $style={{ color: hasAlert ? theme.colors.warning500 : undefined }}
             onClick={() => navigate(`/alert/events/disclosure/${disclosure.id}`)}
           />
         )}
@@ -239,7 +237,7 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
           <div className="w-full flex justify-end">
             <Button
               tooltip="Rediger"
-              size={SIZE.compact}
+              size="xsmall"
               kind={KIND.tertiary}
               onClick={() => {
                 setSelectedDisclosure(disclosure)
@@ -250,7 +248,7 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
 
             <Button
               tooltip="Slett"
-              size={SIZE.compact}
+              size="xsmall"
               kind={KIND.tertiary}
               onClick={() => {
                 setSelectedDisclosure(disclosure)

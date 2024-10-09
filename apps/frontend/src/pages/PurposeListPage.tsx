@@ -1,4 +1,3 @@
-import { SIZE as ButtonSize } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import { useState } from 'react'
@@ -66,7 +65,7 @@ export const PurposeListPage = () => {
           <div className="mt-auto">
             {hasAccess() && (
               <Button
-                size={ButtonSize.compact}
+                size="xsmall"
                 kind={'outline'}
                 onClick={() => setShowCreateProcessModal(true)}
                 startEnhancer={

@@ -1,5 +1,5 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { SIZE as ButtonSize, KIND } from 'baseui/button'
+import { KIND } from 'baseui/button'
 import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
 import { FieldArrayRenderProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
@@ -42,7 +42,7 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
           <Button
             type="button"
             kind={KIND.secondary}
-            size={ButtonSize.compact}
+            size="xsmall"
             icon={faPlus}
             onClick={() => arrayHelpers.push(newRow())}
           >
@@ -74,7 +74,7 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
               {showDeleteRowButton && (
                 <Button
                   kind={KIND.secondary}
-                  size={ButtonSize.compact}
+                  size="xsmall"
                   icon={faTrash}
                   onClick={() => {
                     arrayHelpers.remove(index)

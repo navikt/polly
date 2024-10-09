@@ -1,5 +1,6 @@
 import { faCalendar, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Tooltip } from '@navikt/ds-react'
 import { Datepicker } from 'baseui/datepicker'
 import nb from 'date-fns/locale/nb'
 import { Field, FieldProps } from 'formik'
@@ -8,8 +9,6 @@ import { useState } from 'react'
 import { IProcessFormValues } from '../../constants'
 import { theme } from '../../util'
 import { Error } from '../common/ModalSchema'
-import { padding } from '../common/Style'
-import { Button, Tooltip } from '@navikt/ds-react'
 
 interface IDateModalProps {
   showDates: boolean
@@ -54,11 +53,7 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
     <>
       {!showDates && (
         <div className="flex w-full mt-4">
-          <Button
-            size="xsmall"
-            type="button"
-            onClick={() => setShowDates(true)}
-          >
+          <Button size="xsmall" type="button" onClick={() => setShowDates(true)}>
             Velg datoer
           </Button>
         </div>

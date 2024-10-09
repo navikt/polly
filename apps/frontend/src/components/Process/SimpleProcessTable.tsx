@@ -1,5 +1,4 @@
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
-import { SIZE as ButtonSize, KIND } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { useEffect, useState } from 'react'
 import { StyleObject } from 'styletron-standard'
@@ -80,8 +79,8 @@ export const SimpleProcessTable = (props: IProps) => {
     <div>
       <div className="flex justify-end">
         <Button
-          kind={KIND.tertiary}
-          size={ButtonSize.compact}
+          kind="tertiary"
+          size="xsmall"
           icon={faFileExcel}
           tooltip="Eksportér"
           marginRight

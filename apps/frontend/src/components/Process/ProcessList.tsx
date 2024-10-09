@@ -1,5 +1,4 @@
 import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { SIZE as ButtonSize, KIND } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { Modal, ModalBody, ModalHeader, SIZE as ModalSize, ROLE } from 'baseui/modal'
 import { StatefulSelect } from 'baseui/select'
@@ -355,8 +354,8 @@ const ProcessList = ({
         <div>
           <Button
             onClick={() => setIsExportModalOpen(true)}
-            kind={'outline'}
-            size={ButtonSize.compact}
+            kind="outline"
+            size="xsmall"
             icon={faFileWord}
             marginRight
           >
@@ -364,8 +363,8 @@ const ProcessList = ({
           </Button>
           {isEditable && hasAccess() && (
             <Button
-              size={ButtonSize.compact}
-              kind={KIND.tertiary}
+              size="xsmall"
+              kind="tertiary"
               icon={faPlus}
               onClick={() => setShowCreateProcessModal(true)}
             >
@@ -391,7 +390,7 @@ const ProcessList = ({
                   : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`
               }
             >
-              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
                 Eksport for intern bruk
               </Button>
             </StyledLink>
@@ -403,7 +402,7 @@ const ProcessList = ({
                   : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`
               }
             >
-              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
                 Eksport for ekstern bruk
               </Button>
             </StyledLink>

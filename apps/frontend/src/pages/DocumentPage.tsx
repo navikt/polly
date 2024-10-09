@@ -1,6 +1,5 @@
 import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { Notification } from 'baseui/notification'
 import { Tab } from 'baseui/tabs'
 import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
@@ -98,7 +97,7 @@ const DocumentPage = () => {
                 <Button
                   icon={faTrash}
                   kind="outline"
-                  size={ButtonSize.compact}
+                  size="xsmall"
                   onClick={() => setDeleteModalVisibility(true)}
                   marginLeft
                 >
@@ -110,7 +109,7 @@ const DocumentPage = () => {
                 <Button
                   icon={faEdit}
                   kind="outline"
-                  size={ButtonSize.compact}
+                  size="xsmall"
                   onClick={() => navigate(`/document/${currentDocument.id}/edit`)}
                   marginLeft
                 >
@@ -120,7 +119,7 @@ const DocumentPage = () => {
 
               <Button
                 kind="outline"
-                size={ButtonSize.compact}
+                size="xsmall"
                 icon={faPlusCircle}
                 onClick={() => navigate('/document/create')}
                 marginLeft

@@ -1,7 +1,6 @@
 import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Panel, StatelessAccordion } from 'baseui/accordion'
-import { SIZE as ButtonSize, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
@@ -98,8 +97,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const renderCreatePolicyButton = () => (
     <Button
       tooltip="Legg til én informasjonstype"
-      size={ButtonSize.compact}
-      kind={KIND.tertiary}
+      size="xsmall"
+      kind="tertiary"
       onClick={() => setShowCreatePolicyModal(true)}
       startEnhancer={
         <div className="flex justify-center mr-1">
@@ -114,8 +113,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const renderDeleteAllPolicyButton = () => (
     <Button
       tooltip="Slett alle opplysningstype"
-      size={ButtonSize.compact}
-      kind={KIND.tertiary}
+      size="xsmall"
+      kind="tertiary"
       onClick={() => setShowDeleteAllPolicyModal(true)}
       startEnhancer={
         <div className="flex justify-center mr-1">
@@ -130,8 +129,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const renderAddDocumentButton = () => (
     <Button
       tooltip="Legg til en samling av opplysningstyper"
-      size={ButtonSize.compact}
-      kind={KIND.tertiary}
+      size="xsmall"
+      kind="tertiary"
       onClick={() => setShowAddDocumentModal(true)}
       startEnhancer={
         <div className="flex justify-center mr-1">
@@ -160,8 +159,9 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     ;(async () => {
       if (currentProcess) {
         const userIdent: string = currentProcess.changeStamp.lastModifiedBy.split(' ')[0]
-        await getResourceById(userIdent)
-          .catch(() => console.debug('Unable to get email for user that last modified'))
+        await getResourceById(userIdent).catch(() =>
+          console.debug('Unable to get email for user that last modified')
+        )
       }
     })()
   }, [currentProcess])
@@ -247,7 +247,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                 <Button
                                   type="button"
                                   kind="tertiary"
-                                  size="compact"
+                                  size="xsmall"
                                   icon={faExclamationCircle}
                                   onClick={() => history(`/alert/events/process/${process.id}`)}
                                 >
@@ -260,7 +260,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                 <Button
                                   type="button"
                                   kind="tertiary"
-                                  size="compact"
+                                  size="xsmall"
                                   icon={faGavel}
                                   onClick={() => setShowRevisionModal(true)}
                                 >

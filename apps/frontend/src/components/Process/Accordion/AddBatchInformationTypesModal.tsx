@@ -127,9 +127,8 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                         >
                                           <LabelMedium>{it.name}</LabelMedium>
                                           <Button
-                                            size="compact"
+                                            size="xsmall"
                                             kind="tertiary"
-                                            shape="round"
                                             tooltip="Legg til"
                                             onClick={() =>
                                               informationTypesProps.push(mapToUse(informationType))
@@ -194,9 +193,8 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                       />
                                       <Button
                                         marginLeft
-                                        size="compact"
+                                        size="xsmall"
                                         kind="tertiary"
-                                        shape="round"
                                         tooltip="Fjern"
                                         onClick={() => informationTypesProps.remove(index)}
                                       >

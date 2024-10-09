@@ -7,7 +7,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tag } from '@navikt/ds-react'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { LabelLarge } from 'baseui/typography'
@@ -69,7 +68,7 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
             <Button
               onClick={() => setIsExportModalOpen(true)}
               kind="outline"
-              size={ButtonSize.compact}
+              size="xsmall"
               icon={faFileWord}
               marginRight
             >
@@ -92,7 +91,7 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
               style={{ textDecoration: 'none' }}
               href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}
             >
-              <Button kind="outline" size={ButtonSize.compact} icon={faFileWord} marginRight>
+              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
                 Eksport for intern bruk
               </Button>
             </StyledLink>
@@ -102,7 +101,7 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
             >
               <Button
                 kind="outline"
-                size={ButtonSize.compact}
+                size="xsmall"
                 icon={faFileWord}
                 marginRight
                 disabled={process.status !== EProcessStatus.COMPLETED}
@@ -115,19 +114,13 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
 
         {hasAccess && expanded && (
           <>
-            <Button
-              kind="outline"
-              size={ButtonSize.compact}
-              icon={faEdit}
-              onClick={editProcess}
-              marginRight
-            >
+            <Button kind="outline" size="xsmall" icon={faEdit} onClick={editProcess} marginRight>
               Redigér
             </Button>
 
             <Button
               kind="outline"
-              size={ButtonSize.compact}
+              size="xsmall"
               icon={faEdit}
               onClick={() => {
                 if (InformationTypeRef && InformationTypeRef.current) {
@@ -139,7 +132,7 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
               Rediger opplysningstyper
             </Button>
 
-            <Button kind="outline" size={ButtonSize.compact} icon={faTrash} onClick={deleteProcess}>
+            <Button kind="outline" size="xsmall" icon={faTrash} onClick={deleteProcess}>
               Slett
             </Button>
           </>

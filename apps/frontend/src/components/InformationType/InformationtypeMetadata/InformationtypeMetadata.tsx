@@ -38,19 +38,7 @@ const Purposes = ({ policies }: IPurposesProps) => {
   return (
     <div>
       <div className="flex justify-end">
-        <Button
-          onClick={() => setAccordion(!accordion)}
-          size="compact"
-          shape="pill"
-          kind="outline"
-          $style={{
-            position: 'relative',
-            marginTop: `-${theme.sizing.scale1200}`,
-            marginLeft: `-${theme.sizing.scale400}`,
-            right: theme.sizing.scale600,
-            bottom: theme.sizing.scale600,
-          }}
-        >
+        <Button onClick={() => setAccordion(!accordion)} size="xsmall" kind="outline">
           {accordion ? 'Vis alle' : 'Gruppér etter behandlingsaktivitet'}
         </Button>
       </div>
@@ -98,7 +86,7 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
                 <Button
                   type="button"
                   kind="tertiary"
-                  size="compact"
+                  size="xsmall"
                   icon={faExclamationCircle}
                   onClick={() => navigate(`/alert/events/informationtype/${informationtype.id}`)}
                 >

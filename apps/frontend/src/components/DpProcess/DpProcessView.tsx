@@ -1,5 +1,4 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
@@ -124,7 +123,7 @@ const DpProcessView = () => {
             {user.canWrite() /*!env.disableDpProcess &&*/ && (
               <div>
                 <Button
-                  size="compact"
+                  size="xsmall"
                   kind="outline"
                   icon={faEdit}
                   marginRight
@@ -133,7 +132,7 @@ const DpProcessView = () => {
                   Redigér
                 </Button>
                 <Button
-                  size={ButtonSize.compact}
+                  size="xsmall"
                   kind="outline"
                   onClick={() => setShowDeleteModal(true)}
                   icon={faTrash}

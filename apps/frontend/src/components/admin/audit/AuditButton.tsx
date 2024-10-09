@@ -1,6 +1,6 @@
 import { faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { SIZE as ButtonSize, KIND } from 'baseui/button'
+import { KIND } from 'baseui/button'
 import { user } from '../../../service/User'
 import Button from '../../common/Button'
 import RouteLink from '../../common/RouteLink'
@@ -29,7 +29,7 @@ export const AuditButton = (props: IProps) => {
                 tooltip="Versjonering"
                 marginLeft={marginLeft}
                 marginRight={marginRight}
-                size={ButtonSize.compact}
+                size="xsmall"
                 kind={kind || 'outline'}
               >
                 <FontAwesomeIcon title="Versjonering" icon={faHistory} />

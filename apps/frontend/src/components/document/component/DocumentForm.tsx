@@ -35,7 +35,7 @@ const labelProps: BlockProps = {
 
 type TDocumentFormProps = {
   initialValues: IDocumentFormValues
-  handleSubmit: Function
+  handleSubmit: (values: IDocumentFormValues) => Promise<void>
 }
 
 const DocumentForm = (props: TDocumentFormProps) => {

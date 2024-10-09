@@ -396,10 +396,9 @@ export const MainSearch = () => {
         <Button
           onClick={() => setFilter(!filter)}
           icon={faFilter}
-          size="compact"
+          size="xsmall"
           kind={filter ? 'primary' : 'tertiary'}
           marginLeft
-          $style={{ height: theme.sizing.scale1000, width: theme.sizing.scale1000 }}
         >
           <img aria-label="Filter" />
         </Button>

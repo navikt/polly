@@ -1,6 +1,5 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useStyletron } from 'baseui'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium } from 'baseui/typography'
@@ -104,13 +103,13 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
         <AuditButton id={id} marginRight />
 
         <RouteLink href={`/informationtype/${id}/edit`} className={link}>
-          <Button size="compact" kind="outline" icon={faEdit} marginRight>
+          <Button size="xsmall" kind="outline" icon={faEdit} marginRight>
             Redigér
           </Button>
         </RouteLink>
 
         <Button
-          size={ButtonSize.compact}
+          size="xsmall"
           kind="outline"
           onClick={() => setShowDeleteModal(true)}
           icon={faTrash}

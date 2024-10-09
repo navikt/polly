@@ -144,7 +144,7 @@ export const AlertEventPage = () => {
       type="button"
       marginRight
       kind={state.level === newLevel ? 'primary' : 'outline'}
-      size="compact"
+      size="xsmall"
       onClick={() => setLevel(newLevel)}
     >
       {text}
@@ -160,7 +160,7 @@ export const AlertEventPage = () => {
             <LabelMedium>Filter: </LabelMedium>
             <Button
               kind="secondary"
-              size="compact"
+              size="xsmall"
               marginLeft
               marginRight
               iconEnd={faTimes}

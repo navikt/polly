@@ -1,6 +1,5 @@
 import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Accordion, Modal } from '@navikt/ds-react'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium, ParagraphSmall } from 'baseui/typography'
@@ -124,7 +123,7 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                         {selectedDisclosure && hasAlert && canViewAlerts() && (
                           <Button
                             kind={'outline'}
-                            size={ButtonSize.compact}
+                            size="xsmall"
                             icon={faExclamationCircle}
                             marginRight
                             tooltip={
@@ -143,7 +142,7 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                           <>
                             <Button
                               kind={'outline'}
-                              size={ButtonSize.compact}
+                              size="xsmall"
                               icon={faEdit}
                               onClick={() => setShowEditModal(true)}
                               marginRight
@@ -153,7 +152,7 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
                             <Button
                               kind={'outline'}
-                              size={ButtonSize.compact}
+                              size="xsmall"
                               icon={faTrash}
                               onClick={() => setShowDeleteModal(true)}
                             >
