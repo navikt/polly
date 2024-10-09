@@ -1,10 +1,9 @@
-import { Select, TYPE } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { ChangeEvent, useEffect, useState } from 'react'
+import AsyncSelect from 'react-select/async'
 import { getProcessesByPurpose, searchProcess } from '../../api'
 import { IDisclosureFormValues, IProcess, IProcessShort } from '../../constants'
 import { EListName, ICode, codelist } from '../../service/Codelist'
-import { useDebouncedState } from '../../util'
+import { DropdownIndicator, noOptionMessage, selectOverrides } from './AsyncSelectComponents'
 import { renderTagList } from './TagList'
 
 type TSelectProcessProps = {
@@ -13,58 +12,58 @@ type TSelectProcessProps = {
 
 const SelectProcess = (props: TSelectProcessProps) => {
   const { formikBag } = props
-  const [processList, setProcessList] = useState<IProcess[]>([])
-  const [search, setSearch] = useDebouncedState<string>('', 400)
-  const [isLoading, setLoading] = useState<boolean>(false)
 
-  useEffect(() => {
-    ;(async () => {
-      if (search && search.length > 2) {
-        setLoading(true)
-        let response: IProcess[] = (await searchProcess(search)).content
-        const purposes: ICode[] = codelist
-          .getCodes(EListName.PURPOSE)
-          .filter((code: ICode) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+  const useSearchProcessOptions = async (searchParam: string): Promise<IProcess[]> => {
+    if (searchParam && searchParam.length > 2) {
+      const behandlinger: IProcess[] = (await searchProcess(searchParam)).content
 
-        const processesPromise: Promise<any>[] = []
+      const purposes: ICode[] = codelist
+        .getCodes(EListName.PURPOSE)
+        .filter(
+          (code: ICode) => code.shortName.toLowerCase().indexOf(searchParam.toLowerCase()) >= 0
+        )
 
-        for (let i = 0; i < purposes.length; i++) {
-          processesPromise.push(getProcessesByPurpose(purposes[i].code))
-        }
+      const processesPromise: Promise<any>[] = []
 
-        response = [
-          ...response,
-          ...(await Promise.all(processesPromise))
-            .map((value) => value.content)
-            .flatMap((value) => value),
-        ]
-
-        response = response
-          .map((purpose: IProcess) => {
-            return {
-              ...purpose,
-              namePurpose:
-                'B' +
-                purpose.number +
-                ' ' +
-                (purpose.purposes !== undefined ? purpose.purposes[0].shortName : '') +
-                ': ' +
-                purpose.name,
-            }
-          })
-          .filter(
-            (p1: IProcess, index: number, self) => index === self.findIndex((p2) => p2.id === p1.id)
-          )
-          .filter(
-            (p1: IProcess) =>
-              !formikBag.values.processes.map((value: IProcessShort) => value.id).includes(p1.id)
-          )
-
-        setProcessList(response)
-        setLoading(false)
+      for (let i = 0; i < purposes.length; i++) {
+        processesPromise.push(getProcessesByPurpose(purposes[i].code))
       }
-    })()
-  }, [search])
+
+      let searchResult: IProcess[] = [
+        ...behandlinger,
+        ...(await Promise.all(processesPromise))
+          .map((value) => value.content)
+          .flatMap((value) => value),
+      ]
+
+      searchResult = searchResult
+        .filter(
+          (p1: IProcess, index: number, self) => index === self.findIndex((p2) => p2.id === p1.id)
+        )
+        .filter(
+          (p1: IProcess) =>
+            !formikBag.values.processes.map((value: IProcessShort) => value.id).includes(p1.id)
+        )
+
+      const OptionList = searchResult.map((behandling) => {
+        return {
+          ...behandling,
+          value: behandling.id,
+          label:
+            'B' +
+            behandling.number +
+            ' ' +
+            (behandling.purposes !== undefined ? behandling.purposes[0].shortName : '') +
+            ': ' +
+            behandling.name,
+        }
+      })
+
+      return OptionList
+    }
+
+    return []
+  }
 
   return (
     <FieldArray
@@ -72,25 +71,24 @@ const SelectProcess = (props: TSelectProcessProps) => {
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
           <div className="w-full">
-            <Select
-              options={processList}
-              isLoading={isLoading}
-              clearable
-              searchable={true}
-              noResultsMsg="Ingen"
-              type={TYPE.search}
-              maxDropdownHeight="400px"
-              placeholder="Søk behandlinger"
-              onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setSearch(event.currentTarget.value)
-              }
-              labelKey="namePurpose"
-              onChange={({ value }) =>
-                arrayHelpers.form.setFieldValue('processes', [
-                  ...formikBag.values.processes,
-                  ...value.map((value) => value),
-                ])
-              }
+            <AsyncSelect
+              aria-label="Søk etter behandlinger"
+              placeholder=""
+              components={{ DropdownIndicator }}
+              noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
+              controlShouldRenderValue={false}
+              loadingMessage={() => 'Søker...'}
+              isClearable={false}
+              loadOptions={useSearchProcessOptions}
+              onChange={(value: any) => {
+                if (value) {
+                  arrayHelpers.form.setFieldValue('processes', [
+                    ...formikBag.values.processes,
+                    value
+                  ])
+                }
+              }}
+              styles={selectOverrides}
             />
           </div>
 
