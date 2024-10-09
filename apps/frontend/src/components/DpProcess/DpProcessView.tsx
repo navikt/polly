@@ -2,7 +2,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { SIZE as ButtonSize } from 'baseui/button'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { getResourceById } from '../../api'
 import {
@@ -37,8 +37,8 @@ const DpProcessView = () => {
   > = useParams<{ id?: string }>()
   const [dpProcess, setDpProcess] = useState<IDpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
-  const [showDeleteModal, toggleDeleteModal] = useReducer((prevState) => !prevState, false)
+  const [showModal, setShowModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [processors, setProcessors] = useState<IProcessor[]>([])
 
   ampli.logEvent('besøk', {
@@ -61,7 +61,7 @@ const DpProcessView = () => {
         setDpProcess(updatedDpProcess)
       }
       setErrorDpProcessModal('')
-      toggleModal()
+      setShowModal(false)
     } catch (error: any) {
       if (error.response.data.message.includes('already exists')) {
         setErrorDpProcessModal('Databehandlingen eksisterer allerede.')
@@ -76,7 +76,7 @@ const DpProcessView = () => {
       if (id) {
         await deleteDpProcess(id)
         setErrorDpProcessModal('')
-        toggleModal()
+        setShowModal(false)
         navigate(`/dpprocess`)
       }
     } catch (error: any) {
@@ -128,14 +128,14 @@ const DpProcessView = () => {
                   kind="outline"
                   icon={faEdit}
                   marginRight
-                  onClick={toggleModal}
+                  onClick={() => setShowModal(true)}
                 >
                   Redigér
                 </Button>
                 <Button
                   size={ButtonSize.compact}
                   kind="outline"
-                  onClick={toggleDeleteModal}
+                  onClick={() => setShowDeleteModal(true)}
                   icon={faTrash}
                 >
                   Slett
@@ -261,7 +261,10 @@ const DpProcessView = () => {
                         <div className="whitespace-nowrap mt-4 mr-0" />
                         <div className="flex flexWrap">
                           {processors.map((processor: IProcessor, index) => (
-                            <div key={processor.id} className={index < processors.length ? 'mr-1.5' : ''}>
+                            <div
+                              key={processor.id}
+                              className={index < processors.length ? 'mr-1.5' : ''}
+                            >
                               <DotTag key={processor.id}>
                                 <RouteLink href={'/processor/' + processor.id}>
                                   {processor.name}
@@ -290,7 +293,7 @@ const DpProcessView = () => {
           )}
           <DpProcessModal
             isOpen={showModal}
-            onClose={toggleModal}
+            onClose={() => setShowModal(false)}
             initialValues={dpProcessToFormValues(dpProcess ? dpProcess : {})}
             submit={handleEditDpProcess}
             errorOnCreate={errorDpProcessModal}
@@ -298,7 +301,7 @@ const DpProcessView = () => {
           <DpProcessDeleteModal
             title="Bekreft sletting"
             isOpen={showDeleteModal}
-            onClose={toggleDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
             onSubmit={() => handleDeleteDpProcess(dpProcess?.id)}
             errorOnDeletion={errorDpProcessModal}
           />

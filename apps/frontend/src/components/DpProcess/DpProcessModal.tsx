@@ -175,7 +175,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
               >
                 <div className="flex justify-end">
                   <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" variant="tertiary" onClick={onClose}>
+                  <Button type="button" variant="tertiary" onClick={() => onClose()}>
                     Avbryt
                   </Button>
                   <Button type="submit">Lagre</Button>

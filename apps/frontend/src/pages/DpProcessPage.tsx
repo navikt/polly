@@ -2,7 +2,7 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
 import DpProcessModal from '../components/DpProcess/DpProcessModal'
@@ -13,7 +13,7 @@ import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
 const DpProcessPage = () => {
-  const [showModal, toggleModal] = useReducer((prevState) => !prevState, false)
+  const [showModal, setShowModal] = useState(false)
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [dpProcesses, setDpProcesses] = useState<IDpProcess[]>([])
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -42,7 +42,7 @@ const DpProcessPage = () => {
       const response = await createDpProcess(dpProcess)
       setErrorDpProcessModal('')
       navigate(`/dpprocess/${response.id}`)
-      toggleModal()
+      setShowModal(false)
     } catch (error: any) {
       if (error.response.data.message.includes('already exists')) {
         setErrorDpProcessModal('Databehandlingen eksisterer allerede')
@@ -58,7 +58,7 @@ const DpProcessPage = () => {
         <HeadingMedium marginTop="0">Behandlinger hvor NAV er databehandler</HeadingMedium>
         <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
-            <Button kind="outline" onClick={() => toggleModal()}>
+            <Button kind="outline" onClick={() => setShowModal(true)}>
               <FontAwesomeIcon icon={faPlusCircle} />
               &nbsp;Opprett ny behandling
             </Button>
@@ -67,7 +67,7 @@ const DpProcessPage = () => {
       </div>
       <DpProcessModal
         isOpen={showModal}
-        onClose={toggleModal}
+        onClose={() => setShowModal(false)}
         initialValues={dpProcessToFormValues({})}
         submit={handleCreateDpProcess}
         errorOnCreate={errorDpProcessModal}
