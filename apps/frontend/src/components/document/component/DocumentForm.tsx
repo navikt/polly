@@ -1,5 +1,3 @@
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { BlockProps } from 'baseui/block'
 import { Input, SIZE } from 'baseui/input'
 import { StyledLink } from 'baseui/link'
