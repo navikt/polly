@@ -129,14 +129,18 @@ const ProcessPage = () => {
                 thirdTabContent={
                   <div className="mb-12">
                     <HeadingSmall>Oversikt</HeadingSmall>
-                    <Charts
-                      chartData={chartData!}
-                      processStatus={EProcessStatusFilter.All}
-                      departmentCode={code}
-                      type={
-                        section === ESection.department ? ESection.department : ESection.productarea
-                      }
-                    />
+                    {chartData && (
+                      <Charts
+                        chartData={chartData}
+                        processStatus={EProcessStatusFilter.All}
+                        departmentCode={code}
+                        type={
+                          section === ESection.department
+                            ? ESection.department
+                            : ESection.productarea
+                        }
+                      />
+                    )}
                   </div>
                 }
               />

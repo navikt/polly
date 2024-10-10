@@ -22,7 +22,8 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   const input = legalBasis ? legalBasis : legalBasisForm
   if (!input) return null
   const { description } = input
-  const gdpr = legalBasis ? legalBasis.gdpr.code : legalBasisForm!.gdpr
+  const islegalBasis = legalBasisForm && legalBasisForm.gdpr
+  const gdpr = legalBasis ? legalBasis.gdpr.code : islegalBasis
   const nationalLaw = legalBasis ? legalBasis?.nationalLaw?.code : legalBasisForm!.nationalLaw
 
   const gdprDisplay: string | undefined =
