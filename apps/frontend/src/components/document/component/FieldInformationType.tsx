@@ -6,7 +6,7 @@ import { IDocumentInfoTypeUse, IInformationTypeShort } from '../../../constants'
 
 const FieldInformationType = (props: {
   documentInformationType: IDocumentInfoTypeUse
-  handleChange: Function
+  handleChange: (documentInformationType: IDocumentInfoTypeUse) => void
 }) => {
   const { documentInformationType, handleChange } = props
   const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch()
@@ -40,7 +40,8 @@ const FieldInformationType = (props: {
         setSelectedInformationType(params.value[0] as IInformationTypeShort)
         handleChange({
           ...documentInformationType,
-          informationTypeId: !params.value[0] ? '' : params.value[0].id,
+          informationTypeId:
+            params.value[0] && params.value[0].id ? params.value[0].id.toString() : '',
         })
       }}
       filterOptions={(options) => options}
