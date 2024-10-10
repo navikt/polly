@@ -5,8 +5,8 @@ import { LabelLarge } from 'baseui/typography'
 import * as _ from 'lodash'
 import { Fragment, useReducer, useState } from 'react'
 import { theme } from '../../util'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import { hideBorder, marginAll } from '../common/Style'
+import {Button, Tooltip} from "@navikt/ds-react";
 
 const cursor = { cursor: 'pointer' }
 
@@ -143,6 +143,11 @@ const Visualization = (props: TVisualizationProps) => {
 
   return (
     <div className="relative">
+      <Button variant="tertiary-neutral" size="xsmall" onClick={toggle} >
+        <Tooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
+          <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
+        </Tooltip>
+      </Button>
       <Card
         overrides={{
           Root: {
@@ -205,12 +210,7 @@ const Visualization = (props: TVisualizationProps) => {
         </div>
       </Card>
 
-      <div onClick={toggle} style={{ position: 'absolute', top: '5px', left: '5px' }}>
-        <CustomizedStatefulTooltip
-          content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}
-          icon={<FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />}
-        />
-      </div>
+
     </div>
   )
 }
