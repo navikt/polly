@@ -1,37 +1,22 @@
-import {
-  faChevronDown,
-  faChevronRight,
-  faEdit,
-  faFileWord,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tag } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
-import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { LabelLarge } from 'baseui/typography'
-import { Ref, RefObject, createRef, useState } from 'react'
-import { EProcessStatus, IProcessShort } from '../../../constants'
+import { Ref, RefObject, createRef } from 'react'
+import { IProcessShort } from '../../../constants'
 import { EListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
-import { env } from '../../../util/env'
-import { AuditButton } from '../../admin/audit/AuditButton'
-import Button from '../../common/Button'
 
 type TAccordionTitleProps = {
   process: IProcessShort
   expanded: boolean
-  hasAccess: boolean
-  editProcess: () => void
-  deleteProcess: () => void
   forwardRef?: Ref<any>
 }
 
 export const InformationTypeRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
 
 const AccordionTitle = (props: TAccordionTitleProps) => {
-  const { process, expanded, hasAccess, forwardRef, editProcess, deleteProcess } = props
-  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
+  const { process, expanded, forwardRef } = props
   const today: string = new Date().toISOString().split('T')[0]
 
   const isActive: boolean = today < process.end
@@ -56,87 +41,6 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
           </span>
           <span>{process.name}</span>
         </LabelLarge>
-      </div>
-      <div
-        onClick={(event) => {
-          event.stopPropagation()
-        }}
-      >
-        {expanded && (
-          <>
-            <AuditButton id={process.id} marginRight />
-            <Button
-              onClick={() => setIsExportModalOpen(true)}
-              kind="outline"
-              size="xsmall"
-              icon={faFileWord}
-              marginRight
-            >
-              Eksportér
-            </Button>
-          </>
-        )}
-
-        <Modal
-          closeable
-          animate
-          size={SIZE.auto}
-          role={ROLE.dialog}
-          isOpen={isExportModalOpen}
-          onClose={() => setIsExportModalOpen(false)}
-        >
-          <ModalHeader>Velg eksportmetode</ModalHeader>
-          <ModalBody>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}
-            >
-              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
-                Eksport for intern bruk
-              </Button>
-            </StyledLink>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={`${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`}
-            >
-              <Button
-                kind="outline"
-                size="xsmall"
-                icon={faFileWord}
-                marginRight
-                disabled={process.status !== EProcessStatus.COMPLETED}
-              >
-                Eksport for ekstern bruk
-              </Button>
-            </StyledLink>
-          </ModalBody>
-        </Modal>
-
-        {hasAccess && expanded && (
-          <>
-            <Button kind="outline" size="xsmall" icon={faEdit} onClick={editProcess} marginRight>
-              Redigér
-            </Button>
-
-            <Button
-              kind="outline"
-              size="xsmall"
-              icon={faEdit}
-              onClick={() => {
-                if (InformationTypeRef && InformationTypeRef.current) {
-                  InformationTypeRef.current.scrollIntoView()
-                }
-              }}
-              marginRight
-            >
-              Rediger opplysningstyper
-            </Button>
-
-            <Button kind="outline" size="xsmall" icon={faTrash} onClick={deleteProcess}>
-              Slett
-            </Button>
-          </>
-        )}
       </div>
     </>
   )

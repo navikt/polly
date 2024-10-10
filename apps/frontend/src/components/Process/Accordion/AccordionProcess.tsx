@@ -37,6 +37,7 @@ import DeleteAllPolicyModal from './DeleteAllPolicyModal'
 import { DeleteProcessModal } from './DeleteProcessModal'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
+import { ProcessButtonGroup } from './ProcessButtonGroup'
 import { ProcessCreatedModal } from './ProcessCreatedModal'
 import ProcessData from './ProcessData'
 import TablePolicy from './TablePolicy'
@@ -199,9 +200,6 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                     <AccordionTitle
                       process={process}
                       expanded={expanded}
-                      hasAccess={hasAccess()}
-                      editProcess={() => setShowEditProcessModal(true)}
-                      deleteProcess={() => setShowDeleteModal(true)}
                       forwardRef={expanded ? purposeRef : undefined}
                     />
                   }
@@ -231,8 +229,13 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   {!isLoading && currentProcess && (
                     <div className="outline outline-4 outline-[#E2E2E2]">
                       <div className="px-6 pt-6">
+                        <ProcessButtonGroup
+                          process={process}
+                          hasAccess={hasAccess()}
+                          editProcess={() => setShowEditProcessModal(true)}
+                          deleteProcess={() => setShowDeleteModal(true)}
+                        />
                         <ProcessData process={currentProcess} disclosures={disclosures} />
-
                         <div>
                           <div className="flex justify-end">
                             <span>
