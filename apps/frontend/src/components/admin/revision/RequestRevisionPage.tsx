@@ -1,43 +1,18 @@
 import axios from 'axios'
-import { Button as BButton } from 'baseui/button'
-import { ButtonGroup } from 'baseui/button-group'
-import { Combobox } from 'baseui/combobox'
-import { Notification } from 'baseui/notification'
-import { Select, TYPE, Value } from 'baseui/select'
-import { HeadingMedium } from 'baseui/typography'
-import { Field, Form, Formik } from 'formik'
-import { useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { Form, Formik} from 'formik'
+import {useState} from 'react'
 import * as yup from 'yup'
-import { useAllAreas, useProcessSearch } from '../../../api'
-import { Process, ProductArea } from '../../../constants'
+import {searchProcessOptions, useAllAreas} from '../../../api'
+import {ProcessRevisionRequest, ProductArea, RecipientType} from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { codelist, ListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
-import Button from '../../common/Button'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { RadioBoolButton } from '../../common/Radio'
-import { Spinner } from '../../common/Spinner'
-import { FieldTextarea } from '../../Process/common/FieldTextArea'
+import AsyncSelect from 'react-select/async'
 
-enum ProcessSelection {
-  ONE = 'ONE',
-  ALL = 'ALL',
-  DEPARTMENT = 'DEPARTMENT',
-  PRODUCT_AREA = 'PRODUCT_AREA',
-}
-
-interface ProcessRevisionRequest {
-  processSelection: ProcessSelection
-  processId?: string
-  department?: string
-  productAreaId?: string
-  revisionText: string
-  completedOnly: boolean
-}
+import {Alert, Button, Heading, Label, Loader, Radio, RadioGroup, Select, Tabs, Textarea} from '@navikt/ds-react'
 
 const initialValues: ProcessRevisionRequest = {
-  processSelection: ProcessSelection.ONE,
+  processSelection: RecipientType.ONE,
   processId: '',
   department: '',
   productAreaId: '',
@@ -48,10 +23,10 @@ const initialValues: ProcessRevisionRequest = {
 const schema: () => yup.ObjectSchema<ProcessRevisionRequest> = () => {
   const requiredString = yup.string().required('Feltet er påkrevd')
   return yup.object({
-    processSelection: yup.mixed<ProcessSelection>().oneOf(Object.values(ProcessSelection)).required(),
-    processId: yup.string().when('processSelection', { is: ProcessSelection.ONE, then: () => requiredString }),
-    department: yup.string().when('processSelection', { is: ProcessSelection.DEPARTMENT, then: () => requiredString }),
-    productAreaId: yup.string().when('processSelection', { is: ProcessSelection.PRODUCT_AREA, then: () => requiredString }),
+    processSelection: yup.mixed<RecipientType>().oneOf(Object.values(RecipientType)).required(),
+    processId: yup.string().when('processSelection', { is: RecipientType.ONE, then: () => requiredString }),
+    department: yup.string().when('processSelection', { is: RecipientType.DEPARTMENT, then: () => requiredString }),
+    productAreaId: yup.string().when('processSelection', { is: RecipientType.PRODUCT_AREA, then: () => requiredString }),
     revisionText: requiredString,
     completedOnly: yup.boolean().required(),
   })
@@ -61,16 +36,13 @@ const requestRevision = async (request: ProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
 }
 
-const formatProcessName = (process: Process): string => process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
-
 interface IRequestRevisionPageProps {
   close?: () => void
   processId?: string
 }
 
 export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
-  const { close, processId } = props
-  const navigate: NavigateFunction = useNavigate()
+  const { processId } = props
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -80,16 +52,6 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
   const areas: ProductArea[] = useAllAreas()
 
-  const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
-
-  const modalView = !!props.processId
-  const abort = (): void => {
-    if (close) {
-      close()
-    } else {
-      navigate(-1)
-    }
-  }
   const save = async (request: ProcessRevisionRequest) => {
     setLoading(true)
     try {
@@ -100,31 +62,32 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     }
     setLoading(false)
   }
-  const reset = () => {
-    setDone(false)
-    setLoading(false)
-    setError(undefined)
-    setProcessSearch('')
+
+  const reset = ()=> {
+      setDone(false)
+      setError(undefined)
+  }
+
+  const selectOnlyCompleted = (formikBag: any)=> {
+    return (
+      <RadioGroup
+        value={formikBag.values.completedOnly}
+        className="flex w-full mt-4"
+        legend="Velg kun fullførte behandlinger"
+        onChange={(value) => formikBag.setFieldValue('completedOnly', value)}
+        error={formikBag.errors.completedOnly}
+      >
+        <Radio value={true}>Velg kun fullførte behandlinger</Radio>
+        <Radio value={false}>Velg alle behandlinger</Radio>
+      </RadioGroup>)
   }
 
   return (
     <div>
-      <HeadingMedium>Trenger revidering</HeadingMedium>
-      {loading ? <Spinner /> : error && <Notification kind={'negative'}>{error}</Notification>}
+      <Heading level="1" size="large">Send anmodning om revidering</Heading>
 
-      {done ? (
-        <div>
-          <Notification kind={'positive'}>Revidering etterspurt</Notification>
-          <Button type="button" kind="secondary" onClick={abort} marginRight>
-            {modalView ? 'Lukk' : 'Tilbake'}
-          </Button>
-          {!close && (
-            <Button type="button" onClick={reset}>
-              Ny revidering
-            </Button>
-          )}
-        </div>
-      ) : (
+      {loading ? <Loader size="xlarge" /> : error && <Alert variant={'error'}>{error}</Alert>}
+
         <Formik
           initialValues={{
             ...initialValues,
@@ -132,121 +95,131 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
           }}
           validationSchema={schema()}
           onSubmit={save}
-          validateOnBlur={true}
+          onReset={reset}
+          validateOnBlur={false}
+          validateOnChange={false}
         >
           {(formikBag) => (
             <Form>
-              {!modalView && (
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Behandlinger" />
-                  <Field name="processSelection">
-                    {() => {
-                      const button = (s: ProcessSelection, text: string = 'Alle') => {
-                        const onClick = () => formikBag.setFieldValue('processSelection', s)
-                        return (
-                          <BButton type="button" onClick={onClick}>
-                            {text}
-                          </BButton>
-                        )
-                      }
-                      return (
-                        <div>
-                          <ButtonGroup selected={Object.values(ProcessSelection).indexOf(formikBag.values.processSelection)}>
-                            {button(ProcessSelection.ONE, 'Én')}
-                            {button(ProcessSelection.ALL, 'Alle')}
-                            {button(ProcessSelection.DEPARTMENT, 'Avdeling')}
-                            {button(ProcessSelection.PRODUCT_AREA, 'Område')}
-                          </ButtonGroup>
-                        </div>
-                      )
-                    }}
-                  </Field>
+              {done &&
+                <div>
+                  <Alert variant="success">Revidering etterspurt</Alert>
                 </div>
-              )}
-              <Error fieldName="processSelection" fullWidth />
-
-              {!modalView && (
+              }
                 <div className="flex w-full mt-4">
-                  <ModalLabel label="Bare fullførte" />
-                  <Field name="completedOnly">
-                    {() => <RadioBoolButton setValue={(b) => formikBag.setFieldValue('completedOnly', b)} value={formikBag.values.completedOnly} omitUndefined />}
-                  </Field>
                 </div>
-              )}
-              <Error fieldName="completedOnly" fullWidth />
 
-              {formikBag.values.processSelection === ProcessSelection.ONE && !modalView && (
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Behandling" />
-                  <Select
-                    noResultsMsg="Ingen"
-                    isLoading={processSearchLoading}
-                    maxDropdownHeight="400px"
-                    searchable={true}
-                    type={TYPE.search}
-                    options={processSearchResult}
-                    placeholder="Søk"
-                    value={processSearchResult.filter((process: Process) => process.id === formikBag.values.processId)}
-                    onInputChange={(event) => setProcessSearch(event.currentTarget.value)}
-                    onChange={(params) => {
-                      formikBag.setFieldValue('processId', !params.value[0] ? '' : params.value[0].id)
-                    }}
-                    filterOptions={(option: Value) => option}
-                    labelKey="name"
-                    getOptionLabel={({ option }) => formatProcessName(option as Process)}
+              <Tabs defaultValue="logg" value={formikBag.values.processSelection} onChange={(value)=>formikBag.setFieldValue('processSelection', value)}>
+                <Tabs.List>
+                  <Tabs.Tab
+                    value={RecipientType.ONE}
+                    label="Én behandling"
                   />
-                </div>
-              )}
-              <Error fieldName="processId" fullWidth />
+                  <Tabs.Tab
+                    value={RecipientType.ALL}
+                    label="Alle behandlinger"
+                  />
+                  <Tabs.Tab
+                    value={RecipientType.DEPARTMENT}
+                    label="Avdeling"
+                  />
+                  <Tabs.Tab
+                    value={RecipientType.PRODUCT_AREA}
+                    label="Område"
+                  />
+                </Tabs.List>
+                <Tabs.Panel value={RecipientType.ONE} className="h-48 w-full p-4">
+                  <div className="flex w-full mt-4 my-3">
+                    <div className="my-3">
+                      <Label>Legg til en behandling fra Behandlingskatalogen</Label>
 
-              {formikBag.values.processSelection === ProcessSelection.DEPARTMENT && (
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Avdeling" />
-                  <div className="w-full">
-                    <Combobox
-                      mapOptionToString={(option) => option.label}
-                      options={departments}
-                      value={formikBag.values.department!}
-                      onChange={(code: string) => formikBag.setFieldValue('department', code)}
-                    />
+                      <AsyncSelect
+                        aria-label="Søk etter behandlinger"
+                        placeholder=""
+                        noOptionsMessage={() => 'Skriv minst 3 tegn for å søke'}
+                        loadingMessage={() => 'Søker...'}
+                        isClearable={true}
+                        loadOptions={searchProcessOptions}
+                        onChange={(val) => {
+                          if (val) {
+                            formikBag.setFieldValue('processId', val.value)
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
-              <Error fieldName="department" fullWidth />
+                  {formikBag.errors.processId && (
+                    <p className="navds-error-message navds-label flex gap-2">
+                      <span>•</span>
+                      Feltet er påkrevd
+                    </p>)}
+                </Tabs.Panel>
+                <Tabs.Panel value={RecipientType.ALL} className="h-48 w-full p-4">
+                  {selectOnlyCompleted(formikBag)}
+                </Tabs.Panel>
+                <Tabs.Panel value={RecipientType.DEPARTMENT} className="h-68 w-full p-4">
+                  <Select
+                    className="w-1/2"
+                    label="Avdeling"
+                    hideLabel
+                    onChange={(ev) => formikBag.setFieldValue('department', ev.currentTarget.value)}
+                    value={formikBag.values.department!}
+                    error={formikBag.errors.department}
+                  >
+                    <option key="" value="">
+                      Velg avdeling
+                    </option>
+                    {departments.map((codeListOption) => (
+                      <option key={`option_${codeListOption.id}`} value={codeListOption.label}>
+                        {codeListOption.label}
+                        </option>
+                      ))}
+                    </Select>
+                  {selectOnlyCompleted(formikBag)}
+                </Tabs.Panel>
+                <Tabs.Panel value={RecipientType.PRODUCT_AREA} className="h-68 w-full p-4">
+                  <Select
+                    className="w-1/2"
+                    label="Område"
+                    hideLabel
+                    onChange={(ev) => formikBag.setFieldValue('productAreaId', ev.currentTarget.value)}
+                    value={formikBag.values.productAreaId!}
+                    error={formikBag.errors.productAreaId}
+                  >
+                    <option key="" value="">
+                      Velg område
+                    </option>
+                    {areas.map((productArea) => (
+                      <option key={`option_${productArea.id}`} value={productArea.name}>
+                        {productArea.name}
+                      </option>
+                    ))}
+                  </Select>
+                  {selectOnlyCompleted(formikBag)}
+                </Tabs.Panel>
+              </Tabs>
 
-              {formikBag.values.processSelection === ProcessSelection.PRODUCT_AREA && (
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Område" />
-                  <div className="w-full">
-                    <Combobox
-                      mapOptionToString={(option: ProductArea) => option.name}
-                      options={areas}
-                      value={formikBag.values.productAreaId!}
-                      onChange={(code: string) => formikBag.setFieldValue('productAreaId', code)}
-                    />
-                  </div>
-                </div>
-              )}
-              <Error fieldName="productAreaId" fullWidth />
-
-              <div className="flex w-full mt-4">
-                <ModalLabel label="Revideringstekst" />
-                <FieldTextarea fieldName="revisionText" placeHolder="Revideringstekst" rows={6} />
+              <div className="flex mt-4 ml-4">
+                  <Textarea
+                    className="w-1/2"
+                    name="revisionText"
+                    label="Revideringstekst"
+                    value={formikBag.values.revisionText}
+                    onChange={(event)=>{formikBag.setFieldValue('revisionText', event.target.value)}}
+                    error={formikBag.errors.revisionText}
+                    minRows={6}
+                  />
               </div>
-              <Error fieldName="revisionText" fullWidth />
 
-              <div>
-                <div className="flex justify-end mt-6">
-                  <Button type="button" kind="secondary" onClick={abort} marginRight>
-                    Avbryt
+                <div className="flex justify-end mt-6 gap-2">
+                  <Button variant="secondary" type="reset" >
+                    Tøm skjema
                   </Button>
-                  <Button type="submit">Lagre</Button>
+                  <Button type="submit">Send</Button>
                 </div>
-              </div>
             </Form>
           )}
         </Formik>
-      )}
     </div>
   )
 }
