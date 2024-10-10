@@ -1,7 +1,7 @@
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { OnChangeParams, Select, TYPE, Value } from 'baseui/select'
 import { ChangeEvent, ReactElement, useEffect, useState } from 'react'
-import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import {
   searchDocuments,
   searchInformationType,
@@ -331,14 +331,12 @@ export const MainSearch = () => {
   const [filter, setFilter] = useState(false)
   const [value, setValue] = useState<Value>()
   const navigate: NavigateFunction = useNavigate()
-  const location: Location<any> = useLocation()
 
   return (
     <div>
       <div className="flex items-center">
         <Select
           noResultsMsg="Ingen"
-          autoFocus={location.pathname === '/'}
           isLoading={loading}
           maxDropdownHeight="400px"
           searchable={true}
