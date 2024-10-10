@@ -5,7 +5,7 @@ import { EListName, ICode, codelist } from '../../../service/Codelist'
 
 const FieldSubjectCategory = (props: {
   documentInformationType: IDocumentInfoTypeUse
-  handleChange: Function
+  handleChange: (values: IDocumentInfoTypeUse) => void
 }) => {
   const { documentInformationType, handleChange } = props
   const [value, setValue] = useState<Value>(
@@ -18,7 +18,7 @@ const FieldSubjectCategory = (props: {
     handleChange({
       ...documentInformationType,
       subjectCategories: [...value].map(
-        (category) => codelist.getCode(EListName.SUBJECT_CATEGORY, category.id as string)?.code
+        (category) => codelist.getCode(EListName.SUBJECT_CATEGORY, category.id as string) as ICode
       ),
     })
   }, [])
@@ -31,7 +31,7 @@ const FieldSubjectCategory = (props: {
         handleChange({
           ...documentInformationType,
           subjectCategories: [...value].map(
-            (category) => codelist.getCode(EListName.SUBJECT_CATEGORY, category.id as string)?.code
+            (category) => codelist.getCode(EListName.SUBJECT_CATEGORY, category.id as string) as ICode
           ),
         })
       }}
