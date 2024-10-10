@@ -1,16 +1,26 @@
-import { addBatchInfoTypesToProcessSchema, addDocumentToProcessSchema, createDocumentSchema } from '../../components/common/schema'
-import { AddDocumentToProcessFormValues, CreateDocumentFormValues, LegalBasesUse, Policy, Process } from '../../constants'
-import '../config/schemaValidator'
+import {
+  addBatchInfoTypesToProcessSchema,
+  addDocumentToProcessSchema,
+  createDocumentSchema,
+} from '../../components/common/schema'
+import {
+  ELegalBasesUse,
+  IAddDocumentToProcessFormValues,
+  ICreateDocumentFormValues,
+  IPolicy,
+  IProcess,
+} from '../../constants'
+import { EListName } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
-import { ListName } from '../../service/Codelist'
+import '../config/schemaValidator'
 
-const senCode = addCode(ListName.SENSITIVITY, 'SEN')
-const subCode = addCode(ListName.SUBJECT_CATEGORY, 'SUB')
-const purposeCode = addCode(ListName.PURPOSE, 'PURPOSE')
-const dataAccessClassCode = addCode(ListName.DATA_ACCESS_CLASS, 'ACCESS')
+const senCode = addCode(EListName.SENSITIVITY, 'SEN')
+const subCode = addCode(EListName.SUBJECT_CATEGORY, 'SUB')
+const purposeCode = addCode(EListName.PURPOSE, 'PURPOSE')
+const dataAccessClassCode = addCode(EListName.DATA_ACCESS_CLASS, 'ACCESS')
 
 const schema = createDocumentSchema()
-const createDocument: () => CreateDocumentFormValues = () => ({
+const createDocument: () => ICreateDocumentFormValues = () => ({
   name: 'name',
   description: 'description',
   informationTypes: [
@@ -29,7 +39,10 @@ test('CreateDocument ok', () => {
 test('CreateDocument errors', () => {
   expect({ ...createDocument(), name: '' }).toBeSchemaErrorAt(schema, 'name')
   expect({ ...createDocument(), description: '' }).toBeSchemaErrorAt(schema, 'description')
-  expect({ ...createDocument(), informationTypes: [] }).toBeSchemaErrorAt(schema, 'informationTypes')
+  expect({ ...createDocument(), informationTypes: [] }).toBeSchemaErrorAt(
+    schema,
+    'informationTypes'
+  )
 
   const doc = createDocument()
   const it = doc.informationTypes[0]
@@ -41,7 +54,7 @@ test('CreateDocument errors', () => {
 })
 
 const addDocumentSchema = addDocumentToProcessSchema()
-const addDocumentData: () => AddDocumentToProcessFormValues = () => ({
+const addDocumentData: () => IAddDocumentToProcessFormValues = () => ({
   document: {
     id: 'id',
     name: 'name',
@@ -73,16 +86,25 @@ test('Add Document ok', () => {
 })
 
 test('Add Document errors', () => {
-  expect({ ...addDocumentData(), informationTypes: [] }).toBeSchemaErrorAt(addDocumentSchema, 'informationTypes')
-  expect({ ...addDocumentData(), document: undefined }).toBeSchemaErrorAt(addDocumentSchema, 'document')
-  expect({ ...addDocumentData(), process: undefined }).toBeSchemaErrorAt(addDocumentSchema, 'process')
+  expect({ ...addDocumentData(), informationTypes: [] }).toBeSchemaErrorAt(
+    addDocumentSchema,
+    'informationTypes'
+  )
+  expect({ ...addDocumentData(), document: undefined }).toBeSchemaErrorAt(
+    addDocumentSchema,
+    'document'
+  )
+  expect({ ...addDocumentData(), process: undefined }).toBeSchemaErrorAt(
+    addDocumentSchema,
+    'process'
+  )
 })
 
-const policy: Policy = {
+const policy: IPolicy = {
   id: 'id',
   process: {
     id: 'pro_id',
-  } as Process,
+  } as IProcess,
   subjectCategories: [subCode],
   informationType: {
     id: 'it_id2',
@@ -92,11 +114,11 @@ const policy: Policy = {
   documentIds: [],
   legalBases: [],
   purposes: [purposeCode],
-  legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
+  legalBasesUse: ELegalBasesUse.INHERITED_FROM_PROCESS,
 }
 
 const addBatchSchema = addBatchInfoTypesToProcessSchema([policy])
-const addBatch: () => AddDocumentToProcessFormValues = () => ({
+const addBatch: () => IAddDocumentToProcessFormValues = () => ({
   ...addDocumentData(),
   linkDocumentToPolicies: false,
 })
@@ -106,12 +128,22 @@ test('Add Batch ok', () => {
 })
 
 test('Add Batch errors', () => {
-  expect({ ...addBatch(), informationTypes: [] }).toBeSchemaErrorAt(addBatchSchema, 'informationTypes')
-  expect({ ...addBatch(), linkDocumentToPolicies: true }).toBeSchemaErrorAt(addBatchSchema, 'linkDocumentToPolicies')
+  expect({ ...addBatch(), informationTypes: [] }).toBeSchemaErrorAt(
+    addBatchSchema,
+    'informationTypes'
+  )
+  expect({ ...addBatch(), linkDocumentToPolicies: true }).toBeSchemaErrorAt(
+    addBatchSchema,
+    'linkDocumentToPolicies'
+  )
 })
 
 test('Add Batch policy combo already exists', () => {
   const toAdd = addBatch()
   toAdd.informationTypes[0].informationType.id = 'it_id2'
-  expect(toAdd).toBeSchemaErrorAt(addBatchSchema, 'informationTypes[0]', 'Behandlingen inneholder allerede personkategorien')
+  expect(toAdd).toBeSchemaErrorAt(
+    addBatchSchema,
+    'informationTypes[0]',
+    'Behandlingen inneholder allerede personkategorien'
+  )
 })

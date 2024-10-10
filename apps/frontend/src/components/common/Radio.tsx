@@ -7,9 +7,10 @@ const YES = 'YES',
 const boolToRadio = (bool?: boolean) => (bool === undefined ? UNCLARIFIED : bool ? YES : NO)
 const radioToBool = (radio: string) => (radio === UNCLARIFIED ? undefined : radio === YES)
 
-export const boolToText = (b?: boolean) => (b === null || b === undefined ? 'Uavklart' : b ? 'Ja' : 'Nei')
+export const boolToText = (b?: boolean) =>
+  b === null || b === undefined ? 'Uavklart' : b ? 'Ja' : 'Nei'
 
-type radioBoolProps = {
+type TRadioBoolProps = {
   value?: boolean
   setValue: (b?: boolean) => void
   omitUndefined?: boolean
@@ -18,14 +19,19 @@ type radioBoolProps = {
   justifyContent?: string
 }
 
-export const RadioBoolButton = (props: radioBoolProps) => {
-  const { value, justifyContent, setValue, firstButtonLabel, secondButtonLabel, omitUndefined } = props
+export const RadioBoolButton = (props: TRadioBoolProps) => {
+  const { value, justifyContent, setValue, firstButtonLabel, secondButtonLabel, omitUndefined } =
+    props
 
   return (
     <RadioGroup
       value={boolToRadio(value)}
       align="horizontal"
-      overrides={{ RadioGroupRoot: { style: { width: '100%', justifyContent: justifyContent ? justifyContent : 'stretch' } } }}
+      overrides={{
+        RadioGroupRoot: {
+          style: { width: '100%', justifyContent: justifyContent ? justifyContent : 'stretch' },
+        },
+      }}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         setValue(radioToBool((event.target as HTMLInputElement).value))
       }}

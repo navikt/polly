@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { Settings } from '../constants'
+import { ISettings } from '../constants'
 import { env } from '../util/env'
 
 export const getSettings = async () => {
-  return (await axios.get<Settings>(`${env.pollyBaseUrl}/settings`)).data
+  return (await axios.get<ISettings>(`${env.pollyBaseUrl}/settings`)).data
 }
 
-export const writeSettings = async (settings: Settings) => {
-  return (await axios.post<Settings>(`${env.pollyBaseUrl}/settings`, settings)).data
+export const writeSettings = async (settings: ISettings) => {
+  return (await axios.post<ISettings>(`${env.pollyBaseUrl}/settings`, settings)).data
 }

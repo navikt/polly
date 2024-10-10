@@ -1,16 +1,19 @@
 import { Fragment } from 'react/jsx-runtime'
-import { Process, processSort } from '../../../constants'
+import { IProcess, processSort } from '../../../constants'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
-type RelatedProcessesTableProps = {
-  relatedProcesses: Process[]
+type TRelatedProcessesTableProps = {
+  relatedProcesses: IProcess[]
 }
 
-const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps) => {
-  const [table, sortColumn] = useTable<Process, keyof Process>(relatedProcesses, { sorting: processSort, initialSortColumn: 'name' })
+const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps) => {
+  const [table, sortColumn] = useTable<IProcess, keyof IProcess>(relatedProcesses, {
+    sorting: processSort,
+    initialSortColumn: 'name',
+  })
 
   return (
     <>
@@ -19,19 +22,36 @@ const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps)
         backgroundColor={theme.colors.primary100}
         headers={
           <>
-            <HeadCell title="Overordnet behandlingsaktivitet" column={'purposes'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
-            <HeadCell title="Behandling ja" column={'name'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
-            <HeadCell title="Avdeling" column={'affiliation'} tableState={[table, sortColumn]} $style={{ maxWidth: '25%' }} />
+            <HeadCell
+              title="Overordnet behandlingsaktivitet"
+              column={'purposes'}
+              tableState={[table, sortColumn]}
+              $style={{ maxWidth: '25%' }}
+            />
+            <HeadCell
+              title="Behandling ja"
+              column={'name'}
+              tableState={[table, sortColumn]}
+              $style={{ maxWidth: '25%' }}
+            />
+            <HeadCell
+              title="Avdeling"
+              column={'affiliation'}
+              tableState={[table, sortColumn]}
+              $style={{ maxWidth: '25%' }}
+            />
             <HeadCell title="System" $style={{ maxWidth: '25%' }} />
           </>
         }
       >
-        {table.data.map((row: Process, index: number) => (
+        {table.data.map((row: IProcess, index: number) => (
           <Fragment key={index}>
             <Row>
               <div className="flex w-full justify-between">
                 <Cell $style={{ maxWidth: '25%' }}>
-                  <RouteLink href={`/process/purpose/${row.purposes[0].code}`}>{row.purposes[0].shortName}</RouteLink>
+                  <RouteLink href={`/process/purpose/${row.purposes[0].code}`}>
+                    {row.purposes[0].shortName}
+                  </RouteLink>
                 </Cell>
                 <Cell $style={{ maxWidth: '25%' }}>
                   <RouteLink href={`/process/${row.id}`} width="25%">
@@ -39,13 +59,17 @@ const RelatedProcessesTable = ({ relatedProcesses }: RelatedProcessesTableProps)
                   </RouteLink>
                 </Cell>
                 <Cell $style={{ maxWidth: '25%' }}>
-                  <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>{row.affiliation.department?.shortName}</RouteLink>
+                  <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>
+                    {row.affiliation.department?.shortName}
+                  </RouteLink>
                 </Cell>
                 <Cell $style={{ maxWidth: '25%' }}>
                   <div>
-                    {row.affiliation.products.map((s) => (
-                      <div className="mr-[10%]">
-                        <RouteLink href={`/process/system/${s.code}`}>{s.shortName}</RouteLink>
+                    {row.affiliation.products.map((product, index) => (
+                      <div className="mr-[10%]" key={index}>
+                        <RouteLink href={`/process/system/${product.code}`}>
+                          {product.shortName}
+                        </RouteLink>
                       </div>
                     ))}
                   </div>

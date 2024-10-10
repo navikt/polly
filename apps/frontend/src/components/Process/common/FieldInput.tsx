@@ -10,7 +10,14 @@ interface IFieldInputProps {
 const FieldInput = (props: IFieldInputProps) => {
   const { fieldName, placeHolder } = props
 
-  return <Field name={fieldName} render={({ field, form }: FieldProps<string>) => <Input {...field} size="compact" placeholder={!!placeHolder ? placeHolder : ''} />} />
+  return (
+    <Field
+      name={fieldName}
+      render={({ field }: FieldProps<string>) => (
+        <Input {...field} size="compact" placeholder={placeHolder ? placeHolder : ''} />
+      )}
+    />
+  )
 }
 
 export default FieldInput

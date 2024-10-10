@@ -1,39 +1,51 @@
 import { SORT_DIRECTION } from 'baseui/table'
 import { useEffect, useState } from 'react'
 
-type TableConfig<T, K extends keyof T> = {
-  sorting?: ColumnCompares<T>
+type TTableConfig<T, K extends keyof T> = {
+  sorting?: TColumnCompares<T>
   useDefaultStringCompare?: boolean
   initialSortColumn?: K
   showLast?: (page: T) => boolean
 }
 
-type TableData<T, K extends keyof T> = {
+type TTableData<T, K extends keyof T> = {
   sortColumn?: K
   sortDirection?: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC
-  direction: ColumnDirection<T>
+  direction: TColumnDirection<T>
   data: Array<T>
 }
 
-type Compare<T> = (a: T, b: T) => number
+type TCompare<T> = (a: T, b: T) => number
 
-export type ColumnCompares<T> = {
-  [P in keyof T]?: Compare<T>
+export type TColumnCompares<T> = {
+  [P in keyof T]?: TCompare<T>
 }
 
-export type ColumnDirection<T> = {
+export type TColumnDirection<T> = {
   [P in keyof T]-?: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC | null
 }
 
-const newSort = <T, K extends keyof T>(newColumn?: K, columnPrevious?: K, directionPrevious?: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC) => {
-  const newDirection = columnPrevious && newColumn === columnPrevious && directionPrevious === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC
+const newSort = <T, K extends keyof T>(
+  newColumn?: K,
+  columnPrevious?: K,
+  directionPrevious?: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC
+) => {
+  const newDirection =
+    columnPrevious && newColumn === columnPrevious && directionPrevious === SORT_DIRECTION.ASC
+      ? SORT_DIRECTION.DESC
+      : SORT_DIRECTION.ASC
   return { newDirection, newColumn }
 }
 
-const getSortFunction = <T, K extends keyof T>(sortColumn: K, useDefaultStringCompare: boolean, sorting?: ColumnCompares<T>): Compare<T> | undefined => {
+const getSortFunction = <T, K extends keyof T>(
+  sortColumn: K,
+  useDefaultStringCompare: boolean,
+  sorting?: TColumnCompares<T>
+): TCompare<T> | undefined => {
   if (!sorting) {
     if (useDefaultStringCompare) {
-      return (a, b) => (a[sortColumn] as any as string).localeCompare(b[sortColumn] as any as string)
+      return (a, b) =>
+        (a[sortColumn] as any as string).localeCompare(b[sortColumn] as any as string)
     } else {
       return undefined
     }
@@ -41,15 +53,21 @@ const getSortFunction = <T, K extends keyof T>(sortColumn: K, useDefaultStringCo
   return sorting[sortColumn]
 }
 
-const toDirection = <T, K extends keyof T>(direction: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC, column?: K): ColumnDirection<T> => {
+const toDirection = <T, K extends keyof T>(
+  direction: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC,
+  column?: K
+): TColumnDirection<T> => {
   const newDirection: any = {}
   newDirection[column] = direction
   return newDirection
 }
 
-export type TableState<T, K extends keyof T> = [TableData<T, K>, (column: K) => void]
+export type TTableState<T, K extends keyof T> = [TTableData<T, K>, (column: K) => void]
 
-export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: TableConfig<T, K>) => {
+export const useTable = <T, K extends keyof T>(
+  initialData: Array<T>,
+  config?: TTableConfig<T, K>
+) => {
   const { sorting, useDefaultStringCompare, showLast } = config || {}
   const initialSort = newSort<T, K>(config?.initialSortColumn)
 
@@ -58,7 +76,9 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
   const [isInitialSort, setIsInitialSort] = useState(true)
   const [sortDirection, setSortDirection] = useState(initialSort.newDirection)
   const [sortColumn, setSortColumn] = useState(initialSort.newColumn)
-  const [direction, setDirection] = useState<ColumnDirection<T>>(toDirection(initialSort.newDirection, initialSort.newColumn))
+  const [direction, setDirection] = useState<TColumnDirection<T>>(
+    toDirection(initialSort.newDirection, initialSort.newColumn)
+  )
 
   useEffect(() => setData(sortTableData()), [sortColumn, sortDirection, initialData])
 
@@ -91,6 +111,6 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
     setIsInitialSort(false)
   }
 
-  const state: TableData<T, K> = { data, direction, sortColumn, sortDirection }
-  return [state, sort] as TableState<T, K>
+  const state: TTableData<T, K> = { data, direction, sortColumn, sortDirection }
+  return [state, sort] as TTableState<T, K>
 }

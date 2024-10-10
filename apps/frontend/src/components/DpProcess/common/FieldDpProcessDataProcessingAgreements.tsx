@@ -3,14 +3,16 @@ import { Plus } from 'baseui/icon'
 import { Input } from 'baseui/input'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { KeyboardEvent, RefObject, useRef, useState } from 'react'
-import { DpProcessFormValues } from '../../../constants'
+import { IDpProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
 interface IFieldDpProcessDataProcessingAgreementsProps {
-  formikBag: FormikProps<DpProcessFormValues>
+  formikBag: FormikProps<IDpProcessFormValues>
 }
 
-const FieldDpProcessDataProcessingAgreements = (props: IFieldDpProcessDataProcessingAgreementsProps) => {
+const FieldDpProcessDataProcessingAgreements = (
+  props: IFieldDpProcessDataProcessingAgreementsProps
+) => {
   const { formikBag } = props
   const [currentKeywordValue, setCurrentKeywordValue] = useState('')
   const agreementRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)

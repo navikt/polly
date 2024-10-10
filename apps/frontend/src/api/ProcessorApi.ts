@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { Option } from 'baseui/select'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { PageResponse, Processor, ProcessorFormValues } from '../constants'
+import { IPageResponse, IProcessor, IProcessorFormValues } from '../constants'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'
 
 export const getProcessor = async (processorId: string) => {
-  return (await axios.get<Processor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
+  return (await axios.get<IProcessor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
 }
 
 export const getProcessorsByIds = async (ids: string[]) => {
@@ -19,32 +19,40 @@ export const getProcessorsByIds = async (ids: string[]) => {
 }
 
 export const getProcessorsByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
-  return (await axios.get<PageResponse<Processor>>(`${env.pollyBaseUrl}/processor?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+  return (
+    await axios.get<IPageResponse<IProcessor>>(
+      `${env.pollyBaseUrl}/processor?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    )
+  ).data
 }
 
 export const getAllProcessors = async () => {
-  return (await axios.get<PageResponse<Processor>>(`${env.pollyBaseUrl}/processor`)).data
+  return (await axios.get<IPageResponse<IProcessor>>(`${env.pollyBaseUrl}/processor`)).data
 }
 
-export const createProcessor = async (processor: ProcessorFormValues) => {
-  let body = convertFormValuesToProcessor(processor)
-  return (await axios.post<Processor>(`${env.pollyBaseUrl}/processor`, body)).data
+export const createProcessor = async (processor: IProcessorFormValues) => {
+  const body = convertFormValuesToProcessor(processor)
+  return (await axios.post<IProcessor>(`${env.pollyBaseUrl}/processor`, body)).data
 }
 
 export const searchProcessor = async (name: string) => {
-  return (await axios.get<PageResponse<Processor>>(`${env.pollyBaseUrl}/processor/search/${name}`)).data
+  return (
+    await axios.get<IPageResponse<IProcessor>>(`${env.pollyBaseUrl}/processor/search/${name}`)
+  ).data
 }
 
-export const updateProcessor = async (processor: ProcessorFormValues) => {
-  let body = convertFormValuesToProcessor(processor)
-  return (await axios.put<Processor>(`${env.pollyBaseUrl}/processor/${body.id}`, body)).data
+export const updateProcessor = async (processor: IProcessorFormValues) => {
+  const body = convertFormValuesToProcessor(processor)
+  return (await axios.put<IProcessor>(`${env.pollyBaseUrl}/processor/${body.id}`, body)).data
 }
 
 export const deleteProcessor = async (processorId: string) => {
-  return (await axios.delete<Processor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
+  return (await axios.delete<IProcessor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
 }
 
-export const convertProcessorToFormValues = (values?: Partial<Processor>): ProcessorFormValues => {
+export const convertProcessorToFormValues = (
+  values?: Partial<IProcessor>
+): IProcessorFormValues => {
   const {
     id,
     name,
@@ -74,14 +82,14 @@ export const convertProcessorToFormValues = (values?: Partial<Processor>): Proce
   }
 }
 
-export const convertProcessorToOption = (processor: Processor) => {
+export const convertProcessorToOption = (processor: IProcessor) => {
   return {
     id: processor.id,
     label: processor.name,
   }
 }
 
-export const convertFormValuesToProcessor = (values: ProcessorFormValues) => {
+export const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
   return {
     id: values.id,
     name: values.name,
@@ -106,7 +114,9 @@ export const useProcessorSearch = () => {
     ;(async () => {
       if (processorSearch && processorSearch.length > 2) {
         setLoading(true)
-        setProcessorSearchResult((await searchProcessor(processorSearch)).content.map(convertProcessorToOption))
+        setProcessorSearchResult(
+          (await searchProcessor(processorSearch)).content.map(convertProcessorToOption)
+        )
         setLoading(false)
       } else {
         setProcessorSearchResult([])
@@ -114,5 +124,9 @@ export const useProcessorSearch = () => {
     })()
   }, [processorSearch])
 
-  return [processorSearchResult, setProcessorSearch, loading] as [Processor[], Dispatch<SetStateAction<string>>, boolean]
+  return [processorSearchResult, setProcessorSearch, loading] as [
+    IProcessor[],
+    Dispatch<SetStateAction<string>>,
+    boolean,
+  ]
 }

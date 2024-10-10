@@ -1,10 +1,10 @@
 import { Helmet } from 'react-helmet'
 
-interface RootProps {
+interface IRootProps {
   children: JSX.Element | Array<JSX.Element>
 }
 
-const Root = ({ children }: RootProps): JSX.Element => {
+const Root = ({ children }: IRootProps): JSX.Element => {
   document.title = 'Behandlingskatalog'
 
   return (

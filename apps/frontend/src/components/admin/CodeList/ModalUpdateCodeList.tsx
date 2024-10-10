@@ -1,15 +1,15 @@
-import { Button, Modal, Textarea, TextField } from '@navikt/ds-react'
+import { Button, Modal, TextField, Textarea } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik } from 'formik'
-import { CodeListFormValues } from '../../../constants'
+import { ICodeListFormValues } from '../../../constants'
 import { codeListSchema } from '../../common/schema'
 
-type ModalUpdateProps = {
+type TModalUpdateProps = {
   title: string
-  initialValues: CodeListFormValues
+  initialValues: ICodeListFormValues
   isOpen: boolean
   errorOnUpdate: any | undefined
   onClose: () => void
-  submit: (process: CodeListFormValues) => Promise<void>
+  submit: (process: ICodeListFormValues) => Promise<void>
 }
 
 interface ISubmitValues {
@@ -19,8 +19,20 @@ interface ISubmitValues {
   description?: string
 }
 
-const UpdateCodeListModal = ({ title, initialValues, errorOnUpdate, isOpen, onClose, submit }: ModalUpdateProps) => (
-  <Modal className="px-8 w-full max-w-2xl" onClose={onClose} open={isOpen} header={{ heading: title, closeButton: false }}>
+const UpdateCodeListModal = ({
+  title,
+  initialValues,
+  errorOnUpdate,
+  isOpen,
+  onClose,
+  submit,
+}: TModalUpdateProps) => (
+  <Modal
+    className="px-8 w-full max-w-2xl"
+    onClose={onClose}
+    open={isOpen}
+    header={{ heading: title, closeButton: false }}
+  >
     <Formik
       validateOnChange={false}
       validateOnBlur={false}
@@ -34,8 +46,26 @@ const UpdateCodeListModal = ({ title, initialValues, errorOnUpdate, isOpen, onCl
       {(formik) => (
         <Form>
           <Modal.Body>
-            <Field name="shortName">{({ field }: FieldProps) => <TextField className="w-full" label="Navn" {...field} error={formik.errors.shortName} />}</Field>
-            <Field name="description">{({ field }: FieldProps) => <Textarea className="w-full mt-4" label="Beskrivelse" {...field} error={formik.errors.description} />}</Field>
+            <Field name="shortName">
+              {({ field }: FieldProps) => (
+                <TextField
+                  className="w-full"
+                  label="Navn"
+                  {...field}
+                  error={formik.errors.shortName}
+                />
+              )}
+            </Field>
+            <Field name="description">
+              {({ field }: FieldProps) => (
+                <Textarea
+                  className="w-full mt-4"
+                  label="Beskrivelse"
+                  {...field}
+                  error={formik.errors.description}
+                />
+              )}
+            </Field>
           </Modal.Body>
           <Modal.Footer>
             <div className="flex justify-end">

@@ -1,25 +1,33 @@
-import { PLACEMENT, StatefulTooltip, StatefulTooltipProps } from 'baseui/tooltip'
+import { InformationSquareIcon } from '@navikt/aksel-icons'
+import { Button, Tooltip } from '@navikt/ds-react'
+import { ReactElement } from 'react'
 
-const CustomizedStatefulTooltip = (props: Partial<StatefulTooltipProps>) => {
-  const { ignoreBoundary, children } = props
+interface ICustomizedTooltipProps {
+  content: string
+  text?: string
+  color?: string
+  icon?: ReactElement
+}
+
+const CustomizedStatefulTooltip = (props: ICustomizedTooltipProps) => {
+  const { content, text, color, icon } = props
+  const IconComponent = icon ? (
+    icon
+  ) : (
+    <InformationSquareIcon title="tooltip" color={color || undefined} />
+  )
 
   return (
-    <StatefulTooltip
-      {...props}
-      placement={PLACEMENT.top}
-      focusLock={false}
-      ignoreBoundary={ignoreBoundary === false ? ignoreBoundary : true}
-      overrides={{
-        Body: {
-          style: {
-            maxWidth: '25%',
-            wordBreak: 'break-word',
-          },
-        },
-      }}
-    >
-      {children}
-    </StatefulTooltip>
+    <Tooltip content={content}>
+      <Button
+        type="button"
+        variant="tertiary-neutral"
+        size="small"
+        icon={text ? undefined : IconComponent}
+      >
+        {text}
+      </Button>
+    </Tooltip>
   )
 }
 

@@ -1,38 +1,47 @@
-import { Button } from 'baseui/button'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { ParagraphMedium } from 'baseui/typography'
+import { Button, Modal } from '@navikt/ds-react'
 
-type ModalDeleteProps = {
+type TModalDeleteProps = {
   title: string
   isOpen: boolean
-  documentName: String
+  documentName: string
   documentUsageCount?: number
   submit: () => void
   onClose: () => void
 }
 
-const DeleteDocumentModal = ({ title, documentName = '', isOpen, onClose, submit, documentUsageCount }: ModalDeleteProps) => (
-  <Modal onClose={onClose} isOpen={isOpen} autoFocus animate size="default">
-    <ModalHeader>{title}</ModalHeader>
-    <ModalBody>
-      {!!!documentUsageCount ? (
-        <ParagraphMedium> Bekreft sletting av dokument "{documentName}"</ParagraphMedium>
+const DeleteDocumentModal = ({
+  title,
+  documentName = '',
+  isOpen,
+  onClose,
+  submit,
+  documentUsageCount,
+}: TModalDeleteProps) => (
+  <Modal onClose={onClose} open={isOpen} header={{ heading: title }}>
+    <Modal.Body>
+      {!documentUsageCount ? (
+        <div>{`Bekreft sletting av dokument"${documentName}"`}</div>
       ) : (
-        <ParagraphMedium>{`Kan ikke slette behandlingen ${documentName.toString()}
-          den inneholder fortsatt ${documentUsageCount.toString()} opplysningstype(r)`}</ParagraphMedium>
+        <div>
+          {`Kan ikke slette behandlingen ${documentName.toString()}
+          den inneholder fortsatt ${documentUsageCount.toString()} opplysningstype(r)`}
+        </div>
       )}
-    </ModalBody>
+    </Modal.Body>
 
-    <ModalFooter>
+    <Modal.Footer>
       <div className="flex justify-end">
-        <Button kind="secondary" onClick={() => onClose()} overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}>
+        <Button className="mr-4" variant="secondary" onClick={() => onClose()}>
           Avbryt
         </Button>
-        <Button onClick={() => submit()} disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}>
+        <Button
+          onClick={() => submit()}
+          disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}
+        >
           Slett
         </Button>
       </div>
-    </ModalFooter>
+    </Modal.Footer>
   </Modal>
 )
 

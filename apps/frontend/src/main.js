@@ -24,7 +24,7 @@ const Main = (props) => {
       <StyletronProvider value={engine}>
         <BaseProvider theme={theme}>
           <Router history={history}>
-            <div className="flex h-full min-h-screen w-full bg-[#F1F1F1]"  >
+            <div className="flex h-full min-h-screen w-full bg-bg-default"  >
               <div className="min-w-60 min-h-full">
                 <SideBar />
               </div>

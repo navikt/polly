@@ -12,6 +12,16 @@ export const FieldTextarea = (props: IFieldTextareaProps) => {
   const { fieldName, rows, placeHolder } = props
 
   return (
-    <Field name={fieldName} render={({ field, form }: FieldProps<string>) => <Textarea {...field} size="compact" rows={rows} placeholder={!!placeHolder ? placeHolder : ''} />} />
+    <Field
+      name={fieldName}
+      render={({ field }: FieldProps<string>) => (
+        <Textarea
+          {...field}
+          size="compact"
+          rows={rows}
+          placeholder={placeHolder ? placeHolder : ''}
+        />
+      )}
+    />
   )
 }

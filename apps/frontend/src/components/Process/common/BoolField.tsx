@@ -1,5 +1,5 @@
 import { Field, FieldProps } from 'formik'
-import { ProcessFormValues } from '../../../constants'
+import { IProcessFormValues } from '../../../constants'
 import { RadioBoolButton } from '../../common/Radio'
 
 interface IBoolFieldProps {
@@ -17,7 +17,7 @@ const BoolField = (props: IBoolFieldProps) => {
   return (
     <Field
       name={fieldName}
-      render={({ form }: FieldProps<ProcessFormValues>) => (
+      render={({ form }: FieldProps<IProcessFormValues>) => (
         <RadioBoolButton
           value={value}
           setValue={(b) => form.setFieldValue(fieldName, b)}

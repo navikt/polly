@@ -5,34 +5,44 @@ import { Accordion, Panel } from 'baseui/accordion'
 import { Heading, HeadingLevel } from 'baseui/heading'
 import { ListItem, ListItemLabel } from 'baseui/list'
 import { ParagraphLarge } from 'baseui/typography'
-import { CodeUsage, Use } from '../../constants'
-import { ListName, codelist } from '../../service/Codelist'
+import { ICodeUsage, IUse } from '../../constants'
+import { EListName, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import { useQueryParam } from '../../util/hooks'
 import { toggleOverride } from '../common/Accordion'
 import RouteLink from '../common/RouteLink'
 
-type InformationTypeAccordionProps = {
-  categoryUsages: CodeUsage[] | undefined
+type TInformationTypeAccordionProps = {
+  categoryUsages: ICodeUsage[] | undefined
 }
 
-const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordionProps) => {
+const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordionProps) => {
   const [css] = useStyletron()
   const category = useQueryParam('category')
-  const categoryNotInUse = !!category && !categoryUsages?.filter((c) => c.code === category).flatMap((u) => u.informationTypes).length
+  const categoryNotInUse =
+    !!category &&
+    !categoryUsages?.filter((c) => c.code === category).flatMap((u) => u.informationTypes).length
 
   const panelList = () => {
     if (!categoryUsages) return
     return categoryUsages
-      .filter((categoryUsage: CodeUsage) => categoryUsage.informationTypes.length > 0)
-      .sort((a, b) => codelist.getShortname(a.listName, a.code).localeCompare(codelist.getShortname(b.listName, b.code), 'nb'))
-      .map((categoryUsage: CodeUsage) => {
+      .filter((categoryUsage: ICodeUsage) => categoryUsage.informationTypes.length > 0)
+      .sort((a, b) =>
+        codelist
+          .getShortname(a.listName, a.code)
+          .localeCompare(codelist.getShortname(b.listName, b.code), 'nb')
+      )
+      .map((categoryUsage: ICodeUsage) => {
         return (
           <Panel
             title={
               <div className="flex w-full">
-                <div className="min-w-[80%]">{codelist.getShortname(ListName.CATEGORY, categoryUsage.code)}</div>
-                <div className="mr-[50px] min-w-[20%] opacity-50 color-[#545454] text-sm">Opplysningstyper: {categoryUsage.informationTypes.length}</div>
+                <div className="min-w-[80%]">
+                  {codelist.getShortname(EListName.CATEGORY, categoryUsage.code)}
+                </div>
+                <div className="mr-[50px] min-w-[20%] opacity-50 color-[#545454] text-sm">
+                  Opplysningstyper: {categoryUsage.informationTypes.length}
+                </div>
               </div>
             }
             overrides={{
@@ -55,7 +65,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
             >
               {categoryUsage.informationTypes
                 .sort((a, b) => a.name.localeCompare(b.name, 'nb'))
-                .map((informationType: Use) => {
+                .map((informationType: IUse) => {
                   return (
                     <ListItem
                       overrides={{
@@ -71,7 +81,9 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
                       key={informationType.id}
                     >
                       <ListItemLabel>
-                        <RouteLink href={`/informationtype/${informationType.id}`}>{informationType.name}</RouteLink>
+                        <RouteLink href={`/informationtype/${informationType.id}`}>
+                          {informationType.name}
+                        </RouteLink>
                       </ListItemLabel>
                     </ListItem>
                   )
@@ -88,7 +100,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: InformationTypeAccordio
         <ParagraphLarge marginBottom={theme.sizing.scale1200}>
           <FontAwesomeIcon icon={faExclamationTriangle} color={theme.colors.negative400} />
           <div className="mr-1.5 inline" />
-          {`Kategori ${codelist.getShortname(ListName.CATEGORY, category!)} er ikke i bruk`}
+          {`Kategori ${codelist.getShortname(EListName.CATEGORY, category!)} er ikke i bruk`}
         </ParagraphLarge>
       )}
 

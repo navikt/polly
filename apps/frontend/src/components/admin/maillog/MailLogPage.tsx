@@ -8,29 +8,45 @@ import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { HeadingMedium, HeadingXSmall } from 'baseui/typography'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import { PageResponse } from '../../../constants'
+import { IPageResponse } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import { Markdown } from '../../common/Markdown'
 
-interface MailLog {
+interface IMailLog {
   time: string
   to: string
   subject: string
   body: string
 }
 
-const getMailLog = async (start: number, count: number): Promise<PageResponse<MailLog>> => {
-  return (await axios.get<PageResponse<MailLog>>(`${env.pollyBaseUrl}/audit/maillog?pageNumber=${start}&pageSize=${count}`)).data
+const getMailLog = async (start: number, count: number): Promise<IPageResponse<IMailLog>> => {
+  return (
+    await axios.get<IPageResponse<IMailLog>>(
+      `${env.pollyBaseUrl}/audit/maillog?pageNumber=${start}&pageSize=${count}`
+    )
+  ).data
 }
 
 export const MailLogPage = () => {
-  const [log, setLog] = useState<PageResponse<MailLog>>({ content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0 })
+  const [log, setLog] = useState<IPageResponse<IMailLog>>({
+    content: [],
+    numberOfElements: 0,
+    pageNumber: 0,
+    pages: 0,
+    pageSize: 1,
+    totalElements: 0,
+  })
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(20)
 
-  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/maillog', app: 'Behandlingskatalogen', type: 'Mail log' })
+  ampli.logEvent('besøk', {
+    side: 'Admin',
+    url: '/admin/maillog',
+    app: 'Behandlingskatalogen',
+    type: 'Mail log',
+  })
 
   useEffect(() => {
     getMailLog(page - 1, limit).then(setLog)
@@ -56,7 +72,7 @@ export const MailLogPage = () => {
   return (
     <>
       <HeadingMedium>Mail log</HeadingMedium>
-      {log?.content.map((logList: MailLog, index: number) => {
+      {log?.content.map((logList: IMailLog, index: number) => {
         let html: string = logList.body
         const bodyIdx: number = logList.body.indexOf('<body>')
         if (bodyIdx >= 0) {
@@ -102,7 +118,12 @@ export const MailLogPage = () => {
         >
           <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>{`${limit} Rader`}</Button>
         </StatefulPopover>
-        <Pagination currentPage={page} numPages={log.pages} onPageChange={({ nextPage }) => handlePageChange(nextPage)} labels={{ nextButton: 'Neste', prevButton: 'Forrige' }} />
+        <Pagination
+          currentPage={page}
+          numPages={log.pages}
+          onPageChange={({ nextPage }) => handlePageChange(nextPage)}
+          labels={{ nextButton: 'Neste', prevButton: 'Forrige' }}
+        />
       </div>
     </>
   )

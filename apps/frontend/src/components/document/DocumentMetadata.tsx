@@ -1,9 +1,9 @@
 import { Fragment } from 'react'
-import { Document } from '../../constants'
+import { IDocument } from '../../constants'
 import DocumentInfoTypeTable from './DocumentInfoTypeTable'
 
 type TDocumentMetadata = {
-  document: Document
+  document: IDocument
 }
 
 const DocumentMetadata = (props: TDocumentMetadata) => {

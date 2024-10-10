@@ -1,15 +1,9 @@
-import { Panel, PanelOverrides, StatelessAccordion } from 'baseui/accordion'
-import { BlockProps } from 'baseui/block'
-import { Button, KIND } from 'baseui/button'
-import { Input, SIZE as InputSIZE } from 'baseui/input'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Accordion, Button, Modal, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik } from 'formik'
-import { Key, useState } from 'react'
-import { DpProcessFormValues } from '../../constants'
-import { theme } from '../../util'
+import { useState } from 'react'
+import { IDpProcessFormValues } from '../../constants'
 import { disableEnter } from '../../util/helper-functions'
 import BoolField from '../Process/common/BoolField'
-import PanelTitle from '../Process/common/PanelTitle'
 import CustomizedModalBlock from '../common/CustomizedModalBlock'
 import FieldProduct from '../common/FieldProduct'
 import { Error, ModalLabel } from '../common/ModalSchema'
@@ -23,44 +17,29 @@ import FieldDpProcessSubDataProcessor from './common/FieldDpProcessSubDataProces
 import FieldPurposeDescription from './common/FieldPurposeDescription'
 import RetentionItems from './common/RetentionItems'
 
-type ModalDpProcessProps = {
-  initialValues: DpProcessFormValues
+type TModalDpProcessProps = {
+  initialValues: IDpProcessFormValues
   errorOnCreate?: string
   isOpen: boolean
-  submit: Function
+  submit: (dpProcess: IDpProcessFormValues) => Promise<void>
   onClose: () => void
 }
 
-const rowBlockProps: BlockProps = {
-  display: 'flex',
-  width: '100%',
-  marginTop: '1rem',
-}
-
-const panelOverrides: PanelOverrides = {
-  Header: {
-    style: {
-      paddingLeft: '0',
-    },
-  },
-  Content: {
-    style: {
-      backgroundColor: theme.colors.white,
-    },
-  },
-  ToggleIcon: {
-    component: () => null,
-  },
-}
-
-const DpProcessModal = (props: ModalDpProcessProps) => {
+const DpProcessModal = (props: TModalDpProcessProps) => {
   const { initialValues, errorOnCreate, isOpen, submit, onClose } = props
-  const [expanded, setExpanded] = useState<Key[]>([])
-  const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(!!props.initialValues.externalProcessResponsible)
+  const [expanded, setExpanded] = useState<string>('')
+
+  const onOpenChangeAction = (open: boolean, key: string): void =>
+    open ? setExpanded(key) : setExpanded('')
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} animate size={SIZE.auto} role={ROLE.dialog}>
-      <div className="w-[960px] pr-8 pl-8">
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      header={{ heading: 'Behandlinger hvor NAV er databehandler' }}
+      width="960px"
+    >
+      <div>
         <Formik
           onSubmit={(values) => {
             submit(values)
@@ -70,25 +49,36 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
         >
           {(formikBag) => (
             <Form onKeyDown={disableEnter}>
-              <ModalHeader>
-                <div className="flex justify-center mb-8">Behandlinger hvor NAV er databehandler</div>
-              </ModalHeader>
-              <ModalBody>
+              <Modal.Body>
                 <CustomizedModalBlock first>
-                  <ModalLabel label="Navn" tooltip="Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring." />
+                  <ModalLabel
+                    label="Navn"
+                    tooltip="Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring."
+                  />
                   <Field
                     name="name"
-                    render={({ field, form }: FieldProps<string, DpProcessFormValues>) => (
-                      <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name && form.touched.name} />
+                    render={({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
+                      <TextField
+                        className="w-full"
+                        label="name"
+                        hideLabel
+                        {...field}
+                        error={!!form.errors.name && form.touched.name}
+                      />
                     )}
                   />
                 </CustomizedModalBlock>
                 <Error fieldName={'name'} />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label="Behandlingsansvarlig" tooltip="Oppgi navn på den behandlingsansvarlige virksomheten." />
+                  <ModalLabel
+                    label="Behandlingsansvarlig"
+                    tooltip="Oppgi navn på den behandlingsansvarlige virksomheten."
+                  />
                   <div className="w-full">
-                    <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible} />
+                    <FieldDpProcessExternalProcessResponsible
+                      thirdParty={formikBag.values.externalProcessResponsible}
+                    />
                   </div>
                 </CustomizedModalBlock>
 
@@ -102,7 +92,10 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                 <Error fieldName="description" />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label="Formål" tooltip="Beskriv formålet med å bruke personopplysninger i denne behandlingen." />
+                  <ModalLabel
+                    label="Formål"
+                    tooltip="Beskriv formålet med å bruke personopplysninger i denne behandlingen."
+                  />
                   <FieldPurposeDescription />
                 </CustomizedModalBlock>
                 <Error fieldName="purposeDescription" />
@@ -126,7 +119,10 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                 </div>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label="System" tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen." />
+                  <ModalLabel
+                    label="System"
+                    tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
+                  />
                   <FieldProduct formikBag={formikBag} />
                 </CustomizedModalBlock>
 
@@ -136,56 +132,55 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                 </div>
                 <Error fieldName="dataProcessingAgreements" />
 
-                <StatelessAccordion
-                  overrides={{
-                    Root: {
-                      style: {
-                        marginTop: '25px',
-                      },
-                    },
-                  }}
-                  expanded={expanded}
-                  onChange={(event) => setExpanded(event.expanded)}
-                >
-                  <Panel
-                    key="organizing"
-                    title={<ModalLabel label={<PanelTitle title="Organisering" expanded={expanded.indexOf('organizing') >= 0} />} />}
-                    overrides={{ ...panelOverrides }}
+                <Accordion className="mt-6">
+                  <Accordion.Item
+                    open={expanded === 'organizing'}
+                    onOpenChange={(open: boolean) => onOpenChangeAction(open, 'organizing')}
                   >
-                    <FieldDpProcessAffiliation
-                      rowBlockProps={rowBlockProps}
-                      formikBag={formikBag}
-                      showResponsibleSelect={showResponsibleSelect}
-                      setShowResponsibleSelect={setShowResponsibleSelect}
-                    />
-                  </Panel>
+                    <Accordion.Header>Organisering</Accordion.Header>
+                    <Accordion.Content>
+                      <FieldDpProcessAffiliation formikBag={formikBag} />
+                    </Accordion.Content>
+                  </Accordion.Item>
 
-                  <Panel
-                    key="subDataProcessor"
-                    title={<PanelTitle title="Underdatabehandler" expanded={expanded.indexOf('subDataProcessor') >= 0} />}
-                    overrides={{ ...panelOverrides }}
+                  <Accordion.Item
+                    open={expanded === 'subDataProcessor'}
+                    onOpenChange={(open: boolean) => onOpenChangeAction(open, 'subDataProcessor')}
                   >
-                    <FieldDpProcessSubDataProcessor formikBag={formikBag} initialValues={initialValues} />
-                  </Panel>
+                    <Accordion.Header>Underdatabehandler</Accordion.Header>
 
-                  <Panel key="retention" title={<PanelTitle title="Lagringsbehov" expanded={expanded.indexOf('retention') >= 0} />} overrides={{ ...panelOverrides }}>
-                    <RetentionItems formikBag={formikBag} />
-                  </Panel>
-                </StatelessAccordion>
-              </ModalBody>
-              <ModalFooter
+                    <Accordion.Content>
+                      <FieldDpProcessSubDataProcessor
+                        formikBag={formikBag}
+                        initialValues={initialValues}
+                      />
+                    </Accordion.Content>
+                  </Accordion.Item>
+
+                  <Accordion.Item
+                    open={expanded === 'retention'}
+                    onOpenChange={(open: boolean) => onOpenChangeAction(open, 'retention')}
+                  >
+                    <Accordion.Header>Lagringsbehov</Accordion.Header>
+                    <Accordion.Content>
+                      <RetentionItems formikBag={formikBag} />
+                    </Accordion.Content>
+                  </Accordion.Item>
+                </Accordion>
+              </Modal.Body>
+              <Modal.Footer
                 style={{
                   borderTop: 0,
                 }}
               >
                 <div className="flex justify-end">
                   <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" kind={KIND.tertiary} onClick={onClose}>
+                  <Button type="button" variant="tertiary" onClick={() => onClose()}>
                     Avbryt
                   </Button>
-                  <ModalButton type="submit">Lagre</ModalButton>
+                  <Button type="submit">Lagre</Button>
                 </div>
-              </ModalFooter>
+              </Modal.Footer>
             </Form>
           )}
         </Formik>

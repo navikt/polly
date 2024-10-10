@@ -1,9 +1,9 @@
-import '../config/schemaValidator'
 import { disclosureSchema } from '../../components/common/schema'
-import { DisclosureFormValues } from '../../constants'
+import { IDisclosureFormValues } from '../../constants'
+import '../config/schemaValidator'
 
 const schema = disclosureSchema()
-const disclosure: () => DisclosureFormValues = () => ({
+const disclosure: () => IDisclosureFormValues = () => ({
   name: 'name',
   recipientPurpose: 'PURPOSE',
   abroad: {
@@ -14,7 +14,7 @@ const disclosure: () => DisclosureFormValues = () => ({
   processes: [],
   processIds: [],
   assessedConfidentiality: false,
-  confidentialityDescription: 'test'
+  confidentialityDescription: 'test',
 })
 
 test('Disclosure ok', () => {

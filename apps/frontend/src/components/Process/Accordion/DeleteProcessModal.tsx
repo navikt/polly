@@ -1,23 +1,26 @@
 import { BodyShort, Button, Link, List, Modal } from '@navikt/ds-react'
-import { Disclosure, Process } from '../../../constants'
+import { IDisclosure, IProcess } from '../../../constants'
 import { user } from '../../../service/User'
 
-interface DeleteProcessProps {
+interface IDeleteProcessProps {
   onClose: () => void
   isOpen: boolean
-  process: Process
-  submitDeleteProcess: (process: Process) => Promise<boolean>
+  process: IProcess
+  submitDeleteProcess: (process: IProcess) => Promise<boolean>
   errorProcessModal: string
-  disclosures: Disclosure[]
+  disclosures: IDisclosure[]
 }
 
-export const DeleteProcessModal = (props: DeleteProcessProps) => {
+export const DeleteProcessModal = (props: IDeleteProcessProps) => {
   const { process, onClose, isOpen, submitDeleteProcess, errorProcessModal, disclosures } = props
 
   return (
     <Modal header={{ heading: 'Bekreft sletting' }} onClose={onClose} open={isOpen}>
       <Modal.Body>
-        <BodyShort spacing>Er du sikker på at du vil slette behandlingen? Dersom behandlingen er opphørt skal gyldighetsperiode oppdateres.</BodyShort>
+        <BodyShort spacing>
+          Er du sikker på at du vil slette behandlingen? Dersom behandlingen er opphørt skal
+          gyldighetsperiode oppdateres.
+        </BodyShort>
 
         {!user.isAdmin() && (
           <BodyShort>
@@ -31,13 +34,19 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
 
         {user.isAdmin() && (
           <div>
-            {!process.policies.length && <BodyShort spacing>Bekreft sletting av behandlingen {process.name}</BodyShort>}
+            {!process.policies.length && (
+              <BodyShort spacing>Bekreft sletting av behandlingen {process.name}</BodyShort>
+            )}
             {(!!process.policies.length || !!disclosures.length) && (
               <List as="ul" title="Disse koblingene må fjernes">
                 {!!process.policies.length && (
                   <List.Item>{`Kan ikke slette behandlingen ${process.name}, den inneholder fortsatt ${process.policies.length} opplysningstype(r)`}</List.Item>
                 )}
-                {!!disclosures.length && <List.Item>Du kan ikke slette behandlinger med eksisterende utleveringer.</List.Item>}
+                {!!disclosures.length && (
+                  <List.Item>
+                    Du kan ikke slette behandlinger med eksisterende utleveringer.
+                  </List.Item>
+                )}
               </List>
             )}
           </div>
@@ -46,7 +55,9 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
 
       {user.isAdmin() && (
         <Modal.Footer>
-          <div className="self-end">{errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}</div>
+          <div className="self-end">
+            {errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}
+          </div>
           <Button
             onClick={() => {
               submitDeleteProcess(process).then(onClose)

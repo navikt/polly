@@ -1,12 +1,19 @@
 import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
-import { ChangeEvent, createRef, RefObject, useEffect, useState } from 'react'
+import { ChangeEvent, RefObject, createRef, useEffect, useState } from 'react'
 import { replaceCodelistUsage } from '../../../api'
-import { CodeUsage, DpProcessShort, ObjectType, ProcessShort, Use, UseWithPurpose } from '../../../constants'
-import { codelist, ListName } from '../../../service/Codelist'
+import {
+  EObjectType,
+  ICodeUsage,
+  IDpProcessShort,
+  IProcessShort,
+  IUse,
+  IUseWithPurpose,
+} from '../../../constants'
+import { EListName, codelist } from '../../../service/Codelist'
 import { ObjectLink } from '../../common/RouteLink'
 
 interface IProps {
-  usage: CodeUsage
+  usage: ICodeUsage
 }
 
 const UsageTable = (props: IProps) => {
@@ -27,7 +34,7 @@ const UsageTable = (props: IProps) => {
         usage.dpProcesses.length,
         usage.policies.length,
         usage.disclosures.length,
-        usage.documents.length,
+        usage.documents.length
       )
     : -1
 
@@ -46,20 +53,24 @@ const UsageTable = (props: IProps) => {
       </Table.Header>
       <Table.Body>
         {Array.from(Array(rows).keys()).map((index: number) => {
-          const informationTypes: Use = usage.informationTypes[index]
-          const policies: UseWithPurpose = usage.policies[index]
-          const processes: ProcessShort = usage.processes[index]
-          const processors: Use = usage.processors[index]
-          const dpProcesses: DpProcessShort = usage.dpProcesses[index]
-          const disclosures: Use = usage.disclosures[index]
-          const documents: Use = usage.documents[index]
+          const informationTypes: IUse = usage.informationTypes[index]
+          const policies: IUseWithPurpose = usage.policies[index]
+          const processes: IProcessShort = usage.processes[index]
+          const processors: IUse = usage.processors[index]
+          const dpProcesses: IDpProcessShort = usage.dpProcesses[index]
+          const disclosures: IUse = usage.disclosures[index]
+          const documents: IUse = usage.documents[index]
 
           return (
             <Table.Row key={index}>
               {informationTypes && (
                 <Table.DataCell>
                   {informationTypes && (
-                    <ObjectLink id={informationTypes.id} type={ObjectType.INFORMATION_TYPE} withHistory={true}>
+                    <ObjectLink
+                      id={informationTypes.id}
+                      type={EObjectType.INFORMATION_TYPE}
+                      withHistory={true}
+                    >
                       {informationTypes.name}
                     </ObjectLink>
                   )}
@@ -68,11 +79,11 @@ const UsageTable = (props: IProps) => {
               {processes && (
                 <Table.DataCell>
                   {processes && (
-                    <ObjectLink id={processes.id} type={ObjectType.PROCESS} withHistory={true}>
+                    <ObjectLink id={processes.id} type={EObjectType.PROCESS} withHistory={true}>
                       {codelist
                         .getShortnames(
-                          ListName.PURPOSE,
-                          processes.purposes.map((purpose) => purpose.code),
+                          EListName.PURPOSE,
+                          processes.purposes.map((purpose) => purpose.code)
                         )
                         .join(', ')}{' '}
                       {processes.name}
@@ -83,7 +94,7 @@ const UsageTable = (props: IProps) => {
               {processors && (
                 <Table.DataCell>
                   {processes && (
-                    <ObjectLink id={processors.id} type={ObjectType.PROCESSOR} withHistory={true}>
+                    <ObjectLink id={processors.id} type={EObjectType.PROCESSOR} withHistory={true}>
                       {processors.name}
                     </ObjectLink>
                   )}
@@ -92,7 +103,11 @@ const UsageTable = (props: IProps) => {
               {dpProcesses && (
                 <Table.DataCell>
                   {dpProcesses && (
-                    <ObjectLink id={dpProcesses.id} type={ObjectType.DP_PROCESS} withHistory={true}>
+                    <ObjectLink
+                      id={dpProcesses.id}
+                      type={EObjectType.DP_PROCESS}
+                      withHistory={true}
+                    >
                       {dpProcesses.name}
                     </ObjectLink>
                   )}
@@ -101,8 +116,9 @@ const UsageTable = (props: IProps) => {
               {policies && (
                 <Table.DataCell>
                   {policies && (
-                    <ObjectLink id={policies.id} type={ObjectType.POLICY} withHistory={true}>
-                      {codelist.getShortnames(ListName.PURPOSE, policies.purposes).join(', ')} {policies.name}
+                    <ObjectLink id={policies.id} type={EObjectType.POLICY} withHistory={true}>
+                      {codelist.getShortnames(EListName.PURPOSE, policies.purposes).join(', ')}{' '}
+                      {policies.name}
                     </ObjectLink>
                   )}
                 </Table.DataCell>
@@ -110,7 +126,11 @@ const UsageTable = (props: IProps) => {
               {disclosures && (
                 <Table.DataCell>
                   {disclosures && (
-                    <ObjectLink id={disclosures.id} type={ObjectType.DISCLOSURE} withHistory={true}>
+                    <ObjectLink
+                      id={disclosures.id}
+                      type={EObjectType.DISCLOSURE}
+                      withHistory={true}
+                    >
                       {disclosures.name}
                     </ObjectLink>
                   )}
@@ -119,7 +139,7 @@ const UsageTable = (props: IProps) => {
               {documents && (
                 <Table.DataCell>
                   {documents && (
-                    <ObjectLink id={documents.id} type={ObjectType.DOCUMENT} withHistory={true}>
+                    <ObjectLink id={documents.id} type={EObjectType.DOCUMENT} withHistory={true}>
                       {documents.name}
                     </ObjectLink>
                   )}
@@ -134,7 +154,7 @@ const UsageTable = (props: IProps) => {
 }
 
 interface IUsageProps {
-  usage?: CodeUsage
+  usage?: ICodeUsage
   refresh: () => void
 }
 
@@ -168,7 +188,13 @@ export const Usage = (props: IUsageProps) => {
 
       {showReplace && usage && usage.listName && (
         <div className="flex m-4 justify-end">
-          <Select label="Velg ny verdi" hideLabel className="mr-4" value={newValue} onChange={(params: ChangeEvent<HTMLSelectElement>) => setNewValue(params.target.value)}>
+          <Select
+            label="Velg ny verdi"
+            hideLabel
+            className="mr-4"
+            value={newValue}
+            onChange={(params: ChangeEvent<HTMLSelectElement>) => setNewValue(params.target.value)}
+          >
             <option value="">Ny verdi</option>
             {codelist.getParsedOptions(usage.listName).map((code, index: number) => (
               <option key={index + '_' + code.label} value={code.label}>

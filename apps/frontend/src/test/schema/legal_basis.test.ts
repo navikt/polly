@@ -1,10 +1,10 @@
 import { legalBasisSchema } from '../../components/common/schema'
-import { LegalBasisFormValues } from '../../constants'
+import { ILegalBasisFormValues } from '../../constants'
 import { NATIONAL_LAW_GDPR_ARTICLES } from '../../service/Codelist'
 import '../config/schemaValidator'
 
 const schema = legalBasisSchema()
-const legalBasis: () => LegalBasisFormValues = () => ({
+const legalBasis: () => ILegalBasisFormValues = () => ({
   gdpr: NATIONAL_LAW_GDPR_ARTICLES[0],
   nationalLaw: 'LAW_1',
   description: 'desc',

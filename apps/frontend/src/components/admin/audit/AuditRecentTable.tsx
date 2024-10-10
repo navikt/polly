@@ -1,17 +1,27 @@
-import { BodyShort, Button, Heading, Modal, Pagination, Select, Spacer, Table, Tooltip } from '@navikt/ds-react'
+import {
+  BodyShort,
+  Button,
+  Heading,
+  Modal,
+  Pagination,
+  Select,
+  Spacer,
+  Table,
+  Tooltip,
+} from '@navikt/ds-react'
 import _ from 'lodash'
 import moment from 'moment'
 import randomColor from 'randomcolor'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { JsonView } from 'react-json-view-lite'
 import { getAudits } from '../../../api/AuditApi'
-import { AuditItem, ObjectType, PageResponse } from '../../../constants'
+import { EObjectType, IAuditItem, IPageResponse } from '../../../constants'
 import { ObjectLink } from '../../common/RouteLink'
 import { AuditButton } from './AuditButton'
 import { AuditActionIcon } from './AuditComponents'
 
 interface ICodeViewProps {
-  audit: AuditItem
+  audit: IAuditItem
 }
 
 const CodeView = ({ audit }: ICodeViewProps) => {
@@ -22,7 +32,13 @@ const CodeView = ({ audit }: ICodeViewProps) => {
       <Button key={audit.id} onClick={() => setModalOpen(!modalOpen)} variant="tertiary">
         Vis data
       </Button>
-      <Modal key={audit.id} open={modalOpen} onClose={() => setModalOpen(false)} className="max-h-[75%] overflow-y-scroll" header={{ heading: 'Data visning' }}>
+      <Modal
+        key={audit.id}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        className="max-h-[75%] overflow-y-scroll"
+        header={{ heading: 'Data visning' }}
+      >
         <Modal.Body>
           <JsonView data={audit.data} />
         </Modal.Body>
@@ -42,17 +58,24 @@ interface ITableOptionsProps {
 
 export const AuditRecentTable = (props: IAuditRecentTableProps) => {
   const { show } = props
-  const [audits, setAudits] = useState<PageResponse<AuditItem>>({ content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0 })
+  const [audits, setAudits] = useState<IPageResponse<IAuditItem>>({
+    content: [],
+    numberOfElements: 0,
+    pageNumber: 0,
+    pages: 0,
+    pageSize: 1,
+    totalElements: 0,
+  })
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(20)
-  const [table, setTable] = useState<ObjectType | undefined>(undefined)
+  const [table, setTable] = useState<EObjectType | undefined>(undefined)
 
   const colors = _.uniq(audits.content.map((content) => content.tableId)).reduce(
     (val, id: string) => {
       val[id] = randomColor({ seed: id, luminosity: 'dark' })
       return val
     },
-    {} as { [id: string]: string },
+    {} as { [id: string]: string }
   )
 
   useEffect(() => {
@@ -82,7 +105,10 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
     return null
   }
 
-  const tableOptions: ITableOptionsProps[] = Object.keys(ObjectType).map((objectType: string) => ({ value: objectType, label: objectType }))
+  const tableOptions: ITableOptionsProps[] = Object.keys(EObjectType).map((objectType: string) => ({
+    value: objectType,
+    label: objectType,
+  }))
 
   return (
     <>
@@ -93,9 +119,9 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
             label="Tabell:"
             onChange={(event: ChangeEvent<HTMLSelectElement>) => {
               if (event.target.value === 'Codelist') {
-                setTable(event.target.value.toUpperCase() as ObjectType)
+                setTable(event.target.value.toUpperCase() as EObjectType)
               } else {
-                setTable(event.target.value as ObjectType)
+                setTable(event.target.value as EObjectType)
               }
             }}
           >
@@ -120,7 +146,7 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {audits.content.map((audit: AuditItem, index: number) => {
+          {audits.content.map((audit: IAuditItem, index: number) => {
             const length = window.innerWidth > 1000 ? (window.innerWidth > 1200 ? 40 : 30) : 20
             const rowNum: number = audits.pageNumber * audits.pageSize + index + 1
 
@@ -141,7 +167,9 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
                 </Table.HeaderCell>
                 <Table.DataCell>
                   <Tooltip content={audit.tableId} placement="top">
-                    <div className={`text-[${colors[audit.tableId]}]`}>{_.truncate(audit.tableId, { length })}</div>
+                    <div className={`text-[${colors[audit.tableId]}]`}>
+                      {_.truncate(audit.tableId, { length })}
+                    </div>
                   </Tooltip>
                 </Table.DataCell>
                 <Table.DataCell>
@@ -178,7 +206,13 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
         </Select>
         <Spacer />
         <div>
-          <Pagination page={page} onPageChange={(page: number) => handlePageChange(page)} count={audits.pages} prevNextTexts size="small" />
+          <Pagination
+            page={page}
+            onPageChange={(page: number) => handlePageChange(page)}
+            count={audits.pages}
+            prevNextTexts
+            size="small"
+          />
         </div>
         <Spacer />
         <BodyShort>Totalt antall rader: {audits.totalElements}</BodyShort>

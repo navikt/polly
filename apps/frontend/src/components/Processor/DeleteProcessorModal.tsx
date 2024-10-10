@@ -1,45 +1,46 @@
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { ParagraphMedium } from 'baseui/typography'
-import { Processor } from '../../constants'
-import Button from '../common/Button'
+import { BodyLong, Button, Modal } from '@navikt/ds-react'
+import { IProcessor } from '../../constants'
 
-interface DeleteProcessProps {
+interface IDeleteProcessProps {
   onClose: () => void
   isOpen: boolean
-  processor: Processor
-  submitDeleteProcessor: (dp: Processor) => Promise<boolean>
+  processor: IProcessor
+  submitDeleteProcessor: (dp: IProcessor) => Promise<boolean>
   errorProcessorModal: undefined | any
   usageCount: number
 }
 
-export const DeleteProcessorModal = (props: DeleteProcessProps) => {
-  const { processor, onClose, isOpen, submitDeleteProcessor, errorProcessorModal, usageCount } = props
+export const DeleteProcessorModal = (props: IDeleteProcessProps) => {
+  const { processor, onClose, isOpen, submitDeleteProcessor, errorProcessorModal, usageCount } =
+    props
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} animate size="default">
-      <ModalHeader>Bekreft sletting</ModalHeader>
-      <ModalBody>
+    <Modal onClose={onClose} open={isOpen} header={{ heading: 'Bekreft sletting' }}>
+      <Modal.Body>
         {usageCount === 0 ? (
-          <ParagraphMedium>Er du sikker på at du vil slette {processor.name}?</ParagraphMedium>
+          <BodyLong>Er du sikker på at du vil slette {processor.name}?</BodyLong>
         ) : (
-          <ParagraphMedium>
+          <BodyLong>
             Kan ikke slette {processor.name} siden den er knyttet til {usageCount} behandling(er)
-          </ParagraphMedium>
+          </BodyLong>
         )}
-      </ModalBody>
+      </Modal.Body>
 
-      <ModalFooter>
+      <Modal.Footer>
         <div className="flex justify-end">
           <div className="self-end">{errorProcessorModal && <p>{errorProcessorModal}</p>}</div>
-          <Button kind="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose}>
             Avbryt
           </Button>
           <div className="inline mr-3" />
-          <Button onClick={() => submitDeleteProcessor(processor).then(onClose)} disabled={usageCount > 0}>
+          <Button
+            onClick={() => submitDeleteProcessor(processor).then(onClose)}
+            disabled={usageCount > 0}
+          >
             Slett
           </Button>
         </div>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   )
 }

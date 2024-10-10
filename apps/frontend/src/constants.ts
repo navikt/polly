@@ -1,14 +1,14 @@
-import {Code, codelist, ListName} from './service/Codelist'
-import {ColumnCompares} from './util/hooks'
+import { EListName, ICode, codelist } from './service/Codelist'
+import { TColumnCompares } from './util/hooks'
 
-export enum LegalBasesUse {
+export enum ELegalBasesUse {
   INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
   EXCESS_INFO = 'EXCESS_INFO',
   UNRESOLVED = 'UNRESOLVED',
   DEDICATED_LEGAL_BASES = 'DEDICATED_LEGAL_BASES',
 }
 
-export enum AlertEventType {
+export enum EAlertEventType {
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
   EXCESS_INFO = 'EXCESS_INFO',
   MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
@@ -16,19 +16,19 @@ export enum AlertEventType {
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
 }
 
-export enum AlertEventLevel {
+export enum EAlertEventLevel {
   INFO = 'INFO',
   WARNING = 'WARNING',
   ERROR = 'ERROR',
 }
 
-export enum AuditAction {
+export enum EAuditAction {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
 }
 
-export enum ObjectType {
+export enum EObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
@@ -40,7 +40,7 @@ export enum ObjectType {
   GENERIC_STORAGE = 'GENERIC_STORAGE',
 }
 
-export enum ProcessField {
+export enum EProcessField {
   DPIA = 'DPIA',
   DPIA_REFERENCE_MISSING = 'DPIA_REFERENCE_MISSING',
   PROFILING = 'PROFILING',
@@ -56,7 +56,7 @@ export enum ProcessField {
   COMMON_EXTERNAL_PROCESSOR = 'COMMON_EXTERNAL_PROCESSOR',
 }
 
-export type SearchType =
+export type TSearchType =
   | 'all'
   | 'purpose'
   | 'process'
@@ -72,39 +72,39 @@ export type SearchType =
   | 'system'
   | 'document'
 
-export enum ProcessState {
+export enum EProcessState {
   YES = 'YES',
   NO = 'NO',
   UNKNOWN = 'UNKNOWN',
 }
 
-export type NavigableItem =
-  | ObjectType
-  | ListName.CATEGORY
-  | ListName.PURPOSE
-  | ListName.DEPARTMENT
-  | ListName.SUB_DEPARTMENT
-  | ListName.THIRD_PARTY
-  | ListName.SYSTEM
-  | ListName.GDPR_ARTICLE
-  | ListName.NATIONAL_LAW
+export type TNavigableItem =
+  | EObjectType
+  | EListName.CATEGORY
+  | EListName.PURPOSE
+  | EListName.DEPARTMENT
+  | EListName.SUB_DEPARTMENT
+  | EListName.THIRD_PARTY
+  | EListName.SYSTEM
+  | EListName.GDPR_ARTICLE
+  | EListName.NATIONAL_LAW
   | 'team'
   | 'productarea'
 
-export enum ProcessStatusFilter {
+export enum EProcessStatusFilter {
   All = 'ALL',
   COMPLETED = 'COMPLETED',
   IN_PROGRESS = 'IN_PROGRESS',
   NEEDS_REVISION = 'NEEDS_REVISION',
 }
 
-export enum ProcessStatus {
+export enum EProcessStatus {
   COMPLETED = 'COMPLETED',
   IN_PROGRESS = 'IN_PROGRESS',
   NEEDS_REVISION = 'NEEDS_REVISION',
 }
 
-export enum NoDpiaReason {
+export enum ENoDpiaReason {
   NO_SPECIAL_CATEGORY_PI = 'NO_SPECIAL_CATEGORY_PI',
   SMALL_SCALE = 'SMALL_SCALE',
   NO_DATASET_CONSOLIDATION = 'NO_DATASET_CONSOLIDATION',
@@ -115,7 +115,7 @@ export enum NoDpiaReason {
 
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
-export interface InformationtypeFormValues {
+export interface IInformationtypeFormValues {
   id?: string
   term?: string
   name?: string
@@ -128,43 +128,42 @@ export interface InformationtypeFormValues {
   keywords: string[]
 }
 
-export interface PolicyFormValues {
+export interface IPolicyFormValues {
   id?: string
   purposes: string[]
-  informationType?: InformationTypeShort
-  process: { id: string; name: string; legalBases: LegalBasis[] }
+  informationType?: IInformationTypeShort
+  process: { id: string; name: string; legalBases: ILegalBasis[] }
   subjectCategories: string[]
-  legalBasesUse: LegalBasesUse
-  legalBases: Array<LegalBasisFormValues>
+  legalBasesUse: ELegalBasesUse
+  legalBases: Array<ILegalBasisFormValues>
   legalBasesOpen: boolean
   documentIds: string[]
-  otherPolicies: Policy[]
+  otherPolicies: IPolicy[]
 }
 
-export interface ProcessFormValues {
+export interface IProcessFormValues {
   id?: string
   purposes: string[]
   name?: string
   description?: string
   additionalDescription?: string
-  affiliation: AffiliationFormValues
+  affiliation: IAffiliationFormValues
   commonExternalProcessResponsible?: string
-  legalBases: Array<LegalBasisFormValues>
+  legalBases: Array<ILegalBasisFormValues>
   legalBasesOpen: boolean
   end?: string
   start?: string
-
-  dpia: Dpia
-  status?: ProcessStatus
+  dpia: IDpia
+  status?: EProcessStatus
   usesAllInformationTypes?: boolean
   automaticProcessing?: boolean
   profiling?: boolean
-  dataProcessing: DataProcessingFormValues
-  retention: Retention
-  disclosures: Disclosure[]
+  dataProcessing: IDataProcessingFormValues
+  retention: IRetention
+  disclosures: IDisclosure[]
 }
 
-export interface AffiliationFormValues {
+export interface IAffiliationFormValues {
   department?: string
   subDepartments: string[]
   productTeams: string[]
@@ -172,15 +171,15 @@ export interface AffiliationFormValues {
   disclosureDispatchers: string[]
 }
 
-export interface Affiliation {
-  department?: Code
-  subDepartments: Code[]
+export interface IAffiliation {
+  department?: ICode
+  subDepartments: ICode[]
   productTeams: string[]
-  products: Code[]
-  disclosureDispatchers: Code[]
+  products: ICode[]
+  disclosureDispatchers: ICode[]
 }
 
-export interface Dpia {
+export interface IDpia {
   grounds?: string
   needForDpia?: boolean
   processImplemented: boolean
@@ -190,24 +189,24 @@ export interface Dpia {
   noDpiaReasons: string[]
 }
 
-export interface DataProcessingFormValues {
+export interface IDataProcessingFormValues {
   dataProcessor?: boolean
   processors: string[]
 }
 
-export interface DataProcessing {
+export interface IDataProcessing {
   dataProcessor?: boolean
   processors: string[]
 }
 
-export interface Retention {
+export interface IRetention {
   retentionPlan?: boolean
   retentionMonths?: number
   retentionStart?: string
   retentionDescription?: string
 }
 
-export interface AaregAvtale {
+export interface IAaregAvtale {
   avtalenummer: string
   organisasjonsnummer: string
   virksomhet: string
@@ -223,64 +222,70 @@ export interface AaregAvtale {
   hendelser: boolean
 }
 
-export interface DpRetention {
+export interface IDpRetention {
   retentionMonths?: number
   retentionStart?: string
 }
 
-export interface LegalBasisFormValues {
+export interface ILegalBasisFormValues {
   gdpr?: string
   nationalLaw?: string
   description?: string
   key?: string
 }
 
-export interface Term {
+export interface ITerm {
   id: string
   name: string
   description: string
 }
 
-export interface LegalBasis {
-  gdpr: Code
-  nationalLaw?: Code
+export interface ILegalBasis {
+  gdpr: ICode
+  nationalLaw?: ICode
   description?: string
 }
 
-export interface InformationType {
+export interface IInformationType {
   id: string
   name: string
   term?: string
   description?: string
-  sensitivity: Code
-  orgMaster?: Code
+  sensitivity: ICode
+  orgMaster?: ICode
   productTeams: string[]
   keywords: string[]
-  sources: Code[]
-  categories: Code[]
-  changeStamp: ChangeStamp
+  sources: ICode[]
+  categories: ICode[]
+  changeStamp: IChangeStamp
 }
 
-export interface Policy {
+export interface IPolicy {
   id: string
-  informationType: InformationTypeShort
-  process: Process
-  purposes: Code[]
-  subjectCategories: Code[]
-  legalBasesUse: LegalBasesUse
-  legalBases: LegalBasis[]
+  informationType: IInformationTypeShort
+  process: IProcess
+  purposes: ICode[]
+  subjectCategories: ICode[]
+  legalBasesUse: ELegalBasesUse
+  legalBases: ILegalBasis[]
   documentIds?: string[]
 }
 
-export const policySort: ColumnCompares<Policy> = {
-  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
+export const policySort: TColumnCompares<IPolicy> = {
+  purposes: (a, b) =>
+    codelist
+      .getShortnameForCode(a.purposes[0])
+      .localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
-  subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), 'nb'),
+  subjectCategories: (a, b) =>
+    codelist
+      .getShortnameForCode(a.subjectCategories[0])
+      .localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), 'nb'),
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length,
 }
 
-export const disclosureSort: ColumnCompares<Disclosure> = {
+export const disclosureSort: TColumnCompares<IDisclosure> = {
   name: (a, b) => (a.name || '').localeCompare(b.name || ''),
   recipient: (a, b) => a.recipient.shortName.localeCompare(b.recipient.shortName),
   recipientPurpose: (a, b) => a.recipientPurpose.localeCompare(b.recipientPurpose),
@@ -289,147 +294,160 @@ export const disclosureSort: ColumnCompares<Disclosure> = {
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length,
 }
 
-export const informationTypeSort: ColumnCompares<InformationType> = {
+export const informationTypeSort: TColumnCompares<IInformationType> = {
   name: (a, b) => (a.name || '').localeCompare(b.name || ''),
   description: (a, b) => (a.description || '').localeCompare(b.description || ''),
   orgMaster: (a, b) => (a.orgMaster?.shortName || '').localeCompare(b.orgMaster?.shortName || ''),
   term: (a, b) => (a.term || '').localeCompare(b.term || ''),
 }
 
-export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
+export const documentSort: TColumnCompares<IDocumentInfoTypeUse> = {
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
-export const processSort: ColumnCompares<Process> = {
+export const processSort: TColumnCompares<IProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
-  affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
+  purposes: (a, b) =>
+    codelist
+      .getShortnameForCode(a.purposes[0])
+      .localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
+  affiliation: (a) =>
+    (a.affiliation.department?.shortName || '').localeCompare(
+      a.affiliation.department?.shortName || ''
+    ),
 }
 
-export const dpProcessSort: ColumnCompares<DpProcess> = {
+export const dpProcessSort: TColumnCompares<IDpProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
-  affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
+  externalProcessResponsible: (a, b) =>
+    (a.externalProcessResponsible?.shortName || '').localeCompare(
+      b.externalProcessResponsible?.shortName || ''
+    ),
+  affiliation: (a) =>
+    (a.affiliation.department?.shortName || '').localeCompare(
+      a.affiliation.department?.shortName || ''
+    ),
   description: (a, b) => (a.description || '').localeCompare(b.description || ''),
-  changeStamp: (a, b) => (a.changeStamp.lastModifiedBy || '').localeCompare(b.changeStamp.lastModifiedBy || ''),
+  changeStamp: (a, b) =>
+    (a.changeStamp.lastModifiedBy || '').localeCompare(b.changeStamp.lastModifiedBy || ''),
 }
 
-export interface InformationTypeShort {
+export interface IInformationTypeShort {
   id: string
   name: string
-  sensitivity: Code
+  sensitivity: ICode
 }
 
-export interface ProcessShort {
+export interface IProcessShort {
   id: string
   name: string
   number: number
   description?: string
-  purposes: Code[]
-  affiliation: Affiliation
-  status?: ProcessStatus
+  purposes: ICode[]
+  affiliation: IAffiliation
+  status?: EProcessStatus
   end: string
-  commonExternalProcessResponsible?: Code
-  changeStamp: ChangeStamp
+  commonExternalProcessResponsible?: ICode
+  changeStamp: IChangeStamp
 }
 
-export interface ProcessShortWithEmail {
+export interface IProcessShortWithEmail {
   id: string
   name: string
   number: number
   description?: string
-  purposes: Code[]
-  affiliation: Affiliation
-  status?: ProcessStatus
-  commonExternalProcessResponsible?: Code
-  changeStamp: ChangeStamp
+  purposes: ICode[]
+  affiliation: IAffiliation
+  status?: EProcessStatus
+  commonExternalProcessResponsible?: ICode
+  changeStamp: IChangeStamp
   lastModifiedEmail?: string
 }
 
-export interface DpProcessShort {
+export interface IDpProcessShort {
   id: string
   name: string
-  affiliation: Affiliation
+  affiliation: IAffiliation
 }
 
-export interface Process extends IDurationed {
+export interface IProcess extends IDurationed {
   id: string
   name: string
   number: number
   description?: string
   additionalDescription?: string
-  legalBases: LegalBasis[]
-  affiliation: Affiliation
-  commonExternalProcessResponsible: Code
-  policies: Policy[]
-  purposes: Code[]
-  changeStamp: ChangeStamp
-  dpia: Dpia
-  status?: ProcessStatus
+  legalBases: ILegalBasis[]
+  affiliation: IAffiliation
+  commonExternalProcessResponsible: ICode
+  policies: IPolicy[]
+  purposes: ICode[]
+  changeStamp: IChangeStamp
+  dpia: IDpia
+  status?: EProcessStatus
   usesAllInformationTypes: boolean
   automaticProcessing?: boolean
   profiling?: boolean
-  dataProcessing: DataProcessing
-  retention: Retention
+  dataProcessing: IDataProcessing
+  retention: IRetention
   revisionText?: string
 }
 
-export interface DpProcess extends IDurationed {
+export interface IDpProcess extends IDurationed {
   id: string
   name: string
   dpProcessNumber: number
   description?: string
   purposeDescription?: string
-  affiliation: Affiliation
-  externalProcessResponsible?: Code
+  affiliation: IAffiliation
+  externalProcessResponsible?: ICode
   dataProcessingAgreements: string[]
-  subDataProcessing: DataProcessing
-  changeStamp: ChangeStamp
+  subDataProcessing: IDataProcessing
+  changeStamp: IChangeStamp
   art9?: boolean
   art10?: boolean
-  retention: DpRetention
+  retention: IDpRetention
 }
 
-export interface DpProcessWithEmail extends IDurationed {
+export interface IDpProcessWithEmail extends IDurationed {
   id: string
   name: string
   dpProcessNumber: number
   description?: string
   purposeDescription?: string
-  affiliation: Affiliation
-  externalProcessResponsible?: Code
+  affiliation: IAffiliation
+  externalProcessResponsible?: ICode
   dataProcessingAgreements: string[]
-  subDataProcessing: DataProcessing
-  changeStamp: ChangeStamp
+  subDataProcessing: IDataProcessing
+  changeStamp: IChangeStamp
   art9?: boolean
   art10?: boolean
-  retention: DpRetention
+  retention: IDpRetention
   lastModifiedEmail?: string
 }
 
-export interface DpProcessFormValues {
+export interface IDpProcessFormValues {
   id?: string
   name: string
   description?: string
   purposeDescription?: string
-  affiliation: AffiliationFormValues
+  affiliation: IAffiliationFormValues
   externalProcessResponsible?: string
   dataProcessingAgreements: string[]
-  subDataProcessing: DataProcessingFormValues
+  subDataProcessing: IDataProcessingFormValues
   art9?: boolean
   art10?: boolean
-  retention: DpRetention
+  retention: IDpRetention
   start?: string
   end?: string
 }
 
-export interface ChangeStamp {
+export interface IChangeStamp {
   lastModifiedBy: string
   lastModifiedDate: string
 }
 
-export interface TeamResource {
+export interface ITeamResource {
   navIdent: string
   givenName: string
   familyName: string
@@ -438,11 +456,11 @@ export interface TeamResource {
   resourceType: string
 }
 
-export interface ProcessCount {
+export interface IProcessCount {
   counts: { [code: string]: number }
 }
 
-export interface UserInfo {
+export interface IUserInfo {
   loggedIn: boolean
   groups: string[]
   ident?: string
@@ -452,7 +470,7 @@ export interface UserInfo {
   email?: string
 }
 
-export interface PageResponse<T> {
+export interface IPageResponse<T> {
   pageNumber: number
   pageSize: number
   pages: number
@@ -467,58 +485,58 @@ export interface IDurationed {
   end: string
 }
 
-export interface CodeListFormValues {
+export interface ICodeListFormValues {
   list: string
   code: string
   shortName?: string
   description?: string
 }
 
-export interface Team {
+export interface ITeam {
   id: string
   name: string
   description: string
   productAreaId?: string
   slackChannel?: string
   tags: string[]
-  members: Member[]
+  members: IMember[]
 }
 
-export interface ProductArea {
+export interface IProductArea {
   id: string
   name: string
   description: string
   tags: string[]
-  members: Member[]
+  members: IMember[]
 }
 
-export interface Member {
+export interface IMember {
   name?: string
   email?: string
 }
 
-export interface CodeListFormValues {
+export interface ICodeListFormValues {
   list: string
   code: string
   shortName?: string
   description?: string
 }
 
-export interface DisclosureFormValues {
+export interface IDisclosureFormValues {
   id?: string
   name?: string
   recipient?: string
   recipientPurpose?: string
   description?: string
   documentId?: string
-  document?: DocumentFormValues
-  legalBases: LegalBasisFormValues[]
+  document?: IDocumentFormValues
+  legalBases: ILegalBasisFormValues[]
   legalBasesOpen: boolean
   end?: string
   start?: string
-  processes: ProcessShort[]
-  informationTypes?: InformationTypeShort[]
-  abroad: DisclosureAbroad
+  processes: IProcessShort[]
+  informationTypes?: IInformationTypeShort[]
+  abroad: IDisclosureAbroad
   administrationArchiveCaseNumber?: string
   thirdCountryReceiver?: boolean
   processIds: string[]
@@ -528,86 +546,86 @@ export interface DisclosureFormValues {
   department?: string
 }
 
-export interface DisclosureAbroad {
+export interface IDisclosureAbroad {
   abroad?: boolean
   countries: string[]
   refToAgreement?: string
   businessArea?: string
 }
 
-export interface Disclosure extends IDurationed {
+export interface IDisclosure extends IDurationed {
   id: string
   name: string
-  recipient: Code
+  recipient: ICode
   recipientPurpose: string
   description: string
   documentId?: string
-  document?: Document
-  legalBases: LegalBasis[]
-  processes: ProcessShort[]
+  document?: IDocument
+  legalBases: ILegalBasis[]
+  processes: IProcessShort[]
   processIds: string[]
-  informationTypes?: InformationTypeShort[]
+  informationTypes?: IInformationTypeShort[]
   informationTypeIds?: string[]
-  abroad: DisclosureAbroad
+  abroad: IDisclosureAbroad
   administrationArchiveCaseNumber?: string
   thirdCountryReceiver?: boolean
   assessedConfidentiality?: boolean
   confidentialityDescription?: string
   productTeams?: string[]
-  department?: Code
+  department?: ICode
 
-  changeStamp: ChangeStamp
+  changeStamp: IChangeStamp
 }
 
-export interface DocumentFormValues {
+export interface IDocumentFormValues {
   id?: string
   name: string
   description: string
-  informationTypes: DocumentInfoTypeUse[]
+  informationTypes: IDocumentInfoTypeUse[]
   dataAccessClass?: string
 }
 
-export interface Document {
+export interface IDocument {
   id: string
   name: string
   description: string
-  informationTypes: DocumentInfoTypeUse[]
-  dataAccessClass: Code
+  informationTypes: IDocumentInfoTypeUse[]
+  dataAccessClass: ICode
 }
 
-export interface DocumentInfoTypeUse {
+export interface IDocumentInfoTypeUse {
   informationTypeId: string
-  informationType: InformationTypeShort
-  subjectCategories: Code[]
+  informationType: IInformationTypeShort
+  subjectCategories: ICode[]
 }
 
-export interface AddDocumentToProcessFormValues {
-  document?: Document
-  informationTypes: DocumentInfoTypeUse[]
+export interface IAddDocumentToProcessFormValues {
+  document?: IDocument
+  informationTypes: IDocumentInfoTypeUse[]
   linkDocumentToPolicies: boolean
-  process: CustomizedProcess
+  process: ICustomizedProcess
 }
 
-export interface CustomizedProcess {
+export interface ICustomizedProcess {
   id: string
   name: string
-  purposes: Code[]
+  purposes: ICode[]
 }
 
-export interface CreateDocumentFormValues {
+export interface ICreateDocumentFormValues {
   name: string
   description: string
-  informationTypes: DocumentInformationTypes[]
+  informationTypes: IDocumentInformationTypes[]
   dataAccessClass?: string
 }
 
-export interface DocumentInformationTypes {
+export interface IDocumentInformationTypes {
   id?: string
   informationTypeId: string
   subjectCategories: string[]
 }
 
-export interface Processor {
+export interface IProcessor {
   id: string
   name: string
   contract?: string
@@ -615,13 +633,13 @@ export interface Processor {
   operationalContractManagers: string[]
   note?: string
   outsideEU?: boolean
-  transferGroundsOutsideEU?: Code
+  transferGroundsOutsideEU?: ICode
   transferGroundsOutsideEUOther?: string
   countries?: string[]
-  changeStamp?: ChangeStamp
+  changeStamp?: IChangeStamp
 }
 
-export interface ProcessorFormValues {
+export interface IProcessorFormValues {
   id?: string
   name: string
   contract?: string
@@ -634,74 +652,74 @@ export interface ProcessorFormValues {
   countries: string[]
 }
 
-export interface AuditItem {
-  action: AuditAction
+export interface IAuditItem {
+  action: EAuditAction
   id: string
-  table: ObjectType
+  table: EObjectType
   tableId: string
   time: string
   user: string
   data: object
 }
 
-export type Event = Omit<AuditItem, 'user' | 'data'> & { name: string }
+export type TEvent = Omit<IAuditItem, 'user' | 'data'> & { name: string }
 
-export interface AuditLog {
+export interface IAuditLog {
   id: string
-  audits: AuditItem[]
+  audits: IAuditItem[]
 }
 
-export interface CodeUsage {
-  listName: ListName
+export interface ICodeUsage {
+  listName: EListName
   code: string
   inUse: boolean
-  disclosures: [Use]
-  documents: [Use]
-  informationTypes: [Use]
-  policies: [UseWithPurpose]
-  processes: [ProcessShort]
-  processors: [Use]
-  dpProcesses: [DpProcessShort]
+  disclosures: [IUse]
+  documents: [IUse]
+  informationTypes: [IUse]
+  policies: [IUseWithPurpose]
+  processes: [IProcessShort]
+  processors: [IUse]
+  dpProcesses: [IDpProcessShort]
 }
 
-export interface RecentEdits {
+export interface IRecentEdits {
   time: string
-  process: ProcessShort
+  process: IProcessShort
 }
 
-export interface Use {
+export interface IUse {
   id: string
   name: string
 }
 
-export interface UseWithPurpose {
+export interface IUseWithPurpose {
   id: string
   processId: string
   name: string
   purposes: string[]
 }
 
-export interface CategoryUsage {
+export interface ICategoryUsage {
   listName: string
-  codesInUse: CodeUsage[]
+  codesInUse: ICodeUsage[]
 }
 
-export interface Settings {
+export interface ISettings {
   defaultProcessDocument: string
   frontpageMessage: string
 }
 
-export interface InformationTypeAlert {
+export interface IInformationTypeAlert {
   informationTypeId: string
-  processes: ProcessAlert[]
+  processes: IProcessAlert[]
 }
 
-export interface ProcessAlert {
+export interface IProcessAlert {
   processId: string
-  policies: PolicyAlert[]
+  policies: IPolicyAlert[]
 }
 
-export interface PolicyAlert {
+export interface IPolicyAlert {
   policyId: string
   missingLegalBasis: boolean
   excessInfo: boolean
@@ -709,32 +727,36 @@ export interface PolicyAlert {
   missingArt9: boolean
 }
 
-export interface DisclosureAlert {
+export interface IDisclosureAlert {
   disclosureId: string
   missingArt6: boolean
 }
 
-export interface AlertEvent {
+export interface IAlertEvent {
   id: string
-  process?: ProcessShort
-  informationType?: InformationTypeShort
-  disclosure?: Disclosure
-  type: AlertEventType
-  level: AlertEventLevel
-  changeStamp: ChangeStamp
+  process?: IProcessShort
+  informationType?: IInformationTypeShort
+  disclosure?: IDisclosure
+  type: EAlertEventType
+  level: EAlertEventLevel
+  changeStamp: IChangeStamp
 }
 
-export type RecursivePartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P]
+export type TRecursivePartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? TRecursivePartial<U>[]
+    : T[P] extends object
+      ? TRecursivePartial<T[P]>
+      : T[P]
 }
 
-export interface DashboardData {
-  all: AllDashCount
-  departments: DepartmentDashCount[]
-  productAreas: ProductAreaDashCount[]
+export interface IDashboardData {
+  all: IAllDashCount
+  departments: IDepartmentDashCount[]
+  productAreas: IProductAreaDashCount[]
 }
 
-interface DashCount {
+interface IDashCount {
   processes: number
   dpProcesses: number
   processesCompleted: number
@@ -744,32 +766,32 @@ interface DashCount {
   processesUsingAllInfoTypes: number
   processesMissingArt6: number
   processesMissingArt9: number
-  dpia: Counter
-  profiling: Counter
-  automation: Counter
-  retention: Counter
+  dpia: ICounter
+  profiling: ICounter
+  automation: ICounter
+  retention: ICounter
   retentionDataIncomplete: number
-  dataProcessor: Counter
+  dataProcessor: ICounter
   dataProcessorAgreementMissing: number
-  dataProcessorOutsideEU: Counter
+  dataProcessorOutsideEU: ICounter
   commonExternalProcessResponsible: number
   dpiaReferenceMissing: number
 }
 
-export interface AllDashCount extends DashCount {
+export interface IAllDashCount extends IDashCount {
   disclosures: number
   disclosuresIncomplete: number
 }
 
-export interface DepartmentDashCount extends DashCount {
+export interface IDepartmentDashCount extends IDashCount {
   department: string
 }
 
-export interface ProductAreaDashCount extends DashCount {
+export interface IProductAreaDashCount extends IDashCount {
   productAreaId: string
 }
 
-export interface Counter {
+export interface ICounter {
   yes: number
   no: number
   unknown: number

@@ -1,11 +1,11 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { ProcessorFormValues } from '../../../constants'
-import { codelist, CountryCode } from '../../../service/Codelist'
+import { IProcessorFormValues } from '../../../constants'
+import { ICountryCode, codelist } from '../../../service/Codelist'
 import { renderTagList } from '../../common/TagList'
 
 interface IProps {
-  formikBag: FormikProps<ProcessorFormValues>
+  formikBag: FormikProps<IProcessorFormValues>
 }
 
 const FieldCountries = (props: IProps) => {
@@ -21,10 +21,13 @@ const FieldCountries = (props: IProps) => {
               clearable
               options={codelist
                 .getCountryCodesOutsideEu()
-                .map((code: CountryCode) => ({ id: code.code, label: code.description }))
+                .map((code: ICountryCode) => ({ id: code.code, label: code.description }))
                 .filter((code) => !countries.includes(code.id))}
               onChange={({ value }) => {
-                arrayHelpers.form.setFieldValue('countries', [...countries, ...value.map((value) => value.id)])
+                arrayHelpers.form.setFieldValue('countries', [
+                  ...countries,
+                  ...value.map((value) => value.id),
+                ])
               }}
               maxDropdownHeight={'400px'}
             />
@@ -33,7 +36,7 @@ const FieldCountries = (props: IProps) => {
             <div>
               {renderTagList(
                 countries.map((country: string) => codelist.countryName(country)),
-                arrayHelpers,
+                arrayHelpers
               )}
             </div>
           </div>

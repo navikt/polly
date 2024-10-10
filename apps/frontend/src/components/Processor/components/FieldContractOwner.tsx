@@ -2,7 +2,7 @@ import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { getResourceById, useTeamResourceSearch } from '../../../api'
-import { ProcessorFormValues } from '../../../constants'
+import { IProcessorFormValues } from '../../../constants'
 
 interface IProps {
   contractOwner?: string
@@ -11,7 +11,8 @@ interface IProps {
 const FieldContractOwner = (props: IProps) => {
   const { contractOwner } = props
   const [value, setValue] = useState<Value>()
-  const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] = useTeamResourceSearch()
+  const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] =
+    useTeamResourceSearch()
 
   useEffect(() => {
     ;(async () => {
@@ -25,7 +26,7 @@ const FieldContractOwner = (props: IProps) => {
 
   return (
     <Field name="contractOwner">
-      {({ form, field }: FieldProps<ProcessorFormValues>) => (
+      {({ form }: FieldProps<IProcessorFormValues>) => (
         <div className="w-full">
           <Select
             options={teamResourceSearchResult}
@@ -33,7 +34,9 @@ const FieldContractOwner = (props: IProps) => {
               setValue(value)
               form.setFieldValue('contractOwner', value && value.length > 0 ? value[0].id : '')
             }}
-            onInputChange={(event: ChangeEvent<HTMLInputElement>) => setTeamResourceSearch(event.currentTarget.value)}
+            onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setTeamResourceSearch(event.currentTarget.value)
+            }
             value={value}
             isLoading={teamResourceSearchLoading}
           />

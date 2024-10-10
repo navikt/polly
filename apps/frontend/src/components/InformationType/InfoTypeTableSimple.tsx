@@ -1,7 +1,7 @@
 import { HeadingXLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { InformationType, informationTypeSort } from '../../constants'
-import { ListName } from '../../service/Codelist'
+import { IInformationType, informationTypeSort } from '../../constants'
+import { EListName } from '../../service/Codelist'
 import { theme } from '../../util'
 import { useTable } from '../../util/hooks'
 import { DotTags } from '../common/DotTag'
@@ -10,20 +10,25 @@ import { Spinner } from '../common/Spinner'
 import { Cell, HeadCell, Row, Table } from '../common/Table'
 import { Sensitivity } from './Sensitivity'
 
-type TableProps = {
+type TTableProps = {
   title: string
-  informationTypes?: InformationType[]
-  getInfoTypes?: () => Promise<InformationType[]>
+  informationTypes?: IInformationType[]
+  getInfoTypes?: () => Promise<IInformationType[]>
 }
 
-export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TableProps) => {
-  const [informationTypeList, setInformationTypeList] = useState<InformationType[]>(informationTypes || [])
+export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableProps) => {
+  const [informationTypeList, setInformationTypeList] = useState<IInformationType[]>(
+    informationTypes || []
+  )
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  const [table, sortColumn] = useTable<InformationType, keyof InformationType>(informationTypeList, {
-    sorting: informationTypeSort,
-    initialSortColumn: 'name',
-  })
+  const [table, sortColumn] = useTable<IInformationType, keyof IInformationType>(
+    informationTypeList,
+    {
+      sorting: informationTypeSort,
+      initialSortColumn: 'name',
+    }
+  )
 
   useEffect(() => {
     if (!getInfoTypes) return
@@ -48,12 +53,16 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TablePr
             headers={
               <>
                 <HeadCell title="Navn" column={'name'} tableState={[table, sortColumn]} />
-                <HeadCell title="Beskrivelse" column={'description'} tableState={[table, sortColumn]} />
+                <HeadCell
+                  title="Beskrivelse"
+                  column={'description'}
+                  tableState={[table, sortColumn]}
+                />
                 <HeadCell title="Kilder" column={'sources'} tableState={[table, sortColumn]} />
               </>
             }
           >
-            {table.data.map((row: InformationType, index: number) => (
+            {table.data.map((row: IInformationType, index: number) => (
               <Row key={index}>
                 <Cell>
                   <RouteLink href={`/informationtype/${row.id}`}>
@@ -62,7 +71,12 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TablePr
                 </Cell>
                 <Cell>{row.description}</Cell>
                 <Cell>
-                  <DotTags list={ListName.THIRD_PARTY} codes={row.sources} linkCodelist commaSeparator />
+                  <DotTags
+                    list={EListName.THIRD_PARTY}
+                    codes={row.sources}
+                    linkCodelist
+                    commaSeparator
+                  />
                 </Cell>
               </Row>
             ))}

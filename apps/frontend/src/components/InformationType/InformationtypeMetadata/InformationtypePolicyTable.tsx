@@ -1,35 +1,45 @@
 import { useEffect, useState } from 'react'
 import { getAlertForInformationType } from '../../../api/AlertApi'
-import { InformationTypeAlert, LegalBasesUse, Policy, PolicyAlert, policySort, ProcessAlert } from '../../../constants'
-import { Code, codelist, ListName } from '../../../service/Codelist'
+import {
+  ELegalBasesUse,
+  IInformationTypeAlert,
+  IPolicy,
+  IPolicyAlert,
+  IProcessAlert,
+  policySort,
+} from '../../../constants'
+import { EListName, ICode, codelist } from '../../../service/Codelist'
 import { useTable } from '../../../util/hooks'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
-type TableInformationtypeProps = {
-  policies: Array<Policy>
+type TTableInformationtypeProps = {
+  policies: Array<IPolicy>
   showPurpose: boolean
 }
 
-type Alerts = { [id: string]: PolicyAlert }
+type TAlerts = { [id: string]: IPolicyAlert }
 
-const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationtypeProps) => {
-  const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, { sorting: policySort, initialSortColumn: showPurpose ? 'purposes' : 'process' })
-  const [alerts, setAlerts] = useState<Alerts>()
+const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformationtypeProps) => {
+  const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(policies, {
+    sorting: policySort,
+    initialSortColumn: showPurpose ? 'purposes' : 'process',
+  })
+  const [alerts, setAlerts] = useState<TAlerts>()
 
   useEffect(() => {
     ;(async () => {
       const infoTypeId = policies && policies.length && policies[0].informationType.id
       if (infoTypeId) {
-        const infoTypeAlert: InformationTypeAlert = await getAlertForInformationType(infoTypeId)
-        const reduced: Alerts = infoTypeAlert.processes
-          .flatMap((process: ProcessAlert) => process.policies)
-          .reduce((agg: Alerts, policy: PolicyAlert) => {
+        const infoTypeAlert: IInformationTypeAlert = await getAlertForInformationType(infoTypeId)
+        const reduced: TAlerts = infoTypeAlert.processes
+          .flatMap((process: IProcessAlert) => process.policies)
+          .reduce((agg: TAlerts, policy: IPolicyAlert) => {
             agg[policy.policyId] = policy
             return agg
-          }, {} as Alerts)
+          }, {} as TAlerts)
         setAlerts(reduced)
       }
     })()
@@ -40,22 +50,36 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
       emptyText="Ingen behandlinger"
       headers={
         <>
-          <HeadCell title="Overordnet behandlingsaktivitet" column="purposes" tableState={[table, sortColumn]} />
+          <HeadCell
+            title="Overordnet behandlingsaktivitet"
+            column="purposes"
+            tableState={[table, sortColumn]}
+          />
           <HeadCell title="Behandling" column="process" tableState={[table, sortColumn]} />
-          <HeadCell title="Personkategori" column="subjectCategories" tableState={[table, sortColumn]} />
-          <HeadCell title="Behandlingsgrunnlag" column="legalBases" tableState={[table, sortColumn]} />
+          <HeadCell
+            title="Personkategori"
+            column="subjectCategories"
+            tableState={[table, sortColumn]}
+          />
+          <HeadCell
+            title="Behandlingsgrunnlag"
+            column="legalBases"
+            tableState={[table, sortColumn]}
+          />
           <HeadCell title="Lagringsbehov" />
         </>
       }
     >
-      {table.data.map((row: Policy, index: number) => (
+      {table.data.map((row: IPolicy, index: number) => (
         <Row key={index}>
           {showPurpose && (
             <Cell>
               <div className="flex flex-col">
-                {row.purposes.map((purpose: Code, index: number) => (
+                {row.purposes.map((purpose: ICode, index: number) => (
                   <div key={index}>
-                    <RouteLink href={`/process/purpose/${purpose.code}`}>{codelist.getShortnameForCode(purpose)}</RouteLink>
+                    <RouteLink href={`/process/purpose/${purpose.code}`}>
+                      {codelist.getShortnameForCode(purpose)}
+                    </RouteLink>
                   </div>
                 ))}
               </div>
@@ -64,18 +88,32 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
 
           <Cell>
             {/* todo mulitpurpose url */}
-            <RouteLink href={`/process/purpose/${row.purposes[0].code}/${row.process.id}`}>{row.process && row.process.name}</RouteLink>
+            <RouteLink href={`/process/purpose/${row.purposes[0].code}/${row.process.id}`}>
+              {row.process && row.process.name}
+            </RouteLink>
           </Cell>
 
-          <Cell>{row.subjectCategories.map((subjectCategory: Code) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}</Cell>
+          <Cell>
+            {row.subjectCategories
+              .map((subjectCategory: ICode) =>
+                codelist.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+              )
+              .join(', ')}
+          </Cell>
 
           <Cell>
             <div>
-              {row.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && row.legalBases && row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
+              {row.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES &&
+                row.legalBases &&
+                row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
 
-              {!(row.legalBasesUse === LegalBasesUse.EXCESS_INFO || row.legalBasesUse === LegalBasesUse.UNRESOLVED) && row.process.legalBases && (
-                <ListLegalBasesInTable legalBases={row.process.legalBases} />
-              )}
+              {!(
+                row.legalBasesUse === ELegalBasesUse.EXCESS_INFO ||
+                row.legalBasesUse === ELegalBasesUse.UNRESOLVED
+              ) &&
+                row.process.legalBases && (
+                  <ListLegalBasesInTable legalBases={row.process.legalBases} />
+                )}
 
               <LegalBasesNotClarified alert={alerts && alerts[row.id]} />
             </div>

@@ -1,7 +1,7 @@
 import { createTheme, lightThemePrimitives } from 'baseui'
-import { colors } from 'baseui/tokens'
 import { Theme, ThemePrimitives } from 'baseui/theme'
-import { RecursivePartial } from '../constants'
+import { colors } from 'baseui/tokens'
+import { TRecursivePartial } from '../constants'
 
 export const primitives: ThemePrimitives & { primary150: string } = {
   ...lightThemePrimitives,
@@ -45,7 +45,7 @@ export const searchResultColor = {
 }
 
 // Official type is wrong
-interface Borders {
+interface IBorders {
   radius400: string
   buttonBorderRadius: string
   inputBorderRadius: string
@@ -53,13 +53,13 @@ interface Borders {
   surfaceBorderRadius: string
 }
 
-interface Colors {
+interface IColors {
   inputEnhancerFill?: string
 }
 
-type ThemeOverride = RecursivePartial<Theme> & { borders: Partial<Borders>; colors: Colors }
+type TThemeOverride = TRecursivePartial<Theme> & { borders: Partial<IBorders>; colors: IColors }
 
-const overrides: ThemeOverride = {
+const overrides: TThemeOverride = {
   colors: {
     linkVisited: primitives.primary400,
     inputFill: primitives.primary50,
@@ -106,7 +106,7 @@ const ResponsiveTheme = Object.keys(breakpoints).reduce(
   {
     breakpoints,
     mediaQuery: {},
-  },
+  }
 )
 
 export const theme = createTheme(primitives, { ...overrides, ...ResponsiveTheme })

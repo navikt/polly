@@ -1,15 +1,24 @@
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { withStyle } from 'baseui'
-import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from 'baseui/table'
+import {
+  SORT_DIRECTION,
+  SortableHeadCell,
+  StyledBody,
+  StyledCell,
+  StyledHead,
+  StyledHeadCell,
+  StyledRow,
+  StyledTable,
+} from 'baseui/table'
 import { LabelMedium } from 'baseui/typography'
 import { ReactElement, ReactNode, createContext, useContext } from 'react'
 import { StyleObject } from 'styletron-standard'
 import { theme } from '../../util'
-import { TableState } from '../../util/hooks'
+import { TTableState } from '../../util/hooks'
 import { paddingAll } from './Style'
 
-type TableProps = {
+type TTableProps = {
   backgroundColor?: string
   hoverColor?: string
   emptyText: string
@@ -17,16 +26,20 @@ type TableProps = {
   children: ReactNode
 }
 
-type HeadProps<K extends keyof T, T> = {
+type THeadProps<K extends keyof T, T> = {
   title?: string
   column?: K
-  tableState?: TableState<T, K>
+  tableState?: TTableState<T, K>
   $style?: StyleObject
   small?: boolean
-  sort?: [string, { column: string; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }, (column: K) => void]
+  sort?: [
+    string,
+    { column: string; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC },
+    (column: K) => void,
+  ]
 }
 
-type RowProps = {
+type TRowProps = {
   inactiveRow?: boolean
   selectedRow?: boolean
   infoRow?: boolean
@@ -64,11 +77,14 @@ const tableStyle = {
   ...paddingAll(theme.sizing.scale600),
 }
 
-const TableContext = createContext<Partial<TableProps>>({})
+const TableContext = createContext<Partial<TTableProps>>({})
 
-export const Table = (props: TableProps) => {
+export const Table = (props: TTableProps) => {
   const { headers, children, emptyText } = props
-  const StyleTable = withStyle(StyledTable, { ...tableStyle, backgroundColor: props.backgroundColor || tableStyle.backgroundColor })
+  const StyleTable = withStyle(StyledTable, {
+    ...tableStyle,
+    backgroundColor: props.backgroundColor || tableStyle.backgroundColor,
+  })
 
   return (
     <TableContext.Provider value={props}>
@@ -76,13 +92,15 @@ export const Table = (props: TableProps) => {
         <StyledHeader>{headers}</StyledHeader>
         <StyledBody>
           {children}
-          {(!children || (Array.isArray(children) && !children.length)) && <LabelMedium margin="1rem">{emptyText}</LabelMedium>}
+          {(!children || (Array.isArray(children) && !children.length)) && (
+            <LabelMedium margin="1rem">{emptyText}</LabelMedium>
+          )}
         </StyledBody>
       </StyleTable>
     </TableContext.Provider>
   )
 }
-export const Row = (props: RowProps) => {
+export const Row = (props: TRowProps) => {
   const { inactiveRow, infoRow, selectedRow, $style, children } = props
   const tableProps = useContext(TableContext)
   const styleProps: StyleObject = {
@@ -95,7 +113,8 @@ export const Row = (props: RowProps) => {
     borderLeftWidth: infoRow || selectedRow ? theme.sizing.scale300 : '0',
     borderLeftStyle: 'solid',
     ':hover': {
-      backgroundColor: tableProps.hoverColor || (infoRow ? theme.colors.mono100 : theme.colors.primary50),
+      backgroundColor:
+        tableProps.hoverColor || (infoRow ? theme.colors.mono100 : theme.colors.primary50),
     },
     ...$style,
   }
@@ -121,7 +140,7 @@ const SortDirectionIcon = (props: ISortDirectionIconProps) => {
 
 const PlainHeadCell = withStyle(StyledHeadCell, headerCellOverride.HeadCell.style)
 
-export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
+export const HeadCell = <T, K extends keyof T>(props: THeadProps<K, T>) => {
   const { title, tableState, column, small } = props
 
   const widthStyle = small ? { maxWidth: '15%' } : {}

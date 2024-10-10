@@ -4,24 +4,24 @@ import { theme } from '../../util'
 import RouteLink from './RouteLink'
 import { margin } from './Style'
 
-type Opt = { id: string; label: string }
+type TOpt = { id: string; label: string }
 
 interface IAlphabeticListProps {
-  items: Opt[]
+  items: TOpt[]
   baseUrl: string
 }
 
 const AlphabeticList = (props: IAlphabeticListProps) => {
   const { baseUrl } = props
   const items = props.items
-    .sort((a: Opt, b: Opt) => a.label.localeCompare(b.label))
+    .sort((a: TOpt, b: TOpt) => a.label.localeCompare(b.label))
     .reduce(
-      (acc, cur: Opt) => {
+      (acc, cur: TOpt) => {
         const letter: string = cur.label.toUpperCase()[0]
         acc[letter] = [...(acc[letter] || []), cur]
         return acc
       },
-      {} as { [letter: string]: Opt[] },
+      {} as { [letter: string]: TOpt[] }
     )
   return (
     <>
@@ -36,8 +36,12 @@ const AlphabeticList = (props: IAlphabeticListProps) => {
             <div className="w-full border-b-2 border-[#CBCBCB] border-solid" />
           </div>
 
-          <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
-            {items[letter].map((item: Opt) => (
+          <FlexGrid
+            flexGridRowGap={theme.sizing.scale600}
+            flexGridColumnGap={theme.sizing.scale600}
+            flexGridColumnCount={4}
+          >
+            {items[letter].map((item: TOpt) => (
               <FlexGridItem
                 key={item.id}
                 minWidth={'fit-content'}

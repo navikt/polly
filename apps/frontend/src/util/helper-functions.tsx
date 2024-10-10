@@ -1,8 +1,8 @@
 import { StyledLink } from 'baseui/link'
 import { StatefulTooltip } from 'baseui/tooltip'
 import { KeyboardEvent } from 'react'
-import { Process } from '../constants'
-import { Code } from '../service/Codelist'
+import { IProcess } from '../constants'
+import { ICode } from '../service/Codelist'
 
 export const isLink = (text: string): boolean => {
   const regex = /http[s]?:\/\/.*/gm
@@ -54,6 +54,8 @@ export const getNoDpiaLabel = (id: string) => {
   return ''
 }
 
-export const checkForAaregDispatcher = (process: Process) => {
-  return process.affiliation.disclosureDispatchers.find((disclosureDispatcher: Code) => disclosureDispatcher.shortName === 'Aa-reg')
+export const checkForAaregDispatcher = (process: IProcess) => {
+  return process.affiliation.disclosureDispatchers.find(
+    (disclosureDispatcher: ICode) => disclosureDispatcher.shortName === 'Aa-reg'
+  )
 }

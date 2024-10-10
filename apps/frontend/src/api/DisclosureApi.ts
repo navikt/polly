@@ -1,71 +1,107 @@
 import axios from 'axios'
-import {Affiliation, Disclosure, DisclosureFormValues, PageResponse} from '../constants'
-import {env} from '../util/env'
-import {convertLegalBasesToFormValues} from './PolicyApi'
-import {mapBool} from '../util/helper-functions'
-import {Code} from '../service/Codelist'
-import {useDebouncedState} from '../util'
-import {Dispatch, SetStateAction, useEffect, useState} from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { IAffiliation, IDisclosure, IDisclosureFormValues, IPageResponse } from '../constants'
+import { ICode } from '../service/Codelist'
+import { useDebouncedState } from '../util'
+import { env } from '../util/env'
+import { mapBool } from '../util/helper-functions'
+import { convertLegalBasesToFormValues } from './PolicyApi'
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`
+    )
+  ).data.content
 }
 
 export const getDisclosure = async (disclosureId: string) => {
-  return (await axios.get<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
+  return (await axios.get<IDisclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
 }
 
 export const getDisclosuresByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    )
+  ).data
 }
 
 export const getDisclosureSummaries = async () => {
-  return (await axios.get<PageResponse<DisclosureSummary>>(`${env.pollyBaseUrl}/disclosure/summary`)).data
+  return (
+    await axios.get<IPageResponse<IDisclosureSummary>>(`${env.pollyBaseUrl}/disclosure/summary`)
+  ).data
 }
 
 export const getDisclosuresWithEmptyLegalBases = async () => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?emptyLegalBases=true`)).data.content
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure?emptyLegalBases=true`
+    )
+  ).data.content
 }
 
 export const getDisclosuresByRecipient = async (recipient: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?recipient=${recipient}`)).data.content
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure?recipient=${recipient}`
+    )
+  ).data.content
 }
 
 export const getDisclosuresByProcessId = async (processId: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?processId=${processId}`)).data.content
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure?processId=${processId}`
+    )
+  ).data.content
 }
 
 export const getDisclosuresByInformationTypeId = async (informationTypeId: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?informationTypeId=${informationTypeId}`)).data.content
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure?informationTypeId=${informationTypeId}`
+    )
+  ).data.content
 }
 
 export const searchDisclosure = async (text: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/search/${text}`)).data
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(`${env.pollyBaseUrl}/disclosure/search/${text}`)
+  ).data
 }
 
 export const getDisclosureByDepartment = async (department: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/department/${department}`)).data
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure/department/${department}`
+    )
+  ).data
 }
 
 export const getDisclosureByProductTeam = async (productTeam: string) => {
-  return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure/productTeam/${productTeam}`)).data
+  return (
+    await axios.get<IPageResponse<IDisclosure>>(
+      `${env.pollyBaseUrl}/disclosure/productTeam/${productTeam}`
+    )
+  ).data
 }
 
-export const createDisclosure = async (disclosure: DisclosureFormValues) => {
-  let body = convertFormValuesToDisclosure(disclosure)
-  return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data
+export const createDisclosure = async (disclosure: IDisclosureFormValues) => {
+  const body = convertFormValuesToDisclosure(disclosure)
+  return (await axios.post<IDisclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data
 }
 
-export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
-  let body = convertFormValuesToDisclosure(disclosure)
-  return (await axios.put<Disclosure>(`${env.pollyBaseUrl}/disclosure/${body.id}`, body)).data
+export const updateDisclosure = async (disclosure: IDisclosureFormValues) => {
+  const body = convertFormValuesToDisclosure(disclosure)
+  return (await axios.put<IDisclosure>(`${env.pollyBaseUrl}/disclosure/${body.id}`, body)).data
 }
 
 export const deleteDisclosure = async (disclosureId: string) => {
-  return (await axios.delete<Disclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
+  return (await axios.delete<IDisclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
 }
 
-export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
+export const convertFormValuesToDisclosure = (values: IDisclosureFormValues) => {
   return {
     id: values.id,
     recipient: values.recipient,
@@ -76,7 +112,8 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
     end: values.end,
-    processIds: values.processIds.length > 0 ? values.processIds : values.processes.map((p) => p.id) || [],
+    processIds:
+      values.processIds.length > 0 ? values.processIds : values.processes.map((p) => p.id) || [],
     informationTypeIds: values.informationTypes ? values.informationTypes.map((i) => i.id) : [],
     abroad: {
       abroad: mapBool(values.abroad.abroad),
@@ -89,11 +126,13 @@ export const convertFormValuesToDisclosure = (values: DisclosureFormValues) => {
     assessedConfidentiality: mapBool(values.assessedConfidentiality),
     confidentialityDescription: values.confidentialityDescription,
     productTeams: values.productTeams,
-    department: values.department
+    department: values.department,
   }
 }
 
-export const convertDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => {
+export const convertDisclosureToFormValues: (disclosure: IDisclosure) => IDisclosureFormValues = (
+  disclosure
+) => {
   return {
     id: disclosure.id,
     recipient: disclosure.recipient.code || '',
@@ -102,11 +141,13 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
     description: disclosure.description || '',
     document: disclosure.document
       ? {
-        name: disclosure.document.name,
-        description: disclosure.document.description,
-        dataAccessClass: disclosure.document.dataAccessClass ? disclosure.document.dataAccessClass.code : '',
-        informationTypes: disclosure.document.informationTypes,
-      }
+          name: disclosure.document.name,
+          description: disclosure.document.description,
+          dataAccessClass: disclosure.document.dataAccessClass
+            ? disclosure.document.dataAccessClass.code
+            : '',
+          informationTypes: disclosure.document.informationTypes,
+        }
       : undefined,
     legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),
     legalBasesOpen: false,
@@ -132,7 +173,7 @@ export const convertDisclosureToFormValues: (disclosure: Disclosure) => Disclosu
 
 export const useDisclosureSearch = () => {
   const [disclosureSearch, setDisclosureSearch] = useDebouncedState<string>('', 200)
-  const [disclosureSearchResult, setDisclosureSearchResult] = useState<Disclosure[]>([])
+  const [disclosureSearchResult, setDisclosureSearchResult] = useState<IDisclosure[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -147,14 +188,18 @@ export const useDisclosureSearch = () => {
     })()
   }, [disclosureSearch])
 
-  return [disclosureSearchResult, setDisclosureSearch, loading] as [Disclosure[], Dispatch<SetStateAction<string>>, boolean]
+  return [disclosureSearchResult, setDisclosureSearch, loading] as [
+    IDisclosure[],
+    Dispatch<SetStateAction<string>>,
+    boolean,
+  ]
 }
 
-export interface DisclosureSummary {
+export interface IDisclosureSummary {
   id: string
   name: string
-  recipient: Code
-  processes: { id: string; name: string; number: number; purposes: Code[] }[]
+  recipient: ICode
+  processes: { id: string; name: string; number: number; purposes: ICode[] }[]
   legalBases: number
-  affiliation: Affiliation
+  affiliation: IAffiliation
 }

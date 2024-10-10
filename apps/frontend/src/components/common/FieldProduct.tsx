@@ -1,14 +1,14 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { DpProcessFormValues, ProcessFormValues } from '../../constants'
-import { codelist, ListName } from '../../service/Codelist'
+import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
+import { EListName, codelist } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
-type fieldProductsProps = {
-  formikBag: FormikProps<ProcessFormValues> | FormikProps<DpProcessFormValues>
+type TFieldProductsProps = {
+  formikBag: FormikProps<IProcessFormValues> | FormikProps<IDpProcessFormValues>
 }
 
-const FieldProduct = (props: fieldProductsProps) => {
+const FieldProduct = (props: TFieldProductsProps) => {
   const { formikBag } = props
 
   return (
@@ -20,17 +20,24 @@ const FieldProduct = (props: fieldProductsProps) => {
             <div className="w-full">
               <Select
                 clearable
-                options={codelist.getParsedOptions(ListName.SYSTEM).filter((option) => !formikBag.values.affiliation.products.includes(option.id))}
+                options={codelist
+                  .getParsedOptions(EListName.SYSTEM)
+                  .filter((option) => !formikBag.values.affiliation.products.includes(option.id))}
                 onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue('affiliation.products', [...formikBag.values.affiliation.products, ...value.map((v) => v.id)])
+                  arrayHelpers.form.setFieldValue('affiliation.products', [
+                    ...formikBag.values.affiliation.products,
+                    ...value.map((v) => v.id),
+                  ])
                 }}
                 overrides={{ Placeholder: { style: { color: 'black' } } }}
               />
             </div>
             <div>
               {renderTagList(
-                formikBag.values.affiliation.products.map((product: string) => codelist.getShortname(ListName.SYSTEM, product)),
-                arrayHelpers,
+                formikBag.values.affiliation.products.map((product: string) =>
+                  codelist.getShortname(EListName.SYSTEM, product)
+                ),
+                arrayHelpers
               )}
             </div>
           </div>

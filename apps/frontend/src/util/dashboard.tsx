@@ -1,10 +1,19 @@
-import { ProcessField, ProcessState, ProcessStatusFilter } from '../constants'
-import { Section } from '../pages/ProcessPage'
 import { NavigateFunction } from 'react-router-dom'
+import { EProcessField, EProcessState, EProcessStatusFilter } from '../constants'
+import { ESection } from '../pages/ProcessPage'
 
 export const clickOnPieChartSlice =
-  (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatusFilter, navigate: NavigateFunction, type?: Section, id?: string) => () => {
+  (
+    processField: EProcessField,
+    processState: EProcessState,
+    processStatus: EProcessStatusFilter,
+    navigate: NavigateFunction,
+    type?: ESection,
+    id?: string
+  ) =>
+  () => {
     if (!type) navigate(`/dashboard/${processField}/${processState}/${processStatus}`)
-    else if (type === Section.department) navigate(`/dashboard/${processField}/${processState}/${processStatus}?department=${id}`)
+    else if (type === ESection.department)
+      navigate(`/dashboard/${processField}/${processState}/${processStatus}?department=${id}`)
     else navigate(`/dashboard/${processField}/${processState}/${processStatus}?productarea=${id}`)
   }

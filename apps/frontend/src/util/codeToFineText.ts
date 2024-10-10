@@ -1,5 +1,4 @@
 export interface IStrings {
-
   // groups
   READ: string
   WRITE: string
@@ -22,18 +21,15 @@ export interface IStrings {
   WARNING: string
   ERROR: string
 
-
   // Alert events
   MISSING_LEGAL_BASIS: string
   EXCESS_INFO: string
   MISSING_ARTICLE_6: string
   MISSING_ARTICLE_9: string
   USES_ALL_INFO_TYPE: string
-
 }
 
 export const tekster: IStrings = {
-
   READ: 'Les',
   WRITE: 'Skriv',
   SUPER: 'Super',
@@ -60,4 +56,3 @@ export const tekster: IStrings = {
   MISSING_ARTICLE_9: 'Behandlingsgrunnlag for artikkel 9 mangler',
   USES_ALL_INFO_TYPE: 'Bruker alle opplysningstyper',
 }
-

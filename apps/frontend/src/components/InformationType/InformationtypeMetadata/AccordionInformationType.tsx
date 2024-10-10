@@ -5,17 +5,17 @@ import { ParagraphMedium } from 'baseui/typography'
 import queryString from 'query-string'
 import { Key } from 'react'
 import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
-import { Policy } from '../../../constants'
-import { PurposeMap } from '../../../pages/InformationtypePage'
-import { Code, ListName, codelist } from '../../../service/Codelist'
+import { IPolicy } from '../../../constants'
+import { TPurposeMap } from '../../../pages/InformationtypePage'
+import { EListName, ICode, codelist } from '../../../service/Codelist'
 import { useQueryParam } from '../../../util/hooks'
 import { toggleOverride } from '../../common/Accordion'
 import { paddingZero } from '../../common/Style'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 
-const reducePolicyList = (list: Policy[]) => {
-  return list.reduce((acc: PurposeMap, curr: Policy) => {
-    curr.purposes.forEach((purpose: Code) => {
+const reducePolicyList = (list: IPolicy[]) => {
+  return list.reduce((acc: TPurposeMap, curr: IPolicy) => {
+    curr.purposes.forEach((purpose: ICode) => {
       if (!acc[purpose.code]) {
         acc[purpose.code] = [curr]
       } else {
@@ -27,11 +27,11 @@ const reducePolicyList = (list: Policy[]) => {
   }, {})
 }
 
-export interface AccordionInformationtypeProps {
-  policies: Policy[]
+export interface IAccordionInformationtypeProps {
+  policies: IPolicy[]
 }
 
-const AccordionInformationType = (props: AccordionInformationtypeProps) => {
+const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
   const { policies } = props
   const selectedPurpose = useQueryParam('purpose')
   const navigate: NavigateFunction = useNavigate()
@@ -40,15 +40,16 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
   if (!policies) return <ParagraphMedium>Fant ingen formål</ParagraphMedium>
   if (!codelist.isLoaded()) return <ParagraphMedium>Kunne ikke laste inn siden</ParagraphMedium>
 
-  const purposeMap: PurposeMap = reducePolicyList(policies)
-  const getPolicylistForPurpose = (purpose: string): Policy[] => (!purposeMap[purpose] ? [] : purposeMap[purpose])
+  const purposeMap: TPurposeMap = reducePolicyList(policies)
+  const getPolicylistForPurpose = (purpose: string): IPolicy[] =>
+    !purposeMap[purpose] ? [] : purposeMap[purpose]
 
   return (
     <Accordion
       initialState={{ expanded: selectedPurpose ? [selectedPurpose] : [] }}
       onChange={(key) => {
-        let pathname: string = location.pathname
-        let purpose: Key = key.expanded[0]
+        const pathname: string = location.pathname
+        const purpose: Key = key.expanded[0]
         navigate(pathname + '?' + queryString.stringify({ purpose }, { skipNull: true }))
       }}
     >
@@ -56,7 +57,7 @@ const AccordionInformationType = (props: AccordionInformationtypeProps) => {
         <Panel
           title={
             <span>
-              <FontAwesomeIcon icon={faUsersCog} /> {codelist.getShortname(ListName.PURPOSE, key)}
+              <FontAwesomeIcon icon={faUsersCog} /> {codelist.getShortname(EListName.PURPOSE, key)}
             </span>
           }
           key={key}

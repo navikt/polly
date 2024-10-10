@@ -1,14 +1,14 @@
 import { BodyShort, Button, Modal, TextField, Textarea } from '@navikt/ds-react'
 import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik'
-import { CodeListFormValues } from '../../../constants'
+import { ICodeListFormValues } from '../../../constants'
 import { codeListSchema } from '../../common/schema'
 
-type ModalCreateProps = {
+type TModalCreateProps = {
   title: string
   list: string
   isOpen: boolean
   errorOnCreate: any | undefined
-  submit: (code: CodeListFormValues) => Promise<void>
+  submit: (code: ICodeListFormValues) => Promise<void>
   onClose: () => void
 }
 
@@ -19,8 +19,21 @@ interface ISubmitValues {
   description: string
 }
 
-const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, submit }: ModalCreateProps) => (
-  <Modal className="px-8" width="medium" open={isOpen} header={{ heading: title, closeButton: false }} onClose={() => onClose()}>
+const CreateCodeListModal = ({
+  isOpen,
+  title,
+  list,
+  errorOnCreate,
+  onClose,
+  submit,
+}: TModalCreateProps) => (
+  <Modal
+    className="px-8"
+    width="medium"
+    open={isOpen}
+    header={{ heading: title, closeButton: false }}
+    onClose={() => onClose()}
+  >
     <div>
       <Formik
         validateOnChange={false}
@@ -40,15 +53,38 @@ const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, subm
         {({ errors, submitForm }) => (
           <Form>
             <Modal.Body>
-              <Field name="code" render={({ field }: FieldProps) => <TextField className="w-full" {...field} label="Kode" error={errors.code && <ErrorMessage name="code" />} />} />
+              <Field
+                name="code"
+                render={({ field }: FieldProps) => (
+                  <TextField
+                    className="w-full"
+                    {...field}
+                    label="Kode"
+                    error={errors.code && <ErrorMessage name="code" />}
+                  />
+                )}
+              />
               <Field
                 name="shortName"
-                render={({ field }: FieldProps) => <TextField className="w-full mt-4" {...field} label="Navn" error={errors.shortName && <ErrorMessage name="shortName" />} />}
+                render={({ field }: FieldProps) => (
+                  <TextField
+                    className="w-full mt-4"
+                    {...field}
+                    label="Navn"
+                    error={errors.shortName && <ErrorMessage name="shortName" />}
+                  />
+                )}
               />
               <Field
                 name="description"
                 render={({ field }: FieldProps) => (
-                  <Textarea className="w-full mt-4" {...field} label="Beskrivelse" minRows={6} error={errors.description && <ErrorMessage name="description" />} />
+                  <Textarea
+                    className="w-full mt-4"
+                    {...field}
+                    label="Beskrivelse"
+                    minRows={6}
+                    error={errors.description && <ErrorMessage name="description" />}
+                  />
                 )}
               />
             </Modal.Body>
@@ -58,7 +94,7 @@ const CreateCodeListModal = ({ isOpen, title, list, errorOnCreate, onClose, subm
                 <Button variant="secondary" type="button" onClick={() => onClose()}>
                   Avbryt
                 </Button>
-                <Button variant="primary" type="button" onClick={submitForm} >
+                <Button variant="primary" type="button" onClick={submitForm}>
                   Lagre
                 </Button>
               </div>

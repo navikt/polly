@@ -1,14 +1,14 @@
 import { Radio } from 'baseui/radio'
-import { SearchType } from '../../../constants'
+import { TSearchType } from '../../../constants'
 import { theme } from '../../../util'
 import { paddingZero } from '../../common/Style'
 
-type RadioProps = {
+type TRadioProps = {
   $isHovered: boolean
   $checked: boolean
 }
 
-export const SmallRadio = (value: SearchType, text: string) => (
+export const SmallRadio = (value: TSearchType, text: string) => (
   <Radio
     value={value}
     overrides={{
@@ -18,20 +18,20 @@ export const SmallRadio = (value: SearchType, text: string) => (
         },
       },
       Label: {
-        style: (a: RadioProps) => ({
+        style: (a: TRadioProps) => ({
           ...paddingZero,
           ...(a.$isHovered ? { color: theme.colors.positive400 } : {}),
         }),
       },
       RadioMarkOuter: {
-        style: (a: RadioProps) => ({
+        style: (a: TRadioProps) => ({
           width: theme.sizing.scale500,
           height: theme.sizing.scale500,
           ...(a.$isHovered ? { backgroundColor: theme.colors.positive400 } : {}),
         }),
       },
       RadioMarkInner: {
-        style: (a: RadioProps) => ({
+        style: (a: TRadioProps) => ({
           width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
           height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
         }),
