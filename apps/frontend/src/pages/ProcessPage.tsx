@@ -170,7 +170,7 @@ export const genProcessPath = (
         processId: process.id,
       }) +
       '?' +
-      queryString.stringify({ filter, create }, { skipNull: true })
+      queryString.stringify({ filter, create }, { skipNull: true, skipEmptyString: true })
     )
   }
 
@@ -181,6 +181,6 @@ export const genProcessPath = (
       code: section === ESection.purpose && !!process?.purposes ? process.purposes[0].code : code,
     }) +
     '?' +
-    queryString.stringify({ filter, create }, { skipNull: true })
+    queryString.stringify({ filter, create }, { skipNull: true, skipEmptyString: true })
   )
 }

@@ -1,7 +1,7 @@
+import { Select } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Radio, RadioGroup } from 'baseui/radio'
-import { OnChangeParams, Select, StatefulSelect } from 'baseui/select'
 import { Tag, VARIANT } from 'baseui/tag'
 import {
   Field,
@@ -45,6 +45,7 @@ const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => (
 
 const FieldInformationType = () => {
   const [infoTypes, setInfoTypes] = useState<IInformationTypeShort[]>([])
+  const [selectedValue, setSelectedValue] = useState<string>('')
 
   useEffect(() => {
     getInformationTypesShort().then((informationTypeShort: IInformationTypeShort[]) => {
@@ -56,18 +57,32 @@ const FieldInformationType = () => {
     <Field
       name="informationType"
       render={({ form }: FieldProps<IPolicyFormValues>) => (
-        <StatefulSelect
-          maxDropdownHeight="400px"
-          noResultsMsg="Ingen"
-          options={infoTypes}
-          placeholder={form.values.informationType ? '' : 'Søk opplysningsyper'}
-          initialState={{ value: form.values.informationType }}
-          onChange={(params: OnChangeParams) =>
-            form.setFieldValue('informationType', params.value[0] as IInformationTypeShort)
-          }
-          error={!!form.errors.informationType && !!form.submitCount}
-          labelKey="name"
-        />
+        <>
+          <Select
+            label="Opplysningstyper"
+            hideLabel
+            value={form.values.informationType ? form.values.informationType.id : selectedValue}
+            onChange={(event) => {
+              setSelectedValue(event.target.value)
+              if (event.target.value && event.target.value !== '') {
+                form.setFieldValue(
+                  'informationType',
+                  infoTypes.filter(
+                    (infoType) => infoType.id === event.target.value
+                  )[0] as IInformationTypeShort
+                )
+              }
+            }}
+            error={!!form.errors.informationType && !!form.submitCount}
+          >
+            <option value="">Søk opplysningsyper</option>
+            {infoTypes.map((infoType: IInformationTypeShort) => (
+              <option key={infoType.id} value={infoType.id}>
+                {infoType.name}
+              </option>
+            ))}
+          </Select>
+        </>
       )}
     />
   )
@@ -176,19 +191,27 @@ const ModalPolicy = ({
                     render={(arrayHelpers: FieldArrayRenderProps) => (
                       <div className="w-full">
                         <Select
-                          options={codelist.getParsedOptionsFilterOutSelected(
-                            EListName.SUBJECT_CATEGORY,
-                            formikBag.values.subjectCategories
-                          )}
-                          maxDropdownHeight="300px"
-                          onChange={({ option }) => {
-                            arrayHelpers.push(option ? option.id : null)
+                          label="Personkategori"
+                          hideLabel
+                          onChange={(event) => {
+                            arrayHelpers.push(event.target.value ? event.target.value : null)
                           }}
                           error={
                             !!formikBag.errors.subjectCategories &&
                             !!formikBag.touched.subjectCategories
                           }
-                        />
+                        >
+                          {codelist
+                            .getParsedOptionsFilterOutSelected(
+                              EListName.SUBJECT_CATEGORY,
+                              formikBag.values.subjectCategories
+                            )
+                            .map((catergories) => (
+                              <option key={catergories.id} value={catergories.id}>
+                                {catergories.label}
+                              </option>
+                            ))}
+                        </Select>
                         {renderTagList(
                           codelist.getShortnames(
                             EListName.SUBJECT_CATEGORY,

@@ -1,4 +1,4 @@
-import { OnChangeParams, Option, StatefulSelect, Value } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { StatefulTabs, Tab } from 'baseui/tabs'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import moment from 'moment'
@@ -14,13 +14,11 @@ import { AuditActionIcon } from './AuditComponents'
 export const LastEvents = () => {
   const [events, setEvents] = useState<IPageResponse<TEvent>>()
   const [table, setTable] = useState<EObjectType>(EObjectType.PROCESS)
-  const [action, setAction] = useState<Value>([
-    { id: EAuditAction.CREATE, label: 'Opprett' } as Option,
-  ])
+  const [action, setAction] = useState<string>(EAuditAction.CREATE)
 
   useEffect(() => {
     ;(async () => {
-      setEvents(await getEvents(0, 10, table, action[0].id as EAuditAction))
+      setEvents(await getEvents(0, 10, table, action as EAuditAction))
     })()
   }, [table, action])
 
@@ -54,24 +52,18 @@ export const LastEvents = () => {
         <HeadingXLarge>Siste hendelser</HeadingXLarge>
         <div className="flex justify-between items-center">
           <LabelMedium marginRight={theme.sizing.scale300}>Hendelsestype</LabelMedium>
-          <StatefulSelect
-            size="compact"
-            clearable={false}
-            searchable={false}
-            options={Object.keys(EAuditAction).map((auditAction: string) => ({
-              id: auditAction,
-              label: tekster[auditAction as EAuditAction],
-            }))}
-            initialState={{ value: action }}
-            onChange={(params: OnChangeParams) => setAction(params.value)}
-            overrides={{
-              Root: {
-                style: {
-                  width: '120px',
-                },
-              },
-            }}
-          />
+          <Select
+            size="small"
+            label="Hendelsestype"
+            hideLabel
+            onChange={(event) => setAction(event.target.value)}
+          >
+            {Object.keys(EAuditAction).map((auditAction: string) => (
+              <option key={auditAction} value={auditAction}>
+                {tekster[auditAction as EAuditAction]}
+              </option>
+            ))}
+          </Select>
         </div>
       </div>
       <div>

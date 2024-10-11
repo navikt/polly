@@ -1,7 +1,7 @@
 import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { Select } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
 import { Modal, ModalBody, ModalHeader, SIZE as ModalSize, ROLE } from 'baseui/modal'
-import { StatefulSelect } from 'baseui/select'
 import { Spinner } from 'baseui/spinner'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
@@ -409,24 +409,18 @@ const ProcessList = ({
           </ModalBody>
         </Modal>
         <div className="w-1/4">
-          <StatefulSelect
-            backspaceRemoves={false}
-            clearable={false}
-            deleteRemoves={false}
-            escapeClearsValue={false}
-            options={[
-              { label: 'Alle behandlinger', id: undefined },
-              { label: 'Behandlinger under arbeid', id: EProcessStatus.IN_PROGRESS },
-              { label: 'Trenger revidering', id: EProcessStatus.NEEDS_REVISION },
-              { label: 'Ferdig dokumenterte behandlinger', id: EProcessStatus.COMPLETED },
-            ]}
-            initialState={{ value: [{ id: filter }] }}
-            filterOutSelected={false}
-            searchable={false}
-            onChange={(params: any) =>
-              navigate(genProcessPath(section, code, undefined, params.value[0].id))
+          <Select
+            label="Status filter"
+            hideLabel
+            onChange={(event: any) =>
+              navigate(genProcessPath(section, code, undefined, event.target.value))
             }
-          />
+          >
+            <option value="">Alle behandlinger</option>
+            <option value={EProcessStatus.IN_PROGRESS}>Behandlinger under arbeid</option>
+            <option value={EProcessStatus.NEEDS_REVISION}>Trenger revidering</option>
+            <option value={EProcessStatus.COMPLETED}>Ferdig dokumenterte behandlinger</option>
+          </Select>
         </div>
         <div>
           <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>

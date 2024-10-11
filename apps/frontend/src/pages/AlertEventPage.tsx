@@ -1,9 +1,9 @@
 import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { Select } from '@navikt/ds-react'
 import { KIND } from 'baseui/button'
 import { StatefulMenu } from 'baseui/menu'
 import { Pagination } from 'baseui/pagination'
 import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulSelect } from 'baseui/select'
 import { SORT_DIRECTION } from 'baseui/table'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
 import moment from 'moment'
@@ -176,13 +176,24 @@ export const AlertEventPage = () => {
       <div className="w-full flex mb-1.5">
         <div className="w-1/2 flex justify-start items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
-          <StatefulSelect
-            options={Object.values(EAlertEventType).map((t: EAlertEventType) => ({
-              id: t,
-              label: tekster[t],
-            }))}
-            onChange={(params) => setType(params?.option?.id as EAlertEventType)}
-          />
+          <Select
+            label="Alert type"
+            hideLabel
+            onChange={(event) => {
+              if (event.target.value !== '') {
+                setType(event.target.value as EAlertEventType)
+              } else {
+                setType(undefined)
+              }
+            }}
+          >
+            <option value="">velg type</option>
+            {Object.values(EAlertEventType).map((t: EAlertEventType) => (
+              <option key={t} value={t}>
+                {tekster[t]}
+              </option>
+            ))}
+          </Select>
         </div>
 
         <div className="w-1/2 flex justify-end items-center">
