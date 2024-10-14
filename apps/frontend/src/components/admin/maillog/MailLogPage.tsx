@@ -1,10 +1,9 @@
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Dropdown } from '@navikt/ds-react'
 import axios from 'axios'
-import { Button, KIND } from 'baseui/button'
 import { Card } from 'baseui/card'
-import { TriangleDown } from 'baseui/icon'
-import { StatefulMenu } from 'baseui/menu'
 import { Pagination } from 'baseui/pagination'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { HeadingMedium, HeadingXSmall } from 'baseui/typography'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
@@ -99,25 +98,25 @@ export const MailLogPage = () => {
       })}
 
       <div className="flex justify-between mt-4">
-        <StatefulPopover
-          content={({ close }) => (
-            <StatefulMenu
-              items={[5, 10, 20, 50, 100].map((items) => ({ label: items }))}
-              onItemSelect={({ item }) => {
-                setLimit(item.label)
-                close()
-              }}
-              overrides={{
-                List: {
-                  style: { height: '150px', width: '100px' },
-                },
-              }}
-            />
-          )}
-          placement={PLACEMENT.bottom}
-        >
-          <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>{`${limit} Rader`}</Button>
-        </StatefulPopover>
+        <Dropdown>
+          <Button variant="tertiary" as={Dropdown.Toggle}>
+            {`${limit} Rader`}{' '}
+            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+          </Button>
+          <Dropdown.Menu className="w-fit">
+            <Dropdown.Menu.List>
+              {[5, 10, 20, 50, 100].map((pageSize: number) => (
+                <Dropdown.Menu.List.Item
+                  key={'pageSize_' + pageSize}
+                  as={Button}
+                  onClick={() => setLimit(pageSize)}
+                >
+                  {pageSize}
+                </Dropdown.Menu.List.Item>
+              ))}
+            </Dropdown.Menu.List>
+          </Dropdown.Menu>
+        </Dropdown>
         <Pagination
           currentPage={page}
           numPages={log.pages}

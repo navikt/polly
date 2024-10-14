@@ -1,12 +1,12 @@
 import { faChartBar, faChartPie, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Tooltip } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { LabelLarge } from 'baseui/typography'
 import * as _ from 'lodash'
 import { Fragment, useReducer, useState } from 'react'
 import { theme } from '../../util'
 import { hideBorder, marginAll } from '../common/Style'
-import {Button, Tooltip} from "@navikt/ds-react";
 
 const cursor = { cursor: 'pointer' }
 
@@ -143,7 +143,7 @@ const Visualization = (props: TVisualizationProps) => {
 
   return (
     <div className="relative">
-      <Button variant="tertiary-neutral" size="xsmall" onClick={toggle} >
+      <Button variant="tertiary-neutral" size="xsmall" onClick={toggle}>
         <Tooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
           <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
         </Tooltip>
@@ -209,8 +209,6 @@ const Visualization = (props: TVisualizationProps) => {
           </div>
         </div>
       </Card>
-
-
     </div>
   )
 }
@@ -224,43 +222,49 @@ interface IBarChartProps {
 
 const BarChart = (props: IBarChartProps) => {
   const { data, size, hover, setHover } = props
-  const max = _.max(data.map((data) => data.sizeFraction))!
-  const maxVal = _.max(data.map((data) => data.size))!
+  const max = _.max(data.map((data) => data.sizeFraction))
+  const maxVal = _.max(data.map((data) => data.size))
 
   return (
-    <svg
-      height={size * 3}
-      width={size * 3}
-      viewBox="0 0 1150 1150"
-      style={{ transform: 'scaleY(-1)' }}
-    >
-      <style>{'text {' + 'transform: scaleY(-1);' + 'font: italic 40px sans-serif;' + '}'}</style>
-      <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="black" />
-      <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="black" />
+    <>
+      {max && maxVal && (
+        <svg
+          height={size * 3}
+          width={size * 3}
+          viewBox="0 0 1150 1150"
+          style={{ transform: 'scaleY(-1)' }}
+        >
+          <style>
+            {'text {' + 'transform: scaleY(-1);' + 'font: italic 40px sans-serif;' + '}'}
+          </style>
+          <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="black" />
+          <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="black" />
 
-      {_.range(0, 11).map((i) => (
-        <Fragment key={i}>
-          <g transform={`translate(0 ${105 + i * 100})`}>
-            <text>{(maxVal * i * 0.1).toFixed(0)}</text>
-          </g>
-          <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="black" />
-        </Fragment>
-      ))}
+          {_.range(0, 11).map((i) => (
+            <Fragment key={i}>
+              <g transform={`translate(0 ${105 + i * 100})`}>
+                <text>{(maxVal * i * 0.1).toFixed(0)}</text>
+              </g>
+              <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="black" />
+            </Fragment>
+          ))}
 
-      {data.map((dataItem: IChartDataExpanded, index: number) => (
-        <Bar
-          key={index}
-          idx={index}
-          size={dataItem.sizeFraction * (1 / max)}
-          totalSize={data.length}
-          start={dataItem.start}
-          color={dataItem.color}
-          hover={index === hover}
-          onMouseOver={() => setHover(index)}
-          onClick={dataItem.onClick}
-        />
-      ))}
-    </svg>
+          {data.map((dataItem: IChartDataExpanded, index: number) => (
+            <Bar
+              key={index}
+              idx={index}
+              size={dataItem.sizeFraction * (1 / max)}
+              totalSize={data.length}
+              start={dataItem.start}
+              color={dataItem.color}
+              hover={index === hover}
+              onMouseOver={() => setHover(index)}
+              onClick={dataItem.onClick}
+            />
+          ))}
+        </svg>
+      )}
+    </>
   )
 }
 

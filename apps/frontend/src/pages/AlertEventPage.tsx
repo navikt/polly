@@ -1,9 +1,7 @@
 import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { Select } from '@navikt/ds-react'
-import { KIND } from 'baseui/button'
-import { StatefulMenu } from 'baseui/menu'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Dropdown, Select } from '@navikt/ds-react'
 import { Pagination } from 'baseui/pagination'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { SORT_DIRECTION } from 'baseui/table'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
 import moment from 'moment'
@@ -11,7 +9,6 @@ import { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 import { getAlertEvents } from '../api/AlertApi'
 import { Sensitivity } from '../components/InformationType/Sensitivity'
-import Button from '../components/common/Button'
 import { ObjectLink } from '../components/common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
 import {
@@ -141,9 +138,9 @@ export const AlertEventPage = () => {
 
   const levelButton = (text: string, newLevel?: EAlertEventLevel) => (
     <Button
+      className="mr-2.5"
       type="button"
-      marginRight
-      kind={state.level === newLevel ? 'primary' : 'outline'}
+      variant={state.level === newLevel ? 'primary' : 'secondary'}
       size="xsmall"
       onClick={() => setLevel(newLevel)}
     >
@@ -159,16 +156,15 @@ export const AlertEventPage = () => {
           <div className="flex items-center">
             <LabelMedium>Filter: </LabelMedium>
             <Button
-              kind="secondary"
+              variant="secondary"
               size="xsmall"
-              marginLeft
-              marginRight
-              iconEnd={faTimes}
+              className="mx-2.5"
               onClick={() => dispatch({ type: 'OBJECT_FILTER' })}
             >
               {state.processId && 'Behandling'}
               {state.informationTypeId && 'Opplysningstype'}
               {state.disclosureId && 'Utlevering'}
+              <FontAwesomeIcon icon={faTimes} style={{ marginLeft: '.5rem' }} />
             </Button>
           </div>
         )}
@@ -260,27 +256,25 @@ export const AlertEventPage = () => {
         ))}
       </Table>
       <div className="flex justify-between mt-4">
-        <StatefulPopover
-          placement={PLACEMENT.bottom}
-          content={({ close }) => (
-            <StatefulMenu
-              items={[5, 10, 20, 50, 100].map((i) => ({ label: i }))}
-              onItemSelect={({ item }) => {
-                setLimit(item.label)
-                close()
-              }}
-              overrides={{
-                List: {
-                  style: { height: '150px', width: '100px' },
-                },
-              }}
-            />
-          )}
-        >
-          <div>
-            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${state.limit} Rader`}</Button>
-          </div>
-        </StatefulPopover>
+        <Dropdown>
+          <Button variant="tertiary" as={Dropdown.Toggle}>
+            {`${state.limit} Rader`}{' '}
+            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+          </Button>
+          <Dropdown.Menu className="w-fit">
+            <Dropdown.Menu.List>
+              {[5, 10, 20, 50, 100].map((pageSize: number) => (
+                <Dropdown.Menu.List.Item
+                  key={'pageSize_' + pageSize}
+                  as={Button}
+                  onClick={() => setLimit(pageSize)}
+                >
+                  {pageSize}
+                </Dropdown.Menu.List.Item>
+              ))}
+            </Dropdown.Menu.List>
+          </Dropdown.Menu>
+        </Dropdown>
         <Pagination
           currentPage={state.page}
           numPages={state.events.pages}

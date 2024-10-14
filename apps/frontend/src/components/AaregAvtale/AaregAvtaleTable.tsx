@@ -1,15 +1,12 @@
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Dropdown } from '@navikt/ds-react'
 import { Panel, StatelessAccordion } from 'baseui/accordion'
-import { KIND } from 'baseui/button'
-import { StatefulMenu } from 'baseui/menu'
 import { Pagination } from 'baseui/pagination'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { HeadingLarge, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { IAaregAvtale } from '../../constants'
 import { theme } from '../../util'
-import Button from '../common/Button'
 import DataText from '../common/DataText'
 import AAregHjemmelDataText from './AAregHjemmelDataText'
 
@@ -74,12 +71,12 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
         expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
       >
         {sortedAaregAvtale &&
-          sortedAaregAvtale.map((aaregisterAvtale) => {
+          sortedAaregAvtale.map((aaregisterAvtale, index) => {
             const expanded: boolean = selectedAaregAvtale === aaregisterAvtale.avtalenummer
 
             return (
               <Panel
-                key={aaregisterAvtale.avtalenummer}
+                key={aaregisterAvtale.avtalenummer + '_' + index}
                 title={
                   <div className="w-full">
                     <LabelLarge color={theme.colors.primary}>
@@ -176,27 +173,26 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
       </StatelessAccordion>
 
       <div className="flex justify-between mt-1">
-        <StatefulPopover
-          placement={PLACEMENT.bottom}
-          content={({ close }) => (
-            <StatefulMenu
-              items={[5, 10, 20, 50, 100].map((item: number) => ({ label: item }))}
-              onItemSelect={({ item }) => {
-                setPageLimit(item.label)
-                close()
-              }}
-              overrides={{
-                List: {
-                  style: { height: '150px', width: '100px' },
-                },
-              }}
-            />
-          )}
-        >
-          <div>
-            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${pageLimit} Rader`}</Button>
-          </div>
-        </StatefulPopover>
+        <Dropdown>
+          <Button variant="tertiary" as={Dropdown.Toggle}>
+            {`${pageLimit} Rader`}{' '}
+            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+          </Button>
+          <Dropdown.Menu className="w-fit">
+            <Dropdown.Menu.List>
+              {[5, 10, 20, 50, 100].map((pageSize: number) => (
+                <Dropdown.Menu.List.Item
+                  key={'pageSize_' + pageSize}
+                  as={Button}
+                  onClick={() => setPageLimit(pageSize)}
+                >
+                  {pageSize}
+                </Dropdown.Menu.List.Item>
+              ))}
+            </Dropdown.Menu.List>
+          </Dropdown.Menu>
+        </Dropdown>
+
         <Pagination
           currentPage={page}
           numPages={Math.ceil(aaregAvtaler.length / pageLimit)}
