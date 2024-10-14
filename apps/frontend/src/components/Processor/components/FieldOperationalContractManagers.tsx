@@ -14,9 +14,7 @@ const FieldOperationalContractManagers = (props: TFieldOperationalContractManage
   const { formikBag } = props
   const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] =
     useTeamResourceSearch()
-  const [resources, _setResources] = useState(
-    props.resources ? props.resources : new Map<string, string>()
-  )
+  const [resources] = useState(props.resources ? props.resources : new Map<string, string>())
 
   useEffect(() => {
     ;(async () => {
