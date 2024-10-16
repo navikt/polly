@@ -1,18 +1,16 @@
-import { faExclamationCircle, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button } from '@navikt/ds-react'
+import { Button, Detail } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input'
 import { KIND as NKIND, Notification } from 'baseui/notification'
 import { Select, TYPE, Value } from 'baseui/select'
-import { Tooltip } from 'baseui/tooltip'
 import { LabelMedium } from 'baseui/typography'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import { useState } from 'react'
 import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
 import { EListName, ESensitivityLevel, codelist } from '../../../service/Codelist'
-import { theme } from '../../../util'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { paddingZero } from '../../common/Style'
 import { legalBasisSchema } from '../../common/schema'
@@ -34,24 +32,13 @@ const Error = (props: { fieldName: string }) => (
 )
 
 const renderCardHeader = (text: string, sensitivityLevel: ESensitivityLevel) => (
-  <div className="flex">
-    <Tooltip
-      content={
-        sensitivityLevel === ESensitivityLevel.ART6
-          ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
-          : 'Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'
-      }
-    >
-      <Button type="button" variant="tertiary-neutral" size="small">
-        <LabelMedium>{text}</LabelMedium>
-        <FontAwesomeIcon
-          style={{ marginLeft: '.25rem' }}
-          icon={faExclamationCircle}
-          color={theme.colors.primary300}
-          size="sm"
-        />
-      </Button>
-    </Tooltip>
+  <div>
+    <LabelMedium>{text}</LabelMedium>
+    <Detail>
+      {sensitivityLevel === ESensitivityLevel.ART6
+        ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
+        : 'Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'}
+    </Detail>
   </div>
 )
 
