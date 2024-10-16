@@ -111,20 +111,24 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
     values: IInformationtypeFormValues,
     actions: FormikHelpers<IInformationtypeFormValues>
   ): Promise<void> => {
-    const searchResults: IInformationType[] = (
-      await searchInformationType(values.name!)
-    ).content.filter(
-      (informationType) =>
-        informationType.name.toLowerCase() === values.name?.toLowerCase() &&
-        formInitialValues.id !== informationType.id
-    )
-    if (searchResults.length > 0) {
-      actions.setFieldError('name', 'Informasjonstypen eksisterer allerede')
-    } else {
-      submit(values)
-      actions.setSubmitting(false)
+    if (values.name) {
+      const searchResults: IInformationType[] = (
+        await searchInformationType(values.name)
+      ).content.filter(
+        (informationType) =>
+          informationType.name.toLowerCase() === values.name?.toLowerCase() &&
+          formInitialValues.id !== informationType.id
+      )
+
+      if (searchResults.length > 0) {
+        actions.setFieldError('name', 'Informasjonstypen eksisterer allerede')
+      } else {
+        submit(values)
+        actions.setSubmitting(false)
+      }
     }
   }
+
   return (
     <Fragment>
       <Formik

@@ -156,9 +156,10 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
           initialValues={
             {
               document: addDefaultDocument ? defaultDoc : undefined,
-              informationTypes: addDefaultDocument
-                ? extractInfoTypes(defaultDoc!, process.policies)
-                : [],
+              informationTypes:
+                addDefaultDocument && defaultDoc
+                  ? extractInfoTypes(defaultDoc, process.policies)
+                  : [],
               process: process,
               linkDocumentToPolicies: !addDefaultDocument,
             } as IAddDocumentToProcessFormValues

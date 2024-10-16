@@ -51,8 +51,8 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
               }}
               submit={(values: ILegalBasisFormValues) => {
                 if (!values) return
-                if (selectedLegalBasis) {
-                  arrayHelpers.replace(selectedLegalBasisIndex!, values)
+                if (selectedLegalBasis && selectedLegalBasisIndex !== undefined) {
+                  arrayHelpers.replace(selectedLegalBasisIndex, values)
                   setSelectedLegalBasis(undefined)
                 } else {
                   arrayHelpers.push(values)

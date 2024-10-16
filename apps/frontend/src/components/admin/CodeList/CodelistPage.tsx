@@ -104,17 +104,19 @@ const CodeListPage = () => {
               <CodeListTable tableData={currentCodelist || []} refresh={update} />
             </div>
           )}
-          <CreateCodeListModal
-            title="Ny kode"
-            list={listname!}
-            isOpen={createCodeListModal}
-            errorOnCreate={errorOnResponse}
-            onClose={() => {
-              setCreateCodeListModal(false)
-              setErrorOnResponse(null)
-            }}
-            submit={handleCreateCodelist}
-          />
+          {listname && (
+            <CreateCodeListModal
+              title="Ny kode"
+              list={listname}
+              isOpen={createCodeListModal}
+              errorOnCreate={errorOnResponse}
+              onClose={() => {
+                setCreateCodeListModal(false)
+                setErrorOnResponse(null)
+              }}
+              submit={handleCreateCodelist}
+            />
+          )}
         </div>
       )}
     </>

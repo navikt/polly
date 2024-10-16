@@ -358,7 +358,7 @@ const ModalProcess = ({
                           {!showResponsibleSelect && (
                             <RadioBoolButton
                               value={showResponsibleSelect}
-                              setValue={(value) => setShowResponsibleSelect(value!)}
+                              setValue={(value) => setShowResponsibleSelect(!!value)}
                               omitUndefined
                             />
                           )}

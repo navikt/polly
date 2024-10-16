@@ -24,7 +24,12 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   const { description } = input
   const islegalBasis = legalBasisForm && legalBasisForm.gdpr
   const gdpr = legalBasis ? legalBasis.gdpr.code : islegalBasis
-  const nationalLaw = legalBasis ? legalBasis?.nationalLaw?.code : legalBasisForm!.nationalLaw
+  const nationalLaw =
+    legalBasis && legalBasis.nationalLaw
+      ? legalBasis.nationalLaw.code
+      : legalBasisForm && legalBasisForm.nationalLaw
+        ? legalBasisForm.nationalLaw
+        : ''
 
   const gdprDisplay: string | undefined =
     gdpr && codelist.getShortname(EListName.GDPR_ARTICLE, gdpr)
@@ -35,7 +40,7 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
     EListName.NATIONAL_LAW,
     nationalLaw
   )
-    ? legalBasisLinkProcessor(nationalLaw!, description)
+    ? legalBasisLinkProcessor(nationalLaw, description)
     : description
 
   return (

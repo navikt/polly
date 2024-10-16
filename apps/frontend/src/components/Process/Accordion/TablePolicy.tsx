@@ -63,8 +63,10 @@ const TablePolicy = ({
 
   useEffect(() => {
     ;(async () => {
-      const allIds = _.uniq(process.policies.flatMap((p) => p.documentIds)).filter((id) => !!id)
-      const docMap: TDocs = (await Promise.all(allIds.map((id) => getDocument(id!)))).reduce(
+      const allIds = _.uniq(process.policies.flatMap((p) => p.documentIds)).filter(
+        (id) => id !== undefined
+      )
+      const docMap: TDocs = (await Promise.all(allIds.map((id) => getDocument(id)))).reduce(
         (acc: TDocs, doc) => {
           acc[doc.id] = doc
           return acc

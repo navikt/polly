@@ -32,8 +32,14 @@ export const AuditView = (props: TAuditViewProps) => {
   const [open, setOpen] = useState(initialOpen(auditLog, auditId))
 
   useEffect(() => {
-    if (auditId && auditLog && refs[auditId] && auditId !== auditLog.audits[0].id) {
-      refs[auditId].current!.scrollIntoView({ block: 'start' })
+    if (
+      auditId &&
+      auditLog &&
+      refs[auditId] &&
+      auditId !== auditLog.audits[0].id &&
+      refs[auditId].current
+    ) {
+      refs[auditId].current.scrollIntoView({ block: 'start' })
     }
     setOpen(initialOpen(auditLog, auditId))
   }, [auditId, auditLog])
@@ -55,11 +61,13 @@ export const AuditView = (props: TAuditViewProps) => {
               <AuditLabel label="Versjoneringer:">{auditLog?.audits.length}</AuditLabel>
             </div>
             <div className="flex">
-              <Button variant="tertiary" onClick={() => setOpen(auditLog!.audits.map(() => true))}>
-                Åpne alle
-              </Button>
-              {newestAudit?.action !== EAuditAction.DELETE && (
-                <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table} audit={newestAudit}>
+              {auditLog && (
+                <Button variant="tertiary" onClick={() => setOpen(auditLog.audits.map(() => true))}>
+                  Åpne alle
+                </Button>
+              )}
+              {newestAudit && newestAudit.action !== EAuditAction.DELETE && (
+                <ObjectLink id={newestAudit.tableId} type={newestAudit.table} audit={newestAudit}>
                   <Button variant="tertiary">Vis bruk</Button>
                 </ObjectLink>
               )}

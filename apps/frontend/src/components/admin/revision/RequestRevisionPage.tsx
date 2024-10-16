@@ -236,7 +236,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     <Combobox
                       mapOptionToString={(option) => option.label}
                       options={departments}
-                      value={formikBag.values.department!}
+                      value={formikBag.values.department || ''}
                       onChange={(code: string) => formikBag.setFieldValue('department', code)}
                     />
                   </div>
@@ -251,7 +251,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     <Combobox
                       mapOptionToString={(option: IProductArea) => option.name}
                       options={areas}
-                      value={formikBag.values.productAreaId!}
+                      value={formikBag.values.productAreaId || ''}
                       onChange={(code: string) => formikBag.setFieldValue('productAreaId', code)}
                     />
                   </div>

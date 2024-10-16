@@ -96,11 +96,11 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
 
   return (
     <>
-      {categoryNotInUse && (
+      {categoryNotInUse && category && (
         <ParagraphLarge marginBottom={theme.sizing.scale1200}>
           <FontAwesomeIcon icon={faExclamationTriangle} color={theme.colors.negative400} />
           <div className="mr-1.5 inline" />
-          {`Kategori ${codelist.getShortname(EListName.CATEGORY, category!)} er ikke i bruk`}
+          {`Kategori ${codelist.getShortname(EListName.CATEGORY, category)} er ikke i bruk`}
         </ParagraphLarge>
       )}
 

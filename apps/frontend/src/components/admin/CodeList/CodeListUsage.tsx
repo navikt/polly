@@ -170,8 +170,8 @@ export const Usage = (props: IUsageProps) => {
   }, [usage])
 
   const replace = async (): Promise<void> => {
-    if (newValue) {
-      await replaceCodelistUsage(usage!.listName, usage!.code, newValue).then(() => refresh())
+    if (newValue && usage) {
+      await replaceCodelistUsage(usage.listName, usage.code, newValue).then(() => refresh())
     }
   }
 

@@ -271,7 +271,7 @@ const subjectCategoryExists = (
   context: yup.TestContext<any>
 ) => {
   return subjectCategoryExistsGen(
-    policy.informationType!,
+    policy.informationType as IInformationTypeShort,
     policy.subjectCategories,
     path,
     context,
@@ -353,7 +353,7 @@ export const policySchema: () => yup.ObjectSchema<IPolicyFormValues> = () =>
           const { parent, path } = this
           return subjectCategoryExists(path, parent, context)
         },
-      }), 
+      }),
     legalBasesUse: yup
       .mixed<ELegalBasesUse>()
       .oneOf(Object.values(ELegalBasesUse))

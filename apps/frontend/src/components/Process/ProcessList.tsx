@@ -336,7 +336,9 @@ const ProcessList = ({
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: ELegalBasesUse.INHERITED_FROM_PROCESS,
-        documentIds: !formValues.linkDocumentToPolicies ? [] : [formValues.document!.id],
+        documentIds: !formValues.linkDocumentToPolicies
+          ? []
+          : [formValues.document ? formValues.document.id : ''],
         otherPolicies: [],
       }))
       await createPolicies(policies)
@@ -480,13 +482,17 @@ const ProcessList = ({
                   : undefined,
               subDepartments:
                 section === ESection.subdepartment
-                  ? [codelist.getCode(EListName.SUB_DEPARTMENT, code)!]
+                  ? [codelist.getCode(EListName.SUB_DEPARTMENT, code) as ICode]
                   : [],
               products:
-                section === ESection.system ? [codelist.getCode(EListName.SYSTEM, code)!] : [],
+                section === ESection.system
+                  ? [codelist.getCode(EListName.SYSTEM, code) as ICode]
+                  : [],
               productTeams: section === ESection.team ? [code] : [],
               disclosureDispatchers:
-                section === ESection.system ? [codelist.getCode(EListName.SYSTEM, code)!] : [],
+                section === ESection.system
+                  ? [codelist.getCode(EListName.SYSTEM, code) as ICode]
+                  : [],
             },
           })}
         />
