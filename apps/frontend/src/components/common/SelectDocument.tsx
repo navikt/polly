@@ -1,6 +1,6 @@
 import { Tag, VARIANT } from 'baseui/tag'
 import { FormikProps } from 'formik'
-import { searchDocuments } from '../../api'
+import { searchDocuments } from '../../api/GetAllApi'
 import { IDocument } from '../../constants'
 import CustomSearchSelect from './AsyncSelectComponents'
 

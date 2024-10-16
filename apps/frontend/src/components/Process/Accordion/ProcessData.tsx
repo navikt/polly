@@ -2,7 +2,7 @@ import { Tooltip } from '@navikt/ds-react'
 import { ProgressBar } from 'baseui/progress-bar'
 import { isNil, sum, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
-import { getResourceById } from '../../../api'
+import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import {
   EObjectType,

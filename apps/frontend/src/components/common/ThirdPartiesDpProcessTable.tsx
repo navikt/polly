@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
-import { getTeam } from '../../api'
+import { getTeam } from '../../api/GetAllApi'
 import { IDpProcess, ITeam, dpProcessSort } from '../../constants'
 import { useTable } from '../../util/hooks'
 import RouteLink from './RouteLink'

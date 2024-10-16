@@ -18,7 +18,7 @@ import {
   FormikProps,
 } from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getDefaultProcessDocument, searchDocuments } from '../../../api'
+import { getDefaultProcessDocument, searchDocuments } from '../../../api/GetAllApi'
 import {
   IAddDocumentToProcessFormValues,
   IDocument,

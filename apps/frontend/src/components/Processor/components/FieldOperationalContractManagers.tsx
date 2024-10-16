@@ -1,7 +1,7 @@
 import { OnChangeParams, Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getResourcesByIds, useTeamResourceSearch } from '../../../api'
+import { getResourcesByIds, useTeamResourceSearch } from '../../../api/GetAllApi'
 import { IProcessorFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 

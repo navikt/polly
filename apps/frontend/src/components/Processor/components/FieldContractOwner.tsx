@@ -1,7 +1,7 @@
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getResourceById, useTeamResourceSearch } from '../../../api'
+import { getResourceById, useTeamResourceSearch } from '../../../api/GetAllApi'
 import { IProcessorFormValues } from '../../../constants'
 
 interface IProps {

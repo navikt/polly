@@ -1,6 +1,6 @@
 import { Button, Heading, Loader, Select, Textarea } from '@navikt/ds-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { getDocument, getDocumentByPageAndPageSize } from '../../../api'
+import { getDocument, getDocumentByPageAndPageSize } from '../../../api/GetAllApi'
 import { getSettings, writeSettings } from '../../../api/SettingsApi'
 import { IDocument, ISettings } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'

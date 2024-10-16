@@ -9,10 +9,10 @@ import {
   getDocumentsForInformationType,
   getInformationType,
   getPoliciesForInformationType,
-} from '../api'
+} from '../api/GetAllApi'
 import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
-import Button from '../components/common/Button'
+import Button from '../components/common/Button/CustomButton'
 import { Spinner } from '../components/common/Spinner'
 import {
   ICategoryUsage,

@@ -3,13 +3,13 @@ import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import { getResourceById } from '../../api'
 import {
   deleteDpProcess,
   dpProcessToFormValues,
   getDpProcess,
   updateDpProcess,
 } from '../../api/DpProcessApi'
+import { getResourceById } from '../../api/GetAllApi'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
 import { IDpProcess, IDpProcessFormValues, IProcessor } from '../../constants'
 import { ampli } from '../../service/Amplitude'
@@ -17,7 +17,7 @@ import { EListName, codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
-import Button from '../common/Button'
+import Button from '../common/Button/CustomButton'
 import DataText from '../common/DataText'
 import { DotTag, DotTags } from '../common/DotTag'
 import { ActiveIndicator } from '../common/Durations'

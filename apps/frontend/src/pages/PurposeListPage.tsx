@@ -7,9 +7,9 @@ import {
   convertProcessToFormValues,
   createProcess,
   updateDisclosure,
-} from '../api'
+} from '../api/GetAllApi'
 import ModalProcess from '../components/Process/Accordion/ModalProcess'
-import Button from '../components/common/Button'
+import Button from '../components/common/Button/CustomButton'
 import { IProcessFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'

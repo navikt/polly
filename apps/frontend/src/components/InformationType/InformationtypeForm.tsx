@@ -16,7 +16,7 @@ import {
   FormikProps,
 } from 'formik'
 import { ChangeEvent, Fragment, KeyboardEvent, RefObject, useEffect, useRef, useState } from 'react'
-import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
+import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api/GetAllApi'
 import { IInformationType, IInformationtypeFormValues } from '../../constants'
 import { EListName, codelist } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'

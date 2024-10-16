@@ -11,10 +11,10 @@ import {
   getDocument,
   getDocumentByPageAndPageSize,
   getProcessesFor,
-} from '../api'
+} from '../api/GetAllApi'
 import { AuditButton } from '../components/admin/audit/AuditButton'
 import AlphabeticList from '../components/common/AlphabeticList'
-import Button from '../components/common/Button'
+import Button from '../components/common/Button/CustomButton'
 import { CustomizedTabs } from '../components/common/CustomizedTabs'
 import { tabOverride } from '../components/common/Style'
 import DocumentMetadata from '../components/document/DocumentMetadata'

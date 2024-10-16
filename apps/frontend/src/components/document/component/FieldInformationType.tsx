@@ -1,7 +1,7 @@
 import { PLACEMENT } from 'baseui/popover'
 import { OnChangeParams, Select, TYPE } from 'baseui/select'
 import { ChangeEvent, useState } from 'react'
-import { useInfoTypeSearch } from '../../../api'
+import { useInfoTypeSearch } from '../../../api/GetAllApi'
 import { IDocumentInfoTypeUse, IInformationTypeShort } from '../../../constants'
 
 const FieldInformationType = (props: {

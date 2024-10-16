@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Modal, Tooltip } from '@navikt/ds-react'
 import _ from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
-import { convertPolicyToFormValues, getDocument } from '../../../api'
 import { getAlertForProcess } from '../../../api/AlertApi'
+import { convertPolicyToFormValues, getDocument } from '../../../api/GetAllApi'
 import {
   IDocument,
   IPolicy,

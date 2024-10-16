@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { HeadingMedium, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getAll } from '../api'
+import { getAll } from '../api/GetAllApi'
 import {
   convertProcessorToFormValues,
   createProcessor,
@@ -11,7 +11,7 @@ import {
 } from '../api/ProcessorApi'
 import ProcessorModal from '../components/Processor/ProcessorModal'
 import AlphabeticList from '../components/common/AlphabeticList'
-import Button from '../components/common/Button'
+import Button from '../components/common/Button/CustomButton'
 import { Spinner } from '../components/common/Spinner'
 import { IProcessor, IProcessorFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'

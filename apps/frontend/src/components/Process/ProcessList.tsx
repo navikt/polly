@@ -22,7 +22,7 @@ import {
   updateDisclosure,
   updatePolicy,
   updateProcess,
-} from '../../api'
+} from '../../api/GetAllApi'
 import {
   ELegalBasesUse,
   EProcessStatus,
@@ -39,7 +39,7 @@ import { EListName, ICode, codelist } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme, useAwait } from '../../util'
 import { env } from '../../util/env'
-import Button from '../common/Button'
+import Button from '../common/Button/CustomButton'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 

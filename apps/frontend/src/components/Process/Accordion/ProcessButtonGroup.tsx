@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { EProcessStatus, IProcessShort } from '../../../constants'
 import { env } from '../../../util/env'
 import { AuditButton } from '../../admin/audit/AuditButton'
-import Button from '../../common/Button'
+import Button from '../../common/Button/CustomButton'
 import { InformationTypeRef } from './AccordionTitle'
 
 interface IProcessButtonGroupProps {

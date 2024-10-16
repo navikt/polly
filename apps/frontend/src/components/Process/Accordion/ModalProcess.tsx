@@ -14,7 +14,7 @@ import {
   FormikProps,
 } from 'formik'
 import { ChangeEvent, Key, useEffect, useState } from 'react'
-import { getAll, getDisclosuresByRecipient } from '../../../api'
+import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'

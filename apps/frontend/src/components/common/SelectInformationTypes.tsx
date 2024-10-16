@@ -1,5 +1,5 @@
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { searchInformationType } from '../../api'
+import { searchInformationType } from '../../api/GetAllApi'
 import { IDisclosureFormValues, IInformationTypeShort } from '../../constants'
 import CustomSearchSelect from './AsyncSelectComponents'
 import { renderTagList } from './TagList'

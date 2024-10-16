@@ -1,6 +1,6 @@
 import { OnChangeParams, Select, TYPE } from 'baseui/select'
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { getProcessesByPurpose, searchProcess } from '../../api'
+import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IPageResponse, IProcess } from '../../constants'
 import { EListName, ICode, codelist } from '../../service/Codelist'
 import { useDebouncedState } from '../../util'

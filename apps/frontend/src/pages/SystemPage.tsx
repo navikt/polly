@@ -1,6 +1,6 @@
 import { Tabs } from '@navikt/ds-react'
 import { useParams } from 'react-router-dom'
-import { getInformationTypesBy } from '../api'
+import { getInformationTypesBy } from '../api/GetAllApi'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'

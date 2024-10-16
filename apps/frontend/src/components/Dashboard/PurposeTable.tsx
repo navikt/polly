@@ -5,7 +5,7 @@ import {
   getProcessByStateAndStatus,
   getProcessByStateAndStatusForDepartment,
   getProcessByStateAndStatusForProductArea,
-} from '../../api'
+} from '../../api/GetAllApi'
 import { EProcessField, EProcessState, EProcessStatusFilter, IProcessShort } from '../../constants'
 import { useQueryParam } from '../../util/hooks'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'

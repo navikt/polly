@@ -4,14 +4,14 @@ import { Plus } from 'baseui/icon'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import {
   IDisclosureSummary,
   createDisclosure,
   getAll,
   getDisclosureSummaries,
   getProcess,
-} from '../api'
-import { searchAaregAvtale } from '../api/AaregAvtaleApi'
+} from '../api/GetAllApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { ObjectLink } from '../components/common/RouteLink'

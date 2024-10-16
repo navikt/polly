@@ -6,7 +6,7 @@ import { OnChangeParams, Select, Value } from 'baseui/select'
 import { LabelMedium, LabelSmall } from 'baseui/typography'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
-import { getInformationTypesBy } from '../../../api'
+import { getInformationTypesBy } from '../../../api/GetAllApi'
 import {
   IAddDocumentToProcessFormValues,
   IDocumentInfoTypeUse,
@@ -18,7 +18,7 @@ import { EListName, ICode, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
-import Button from '../../common/Button'
+import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
 

@@ -10,10 +10,10 @@ import {
   getDocumentsForInformationType,
   getInformationType,
   getPoliciesForInformationType,
-} from '../../api'
+} from '../../api/GetAllApi'
 import { IInformationType } from '../../constants'
 import { AuditButton } from '../admin/audit/AuditButton'
-import Button from '../common/Button'
+import Button from '../common/Button/CustomButton'
 import RouteLink from '../common/RouteLink'
 
 interface IDeleteModalProps {

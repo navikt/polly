@@ -1,5 +1,5 @@
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { getProcessesByPurpose, searchProcess } from '../../api'
+import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IDisclosureFormValues, IProcess, IProcessShort } from '../../constants'
 import { EListName, ICode, codelist } from '../../service/Codelist'
 import { CustomSearchSelect } from './AsyncSelectComponents'

@@ -1,7 +1,7 @@
 import { Tag } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
 import { useEffect, useState } from 'react'
-import { getResourceById } from '../../api'
+import { getResourceById } from '../../api/GetAllApi'
 import { IDpProcess, IDpProcessWithEmail, dpProcessSort } from '../../constants'
 import { useTable } from '../../util/hooks'
 import RouteLink from '../common/RouteLink'

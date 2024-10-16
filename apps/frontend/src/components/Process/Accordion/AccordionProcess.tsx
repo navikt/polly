@@ -11,7 +11,7 @@ import {
   convertProcessToFormValues,
   getDisclosuresByProcessId,
   getResourceById,
-} from '../../../api'
+} from '../../../api/GetAllApi'
 import { RequestRevisionPage } from '../../../components/admin/revision/RequestRevisionPage'
 import {
   ELegalBasesUse,
@@ -29,7 +29,7 @@ import { ICode } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
-import Button from '../../common/Button'
+import Button from '../../common/Button/CustomButton'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { AddDocumentModal } from './AddDocumentModal'

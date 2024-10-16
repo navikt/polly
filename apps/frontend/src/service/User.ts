@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { getUserInfo } from '../api'
+import { getUserInfo } from '../api/GetAllApi'
 import { IUserInfo } from '../constants'
 import { tekster } from '../util/codeToFineText'
 

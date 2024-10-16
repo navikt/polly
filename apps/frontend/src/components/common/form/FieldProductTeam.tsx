@@ -1,7 +1,7 @@
 import { Option, Select, Value } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps } from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getTeam, mapTeamToOption, useTeamSearch } from '../../../api'
+import { getTeam, mapTeamToOption, useTeamSearch } from '../../../api/GetAllApi'
 import { Error } from '../ModalSchema'
 import { renderTagList } from '../TagList'
 

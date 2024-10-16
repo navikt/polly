@@ -4,7 +4,7 @@ import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api'
+import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api/GetAllApi'
 import {
   convertProcessorToFormValues,
   deleteProcessor,
@@ -25,7 +25,7 @@ import { user } from '../../service/User'
 import { theme } from '../../util'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
-import Button from '../common/Button'
+import Button from '../common/Button/CustomButton'
 import { boolToText } from '../common/Radio'
 import { Spinner } from '../common/Spinner'
 import TextWithLabel from '../common/TextWithLabel'

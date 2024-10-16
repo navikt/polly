@@ -1,6 +1,6 @@
 import { FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import { getAll } from '../../../api'
+import { getAll } from '../../../api/GetAllApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { IDpProcessFormValues, IProcessor } from '../../../constants'
 import BoolField from '../../Process/common/BoolField'

@@ -13,7 +13,7 @@ import {
   FormikProps,
 } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
-import { getInformationTypesShort } from '../../../api'
+import { getInformationTypesShort } from '../../../api/GetAllApi'
 import { ELegalBasesUse, IInformationTypeShort, IPolicyFormValues } from '../../../constants'
 import { EListName, codelist } from '../../../service/Codelist'
 import { disableEnter } from '../../../util/helper-functions'

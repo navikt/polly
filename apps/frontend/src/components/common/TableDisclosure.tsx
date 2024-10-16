@@ -4,8 +4,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { convertDisclosureToFormValues } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
+import { convertDisclosureToFormValues } from '../../api/GetAllApi'
 import {
   IDisclosure,
   IDisclosureAlert,
@@ -15,7 +15,7 @@ import {
 import { canViewAlerts } from '../../pages/AlertEventPage'
 import { useTable } from '../../util/hooks'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
-import Button from './Button'
+import Button from './Button/CustomButton'
 import { ListLegalBasesInTable } from './LegalBasis'
 import RouteLink from './RouteLink'
 import { Cell, HeadCell, Row, Table } from './Table'

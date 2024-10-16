@@ -1,7 +1,7 @@
 import { Card } from 'baseui/card'
 import { HeadingXXLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { getDashboard } from '../api'
+import { getDashboard } from '../api/GetAllApi'
 import { getSettings } from '../api/SettingsApi'
 import ShortcutNav from '../components/Main/ShortcutNav'
 import { LastEvents } from '../components/admin/audit/LastEvents'

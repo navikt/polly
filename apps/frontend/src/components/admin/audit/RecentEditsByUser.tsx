@@ -1,7 +1,7 @@
 import { HeadingXLarge } from 'baseui/typography'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import { getRecentEditedProcesses } from '../../../api'
+import { getRecentEditedProcesses } from '../../../api/GetAllApi'
 import { EObjectType, IRecentEdits } from '../../../constants'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { ObjectLink } from '../../common/RouteLink'

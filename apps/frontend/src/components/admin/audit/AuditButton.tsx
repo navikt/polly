@@ -2,7 +2,7 @@ import { faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { KIND } from 'baseui/button'
 import { user } from '../../../service/User'
-import Button from '../../common/Button'
+import Button from '../../common/Button/CustomButton'
 import RouteLink from '../../common/RouteLink'
 
 interface IProps {

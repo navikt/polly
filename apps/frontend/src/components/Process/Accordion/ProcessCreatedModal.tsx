@@ -1,7 +1,7 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
-import Button from '../../common/Button'
+import Button from '../../common/Button/CustomButton'
 
 interface IProps {
   openAddPolicy: () => void

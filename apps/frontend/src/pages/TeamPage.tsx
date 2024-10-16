@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getDisclosureByProductTeam, getInformationTypesBy } from '../api'
+import { getDisclosureByProductTeam, getInformationTypesBy } from '../api/GetAllApi'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import { PageHeader } from '../components/common/PageHeader'

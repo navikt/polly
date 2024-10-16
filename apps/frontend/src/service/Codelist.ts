@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api'
+import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
 export enum EListName {
   PURPOSE = 'PURPOSE',

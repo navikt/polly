@@ -1,6 +1,6 @@
 import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
 import { ChangeEvent, RefObject, createRef, useEffect, useState } from 'react'
-import { replaceCodelistUsage } from '../../../api'
+import { replaceCodelistUsage } from '../../../api/GetAllApi'
 import {
   EObjectType,
   ICodeUsage,

@@ -5,14 +5,14 @@ import { Spinner } from 'baseui/spinner'
 import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { getAllDpProcesses } from '../api/DpProcessApi'
 import {
   createDisclosure,
   deleteDisclosure,
   getDisclosuresByRecipient,
   getInformationTypesBy,
   updateDisclosure,
-} from '../api'
-import { getAllDpProcesses } from '../api/DpProcessApi'
+} from '../api/GetAllApi'
 import ProcessList from '../components/Process/ProcessList'
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
