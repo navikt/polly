@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios'
+import { useState } from 'react'
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
 export enum EListName {
@@ -33,10 +34,67 @@ export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
 const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT_'
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
+const CodelistServiceNew = () => {
+  const [lists, setLists] = useState<IAllCodelists | undefined>()
+  const [error, setError] = useState<string | undefined>()
+  const [countries, setCountries] = useState<ICountryCode[] | undefined>()
+  const [countriesOutsideEUEEA, setCountriesOutsideEUEEA] = useState<ICountryCode[] | undefined>()
+
+  const fetchData = async (refresh?: boolean): Promise<[void, void, void]> => {
+    const codeListPromise = getAllCodelists(refresh)
+      .then(handleGetCodelistResponse)
+      .catch((error: any) => setError(error.message))
+    const allCountriesPromise = getAllCountries()
+      .then((codes) => setCountries(codes))
+      .catch((error: any) => setError(error.message))
+    const countriesPromise = getCountriesOutsideEUEEA()
+      .then((codes) => setCountriesOutsideEUEEA(codes))
+      .catch((error: any) => setError(error.message))
+    return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
+  }
+
+  const handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>) => {
+    if (typeof response.data === 'object' && response.data !== null) {
+      setLists(response.data)
+    } else {
+      setError(response.data)
+    }
+  }
+
+  const isLoaded = () => {
+    return lists || error
+  }
+
+  const getCodes = (list: EListName): ICode[] => {
+    return lists && lists.codelist[list]
+      ? lists.codelist[list].sort((c1: ICode, c2: ICode) =>
+          c1.shortName.localeCompare(c2.shortName)
+        )
+      : []
+  }
+
+  const getCode = (list: EListName, codeName: string): ICode | undefined => {
+    return getCodes(list).find((code: ICode) => code.code === codeName)
+  }
+
+  const utils = {
+    fetchData,
+    isLoaded,
+    getCodes,
+    getCode,
+  }
+
+  return [utils, lists]
+}
+
 class CodelistService {
+  // lagt inn
   lists?: IAllCodelists
   error?: string
+
   promise: Promise<any>
+
+  // lagt inn
   countries?: ICountryCode[]
   countriesOutsideEUEEA?: ICountryCode[]
 
@@ -44,6 +102,7 @@ class CodelistService {
     this.promise = this.fetchData()
   }
 
+  // Lagt inn
   private fetchData = async (refresh?: boolean) => {
     const codeListPromise = getAllCodelists(refresh)
       .then(this.handleGetCodelistResponse)
@@ -57,6 +116,7 @@ class CodelistService {
     return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
   }
 
+  // Lagt inn
   handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>) => {
     if (typeof response.data === 'object' && response.data !== null) {
       this.lists = response.data
@@ -74,6 +134,7 @@ class CodelistService {
     await this.promise
   }
 
+  // lagt inn
   isLoaded() {
     return this.lists || this.error
   }
@@ -90,12 +151,14 @@ class CodelistService {
     return this.getAllCountryCodes().find((c) => c.code === code)?.description || code
   }
 
+  // lagt inn
   getCodes(list: EListName): ICode[] {
     return this.lists && this.lists.codelist[list]
       ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName))
       : []
   }
 
+  // lagt inn
   getCode(list: EListName, codeName: string): ICode | undefined {
     return this.getCodes(list).find((c) => c.code === codeName)
   }
