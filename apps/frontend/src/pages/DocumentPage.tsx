@@ -1,21 +1,26 @@
 import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { Notification } from 'baseui/notification'
 import { Tab } from 'baseui/tabs'
 import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
 import { Key, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteDocument, getAll, getDocument, getDocumentByPageAndPageSize, getProcessesFor } from '../api'
+import {
+  deleteDocument,
+  getAll,
+  getDocument,
+  getDocumentByPageAndPageSize,
+  getProcessesFor,
+} from '../api/GetAllApi'
 import { AuditButton } from '../components/admin/audit/AuditButton'
 import AlphabeticList from '../components/common/AlphabeticList'
-import Button from '../components/common/Button'
+import Button from '../components/common/Button/CustomButton'
 import { CustomizedTabs } from '../components/common/CustomizedTabs'
 import { tabOverride } from '../components/common/Style'
 import DocumentMetadata from '../components/document/DocumentMetadata'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import { Document, Process } from '../constants'
+import { IDocument, IProcess } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
@@ -30,13 +35,13 @@ const DocumentPage = () => {
   const params = useParams<{ id?: string }>()
   const navigate = useNavigate()
 
-  const [currentDocument, setCurrentDocument] = useState<Document | undefined>()
+  const [currentDocument, setCurrentDocument] = useState<IDocument | undefined>()
   const [documentId, setDocumentId] = useState<string | undefined>(params.id)
   const [isDeleteModalVisible, setDeleteModalVisibility] = useState(false)
-  const [documentUsages, setDocumentUsages] = useState<Process[]>()
+  const [documentUsages, setDocumentUsages] = useState<IProcess[]>()
   const [errorMessage, setErrorMessage] = useState<string>()
   const [activeKey, setActiveKey] = useState<string | number | bigint>('containsInformationType')
-  const [documents, setDocuments] = useState<Document[]>([])
+  const [documents, setDocuments] = useState<IDocument[]>([])
 
   ampli.logEvent('besøk', { side: 'Dokumenter', url: '/document/', app: 'Behandlingskatalogen' })
 
@@ -72,7 +77,7 @@ const DocumentPage = () => {
         if (params.id !== documentId) navigate(`/document/${documentId}`)
       } else {
         setCurrentDocument(undefined)
-        if (!!params.id) navigate('/document')
+        if (params.id) navigate('/document')
       }
     })()
   }, [documentId])
@@ -89,29 +94,57 @@ const DocumentPage = () => {
               {currentDocument && <AuditButton id={currentDocument.id} />}
 
               {currentDocument && (
-                <Button icon={faTrash} kind="outline" size={ButtonSize.compact} onClick={() => setDeleteModalVisibility(true)} marginLeft>
+                <Button
+                  icon={faTrash}
+                  kind="outline"
+                  size="xsmall"
+                  onClick={() => setDeleteModalVisibility(true)}
+                  marginLeft
+                >
                   Slett
                 </Button>
               )}
 
               {currentDocument && (
-                <Button icon={faEdit} kind="outline" size={ButtonSize.compact} onClick={() => navigate(`/document/${currentDocument.id}/edit`)} marginLeft>
+                <Button
+                  icon={faEdit}
+                  kind="outline"
+                  size="xsmall"
+                  onClick={() => navigate(`/document/${currentDocument.id}/edit`)}
+                  marginLeft
+                >
                   Redigér
                 </Button>
               )}
 
-              <Button kind="outline" size={ButtonSize.compact} icon={faPlusCircle} onClick={() => navigate('/document/create')} marginLeft>
+              <Button
+                kind="outline"
+                size="xsmall"
+                icon={faPlusCircle}
+                onClick={() => navigate('/document/create')}
+                marginLeft
+              >
                 Opprett ny
               </Button>
             </div>
           )}
         </div>
-        {!currentDocument && <AlphabeticList items={documents.map((d) => ({ id: d.id, label: d.name }))} baseUrl={'/document/'} />}
+        {!currentDocument && (
+          <AlphabeticList
+            items={documents.map((d) => ({ id: d.id, label: d.name }))}
+            baseUrl={'/document/'}
+          />
+        )}
         {currentDocument && (
           <div className="p-[5px] mt-[5px]">
             {renderTextWithLabel('Navn', currentDocument.name)}
             {renderTextWithLabel('Beskrivelse', currentDocument.description)}
-            {renderTextWithLabel('Datatilgangsklasse', currentDocument.dataAccessClass ? currentDocument.dataAccessClass.shortName : 'Ikke angitt')}
+            {renderTextWithLabel(
+              'Datatilgangsklasse',
+              currentDocument.dataAccessClass
+                ? currentDocument.dataAccessClass.shortName
+                : 'Ikke angitt'
+            )}
           </div>
         )}
 
@@ -122,14 +155,22 @@ const DocumentPage = () => {
             }}
             activeKey={activeKey as Key}
           >
-            <Tab key={'containsInformationType'} title="Inneholder opplysningstyper" overrides={tabOverride}>
+            <Tab
+              key={'containsInformationType'}
+              title="Inneholder opplysningstyper"
+              overrides={tabOverride}
+            >
               <div>
                 <DocumentMetadata document={currentDocument} />
               </div>
             </Tab>
             <>
               {documentUsages && documentUsages.length > 0 && (
-                <Tab key={'containsProcesses'} title="Brukes i behandlinger" overrides={tabOverride}>
+                <Tab
+                  key={'containsProcesses'}
+                  title="Brukes i behandlinger"
+                  overrides={tabOverride}
+                >
                   <div>
                     <DocumentProcessesTable documentUsages={documentUsages} />
                   </div>

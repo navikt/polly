@@ -1,9 +1,9 @@
 import { dpProcessSchema } from '../../components/common/schema'
-import { DpProcessFormValues } from '../../constants'
+import { IDpProcessFormValues } from '../../constants'
 import '../config/schemaValidator'
 
 const schema = dpProcessSchema()
-const createDp: () => DpProcessFormValues = () => ({
+const createDp: () => IDpProcessFormValues = () => ({
   name: 'name',
   dataProcessingAgreements: [],
   affiliation: {

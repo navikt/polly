@@ -2,10 +2,10 @@ import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import { createCodelist } from '../../../api'
-import { CodeListFormValues } from '../../../constants'
+import { createCodelist } from '../../../api/GetAllApi'
+import { ICodeListFormValues } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
-import { Code, codelist, List } from '../../../service/Codelist'
+import { ICode, IList, codelist } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { useAwait, useForceUpdate } from '../../../util'
 import CodeListTable from './CodeListStyledTable'
@@ -25,15 +25,20 @@ const CodeListPage = () => {
   const forceUpdate: () => void = useForceUpdate()
   useAwait(codelist.wait(), setLoading)
 
-  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/codelist/', app: 'Behandlingskatalogen', type: 'Kodeverk' })
+  ampli.logEvent('besøk', {
+    side: 'Admin',
+    url: '/admin/codelist/',
+    app: 'Behandlingskatalogen',
+    type: 'Kodeverk',
+  })
 
-  const lists: List | undefined = codelist.lists?.codelist
-  const currentCodelist: Code[] | undefined = lists && listname ? lists[listname] : undefined
+  const lists: IList | undefined = codelist.lists?.codelist
+  const currentCodelist: ICode[] | undefined = lists && listname ? lists[listname] : undefined
 
-  const handleCreateCodelist = async (values: CodeListFormValues): Promise<void> => {
+  const handleCreateCodelist = async (values: ICodeListFormValues): Promise<void> => {
     setLoading(true)
     try {
-      await createCodelist({ ...values } as Code)
+      await createCodelist({ ...values } as ICode)
       await codelist.refreshCodeLists()
       setCreateCodeListModal(false)
     } catch (error: any) {
@@ -56,46 +61,53 @@ const CodeListPage = () => {
 
   return (
     <>
-      {!(user.isAdmin() ||
-        lists) && (
-          <div role="main">
-            <Loader size="2xlarge" />
-          </div>
-        )}
-      {(user.isAdmin() &&
-        lists) && (
-          <div role="main">
-            <Heading size="large" level="1">
-              Administrering av kodeverk
-            </Heading>
-            {loading && <Loader />}{' '}
-            {!loading && (
-              <div className="flex justify-between w-full">
-                <Select label="Velg kodeverk" hideLabel onChange={(event) => setListname(event.target.value)}>
-                  <option value="">Velg kodeverk</option>
-                  {codelist.makeIdLabelForAllCodeLists().map((value) => (
-                    <option key={value.id} value={value.id}>
-                      {value.label}
-                    </option>
-                  ))}
-                </Select>
-                {listname && (
-                  <div>
-                    <Button icon={<PlusIcon aria-hidden />} variant="tertiary" onClick={() => setCreateCodeListModal(!createCodeListModal)}>
-                      Opprett ny kode
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-            {!loading && currentCodelist && (
-              <div className="mt-4">
-                <CodeListTable tableData={currentCodelist || []} refresh={update} />
-              </div>
-            )}
+      {!(user.isAdmin() || lists) && (
+        <div role="main">
+          <Loader size="2xlarge" />
+        </div>
+      )}
+      {user.isAdmin() && lists && (
+        <div role="main">
+          <Heading size="large" level="1">
+            Administrering av kodeverk
+          </Heading>
+          {loading && <Loader />}{' '}
+          {!loading && (
+            <div className="flex justify-between w-full">
+              <Select
+                label="Velg kodeverk"
+                hideLabel
+                onChange={(event) => setListname(event.target.value)}
+              >
+                <option value="">Velg kodeverk</option>
+                {codelist.makeIdLabelForAllCodeLists().map((value) => (
+                  <option key={value.id} value={value.id}>
+                    {value.label}
+                  </option>
+                ))}
+              </Select>
+              {listname && (
+                <div>
+                  <Button
+                    icon={<PlusIcon aria-hidden />}
+                    variant="tertiary"
+                    onClick={() => setCreateCodeListModal(!createCodeListModal)}
+                  >
+                    Opprett ny kode
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+          {!loading && currentCodelist && (
+            <div className="mt-4">
+              <CodeListTable tableData={currentCodelist || []} refresh={update} />
+            </div>
+          )}
+          {listname && (
             <CreateCodeListModal
               title="Ny kode"
-              list={listname!}
+              list={listname}
               isOpen={createCodeListModal}
               errorOnCreate={errorOnResponse}
               onClose={() => {
@@ -104,8 +116,9 @@ const CodeListPage = () => {
               }}
               submit={handleCreateCodelist}
             />
-          </div>
-        )}
+          )}
+        </div>
+      )}
     </>
   )
 }

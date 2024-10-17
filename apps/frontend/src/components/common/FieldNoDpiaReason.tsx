@@ -1,14 +1,14 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { NoDpiaReason, ProcessFormValues } from '../../constants'
+import { ENoDpiaReason, IProcessFormValues } from '../../constants'
 import { getNoDpiaLabel } from '../../util/helper-functions'
 import { renderTagList } from './TagList'
 
-type fieldNoDpiaReasonProps = {
-  formikBag: FormikProps<ProcessFormValues>
+type TFieldNoDpiaReasonProps = {
+  formikBag: FormikProps<IProcessFormValues>
 }
 
-const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
+const FieldNoDpiaReason = (props: TFieldNoDpiaReasonProps) => {
   const { formikBag } = props
 
   return (
@@ -21,8 +21,10 @@ const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
               <Select
                 clearable
                 placeholder="Velg en eller flere begrunnelser"
-                options={Object.keys(NoDpiaReason)
-                  .filter((reason: string) => formikBag.values.dpia.noDpiaReasons.indexOf(reason) === -1)
+                options={Object.keys(ENoDpiaReason)
+                  .filter(
+                    (reason: string) => formikBag.values.dpia.noDpiaReasons.indexOf(reason) === -1
+                  )
                   .map((reason: string) => {
                     return {
                       label: getNoDpiaLabel(reason),
@@ -30,14 +32,17 @@ const FieldNoDpiaReason = (props: fieldNoDpiaReasonProps) => {
                     }
                   })}
                 onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue('dpia.noDpiaReasons', [...formikBag.values.dpia.noDpiaReasons, ...value.map((value) => value.id)])
+                  arrayHelpers.form.setFieldValue('dpia.noDpiaReasons', [
+                    ...formikBag.values.dpia.noDpiaReasons,
+                    ...value.map((value) => value.id),
+                  ])
                 }}
               />
             </div>
             <div>
               {renderTagList(
                 formikBag.values.dpia.noDpiaReasons.map((reason: string) => getNoDpiaLabel(reason)),
-                arrayHelpers,
+                arrayHelpers
               )}
             </div>
           </div>

@@ -4,33 +4,45 @@ import { Plus } from 'baseui/icon'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { DisclosureSummary, createDisclosure, getAll, getDisclosureSummaries, getProcess } from '../api'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
+import {
+  IDisclosureSummary,
+  createDisclosure,
+  getAll,
+  getDisclosureSummaries,
+  getProcess,
+} from '../api/GetAllApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { ObjectLink } from '../components/common/RouteLink'
 import SearchProcess from '../components/common/SearchProcess'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { AaregAvtale, Disclosure, DisclosureFormValues, ObjectType, Process } from '../constants'
+import {
+  EObjectType,
+  IAaregAvtale,
+  IDisclosure,
+  IDisclosureFormValues,
+  IProcess,
+} from '../constants'
 import { ampli } from '../service/Amplitude'
-import { ListName } from '../service/Codelist'
+import { EListName } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
 import { checkForAaregDispatcher } from '../util/helper-functions'
 import { useQueryParam, useTable } from '../util/hooks'
 
-enum FilterType {
+enum EFilterType {
   legalbases = 'legalbases',
   emptylegalbases = 'emptylegalbases',
 }
 
 export const DisclosureListPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [newDisclosure, setNewDisclosure] = useState<Disclosure>()
+  const [newDisclosure, setNewDisclosure] = useState<IDisclosure>()
   const [error, setError] = useState<string>()
-  const [disclosures, setDisclosures] = useState<DisclosureSummary[]>([])
-  const [selectedProcess, setSelectedProcess] = useState<Process>()
-  const [table, sortColumn] = useTable<DisclosureSummary, keyof DisclosureSummary>(disclosures, {
+  const [disclosures, setDisclosures] = useState<IDisclosureSummary[]>([])
+  const [selectedProcess, setSelectedProcess] = useState<IProcess>()
+  const [table, sortColumn] = useTable<IDisclosureSummary, keyof IDisclosureSummary>(disclosures, {
     sorting: {
       name: (a, b) => a.name.localeCompare(b.name),
       legalBases: (a, b) => a.legalBases - b.legalBases,
@@ -39,15 +51,15 @@ export const DisclosureListPage = () => {
     },
     initialSortColumn: 'name',
   })
-  const [aaregAvtaler, setAaregAvtaler] = useState<AaregAvtale[]>([])
+  const [aaregAvtaler, setAaregAvtaler] = useState<IAaregAvtale[]>([])
   const [showAaregAvtaleTable, setShowAaregAvtaleTable] = useState<boolean>(false)
-  const filter = useQueryParam<FilterType>('filter')
+  const filter = useQueryParam<EFilterType>('filter')
   const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
 
   ampli.logEvent('besøk', { side: 'Utleveringer', url: '/disclosure', app: 'Behandlingskatalogen' })
 
-  const initialFormValues: DisclosureFormValues = {
+  const initialFormValues: IDisclosureFormValues = {
     name: '',
     recipient: '',
     recipientPurpose: '',
@@ -68,10 +80,12 @@ export const DisclosureListPage = () => {
   useEffect(() => {
     ;(async () => {
       const all = selectedProcess
-        ? (await getAll(getDisclosureSummaries)()).filter((d) => d.processes.find((p) => p.id === selectedProcess.id))
+        ? (await getAll(getDisclosureSummaries)()).filter((d) =>
+            d.processes.find((p) => p.id === selectedProcess.id)
+          )
         : await getAll(getDisclosureSummaries)()
-      if (filter === FilterType.emptylegalbases) setDisclosures(all.filter((d) => !d.legalBases))
-      else if (filter === FilterType.legalbases) setDisclosures(all.filter((d) => !!d.legalBases))
+      if (filter === EFilterType.emptylegalbases) setDisclosures(all.filter((d) => !d.legalBases))
+      else if (filter === EFilterType.legalbases) setDisclosures(all.filter((d) => !!d.legalBases))
       else setDisclosures(all)
     })()
   }, [filter, newDisclosure, selectedProcess])
@@ -98,7 +112,7 @@ export const DisclosureListPage = () => {
     })()
   }, [selectedProcess, showAaregAvtaleTable])
 
-  const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
+  const handleCreateDisclosure = async (disclosure: IDisclosureFormValues) => {
     try {
       setNewDisclosure(await createDisclosure(disclosure))
       setShowCreateModal(false)
@@ -122,7 +136,11 @@ export const DisclosureListPage = () => {
         <HeadingLarge>Utleveringer</HeadingLarge>
         <div>
           <LabelMedium marginBottom={theme.sizing.scale600}>Filter behandlingsgrunnlag</LabelMedium>
-          <ButtonGroup selected={!filter ? 0 : filter === FilterType.legalbases ? 1 : 2} mode="radio" shape="pill">
+          <ButtonGroup
+            selected={!filter ? 0 : filter === EFilterType.legalbases ? 1 : 2}
+            mode="radio"
+            shape="pill"
+          >
             <BButton
               onClick={() =>
                 navigate(handleFilterChange('/disclosure?'), {
@@ -156,7 +174,10 @@ export const DisclosureListPage = () => {
       <div className="flex w-full mb-3">
         <div className="flex flex-1">
           <div className="flex flex-1">
-            <SearchProcess selectedProcess={selectedProcess} setSelectedProcess={setSelectedProcess} />
+            <SearchProcess
+              selectedProcess={selectedProcess}
+              setSelectedProcess={setSelectedProcess}
+            />
           </div>
           <div className="ml-8px flex">
             <Button size="compact" onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}>
@@ -188,21 +209,33 @@ export const DisclosureListPage = () => {
           headers={
             <>
               <HeadCell title="Navn på utlevering" column="name" tableState={[table, sortColumn]} />
-              <HeadCell title="Mottaker (ekstern part)" column="recipient" tableState={[table, sortColumn]} />
-              <HeadCell title="Relaterte behandlinger" column="processes" tableState={[table, sortColumn]} />
-              <HeadCell title="Behandlingsgrunnlag" column="legalBases" tableState={[table, sortColumn]} />
+              <HeadCell
+                title="Mottaker (ekstern part)"
+                column="recipient"
+                tableState={[table, sortColumn]}
+              />
+              <HeadCell
+                title="Relaterte behandlinger"
+                column="processes"
+                tableState={[table, sortColumn]}
+              />
+              <HeadCell
+                title="Behandlingsgrunnlag"
+                column="legalBases"
+                tableState={[table, sortColumn]}
+              />
             </>
           }
         >
           {table.data.map((data) => (
             <Row key={data.id}>
               <Cell>
-                <ObjectLink id={data.id} type={ObjectType.DISCLOSURE}>
+                <ObjectLink id={data.id} type={EObjectType.DISCLOSURE}>
                   {data.name}
                 </ObjectLink>
               </Cell>
               <Cell>
-                <ObjectLink id={data.recipient.code} type={ListName.THIRD_PARTY}>
+                <ObjectLink id={data.recipient.code} type={EListName.THIRD_PARTY}>
                   {data.recipient.shortName}
                 </ObjectLink>
               </Cell>
@@ -210,8 +243,9 @@ export const DisclosureListPage = () => {
                 <div className="flex flex-col">
                   {data.processes.map((process) => (
                     <div key={process.id} className="mr-2.5">
-                      <ObjectLink id={process.id} type={ObjectType.PROCESS}>
-                        {process.purposes.map((purpose) => purpose.shortName).join(', ')}: {process.name}
+                      <ObjectLink id={process.id} type={EObjectType.PROCESS}>
+                        {process.purposes.map((purpose) => purpose.shortName).join(', ')}:{' '}
+                        {process.name}
                       </ObjectLink>
                     </div>
                   ))}

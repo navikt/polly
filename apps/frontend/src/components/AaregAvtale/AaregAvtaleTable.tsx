@@ -1,20 +1,17 @@
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Dropdown } from '@navikt/ds-react'
 import { Panel, StatelessAccordion } from 'baseui/accordion'
-import { KIND } from 'baseui/button'
-import { StatefulMenu } from 'baseui/menu'
 import { Pagination } from 'baseui/pagination'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
 import { HeadingLarge, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { AaregAvtale } from '../../constants'
+import { IAaregAvtale } from '../../constants'
 import { theme } from '../../util'
-import Button from '../common/Button'
 import DataText from '../common/DataText'
 import AAregHjemmelDataText from './AAregHjemmelDataText'
 
-type AaregAvtaleTableProps = {
-  aaregAvtaler: AaregAvtale[]
+type TAaregAvtaleTableProps = {
+  aaregAvtaler: IAaregAvtale[]
 }
 
 const marginTop = '2rem'
@@ -29,8 +26,8 @@ const CustomPanelLabel = ({ text }: ICustomPanelLabelProps) => (
   </div>
 )
 
-export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]): AaregAvtale[] => {
-  return aaregAvtaler.sort((a: AaregAvtale, b: AaregAvtale) => {
+export const sortAaregAvtaleList = (aaregAvtaler: IAaregAvtale[]): IAaregAvtale[] => {
+  return aaregAvtaler.sort((a: IAaregAvtale, b: IAaregAvtale) => {
     if (a.virksomhet > b.virksomhet) {
       return 1
     } else if (a.virksomhet < b.virksomhet) {
@@ -47,11 +44,11 @@ export const sortAaregAvtaleList = (aaregAvtaler: AaregAvtale[]): AaregAvtale[] 
   })
 }
 
-export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
+export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
   const { aaregAvtaler } = props
   const [pageLimit, setPageLimit] = useState(10)
   const [page, setPage] = useState(1)
-  const [sortedAaregAvtale, setSortedAaregAvtale] = useState<AaregAvtale[]>([])
+  const [sortedAaregAvtale, setSortedAaregAvtale] = useState<IAaregAvtale[]>([])
   const [selectedAaregAvtale, setSelectedAaregAvtale] = useState<string>()
 
   useEffect(() => {
@@ -59,7 +56,9 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
   }, [aaregAvtaler])
 
   useEffect(() => {
-    setSortedAaregAvtale(sortAaregAvtaleList(aaregAvtaler).slice((page - 1) * pageLimit, pageLimit * page))
+    setSortedAaregAvtale(
+      sortAaregAvtaleList(aaregAvtaler).slice((page - 1) * pageLimit, pageLimit * page)
+    )
   }, [pageLimit, page])
 
   return (
@@ -72,19 +71,24 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
         expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
       >
         {sortedAaregAvtale &&
-          sortedAaregAvtale.map((aaregisterAvtale) => {
+          sortedAaregAvtale.map((aaregisterAvtale, index) => {
             const expanded: boolean = selectedAaregAvtale === aaregisterAvtale.avtalenummer
 
             return (
               <Panel
-                key={aaregisterAvtale.avtalenummer}
+                key={aaregisterAvtale.avtalenummer + '_' + index}
                 title={
                   <div className="w-full">
                     <LabelLarge color={theme.colors.primary}>
-                      {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+                      {expanded ? (
+                        <FontAwesomeIcon icon={faChevronDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faChevronRight} />
+                      )}
                       <span> </span>
                       <span>
-                        {aaregisterAvtale.virksomhet} - (Avtalenummer-{aaregisterAvtale.avtalenummer.replace('AVT-', '')})
+                        {aaregisterAvtale.virksomhet} - (Avtalenummer-
+                        {aaregisterAvtale.avtalenummer.replace('AVT-', '')})
                       </span>
                     </LabelLarge>
                   </div>
@@ -109,25 +113,58 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
                   <div className="p-1">
                     <CustomPanelLabel text="Konsument" />
                     <DataText label="Navn" text={aaregisterAvtale.virksomhet || 'Ikke angitt'} />
-                    <DataText label="Organisasjonsnummer" text={aaregisterAvtale.organisasjonsnummer || 'Ikke angitt'} />
+                    <DataText
+                      label="Organisasjonsnummer"
+                      text={aaregisterAvtale.organisasjonsnummer || 'Ikke angitt'}
+                    />
 
                     <CustomPanelLabel text="Avtale" />
-                    <DataText label="Avtalenummer" text={aaregisterAvtale.avtalenummer || 'Ikke angitt'} />
-                    <DataText label="Dato opprettet" text={aaregisterAvtale.opprettet || 'Ikke angitt'} />
+                    <DataText
+                      label="Avtalenummer"
+                      text={aaregisterAvtale.avtalenummer || 'Ikke angitt'}
+                    />
+                    <DataText
+                      label="Dato opprettet"
+                      text={aaregisterAvtale.opprettet || 'Ikke angitt'}
+                    />
 
                     <CustomPanelLabel text="Formål, Hjemmel og Behandlingsgrunnlag" />
 
-                    <AAregHjemmelDataText data={aaregisterAvtale.hjemmel_behandlingsgrunnlag_formal} />
+                    <AAregHjemmelDataText
+                      data={aaregisterAvtale.hjemmel_behandlingsgrunnlag_formal}
+                    />
 
                     <CustomPanelLabel text="Type tilgang" />
-                    <DataText label="API" text={aaregisterAvtale.integrert_oppslag_api ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
-                    <DataText label="Uttrekk" text={aaregisterAvtale.uttrekk ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
-                    <DataText label="Web-oppslag" text={aaregisterAvtale.web_oppslag ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
-                    <DataText label="Hendelser" text={aaregisterAvtale.hendelser ? 'Tilgjengelig' : 'Ikke tilgjengelig'} />
+                    <DataText
+                      label="API"
+                      text={
+                        aaregisterAvtale.integrert_oppslag_api
+                          ? 'Tilgjengelig'
+                          : 'Ikke tilgjengelig'
+                      }
+                    />
+                    <DataText
+                      label="Uttrekk"
+                      text={aaregisterAvtale.uttrekk ? 'Tilgjengelig' : 'Ikke tilgjengelig'}
+                    />
+                    <DataText
+                      label="Web-oppslag"
+                      text={aaregisterAvtale.web_oppslag ? 'Tilgjengelig' : 'Ikke tilgjengelig'}
+                    />
+                    <DataText
+                      label="Hendelser"
+                      text={aaregisterAvtale.hendelser ? 'Tilgjengelig' : 'Ikke tilgjengelig'}
+                    />
 
                     <CustomPanelLabel text="Databehandler" />
-                    <DataText label="Organisasjonsnummer" text={aaregisterAvtale.databehandler_organisasjonsnummer || 'Ikke angitt'} />
-                    <DataText label="Navn" text={aaregisterAvtale.databehandler_navn || 'Ikke angitt'} />
+                    <DataText
+                      label="Organisasjonsnummer"
+                      text={aaregisterAvtale.databehandler_organisasjonsnummer || 'Ikke angitt'}
+                    />
+                    <DataText
+                      label="Navn"
+                      text={aaregisterAvtale.databehandler_navn || 'Ikke angitt'}
+                    />
                   </div>
                 </div>
               </Panel>
@@ -136,27 +173,26 @@ export const AaregAvtaleTable = (props: AaregAvtaleTableProps) => {
       </StatelessAccordion>
 
       <div className="flex justify-between mt-1">
-        <StatefulPopover
-          placement={PLACEMENT.bottom}
-          content={({ close }) => (
-            <StatefulMenu
-              items={[5, 10, 20, 50, 100].map((item: number) => ({ label: item }))}
-              onItemSelect={({ item }) => {
-                setPageLimit(item.label)
-                close()
-              }}
-              overrides={{
-                List: {
-                  style: { height: '150px', width: '100px' },
-                },
-              }}
-            />
-          )}
-        >
-          <div>
-            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${pageLimit} Rader`}</Button>
-          </div>
-        </StatefulPopover>
+        <Dropdown>
+          <Button variant="tertiary" as={Dropdown.Toggle}>
+            {`${pageLimit} Rader`}{' '}
+            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+          </Button>
+          <Dropdown.Menu className="w-fit">
+            <Dropdown.Menu.List>
+              {[5, 10, 20, 50, 100].map((pageSize: number) => (
+                <Dropdown.Menu.List.Item
+                  key={'pageSize_' + pageSize}
+                  as={Button}
+                  onClick={() => setPageLimit(pageSize)}
+                >
+                  {pageSize}
+                </Dropdown.Menu.List.Item>
+              ))}
+            </Dropdown.Menu.List>
+          </Dropdown.Menu>
+        </Dropdown>
+
         <Pagination
           currentPage={page}
           numPages={Math.ceil(aaregAvtaler.length / pageLimit)}

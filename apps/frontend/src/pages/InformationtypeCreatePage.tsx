@@ -2,10 +2,10 @@ import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
 import { Fragment, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createInformationType, mapInfoTypeToFormVals } from '../api'
+import { createInformationType, mapInfoTypeToFormVals } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
-import { InformationtypeFormValues } from '../constants'
+import { IInformationtypeFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { codelist } from '../service/Codelist'
 import { user } from '../service/User'
@@ -16,9 +16,14 @@ const InformationtypeCreatePage = () => {
   const [errorSubmit, setErrorSubmit] = useState(null)
   const navigate = useNavigate()
 
-  ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/create', app: 'Behandlingskatalogen', type: 'Opprett opplysningstype' })
+  ampli.logEvent('besøk', {
+    side: 'Opplysningstyper',
+    url: '/informationtype/create',
+    app: 'Behandlingskatalogen',
+    type: 'Opprett opplysningstype',
+  })
 
-  const handleSubmit = async (values: InformationtypeFormValues) => {
+  const handleSubmit = async (values: IInformationtypeFormValues) => {
     if (!values) return
 
     setErrorSubmit(null)
@@ -47,7 +52,11 @@ const InformationtypeCreatePage = () => {
               <HeadingMedium>Opprett opplysningstype</HeadingMedium>
               {codelist ? (
                 <>
-                  <InformationtypeForm formInitialValues={mapInfoTypeToFormVals({})} submit={handleSubmit} isEdit={false} />
+                  <InformationtypeForm
+                    formInitialValues={mapInfoTypeToFormVals({})}
+                    submit={handleSubmit}
+                    isEdit={false}
+                  />
                   {errorSubmit && <p>{errorSubmit}</p>}
                 </>
               ) : (

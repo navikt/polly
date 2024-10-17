@@ -1,8 +1,8 @@
 import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getResourceById, useTeamResourceSearch } from '../../../api'
-import { ProcessFormValues } from '../../../constants'
+import { getResourceById, useTeamResourceSearch } from '../../../api/GetAllApi'
+import { IProcessFormValues } from '../../../constants'
 
 interface IProps {
   riskOwner?: string
@@ -11,7 +11,8 @@ interface IProps {
 const FieldRiskOwner = (props: IProps) => {
   const { riskOwner } = props
   const [value, setValue] = useState<Value>()
-  const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] = useTeamResourceSearch()
+  const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] =
+    useTeamResourceSearch()
 
   useEffect(() => {
     ;(async () => {
@@ -26,7 +27,7 @@ const FieldRiskOwner = (props: IProps) => {
   return (
     <Field
       name="dpia.riskOwner"
-      render={({ form, field }: FieldProps<ProcessFormValues>) => (
+      render={({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
           <Select
             options={teamResourceSearchResult}
@@ -34,7 +35,9 @@ const FieldRiskOwner = (props: IProps) => {
               setValue(value)
               form.setFieldValue('dpia.riskOwner', value && value.length > 0 ? value[0].id : '')
             }}
-            onInputChange={(event: ChangeEvent<HTMLInputElement>) => setTeamResourceSearch(event.currentTarget.value)}
+            onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setTeamResourceSearch(event.currentTarget.value)
+            }
             value={value}
             isLoading={teamResourceSearchLoading}
           />

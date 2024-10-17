@@ -14,7 +14,11 @@ const PanelTitle = (props: IProps) => {
   return (
     <div>
       <LabelLarge color={theme.colors.primary}>
-        {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+        {expanded ? (
+          <FontAwesomeIcon icon={faChevronDown} />
+        ) : (
+          <FontAwesomeIcon icon={faChevronRight} />
+        )}
         <span> </span>
         <span>{title}</span>
       </LabelLarge>

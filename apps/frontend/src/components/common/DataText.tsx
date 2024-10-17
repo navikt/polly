@@ -1,16 +1,17 @@
 import { LabelMedium, ParagraphMedium } from 'baseui/typography'
 import { ReactNode } from 'react'
 
-type DataTextProps = {
+type TDataTextProps = {
   label?: string
   text?: false | string | string[]
   children?: ReactNode
   hideComponent?: boolean
 }
 
-const DataText = (props: DataTextProps) => {
+const DataText = (props: TDataTextProps) => {
   const { hideComponent, text, children, label } = props
-  const texts: false | string[] | undefined = typeof text === 'string' ? [text] : !!text || children ? text : ['Ikke utfylt']
+  const texts: false | string[] | undefined =
+    typeof text === 'string' ? [text] : !!text || children ? text : ['Ikke utfylt']
 
   return (
     <>
@@ -22,7 +23,12 @@ const DataText = (props: DataTextProps) => {
           <div className="w-[60%]">
             {texts &&
               texts.map((text: string, index: number) => (
-                <ParagraphMedium marginTop="0" marginBottom="0" key={index} $style={{ wordBreak: 'break-word' }}>
+                <ParagraphMedium
+                  marginTop="0"
+                  marginBottom="0"
+                  key={index}
+                  $style={{ wordBreak: 'break-word' }}
+                >
                   {text}
                 </ParagraphMedium>
               ))}

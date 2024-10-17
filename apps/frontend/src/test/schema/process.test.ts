@@ -1,13 +1,13 @@
 import { processSchema } from '../../components/common/schema'
-import { LegalBasisFormValues, ProcessFormValues, ProcessStatus } from '../../constants'
-import { ListName, NATIONAL_LAW_GDPR_ARTICLES } from '../../service/Codelist'
+import { EProcessStatus, ILegalBasisFormValues, IProcessFormValues } from '../../constants'
+import { EListName, NATIONAL_LAW_GDPR_ARTICLES } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 
-addCode(ListName.PURPOSE, 'PURPOSE')
+addCode(EListName.PURPOSE, 'PURPOSE')
 
 const schema = processSchema()
-export const createProcess = (): ProcessFormValues => ({
+export const createProcess = (): IProcessFormValues => ({
   name: 'name',
   purposes: ['PURPOSE'],
   affiliation: {
@@ -16,7 +16,7 @@ export const createProcess = (): ProcessFormValues => ({
     subDepartments: [],
     disclosureDispatchers: [],
   },
-  legalBases: new Array<LegalBasisFormValues>(),
+  legalBases: new Array<ILegalBasisFormValues>(),
   legalBasesOpen: false,
   dataProcessing: {
     dataProcessor: true,
@@ -26,7 +26,7 @@ export const createProcess = (): ProcessFormValues => ({
     retentionMonths: 2,
     retentionStart: 'august',
   },
-  status: ProcessStatus.IN_PROGRESS,
+  status: EProcessStatus.IN_PROGRESS,
   dpia: {
     noDpiaReasons: [],
     processImplemented: true,
@@ -54,10 +54,21 @@ test('Process disclosures required', () => {
 })
 
 test('Process legalBasis', () => {
-  let process = { ...createProcess(), legalBases: [{ gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: '', nationalLaw: '' }] }
+  let process = {
+    ...createProcess(),
+    legalBases: [{ gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: '', nationalLaw: '' }],
+  }
   expect(process).toBeSchemaErrorAt(schema, 'legalBases[0].description')
-  process = { ...createProcess(), legalBases: [{ gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: 'desc', nationalLaw: '' }] }
+  process = {
+    ...createProcess(),
+    legalBases: [{ gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: 'desc', nationalLaw: '' }],
+  }
   expect(process).toBeSchemaErrorAt(schema, 'legalBases[0].nationalLaw')
-  process = { ...createProcess(), legalBases: [{ gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: 'desc', nationalLaw: 'LAW_1' }] }
+  process = {
+    ...createProcess(),
+    legalBases: [
+      { gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: 'desc', nationalLaw: 'LAW_1' },
+    ],
+  }
   expect(process).toBeSchema(schema)
 })

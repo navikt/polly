@@ -1,36 +1,51 @@
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button } from '@navikt/ds-react'
 import { useStyletron } from 'baseui'
-import { Button, KIND } from 'baseui/button'
 import { ListItem } from 'baseui/list'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Modal, ModalBody, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { OnChangeParams, Option, Select, TYPE } from 'baseui/select'
+import { Tooltip } from 'baseui/tooltip'
 import { ParagraphSmall } from 'baseui/typography'
-import { ArrayHelpers, Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
+import {
+  ArrayHelpers,
+  Field,
+  FieldArray,
+  FieldArrayRenderProps,
+  FieldProps,
+  Form,
+  Formik,
+  FormikProps,
+} from 'formik'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getDefaultProcessDocument, searchDocuments } from '../../../api'
-import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process } from '../../../constants'
-import { Code, ListName, codelist } from '../../../service/Codelist'
+import { getDefaultProcessDocument, searchDocuments } from '../../../api/GetAllApi'
+import {
+  IAddDocumentToProcessFormValues,
+  IDocument,
+  IDocumentInfoTypeUse,
+  IPolicy,
+  IProcess,
+} from '../../../constants'
+import { EListName, ICode, codelist } from '../../../service/Codelist'
 import { useDebouncedState } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
-import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Spinner } from '../../common/Spinner'
 import { addDocumentToProcessSchema } from '../../common/schema'
 
-type AddDocumentProps = {
+type TAddDocumentProps = {
   isOpen: boolean
   addDefaultDocument: boolean
-  submit: (values: AddDocumentToProcessFormValues) => void
+  submit: (values: IAddDocumentToProcessFormValues) => void
   onClose: () => void
-  process: Process
+  process: IProcess
   error: string | null
 }
 
 interface IListInformationTypesProps {
-  informationTypes: DocumentInfoTypeUse[]
-  formik: FormikProps<AddDocumentToProcessFormValues>
+  informationTypes: IDocumentInfoTypeUse[]
+  formik: FormikProps<IAddDocumentToProcessFormValues>
   arrayHelpers: ArrayHelpers
 }
 
@@ -40,7 +55,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
 
   return (
     <ul className={css({ paddingLeft: 0, width: '100%' })}>
-      {informationTypes.map((informationType: DocumentInfoTypeUse, index: number) => (
+      {informationTypes.map((informationType: IDocumentInfoTypeUse, index: number) => (
         <ListItem key={informationType.informationTypeId} sublist>
           <div className="flex w-full justify-between">
             <div className="flex justify-between w-[90%] items-center">
@@ -50,14 +65,18 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 {informationType.informationType.name}
               </div>
               <div className="opacity-80">
-                {informationType.subjectCategories.map((subjectCategory: Code) => codelist.getShortname(ListName.SUBJECT_CATEGORY, subjectCategory.code)).join(', ')}
+                {informationType.subjectCategories
+                  .map((subjectCategory: ICode) =>
+                    codelist.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+                  )
+                  .join(', ')}
               </div>
             </div>
-            <CustomizedStatefulTooltip content="Fjern">
+            <Tooltip content="Fjern">
               <Button
-                size="compact"
-                kind="tertiary"
-                shape="round"
+                size="small"
+                variant="tertiary"
+                type="button"
                 onClick={() => {
                   const length = formik.values.informationTypes.length
                   arrayHelpers.remove(index)
@@ -69,7 +88,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 {' '}
                 <FontAwesomeIcon icon={faMinusCircle} />{' '}
               </Button>
-            </CustomizedStatefulTooltip>
+            </Tooltip>
           </div>
         </ListItem>
       ))}
@@ -77,14 +96,14 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
   )
 }
 
-export const AddDocumentModal = (props: AddDocumentProps) => {
-  const { isOpen, submit, addDefaultDocument, onClose, process, error } = props
-  const [defaultDoc, setDefaultDoc] = useState<Document | undefined>()
-  const [documents, setDocuments] = useState<Document[]>([])
+export const AddDocumentModal = (props: TAddDocumentProps) => {
+  const { isOpen, submit, addDefaultDocument, process, error } = props
+  const [defaultDoc, setDefaultDoc] = useState<IDocument | undefined>()
+  const [documents, setDocuments] = useState<IDocument[]>([])
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
 
-  const loading: boolean = !defaultDoc
+  const loading = !defaultDoc
 
   useEffect(() => {
     ;(async () => {
@@ -109,7 +128,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
     props.onClose()
   }
 
-  function extractInfoTypes(document: Document, existingPolicies: Policy[]) {
+  function extractInfoTypes(document: IDocument, existingPolicies: IPolicy[]) {
     const infoTypeUses = document.informationTypes
       .map((infoType) => {
         // remove subject categories already in use for this process
@@ -117,7 +136,9 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
           .filter((policy) => policy.informationType.id === infoType.informationTypeId)
           .flatMap((policy) => policy.subjectCategories)
           .map((policy) => policy.code)
-        const remainingSubjectCategories: Code[] = infoType.subjectCategories.filter((subjectCategory) => alreadyUsedSubjectCategoriies.indexOf(subjectCategory.code) < 0)
+        const remainingSubjectCategories: ICode[] = infoType.subjectCategories.filter(
+          (subjectCategory) => alreadyUsedSubjectCategoriies.indexOf(subjectCategory.code) < 0
+        )
 
         return { ...infoType, subjectCategories: remainingSubjectCategories }
       })
@@ -135,14 +156,20 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
           initialValues={
             {
               document: addDefaultDocument ? defaultDoc : undefined,
-              informationTypes: addDefaultDocument ? extractInfoTypes(defaultDoc!, process.policies) : [],
+              informationTypes:
+                addDefaultDocument && defaultDoc
+                  ? extractInfoTypes(defaultDoc, process.policies)
+                  : [],
               process: process,
               linkDocumentToPolicies: !addDefaultDocument,
-            } as AddDocumentToProcessFormValues
+            } as IAddDocumentToProcessFormValues
           }
           validationSchema={addDocumentToProcessSchema()}
-          render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
-            const selectDocument: (document: Document, isDefault: boolean) => void = (document: Document, isDefault: boolean) => {
+          render={(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
+            const selectDocument: (document: IDocument, isDefault: boolean) => void = (
+              document: IDocument,
+              isDefault: boolean
+            ) => {
               formik.setFieldValue('defaultDocument', isDefault)
               formik.setFieldValue('document', document)
               formik.setFieldValue('informationTypes', extractInfoTypes(document, process.policies))
@@ -157,12 +184,11 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                       <ModalLabel label="Dokument" />
                       <Field
                         name="document"
-                        render={({ form }: FieldProps<AddDocumentToProcessFormValues>) => (
+                        render={({ form }: FieldProps<IAddDocumentToProcessFormValues>) => (
                           <>
                             <Select
                               clearable={false}
                               isLoading={searchLoading}
-                              autoFocus
                               noResultsMsg="Ingen"
                               maxDropdownHeight="400px"
                               searchable={true}
@@ -170,18 +196,27 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                               options={documents}
                               placeholder="Søk dokumenter"
                               value={form.values.document ? [form.values.document as Option] : []}
-                              onInputChange={(event: ChangeEvent<HTMLInputElement>) => setDocumentSearch(event.currentTarget.value)}
+                              onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
+                                setDocumentSearch(event.currentTarget.value)
+                              }
                               onChange={(params: OnChangeParams) => {
-                                let document = params.value[0] as Document
+                                const document = params.value[0] as IDocument
                                 formik.setFieldValue('defaultDocument', false)
                                 selectDocument(document, false)
                               }}
                               error={!!form.errors.document && !!form.submitCount}
-                              filterOptions={(options) => options.filter((doc) => !!doc.informationTypes.length)}
+                              filterOptions={(options) =>
+                                options.filter((doc) => !!doc.informationTypes.length)
+                              }
                               labelKey="name"
                             />
                             {!formik.values.document && defaultDoc && (
-                              <Button type="button" kind="secondary" size="compact" style={{ marginLeft: '.5rem' }} onClick={() => selectDocument(defaultDoc, true)}>
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                size="small"
+                                onClick={() => selectDocument(defaultDoc, true)}
+                              >
                                 Standard opplysningstyper
                               </Button>
                             )}
@@ -199,7 +234,11 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                           <FieldArray
                             name="informationTypes"
                             render={(arrayHelpers: FieldArrayRenderProps) => (
-                              <ListInformationTypes informationTypes={formik.values.informationTypes} formik={formik} arrayHelpers={arrayHelpers} />
+                              <ListInformationTypes
+                                informationTypes={formik.values.informationTypes}
+                                formik={formik}
+                                arrayHelpers={arrayHelpers}
+                              />
                             )}
                           />
                         </div>
@@ -211,10 +250,10 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                 <ModalFooter>
                   <div className="flex justify-end">
                     <div className="self-end">{error && <p>{error}</p>}</div>
-                    <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
+                    <Button type="button" variant="tertiary" onClick={onCloseModal}>
                       Avbryt
                     </Button>
-                    <ModalButton type="submit">Legg til</ModalButton>
+                    <Button type="submit">Legg til</Button>
                   </div>
                 </ModalFooter>
               </Form>

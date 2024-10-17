@@ -1,7 +1,10 @@
 import { Dispatch, RefObject, SetStateAction, createRef, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
-export function useDebouncedState<T>(initialValue: T, delay: number): [T, Dispatch<SetStateAction<T>>, T] {
+export function useDebouncedState<T>(
+  initialValue: T,
+  delay: number
+): [T, Dispatch<SetStateAction<T>>, T] {
   const [value, setValue] = useState<T>(initialValue)
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
@@ -44,14 +47,14 @@ export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<
   }, [])
 }
 
-type Refs<T> = { [id: string]: RefObject<T> }
+type TRefs<T> = { [id: string]: RefObject<T> }
 
 export function useRefs<T>(ids: string[]) {
-  const refs: Refs<T> =
+  const refs: TRefs<T> =
     ids.reduce((acc, value) => {
       acc[value] = createRef()
       return acc
-    }, {} as Refs<T>) || {}
+    }, {} as TRefs<T>) || {}
 
   return refs
 }

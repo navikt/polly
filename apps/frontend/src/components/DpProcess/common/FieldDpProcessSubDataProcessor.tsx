@@ -1,20 +1,20 @@
 import { FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import { getAll } from '../../../api'
+import { getAll } from '../../../api/GetAllApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
-import { DpProcessFormValues, Processor } from '../../../constants'
+import { IDpProcessFormValues, IProcessor } from '../../../constants'
 import BoolField from '../../Process/common/BoolField'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import FieldDpDataProcessors from './FieldDpDataProcessors'
 
-type FieldDpProcessSubDataProcessorProps = {
-  formikBag: FormikProps<DpProcessFormValues>
-  initialValues: DpProcessFormValues
+type TFieldDpProcessSubDataProcessorProps = {
+  formikBag: FormikProps<IDpProcessFormValues>
+  initialValues: IDpProcessFormValues
 }
 
-const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorProps) => {
+const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorProps) => {
   const { formikBag, initialValues } = props
-  const [processorList, setProcessorList] = useState<Processor[]>([])
+  const [processorList, setProcessorList] = useState<IProcessor[]>([])
   const [subDataProcessors, setSubDataProcessors] = useState(new Map<string, string>())
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
 
   useEffect(() => {
     ;(async () => {
-      const response: Processor[] = await getAll(getProcessorsByPageAndPageSize)()
+      const response: IProcessor[] = await getAll(getProcessorsByPageAndPageSize)()
       if (response) {
         setProcessorList(response)
       }
@@ -44,7 +44,10 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
           label="Benyttes underdatabehandler(e)?"
           tooltip="En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler."
         />
-        <BoolField fieldName="subDataProcessing.dataProcessor" value={formikBag.values.subDataProcessing.dataProcessor} />
+        <BoolField
+          fieldName="subDataProcessing.dataProcessor"
+          value={formikBag.values.subDataProcessing.dataProcessor}
+        />
       </div>
 
       {formikBag.values.subDataProcessing.dataProcessor && (
@@ -54,7 +57,7 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
             <FieldDpDataProcessors
               formikBag={formikBag}
               subDataProcessors={subDataProcessors}
-              options={processorList.map((processor: Processor) => {
+              options={processorList.map((processor: IProcessor) => {
                 return {
                   id: processor.id,
                   label: processor.name,

@@ -1,46 +1,63 @@
 import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { KIND, SIZE } from 'baseui/button'
+import { KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { convertDisclosureToFormValues } from '../../api'
 import { getAlertForDisclosure } from '../../api/AlertApi'
-import { Disclosure, DisclosureAlert, DisclosureFormValues, disclosureSort } from '../../constants'
+import { convertDisclosureToFormValues } from '../../api/GetAllApi'
+import {
+  IDisclosure,
+  IDisclosureAlert,
+  IDisclosureFormValues,
+  disclosureSort,
+} from '../../constants'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import { theme } from '../../util'
 import { useTable } from '../../util/hooks'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
-import Button from './Button'
+import Button from './Button/CustomButton'
 import { ListLegalBasesInTable } from './LegalBasis'
 import RouteLink from './RouteLink'
 import { Cell, HeadCell, Row, Table } from './Table'
 
-type TableDisclosureProps = {
-  list: Array<Disclosure>
+type TTableDisclosureProps = {
+  list: Array<IDisclosure>
   showRecipient: boolean
   editable: boolean
-  submitDeleteDisclosure?: (disclosure: Disclosure) => Promise<boolean>
-  submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>
+  submitDeleteDisclosure?: (disclosure: IDisclosure) => Promise<boolean>
+  submitEditDisclosure?: (disclosure: IDisclosureFormValues) => Promise<boolean>
   errorModal?: string
   onCloseModal?: () => void
 }
 
-type Alerts = { [k: string]: DisclosureAlert }
-const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal }: TableDisclosureProps) => {
+type TAlerts = { [k: string]: IDisclosureAlert }
+const TableDisclosure = ({
+  list,
+  showRecipient,
+  submitDeleteDisclosure,
+  submitEditDisclosure,
+  errorModal,
+  editable,
+  onCloseModal,
+}: TTableDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [showEditModal, setShowEditModal] = useState<boolean>()
-  const [selectedDisclosure, setSelectedDisclosure] = useState<Disclosure>()
-  const [alerts, setAlerts] = useState<Alerts>({})
+  const [selectedDisclosure, setSelectedDisclosure] = useState<IDisclosure>()
+  const [alerts, setAlerts] = useState<TAlerts>({})
 
-  const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, { sorting: disclosureSort, initialSortColumn: showRecipient ? 'recipient' : 'name' })
+  const [table, sortColumn] = useTable<IDisclosure, keyof IDisclosure>(list, {
+    sorting: disclosureSort,
+    initialSortColumn: showRecipient ? 'recipient' : 'name',
+  })
 
   useEffect(() => {
     ;(async () => {
-      const alertMap: Alerts = (await Promise.all(list.map((list: Disclosure) => getAlertForDisclosure(list.id)))).reduce((acc: Alerts, alert: DisclosureAlert) => {
+      const alertMap: TAlerts = (
+        await Promise.all(list.map((list: IDisclosure) => getAlertForDisclosure(list.id)))
+      ).reduce((acc: TAlerts, alert: IDisclosureAlert) => {
         acc[alert.disclosureId] = alert
         return acc
-      }, {} as Alerts)
+      }, {} as TAlerts)
       setAlerts(alertMap)
     })()
   }, [list])
@@ -51,17 +68,31 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
         emptyText="Ingen utlevering"
         headers={
           <>
-            {showRecipient && <HeadCell title="Mottaker" column="recipient" tableState={[table, sortColumn]} />}
+            {showRecipient && (
+              <HeadCell title="Mottaker" column="recipient" tableState={[table, sortColumn]} />
+            )}
             <HeadCell title="Navn på utlevering" column="name" tableState={[table, sortColumn]} />
             <HeadCell title="Dokument" column="document" tableState={[table, sortColumn]} />
-            <HeadCell title="Formål med utlevering" column="recipientPurpose" tableState={[table, sortColumn]} />
-            <HeadCell title="Ytterligere beskrivelse" column="description" tableState={[table, sortColumn]} />
-            <HeadCell title="Behandlingsgrunnlag" column="legalBases" tableState={[table, sortColumn]} />
+            <HeadCell
+              title="Formål med utlevering"
+              column="recipientPurpose"
+              tableState={[table, sortColumn]}
+            />
+            <HeadCell
+              title="Ytterligere beskrivelse"
+              column="description"
+              tableState={[table, sortColumn]}
+            />
+            <HeadCell
+              title="Behandlingsgrunnlag"
+              column="legalBases"
+              tableState={[table, sortColumn]}
+            />
             <HeadCell small />
           </>
         }
       >
-        {table.data.map((row: Disclosure, index: number) => (
+        {table.data.map((row: IDisclosure, index: number) => (
           <DisclosureRow
             key={index}
             disclosure={row}
@@ -80,7 +111,11 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
           title="Rediger utlevering"
           isOpen={showEditModal}
           initialValues={convertDisclosureToFormValues(selectedDisclosure)}
-          submit={async (values: DisclosureFormValues) => (submitEditDisclosure && (await submitEditDisclosure(values)) ? setShowEditModal(false) : setShowEditModal(true))}
+          submit={async (values: IDisclosureFormValues) =>
+            submitEditDisclosure && (await submitEditDisclosure(values))
+              ? setShowEditModal(false)
+              : setShowEditModal(true)
+          }
           onClose={() => {
             onCloseModal && onCloseModal()
             setShowEditModal(false)
@@ -91,16 +126,29 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
       )}
 
       {showDeleteModal && (
-        <Modal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal} animate size="default">
+        <Modal
+          onClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteModal}
+          animate
+          size="default"
+        >
           <ModalHeader>Bekreft sletting</ModalHeader>
           <ModalBody>
-            <ParagraphMedium>Bekreft sletting av behandling for opplysningstypen {selectedDisclosure && selectedDisclosure.recipient.code}</ParagraphMedium>
+            <ParagraphMedium>
+              Bekreft sletting av behandling for opplysningstypen{' '}
+              {selectedDisclosure && selectedDisclosure.recipient.code}
+            </ParagraphMedium>
           </ModalBody>
 
           <ModalFooter>
             <div className="flex justify-end">
               <div className="self-end">{errorModal && <p>{errorModal}</p>}</div>
-              <Button kind="secondary" onClick={() => setShowDeleteModal(false)} marginLeft marginRight>
+              <Button
+                kind="secondary"
+                onClick={() => setShowDeleteModal(false)}
+                marginLeft
+                marginRight
+              >
                 Avbryt
               </Button>
               <Button
@@ -127,17 +175,25 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
 }
 
 interface IDisclosureRowProps {
-  disclosure: Disclosure
+  disclosure: IDisclosure
   editable: boolean
   showRecipient: boolean
-  alert: DisclosureAlert
-  setSelectedDisclosure: (disclosure: Disclosure) => void
+  alert: IDisclosureAlert
+  setSelectedDisclosure: (disclosure: IDisclosure) => void
   showEditModal: () => void
   showDeleteModal: () => void
 }
 
 const DisclosureRow = (props: IDisclosureRowProps) => {
-  const { disclosure, editable, alert, showRecipient, setSelectedDisclosure, showEditModal, showDeleteModal } = props
+  const {
+    disclosure,
+    editable,
+    alert,
+    showRecipient,
+    setSelectedDisclosure,
+    showEditModal,
+    showDeleteModal,
+  } = props
   const navigate: NavigateFunction = useNavigate()
   const hasAlert: boolean = alert?.missingArt6
 
@@ -145,23 +201,34 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
     <Row>
       {showRecipient && (
         <Cell>
-          <RouteLink href={`/thirdparty/${disclosure.recipient.code}`}>{disclosure.recipient.shortName}</RouteLink>
+          <RouteLink href={`/thirdparty/${disclosure.recipient.code}`}>
+            {disclosure.recipient.shortName}
+          </RouteLink>
         </Cell>
       )}
       <Cell>{disclosure.name}</Cell>
-      <Cell>{<RouteLink href={`/document/${disclosure.documentId}`}>{disclosure.document?.name}</RouteLink>}</Cell>
+      <Cell>
+        {
+          <RouteLink href={`/document/${disclosure.documentId}`}>
+            {disclosure.document?.name}
+          </RouteLink>
+        }
+      </Cell>
       <Cell>{disclosure.recipientPurpose}</Cell>
       <Cell>{disclosure.description}</Cell>
-      <Cell>{disclosure.legalBases && <ListLegalBasesInTable legalBases={disclosure.legalBases} />}</Cell>
+      <Cell>
+        {disclosure.legalBases && <ListLegalBasesInTable legalBases={disclosure.legalBases} />}
+      </Cell>
       <Cell small>
         {hasAlert && canViewAlerts() && (
           <Button
             type="button"
             kind="tertiary"
-            size="compact"
+            size="xsmall"
             icon={faExclamationCircle}
-            tooltip={hasAlert ? `Varsler: Behandlingsgrunnlag for artikkel 6 mangler` : `Varsler: Nei`}
-            $style={{ color: hasAlert ? theme.colors.warning500 : undefined }}
+            tooltip={
+              hasAlert ? `Varsler: Behandlingsgrunnlag for artikkel 6 mangler` : `Varsler: Nei`
+            }
             onClick={() => navigate(`/alert/events/disclosure/${disclosure.id}`)}
           />
         )}
@@ -170,7 +237,7 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
           <div className="w-full flex justify-end">
             <Button
               tooltip="Rediger"
-              size={SIZE.compact}
+              size="xsmall"
               kind={KIND.tertiary}
               onClick={() => {
                 setSelectedDisclosure(disclosure)
@@ -181,7 +248,7 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
 
             <Button
               tooltip="Slett"
-              size={SIZE.compact}
+              size="xsmall"
               kind={KIND.tertiary}
               onClick={() => {
                 setSelectedDisclosure(disclosure)

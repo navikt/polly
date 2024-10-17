@@ -3,18 +3,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../api'
+import {
+  getCodelistUsageByListName,
+  getDisclosuresByInformationTypeId,
+  getDocumentsForInformationType,
+  getInformationType,
+  getPoliciesForInformationType,
+} from '../api/GetAllApi'
 import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
-import Button from '../components/common/Button'
+import Button from '../components/common/Button/CustomButton'
 import { Spinner } from '../components/common/Spinner'
-import { CategoryUsage, CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
+import {
+  ICategoryUsage,
+  ICodeUsage,
+  IDisclosure,
+  IDocument,
+  IInformationType,
+  IPolicy,
+} from '../constants'
 import { ampli } from '../service/Amplitude'
-import { ListName } from '../service/Codelist'
+import { EListName } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
 
-export type PurposeMap = { [purpose: string]: Policy[] }
+export type TPurposeMap = { [purpose: string]: IPolicy[] }
 
 const InformationtypePage = () => {
   const params = useParams<{ id?: string }>()
@@ -22,17 +35,21 @@ const InformationtypePage = () => {
 
   const [error, setError] = useState(null)
   const [informationTypeId, setInformationTypeId] = useState(params.id)
-  const [informationtype, setInformationtype] = useState<InformationType>()
-  const [policies, setPolicies] = useState<Policy[]>()
-  const [disclosures, setDisclosures] = useState<Disclosure[]>()
-  const [documents, setDocuments] = useState<Document[]>()
-  const [categoryUsages, setCategoryUsages] = useState<CodeUsage[]>()
+  const [informationtype, setInformationtype] = useState<IInformationType>()
+  const [policies, setPolicies] = useState<IPolicy[]>()
+  const [disclosures, setDisclosures] = useState<IDisclosure[]>()
+  const [documents, setDocuments] = useState<IDocument[]>()
+  const [categoryUsages, setCategoryUsages] = useState<ICodeUsage[]>()
 
-  ampli.logEvent('besøk', { side: 'Opplysningstyper', url: '/informationtype/', app: 'Behandlingskatalogen' })
+  ampli.logEvent('besøk', {
+    side: 'Opplysningstyper',
+    url: '/informationtype/',
+    app: 'Behandlingskatalogen',
+  })
 
   useEffect(() => {
     ;(async () => {
-      let response: CategoryUsage = await getCodelistUsageByListName(ListName.CATEGORY)
+      const response: ICategoryUsage = await getCodelistUsageByListName(EListName.CATEGORY)
       setCategoryUsages(response.codesInUse)
     })()
   }, [])
@@ -61,7 +78,14 @@ const InformationtypePage = () => {
     return (
       <>
         {!informationtype && <Spinner size={theme.sizing.scale1200} />}
-        {!error && informationtype && <InformationtypeMetadata informationtype={informationtype} policies={policies} disclosures={disclosures} documents={documents} />}
+        {!error && informationtype && (
+          <InformationtypeMetadata
+            informationtype={informationtype}
+            policies={policies}
+            disclosures={disclosures}
+            documents={documents}
+          />
+        )}
 
         {error && <p>{error}</p>}
       </>
