@@ -3,28 +3,36 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { HeadingMedium, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getAll } from '../api'
-import { convertProcessorToFormValues, createProcessor, getProcessorsByPageAndPageSize } from '../api/ProcessorApi'
+import { getAll } from '../api/GetAllApi'
+import {
+  convertProcessorToFormValues,
+  createProcessor,
+  getProcessorsByPageAndPageSize,
+} from '../api/ProcessorApi'
 import ProcessorModal from '../components/Processor/ProcessorModal'
 import AlphabeticList from '../components/common/AlphabeticList'
-import Button from '../components/common/Button'
+import Button from '../components/common/Button/CustomButton'
 import { Spinner } from '../components/common/Spinner'
-import { Processor, ProcessorFormValues } from '../constants'
+import { IProcessor, IProcessorFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 import { theme } from '../util'
 
 export const ProcessorListPage = () => {
-  const [processors, setProcessors] = useState<Processor[]>([])
+  const [processors, setProcessors] = useState<IProcessor[]>([])
   const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
 
-  ampli.logEvent('besøk', { side: 'Databehandlere', url: '/processor', app: 'Behandlingskatalogen' })
+  ampli.logEvent('besøk', {
+    side: 'Databehandlere',
+    url: '/processor',
+    app: 'Behandlingskatalogen',
+  })
 
-  const handleCreateProcessor = (processor: ProcessorFormValues) => {
+  const handleCreateProcessor = (processor: IProcessorFormValues) => {
     if (!processor) return
     try {
       ;(async () => {

@@ -1,26 +1,31 @@
 import { Fragment, useEffect, useState } from 'react'
-import { getTeam } from '../../api'
-import { DpProcess, Team, dpProcessSort } from '../../constants'
+import { getTeam } from '../../api/GetAllApi'
+import { IDpProcess, ITeam, dpProcessSort } from '../../constants'
 import { useTable } from '../../util/hooks'
 import RouteLink from './RouteLink'
 import { Cell, HeadCell, Row, Table } from './Table'
 
-type TableDpProcessType = {
-  dpProcesses: Array<DpProcess>
+type TTableDpProcessType = {
+  dpProcesses: Array<IDpProcess>
 }
 
-const ThirdPartiesDpProcessTable = ({ dpProcesses }: TableDpProcessType) => {
-  const [table, sortColumn] = useTable<DpProcess, keyof DpProcess>(dpProcesses, { sorting: dpProcessSort, initialSortColumn: 'name' })
-  const [productTeams, setProductTeams] = useState<Map<string, Team>>()
+const ThirdPartiesDpProcessTable = ({ dpProcesses }: TTableDpProcessType) => {
+  const [table, sortColumn] = useTable<IDpProcess, keyof IDpProcess>(dpProcesses, {
+    sorting: dpProcessSort,
+    initialSortColumn: 'name',
+  })
+  const [productTeams, setProductTeams] = useState<Map<string, ITeam>>()
 
   useEffect(() => {
     ;(async () => {
-      let teamIds: string[] = dpProcesses.map((dp: DpProcess) => dp.affiliation.productTeams).flat()
-      let teamsPromises: Promise<Team>[] = []
+      const teamIds: string[] = dpProcesses
+        .map((dp: IDpProcess) => dp.affiliation.productTeams)
+        .flat()
+      const teamsPromises: Promise<ITeam>[] = []
       teamIds.forEach((id) => teamsPromises.push((async () => await getTeam(id))()))
-      let totalResponse: Team[] = await Promise.all(teamsPromises)
-      let tempDictionary: Map<string, Team> = new Map<string, Team>()
-      totalResponse.forEach((response: Team) => {
+      const totalResponse: ITeam[] = await Promise.all(teamsPromises)
+      const tempDictionary: Map<string, ITeam> = new Map<string, ITeam>()
+      totalResponse.forEach((response: ITeam) => {
         if (tempDictionary.get(response.id) === undefined) {
           tempDictionary.set(response.id, response)
         }
@@ -41,17 +46,22 @@ const ThirdPartiesDpProcessTable = ({ dpProcesses }: TableDpProcessType) => {
         </>
       }
     >
-      {table.data.map((row: DpProcess, index: number) => (
+      {table.data.map((row: IDpProcess, index: number) => (
         <Row key={index}>
           <Cell>{<RouteLink href={`/dpprocess/${row.id}`}>{row.name}</RouteLink>}</Cell>
           <Cell>{row.description}</Cell>
           <Cell>
-            <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>{row.affiliation.department?.shortName}</RouteLink>
+            <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>
+              {row.affiliation.department?.shortName}
+            </RouteLink>
           </Cell>
           <Cell>
             {row.affiliation.productTeams.map((productTeam: string) => (
               <Fragment key={productTeam}>
-                <RouteLink href={`/team/${productTeam}`}>{productTeams?.get(productTeam)?.id === productTeam && productTeams?.get(productTeam)?.name}</RouteLink>
+                <RouteLink href={`/team/${productTeam}`}>
+                  {productTeams?.get(productTeam)?.id === productTeam &&
+                    productTeams?.get(productTeam)?.name}
+                </RouteLink>
                 &nbsp;
               </Fragment>
             ))}

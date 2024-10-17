@@ -2,17 +2,32 @@ import axios from 'axios'
 import { Form, Formik} from 'formik'
 import {useState} from 'react'
 import * as yup from 'yup'
-import {searchProcessOptions, useAllAreas} from '../../../api'
-import {ProcessRevisionRequest, ProductArea, RecipientType} from '../../../constants'
+import { useAllAreas, useProcessSearch } from '../../../api/GetAllApi'
+import { IProcess, IProductArea } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
-import { codelist, ListName } from '../../../service/Codelist'
+import { EListName, codelist } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import AsyncSelect from 'react-select/async'
-
 import {Alert, Button, Heading, Label, Loader, Radio, RadioGroup, Select, Tabs, Textarea} from '@navikt/ds-react'
 
-const initialValues: ProcessRevisionRequest = {
-  processSelection: RecipientType.ONE,
+enum EProcessSelection {
+  ONE = 'ONE',
+  ALL = 'ALL',
+  DEPARTMENT = 'DEPARTMENT',
+  PRODUCT_AREA = 'PRODUCT_AREA',
+}
+
+interface IProcessRevisionRequest {
+  processSelection: EProcessSelection
+  processId?: string
+  department?: string
+  productAreaId?: string
+  revisionText: string
+  completedOnly: boolean
+}
+
+const initialValues: IProcessRevisionRequest = {
+  processSelection: EProcessSelection.ONE,
   processId: '',
   department: '',
   productAreaId: '',
@@ -20,21 +35,33 @@ const initialValues: ProcessRevisionRequest = {
   completedOnly: false,
 }
 
-const schema: () => yup.ObjectSchema<ProcessRevisionRequest> = () => {
+const schema: () => yup.ObjectSchema<IProcessRevisionRequest> = () => {
   const requiredString = yup.string().required('Feltet er påkrevd')
   return yup.object({
-    processSelection: yup.mixed<RecipientType>().oneOf(Object.values(RecipientType)).required(),
-    processId: yup.string().when('processSelection', { is: RecipientType.ONE, then: () => requiredString }),
-    department: yup.string().when('processSelection', { is: RecipientType.DEPARTMENT, then: () => requiredString }),
-    productAreaId: yup.string().when('processSelection', { is: RecipientType.PRODUCT_AREA, then: () => requiredString }),
+    processSelection: yup
+      .mixed<EProcessSelection>()
+      .oneOf(Object.values(EProcessSelection))
+      .required(),
+    processId: yup
+      .string()
+      .when('processSelection', { is: EProcessSelection.ONE, then: () => requiredString }),
+    department: yup
+      .string()
+      .when('processSelection', { is: EProcessSelection.DEPARTMENT, then: () => requiredString }),
+    productAreaId: yup
+      .string()
+      .when('processSelection', { is: EProcessSelection.PRODUCT_AREA, then: () => requiredString }),
     revisionText: requiredString,
     completedOnly: yup.boolean().required(),
   })
 }
 
-const requestRevision = async (request: ProcessRevisionRequest) => {
+const requestRevision = async (request: IProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
 }
+
+const formatProcessName = (process: IProcess): string =>
+  process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
 
 interface IRequestRevisionPageProps {
   close?: () => void
@@ -47,12 +74,29 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
-  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/request-revision', app: 'Behandlingskatalogen', type: 'Trenger revidering' })
+  ampli.logEvent('besøk', {
+    side: 'Admin',
+    url: '/admin/request-revision',
+    app: 'Behandlingskatalogen',
+    type: 'Trenger revidering',
+  })
 
-  const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
-  const areas: ProductArea[] = useAllAreas()
+  const departments = codelist.getParsedOptions(EListName.DEPARTMENT)
+  const areas: IProductArea[] = useAllAreas()
 
-  const save = async (request: ProcessRevisionRequest) => {
+  const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
+
+  const modalView = !!props.processId
+  const abort = (): void => {
+    if (close) {
+      close()
+    } else {
+      navigate(-1)
+    }
+  }
+
+
+  const save = async (request: IProcessRevisionRequest) => {
     setLoading(true)
     try {
       await requestRevision(request)

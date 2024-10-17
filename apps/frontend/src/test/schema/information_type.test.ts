@@ -1,9 +1,9 @@
 import { infoTypeSchema } from '../../components/common/schema'
-import { InformationtypeFormValues } from '../../constants'
+import { IInformationtypeFormValues } from '../../constants'
 import '../config/schemaValidator'
 
 const schema = infoTypeSchema()
-const createInfoType: () => InformationtypeFormValues = () => ({
+const createInfoType: () => IInformationtypeFormValues = () => ({
   name: 'name',
   description: '',
   sensitivity: 'SEN',

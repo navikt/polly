@@ -1,9 +1,9 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { ProcessFormValues } from '../../../constants'
-import { codelist, ListName } from '../../../service/Codelist'
+import { IProcessFormValues } from '../../../constants'
+import { EListName, codelist } from '../../../service/Codelist'
 
-const FieldPurpose = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
+const FieldPurpose = (props: { formikBag: FormikProps<IProcessFormValues> }) => {
   const { formikBag } = props
 
   return (
@@ -12,12 +12,14 @@ const FieldPurpose = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
           <Select
-            value={codelist.getParsedOptionsForList(ListName.PURPOSE, formikBag.values.purposes)}
-            options={codelist.getParsedOptions(ListName.PURPOSE).filter((option) => !formikBag.values.purposes.includes(option.id))}
+            value={codelist.getParsedOptionsForList(EListName.PURPOSE, formikBag.values.purposes)}
+            options={codelist
+              .getParsedOptions(EListName.PURPOSE)
+              .filter((option) => !formikBag.values.purposes.includes(option.id))}
             onChange={({ value }) => {
               arrayHelpers.form.setFieldValue(
                 'purposes',
-                value.map((value) => value.id),
+                value.map((value) => value.id)
               )
             }}
             overrides={{ Placeholder: { style: { color: 'black' } } }}

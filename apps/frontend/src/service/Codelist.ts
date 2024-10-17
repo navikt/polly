@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
-import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api'
+import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
-export enum ListName {
+export enum EListName {
   PURPOSE = 'PURPOSE',
   CATEGORY = 'CATEGORY',
   THIRD_PARTY = 'THIRD_PARTY',
@@ -18,7 +18,7 @@ export enum ListName {
 }
 
 // Refers to SENSITIVITY codelist
-export enum SensitivityLevel {
+export enum ESensitivityLevel {
   ART6 = 'POL',
   ART9 = 'SAERLIGE',
   ART10 = 'STRAFF',
@@ -34,11 +34,11 @@ const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT_'
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
 class CodelistService {
-  lists?: AllCodelists
+  lists?: IAllCodelists
   error?: string
   promise: Promise<any>
-  countries?: CountryCode[]
-  countriesOutsideEUEEA?: CountryCode[]
+  countries?: ICountryCode[]
+  countriesOutsideEUEEA?: ICountryCode[]
 
   constructor() {
     this.promise = this.fetchData()
@@ -57,7 +57,7 @@ class CodelistService {
     return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
   }
 
-  handleGetCodelistResponse = (response: AxiosResponse<AllCodelists>) => {
+  handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>) => {
     if (typeof response.data === 'object' && response.data !== null) {
       this.lists = response.data
     } else {
@@ -90,53 +90,63 @@ class CodelistService {
     return this.getAllCountryCodes().find((c) => c.code === code)?.description || code
   }
 
-  getCodes(list: ListName): Code[] {
-    return this.lists && this.lists.codelist[list] ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName)) : []
+  getCodes(list: EListName): ICode[] {
+    return this.lists && this.lists.codelist[list]
+      ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName))
+      : []
   }
 
-  getCode(list: ListName, codeName: string): Code | undefined {
+  getCode(list: EListName, codeName: string): ICode | undefined {
     return this.getCodes(list).find((c) => c.code === codeName)
   }
 
-  valid(list: ListName, codeName?: string): boolean {
+  valid(list: EListName, codeName?: string): boolean {
     return !!codeName && !!this.getCode(list, codeName)
   }
 
-  getShortnameForCode(code: Code) {
+  getShortnameForCode(code: ICode) {
     return this.getShortname(code.list, code.code)
   }
 
-  getShortnameForCodes(codes: Code[]) {
+  getShortnameForCodes(codes: ICode[]) {
     return codes.map((c) => this.getShortname(c.list, c.code)).join(', ')
   }
 
-  getShortname(list: ListName, codeName: string) {
-    let code = this.getCode(list, codeName)
+  getShortname(list: EListName, codeName: string) {
+    const code = this.getCode(list, codeName)
     return code ? code.shortName : codeName
   }
 
-  getShortnames(list: ListName, codeNames: string[]) {
+  getShortnames(list: EListName, codeNames: string[]) {
     return codeNames.map((codeName) => this.getShortname(list, codeName))
   }
 
-  getDescription(list: ListName, codeName: string) {
-    let code = this.getCode(list, codeName)
+  getDescription(list: EListName, codeName: string) {
+    const code = this.getCode(list, codeName)
     return code ? code.description : codeName
   }
 
-  getParsedOptions(listName: ListName): { id: string; label: string }[] {
-    return this.getCodes(listName).map((code: Code) => {
+  getParsedOptions(listName: EListName): { id: string; label: string }[] {
+    return this.getCodes(listName).map((code: ICode) => {
       return { id: code.code, label: code.shortName }
     })
   }
 
-  getParsedOptionsForList(listName: ListName, selected: string[]): { id: string; label: string }[] {
+  getParsedOptionsForList(
+    listName: EListName,
+    selected: string[]
+  ): { id: string; label: string }[] {
     return selected.map((code) => ({ id: code, label: this.getShortname(listName, code) }))
   }
 
-  getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): { id: string; label: string }[] {
-    let parsedOptions = this.getParsedOptions(listName)
-    return !currentSelected ? parsedOptions : parsedOptions.filter((option) => (currentSelected.includes(option.id) ? null : option.id))
+  getParsedOptionsFilterOutSelected(
+    listName: EListName,
+    currentSelected: string[]
+  ): { id: string; label: string }[] {
+    const parsedOptions = this.getParsedOptions(listName)
+    return !currentSelected
+      ? parsedOptions
+      : parsedOptions.filter((option) => (currentSelected.includes(option.id) ? null : option.id))
   }
 
   requiresNationalLaw(gdprCode?: string) {
@@ -148,7 +158,7 @@ class CodelistService {
   }
 
   requiresArt9(sensitivityCode?: string) {
-    return sensitivityCode === SensitivityLevel.ART9
+    return sensitivityCode === ESensitivityLevel.ART9
   }
 
   isArt6(gdprCode?: string) {
@@ -168,29 +178,29 @@ class CodelistService {
   }
 
   makeIdLabelForAllCodeLists() {
-    return Object.keys(ListName).map((key) => ({ id: key, label: key }))
+    return Object.keys(EListName).map((key) => ({ id: key, label: key }))
   }
 }
 
 export const codelist = new CodelistService()
 
-export interface AllCodelists {
-  codelist: List
+export interface IAllCodelists {
+  codelist: IList
 }
 
-export interface List {
-  [name: string]: Code[]
+export interface IList {
+  [name: string]: ICode[]
 }
 
-export interface Code {
-  list: ListName
+export interface ICode {
+  list: EListName
   code: string
   shortName: string
   description: string
   invalidCode?: boolean
 }
 
-export interface CountryCode {
+export interface ICountryCode {
   code: string
   description: string
   validFrom: string

@@ -1,10 +1,10 @@
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Tooltip } from '@navikt/ds-react'
 import { LabelMedium } from 'baseui/typography'
 import { ReactNode } from 'react'
 import { theme } from '../../util'
-import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 interface ITextWithLabelProps {
   label: string
@@ -30,7 +30,13 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
         {icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}
       </LabelMedium>
       {!error && value}
-      {error && <CustomizedStatefulTooltip content={error}>{value}</CustomizedStatefulTooltip>}
+      {error && (
+        <Tooltip content={error}>
+          <Button type="button" size="small" variant="tertiary-neutral">
+            {value}
+          </Button>
+        </Tooltip>
+      )}
       {children}
     </>
   )

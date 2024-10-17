@@ -113,12 +113,6 @@ export enum NoDpiaReason {
   OTHER = 'OTHER',
 }
 
-export enum RecipientType {
-  ONE = 'ONE',
-  ALL = 'ALL',
-  DEPARTMENT = 'DEPARTMENT',
-  PRODUCT_AREA = 'PRODUCT_AREA',
-}
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
 export interface InformationtypeFormValues {
@@ -278,8 +272,10 @@ export interface Policy {
   documentIds?: string[]
 }
 
+
+
 export interface ProcessRevisionRequest {
-  processSelection: RecipientType
+  processSelection: IRecipientType
   processId?: string
   department?: string
   productAreaId?: string
@@ -289,6 +285,11 @@ export interface ProcessRevisionRequest {
 
 export const policySort: ColumnCompares<Policy> = {
   purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
+export const policySort: TColumnCompares<IPolicy> = {
+  purposes: (a, b) =>
+    codelist
+      .getShortnameForCode(a.purposes[0])
+      .localeCompare(codelist.getShortnameForCode(b.purposes[0]), 'nb'),
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
   subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), 'nb'),

@@ -1,45 +1,45 @@
 import { faChartBar, faChartPie, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Tooltip } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { LabelLarge } from 'baseui/typography'
 import * as _ from 'lodash'
 import { Fragment, useReducer, useState } from 'react'
 import { theme } from '../../util'
-import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 import { hideBorder, marginAll } from '../common/Style'
 
 const cursor = { cursor: 'pointer' }
 
-interface ChartData {
+interface IChartData {
   label: string
   color?: string
   size: number
   onClick?: () => void
 }
 
-interface ChartDataExpanded extends ChartData {
+interface IChartDataExpanded extends IChartData {
   color: string
   fraction: number
   sizeFraction: number
   start: number
 }
 
-type ChartType = 'pie' | 'bar'
+type TChartType = 'pie' | 'bar'
 
-interface ChartProps {
+interface IChartProps {
   headerTitle?: string
   chartTitle: string
   leftLegend?: boolean
   total?: number
-  data: ChartData[]
+  data: IChartData[]
   size: number
-  type?: ChartType
+  type?: TChartType
   hidePercent?: boolean
 }
 
-export const Chart = (props: ChartProps) => {
+export const Chart = (props: IChartProps) => {
   const { headerTitle, size, total, data, chartTitle, leftLegend, hidePercent } = props
-  const totSize = data.map((data: ChartData) => data.size).reduce((a, b) => a + b, 0)
+  const totSize = data.map((data: IChartData) => data.size).reduce((a, b) => a + b, 0)
   const totalFraction = total !== undefined ? total : totSize
 
   const colorsBase = [
@@ -90,7 +90,7 @@ export const Chart = (props: ChartProps) => {
   const colors: string[] = [...colorsBase.slice(splice), ...colorsBase.slice(0, splice)]
 
   let s = 0
-  const expData: ChartDataExpanded[] = data.map((d, idx) => {
+  const expData: IChartDataExpanded[] = data.map((d, idx) => {
     // last color can't be same color as first color, as they are next to each other
     const colorIndex = data.length - 1 === colors.length && idx >= data.length - 1 ? idx + 1 : idx
     const pieData = {
@@ -112,30 +112,42 @@ export const Chart = (props: ChartProps) => {
         </div>
       )}
       <div>
-        <Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} hidePercent={!!hidePercent} type={props.type || 'pie'} />
+        <Visualization
+          data={expData}
+          size={size}
+          chartTitle={chartTitle}
+          leftLegend={!!leftLegend}
+          hidePercent={!!hidePercent}
+          type={props.type || 'pie'}
+        />
       </div>
     </>
   )
 }
 
-type VisualizationProps = {
-  data: ChartDataExpanded[]
+type TVisualizationProps = {
+  data: IChartDataExpanded[]
   size: number
   chartTitle: string
   leftLegend: boolean
-  type: ChartType
+  type: TChartType
   hidePercent: boolean
 }
 
-const Visualization = (props: VisualizationProps) => {
+const Visualization = (props: TVisualizationProps) => {
   const { size, data, chartTitle, leftLegend, hidePercent } = props
   const [hover, setHover] = useState<number>(-1)
   const [type, toggle] = useReducer((old) => (old === 'bar' ? 'pie' : 'bar'), props.type)
 
-  let noChartData = !data.length || !data.reduce((p, c) => p + c.size, 0)
+  const noChartData = !data.length || !data.reduce((p, c) => p + c.size, 0)
 
   return (
     <div className="relative">
+      <Button variant="tertiary-neutral" size="xsmall" onClick={toggle}>
+        <Tooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
+          <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
+        </Tooltip>
+      </Button>
       <Card
         overrides={{
           Root: {
@@ -148,22 +160,46 @@ const Visualization = (props: VisualizationProps) => {
         }}
       >
         <div onMouseLeave={() => setHover(-1)}>
-          <div className={`flex items-center ${leftLegend ? 'flex-row-reverse' : 'flex-row'} max-w-fit flex-wrap`}>
+          <div
+            className={`flex items-center ${leftLegend ? 'flex-row-reverse' : 'flex-row'} max-w-fit flex-wrap`}
+          >
             {!noChartData && (
               <div>
-                {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover} />}
-                {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover} />}
+                {type === 'pie' && (
+                  <PieChart data={data} radius={size} hover={hover} setHover={setHover} />
+                )}
+                {type === 'bar' && (
+                  <BarChart data={data} size={size} hover={hover} setHover={setHover} />
+                )}
               </div>
             )}
             <div className={`mx-1.5 ${noChartData ? 'mt-2.5' : ''}`}>
               <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
               {!noChartData &&
-                data.map((data: ChartDataExpanded, index) => (
-                  <div key={index} onMouseOver={() => setHover(index)} onClick={data.onClick}>
-                    <div className={`${index === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}>
+                data.map((data: IChartDataExpanded, index) => (
+                  <div
+                    key={index}
+                    tabIndex={-1}
+                    role="button"
+                    onFocus={() => setHover(index)}
+                    onMouseOver={() => setHover(index)}
+                    onClick={data.onClick}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        data.onClick
+                      }
+                    }}
+                  >
+                    <div
+                      className={`${index === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}
+                    >
                       <FontAwesomeIcon icon={faCircle} color={data.color} />
                       <div className="min-w-10 flex justify-end">{data.size}</div>
-                      {!hidePercent && <div className="min-w-10 flex justify-end">{(data.fraction * 100).toFixed(0)}%</div>}
+                      {!hidePercent && (
+                        <div className="min-w-10 flex justify-end">
+                          {(data.fraction * 100).toFixed(0)}%
+                        </div>
+                      )}
                       <div className="ml-2.5">{data.label}</div>
                     </div>
                   </div>
@@ -173,20 +209,12 @@ const Visualization = (props: VisualizationProps) => {
           </div>
         </div>
       </Card>
-
-      <div onClick={toggle} style={{ position: 'absolute', top: '5px', left: '5px' }}>
-        <CustomizedStatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
-          <div className="cursor-pointer">
-            <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
-          </div>
-        </CustomizedStatefulTooltip>
-      </div>
     </div>
   )
 }
 
 interface IBarChartProps {
-  data: ChartDataExpanded[]
+  data: IChartDataExpanded[]
   size: number
   hover: number
   setHover: (i: number) => void
@@ -194,42 +222,53 @@ interface IBarChartProps {
 
 const BarChart = (props: IBarChartProps) => {
   const { data, size, hover, setHover } = props
-  const max = _.max(data.map((data) => data.sizeFraction))!
-  const maxVal = _.max(data.map((data) => data.size))!
+  const max = _.max(data.map((data) => data.sizeFraction))
+  const maxVal = _.max(data.map((data) => data.size))
 
   return (
-    <svg height={size * 3} width={size * 3} viewBox="0 0 1150 1150" style={{ transform: 'scaleY(-1)' }}>
-      <style>{'text {' + 'transform: scaleY(-1);' + 'font: italic 40px sans-serif;' + '}'}</style>
-      <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="black" />
-      <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="black" />
+    <>
+      {max && maxVal && (
+        <svg
+          height={size * 3}
+          width={size * 3}
+          viewBox="0 0 1150 1150"
+          style={{ transform: 'scaleY(-1)' }}
+        >
+          <style>
+            {'text {' + 'transform: scaleY(-1);' + 'font: italic 40px sans-serif;' + '}'}
+          </style>
+          <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="black" />
+          <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="black" />
 
-      {_.range(0, 11).map((i) => (
-        <Fragment key={i}>
-          <g transform={`translate(0 ${105 + i * 100})`}>
-            <text>{(maxVal * i * 0.1).toFixed(0)}</text>
-          </g>
-          <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="black" />
-        </Fragment>
-      ))}
+          {_.range(0, 11).map((i) => (
+            <Fragment key={i}>
+              <g transform={`translate(0 ${105 + i * 100})`}>
+                <text>{(maxVal * i * 0.1).toFixed(0)}</text>
+              </g>
+              <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="black" />
+            </Fragment>
+          ))}
 
-      {data.map((dataItem: ChartDataExpanded, index: number) => (
-        <Bar
-          key={index}
-          idx={index}
-          size={dataItem.sizeFraction * (1 / max)}
-          totalSize={data.length}
-          start={dataItem.start}
-          color={dataItem.color}
-          hover={index === hover}
-          onMouseOver={() => setHover(index)}
-          onClick={dataItem.onClick}
-        />
-      ))}
-    </svg>
+          {data.map((dataItem: IChartDataExpanded, index: number) => (
+            <Bar
+              key={index}
+              idx={index}
+              size={dataItem.sizeFraction * (1 / max)}
+              totalSize={data.length}
+              start={dataItem.start}
+              color={dataItem.color}
+              hover={index === hover}
+              onMouseOver={() => setHover(index)}
+              onClick={dataItem.onClick}
+            />
+          ))}
+        </svg>
+      )}
+    </>
   )
 }
 
-const Bar = (props: PartProps) => {
+const Bar = (props: TPartProps) => {
   const { idx, size, color, totalSize, hover, onClick } = props
   const width = 1000 / (totalSize * 1.3)
   const d = `
@@ -246,18 +285,33 @@ const Bar = (props: PartProps) => {
       `
   return (
     <>
-      <path d={dHover} fill={hover ? theme.colors.accent100 : 'transparent'} fillOpacity={0.5} onMouseOver={props.onMouseOver} />
+      <path
+        d={dHover}
+        fill={hover ? theme.colors.accent100 : 'transparent'}
+        fillOpacity={0.5}
+        onMouseOver={props.onMouseOver}
+      />
       <path d={d} fill={color} onMouseOver={props.onMouseOver} onClick={onClick} style={cursor} />
     </>
   )
 }
 
-const PieChart = (props: { data: ChartDataExpanded[]; radius: number; hover: number; setHover: (i: number) => void }) => {
+const PieChart = (props: {
+  data: IChartDataExpanded[]
+  radius: number
+  hover: number
+  setHover: (i: number) => void
+}) => {
   const { data, radius, hover, setHover } = props
 
   return (
-    <svg height={radius * 2} width={radius * 2} viewBox="-1.1 -1.1 2.2 2.2" style={{ transform: 'rotate(-90deg)' }}>
-      {data.map((dataItem: ChartDataExpanded, index: number) => (
+    <svg
+      height={radius * 2}
+      width={radius * 2}
+      viewBox="-1.1 -1.1 2.2 2.2"
+      style={{ transform: 'rotate(-90deg)' }}
+    >
+      {data.map((dataItem: IChartDataExpanded, index: number) => (
         <Wedge
           key={index}
           idx={index}
@@ -277,7 +331,7 @@ const PieChart = (props: { data: ChartDataExpanded[]; radius: number; hover: num
 const pi = 3.1415926
 const tau = 2 * pi
 
-type PartProps = {
+type TPartProps = {
   idx: number
   totalSize: number
   size: number
@@ -288,7 +342,7 @@ type PartProps = {
   onClick?: () => void
 }
 
-const Wedge = (props: PartProps) => {
+const Wedge = (props: TPartProps) => {
   const { size, start, color, hover, onClick } = props
   const scale = hover ? 1.05 : 1
   const d = `
@@ -296,5 +350,7 @@ const Wedge = (props: PartProps) => {
   A ${scale} ${scale} 0 ${size >= 0.5 ? 1 : 0} 1 ${Math.cos((start + size) * tau) * scale} ${Math.sin((start + size) * tau) * scale}
   L 0 0
   `
-  return <path d={d} fill={color} onMouseOver={props.onMouseOver} onClick={onClick} style={cursor} />
+  return (
+    <path d={d} fill={color} onMouseOver={props.onMouseOver} onClick={onClick} style={cursor} />
+  )
 }

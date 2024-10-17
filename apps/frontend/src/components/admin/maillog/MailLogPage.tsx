@@ -1,38 +1,75 @@
-import {BodyShort, Box, Heading, Pagination, Select, Spacer} from "@navikt/ds-react";
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Dropdown } from '@navikt/ds-react'
+import {BodyShort, Box, Heading, Pagination,} from "@navikt/ds-react";
 import axios from 'axios'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import { PageResponse } from '../../../constants'
+import { IPageResponse } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { env } from '../../../util/env'
 import { Markdown } from '../../common/Markdown'
 
-interface MailLog {
+interface IMailLog {
   time: string
   to: string
   subject: string
   body: string
 }
 
-const getMailLog = async (start: number, count: number): Promise<PageResponse<MailLog>> => {
-  return (await axios.get<PageResponse<MailLog>>(`${env.pollyBaseUrl}/audit/maillog?pageNumber=${start}&pageSize=${count}`)).data
+const getMailLog = async (start: number, count: number): Promise<IPageResponse<IMailLog>> => {
+  return (
+    await axios.get<IPageResponse<IMailLog>>(
+      `${env.pollyBaseUrl}/audit/maillog?pageNumber=${start}&pageSize=${count}`
+    )
+  ).data
 }
 
 export const MailLogPage = () => {
-  const [log, setLog] = useState<PageResponse<MailLog>>({ content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0 })
+  const [log, setLog] = useState<IPageResponse<IMailLog>>({
+    content: [],
+    numberOfElements: 0,
+    pageNumber: 0,
+    pages: 0,
+    pageSize: 1,
+    totalElements: 0,
+  })
   const [page, setPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(20)
 
-  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/maillog', app: 'Behandlingskatalogen', type: 'Mail log' })
+  ampli.logEvent('besøk', {
+    side: 'Admin',
+    url: '/admin/maillog',
+    app: 'Behandlingskatalogen',
+    type: 'Mail log',
+  })
 
   useEffect(() => {
     getMailLog(page - 1, rowsPerPage).then(setLog)
   }, [page, rowsPerPage])
 
+
+  const handlePageChange = (nextPage: number): void => {
+    if (nextPage < 1) {
+      return
+    }
+    if (nextPage > log.pages) {
+      return
+    }
+    setPage(nextPage)
+  }
+
+  useEffect(() => {
+    const nextPageNum: number = Math.ceil(log.totalElements / rowsPerPage)
+    if (log.totalElements && nextPageNum < page) {
+      setPage(nextPageNum)
+    }
+  }, [rowsPerPage, log.totalElements])
+
   return (
     <div className="w-full px-16" role="main">
       <Heading className="mt-4" size="large" level="1" spacing>Logg for sendt e-post</Heading>
-      {log?.content.map((logList: MailLog, index: number) => {
+      {log?.content.map((logList: IMailLog, index: number) => {
         let html: string = logList.body
         const bodyIdx: number = logList.body.indexOf('<body>')
         if (bodyIdx >= 0) {
@@ -63,31 +100,32 @@ export const MailLogPage = () => {
         )
       })}
 
-      <div className="flex w-full justify-center items-center mt-3">
-        <Select
-          label="Antall rader:"
-          value={rowsPerPage}
-          onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-          size="small"
-        >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </Select>
-        <Spacer/>
-        <div>
-          <Pagination
-            page={page}
-            onPageChange={setPage}
-            count={log.pages ? log.pages : 1}
-            prevNextTexts
-            size="small"
-          />
-        </div>
-        <Spacer/>
-        <BodyShort>Totalt antall rader: {log.totalElements}</BodyShort>
+      <div className="flex justify-between mt-4">
+        <Dropdown>
+          <Button variant="tertiary" as={Dropdown.Toggle}>
+            {`${rowsPerPage} Rader`}{' '}
+            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+          </Button>
+          <Dropdown.Menu className="w-fit">
+            <Dropdown.Menu.List>
+              {[5, 10, 20, 50, 100].map((pageSize: number) => (
+                <Dropdown.Menu.List.Item
+                  key={'pageSize_' + pageSize}
+                  as={Button}
+                  onClick={() => setRowsPerPage(pageSize)}
+                >
+                  {pageSize}
+                </Dropdown.Menu.List.Item>
+              ))}
+            </Dropdown.Menu.List>
+          </Dropdown.Menu>
+        </Dropdown>
+        <Pagination
+          currentPage={page}
+          numPages={log.pages}
+          onPageChange={({ nextPage }) => handlePageChange(nextPage)}
+          labels={{ nextButton: 'Neste', prevButton: 'Forrige' }}
+        />
       </div>
     </div>
   )
