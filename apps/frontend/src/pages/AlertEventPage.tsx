@@ -1,9 +1,7 @@
 import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { KIND } from 'baseui/button'
-import { StatefulMenu } from 'baseui/menu'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Dropdown, Select } from '@navikt/ds-react'
 import { Pagination } from 'baseui/pagination'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulSelect } from 'baseui/select'
 import { SORT_DIRECTION } from 'baseui/table'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
 import moment from 'moment'
@@ -11,42 +9,47 @@ import { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 import { getAlertEvents } from '../api/AlertApi'
 import { Sensitivity } from '../components/InformationType/Sensitivity'
-import Button from '../components/common/Button'
 import { ObjectLink } from '../components/common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse } from '../constants'
+import {
+  EAlertEventLevel,
+  EAlertEventType,
+  EObjectType,
+  IAlertEvent,
+  IPageResponse,
+} from '../constants'
 import { ampli } from '../service/Amplitude'
 import { codelist } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
 import { tekster } from '../util/codeToFineText'
 
-type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
+type TSortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
-type State = {
-  events: PageResponse<AlertEvent>
+type TState = {
+  events: IPageResponse<IAlertEvent>
   page: number
   limit: number
-  level?: AlertEventLevel
-  type?: AlertEventType
+  level?: EAlertEventLevel
+  type?: EAlertEventType
   processId?: string
   informationTypeId?: string
   disclosureId?: string
-  sort: { column: SortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
+  sort: { column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 }
 
-type AlertObjectType = 'informationtype' | 'process' | 'disclosure'
+type TAlertObjectType = 'informationtype' | 'process' | 'disclosure'
 
-type Action =
-  | { type: 'EVENTS'; value: PageResponse<AlertEvent> }
+type TAction =
+  | { type: 'EVENTS'; value: IPageResponse<IAlertEvent> }
   | { type: 'PAGE'; value: number }
   | { type: 'LIMIT'; value: number }
-  | { type: 'EVENT_TYPE'; value?: AlertEventType }
-  | { type: 'EVENT_LEVEL'; value?: AlertEventLevel }
-  | { type: 'OBJECT_FILTER'; objectType?: AlertObjectType; id?: string }
-  | { type: 'SORT'; column: SortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
+  | { type: 'EVENT_TYPE'; value?: EAlertEventType }
+  | { type: 'EVENT_LEVEL'; value?: EAlertEventLevel }
+  | { type: 'OBJECT_FILTER'; objectType?: TAlertObjectType; id?: string }
+  | { type: 'SORT'; column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 
-const clampPage = (state: State, page: number, limit: number): number => {
+const clampPage = (state: TState, page: number, limit: number): number => {
   if (page < 1 || page > state.events.pages) {
     return state.page
   }
@@ -54,7 +57,7 @@ const clampPage = (state: State, page: number, limit: number): number => {
   return page > maxPage ? maxPage : page
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: TState, action: TAction): TState => {
   switch (action.type) {
     case 'OBJECT_FILTER':
       return {
@@ -64,7 +67,11 @@ const reducer = (state: State, action: Action): State => {
         disclosureId: action.objectType === 'disclosure' ? action.id : undefined,
       }
     case 'EVENTS':
-      return { ...state, events: action.value, page: clampPage({ ...state, events: action.value }, state.page, state.limit) }
+      return {
+        ...state,
+        events: action.value,
+        page: clampPage({ ...state, events: action.value }, state.page, state.limit),
+      }
     case 'PAGE':
       return { ...state, page: clampPage(state, action.value, state.limit) }
     case 'LIMIT':
@@ -79,9 +86,16 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const AlertEventPage = () => {
-  const { objectType, id } = useParams<{ objectType?: AlertObjectType; id?: string }>()
+  const { objectType, id } = useParams<{ objectType?: TAlertObjectType; id?: string }>()
   const [state, dispatch] = useReducer(reducer, {
-    events: { content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0 },
+    events: {
+      content: [],
+      numberOfElements: 0,
+      pageNumber: 0,
+      pages: 0,
+      pageSize: 1,
+      totalElements: 0,
+    },
     page: 1,
     limit: 50,
     level: undefined,
@@ -93,29 +107,43 @@ export const AlertEventPage = () => {
   })
   const setPage = (p: number) => dispatch({ type: 'PAGE', value: p })
   const setLimit = (l: number) => dispatch({ type: 'LIMIT', value: l })
-  const setType = (t?: AlertEventType) => dispatch({ type: 'EVENT_TYPE', value: t })
-  const setLevel = (l?: AlertEventLevel) => dispatch({ type: 'EVENT_LEVEL', value: l })
-  const setSort = (column: SortCol) =>
-    dispatch({
-      type: 'SORT',
-      column,
-      dir: state.sort.column !== column ? SORT_DIRECTION.ASC : state.sort.dir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC,
-    })
+  const setType = (t?: EAlertEventType) => dispatch({ type: 'EVENT_TYPE', value: t })
+  const setLevel = (l?: EAlertEventLevel) => dispatch({ type: 'EVENT_LEVEL', value: l })
 
   ampli.logEvent('besøk', { side: 'Varsler', url: '/alert/events/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
-    getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId).then((a) =>
-      dispatch({ type: 'EVENTS', value: a }),
-    )
-  }, [state.page, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId])
+    getAlertEvents(
+      state.page - 1,
+      state.limit,
+      state.type,
+      state.level,
+      state.processId,
+      state.informationTypeId,
+      state.disclosureId
+    ).then((a) => dispatch({ type: 'EVENTS', value: a }))
+  }, [
+    state.page,
+    state.limit,
+    state.type,
+    state.level,
+    state.processId,
+    state.informationTypeId,
+    state.disclosureId,
+  ])
 
   useEffect(() => {
     dispatch({ type: 'OBJECT_FILTER', objectType, id })
   }, [objectType, id])
 
-  const levelButton = (text: string, newLevel?: AlertEventLevel) => (
-    <Button type="button" marginRight kind={state.level === newLevel ? 'primary' : 'outline'} size="compact" onClick={() => setLevel(newLevel)}>
+  const levelButton = (text: string, newLevel?: EAlertEventLevel) => (
+    <Button
+      className="mr-2.5"
+      type="button"
+      variant={state.level === newLevel ? 'primary' : 'secondary'}
+      size="xsmall"
+      onClick={() => setLevel(newLevel)}
+    >
       {text}
     </Button>
   )
@@ -127,10 +155,16 @@ export const AlertEventPage = () => {
         {(state.informationTypeId || state.processId || state.disclosureId) && (
           <div className="flex items-center">
             <LabelMedium>Filter: </LabelMedium>
-            <Button kind="secondary" size="compact" marginLeft marginRight iconEnd={faTimes} onClick={() => dispatch({ type: 'OBJECT_FILTER' })}>
+            <Button
+              variant="secondary"
+              size="xsmall"
+              className="mx-2.5"
+              onClick={() => dispatch({ type: 'OBJECT_FILTER' })}
+            >
               {state.processId && 'Behandling'}
               {state.informationTypeId && 'Opplysningstype'}
               {state.disclosureId && 'Utlevering'}
+              <FontAwesomeIcon icon={faTimes} style={{ marginLeft: '.5rem' }} />
             </Button>
           </div>
         )}
@@ -138,18 +172,32 @@ export const AlertEventPage = () => {
       <div className="w-full flex mb-1.5">
         <div className="w-1/2 flex justify-start items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
-          <StatefulSelect
-            options={Object.values(AlertEventType).map((t: AlertEventType) => ({ id: t, label: tekster[t] }))}
-            onChange={(params) => setType(params?.option?.id as AlertEventType)}
-          />
+          <Select
+            label="Alert type"
+            hideLabel
+            onChange={(event) => {
+              if (event.target.value !== '') {
+                setType(event.target.value as EAlertEventType)
+              } else {
+                setType(undefined)
+              }
+            }}
+          >
+            <option value="">velg type</option>
+            {Object.values(EAlertEventType).map((t: EAlertEventType) => (
+              <option key={t} value={t}>
+                {tekster[t]}
+              </option>
+            ))}
+          </Select>
         </div>
 
         <div className="w-1/2 flex justify-end items-center">
           <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
           {levelButton('Alle')}
-          {levelButton('Info', AlertEventLevel.INFO)}
-          {levelButton('Advarsel', AlertEventLevel.WARNING)}
-          {levelButton('Feil', AlertEventLevel.ERROR)}
+          {levelButton('Info', EAlertEventLevel.INFO)}
+          {levelButton('Advarsel', EAlertEventLevel.WARNING)}
+          {levelButton('Feil', EAlertEventLevel.ERROR)}
         </div>
       </div>
       <Table
@@ -165,11 +213,11 @@ export const AlertEventPage = () => {
           </>
         }
       >
-        {state.events.content.map((event: AlertEvent) => (
+        {state.events.content.map((event: IAlertEvent) => (
           <Row key={event.id}>
             <Cell>
               {event.process ? (
-                <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
+                <ObjectLink id={event.process.id} type={EObjectType.PROCESS}>
                   {codelist.getShortnameForCodes(event.process.purposes)}: {event.process.name}
                 </ObjectLink>
               ) : (
@@ -179,7 +227,7 @@ export const AlertEventPage = () => {
 
             <Cell>
               {event.informationType ? (
-                <ObjectLink id={event.informationType.id} type={ObjectType.INFORMATION_TYPE}>
+                <ObjectLink id={event.informationType.id} type={EObjectType.INFORMATION_TYPE}>
                   <Sensitivity sensitivity={event.informationType.sensitivity} />
                   &nbsp;
                   {event.informationType.name}
@@ -191,7 +239,7 @@ export const AlertEventPage = () => {
 
             <Cell>
               {event.disclosure ? (
-                <ObjectLink id={event.disclosure.id} type={ObjectType.DISCLOSURE}>
+                <ObjectLink id={event.disclosure.id} type={EObjectType.DISCLOSURE}>
                   {event.disclosure.name}
                 </ObjectLink>
               ) : (
@@ -208,27 +256,25 @@ export const AlertEventPage = () => {
         ))}
       </Table>
       <div className="flex justify-between mt-4">
-        <StatefulPopover
-          placement={PLACEMENT.bottom}
-          content={({ close }) => (
-            <StatefulMenu
-              items={[5, 10, 20, 50, 100].map((i) => ({ label: i }))}
-              onItemSelect={({ item }) => {
-                setLimit(item.label)
-                close()
-              }}
-              overrides={{
-                List: {
-                  style: { height: '150px', width: '100px' },
-                },
-              }}
-            />
-          )}
-        >
-          <div>
-            <Button kind={KIND.tertiary} iconEnd={faChevronDown}>{`${state.limit} Rader`}</Button>
-          </div>
-        </StatefulPopover>
+        <Dropdown>
+          <Button variant="tertiary" as={Dropdown.Toggle}>
+            {`${state.limit} Rader`}{' '}
+            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+          </Button>
+          <Dropdown.Menu className="w-fit">
+            <Dropdown.Menu.List>
+              {[5, 10, 20, 50, 100].map((pageSize: number) => (
+                <Dropdown.Menu.List.Item
+                  key={'pageSize_' + pageSize}
+                  as={Button}
+                  onClick={() => setLimit(pageSize)}
+                >
+                  {pageSize}
+                </Dropdown.Menu.List.Item>
+              ))}
+            </Dropdown.Menu.List>
+          </Dropdown.Menu>
+        </Dropdown>
         <Pagination
           currentPage={state.page}
           numPages={state.events.pages}

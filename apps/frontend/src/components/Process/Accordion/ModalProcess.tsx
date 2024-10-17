@@ -4,13 +4,21 @@ import { FlexGridItem } from 'baseui/flex-grid'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
 import { OnChangeParams, Select, Value } from 'baseui/select'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps } from 'formik'
+import {
+  Field,
+  FieldArray,
+  FieldArrayRenderProps,
+  FieldProps,
+  Form,
+  Formik,
+  FormikProps,
+} from 'formik'
 import { ChangeEvent, Key, useEffect, useState } from 'react'
-import { getAll, getDisclosuresByRecipient } from '../../../api'
+import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
-import { Disclosure, ProcessFormValues, ProcessStatus, Processor } from '../../../constants'
-import { ListName, codelist } from '../../../service/Codelist'
+import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
+import { EListName, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
@@ -39,13 +47,13 @@ import FieldRiskOwner from '../common/FieldRiskOwner'
 import PanelTitle from '../common/PanelTitle'
 import RetentionItems from '../common/RetentionItems'
 
-type ModalProcessProps = {
+type TModalProcessProps = {
   title: string
   isOpen: boolean
   isEdit?: boolean
-  initialValues: ProcessFormValues
+  initialValues: IProcessFormValues
   errorOnCreate: any | undefined
-  submit: (process: ProcessFormValues) => void
+  submit: (process: IProcessFormValues) => void
   onClose: () => void
 }
 
@@ -65,14 +73,23 @@ const panelOverrides: PanelOverrides = {
   },
 }
 
-const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {
+const ModalProcess = ({
+  submit,
+  errorOnCreate,
+  onClose,
+  isOpen,
+  initialValues,
+  title,
+}: TModalProcessProps) => {
   const [expanded, setExpanded] = useState<Key[]>([])
-  const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(!!initialValues.commonExternalProcessResponsible)
+  const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(
+    !!initialValues.commonExternalProcessResponsible
+  )
 
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<Value>([])
-  const [disclosures, setDisclosures] = useState<Disclosure[]>([])
-  const [processorList, setProcessorList] = useState<Processor[]>([])
+  const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
+  const [processorList, setProcessorList] = useState<IProcessor[]>([])
 
   const expand: (panelKey: string) => void = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
@@ -102,7 +119,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
   useEffect(() => {
     ;(async () => {
-      const response: Processor[] = await getAll(getProcessorsByPageAndPageSize)()
+      const response: IProcessor[] = await getAll(getProcessorsByPageAndPageSize)()
       if (response) {
         setProcessorList(response)
       }
@@ -110,7 +127,14 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
   }, [])
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} closeable={false} animate size={SIZE.auto} role={ROLE.dialog}>
+    <Modal
+      onClose={onClose}
+      isOpen={isOpen}
+      closeable={false}
+      animate
+      size={SIZE.auto}
+      role={ROLE.dialog}
+    >
       <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
@@ -118,9 +142,9 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
             submit(values)
           }}
           validationSchema={processSchema()}
-          render={(formikBag: FormikProps<ProcessFormValues>) => {
+          render={(formikBag: FormikProps<IProcessFormValues>) => {
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
-              console.log(formikBag.errors)
+              console.debug(formikBag.errors)
               writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
               if (formikBag.errors.legalBasesOpen) {
                 expand('legalBasis')
@@ -172,7 +196,11 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                   <CustomizedModalBlock>
                     <ModalLabel label="Er behandlingen innført i NAV?" />
                     <div>
-                      <BoolField value={formikBag.values.dpia?.processImplemented} fieldName="dpia.processImplemented" omitUndefined />
+                      <BoolField
+                        value={formikBag.values.dpia?.processImplemented}
+                        fieldName="dpia.processImplemented"
+                        omitUndefined
+                      />
                     </div>
                   </CustomizedModalBlock>
 
@@ -186,7 +214,10 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                   {!env.disableRiskOwner && (
                     <CustomizedModalBlock>
                       <ModalLabel label="Risikoeier funksjon9" />
-                      <FieldInput fieldName="dpia.riskOwnerFunction" fieldValue={formikBag.values.dpia?.riskOwnerFunction} />
+                      <FieldInput
+                        fieldName="dpia.riskOwnerFunction"
+                        fieldValue={formikBag.values.dpia?.riskOwnerFunction}
+                      />
                     </CustomizedModalBlock>
                   )}
 
@@ -196,7 +227,10 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label="System" tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen." />
+                    <ModalLabel
+                      label="System"
+                      tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
+                    />
                     <FieldProduct formikBag={formikBag} />
                   </CustomizedModalBlock>
 
@@ -206,7 +240,12 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                       tooltip="Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet."
                     />
                     <div>
-                      <BoolField value={formikBag.values.usesAllInformationTypes} fieldName="usesAllInformationTypes" omitUndefined firstButtonLabel="(Brukes unntaksvis)" />
+                      <BoolField
+                        value={formikBag.values.usesAllInformationTypes}
+                        fieldName="usesAllInformationTypes"
+                        omitUndefined
+                        firstButtonLabel="(Brukes unntaksvis)"
+                      />
                     </div>
                   </CustomizedModalBlock>
 
@@ -223,15 +262,30 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                   >
                     <Panel
                       key="organizing"
-                      title={<ModalLabel label={<PanelTitle title="Organisering" expanded={expanded.indexOf('organizing') >= 0} />} />}
+                      title={
+                        <ModalLabel
+                          label={
+                            <PanelTitle
+                              title="Organisering"
+                              expanded={expanded.indexOf('organizing') >= 0}
+                            />
+                          }
+                        />
+                      }
                       overrides={{ ...panelOverrides }}
                     >
                       <div className="flex w-full justify-between">
                         <div className="w-[48%]">
-                          <ModalLabel label="Avdeling" tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen." />
+                          <ModalLabel
+                            label="Avdeling"
+                            tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
+                          />
                         </div>
                         <div className="w-[48%]">
-                          <ModalLabel label="Linja" tooltip="Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres." />
+                          <ModalLabel
+                            label="Linja"
+                            tooltip="Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres."
+                          />
                         </div>
                       </div>
 
@@ -246,16 +300,27 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
                       <div className="flex w-full justify-between mt-2.5">
                         <div className="w-[48%]">
-                          <ModalLabel label="Team (Oppslag i Teamkatalogen)" tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene." fullwidth={true} />
+                          <ModalLabel
+                            label="Team (Oppslag i Teamkatalogen)"
+                            tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
+                            fullwidth={true}
+                          />
                         </div>
                         <div className="w-[48%]">
-                          <ModalLabel fullwidth label="Felles behandlingsansvarlig" tooltip="Er NAV behandlingsansvarlig sammen med annen virksomhet?" />
+                          <ModalLabel
+                            fullwidth
+                            label="Felles behandlingsansvarlig"
+                            tooltip="Er NAV behandlingsansvarlig sammen med annen virksomhet?"
+                          />
                         </div>
                       </div>
 
                       <div className="flex w-full justify-between">
                         <div className="w-[48]">
-                          <FieldProductTeam productTeams={formikBag.values.affiliation.productTeams} fieldName="affiliation.productTeams" />
+                          <FieldProductTeam
+                            productTeams={formikBag.values.affiliation.productTeams}
+                            fieldName="affiliation.productTeams"
+                          />
                         </div>
                         <div className="w-[48%]">
                           {showResponsibleSelect && (
@@ -264,14 +329,25 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                               hideSelect={() => setShowResponsibleSelect(false)}
                             />
                           )}
-                          {!showResponsibleSelect && <RadioBoolButton value={showResponsibleSelect} setValue={(value) => setShowResponsibleSelect(value!)} omitUndefined />}
+                          {!showResponsibleSelect && (
+                            <RadioBoolButton
+                              value={showResponsibleSelect}
+                              setValue={(value) => setShowResponsibleSelect(!!value)}
+                              omitUndefined
+                            />
+                          )}
                         </div>
                       </div>
                     </Panel>
 
                     <Panel
                       key="legalBasis"
-                      title={<PanelTitle title="Behandlingsgrunnlag for hele behandlingen" expanded={expanded.indexOf('legalBasis') >= 0} />}
+                      title={
+                        <PanelTitle
+                          title="Behandlingsgrunnlag for hele behandlingen"
+                          expanded={expanded.indexOf('legalBasis') >= 0}
+                        />
+                      }
                       overrides={{ ...panelOverrides }}
                     >
                       <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
@@ -280,7 +356,12 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
                     <Panel
                       key="automation"
-                      title={<PanelTitle title="Automatisering og profilering" expanded={expanded.indexOf('automation') >= 0} />}
+                      title={
+                        <PanelTitle
+                          title="Automatisering og profilering"
+                          expanded={expanded.indexOf('automation') >= 0}
+                        />
+                      }
                       overrides={{ ...panelOverrides }}
                     >
                       <div className="flex w-full mt-4">
@@ -289,21 +370,44 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                           tooltip="Med helautomatisert behandling menes behandling som fører til en individuell avgjørelser eller vedtak uten menneskelig involvering"
                           fullwidth={true}
                         />
-                        <BoolField fieldName="automaticProcessing" value={formikBag.values.automaticProcessing} justifyContent={'flex-end'} />
+                        <BoolField
+                          fieldName="automaticProcessing"
+                          value={formikBag.values.automaticProcessing}
+                          justifyContent={'flex-end'}
+                        />
                       </div>
                       <div className="flex w-full mt-4">
                         <ModalLabel
                           label="Benyttes profilering"
                           tooltip="Med profilering menes det å utlede nye egenskaper, tilbøyeligheter eller behov hos en bruker etter sammenligning med andre brukere i liknende omstendigheter"
                         />
-                        <BoolField fieldName="profiling" value={formikBag.values.profiling} justifyContent={'flex-end'} />
+                        <BoolField
+                          fieldName="profiling"
+                          value={formikBag.values.profiling}
+                          justifyContent={'flex-end'}
+                        />
                       </div>
                     </Panel>
 
-                    <Panel key="dataProcessor" title={<PanelTitle title="Databehandler" expanded={expanded.indexOf('dataProcessor') >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel
+                      key="dataProcessor"
+                      title={
+                        <PanelTitle
+                          title="Databehandler"
+                          expanded={expanded.indexOf('dataProcessor') >= 0}
+                        />
+                      }
+                      overrides={{ ...panelOverrides }}
+                    >
                       <div className="flex w-full mt-0">
-                        <ModalLabel label="Benyttes databehandler(e)" tooltip="En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne." />
-                        <BoolField fieldName="dataProcessing.dataProcessor" value={formikBag.values.dataProcessing.dataProcessor} />
+                        <ModalLabel
+                          label="Benyttes databehandler(e)"
+                          tooltip="En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne."
+                        />
+                        <BoolField
+                          fieldName="dataProcessing.dataProcessor"
+                          value={formikBag.values.dataProcessing.dataProcessor}
+                        />
                       </div>
 
                       {formikBag.values.dataProcessing.dataProcessor && (
@@ -313,7 +417,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                             <FieldDataProcessors
                               formikBag={formikBag}
                               dataProcessors={dataProcessors}
-                              options={processorList.map((processor: Processor) => {
+                              options={processorList.map((processor: IProcessor) => {
                                 return {
                                   id: processor.id,
                                   label: processor.name,
@@ -326,14 +430,41 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                         </>
                       )}
                     </Panel>
-                    <Panel key="retention" title={<PanelTitle title="Lagringsbehov" expanded={expanded.indexOf('retention') >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel
+                      key="retention"
+                      title={
+                        <PanelTitle
+                          title="Lagringsbehov"
+                          expanded={expanded.indexOf('retention') >= 0}
+                        />
+                      }
+                      overrides={{ ...panelOverrides }}
+                    >
                       <RetentionItems formikBag={formikBag} />
                     </Panel>
 
-                    <Panel key="dpia" title={<PanelTitle title="Personkonsekvensvurdering (PVK)" expanded={expanded.indexOf('dpia') >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel
+                      key="dpia"
+                      title={
+                        <PanelTitle
+                          title="Personkonsekvensvurdering (PVK)"
+                          expanded={expanded.indexOf('dpia') >= 0}
+                        />
+                      }
+                      overrides={{ ...panelOverrides }}
+                    >
                       <DpiaItems formikBag={formikBag} />
                     </Panel>
-                    <Panel key="disclosure" title={<PanelTitle title="Utlevering" expanded={expanded.indexOf('disclosure') >= 0} />} overrides={{ ...panelOverrides }}>
+                    <Panel
+                      key="disclosure"
+                      title={
+                        <PanelTitle
+                          title="Utlevering"
+                          expanded={expanded.indexOf('disclosure') >= 0}
+                        />
+                      }
+                      overrides={{ ...panelOverrides }}
+                    >
                       <CustomizedModalBlock first>
                         <ModalLabel label="Avsender" />
                         <FieldDispatcher formikBag={formikBag} />
@@ -343,7 +474,9 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                         <ModalLabel label="Mottaker" />
                         <Select
                           value={thirdParty}
-                          options={codelist.getParsedOptions(ListName.THIRD_PARTY).filter((thirdParty) => thirdParty.id != 'NAV')}
+                          options={codelist
+                            .getParsedOptions(EListName.THIRD_PARTY)
+                            .filter((thirdParty) => thirdParty.id != 'NAV')}
                           onChange={({ value }) => {
                             setThirdParty(value)
                           }}
@@ -363,10 +496,16 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     disabled={thirdParty.length === 0}
                                     noResultsMsg="Ingen eksisterende utleveringer passer til søket. Opprett ny utlevering før du legger den til her."
                                     options={disclosures.filter(
-                                      (disclosure: Disclosure) => !formikBag.values.disclosures.map((value: Disclosure) => value.id).includes(disclosure.id),
+                                      (disclosure: IDisclosure) =>
+                                        !formikBag.values.disclosures
+                                          .map((value: IDisclosure) => value.id)
+                                          .includes(disclosure.id)
                                     )}
                                     onChange={(params: OnChangeParams) => {
-                                      arrayHelpers.form.setFieldValue('disclosures', [...formikBag.values.disclosures, ...params.value.map((value) => value)])
+                                      arrayHelpers.form.setFieldValue('disclosures', [
+                                        ...formikBag.values.disclosures,
+                                        ...params.value.map((value) => value),
+                                      ])
                                     }}
                                     labelKey="name"
                                     valueKey="id"
@@ -374,8 +513,11 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                   />
                                   <div>
                                     {renderTagList(
-                                      formikBag.values.disclosures.map((disclosure: Disclosure) => disclosure.recipient.shortName + ':' + disclosure.name),
-                                      arrayHelpers,
+                                      formikBag.values.disclosures.map(
+                                        (disclosure: IDisclosure) =>
+                                          disclosure.recipient.shortName + ':' + disclosure.name
+                                      ),
+                                      arrayHelpers
                                     )}
                                   </div>
                                 </div>
@@ -391,15 +533,21 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                     <div className="flex w-full mt-4">
                       <Field
                         name="status"
-                        render={({ form }: FieldProps<ProcessFormValues>) => (
+                        render={({ form }: FieldProps<IProcessFormValues>) => (
                           <RadioGroup
                             value={formikBag.values.status}
                             align={ALIGN.horizontal}
-                            onChange={(event: ChangeEvent<HTMLInputElement>) => form.setFieldValue('status', (event.target as HTMLInputElement).value)}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                              form.setFieldValue('status', (event.target as HTMLInputElement).value)
+                            }
                           >
-                            <Radio value={ProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
-                            <Radio value={ProcessStatus.IN_PROGRESS}>Under arbeid</Radio>
-                            {initialValues.status === ProcessStatus.NEEDS_REVISION && <Radio value={ProcessStatus.NEEDS_REVISION}>Trenger revidering</Radio>}
+                            <Radio value={EProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
+                            <Radio value={EProcessStatus.IN_PROGRESS}>Under arbeid</Radio>
+                            {initialValues.status === EProcessStatus.NEEDS_REVISION && (
+                              <Radio value={EProcessStatus.NEEDS_REVISION}>
+                                Trenger revidering
+                              </Radio>
+                            )}
                           </RadioGroup>
                         )}
                       />

@@ -1,19 +1,21 @@
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getDashboard } from '../api'
+import { getDashboard } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
 import Departments from '../components/Dashboard/Departments'
 import { FilterDashboardStatus } from '../components/Dashboard/FilterDashboardStatus'
 import { Spinner } from '../components/common/Spinner'
-import { DashboardData, ProcessStatusFilter } from '../constants'
+import { EProcessStatusFilter, IDashboardData } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { theme } from '../util'
 
 export const DashboardPage = () => {
-  const [dashboardData, setDashboardData] = useState<DashboardData>()
-  const { processStatus } = useParams<{ processStatus: ProcessStatusFilter }>()
-  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatusFilter>(processStatus ? (processStatus as ProcessStatusFilter) : ProcessStatusFilter.All)
+  const [dashboardData, setDashboardData] = useState<IDashboardData>()
+  const { processStatus } = useParams<{ processStatus: EProcessStatusFilter }>()
+  const [dashboardStatus, setDashboardStatus] = useState<EProcessStatusFilter>(
+    processStatus ? (processStatus as EProcessStatusFilter) : EProcessStatusFilter.All
+  )
 
   ampli.logEvent('besøk', { side: 'Dashboard', url: '/dashboard/', app: 'Behandlingskatalogen' })
 

@@ -6,27 +6,33 @@ import { OnChangeParams, Select, Value } from 'baseui/select'
 import { LabelMedium, LabelSmall } from 'baseui/typography'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
-import { getInformationTypesBy } from '../../../api'
-import { AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, PageResponse, Process } from '../../../constants'
-import { Code, ListName, codelist } from '../../../service/Codelist'
+import { getInformationTypesBy } from '../../../api/GetAllApi'
+import {
+  IAddDocumentToProcessFormValues,
+  IDocumentInfoTypeUse,
+  IInformationType,
+  IPageResponse,
+  IProcess,
+} from '../../../constants'
+import { EListName, ICode, codelist } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
-import Button from '../../common/Button'
+import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
 
-type AddBatchInformationTypesProps = {
+type TAddBatchInformationTypesProps = {
   isOpen: boolean
-  submit: (values: AddDocumentToProcessFormValues) => void
+  submit: (values: IAddDocumentToProcessFormValues) => void
   onClose: () => void
-  process: Process
+  process: IProcess
   error: string | null
 }
 
-export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesProps) => {
+export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesProps) => {
   const { isOpen, submit, onClose, process, error } = props
-  const [infoTypes, setInfoTypes] = useState<InformationType[]>([])
+  const [infoTypes, setInfoTypes] = useState<IInformationType[]>([])
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
   const [system, setSystem] = useState<Value>([])
 
@@ -34,7 +40,9 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
     ;(async () => {
       if (!system.length) return
       setSearchLoading(true)
-      const response: PageResponse<InformationType> = await getInformationTypesBy({ orgMaster: system[0].id as string })
+      const response: IPageResponse<IInformationType> = await getInformationTypesBy({
+        orgMaster: system[0].id as string,
+      })
       setInfoTypes(response.content)
       setSearchLoading(false)
     })()
@@ -46,8 +54,8 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
     onClose()
   }
 
-  const mapToUse = (informationType: InformationType): DocumentInfoTypeUse => {
-    const userCode = codelist.getCode(ListName.SUBJECT_CATEGORY, 'BRUKER')
+  const mapToUse = (informationType: IInformationType): IDocumentInfoTypeUse => {
+    const userCode = codelist.getCode(EListName.SUBJECT_CATEGORY, 'BRUKER')
 
     return {
       informationType: informationType,
@@ -65,10 +73,10 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
             informationTypes: [],
             process: props.process,
             linkDocumentToPolicies: false,
-          } as AddDocumentToProcessFormValues
+          } as IAddDocumentToProcessFormValues
         }
         validationSchema={addBatchInfoTypesToProcessSchema(process.policies)}
-        render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
+        render={(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
           return (
             <Form onKeyDown={disableEnter}>
               <ModalHeader>Legg til en samling av opplysningstyper</ModalHeader>
@@ -77,9 +85,8 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                   <div className=" flex w-full mt-4 flex-row">
                     <ModalLabel label="Master i NAV" />
                     <Select
-                      autoFocus
                       isLoading={searchLoading}
-                      options={codelist.getParsedOptions(ListName.SYSTEM)}
+                      options={codelist.getParsedOptions(EListName.SYSTEM)}
                       maxDropdownHeight="400px"
                       value={system}
                       placeholder="System"
@@ -95,9 +102,12 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                     name="informationTypes"
                     render={(informationTypesProps: FieldArrayRenderProps) => {
                       const addable = infoTypes.filter(
-                        (infoType: InformationType) => !formik.values.informationTypes.find((it2: DocumentInfoTypeUse) => it2.informationTypeId === infoType.id),
+                        (infoType: IInformationType) =>
+                          !formik.values.informationTypes.find(
+                            (it2: IDocumentInfoTypeUse) => it2.informationTypeId === infoType.id
+                          )
                       )
-                      const added: DocumentInfoTypeUse[] = formik.values.informationTypes
+                      const added: IDocumentInfoTypeUse[] = formik.values.informationTypes
 
                       return (
                         <>
@@ -106,17 +116,23 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                               {!!addable.length && (
                                 <>
                                   <div className="flex flex-col">
-                                    <LabelMedium marginTop={theme.sizing.scale600}>Opplysningstyper ja</LabelMedium>
+                                    <LabelMedium marginTop={theme.sizing.scale600}>
+                                      Opplysningstyper ja
+                                    </LabelMedium>
                                     <div className="flex flex-col w-full mt-4">
-                                      {addable.map((informationType: InformationType) => (
-                                        <div key={informationType.id} className="flex items-center my-1">
+                                      {addable.map((informationType: IInformationType) => (
+                                        <div
+                                          key={informationType.id}
+                                          className="flex items-center my-1"
+                                        >
                                           <LabelMedium>{it.name}</LabelMedium>
                                           <Button
-                                            size="compact"
+                                            size="xsmall"
                                             kind="tertiary"
-                                            shape="round"
                                             tooltip="Legg til"
-                                            onClick={() => informationTypesProps.push(mapToUse(informationType))}
+                                            onClick={() =>
+                                              informationTypesProps.push(mapToUse(informationType))
+                                            }
                                           >
                                             <FontAwesomeIcon icon={faPlusCircle} />
                                           </Button>
@@ -126,52 +142,85 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                                   </div>
                                 </>
                               )}
-                              {!addable.length && !infoTypes.length && <LabelMedium marginTop={theme.sizing.scale600}>Ingen opplysningstyper</LabelMedium>}
-                              {!addable.length && !!infoTypes.length && <LabelMedium marginTop={theme.sizing.scale600}>Alle opplysningstyper lagt til</LabelMedium>}
+                              {!addable.length && !infoTypes.length && (
+                                <LabelMedium marginTop={theme.sizing.scale600}>
+                                  Ingen opplysningstyper
+                                </LabelMedium>
+                              )}
+                              {!addable.length && !!infoTypes.length && (
+                                <LabelMedium marginTop={theme.sizing.scale600}>
+                                  Alle opplysningstyper lagt til
+                                </LabelMedium>
+                              )}
 
                               <div className="my-4 w-full border-solid border-b-[1px]" />
                             </>
                           )}
 
                           <div className="flex flex-col w-full mt-4">
-                            {added.map((informationTypeMap: DocumentInfoTypeUse, index: number) => (
-                              <Fragment key={informationTypeMap.informationType.id}>
-                                <div className="flex justify-between items-center my-1">
-                                  <LabelMedium>
-                                    <Sensitivity sensitivity={informationTypeMap.informationType.sensitivity} />
-                                    &nbsp;
-                                    {informationTypeMap.informationType.name}
-                                  </LabelMedium>
+                            {added.map(
+                              (informationTypeMap: IDocumentInfoTypeUse, index: number) => (
+                                <Fragment key={informationTypeMap.informationType.id}>
+                                  <div className="flex justify-between items-center my-1">
+                                    <LabelMedium>
+                                      <Sensitivity
+                                        sensitivity={informationTypeMap.informationType.sensitivity}
+                                      />
+                                      &nbsp;
+                                      {informationTypeMap.informationType.name}
+                                    </LabelMedium>
 
-                                  <div className="w-[60%] flex item-center">
-                                    <LabelSmall marginRight={theme.sizing.scale100}>Personkategori: </LabelSmall>
-                                    <Select
-                                      options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
-                                      value={informationTypeMap.subjectCategories.map((subjectCategory: Code) => ({ id: subjectCategory.code }))}
-                                      onChange={(params: OnChangeParams) => {
-                                        const subjectCategories = params.value.map((option) => ({ code: option.id }))
-                                        informationTypesProps.replace(index, { ...it, subjectCategories })
-                                      }}
-                                    />
-                                    <Button marginLeft size="compact" kind="tertiary" shape="round" tooltip="Fjern" onClick={() => informationTypesProps.remove(index)}>
-                                      <FontAwesomeIcon icon={faMinusCircle} />
-                                    </Button>
+                                    <div className="w-[60%] flex item-center">
+                                      <LabelSmall marginRight={theme.sizing.scale100}>
+                                        Personkategori:{' '}
+                                      </LabelSmall>
+                                      <Select
+                                        options={codelist.getParsedOptions(
+                                          EListName.SUBJECT_CATEGORY
+                                        )}
+                                        value={informationTypeMap.subjectCategories.map(
+                                          (subjectCategory: ICode) => ({ id: subjectCategory.code })
+                                        )}
+                                        onChange={(params: OnChangeParams) => {
+                                          const subjectCategories = params.value.map((option) => ({
+                                            code: option.id,
+                                          }))
+                                          informationTypesProps.replace(index, {
+                                            ...it,
+                                            subjectCategories,
+                                          })
+                                        }}
+                                      />
+                                      <Button
+                                        marginLeft
+                                        size="xsmall"
+                                        kind="tertiary"
+                                        tooltip="Fjern"
+                                        onClick={() => informationTypesProps.remove(index)}
+                                      >
+                                        <FontAwesomeIcon icon={faMinusCircle} />
+                                      </Button>
+                                    </div>
                                   </div>
-                                </div>
-                                <div>
-                                  {' '}
-                                  <Error fieldName={`informationTypes[${index}]`} />{' '}
-                                </div>
-                                <div>
-                                  {' '}
-                                  <Error fieldName={`informationTypes[${index}].informationType`} />{' '}
-                                </div>
-                                <div>
-                                  {' '}
-                                  <Error fieldName={`informationTypes[${index}].subjectCategories`} />{' '}
-                                </div>
-                              </Fragment>
-                            ))}
+                                  <div>
+                                    {' '}
+                                    <Error fieldName={`informationTypes[${index}]`} />{' '}
+                                  </div>
+                                  <div>
+                                    {' '}
+                                    <Error
+                                      fieldName={`informationTypes[${index}].informationType`}
+                                    />{' '}
+                                  </div>
+                                  <div>
+                                    {' '}
+                                    <Error
+                                      fieldName={`informationTypes[${index}].subjectCategories`}
+                                    />{' '}
+                                  </div>
+                                </Fragment>
+                              )
+                            )}
                           </div>
                         </>
                       )

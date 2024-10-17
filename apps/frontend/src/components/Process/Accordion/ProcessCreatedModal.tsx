@@ -1,7 +1,7 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
-import Button from '../../common/Button'
+import Button from '../../common/Button/CustomButton'
 
 interface IProps {
   openAddPolicy: () => void
@@ -22,11 +22,11 @@ export const ProcessCreatedModal = (props: IProps) => {
       </ModalBody>
       <ModalFooter>
         <div className="flex justify-end">
-          <Button size="compact" kind="tertiary" marginRight onClick={closeModal}>
+          <Button size="xsmall" kind="tertiary" marginRight onClick={closeModal}>
             Nei
           </Button>
           <Button
-            size="compact"
+            size="xsmall"
             kind="primary"
             marginRight
             onClick={() => {
@@ -37,7 +37,7 @@ export const ProcessCreatedModal = (props: IProps) => {
             Legg til opplysningstyper enkeltvis
           </Button>
           <Button
-            size="compact"
+            size="xsmall"
             kind="primary"
             onClick={() => {
               closeModal()

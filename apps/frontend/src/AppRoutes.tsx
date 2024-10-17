@@ -1,9 +1,8 @@
 import { Spinner } from 'baseui/icon'
 import { ParagraphLarge } from 'baseui/typography'
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
-
 import { useEffect, useState } from 'react'
-import { getDisclosure, getPolicy, getProcess } from './api'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { getDisclosure, getPolicy, getProcess } from './api/GetAllApi'
 import PurposeTable from './components/Dashboard/PurposeTable'
 import DpProcessView from './components/DpProcess/DpProcessView'
 import ProcessorView from './components/Processor/ProcessorView'
@@ -41,21 +40,41 @@ export const processPathNoId = '/process/:section/:code/'
 const AppRoutes = (): JSX.Element => (
   <Root>
     <Routes>
-      <Route path="/dashboard/:filterName/:filterValue/:filterStatus" element={<PurposeTable />} caseSensitive={true} />
+      <Route
+        path="/dashboard/:filterName/:filterValue/:filterStatus"
+        element={<PurposeTable />}
+        caseSensitive={true}
+      />
       <Route path="/dashboard/:processStatus" element={<DashboardPage />} caseSensitive={true} />
       <Route path="/dashboard/" element={<DashboardPage />} caseSensitive={true} />
 
       <Route path="/thirdparty" element={<ThirdPartyListPage />} caseSensitive={true} />
-      <Route path="/thirdparty/:thirdPartyCode/:section/:id" element={<ThirdPartyMetadataPage />} caseSensitive={true} />
-      <Route path="/thirdparty/:thirdPartyCode/:section/" element={<ThirdPartyMetadataPage />} caseSensitive={true} />
-      <Route path="/thirdparty/:thirdPartyCode/" element={<ThirdPartyMetadataPage />} caseSensitive={true} />
+      <Route
+        path="/thirdparty/:thirdPartyCode/:section/:id"
+        element={<ThirdPartyMetadataPage />}
+        caseSensitive={true}
+      />
+      <Route
+        path="/thirdparty/:thirdPartyCode/:section/"
+        element={<ThirdPartyMetadataPage />}
+        caseSensitive={true}
+      />
+      <Route
+        path="/thirdparty/:thirdPartyCode/"
+        element={<ThirdPartyMetadataPage />}
+        caseSensitive={true}
+      />
 
       <Route path="/system" element={<SystemListPage />} caseSensitive={true} />
       <Route path="/system/:systemCode" element={<SystemPage />} caseSensitive={true} />
 
       <Route path="/team/:teamId" element={<TeamPage />} caseSensitive={true} />
 
-      <Route path="/productarea/:productAreaId" element={<ProductAreaPage />} caseSensitive={true} />
+      <Route
+        path="/productarea/:productAreaId"
+        element={<ProductAreaPage />}
+        caseSensitive={true}
+      />
       <Route path="/process" element={<PurposeListPage />} caseSensitive={true} />
 
       <Route path={processPathNoId} element={<ProcessPage />} caseSensitive={true} />
@@ -71,13 +90,25 @@ const AppRoutes = (): JSX.Element => (
       <Route path="/process/:id" element={<Redirect to={processUrl} />} caseSensitive={true} />
       <Route path="/policy/:id" element={<Redirect to={policyUrl} />} caseSensitive={true} />
       <Route path="/disclosure" element={<DisclosureListPage />} caseSensitive={true} />
-      <Route path="/disclosure/:id" element={<Redirect to={disclosureUrl} />} caseSensitive={true} />
+      <Route
+        path="/disclosure/:id"
+        element={<Redirect to={disclosureUrl} />}
+        caseSensitive={true}
+      />
 
-      <Route path="/informationtype/create" element={<InformationtypeCreatePage />} caseSensitive={true} />
+      <Route
+        path="/informationtype/create"
+        element={<InformationtypeCreatePage />}
+        caseSensitive={true}
+      />
       <Route path="/informationtype/:id" element={<InformationtypePage />} caseSensitive={true} />
       <Route path="/informationtype/" element={<InformationtypePage />} caseSensitive={true} />
 
-      <Route path="/informationtype/:id/edit" element={<InformationtypeEditPage />} caseSensitive={true} />
+      <Route
+        path="/informationtype/:id/edit"
+        element={<InformationtypeEditPage />}
+        caseSensitive={true}
+      />
 
       <Route path="/admin/codelist/:listname" element={<CodelistPage />} caseSensitive={true} />
       <Route path="/admin/codelist/" element={<CodelistPage />} caseSensitive={true} />
@@ -87,7 +118,11 @@ const AppRoutes = (): JSX.Element => (
       <Route path="/admin/audit/" element={<AuditPage />} caseSensitive={true} />
 
       <Route path="/admin/settings" element={<SettingsPage />} caseSensitive={true} />
-      <Route path="/admin/request-revision" element={<RequestRevisionPage />} caseSensitive={true} />
+      <Route
+        path="/admin/request-revision"
+        element={<RequestRevisionPage />}
+        caseSensitive={true}
+      />
       <Route path="/admin/maillog" element={<MailLogPage />} caseSensitive={true} />
 
       <Route path="/document/create" element={<DocumentCreatePage />} caseSensitive={true} />
@@ -96,7 +131,11 @@ const AppRoutes = (): JSX.Element => (
 
       <Route path="/document/:id/edit" element={<DocumentEditPage />} caseSensitive={true} />
 
-      <Route path="/alert/events/:objectType/:id" element={<AlertEventPage />} caseSensitive={true} />
+      <Route
+        path="/alert/events/:objectType/:id"
+        element={<AlertEventPage />}
+        caseSensitive={true}
+      />
       <Route path="/alert/events/:objectType/" element={<AlertEventPage />} caseSensitive={true} />
       <Route path="/alert/events/" element={<AlertEventPage />} caseSensitive={true} />
 
@@ -108,7 +147,9 @@ const AppRoutes = (): JSX.Element => (
 
 const NotFound = () => (
   <div className="flex justify-center content-center just mt-48">
-    <ParagraphLarge>Oida 404! Fant ikke den siden der nei - {useLocation().pathname}</ParagraphLarge>
+    <ParagraphLarge>
+      Oida 404! Fant ikke den siden der nei - {useLocation().pathname}
+    </ParagraphLarge>
     <img src={notFound} alt="404 Finner ikke den siden" style={{ maxWidth: '65%' }} />
   </div>
 )

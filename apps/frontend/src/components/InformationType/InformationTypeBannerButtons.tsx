@@ -1,15 +1,19 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useStyletron } from 'baseui'
-import { SIZE as ButtonSize } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
-import { InformationType } from '../../constants'
+import {
+  deleteInformationType,
+  getDocumentsForInformationType,
+  getInformationType,
+  getPoliciesForInformationType,
+} from '../../api/GetAllApi'
+import { IInformationType } from '../../constants'
 import { AuditButton } from '../admin/audit/AuditButton'
-import Button from '../common/Button'
+import Button from '../common/Button/CustomButton'
 import RouteLink from '../common/RouteLink'
 
 interface IDeleteModalProps {
@@ -21,7 +25,7 @@ interface IDeleteModalProps {
 export const DeleteModal = (props: IDeleteModalProps) => {
   const { showDeleteModal, id, closeModal } = props
   const [errorProcessModal, setErrorProcessModal] = useState(false)
-  const [infoType, setInfoType] = useState<InformationType>()
+  const [infoType, setInfoType] = useState<IInformationType>()
   const [policies, setPolicies] = useState<number>()
   const [documents, setDocuments] = useState<number>()
   const navigate: NavigateFunction = useNavigate()
@@ -54,7 +58,9 @@ export const DeleteModal = (props: IDeleteModalProps) => {
       <ModalHeader>Bekreft sletting</ModalHeader>
       <ModalBody>
         {!infoType && <Spinner />}
-        {canDelete && <ParagraphMedium>Bekreft sletting av opplysningstypen {infoType?.name}</ParagraphMedium>}
+        {canDelete && (
+          <ParagraphMedium>Bekreft sletting av opplysningstypen {infoType?.name}</ParagraphMedium>
+        )}
         {infoType && !canDelete && (
           <ParagraphMedium>
             {`Kan ikke slette opplysningstypen ${infoType.name} da den er knyttet til:`}
@@ -97,16 +103,25 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
         <AuditButton id={id} marginRight />
 
         <RouteLink href={`/informationtype/${id}/edit`} className={link}>
-          <Button size="compact" kind="outline" icon={faEdit} marginRight>
+          <Button size="xsmall" kind="outline" icon={faEdit} marginRight>
             Redigér
           </Button>
         </RouteLink>
 
-        <Button size={ButtonSize.compact} kind="outline" onClick={() => setShowDeleteModal(true)} icon={faTrash}>
+        <Button
+          size="xsmall"
+          kind="outline"
+          onClick={() => setShowDeleteModal(true)}
+          icon={faTrash}
+        >
           Slett
         </Button>
       </div>
-      <DeleteModal id={id} showDeleteModal={showDeleteModal} closeModal={() => setShowDeleteModal(false)} />
+      <DeleteModal
+        id={id}
+        showDeleteModal={showDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
+      />
     </>
   )
 }

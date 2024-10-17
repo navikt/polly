@@ -2,14 +2,14 @@ import { HeadingMedium } from 'baseui/typography'
 import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import shortid from 'shortid'
-import { getDocument, updateInformationTypesDocument } from '../api'
+import { getDocument, updateInformationTypesDocument } from '../api/GetAllApi'
 import DocumentForm from '../components/document/component/DocumentForm'
-import { Document, DocumentFormValues, DocumentInfoTypeUse } from '../constants'
+import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { codelist } from '../service/Codelist'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
 
-const convertToDocumentFormValues = (document: Document) => {
+const convertToDocumentFormValues = (document: IDocument) => {
   return {
     id: document.id,
     name: document.name,
@@ -21,25 +21,30 @@ const convertToDocumentFormValues = (document: Document) => {
         informationTypeId: it.informationTypeId,
         informationType: it.informationType,
         subjectCategories: it.subjectCategories,
-      } as DocumentInfoTypeUse
+      } as IDocumentInfoTypeUse
     }),
-  } as DocumentFormValues
+  } as IDocumentFormValues
 }
 
 const DocumentEditPage = () => {
-  const [document, setDocument] = useState<Document>()
+  const [document, setDocument] = useState<IDocument>()
   const [isLoading, setLoading] = useState(false)
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  ampli.logEvent('besøk', { side: 'Dokumenter', url: '/document/:id/edit', app: 'Behandlingskatalogen', type: 'Rediger dokument' })
+  ampli.logEvent('besøk', {
+    side: 'Dokumenter',
+    url: '/document/:id/edit',
+    app: 'Behandlingskatalogen',
+    type: 'Rediger dokument',
+  })
 
-  const handleEditDocument = async (values: DocumentFormValues) => {
+  const handleEditDocument = async (values: IDocumentFormValues) => {
     try {
       const res = await updateInformationTypesDocument(convertDocumentToFormRequest(values))
       navigate(`/document/${res.id}`)
     } catch (error: any) {
-      console.log(error, 'ERR')
+      console.debug(error, 'ERR')
     }
   }
 
@@ -59,7 +64,10 @@ const DocumentEditPage = () => {
       {!isLoading && document && (
         <Fragment>
           <HeadingMedium>Redigér dokument</HeadingMedium>
-          <DocumentForm initialValues={convertToDocumentFormValues(document)} handleSubmit={handleEditDocument} />
+          <DocumentForm
+            initialValues={convertToDocumentFormValues(document)}
+            handleSubmit={handleEditDocument}
+          />
         </Fragment>
       )}
     </Fragment>

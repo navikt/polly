@@ -9,26 +9,26 @@ import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
-import { useAllAreas, useProcessSearch } from '../../../api'
-import { Process, ProductArea } from '../../../constants'
+import { useAllAreas, useProcessSearch } from '../../../api/GetAllApi'
+import { IProcess, IProductArea } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
-import { codelist, ListName } from '../../../service/Codelist'
+import { EListName, codelist } from '../../../service/Codelist'
 import { env } from '../../../util/env'
-import Button from '../../common/Button'
+import { FieldTextarea } from '../../Process/common/FieldTextArea'
+import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { RadioBoolButton } from '../../common/Radio'
 import { Spinner } from '../../common/Spinner'
-import { FieldTextarea } from '../../Process/common/FieldTextArea'
 
-enum ProcessSelection {
+enum EProcessSelection {
   ONE = 'ONE',
   ALL = 'ALL',
   DEPARTMENT = 'DEPARTMENT',
   PRODUCT_AREA = 'PRODUCT_AREA',
 }
 
-interface ProcessRevisionRequest {
-  processSelection: ProcessSelection
+interface IProcessRevisionRequest {
+  processSelection: EProcessSelection
   processId?: string
   department?: string
   productAreaId?: string
@@ -36,8 +36,8 @@ interface ProcessRevisionRequest {
   completedOnly: boolean
 }
 
-const initialValues: ProcessRevisionRequest = {
-  processSelection: ProcessSelection.ONE,
+const initialValues: IProcessRevisionRequest = {
+  processSelection: EProcessSelection.ONE,
   processId: '',
   department: '',
   productAreaId: '',
@@ -45,23 +45,33 @@ const initialValues: ProcessRevisionRequest = {
   completedOnly: false,
 }
 
-const schema: () => yup.ObjectSchema<ProcessRevisionRequest> = () => {
+const schema: () => yup.ObjectSchema<IProcessRevisionRequest> = () => {
   const requiredString = yup.string().required('Feltet er påkrevd')
   return yup.object({
-    processSelection: yup.mixed<ProcessSelection>().oneOf(Object.values(ProcessSelection)).required(),
-    processId: yup.string().when('processSelection', { is: ProcessSelection.ONE, then: () => requiredString }),
-    department: yup.string().when('processSelection', { is: ProcessSelection.DEPARTMENT, then: () => requiredString }),
-    productAreaId: yup.string().when('processSelection', { is: ProcessSelection.PRODUCT_AREA, then: () => requiredString }),
+    processSelection: yup
+      .mixed<EProcessSelection>()
+      .oneOf(Object.values(EProcessSelection))
+      .required(),
+    processId: yup
+      .string()
+      .when('processSelection', { is: EProcessSelection.ONE, then: () => requiredString }),
+    department: yup
+      .string()
+      .when('processSelection', { is: EProcessSelection.DEPARTMENT, then: () => requiredString }),
+    productAreaId: yup
+      .string()
+      .when('processSelection', { is: EProcessSelection.PRODUCT_AREA, then: () => requiredString }),
     revisionText: requiredString,
     completedOnly: yup.boolean().required(),
   })
 }
 
-const requestRevision = async (request: ProcessRevisionRequest) => {
+const requestRevision = async (request: IProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
 }
 
-const formatProcessName = (process: Process): string => process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
+const formatProcessName = (process: IProcess): string =>
+  process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
 
 interface IRequestRevisionPageProps {
   close?: () => void
@@ -75,10 +85,15 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
-  ampli.logEvent('besøk', { side: 'Admin', url: '/admin/request-revision', app: 'Behandlingskatalogen', type: 'Trenger revidering' })
+  ampli.logEvent('besøk', {
+    side: 'Admin',
+    url: '/admin/request-revision',
+    app: 'Behandlingskatalogen',
+    type: 'Trenger revidering',
+  })
 
-  const departments = codelist.getParsedOptions(ListName.DEPARTMENT)
-  const areas: ProductArea[] = useAllAreas()
+  const departments = codelist.getParsedOptions(EListName.DEPARTMENT)
+  const areas: IProductArea[] = useAllAreas()
 
   const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
 
@@ -90,7 +105,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
       navigate(-1)
     }
   }
-  const save = async (request: ProcessRevisionRequest) => {
+  const save = async (request: IProcessRevisionRequest) => {
     setLoading(true)
     try {
       await requestRevision(request)
@@ -141,7 +156,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   <ModalLabel label="Behandlinger" />
                   <Field name="processSelection">
                     {() => {
-                      const button = (s: ProcessSelection, text: string = 'Alle') => {
+                      const button = (s: EProcessSelection, text = 'Alle') => {
                         const onClick = () => formikBag.setFieldValue('processSelection', s)
                         return (
                           <BButton type="button" onClick={onClick}>
@@ -151,11 +166,15 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                       }
                       return (
                         <div>
-                          <ButtonGroup selected={Object.values(ProcessSelection).indexOf(formikBag.values.processSelection)}>
-                            {button(ProcessSelection.ONE, 'Én')}
-                            {button(ProcessSelection.ALL, 'Alle')}
-                            {button(ProcessSelection.DEPARTMENT, 'Avdeling')}
-                            {button(ProcessSelection.PRODUCT_AREA, 'Område')}
+                          <ButtonGroup
+                            selected={Object.values(EProcessSelection).indexOf(
+                              formikBag.values.processSelection
+                            )}
+                          >
+                            {button(EProcessSelection.ONE, 'Én')}
+                            {button(EProcessSelection.ALL, 'Alle')}
+                            {button(EProcessSelection.DEPARTMENT, 'Avdeling')}
+                            {button(EProcessSelection.PRODUCT_AREA, 'Område')}
                           </ButtonGroup>
                         </div>
                       )
@@ -169,13 +188,19 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                 <div className="flex w-full mt-4">
                   <ModalLabel label="Bare fullførte" />
                   <Field name="completedOnly">
-                    {() => <RadioBoolButton setValue={(b) => formikBag.setFieldValue('completedOnly', b)} value={formikBag.values.completedOnly} omitUndefined />}
+                    {() => (
+                      <RadioBoolButton
+                        setValue={(b) => formikBag.setFieldValue('completedOnly', b)}
+                        value={formikBag.values.completedOnly}
+                        omitUndefined
+                      />
+                    )}
                   </Field>
                 </div>
               )}
               <Error fieldName="completedOnly" fullWidth />
 
-              {formikBag.values.processSelection === ProcessSelection.ONE && !modalView && (
+              {formikBag.values.processSelection === EProcessSelection.ONE && !modalView && (
                 <div className="flex w-full mt-4">
                   <ModalLabel label="Behandling" />
                   <Select
@@ -186,27 +211,32 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     type={TYPE.search}
                     options={processSearchResult}
                     placeholder="Søk"
-                    value={processSearchResult.filter((process: Process) => process.id === formikBag.values.processId)}
+                    value={processSearchResult.filter(
+                      (process: IProcess) => process.id === formikBag.values.processId
+                    )}
                     onInputChange={(event) => setProcessSearch(event.currentTarget.value)}
                     onChange={(params) => {
-                      formikBag.setFieldValue('processId', !params.value[0] ? '' : params.value[0].id)
+                      formikBag.setFieldValue(
+                        'processId',
+                        !params.value[0] ? '' : params.value[0].id
+                      )
                     }}
                     filterOptions={(option: Value) => option}
                     labelKey="name"
-                    getOptionLabel={({ option }) => formatProcessName(option as Process)}
+                    getOptionLabel={({ option }) => formatProcessName(option as IProcess)}
                   />
                 </div>
               )}
               <Error fieldName="processId" fullWidth />
 
-              {formikBag.values.processSelection === ProcessSelection.DEPARTMENT && (
+              {formikBag.values.processSelection === EProcessSelection.DEPARTMENT && (
                 <div className="flex w-full mt-4">
                   <ModalLabel label="Avdeling" />
                   <div className="w-full">
                     <Combobox
                       mapOptionToString={(option) => option.label}
                       options={departments}
-                      value={formikBag.values.department!}
+                      value={formikBag.values.department || ''}
                       onChange={(code: string) => formikBag.setFieldValue('department', code)}
                     />
                   </div>
@@ -214,14 +244,14 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
               )}
               <Error fieldName="department" fullWidth />
 
-              {formikBag.values.processSelection === ProcessSelection.PRODUCT_AREA && (
+              {formikBag.values.processSelection === EProcessSelection.PRODUCT_AREA && (
                 <div className="flex w-full mt-4">
                   <ModalLabel label="Område" />
                   <div className="w-full">
                     <Combobox
-                      mapOptionToString={(option: ProductArea) => option.name}
+                      mapOptionToString={(option: IProductArea) => option.name}
                       options={areas}
-                      value={formikBag.values.productAreaId!}
+                      value={formikBag.values.productAreaId || ''}
                       onChange={(code: string) => formikBag.setFieldValue('productAreaId', code)}
                     />
                   </div>

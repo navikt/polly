@@ -1,10 +1,10 @@
 import { codeListSchema } from '../../components/common/schema'
-import { Code, ListName } from '../../service/Codelist'
+import { EListName, ICode } from '../../service/Codelist'
 import '../config/schemaValidator'
 
 const schema = codeListSchema()
-const createCodelist: () => Code = () => ({
-  list: ListName.PURPOSE,
+const createCodelist: () => ICode = () => ({
+  list: EListName.PURPOSE,
   code: 'CODE',
   description: 'desc',
   shortName: 'name',

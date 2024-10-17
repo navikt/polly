@@ -5,31 +5,40 @@ import { Input } from 'baseui/input'
 import { OnChangeParams, Option, Select, TYPE, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from 'formik'
+import {
+  Field,
+  FieldArray,
+  FieldArrayRenderProps,
+  FieldProps,
+  Form,
+  Formik,
+  FormikHelpers,
+  FormikProps,
+} from 'formik'
 import { ChangeEvent, Fragment, KeyboardEvent, RefObject, useEffect, useRef, useState } from 'react'
-import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api'
-import { InformationType, InformationtypeFormValues } from '../../constants'
-import { ListName, codelist } from '../../service/Codelist'
+import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api/GetAllApi'
+import { IInformationType, IInformationtypeFormValues } from '../../constants'
+import { EListName, codelist } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
 import { Error } from '../common/ModalSchema'
 import { renderTagList } from '../common/TagList'
 import FieldProductTeam from '../common/form/FieldProductTeam'
 import { infoTypeSchema } from '../common/schema'
 
-type FormProps = {
-  formInitialValues: InformationtypeFormValues
-  submit: (infoType: InformationtypeFormValues) => Promise<void>
+type TFormProps = {
+  formInitialValues: IInformationtypeFormValues
+  submit: (infoType: IInformationtypeFormValues) => Promise<void>
   isEdit: boolean
 }
 
-const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) => {
+const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
   const initialValueSensitivity = () => {
     if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
 
     return [
       {
         id: formInitialValues.sensitivity,
-        label: codelist.getShortname(ListName.SENSITIVITY, formInitialValues.sensitivity),
+        label: codelist.getShortname(EListName.SENSITIVITY, formInitialValues.sensitivity),
       },
     ]
   }
@@ -40,7 +49,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     return [
       {
         id: formInitialValues.orgMaster,
-        label: codelist.getShortname(ListName.SYSTEM, formInitialValues.orgMaster),
+        label: codelist.getShortname(EListName.SYSTEM, formInitialValues.orgMaster),
       },
     ]
   }
@@ -55,7 +64,9 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
   const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
   const [sensitivityValue, setSensitivityValue] = useState<Option>(initialValueSensitivity())
-  const [termValue, setTermValue] = useState<Option>(formInitialValues.term ? [{ id: formInitialValues.term, label: formInitialValues.term }] : [])
+  const [termValue, setTermValue] = useState<Option>(
+    formInitialValues.term ? [{ id: formInitialValues.term, label: formInitialValues.term }] : []
+  )
   const [masterValue, setMasterValue] = useState<Option>(initialValueMaster())
   const [currentKeywordValue, setCurrentKeywordValue] = useState('')
 
@@ -69,10 +80,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     })()
   }, [formInitialValues.term])
 
-  const getParsedOptions = (listName: ListName, values: string[]) => {
+  const getParsedOptions = (listName: EListName, values: string[]) => {
     if (!codelist) return []
 
-    let parsedOptions = codelist.getParsedOptions(listName)
+    const parsedOptions = codelist.getParsedOptions(listName)
 
     if (!values) {
       return parsedOptions
@@ -81,7 +92,9 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     }
   }
 
-  const onAddKeyword: (arrayHelpers: FieldArrayRenderProps) => void = (arrayHelpers: FieldArrayRenderProps) => {
+  const onAddKeyword: (arrayHelpers: FieldArrayRenderProps) => void = (
+    arrayHelpers: FieldArrayRenderProps
+  ) => {
     if (!currentKeywordValue) {
       return
     }
@@ -94,17 +107,28 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
     }
   }
 
-  const onSubmit = async (values: InformationtypeFormValues, actions: FormikHelpers<InformationtypeFormValues>): Promise<void> => {
-    const searchResults: InformationType[] = (await searchInformationType(values.name!)).content.filter(
-      (informationType) => informationType.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== informationType.id,
-    )
-    if (searchResults.length > 0) {
-      actions.setFieldError('name', 'Informasjonstypen eksisterer allerede')
-    } else {
-      submit(values)
-      actions.setSubmitting(false)
+  const onSubmit = async (
+    values: IInformationtypeFormValues,
+    actions: FormikHelpers<IInformationtypeFormValues>
+  ): Promise<void> => {
+    if (values.name) {
+      const searchResults: IInformationType[] = (
+        await searchInformationType(values.name)
+      ).content.filter(
+        (informationType) =>
+          informationType.name.toLowerCase() === values.name?.toLowerCase() &&
+          formInitialValues.id !== informationType.id
+      )
+
+      if (searchResults.length > 0) {
+        actions.setFieldError('name', 'Informasjonstypen eksisterer allerede')
+      } else {
+        submit(values)
+        actions.setSubmitting(false)
+      }
     }
   }
+
   return (
     <Fragment>
       <Formik
@@ -112,9 +136,13 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
         initialValues={formInitialValues}
         enableReinitialize
         onSubmit={onSubmit}
-        render={(formikBag: FormikProps<InformationtypeFormValues>) => (
+        render={(formikBag: FormikProps<IInformationtypeFormValues>) => (
           <Form onKeyDown={disableEnter}>
-            <FlexGrid flexGridColumnCount={2} flexGridColumnGap="scale1000" flexGridRowGap="scale1000">
+            <FlexGrid
+              flexGridColumnCount={2}
+              flexGridColumnGap="scale1000"
+              flexGridRowGap="scale1000"
+            >
               <FlexGridItem>
                 <Field
                   name="name"
@@ -133,17 +161,17 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               <FlexGridItem>
                 <Field
                   name="orgMaster"
-                  render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                  render={({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div className="mb-4">
                       <div className="mb-2 self-center">
                         <LabelMedium>Master i NAV</LabelMedium>
                       </div>
 
                       <Select
-                        options={codelist.getParsedOptions(ListName.SYSTEM)}
+                        options={codelist.getParsedOptions(EListName.SYSTEM)}
                         value={masterValue as Value}
                         onChange={(params: OnChangeParams) => {
-                          let master = params.value.length ? params.value[0] : undefined
+                          const master = params.value.length ? params.value[0] : undefined
                           setMasterValue(master as Option)
                           form.setFieldValue('orgMaster', master ? master.id : undefined)
                         }}
@@ -158,7 +186,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               <FlexGridItem>
                 <Field
                   name="term"
-                  render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                  render={({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div>
                       <div className="mb-2 self-center">
                         <LabelMedium>Begrepsdefinisjon (oppslag i Begrepskatalogen)</LabelMedium>
@@ -172,7 +200,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         value={termValue as Value}
                         onInputChange={(event) => setTermSearch(event.currentTarget.value)}
                         onChange={(params: OnChangeParams) => {
-                          let term = params.value.length ? params.value[0] : undefined
+                          const term = params.value.length ? params.value[0] : undefined
                           setTermValue(term ? [term as Option] : [])
                           form.setFieldValue('term', term ? term.id : undefined)
                         }}
@@ -194,14 +222,19 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         <LabelMedium>Kilder</LabelMedium>
                       </div>
                       <Select
-                        options={getParsedOptions(ListName.THIRD_PARTY, formikBag.values.sources)}
+                        options={getParsedOptions(EListName.THIRD_PARTY, formikBag.values.sources)}
                         maxDropdownHeight="300px"
                         onChange={({ option }) => {
                           arrayHelpers.push(option ? option.id : null)
                         }}
-                        error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
+                        error={
+                          !!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount
+                        }
                       />
-                      {renderTagList(codelist.getShortnames(ListName.THIRD_PARTY, formikBag.values.sources), arrayHelpers)}
+                      {renderTagList(
+                        codelist.getShortnames(EListName.THIRD_PARTY, formikBag.values.sources),
+                        arrayHelpers
+                      )}
                     </div>
                   )}
                 />
@@ -219,7 +252,9 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                       <Input
                         type="text"
                         value={currentKeywordValue}
-                        onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setCurrentKeywordValue(event.currentTarget.value)}
+                        onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                          setCurrentKeywordValue(event.currentTarget.value)
+                        }
                         onBlur={() => onAddKeyword(arrayHelpers)}
                         onKeyDown={(event) => {
                           if (event.key === 'Enter') onAddKeyword(arrayHelpers)
@@ -232,7 +267,9 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                             </Button>
                           ),
                         }}
-                        error={!!arrayHelpers.form.errors.keywords && !!arrayHelpers.form.submitCount}
+                        error={
+                          !!arrayHelpers.form.errors.keywords && !!arrayHelpers.form.submitCount
+                        }
                       />
                       {renderTagList(formikBag.values.keywords, arrayHelpers)}
                     </div>
@@ -246,7 +283,10 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                   <div className="mb-2 self-center">
                     <LabelMedium>Team</LabelMedium>
                   </div>
-                  <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName="productTeams" />
+                  <FieldProductTeam
+                    productTeams={formikBag.values.productTeams}
+                    fieldName="productTeams"
+                  />
                 </div>
               </FlexGridItem>
 
@@ -259,14 +299,19 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                         <LabelMedium>Kategorier</LabelMedium>
                       </div>
                       <Select
-                        options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
+                        options={getParsedOptions(EListName.CATEGORY, formikBag.values.categories)}
                         maxDropdownHeight="300px"
                         onChange={({ option }) => {
                           arrayHelpers.push(option ? option.id : null)
                         }}
-                        error={!!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount}
+                        error={
+                          !!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount
+                        }
                       />
-                      {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
+                      {renderTagList(
+                        codelist.getShortnames(EListName.CATEGORY, formikBag.values.categories),
+                        arrayHelpers
+                      )}
                     </div>
                   )}
                 />
@@ -283,7 +328,8 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                       </div>
                       <Textarea
                         onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
-                          if (event.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
+                          if (event.key === 'Enter')
+                            form.setFieldValue('description', form.values.description + '\n')
                         }}
                         {...field}
                         rows={5}
@@ -296,19 +342,24 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
               <FlexGridItem>
                 <Field
                   name="sensitivity"
-                  render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                  render={({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div>
                       <div className="mb-2 self-center">
                         <LabelMedium>Type personopplysning</LabelMedium>
                       </div>
 
                       <Select
-                        options={codelist.getParsedOptions(ListName.SENSITIVITY).filter((sensitivity) => !sensitivity.label.includes('Ikke'))}
+                        options={codelist
+                          .getParsedOptions(EListName.SENSITIVITY)
+                          .filter((sensitivity) => !sensitivity.label.includes('Ikke'))}
                         value={sensitivityValue as Value}
                         onChange={(params: OnChangeParams) => {
-                          let sensitivity = params.value.length ? params.value[0] : undefined
+                          const sensitivity = params.value.length ? params.value[0] : undefined
                           setSensitivityValue(sensitivity as Option)
-                          form.setFieldValue('sensitivity', sensitivity ? sensitivity.id : undefined)
+                          form.setFieldValue(
+                            'sensitivity',
+                            sensitivity ? sensitivity.id : undefined
+                          )
                         }}
                         error={!!form.errors.sensitivity && !!form.submitCount}
                       />
@@ -325,7 +376,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 kind="secondary"
                 overrides={{
                   BaseButton: {
-                    style: ({ $theme }: any) => {
+                    style: () => {
                       return {
                         alignContent: 'center',
                         paddingRight: '4rem',
@@ -342,7 +393,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: FormProps) =
                 type="submit"
                 overrides={{
                   BaseButton: {
-                    style: ({ $theme }: any) => {
+                    style: () => {
                       return {
                         alignContent: 'center',
                         marginLeft: '1rem',
