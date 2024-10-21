@@ -2,29 +2,15 @@ import axios from 'axios'
 import { Form, Formik} from 'formik'
 import {useState} from 'react'
 import * as yup from 'yup'
-import { useAllAreas, useProcessSearch } from '../../../api/GetAllApi'
-import { IProcess, IProductArea } from '../../../constants'
+import { searchProcessOptions, useAllAreas } from '../../../api/GetAllApi'
+import {EProcessSelection, IProcessRevisionRequest, IProductArea} from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { EListName, codelist } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import AsyncSelect from 'react-select/async'
 import {Alert, Button, Heading, Label, Loader, Radio, RadioGroup, Select, Tabs, Textarea} from '@navikt/ds-react'
 
-enum EProcessSelection {
-  ONE = 'ONE',
-  ALL = 'ALL',
-  DEPARTMENT = 'DEPARTMENT',
-  PRODUCT_AREA = 'PRODUCT_AREA',
-}
 
-interface IProcessRevisionRequest {
-  processSelection: EProcessSelection
-  processId?: string
-  department?: string
-  productAreaId?: string
-  revisionText: string
-  completedOnly: boolean
-}
 
 const initialValues: IProcessRevisionRequest = {
   processSelection: EProcessSelection.ONE,
@@ -60,9 +46,6 @@ const requestRevision = async (request: IProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
 }
 
-const formatProcessName = (process: IProcess): string =>
-  process.purposes.map((p) => p.shortName).join(', ') + ': ' + process.name
-
 interface IRequestRevisionPageProps {
   close?: () => void
   processId?: string
@@ -83,18 +66,6 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
 
   const departments = codelist.getParsedOptions(EListName.DEPARTMENT)
   const areas: IProductArea[] = useAllAreas()
-
-  const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
-
-  const modalView = !!props.processId
-  const abort = (): void => {
-    if (close) {
-      close()
-    } else {
-      navigate(-1)
-    }
-  }
-
 
   const save = async (request: IProcessRevisionRequest) => {
     setLoading(true)
@@ -156,23 +127,23 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
               <Tabs defaultValue="logg" value={formikBag.values.processSelection} onChange={(value)=>formikBag.setFieldValue('processSelection', value)}>
                 <Tabs.List>
                   <Tabs.Tab
-                    value={RecipientType.ONE}
+                    value={EProcessSelection.ONE}
                     label="Én behandling"
                   />
                   <Tabs.Tab
-                    value={RecipientType.ALL}
+                    value={EProcessSelection.ALL}
                     label="Alle behandlinger"
                   />
                   <Tabs.Tab
-                    value={RecipientType.DEPARTMENT}
+                    value={EProcessSelection.DEPARTMENT}
                     label="Avdeling"
                   />
                   <Tabs.Tab
-                    value={RecipientType.PRODUCT_AREA}
+                    value={EProcessSelection.PRODUCT_AREA}
                     label="Område"
                   />
                 </Tabs.List>
-                <Tabs.Panel value={RecipientType.ONE} className="h-48 w-full p-4">
+                <Tabs.Panel value={EProcessSelection.ONE} className="h-48 w-full p-4">
                   <div className="flex w-full mt-4 my-3">
                     <div className="my-3">
                       <Label>Legg til en behandling fra Behandlingskatalogen</Label>
@@ -198,10 +169,10 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                       Feltet er påkrevd
                     </p>)}
                 </Tabs.Panel>
-                <Tabs.Panel value={RecipientType.ALL} className="h-48 w-full p-4">
+                <Tabs.Panel value={EProcessSelection.ALL} className="h-48 w-full p-4">
                   {selectOnlyCompleted(formikBag)}
                 </Tabs.Panel>
-                <Tabs.Panel value={RecipientType.DEPARTMENT} className="h-68 w-full p-4">
+                <Tabs.Panel value={EProcessSelection.DEPARTMENT} className="h-68 w-full p-4">
                   <Select
                     className="w-1/2"
                     label="Avdeling"
@@ -221,7 +192,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     </Select>
                   {selectOnlyCompleted(formikBag)}
                 </Tabs.Panel>
-                <Tabs.Panel value={RecipientType.PRODUCT_AREA} className="h-68 w-full p-4">
+                <Tabs.Panel value={EProcessSelection.PRODUCT_AREA} className="h-68 w-full p-4">
                   <Select
                     className="w-1/2"
                     label="Område"

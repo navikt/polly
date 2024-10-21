@@ -12,7 +12,6 @@ import {
   getDisclosuresByProcessId,
   getResourceById,
 } from '../../../api/GetAllApi'
-import { RequestRevisionPage } from '../../../components/admin/revision/RequestRevisionPage'
 import {
   ELegalBasesUse,
   IAddDocumentToProcessFormValues,
@@ -41,6 +40,7 @@ import { ProcessButtonGroup } from './ProcessButtonGroup'
 import { ProcessCreatedModal } from './ProcessCreatedModal'
 import ProcessData from './ProcessData'
 import TablePolicy from './TablePolicy'
+import {RequestRevisionModal} from "../../admin/revision/RequestRevisionModal";
 
 type TAccordionProcessProps = {
   isLoading: boolean
