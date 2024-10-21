@@ -37,7 +37,7 @@ const Purposes = ({ policies }: IPurposesProps) => {
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mr-2.5">
         <Button onClick={() => setAccordion(!accordion)} size="xsmall" kind="outline">
           {accordion ? 'Vis alle' : 'Gruppér etter behandlingsaktivitet'}
         </Button>
