@@ -152,7 +152,7 @@ const TablePolicy = ({
                 </div>
               </Cell>
               <Cell small>
-                <div className="flex justify-end w-full">
+                <div className="flex justify-end w-full items-center">
                   <AuditButton id={row.id} kind="tertiary" />
                   {hasAccess && (
                     <>
