@@ -38,7 +38,7 @@
         <commons-io.version>2.17.0</commons-io.version>
         <guava.version>33.3.1-jre</guava.version>
         <jna.version>5.15.0</jna.version>
-        <jetbrains.annotation.version>26.0.0</jetbrains.annotation.version>
+        <jetbrains.annotation.version>26.0.1</jetbrains.annotation.version>
         <stax2-api.version>4.2.2</stax2-api.version>
 
         <!-- Test -->
@@ -94,7 +94,7 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
-                <version>26.48.0</version>
+                <version>26.49.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
