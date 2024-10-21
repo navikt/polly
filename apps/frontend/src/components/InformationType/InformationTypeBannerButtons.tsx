@@ -100,7 +100,7 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
   return (
     <>
       <div className="self-center flex">
-        <AuditButton id={id} marginRight />
+        <AuditButton id={id} />
 
         <RouteLink href={`/informationtype/${id}/edit`} className={link}>
           <Button size="xsmall" kind="outline" icon={faEdit} marginRight>
