@@ -40,7 +40,9 @@ const Button = (props: IButtonProps) => {
 
   return (
     <>
-      <div className={`inline ${props.marginLeft ? 'ml-2.5' : ''}`} />
+      <div
+        className={`inline ${props.marginLeft ? 'ml-2.5' : ''} ${props.marginRight ? 'mr-2.5' : ''}`}
+      />
       <Tooltip tooltip={props.tooltip}>
         <NavButton
           variant={baseuiKind}
