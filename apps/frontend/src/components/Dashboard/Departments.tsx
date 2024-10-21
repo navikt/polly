@@ -56,7 +56,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
     >
       <Button type="button" variant="tertiary-neutral">
         <Card overrides={cardShadow}>
-          <div className="flex flex-col items-center justify-around w-24 h-24">
+          <div className="flex flex-col items-center justify-around w-24 h-28">
             <RouteLink
               href={genProcessPath(ESection.department, department.department, undefined)}
               style={{ textDecoration: 'none' }}
