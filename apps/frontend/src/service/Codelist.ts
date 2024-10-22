@@ -34,6 +34,58 @@ export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
 const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT_'
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
+export interface ICodelistProps {
+  fetchData: (refresh?: boolean) => Promise<any>
+  isLoaded: () => string | IAllCodelists | undefined
+  getCodes: (list: EListName) => ICode[]
+  getCode: (list: EListName, codeName: string) => ICode | undefined
+  valid: (list: EListName, codeName?: string) => boolean
+  getShortnameForCode: (code: ICode) => string
+  getShortnameForCodes: (codes: ICode[]) => string
+  getShortname: (list: EListName, codeName: string) => string
+  getShortnames: (list: EListName, codeNames: string[]) => string[]
+  getDescription: (list: EListName, codeName: string) => string
+  getParsedOptions: (listName: EListName) => IGetParsedOptionsProps[]
+  getParsedOptionsForList: (
+    listName: EListName,
+    selected: string[]
+  ) => IGetParsedOptionsForListProps[]
+  getParsedOptionsFilterOutSelected: (
+    listName: EListName,
+    currentSelected: string[]
+  ) => IGetParsedOptionsFilterOutSelectedProps[]
+  isForskrift: (nationalLawCode?: string) => boolean | '' | undefined
+  countryName: (code: string) => string
+  getCountryCodesOutsideEu: () => ICountryCode[] | []
+  requiresNationalLaw: (gdprCode?: string) => boolean | '' | undefined
+  requiresDescription: (gdprCode?: string) => boolean | '' | undefined
+  requiresArt9: (sensitivityCode?: string) => boolean
+  isArt6: (gdprCode?: string) => string | boolean | undefined
+  isArt9: (gdprCode?: string) => string | boolean | undefined
+  showSubDepartment: (departmentCode?: string) => boolean | '' | undefined
+  makeIdLabelForAllCodeLists: () => IMakeIdLabelForAllCodeListsProps[]
+}
+
+export interface IGetParsedOptionsProps {
+  id: string
+  label: string
+}
+
+interface IGetParsedOptionsForListProps {
+  id: string
+  label: string
+}
+
+interface IGetParsedOptionsFilterOutSelectedProps {
+  id: string
+  label: string
+}
+
+interface IMakeIdLabelForAllCodeListsProps {
+  id: string
+  label: string
+}
+
 const CodelistServiceNew = () => {
   const [lists, setLists] = useState<IAllCodelists | undefined>()
   const [error, setError] = useState<string | undefined>()
@@ -118,7 +170,7 @@ const CodelistServiceNew = () => {
     return code ? code.description : codeName
   }
 
-  const getParsedOptions = (listName: EListName): { id: string; label: string }[] => {
+  const getParsedOptions = (listName: EListName): IGetParsedOptionsProps[] => {
     return getCodes(listName).map((code: ICode) => {
       return { id: code.code, label: code.shortName }
     })
@@ -127,14 +179,14 @@ const CodelistServiceNew = () => {
   const getParsedOptionsForList = (
     listName: EListName,
     selected: string[]
-  ): { id: string; label: string }[] => {
+  ): IGetParsedOptionsForListProps[] => {
     return selected.map((code: string) => ({ id: code, label: getShortname(listName, code) }))
   }
 
   const getParsedOptionsFilterOutSelected = (
     listName: EListName,
     currentSelected: string[]
-  ): { id: string; label: string }[] => {
+  ): IGetParsedOptionsFilterOutSelectedProps[] => {
     const parsedOptions = getParsedOptions(listName)
     return !currentSelected
       ? parsedOptions
@@ -171,14 +223,11 @@ const CodelistServiceNew = () => {
     return departmentCode && DEPARTMENTS_WITH_SUB_DEPARTMENTS.indexOf(departmentCode) >= 0
   }
 
-  const makeIdLabelForAllCodeLists = (): {
-    id: string
-    label: string
-  }[] => {
+  const makeIdLabelForAllCodeLists = (): IMakeIdLabelForAllCodeListsProps[] => {
     return Object.keys(EListName).map((key: string) => ({ id: key, label: key }))
   }
 
-  const utils = {
+  const utils: ICodelistProps = {
     fetchData,
     isLoaded,
     getCodes,
@@ -187,6 +236,7 @@ const CodelistServiceNew = () => {
     getShortnameForCode,
     getShortnameForCodes,
     getShortnames,
+    getShortname,
     getDescription,
     getParsedOptions,
     getParsedOptionsForList,
