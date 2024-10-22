@@ -86,7 +86,7 @@ interface IMakeIdLabelForAllCodeListsProps {
   label: string
 }
 
-const CodelistServiceNew = () => {
+export const CodelistService = () => {
   const [lists, setLists] = useState<IAllCodelists | undefined>()
   const [error, setError] = useState<string | undefined>()
   const [countries, setCountries] = useState<ICountryCode[] | undefined>()
@@ -253,188 +253,188 @@ const CodelistServiceNew = () => {
     makeIdLabelForAllCodeLists,
   }
 
-  return [utils, lists]
+  return [utils, lists] as [ICodelistProps, IAllCodelists | undefined]
 }
 
-class CodelistService {
-  // lagt inn
-  lists?: IAllCodelists
-  error?: string
+// class CodelistService {
+//   // lagt inn
+//   lists?: IAllCodelists
+//   error?: string
 
-  promise: Promise<any>
+//   promise: Promise<any>
 
-  // lagt inn
-  countries?: ICountryCode[]
-  countriesOutsideEUEEA?: ICountryCode[]
+//   // lagt inn
+//   countries?: ICountryCode[]
+//   countriesOutsideEUEEA?: ICountryCode[]
 
-  constructor() {
-    this.promise = this.fetchData()
-  }
+//   constructor() {
+//     this.promise = this.fetchData()
+//   }
 
-  // Lagt inn
-  private fetchData = async (refresh?: boolean) => {
-    const codeListPromise = getAllCodelists(refresh)
-      .then(this.handleGetCodelistResponse)
-      .catch((err) => (this.error = err.message))
-    const allCountriesPromise = getAllCountries()
-      .then((codes) => (this.countries = codes))
-      .catch((err) => (this.error = err.message))
-    const countriesPromise = getCountriesOutsideEUEEA()
-      .then((codes) => (this.countriesOutsideEUEEA = codes))
-      .catch((err) => (this.error = err.message))
-    return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
-  }
+//   // Lagt inn
+//   private fetchData = async (refresh?: boolean) => {
+//     const codeListPromise = getAllCodelists(refresh)
+//       .then(this.handleGetCodelistResponse)
+//       .catch((err) => (this.error = err.message))
+//     const allCountriesPromise = getAllCountries()
+//       .then((codes) => (this.countries = codes))
+//       .catch((err) => (this.error = err.message))
+//     const countriesPromise = getCountriesOutsideEUEEA()
+//       .then((codes) => (this.countriesOutsideEUEEA = codes))
+//       .catch((err) => (this.error = err.message))
+//     return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
+//   }
 
-  // Lagt inn
-  handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>) => {
-    if (typeof response.data === 'object' && response.data !== null) {
-      this.lists = response.data
-    } else {
-      this.error = response.data
-    }
-  }
+//   // Lagt inn
+//   handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>) => {
+//     if (typeof response.data === 'object' && response.data !== null) {
+//       this.lists = response.data
+//     } else {
+//       this.error = response.data
+//     }
+//   }
 
-  refreshCodeLists() {
-    this.promise = this.fetchData(true)
-    return this.promise
-  }
+//   refreshCodeLists() {
+//     this.promise = this.fetchData(true)
+//     return this.promise
+//   }
 
-  async wait() {
-    await this.promise
-  }
+//   async wait() {
+//     await this.promise
+//   }
 
-  // lagt inn
-  isLoaded() {
-    return this.lists || this.error
-  }
+//   // lagt inn
+//   isLoaded() {
+//     return this.lists || this.error
+//   }
 
-  // lagt inn
-  getAllCountryCodes() {
-    return this.countries || []
-  }
+//   // lagt inn
+//   getAllCountryCodes() {
+//     return this.countries || []
+//   }
 
-  // Lagt inn
-  getCountryCodesOutsideEu() {
-    return this.countriesOutsideEUEEA || []
-  }
+//   // Lagt inn
+//   getCountryCodesOutsideEu() {
+//     return this.countriesOutsideEUEEA || []
+//   }
 
-  // lagt
-  countryName(code: string): string {
-    return this.getAllCountryCodes().find((c) => c.code === code)?.description || code
-  }
+//   // lagt
+//   countryName(code: string): string {
+//     return this.getAllCountryCodes().find((c) => c.code === code)?.description || code
+//   }
 
-  // lagt inn
-  getCodes(list: EListName): ICode[] {
-    return this.lists && this.lists.codelist[list]
-      ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName))
-      : []
-  }
+//   // lagt inn
+//   getCodes(list: EListName): ICode[] {
+//     return this.lists && this.lists.codelist[list]
+//       ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName))
+//       : []
+//   }
 
-  // lagt inn
-  getCode(list: EListName, codeName: string): ICode | undefined {
-    return this.getCodes(list).find((c) => c.code === codeName)
-  }
+//   // lagt inn
+//   getCode(list: EListName, codeName: string): ICode | undefined {
+//     return this.getCodes(list).find((c) => c.code === codeName)
+//   }
 
-  // Lagt inn
-  valid(list: EListName, codeName?: string): boolean {
-    return !!codeName && !!this.getCode(list, codeName)
-  }
+//   // Lagt inn
+//   valid(list: EListName, codeName?: string): boolean {
+//     return !!codeName && !!this.getCode(list, codeName)
+//   }
 
-  // Lagt inn
-  getShortnameForCode(code: ICode) {
-    return this.getShortname(code.list, code.code)
-  }
+//   // Lagt inn
+//   getShortnameForCode(code: ICode) {
+//     return this.getShortname(code.list, code.code)
+//   }
 
-  // Lagt inn
-  getShortnameForCodes(codes: ICode[]) {
-    return codes.map((c) => this.getShortname(c.list, c.code)).join(', ')
-  }
+//   // Lagt inn
+//   getShortnameForCodes(codes: ICode[]) {
+//     return codes.map((c) => this.getShortname(c.list, c.code)).join(', ')
+//   }
 
-  // Lagt inn
-  getShortname(list: EListName, codeName: string) {
-    const code = this.getCode(list, codeName)
-    return code ? code.shortName : codeName
-  }
+//   // Lagt inn
+//   getShortname(list: EListName, codeName: string) {
+//     const code = this.getCode(list, codeName)
+//     return code ? code.shortName : codeName
+//   }
 
-  // Lagt inn
-  getShortnames(list: EListName, codeNames: string[]) {
-    return codeNames.map((codeName) => this.getShortname(list, codeName))
-  }
+//   // Lagt inn
+//   getShortnames(list: EListName, codeNames: string[]) {
+//     return codeNames.map((codeName) => this.getShortname(list, codeName))
+//   }
 
-  // Lagt inn
-  getDescription(list: EListName, codeName: string) {
-    const code = this.getCode(list, codeName)
-    return code ? code.description : codeName
-  }
+//   // Lagt inn
+//   getDescription(list: EListName, codeName: string) {
+//     const code = this.getCode(list, codeName)
+//     return code ? code.description : codeName
+//   }
 
-  // Lagt inn
-  getParsedOptions(listName: EListName): { id: string; label: string }[] {
-    return this.getCodes(listName).map((code: ICode) => {
-      return { id: code.code, label: code.shortName }
-    })
-  }
+//   // Lagt inn
+//   getParsedOptions(listName: EListName): { id: string; label: string }[] {
+//     return this.getCodes(listName).map((code: ICode) => {
+//       return { id: code.code, label: code.shortName }
+//     })
+//   }
 
-  // Lagt inn
-  getParsedOptionsForList(
-    listName: EListName,
-    selected: string[]
-  ): { id: string; label: string }[] {
-    return selected.map((code) => ({ id: code, label: this.getShortname(listName, code) }))
-  }
+//   // Lagt inn
+//   getParsedOptionsForList(
+//     listName: EListName,
+//     selected: string[]
+//   ): { id: string; label: string }[] {
+//     return selected.map((code) => ({ id: code, label: this.getShortname(listName, code) }))
+//   }
 
-  // Lagt inn
-  getParsedOptionsFilterOutSelected(
-    listName: EListName,
-    currentSelected: string[]
-  ): { id: string; label: string }[] {
-    const parsedOptions = this.getParsedOptions(listName)
-    return !currentSelected
-      ? parsedOptions
-      : parsedOptions.filter((option) => (currentSelected.includes(option.id) ? null : option.id))
-  }
+//   // Lagt inn
+//   getParsedOptionsFilterOutSelected(
+//     listName: EListName,
+//     currentSelected: string[]
+//   ): { id: string; label: string }[] {
+//     const parsedOptions = this.getParsedOptions(listName)
+//     return !currentSelected
+//       ? parsedOptions
+//       : parsedOptions.filter((option) => (currentSelected.includes(option.id) ? null : option.id))
+//   }
 
-  // Lagt inn
-  requiresNationalLaw(gdprCode?: string) {
-    return gdprCode && NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdprCode) >= 0
-  }
+//   // Lagt inn
+//   requiresNationalLaw(gdprCode?: string) {
+//     return gdprCode && NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdprCode) >= 0
+//   }
 
-  // Lagt inn
-  requiresDescription(gdprCode?: string) {
-    return gdprCode && DESCRIPTION_GDPR_ARTICLES.indexOf(gdprCode) >= 0
-  }
+//   // Lagt inn
+//   requiresDescription(gdprCode?: string) {
+//     return gdprCode && DESCRIPTION_GDPR_ARTICLES.indexOf(gdprCode) >= 0
+//   }
 
-  // Lagt inn
-  requiresArt9(sensitivityCode?: string) {
-    return sensitivityCode === ESensitivityLevel.ART9
-  }
+//   // Lagt inn
+//   requiresArt9(sensitivityCode?: string) {
+//     return sensitivityCode === ESensitivityLevel.ART9
+//   }
 
-  // Lagt inn
-  isArt6(gdprCode?: string) {
-    return gdprCode && gdprCode.startsWith(ARTICLE_6_PREFIX)
-  }
+//   // Lagt inn
+//   isArt6(gdprCode?: string) {
+//     return gdprCode && gdprCode.startsWith(ARTICLE_6_PREFIX)
+//   }
 
-  // Lagt inn
-  isArt9(gdprCode?: string) {
-    return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
-  }
+//   // Lagt inn
+//   isArt9(gdprCode?: string) {
+//     return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
+//   }
 
-  // Lagt inn
-  isForskrift(nationalLawCode?: string) {
-    return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
-  }
+//   // Lagt inn
+//   isForskrift(nationalLawCode?: string) {
+//     return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
+//   }
 
-  // Lagt inn
-  showSubDepartment(departmentCode?: string) {
-    return departmentCode && DEPARTMENTS_WITH_SUB_DEPARTMENTS.indexOf(departmentCode) >= 0
-  }
+//   // Lagt inn
+//   showSubDepartment(departmentCode?: string) {
+//     return departmentCode && DEPARTMENTS_WITH_SUB_DEPARTMENTS.indexOf(departmentCode) >= 0
+//   }
 
-  // Lagt inn
-  makeIdLabelForAllCodeLists() {
-    return Object.keys(EListName).map((key) => ({ id: key, label: key }))
-  }
-}
+//   // Lagt inn
+//   makeIdLabelForAllCodeLists() {
+//     return Object.keys(EListName).map((key) => ({ id: key, label: key }))
+//   }
+// }
 
-export const codelist = new CodelistService()
+// export const codelist = new CodelistService()
 
 export interface IAllCodelists {
   codelist: IList
