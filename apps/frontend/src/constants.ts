@@ -112,6 +112,22 @@ export enum ENoDpiaReason {
   NO_PROFILING_OR_AUTOMATION = 'NO_PROFILING_OR_AUTOMATION',
   OTHER = 'OTHER',
 }
+export enum EProcessSelection {
+  ONE = 'ONE',
+  ALL = 'ALL',
+  DEPARTMENT = 'DEPARTMENT',
+  PRODUCT_AREA = 'PRODUCT_AREA',
+}
+
+export interface IProcessRevisionRequest {
+  processSelection: EProcessSelection
+  processId?: string
+  department?: string
+  productAreaId?: string
+  revisionText: string
+  completedOnly: boolean
+}
+
 
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 

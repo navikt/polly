@@ -252,3 +252,25 @@ export const useProcessSearch = () => {
     boolean,
   ]
 }
+
+export const searchProcessOptions = async (searchParam: string) => {
+  if (searchParam && searchParam.length > 2) {
+    const behandlinger  = ( await searchProcess(searchParam)).content
+    if (behandlinger && behandlinger.length) {
+      return behandlinger.map((behandling) => {
+        return {
+          value: behandling.id,
+          label:
+            'B' +
+            behandling.number +
+            ' ' +
+            behandling.purposes[0].shortName+
+            ': ' +
+            behandling.name,
+          ...behandling,
+        }
+      })
+    }
+  }
+  return []
+}

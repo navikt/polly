@@ -12,7 +12,6 @@ import {
   getDisclosuresByProcessId,
   getResourceById,
 } from '../../../api/GetAllApi'
-import { RequestRevisionPage } from '../../../components/admin/revision/RequestRevisionPage'
 import {
   ELegalBasesUse,
   IAddDocumentToProcessFormValues,
@@ -29,6 +28,7 @@ import { ICode } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
+import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
@@ -406,7 +406,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           >
             <ModalBody>
               <div className="w-[600px]">
-                <RequestRevisionPage processId={currentProcess.id} close={closeRevision} />
+                <RequestRevisionForm processId={currentProcess.id} close={closeRevision} />
               </div>
             </ModalBody>
           </Modal>

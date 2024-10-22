@@ -1,15 +1,10 @@
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown } from '@navikt/ds-react'
+import { Select, Spacer} from '@navikt/ds-react'
+import {BodyShort, Box, Heading, Pagination,} from "@navikt/ds-react";
 import axios from 'axios'
-import { Card } from 'baseui/card'
-import { Pagination } from 'baseui/pagination'
-import { HeadingMedium, HeadingXSmall } from 'baseui/typography'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { IPageResponse } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
-import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import { Markdown } from '../../common/Markdown'
 
@@ -38,7 +33,7 @@ export const MailLogPage = () => {
     totalElements: 0,
   })
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(20)
+  const [rowsPerPage, setRowsPerPage] = useState(20)
 
   ampli.logEvent('besøk', {
     side: 'Admin',
@@ -48,29 +43,15 @@ export const MailLogPage = () => {
   })
 
   useEffect(() => {
-    getMailLog(page - 1, limit).then(setLog)
-  }, [page, limit])
+    getMailLog(page - 1, rowsPerPage).then(setLog)
+  }, [page, rowsPerPage])
 
-  const handlePageChange = (nextPage: number): void => {
-    if (nextPage < 1) {
-      return
-    }
-    if (nextPage > log.pages) {
-      return
-    }
-    setPage(nextPage)
-  }
 
-  useEffect(() => {
-    const nextPageNum: number = Math.ceil(log.totalElements / limit)
-    if (log.totalElements && nextPageNum < page) {
-      setPage(nextPageNum)
-    }
-  }, [limit, log.totalElements])
+
 
   return (
-    <>
-      <HeadingMedium>Mail log</HeadingMedium>
+    <div className="w-full px-16" role="main">
+      <Heading className="mt-4" size="large" level="1" spacing>Logg for sendt e-post</Heading>
       {log?.content.map((logList: IMailLog, index: number) => {
         let html: string = logList.body
         const bodyIdx: number = logList.body.indexOf('<body>')
@@ -84,46 +65,53 @@ export const MailLogPage = () => {
 
         return (
           <div key={index} className="mb-6">
-            <HeadingXSmall marginBottom={0}>
+            <BodyShort>
               #{rowNum} Tid: {moment(logList.time).format('lll')} Til: {logList.to}
-            </HeadingXSmall>
-            <HeadingXSmall marginTop={0} marginBottom={theme.sizing.scale400}>
+            </BodyShort>
+            <BodyShort className="mb-3">
               Emne: {logList.subject}
-            </HeadingXSmall>
-            <Card>
-              <Markdown source={html} escapeHtml={false} />
-            </Card>
+            </BodyShort>
+            <Box
+              className="px-2"
+              borderWidth="2"
+              borderColor="border-subtle"
+              borderRadius="large"
+              background="surface-default">
+              <Markdown source={html} escapeHtml={false}/>
+            </Box>
           </div>
         )
       })}
 
-      <div className="flex justify-between mt-4">
-        <Dropdown>
-          <Button variant="tertiary" as={Dropdown.Toggle}>
-            {`${limit} Rader`}{' '}
-            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
-          </Button>
-          <Dropdown.Menu className="w-fit">
-            <Dropdown.Menu.List>
-              {[5, 10, 20, 50, 100].map((pageSize: number) => (
-                <Dropdown.Menu.List.Item
-                  key={'pageSize_' + pageSize}
-                  as={Button}
-                  onClick={() => setLimit(pageSize)}
-                >
-                  {pageSize}
-                </Dropdown.Menu.List.Item>
-              ))}
-            </Dropdown.Menu.List>
-          </Dropdown.Menu>
-        </Dropdown>
-        <Pagination
-          currentPage={page}
-          numPages={log.pages}
-          onPageChange={({ nextPage }) => handlePageChange(nextPage)}
-          labels={{ nextButton: 'Neste', prevButton: 'Forrige' }}
-        />
+
+      <div className="flex w-full justify-center items-center mt-3">
+        <Select
+          label="Antall rader:"
+          value={rowsPerPage}
+          onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
+          size="small"
+        >
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </Select>
+        <Spacer/>
+        <div>
+          <Pagination
+            page={page}
+            onPageChange={setPage}
+            count={log.pages ? log.pages : 1}
+            prevNextTexts
+            size="small"
+          />
+        </div>
+        <Spacer/>
+        <BodyShort>Totalt antall rader: {log.totalElements}</BodyShort>
+
       </div>
-    </>
-  )
+    </div>
+      )
 }
+
