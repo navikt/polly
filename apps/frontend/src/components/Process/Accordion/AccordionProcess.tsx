@@ -28,6 +28,7 @@ import { ICode } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
+import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
@@ -40,7 +41,6 @@ import { ProcessButtonGroup } from './ProcessButtonGroup'
 import { ProcessCreatedModal } from './ProcessCreatedModal'
 import ProcessData from './ProcessData'
 import TablePolicy from './TablePolicy'
-import {RequestRevisionModal} from "../../admin/revision/RequestRevisionModal";
 
 type TAccordionProcessProps = {
   isLoading: boolean
@@ -406,7 +406,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           >
             <ModalBody>
               <div className="w-[600px]">
-                <RequestRevisionModal processId={currentProcess.id} close={closeRevision} />
+                <RequestRevisionForm processId={currentProcess.id} close={closeRevision} />
               </div>
             </ModalBody>
           </Modal>

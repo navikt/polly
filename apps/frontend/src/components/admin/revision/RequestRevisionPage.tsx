@@ -101,7 +101,8 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     <div>
       <Heading level="1" size="large">Send anmodning om revidering</Heading>
 
-      {loading ? <Loader size="xlarge" /> : error && <Alert variant={'error'}>{error}</Alert>}
+      {loading && <Loader size="xlarge" />}
+      {error && <Alert variant={'error'}>{error}</Alert>}
 
         <Formik
           initialValues={{
