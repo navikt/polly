@@ -65,6 +65,21 @@ const CodelistServiceNew = () => {
     return lists || error
   }
 
+  const getAllCountryCodes = (): ICountryCode[] | [] => {
+    return countries || []
+  }
+
+  const getCountryCodesOutsideEu = (): ICountryCode[] | [] => {
+    return countriesOutsideEUEEA || []
+  }
+
+  const countryName = (code: string): string => {
+    return (
+      getAllCountryCodes().find((country: ICountryCode) => country.code === code)?.description ||
+      code
+    )
+  }
+
   const getCodes = (list: EListName): ICode[] => {
     return lists && lists.codelist[list]
       ? lists.codelist[list].sort((c1: ICode, c2: ICode) =>
@@ -128,8 +143,39 @@ const CodelistServiceNew = () => {
         )
   }
 
-  const isForskrift = (nationalLawCode?: string) => {
+  const requiresNationalLaw = (gdprCode?: string): boolean | '' | undefined => {
+    return gdprCode && NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdprCode) >= 0
+  }
+
+  const requiresDescription = (gdprCode?: string): boolean | '' | undefined => {
+    return gdprCode && DESCRIPTION_GDPR_ARTICLES.indexOf(gdprCode) >= 0
+  }
+
+  const requiresArt9 = (sensitivityCode?: string): boolean => {
+    return sensitivityCode === ESensitivityLevel.ART9
+  }
+
+  const isArt6 = (gdprCode?: string): string | boolean | undefined => {
+    return gdprCode && gdprCode.startsWith(ARTICLE_6_PREFIX)
+  }
+
+  const isArt9 = (gdprCode?: string): string | boolean | undefined => {
+    return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
+  }
+
+  const isForskrift = (nationalLawCode?: string): boolean | '' | undefined => {
     return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
+  }
+
+  const showSubDepartment = (departmentCode?: string): boolean | '' | undefined => {
+    return departmentCode && DEPARTMENTS_WITH_SUB_DEPARTMENTS.indexOf(departmentCode) >= 0
+  }
+
+  const makeIdLabelForAllCodeLists = (): {
+    id: string
+    label: string
+  }[] => {
+    return Object.keys(EListName).map((key: string) => ({ id: key, label: key }))
   }
 
   const utils = {
@@ -146,6 +192,15 @@ const CodelistServiceNew = () => {
     getParsedOptionsForList,
     getParsedOptionsFilterOutSelected,
     isForskrift,
+    countryName,
+    getCountryCodesOutsideEu,
+    requiresNationalLaw,
+    requiresDescription,
+    requiresArt9,
+    isArt6,
+    isArt9,
+    showSubDepartment,
+    makeIdLabelForAllCodeLists,
   }
 
   return [utils, lists]
@@ -203,14 +258,17 @@ class CodelistService {
     return this.lists || this.error
   }
 
+  // lagt inn
   getAllCountryCodes() {
     return this.countries || []
   }
 
+  // Lagt inn
   getCountryCodesOutsideEu() {
     return this.countriesOutsideEUEEA || []
   }
 
+  // lagt
   countryName(code: string): string {
     return this.getAllCountryCodes().find((c) => c.code === code)?.description || code
   }
@@ -285,22 +343,27 @@ class CodelistService {
       : parsedOptions.filter((option) => (currentSelected.includes(option.id) ? null : option.id))
   }
 
+  // Lagt inn
   requiresNationalLaw(gdprCode?: string) {
     return gdprCode && NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdprCode) >= 0
   }
 
+  // Lagt inn
   requiresDescription(gdprCode?: string) {
     return gdprCode && DESCRIPTION_GDPR_ARTICLES.indexOf(gdprCode) >= 0
   }
 
+  // Lagt inn
   requiresArt9(sensitivityCode?: string) {
     return sensitivityCode === ESensitivityLevel.ART9
   }
 
+  // Lagt inn
   isArt6(gdprCode?: string) {
     return gdprCode && gdprCode.startsWith(ARTICLE_6_PREFIX)
   }
 
+  // Lagt inn
   isArt9(gdprCode?: string) {
     return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
   }
@@ -310,10 +373,12 @@ class CodelistService {
     return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
   }
 
+  // Lagt inn
   showSubDepartment(departmentCode?: string) {
     return departmentCode && DEPARTMENTS_WITH_SUB_DEPARTMENTS.indexOf(departmentCode) >= 0
   }
 
+  // Lagt inn
   makeIdLabelForAllCodeLists() {
     return Object.keys(EListName).map((key) => ({ id: key, label: key }))
   }
