@@ -53,7 +53,7 @@ const CodelistServiceNew = () => {
     return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
   }
 
-  const handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>) => {
+  const handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>): void => {
     if (typeof response.data === 'object' && response.data !== null) {
       setLists(response.data)
     } else {
@@ -61,7 +61,7 @@ const CodelistServiceNew = () => {
     }
   }
 
-  const isLoaded = () => {
+  const isLoaded = (): string | IAllCodelists | undefined => {
     return lists || error
   }
 
@@ -77,11 +77,75 @@ const CodelistServiceNew = () => {
     return getCodes(list).find((code: ICode) => code.code === codeName)
   }
 
+  const valid = (list: EListName, codeName?: string): boolean => {
+    return !!codeName && !!getCode(list, codeName)
+  }
+
+  const getShortnameForCode = (code: ICode): string => {
+    return getShortname(code.list, code.code)
+  }
+
+  const getShortnameForCodes = (codes: ICode[]): string => {
+    return codes.map((code: ICode) => getShortname(code.list, code.code)).join(', ')
+  }
+
+  const getShortname = (list: EListName, codeName: string): string => {
+    const code: ICode | undefined = getCode(list, codeName)
+    return code ? code.shortName : codeName
+  }
+
+  const getShortnames = (list: EListName, codeNames: string[]): string[] => {
+    return codeNames.map((codeName: string) => getShortname(list, codeName))
+  }
+
+  const getDescription = (list: EListName, codeName: string): string => {
+    const code: ICode | undefined = getCode(list, codeName)
+    return code ? code.description : codeName
+  }
+
+  const getParsedOptions = (listName: EListName): { id: string; label: string }[] => {
+    return getCodes(listName).map((code: ICode) => {
+      return { id: code.code, label: code.shortName }
+    })
+  }
+
+  const getParsedOptionsForList = (
+    listName: EListName,
+    selected: string[]
+  ): { id: string; label: string }[] => {
+    return selected.map((code: string) => ({ id: code, label: getShortname(listName, code) }))
+  }
+
+  const getParsedOptionsFilterOutSelected = (
+    listName: EListName,
+    currentSelected: string[]
+  ): { id: string; label: string }[] => {
+    const parsedOptions = getParsedOptions(listName)
+    return !currentSelected
+      ? parsedOptions
+      : parsedOptions.filter((option: { id: string; label: string }) =>
+          currentSelected.includes(option.id) ? null : option.id
+        )
+  }
+
+  const isForskrift = (nationalLawCode?: string) => {
+    return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
+  }
+
   const utils = {
     fetchData,
     isLoaded,
     getCodes,
     getCode,
+    valid,
+    getShortnameForCode,
+    getShortnameForCodes,
+    getShortnames,
+    getDescription,
+    getParsedOptions,
+    getParsedOptionsForList,
+    getParsedOptionsFilterOutSelected,
+    isForskrift,
   }
 
   return [utils, lists]
@@ -163,38 +227,46 @@ class CodelistService {
     return this.getCodes(list).find((c) => c.code === codeName)
   }
 
+  // Lagt inn
   valid(list: EListName, codeName?: string): boolean {
     return !!codeName && !!this.getCode(list, codeName)
   }
 
+  // Lagt inn
   getShortnameForCode(code: ICode) {
     return this.getShortname(code.list, code.code)
   }
 
+  // Lagt inn
   getShortnameForCodes(codes: ICode[]) {
     return codes.map((c) => this.getShortname(c.list, c.code)).join(', ')
   }
 
+  // Lagt inn
   getShortname(list: EListName, codeName: string) {
     const code = this.getCode(list, codeName)
     return code ? code.shortName : codeName
   }
 
+  // Lagt inn
   getShortnames(list: EListName, codeNames: string[]) {
     return codeNames.map((codeName) => this.getShortname(list, codeName))
   }
 
+  // Lagt inn
   getDescription(list: EListName, codeName: string) {
     const code = this.getCode(list, codeName)
     return code ? code.description : codeName
   }
 
+  // Lagt inn
   getParsedOptions(listName: EListName): { id: string; label: string }[] {
     return this.getCodes(listName).map((code: ICode) => {
       return { id: code.code, label: code.shortName }
     })
   }
 
+  // Lagt inn
   getParsedOptionsForList(
     listName: EListName,
     selected: string[]
@@ -202,6 +274,7 @@ class CodelistService {
     return selected.map((code) => ({ id: code, label: this.getShortname(listName, code) }))
   }
 
+  // Lagt inn
   getParsedOptionsFilterOutSelected(
     listName: EListName,
     currentSelected: string[]
@@ -232,6 +305,7 @@ class CodelistService {
     return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
   }
 
+  // Lagt inn
   isForskrift(nationalLawCode?: string) {
     return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
   }
