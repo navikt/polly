@@ -18,7 +18,7 @@ import {
 import { ChangeEvent, Fragment, KeyboardEvent, RefObject, useEffect, useRef, useState } from 'react'
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api/GetAllApi'
 import { IInformationType, IInformationtypeFormValues } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
 import { Error } from '../common/ModalSchema'
 import { renderTagList } from '../common/TagList'
@@ -32,30 +32,32 @@ type TFormProps = {
 }
 
 const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
+  const [codelistUtils] = CodelistService()
+
   const initialValueSensitivity = () => {
-    if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
+    if (!formInitialValues.sensitivity || !codelistUtils.isLoaded()) return []
 
     return [
       {
         id: formInitialValues.sensitivity,
-        label: codelist.getShortname(EListName.SENSITIVITY, formInitialValues.sensitivity),
+        label: codelistUtils.getShortname(EListName.SENSITIVITY, formInitialValues.sensitivity),
       },
     ]
   }
 
   const initialValueMaster = () => {
-    if (!formInitialValues.orgMaster || !codelist) return []
+    if (!formInitialValues.orgMaster || !codelistUtils) return []
 
     return [
       {
         id: formInitialValues.orgMaster,
-        label: codelist.getShortname(EListName.SYSTEM, formInitialValues.orgMaster),
+        label: codelistUtils.getShortname(EListName.SYSTEM, formInitialValues.orgMaster),
       },
     ]
   }
 
   const initialValueTerm = async () => {
-    if (!formInitialValues.term || !codelist) return []
+    if (!formInitialValues.term || !codelistUtils) return []
     return [mapTermToOption(await getTerm(formInitialValues.term))]
   }
 
@@ -81,14 +83,16 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
   }, [formInitialValues.term])
 
   const getParsedOptions = (listName: EListName, values: string[]) => {
-    if (!codelist) return []
+    if (!codelistUtils) return []
 
-    const parsedOptions = codelist.getParsedOptions(listName)
+    const parsedOptions: IGetParsedOptionsProps[] = codelistUtils.getParsedOptions(listName)
 
     if (!values) {
       return parsedOptions
     } else {
-      return parsedOptions.filter((option) => (values.includes(option.id) ? null : option.id))
+      return parsedOptions.filter((option: IGetParsedOptionsProps) =>
+        values.includes(option.id) ? null : option.id
+      )
     }
   }
 
@@ -168,7 +172,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       </div>
 
                       <Select
-                        options={codelist.getParsedOptions(EListName.SYSTEM)}
+                        options={codelistUtils.getParsedOptions(EListName.SYSTEM)}
                         value={masterValue as Value}
                         onChange={(params: OnChangeParams) => {
                           const master = params.value.length ? params.value[0] : undefined
@@ -232,7 +236,10 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         }
                       />
                       {renderTagList(
-                        codelist.getShortnames(EListName.THIRD_PARTY, formikBag.values.sources),
+                        codelistUtils.getShortnames(
+                          EListName.THIRD_PARTY,
+                          formikBag.values.sources
+                        ),
                         arrayHelpers
                       )}
                     </div>
@@ -309,7 +316,10 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         }
                       />
                       {renderTagList(
-                        codelist.getShortnames(EListName.CATEGORY, formikBag.values.categories),
+                        codelistUtils.getShortnames(
+                          EListName.CATEGORY,
+                          formikBag.values.categories
+                        ),
                         arrayHelpers
                       )}
                     </div>
@@ -349,9 +359,12 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       </div>
 
                       <Select
-                        options={codelist
+                        options={codelistUtils
                           .getParsedOptions(EListName.SENSITIVITY)
-                          .filter((sensitivity) => !sensitivity.label.includes('Ikke'))}
+                          .filter(
+                            (sensitivity: IGetParsedOptionsProps) =>
+                              !sensitivity.label.includes('Ikke')
+                          )}
                         value={sensitivityValue as Value}
                         onChange={(params: OnChangeParams) => {
                           const sensitivity = params.value.length ? params.value[0] : undefined
