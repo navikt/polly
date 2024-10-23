@@ -10,7 +10,12 @@ import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import { useState } from 'react'
 import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
-import { EListName, ESensitivityLevel, codelist } from '../../../service/Codelist'
+import {
+  CodelistService,
+  EListName,
+  ESensitivityLevel,
+  IGetParsedOptionsProps,
+} from '../../../service/Codelist'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { paddingZero } from '../../common/Style'
 import { legalBasisSchema } from '../../common/schema'
@@ -57,18 +62,20 @@ const CardLegalBasis = ({
   titleSubmitButton,
   sensitivityLevel,
 }: ICardLegalBasisProps) => {
+  const [codelistUtils] = CodelistService()
+
   const [gdpr, setGdpr] = useState<Value>(
     initValue.gdpr
-      ? codelist
+      ? codelistUtils
           .getParsedOptions(EListName.GDPR_ARTICLE)
           .filter((value) => value.id === initValue.gdpr)
       : []
   )
   const [nationalLaw, setNationalLaw] = useState<Value>(
     initValue.nationalLaw
-      ? codelist
+      ? codelistUtils
           .getParsedOptions(EListName.NATIONAL_LAW)
-          .filter((value) => value.id === initValue.nationalLaw)
+          .filter((value: IGetParsedOptionsProps) => value.id === initValue.nationalLaw)
       : []
   )
   // Must be complete to achieve touched on submit
@@ -81,11 +88,15 @@ const CardLegalBasis = ({
 
   const getOptionsBySensitivityLevel = () => {
     if (sensitivityLevel === ESensitivityLevel.ART6) {
-      return codelist.getParsedOptions(EListName.GDPR_ARTICLE).filter((l) => codelist.isArt6(l.id))
+      return codelistUtils
+        .getParsedOptions(EListName.GDPR_ARTICLE)
+        .filter((parsedOption: IGetParsedOptionsProps) => codelistUtils.isArt6(parsedOption.id))
     } else if (sensitivityLevel === ESensitivityLevel.ART9) {
-      return codelist.getParsedOptions(EListName.GDPR_ARTICLE).filter((l) => codelist.isArt9(l.id))
+      return codelistUtils
+        .getParsedOptions(EListName.GDPR_ARTICLE)
+        .filter((parsedOption: IGetParsedOptionsProps) => codelistUtils.isArt9(parsedOption.id))
     }
-    return codelist.getParsedOptions(EListName.GDPR_ARTICLE)
+    return codelistUtils.getParsedOptions(EListName.GDPR_ARTICLE)
   }
 
   return (
@@ -130,13 +141,13 @@ const CardLegalBasis = ({
           <Error fieldName="gdpr" />
 
           <div
-            className={`mt-4 w-full ${codelist.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}
+            className={`mt-4 w-full ${codelistUtils.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}
           >
             <Field
               name="nationalLaw"
               render={() => (
                 <Select
-                  options={codelist.getParsedOptions(EListName.NATIONAL_LAW)}
+                  options={codelistUtils.getParsedOptions(EListName.NATIONAL_LAW)}
                   placeholder="Velg lov eller forskrift"
                   maxDropdownHeight="300px"
                   type={TYPE.search}
@@ -152,7 +163,7 @@ const CardLegalBasis = ({
           </div>
           <Error fieldName="nationalLaw" />
           <div
-            className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}
+            className={`mt-4 w-full ${codelistUtils.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}
           >
             <Field
               name="description"
