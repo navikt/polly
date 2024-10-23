@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { IProcess } from '../../../constants'
-import { ICode, codelist } from '../../../service/Codelist'
+import { CodelistService, ICode } from '../../../service/Codelist'
 import { TColumnCompares, useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
@@ -31,6 +31,8 @@ const sorting: TColumnCompares<IDataFormat> = {
 
 const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
   const { documentUsages } = props
+  const [codelistUtils] = CodelistService()
+
   const [processes] = useState(
     documentUsages.map((documentUsage: IProcess) => ({
       id: documentUsage.id,
@@ -69,7 +71,7 @@ const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
                 {process.purposes.map((purpose: ICode, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/process/purpose/${purpose.code}`}>
-                      {codelist.getShortnameForCode(purpose)}
+                      {codelistUtils.getShortnameForCode(purpose)}
                     </RouteLink>
                   </div>
                 ))}
@@ -95,7 +97,7 @@ const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
                 {process.products.map((purpose: ICode, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/system/${purpose.code}`}>
-                      {codelist.getShortnameForCode(purpose)}
+                      {codelistUtils.getShortnameForCode(purpose)}
                     </RouteLink>
                   </div>
                 ))}
