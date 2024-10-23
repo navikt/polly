@@ -22,7 +22,7 @@ import {
   IProcessorFormValues,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../service/Codelist'
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
@@ -31,6 +31,8 @@ const maxError = () => `Maks ${max} tegn`
 const requredMessage = 'Feltet er påkrevd'
 const incorrectDateMessage = 'Feil dato format, eksempel: 2018-08-22'
 const legalBasesOpenMessage = 'Lukk behandlingsgrunnlag redigering før lagring'
+
+const [codelistUtils] = CodelistService()
 
 function ignore<T>(): yup.Schema<T> {
   return yup.object() as any as yup.Schema<T>
@@ -130,7 +132,7 @@ export const processSchema: () => yup.ObjectSchema<IProcessFormValues> = () =>
         yup
           .string()
           .oneOf(
-            codelist.getCodes(EListName.PURPOSE).map((p) => p.code),
+            codelistUtils.getCodes(EListName.PURPOSE).map((p) => p.code),
             requredMessage
           )
           .required()
@@ -238,12 +240,12 @@ const missingArt9LegalBasisForSensitiveInfoType = (
     policy.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES ||
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
   const reqArt9: boolean =
-    informationType && codelist.requiresArt9(informationType.sensitivity.code)
+    informationType && codelistUtils.requiresArt9(informationType.sensitivity.code)
   const missingArt9 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
-    codelist.isArt9(legalBase.gdpr)
+    codelistUtils.isArt9(legalBase.gdpr)
   ).length
   const processMissingArt9 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
-    codelist.isArt9(legalBase.gdpr.code)
+    codelistUtils.isArt9(legalBase.gdpr.code)
   ).length
   return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
 }
@@ -253,10 +255,10 @@ const missingArt6LegalBasisForInfoType = (policy: IPolicyFormValues) => {
     policy.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES ||
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
   const missingArt6 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
-    codelist.isArt6(legalBase.gdpr)
+    codelistUtils.isArt6(legalBase.gdpr)
   ).length
   const processMissingArt6 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
-    codelist.isArt6(legalBase.gdpr.code)
+    codelistUtils.isArt6(legalBase.gdpr.code)
   ).length
   return ownLegalBasis && missingArt6 && processMissingArt6
 }
@@ -311,7 +313,10 @@ const subjectCategoryExistsGen = (
     .filter((policyIdent: string) => existingPolicyIdents.indexOf(policyIdent) >= 0)
   const errors: string[] = matchingIdents
     .map((ident: string) =>
-      codelist.getShortname(EListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1))
+      codelistUtils.getShortname(
+        EListName.SUBJECT_CATEGORY,
+        ident.substring(ident.indexOf('.') + 1)
+      )
     )
     .map(
       (category: string) =>
@@ -383,12 +388,12 @@ export const legalBasisSchema: () => yup.ObjectSchema<ILegalBasisFormValues> = (
   yup.object({
     gdpr: yup.string().required(requredMessage),
     nationalLaw: yup.string().when('gdpr', {
-      is: (gdpr?: string) => codelist.requiresNationalLaw(gdpr),
+      is: (gdpr?: string) => codelistUtils.requiresNationalLaw(gdpr),
       then: () => yup.string().required('Artikkelen krever nasjonal lov'),
       otherwise: () => yup.string(),
     }),
     description: yup.string().when('gdpr', {
-      is: (gdpr?: string) => codelist.requiresDescription(gdpr),
+      is: (gdpr?: string) => codelistUtils.requiresDescription(gdpr),
       then: () => yup.string().required('Artikkelen krever ytterligere beskrivelse'),
       otherwise: () => yup.string(),
     }),
