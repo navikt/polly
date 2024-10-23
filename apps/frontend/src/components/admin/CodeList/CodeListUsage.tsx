@@ -9,7 +9,12 @@ import {
   IUse,
   IUseWithPurpose,
 } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import {
+  CodelistService,
+  EListName,
+  ICode,
+  IGetParsedOptionsProps,
+} from '../../../service/Codelist'
 import { ObjectLink } from '../../common/RouteLink'
 
 interface IProps {
@@ -17,6 +22,8 @@ interface IProps {
 }
 
 const UsageTable = (props: IProps) => {
+  const [codelistUtils] = CodelistService()
+
   const { usage } = props
   const informationTypes = !!usage.informationTypes.length
   const processes = !!usage.processes.length
@@ -80,10 +87,10 @@ const UsageTable = (props: IProps) => {
                 <Table.DataCell>
                   {processes && (
                     <ObjectLink id={processes.id} type={EObjectType.PROCESS} withHistory={true}>
-                      {codelist
+                      {codelistUtils
                         .getShortnames(
                           EListName.PURPOSE,
-                          processes.purposes.map((purpose) => purpose.code)
+                          processes.purposes.map((purpose: ICode) => purpose.code)
                         )
                         .join(', ')}{' '}
                       {processes.name}
@@ -117,7 +124,7 @@ const UsageTable = (props: IProps) => {
                 <Table.DataCell>
                   {policies && (
                     <ObjectLink id={policies.id} type={EObjectType.POLICY} withHistory={true}>
-                      {codelist.getShortnames(EListName.PURPOSE, policies.purposes).join(', ')}{' '}
+                      {codelistUtils.getShortnames(EListName.PURPOSE, policies.purposes).join(', ')}{' '}
                       {policies.name}
                     </ObjectLink>
                   )}
@@ -160,6 +167,8 @@ interface IUsageProps {
 
 export const Usage = (props: IUsageProps) => {
   const { usage, refresh } = props
+  const [codelistUtils] = CodelistService()
+
   const [showReplace, setShowReplace] = useState(false)
   const [newValue, setNewValue] = useState<string>()
   const ref: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
@@ -196,11 +205,13 @@ export const Usage = (props: IUsageProps) => {
             onChange={(params: ChangeEvent<HTMLSelectElement>) => setNewValue(params.target.value)}
           >
             <option value="">Ny verdi</option>
-            {codelist.getParsedOptions(usage.listName).map((code, index: number) => (
-              <option key={index + '_' + code.label} value={code.label}>
-                {code.label}
-              </option>
-            ))}
+            {codelistUtils
+              .getParsedOptions(usage.listName)
+              .map((code: IGetParsedOptionsProps, index: number) => (
+                <option key={index + '_' + code.label} value={code.label}>
+                  {code.label}
+                </option>
+              ))}
           </Select>
 
           <Button type="button" onClick={replace} disabled={!newValue}>
