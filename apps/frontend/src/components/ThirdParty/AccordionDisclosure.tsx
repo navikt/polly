@@ -7,9 +7,15 @@ import { Fragment, Key, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api/GetAllApi'
-import { IDisclosure, IDisclosureAbroad, IDisclosureFormValues } from '../../constants'
+import {
+  IDisclosure,
+  IDisclosureAbroad,
+  IDisclosureFormValues,
+  IInformationTypeShort,
+  ILegalBasis,
+} from '../../constants'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme } from '../../util'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -65,6 +71,8 @@ const showAbroad = (abroad: IDisclosureAbroad) => {
 
 const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
   const { expand } = props
+  const [codelistUtils] = CodelistService()
+
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [showEditModal, setShowEditModal] = useState<boolean>(false)
   const [selectedDisclosure, setSelectedDisclosure] = useState<IDisclosure>()
@@ -102,21 +110,21 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
         {disclosureList &&
           disclosureList
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((d: IDisclosure) => {
+            .map((disclosure: IDisclosure) => {
               return (
                 <Accordion.Item
-                  key={d.id}
-                  open={d.id === expanded[0]}
+                  key={disclosure.id}
+                  open={disclosure.id === expanded[0]}
                   onOpenChange={(expanded) => {
                     if (expanded) {
-                      renewDisclosureDetails(d.id)
-                      setExpanded([d.id])
+                      renewDisclosureDetails(disclosure.id)
+                      setExpanded([disclosure.id])
                     } else {
                       setExpanded([])
                     }
                   }}
                 >
-                  <Accordion.Header>{d.name}</Accordion.Header>
+                  <Accordion.Header>{disclosure.name}</Accordion.Header>
                   <Accordion.Content>
                     {editable && (
                       <div className=" w-full flex justify-end mb-5">
@@ -198,7 +206,9 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                             <DataText label="Opplysningstyper">
                               {LinkListInformationType(
                                 selectedDisclosure?.informationTypes
-                                  ? selectedDisclosure?.informationTypes.map((p) => p)
+                                  ? selectedDisclosure?.informationTypes.map(
+                                      (informationType: IInformationTypeShort) => informationType
+                                    )
                                   : []
                               )}
                             </DataText>
@@ -219,11 +229,14 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                             {selectedDisclosure?.legalBases.length ? (
                               <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
                                 {selectedDisclosure.legalBases
-                                  .sort((a, b) =>
-                                    codelist
+                                  .sort((a: ILegalBasis, b: ILegalBasis) =>
+                                    codelistUtils
                                       .getShortname(EListName.GDPR_ARTICLE, a.gdpr.code)
                                       .localeCompare(
-                                        codelist.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code)
+                                        codelistUtils.getShortname(
+                                          EListName.GDPR_ARTICLE,
+                                          b.gdpr.code
+                                        )
                                       )
                                   )
                                   .map((legalBasis, index) => (
@@ -247,26 +260,26 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                             <DataText
                               label="Hjemmel for unntak fra taushetsplikt er vurdert"
                               text={
-                                d.assessedConfidentiality !== null
-                                  ? d.assessedConfidentiality
+                                disclosure.assessedConfidentiality !== null
+                                  ? disclosure.assessedConfidentiality
                                     ? 'Ja'
                                     : 'Nei'
                                   : 'Ikke angitt'
                               }
                             />
 
-                            {d.assessedConfidentiality !== null && (
+                            {disclosure.assessedConfidentiality !== null && (
                               <DataText
                                 label={
-                                  d.assessedConfidentiality
+                                  disclosure.assessedConfidentiality
                                     ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
                                     : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'
                                 }
                                 text=""
                               >
                                 {shortenLinksInText(
-                                  d.confidentialityDescription
-                                    ? d.confidentialityDescription
+                                  disclosure.confidentialityDescription
+                                    ? disclosure.confidentialityDescription
                                     : 'Ikke angitt'
                                 )}
                               </DataText>
@@ -275,20 +288,20 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
                           <div>
                             <DataText label="Avdeling">
-                              {d.department?.code && (
+                              {disclosure.department?.code && (
                                 <DotTags
                                   list={EListName.DEPARTMENT}
-                                  codes={[d.department]}
+                                  codes={[disclosure.department]}
                                   commaSeparator
                                   linkCodelist
                                 />
                               )}
-                              {!d.department?.code && 'Ikke angitt'}
+                              {!disclosure.department?.code && 'Ikke angitt'}
                             </DataText>
 
                             <DataText label="Team">
-                              {d.productTeams?.length ? (
-                                <TeamList teamIds={d.productTeams} />
+                              {disclosure.productTeams?.length ? (
+                                <TeamList teamIds={disclosure.productTeams} />
                               ) : (
                                 'Ikke angitt'
                               )}
@@ -361,8 +374,8 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
               <Button
                 onClick={() => {
                   if (selectedDisclosure && submitDeleteDisclosure) {
-                    submitDeleteDisclosure(selectedDisclosure).then((res) => {
-                      if (res) {
+                    submitDeleteDisclosure(selectedDisclosure).then((response: boolean) => {
+                      if (response) {
                         setShowDeleteModal(false)
                       } else {
                         setShowDeleteModal(true)
