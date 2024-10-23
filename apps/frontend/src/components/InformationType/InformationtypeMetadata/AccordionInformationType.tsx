@@ -7,7 +7,7 @@ import { Key } from 'react'
 import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 import { IPolicy } from '../../../constants'
 import { TPurposeMap } from '../../../pages/InformationtypePage'
-import { EListName, ICode, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { useQueryParam } from '../../../util/hooks'
 import { toggleOverride } from '../../common/Accordion'
 import { paddingZero } from '../../common/Style'
@@ -36,9 +36,11 @@ const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
   const selectedPurpose = useQueryParam('purpose')
   const navigate: NavigateFunction = useNavigate()
   const location: Location<any> = useLocation()
+  const [codelistUtils] = CodelistService()
 
   if (!policies) return <ParagraphMedium>Fant ingen formål</ParagraphMedium>
-  if (!codelist.isLoaded()) return <ParagraphMedium>Kunne ikke laste inn siden</ParagraphMedium>
+  if (!codelistUtils.isLoaded())
+    return <ParagraphMedium>Kunne ikke laste inn siden</ParagraphMedium>
 
   const purposeMap: TPurposeMap = reducePolicyList(policies)
   const getPolicylistForPurpose = (purpose: string): IPolicy[] =>
@@ -57,7 +59,8 @@ const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
         <Panel
           title={
             <span>
-              <FontAwesomeIcon icon={faUsersCog} /> {codelist.getShortname(EListName.PURPOSE, key)}
+              <FontAwesomeIcon icon={faUsersCog} />{' '}
+              {codelistUtils.getShortname(EListName.PURPOSE, key)}
             </span>
           }
           key={key}
