@@ -8,7 +8,7 @@ import {
   IDashboardData,
 } from '../../constants'
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName } from '../../service/Codelist'
 import { theme, useAwait } from '../../util'
 import RouteLink from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
@@ -39,8 +39,10 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
 }
 
 const parsedDepartmentName = (department: string): string => {
+  const [codelistUtils] = CodelistService()
+
   if (department === 'OESA') return 'ØSA'
-  return codelist.getCode(EListName.DEPARTMENT, department)?.code as string
+  return codelistUtils.getCode(EListName.DEPARTMENT, department)?.code as string
 }
 
 type TDepartmentCardProps = {
@@ -49,10 +51,11 @@ type TDepartmentCardProps = {
 
 const DepartmentCard = (props: TDepartmentCardProps) => {
   const { department } = props
+  const [codelistUtils] = CodelistService()
 
   return (
     <Tooltip
-      content={codelist.getCode(EListName.DEPARTMENT, department.department)?.shortName || ''}
+      content={codelistUtils.getCode(EListName.DEPARTMENT, department.department)?.shortName || ''}
     >
       <Button type="button" variant="tertiary-neutral">
         <Card overrides={cardShadow}>
@@ -111,8 +114,10 @@ type TDepartmentsProps = {
 }
 const Departments = (props: TDepartmentsProps) => {
   const { data } = props
+  const [codelistUtils] = CodelistService()
+
   const [loading, setLoading] = useState(true)
-  useAwait(codelist.wait(), setLoading)
+  useAwait(codelistUtils.fetchData(), setLoading)
 
   if (loading) {
     return <Spinner />
