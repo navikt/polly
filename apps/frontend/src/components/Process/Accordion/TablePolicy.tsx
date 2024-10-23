@@ -13,7 +13,7 @@ import {
   IProcessAlert,
   policySort,
 } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import { Sensitivity } from '../../InformationType/Sensitivity'
@@ -44,6 +44,8 @@ const TablePolicy = ({
   submitEditPolicy,
   submitDeletePolicy,
 }: TTablePurposeProps) => {
+  const [codelistUtils] = CodelistService()
+
   const [currentPolicy, setCurrentPolicy] = useState<IPolicy>()
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -135,8 +137,8 @@ const TablePolicy = ({
 
               <Cell>
                 {row.subjectCategories
-                  .map((subjectCategory) =>
-                    codelist.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+                  .map((subjectCategory: ICode) =>
+                    codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
                   )
                   .join(', ')}
               </Cell>
