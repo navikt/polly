@@ -4,18 +4,19 @@ import { Button, Detail, Select } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input'
 import { KIND as NKIND, Notification } from 'baseui/notification'
-//import { Value} from 'baseui/select'
 import { LabelMedium } from 'baseui/typography'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
-//import {useState} from 'react'
 import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
-import { EListName, ESensitivityLevel, codelist } from '../../../service/Codelist'
+import {
+  CodelistService,
+  EListName,
+  ESensitivityLevel,
+  IGetParsedOptionsProps,
+} from '../../../service/Codelist'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { paddingZero } from '../../common/Style'
 import { legalBasisSchema } from '../../common/schema'
-
-//import {customizeNationalLawPlaceholder} from './PlaceholderCustomizer'
 
 const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
@@ -58,6 +59,8 @@ const CardLegalBasis = ({
   titleSubmitButton,
   sensitivityLevel,
 }: ICardLegalBasisProps) => {
+  const [codelistUtils] = CodelistService()
+
   // Must be complete to achieve touched on submit
   const initialValues: ILegalBasisFormValues = {
     gdpr: initValue.gdpr,
@@ -68,11 +71,15 @@ const CardLegalBasis = ({
 
   const getOptionsBySensitivityLevel = () => {
     if (sensitivityLevel === ESensitivityLevel.ART6) {
-      return codelist.getParsedOptions(EListName.GDPR_ARTICLE).filter((l) => codelist.isArt6(l.id))
+      return codelistUtils
+        .getParsedOptions(EListName.GDPR_ARTICLE)
+        .filter((parsedOption: IGetParsedOptionsProps) => codelistUtils.isArt6(parsedOption.id))
     } else if (sensitivityLevel === ESensitivityLevel.ART9) {
-      return codelist.getParsedOptions(EListName.GDPR_ARTICLE).filter((l) => codelist.isArt9(l.id))
+      return codelistUtils
+        .getParsedOptions(EListName.GDPR_ARTICLE)
+        .filter((parsedOption: IGetParsedOptionsProps) => codelistUtils.isArt9(parsedOption.id))
     }
-    return codelist.getParsedOptions(EListName.GDPR_ARTICLE)
+    return codelistUtils.getParsedOptions(EListName.GDPR_ARTICLE)
   }
 
   return (
@@ -119,7 +126,7 @@ const CardLegalBasis = ({
           <Error fieldName="gdpr" />
 
           <div
-            className={`mt-4 w-full ${codelist.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}
+            className={`mt-4 w-full ${codelistUtils.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}
           >
             <Field
               name="nationalLaw"
@@ -136,7 +143,7 @@ const CardLegalBasis = ({
                   error={!!form.errors.nationalLaw && !!form.submitCount}
                 >
                   <option value="">Velg lov eller forskrift</option>
-                  {codelist.getParsedOptions(EListName.NATIONAL_LAW).map((lov) => (
+                  {codelistUtils.getParsedOptions(EListName.NATIONAL_LAW).map((lov) => (
                     <option value={lov.id} key={lov.id}>
                       {lov.label}
                     </option>
@@ -147,7 +154,7 @@ const CardLegalBasis = ({
           </div>
           <Error fieldName="nationalLaw" />
           <div
-            className={`mt-4 w-full ${codelist.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}
+            className={`mt-4 w-full ${codelistUtils.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}
           >
             <Field
               name="description"

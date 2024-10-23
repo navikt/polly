@@ -13,7 +13,7 @@ import {
   IProcess,
   IProcessor,
 } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import {
@@ -81,6 +81,8 @@ interface IProcessDataProps {
 
 const ProcessData = (props: IProcessDataProps) => {
   const { process, disclosures } = props
+  const [codelistUtils] = CodelistService()
+
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])
 
@@ -124,9 +126,9 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
           {process.legalBases
             .sort((a, b) =>
-              codelist
+              codelistUtils
                 .getShortname(EListName.GDPR_ARTICLE, a.gdpr.code)
-                .localeCompare(codelist.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code))
+                .localeCompare(codelistUtils.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code))
             )
             .map((legalBasis: ILegalBasis, index: number) => (
               <div key={index}>
@@ -216,7 +218,7 @@ const ProcessData = (props: IProcessDataProps) => {
           <span>
             {process.commonExternalProcessResponsible ? (
               <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>
-                {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+                {codelistUtils.getShortnameForCode(process.commonExternalProcessResponsible)}
               </RouteLink>
             ) : (
               'Nei'
