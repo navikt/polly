@@ -2,7 +2,7 @@ import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName } from '../../../service/Codelist'
 
 interface IFieldCommonExternalProcessResponsibleProps {
   thirdParty?: string
@@ -13,12 +13,14 @@ const FieldCommonExternalProcessResponsible = (
   props: IFieldCommonExternalProcessResponsibleProps
 ) => {
   const { thirdParty, hideSelect } = props
+  const [codelistUtils] = CodelistService()
+
   const [value, setValue] = useState<Value>(
     thirdParty
       ? [
           {
             id: thirdParty,
-            label: codelist.getShortname(EListName.THIRD_PARTY, thirdParty),
+            label: codelistUtils.getShortname(EListName.THIRD_PARTY, thirdParty),
           },
         ]
       : []
@@ -30,7 +32,7 @@ const FieldCommonExternalProcessResponsible = (
       render={({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
           <Select
-            options={codelist.getParsedOptions(EListName.THIRD_PARTY)}
+            options={codelistUtils.getParsedOptions(EListName.THIRD_PARTY)}
             onChange={({ value }) => {
               if (!value.length) hideSelect()
               setValue(value)
