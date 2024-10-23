@@ -6,7 +6,6 @@ import { getDocument, updateInformationTypesDocument } from '../api/GetAllApi'
 import DocumentForm from '../components/document/component/DocumentForm'
 import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { codelist } from '../service/Codelist'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
 
 const convertToDocumentFormValues = (document: IDocument) => {
@@ -51,7 +50,6 @@ const DocumentEditPage = () => {
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      await codelist.wait()
       if (params.id) {
         setDocument(await getDocument(params.id))
       }
