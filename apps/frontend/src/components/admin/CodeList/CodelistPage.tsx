@@ -5,7 +5,7 @@ import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
-import { ICode, IList, codelist } from '../../../service/Codelist'
+import { CodelistService, ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { useAwait, useForceUpdate } from '../../../util'
 import CodeListTable from './CodeListStyledTable'
@@ -18,12 +18,14 @@ const CodeListPage = () => {
     }>
   > = useParams<{ listname?: string }>()
   const navigate: NavigateFunction = useNavigate()
+  const [codelistUtils, lists] = CodelistService()
+
   const [loading, setLoading] = useState(true)
   const [listname, setListname] = useState(params.listname)
   const [createCodeListModal, setCreateCodeListModal] = useState(false)
   const [errorOnResponse, setErrorOnResponse] = useState(null)
   const forceUpdate: () => void = useForceUpdate()
-  useAwait(codelist.wait(), setLoading)
+  useAwait(codelistUtils.fetchData(), setLoading)
 
   ampli.logEvent('besøk', {
     side: 'Admin',
@@ -32,14 +34,14 @@ const CodeListPage = () => {
     type: 'Kodeverk',
   })
 
-  const lists: IList | undefined = codelist.lists?.codelist
-  const currentCodelist: ICode[] | undefined = lists && listname ? lists[listname] : undefined
+  // const lists: IList | undefined = lists?.codelist
+  const currentCodelist: ICode[] | undefined =
+    lists && listname ? lists?.codelist[listname] : undefined
 
   const handleCreateCodelist = async (values: ICodeListFormValues): Promise<void> => {
     setLoading(true)
     try {
       await createCodelist({ ...values } as ICode)
-      await codelist.refreshCodeLists()
       setCreateCodeListModal(false)
     } catch (error: any) {
       setCreateCodeListModal(true)
@@ -49,7 +51,6 @@ const CodeListPage = () => {
   }
 
   const update = async (): Promise<void> => {
-    await codelist.refreshCodeLists()
     forceUpdate()
   }
 
@@ -80,11 +81,13 @@ const CodeListPage = () => {
                 onChange={(event) => setListname(event.target.value)}
               >
                 <option value="">Velg kodeverk</option>
-                {codelist.makeIdLabelForAllCodeLists().map((value) => (
-                  <option key={value.id} value={value.id}>
-                    {value.label}
-                  </option>
-                ))}
+                {codelistUtils
+                  .makeIdLabelForAllCodeLists()
+                  .map((value: IMakeIdLabelForAllCodeListsProps) => (
+                    <option key={value.id} value={value.id}>
+                      {value.label}
+                    </option>
+                  ))}
               </Select>
               {listname && (
                 <div>

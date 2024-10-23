@@ -1,16 +1,18 @@
 // Mock codelist
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName } from '../../service/Codelist'
 
-codelist.lists = {
-  codelist: {},
-}
 export const addCode = (list: EListName, code: string) => {
+  const [, lists] = CodelistService()
+
   const newCode = {
     list,
     code,
     shortName: code + ' name',
     description: code + ' desc',
   }
-  codelist.lists!.codelist[list] = [...(codelist.lists?.codelist[list] || []), newCode]
-  return newCode
+
+  if (lists) {
+    lists.codelist[list] = [...(lists.codelist[list] || []), newCode]
+    return newCode
+  }
 }

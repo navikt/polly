@@ -81,7 +81,7 @@ interface IGetParsedOptionsFilterOutSelectedProps {
   label: string
 }
 
-interface IMakeIdLabelForAllCodeListsProps {
+export interface IMakeIdLabelForAllCodeListsProps {
   id: string
   label: string
 }
