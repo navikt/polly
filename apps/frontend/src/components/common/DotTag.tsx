@@ -2,7 +2,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, ReactNode } from 'react'
 import { TNavigableItem } from '../../constants'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { theme } from '../../util'
 import { Markdown } from './Markdown'
 import RouteLink, { urlForObject } from './RouteLink'
@@ -53,6 +53,7 @@ interface IContentProps {
 
 const Content = (props: IContentProps) => {
   const { item, list, linkCodelist, markdown } = props
+  const [codelistUtils] = CodelistService()
 
   return (
     <>
@@ -60,10 +61,10 @@ const Content = (props: IContentProps) => {
         <>
           {linkCodelist && (
             <RouteLink href={urlForObject(list as EListName & TNavigableItem, item)}>
-              {codelist.getShortname(list as EListName & TNavigableItem, item)}
+              {codelistUtils.getShortname(list as EListName & TNavigableItem, item)}
             </RouteLink>
           )}
-          {!linkCodelist && <>{codelist.getShortname(list, item)}</>}
+          {!linkCodelist && <>{codelistUtils.getShortname(list, item)}</>}
         </>
       )}
       {!list && markdown && <Markdown source={item} />}
