@@ -35,7 +35,7 @@ import {
   IProcessShort,
 } from '../../constants'
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme, useAwait } from '../../util'
 import { env } from '../../util/env'
@@ -71,6 +71,9 @@ const ProcessList = ({
   isEditable,
   getCount,
 }: TProcessListProps) => {
+  const navigate = useNavigate()
+  const [codelistUtils] = CodelistService()
+
   const [processList, setProcessList] = useState<IProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = useState<IProcess | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
@@ -81,11 +84,10 @@ const ProcessList = ({
   const [isLoadingProcess, setIsLoadingProcess] = useState(true)
   const current_location = useLocation()
   const [codelistLoading, setCodelistLoading] = useState(true)
-  const navigate = useNavigate()
   const [exportHref, setExportHref] = useState<string>('')
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
 
-  useAwait(codelist.wait(), setCodelistLoading)
+  useAwait(codelistUtils.fetchData(), setCodelistLoading)
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
 
@@ -327,6 +329,8 @@ const ProcessList = ({
   const handleAddDocument = async (
     formValues: IAddDocumentToProcessFormValues
   ): Promise<boolean> => {
+    const [codelistUtils] = CodelistService()
+
     try {
       const policies: IPolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
         subjectCategories: infoType.subjectCategories.map((category) => category.code),
@@ -473,25 +477,25 @@ const ProcessList = ({
           initialValues={convertProcessToFormValues({
             purposes:
               section === ESection.purpose
-                ? [codelist.getCode(EListName.PURPOSE, code) as ICode]
+                ? [codelistUtils.getCode(EListName.PURPOSE, code) as ICode]
                 : undefined,
             affiliation: {
               department:
                 section === ESection.department
-                  ? codelist.getCode(EListName.DEPARTMENT, code)
+                  ? codelistUtils.getCode(EListName.DEPARTMENT, code)
                   : undefined,
               subDepartments:
                 section === ESection.subdepartment
-                  ? [codelist.getCode(EListName.SUB_DEPARTMENT, code) as ICode]
+                  ? [codelistUtils.getCode(EListName.SUB_DEPARTMENT, code) as ICode]
                   : [],
               products:
                 section === ESection.system
-                  ? [codelist.getCode(EListName.SYSTEM, code) as ICode]
+                  ? [codelistUtils.getCode(EListName.SYSTEM, code) as ICode]
                   : [],
               productTeams: section === ESection.team ? [code] : [],
               disclosureDispatchers:
                 section === ESection.system
-                  ? [codelist.getCode(EListName.SYSTEM, code) as ICode]
+                  ? [codelistUtils.getCode(EListName.SYSTEM, code) as ICode]
                   : [],
             },
           })}
