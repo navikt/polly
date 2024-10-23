@@ -12,7 +12,7 @@ import {
 } from 'formik'
 import { KeyboardEvent, useState } from 'react'
 import { IDisclosureFormValues, IDocument } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { EListName, CodelistService, ICountryCode } from '../../service/Codelist'
 import BoolField from '../Process/common/BoolField'
 import FieldLegalBasis from '../Process/common/FieldLegalBasis'
 import { Error, ModalLabel } from '../common/ModalSchema'
@@ -31,6 +31,7 @@ interface IFieldRecipientProps {
 const FieldRecipient = (props: IFieldRecipientProps) => {
   const { value, disabled } = props
   const [recipientValue, setRecipientValue] = useState<string>(value ? value : '')
+  const [codelistUtils] = CodelistService()
 
   return (
     <Field
@@ -49,7 +50,7 @@ const FieldRecipient = (props: IFieldRecipientProps) => {
           disabled={disabled}
         >
           <option value="">Velg mottaker</option>
-          {codelist.getParsedOptions(EListName.THIRD_PARTY).map((thirdparty) => (
+          {codelistUtils.getParsedOptions(EListName.THIRD_PARTY).map((thirdparty) => (
             <option key={thirdparty.id} value={thirdparty.id}>
               {thirdparty.label}
             </option>
@@ -113,8 +114,8 @@ type TModalThirdPartyProps = {
 }
 
 const ModalThirdParty = (props: TModalThirdPartyProps) => {
-  const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } =
-    props
+  const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } = props
+  const [codelistUtils] = CodelistService()
 
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width="992px">
@@ -244,9 +245,12 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                                 }}
                               >
                                 <option value="">Velg land</option>
-                                {codelist
+                                {codelistUtils
                                   .getCountryCodesOutsideEu()
-                                  .map((code) => ({ id: code.code, label: code.description }))
+                                  .map((code: ICountryCode) => ({
+                                    id: code.code,
+                                    label: code.description,
+                                  }))
                                   .filter(
                                     (code) => !formikBag.values.abroad.countries.includes(code.id)
                                   )
@@ -261,7 +265,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                               <div>
                                 {renderTagList(
                                   formikBag.values.abroad.countries.map((country) =>
-                                    codelist.countryName(country)
+                                    codelistUtils.countryName(country)
                                   ),
                                   arrayHelpers
                                 )}
@@ -346,7 +350,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                         value={formikBag.values.department}
                       >
                         <option value="">Velg avdeling</option>
-                        {codelist.getParsedOptions(EListName.DEPARTMENT).map((department) => (
+                        {codelistUtils.getParsedOptions(EListName.DEPARTMENT).map((department) => (
                           <option key={department.id} value={department.id}>
                             {department.label}
                           </option>
