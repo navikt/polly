@@ -1,7 +1,7 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 type TFieldProductsProps = {
@@ -9,6 +9,8 @@ type TFieldProductsProps = {
 }
 
 const FieldProduct = (props: TFieldProductsProps) => {
+  const [codelistUtils] = CodelistService()
+
   const { formikBag } = props
 
   return (
@@ -20,9 +22,12 @@ const FieldProduct = (props: TFieldProductsProps) => {
             <div className="w-full">
               <Select
                 clearable
-                options={codelist
+                options={codelistUtils
                   .getParsedOptions(EListName.SYSTEM)
-                  .filter((option) => !formikBag.values.affiliation.products.includes(option.id))}
+                  .filter(
+                    (option: IGetParsedOptionsProps) =>
+                      !formikBag.values.affiliation.products.includes(option.id)
+                  )}
                 onChange={({ value }) => {
                   arrayHelpers.form.setFieldValue('affiliation.products', [
                     ...formikBag.values.affiliation.products,
@@ -35,7 +40,7 @@ const FieldProduct = (props: TFieldProductsProps) => {
             <div>
               {renderTagList(
                 formikBag.values.affiliation.products.map((product: string) =>
-                  codelist.getShortname(EListName.SYSTEM, product)
+                  codelistUtils.getShortname(EListName.SYSTEM, product)
                 ),
                 arrayHelpers
               )}
