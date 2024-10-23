@@ -7,7 +7,7 @@ import { Tooltip } from 'baseui/tooltip'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
-import { EListName, ESensitivityLevel, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ESensitivityLevel } from '../../service/Codelist'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
@@ -18,6 +18,8 @@ interface ILegalBasisViewProps {
 }
 
 export const LegalBasisView = (props: ILegalBasisViewProps) => {
+  const [codelistUtils] = CodelistService()
+
   const { legalBasis, legalBasisForm } = props
   const input = legalBasis ? legalBasis : legalBasisForm
   if (!input) return null
@@ -32,11 +34,11 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
         : ''
 
   const gdprDisplay: string | undefined =
-    gdpr && codelist.getShortname(EListName.GDPR_ARTICLE, gdpr)
+    gdpr && codelistUtils.getShortname(EListName.GDPR_ARTICLE, gdpr)
   const nationalLawDisplay: string | undefined =
-    nationalLaw && codelist.getShortname(EListName.NATIONAL_LAW, nationalLaw)
+    nationalLaw && codelistUtils.getShortname(EListName.NATIONAL_LAW, nationalLaw)
 
-  const descriptionText: string | JSX.Element[] | undefined = codelist.valid(
+  const descriptionText: string | JSX.Element[] | undefined = codelistUtils.valid(
     EListName.NATIONAL_LAW,
     nationalLaw
   )
@@ -51,12 +53,19 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   )
 }
 
-const lovdataBase = (nationalLaw: string): string =>
-  (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) +
-  codelist.getDescription(EListName.NATIONAL_LAW, nationalLaw)
+const lovdataBase = (nationalLaw: string): string => {
+  const [codelistUtils] = CodelistService()
+
+  return (
+    (codelistUtils.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) +
+    codelistUtils.getDescription(EListName.NATIONAL_LAW, nationalLaw)
+  )
+}
 
 const legalBasisLinkProcessor = (law: string, text?: string) => {
-  const lawCode: string = codelist.getDescription(EListName.NATIONAL_LAW, law)
+  const [codelistUtils] = CodelistService()
+
+  const lawCode: string = codelistUtils.getDescription(EListName.NATIONAL_LAW, law)
   if (!lawCode.match(/^\d+.*/)) {
     return text
   }
@@ -161,9 +170,11 @@ const isLegalBasisFilteredBySensitivity = (
   legalBasis: ILegalBasisFormValues,
   sensitivityLevel?: ESensitivityLevel
 ) => {
+  const [codelistUtils] = CodelistService()
+
   return (
-    (sensitivityLevel === ESensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
-    (sensitivityLevel === ESensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr)) ||
+    (sensitivityLevel === ESensitivityLevel.ART6 && codelistUtils.isArt6(legalBasis.gdpr)) ||
+    (sensitivityLevel === ESensitivityLevel.ART9 && codelistUtils.isArt9(legalBasis.gdpr)) ||
     !sensitivityLevel
   )
 }
