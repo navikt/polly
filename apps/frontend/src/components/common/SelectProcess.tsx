@@ -1,7 +1,7 @@
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IDisclosureFormValues, IProcess, IProcessShort } from '../../constants'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { CustomSearchSelect } from './AsyncSelectComponents'
 import { renderTagList } from './TagList'
 
@@ -11,12 +11,13 @@ type TSelectProcessProps = {
 
 const SelectProcess = (props: TSelectProcessProps) => {
   const { formikBag } = props
+  const [codelistUtils] = CodelistService()
 
   const useSearchProcessOptions = async (searchParam: string): Promise<IProcess[]> => {
     if (searchParam && searchParam.length > 2) {
       const behandlinger: IProcess[] = (await searchProcess(searchParam)).content
 
-      const purposes: ICode[] = codelist
+      const purposes: ICode[] = codelistUtils
         .getCodes(EListName.PURPOSE)
         .filter(
           (code: ICode) => code.shortName.toLowerCase().indexOf(searchParam.toLowerCase()) >= 0
