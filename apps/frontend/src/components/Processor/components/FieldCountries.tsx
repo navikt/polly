@@ -1,7 +1,7 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IProcessorFormValues } from '../../../constants'
-import { ICountryCode, codelist } from '../../../service/Codelist'
+import { CodelistService, ICountryCode } from '../../../service/Codelist'
 import { renderTagList } from '../../common/TagList'
 
 interface IProps {
@@ -10,6 +10,8 @@ interface IProps {
 
 const FieldCountries = (props: IProps) => {
   const { formikBag } = props
+  const [codelistUtils] = CodelistService()
+
   const countries: string[] = formikBag.values.countries
 
   return (
@@ -19,7 +21,7 @@ const FieldCountries = (props: IProps) => {
           <div className="w-full">
             <Select
               clearable
-              options={codelist
+              options={codelistUtils
                 .getCountryCodesOutsideEu()
                 .map((code: ICountryCode) => ({ id: code.code, label: code.description }))
                 .filter((code) => !countries.includes(code.id))}
@@ -35,7 +37,7 @@ const FieldCountries = (props: IProps) => {
           <div>
             <div>
               {renderTagList(
-                countries.map((country: string) => codelist.countryName(country)),
+                countries.map((country: string) => codelistUtils.countryName(country)),
                 arrayHelpers
               )}
             </div>
