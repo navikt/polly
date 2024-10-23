@@ -26,7 +26,7 @@ import {
   IPolicy,
   IProcess,
 } from '../../../constants'
-import { EListName, ICode, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { useDebouncedState } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
@@ -52,6 +52,7 @@ interface IListInformationTypesProps {
 const ListInformationTypes = (props: IListInformationTypesProps) => {
   const { informationTypes, formik, arrayHelpers } = props
   const [css] = useStyletron()
+  const [codelistUtils] = CodelistService()
 
   return (
     <ul className={css({ paddingLeft: 0, width: '100%' })}>
@@ -67,7 +68,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
               <div className="opacity-80">
                 {informationType.subjectCategories
                   .map((subjectCategory: ICode) =>
-                    codelist.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+                    codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
                   )
                   .join(', ')}
               </div>
