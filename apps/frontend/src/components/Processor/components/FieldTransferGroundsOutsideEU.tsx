@@ -2,7 +2,7 @@ import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IProcessorFormValues } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName } from '../../../service/Codelist'
 
 interface IProps {
   code?: string
@@ -10,12 +10,14 @@ interface IProps {
 
 const FieldTransferGroundsOutsideEU = (props: IProps) => {
   const { code } = props
+  const [codelistUtils] = CodelistService()
+
   const [value, setValue] = useState<Value>(
     code
       ? [
           {
             id: code,
-            label: codelist.getShortname(EListName.TRANSFER_GROUNDS_OUTSIDE_EU, code),
+            label: codelistUtils.getShortname(EListName.TRANSFER_GROUNDS_OUTSIDE_EU, code),
           },
         ]
       : []
@@ -26,7 +28,7 @@ const FieldTransferGroundsOutsideEU = (props: IProps) => {
       {({ form }: FieldProps<string, IProcessorFormValues>) => (
         <div className="w-full">
           <Select
-            options={codelist.getParsedOptions(EListName.TRANSFER_GROUNDS_OUTSIDE_EU)}
+            options={codelistUtils.getParsedOptions(EListName.TRANSFER_GROUNDS_OUTSIDE_EU)}
             onChange={({ value }) => {
               setValue(value)
               form.setFieldValue('transferGroundsOutsideEU', value.length > 0 ? value[0].id : '')
