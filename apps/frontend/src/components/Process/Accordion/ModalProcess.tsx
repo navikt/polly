@@ -18,7 +18,7 @@ import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, IGetParsedOptionsProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
@@ -81,6 +81,8 @@ const ModalProcess = ({
   initialValues,
   title,
 }: TModalProcessProps) => {
+  const [codelistUtils] = CodelistService()
+
   const [expanded, setExpanded] = useState<Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(
     !!initialValues.commonExternalProcessResponsible
@@ -474,9 +476,9 @@ const ModalProcess = ({
                         <ModalLabel label="Mottaker" />
                         <Select
                           value={thirdParty}
-                          options={codelist
+                          options={codelistUtils
                             .getParsedOptions(EListName.THIRD_PARTY)
-                            .filter((thirdParty) => thirdParty.id != 'NAV')}
+                            .filter((thirdParty: IGetParsedOptionsProps) => thirdParty.id != 'NAV')}
                           onChange={({ value }) => {
                             setThirdParty(value)
                           }}
