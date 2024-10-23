@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api/GetAllApi'
 import { IProductArea, ITeam } from '../../constants'
 import { ESection, listNameForSection } from '../../pages/ProcessPage'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName } from '../../service/Codelist'
 import { theme } from '../../util'
 import { productAreaLink, teamLink } from '../../util/config'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
@@ -20,6 +20,8 @@ interface IPageHeaderProps {
 
 export const PageHeader = (props: IPageHeaderProps) => {
   const { code, section } = props
+  const [codelistUtils] = CodelistService()
+
   const [isLoading, setLoading] = useState(false)
   const [team, setTeam] = useState<ITeam>()
   const [productArea, setProductArea] = useState<IProductArea>()
@@ -40,7 +42,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
   const getTitle = () => {
     const currentListName: EListName | undefined = listNameForSection(section)
     if (currentListName !== undefined) {
-      return codelist.getShortname(currentListName, code)
+      return codelistUtils.getShortname(currentListName, code)
     }
     if (section === ESection.team) {
       return team?.name || ''
@@ -65,7 +67,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
   const getDescription = () => {
     const currentListName: EListName | undefined = listNameForSection(section)
     if (currentListName) {
-      return codelist.getDescription(currentListName, code)
+      return codelistUtils.getDescription(currentListName, code)
     }
     if (section === ESection.team) {
       return team?.description || ''
