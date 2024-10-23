@@ -8,7 +8,7 @@ import {
   IProcessAlert,
   policySort,
 } from '../../../constants'
-import { EListName, ICode, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { useTable } from '../../../util/hooks'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
@@ -23,6 +23,8 @@ type TTableInformationtypeProps = {
 type TAlerts = { [id: string]: IPolicyAlert }
 
 const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformationtypeProps) => {
+  const [codelistUtils] = CodelistService()
+
   const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(policies, {
     sorting: policySort,
     initialSortColumn: showPurpose ? 'purposes' : 'process',
@@ -78,7 +80,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformation
                 {row.purposes.map((purpose: ICode, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/process/purpose/${purpose.code}`}>
-                      {codelist.getShortnameForCode(purpose)}
+                      {codelistUtils.getShortnameForCode(purpose)}
                     </RouteLink>
                   </div>
                 ))}
@@ -96,7 +98,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformation
           <Cell>
             {row.subjectCategories
               .map((subjectCategory: ICode) =>
-                codelist.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+                codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
               )
               .join(', ')}
           </Cell>
