@@ -7,7 +7,7 @@ import { getProcessesFor } from '../api/GetAllApi'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { IPageResponse, IProcess } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { EListName, codelist } from '../service/Codelist'
+import { CodelistService, EListName } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
 
 const value = (value: Value) => (value.length ? (value[0].id as string) : undefined)
@@ -18,6 +18,8 @@ export const LegalPage = () => {
   const nationalLaw = useQueryParam('nationalLaw')
   const navigate = useNavigate()
   const location = useLocation()
+
+  const [codelistUtils] = CodelistService()
 
   ampli.logEvent('besøk', {
     side: 'Legal Page',
@@ -43,7 +45,7 @@ export const LegalPage = () => {
           <Select
             maxDropdownHeight="400px"
             value={gdprArticle ? [{ id: gdprArticle }] : []}
-            options={codelist.getParsedOptions(EListName.GDPR_ARTICLE)}
+            options={codelistUtils.getParsedOptions(EListName.GDPR_ARTICLE)}
             onChange={(event: OnChangeParams) =>
               navigate(
                 location.pathname +
@@ -61,7 +63,7 @@ export const LegalPage = () => {
           <Select
             maxDropdownHeight="400px"
             value={nationalLaw ? [{ id: nationalLaw }] : []}
-            options={codelist.getParsedOptions(EListName.NATIONAL_LAW)}
+            options={codelistUtils.getParsedOptions(EListName.NATIONAL_LAW)}
             onChange={(event: OnChangeParams) =>
               navigate(
                 location.pathname +
