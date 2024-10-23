@@ -18,7 +18,7 @@ import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { EListName, CodelistService } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
@@ -63,6 +63,8 @@ const ModalProcess = ({
   initialValues,
   title,
 }: TModalProcessProps) => {
+  const [codelistUtils] = CodelistService()
+
   const [expanded, setExpanded] = useState<Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(
     !!initialValues.commonExternalProcessResponsible
@@ -404,7 +406,7 @@ const ModalProcess = ({
                           <ModalLabel label="Mottaker" />
                           <Select
                             value={thirdParty}
-                            options={codelist
+                            options={codelistUtils
                               .getParsedOptions(EListName.THIRD_PARTY)
                               .filter((thirdParty) => thirdParty.id != 'NAV')}
                             onChange={({ value }) => {
