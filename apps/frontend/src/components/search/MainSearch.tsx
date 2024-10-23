@@ -23,7 +23,7 @@ import {
   TNavigableItem,
   TSearchType,
 } from '../../constants'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { prefixBiasedSort } from '../../util/sort'
 import { searchResultColor } from '../../util/theme'
 import { noOptionMessage, selectOverrides } from '../common/AsyncSelectComponents'
@@ -46,8 +46,10 @@ const searchCodelist = (
   list: EListName & TNavigableItem,
   typeName: string,
   backgroundColor: string
-) =>
-  codelist
+) => {
+  const [codelistUtils] = CodelistService()
+
+  return codelistUtils
     .getCodes(list)
     .filter((code: ICode) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
     .map((code: ICode) => ({
@@ -58,9 +60,12 @@ const searchCodelist = (
       type: list,
       tagColor: backgroundColor,
     }))
+}
 
 const getCodelistByListnameAndType = (search: string, list: EListName, typeName: string) => {
-  return codelist
+  const [codelistUtils] = CodelistService()
+
+  return codelistUtils
     .getCodes(list)
     .filter((code: ICode) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
     .map(
@@ -97,6 +102,8 @@ export const DropdownIndicator = (props: DropdownIndicatorProps<TSearchItem>) =>
 )
 
 export const MainSearch = () => {
+  const [codelistUtils] = CodelistService()
+
   const [filter, setFilter] = useState(false)
   const [type, setType] = useState<TSearchType>('all')
   const navigate = useNavigate()
@@ -220,9 +227,9 @@ export const MainSearch = () => {
               const resProcess: IPageResponse<IProcess> = await searchProcess(searchParam)
 
               add(
-                resProcess.content.map((content) => {
+                resProcess.content.map((content: IProcess) => {
                   const purposes: string = content.purposes
-                    .map((purpose) => codelist.getShortnameForCode(purpose))
+                    .map((purpose: ICode) => codelistUtils.getShortnameForCode(purpose))
                     .join(', ')
 
                   return {
