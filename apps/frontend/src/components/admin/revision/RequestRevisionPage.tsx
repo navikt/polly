@@ -12,7 +12,7 @@ import * as yup from 'yup'
 import { useAllAreas, useProcessSearch } from '../../../api/GetAllApi'
 import { IProcess, IProductArea } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, IGetParsedOptionsProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import { FieldTextarea } from '../../Process/common/FieldTextArea'
 import Button from '../../common/Button/CustomButton'
@@ -81,6 +81,8 @@ interface IRequestRevisionPageProps {
 export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const { close, processId } = props
   const navigate: NavigateFunction = useNavigate()
+  const [codelistUtils] = CodelistService()
+
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -92,7 +94,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     type: 'Trenger revidering',
   })
 
-  const departments = codelist.getParsedOptions(EListName.DEPARTMENT)
+  const departments: IGetParsedOptionsProps[] = codelistUtils.getParsedOptions(EListName.DEPARTMENT)
   const areas: IProductArea[] = useAllAreas()
 
   const [processSearchResult, setProcessSearch, processSearchLoading] = useProcessSearch()
