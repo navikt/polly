@@ -7,11 +7,13 @@ import InformationtypeForm from '../components/InformationType/InformationtypeFo
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
 import { IInformationtypeFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { codelist } from '../service/Codelist'
+import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
 import { useAwait } from '../util'
 
 const InformationtypeCreatePage = () => {
+  const [codelistUtils] = CodelistService()
+
   const [isLoading, setLoading] = useState(true)
   const [errorSubmit, setErrorSubmit] = useState(null)
   const navigate = useNavigate()
@@ -37,7 +39,7 @@ const InformationtypeCreatePage = () => {
 
   const hasAccess = () => user.canWrite()
 
-  useAwait(codelist.wait(), setLoading)
+  useAwait(codelistUtils.fetchData(), setLoading)
 
   return (
     <Fragment>
@@ -50,7 +52,7 @@ const InformationtypeCreatePage = () => {
           ) : (
             <>
               <HeadingMedium>Opprett opplysningstype</HeadingMedium>
-              {codelist ? (
+              {codelistUtils ? (
                 <>
                   <InformationtypeForm
                     formInitialValues={mapInfoTypeToFormVals({})}

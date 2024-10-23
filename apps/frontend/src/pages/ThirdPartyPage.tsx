@@ -20,7 +20,7 @@ import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProce
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { EListName, codelist } from '../service/Codelist'
+import { CodelistService, EListName } from '../service/Codelist'
 import { user } from '../service/User'
 import { ESection } from './ProcessPage'
 
@@ -32,6 +32,8 @@ export type TPathParams = {
 
 const ThirdPartyPage = () => {
   const params = useParams<TPathParams>()
+  const [codelistUtils] = CodelistService()
+
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [disclosureList, setDisclosureList] = useState<IDisclosure[]>([])
   const [informationTypeList, setInformationTypeList] = useState<IInformationType[]>()
@@ -127,7 +129,6 @@ const ThirdPartyPage = () => {
   useEffect(() => {
     ;(async () => {
       setIsLoading(true)
-      await codelist.wait()
       if (params.thirdPartyCode) {
         setDisclosureList(await getDisclosuresByRecipient(params.thirdPartyCode))
         setInformationTypeList(
@@ -146,15 +147,15 @@ const ThirdPartyPage = () => {
     <>
       {isLoading && <Spinner />}
 
-      {!isLoading && codelist && (
+      {!isLoading && codelistUtils && (
         <>
           {params.thirdPartyCode && (
             <div className="mb-12">
               <HeadingMedium>
-                {codelist.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)}
+                {codelistUtils.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)}
               </HeadingMedium>
               <ParagraphMedium>
-                {codelist.getDescription(EListName.THIRD_PARTY, params.thirdPartyCode)}
+                {codelistUtils.getDescription(EListName.THIRD_PARTY, params.thirdPartyCode)}
               </ParagraphMedium>
             </div>
           )}
@@ -213,7 +214,7 @@ const ThirdPartyPage = () => {
                 open={expandedAccordion === 'dpprocess'}
                 onOpenChange={(open: boolean) => handleOnOpenChange(open, 'dpprocess')}
               >
-                <Accordion.Header>{`NAV er databehandler for ${codelist.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)} i følgende behandlinger (${dpProcesses?.length || 0})`}</Accordion.Header>
+                <Accordion.Header>{`NAV er databehandler for ${codelistUtils.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)} i følgende behandlinger (${dpProcesses?.length || 0})`}</Accordion.Header>
                 <Accordion.Content>
                   <ThirdPartiesDpProcessTable dpProcesses={dpProcesses || []} />
                 </Accordion.Content>
