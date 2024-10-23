@@ -19,7 +19,7 @@ import {
   IPageResponse,
 } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { codelist } from '../service/Codelist'
+import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
 import { tekster } from '../util/codeToFineText'
@@ -86,6 +86,8 @@ const reducer = (state: TState, action: TAction): TState => {
 }
 
 export const AlertEventPage = () => {
+  const [codelistUtils] = CodelistService()
+
   const { objectType, id } = useParams<{ objectType?: TAlertObjectType; id?: string }>()
   const [state, dispatch] = useReducer(reducer, {
     events: {
@@ -218,7 +220,7 @@ export const AlertEventPage = () => {
             <Cell>
               {event.process ? (
                 <ObjectLink id={event.process.id} type={EObjectType.PROCESS}>
-                  {codelist.getShortnameForCodes(event.process.purposes)}: {event.process.name}
+                  {codelistUtils.getShortnameForCodes(event.process.purposes)}: {event.process.name}
                 </ObjectLink>
               ) : (
                 ''
