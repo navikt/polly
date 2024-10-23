@@ -14,7 +14,7 @@ import {
 } from 'formik'
 import { KeyboardEvent, useReducer, useState } from 'react'
 import { IDisclosureFormValues, IDocument } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICountryCode } from '../../service/Codelist'
 import { theme } from '../../util'
 import BoolField from '../Process/common/BoolField'
 import FieldDepartment from '../Process/common/FieldDepartment'
@@ -51,8 +51,10 @@ interface IFieldRecipientProps {
 
 const FieldRecipient = (props: IFieldRecipientProps) => {
   const { value, disabled } = props
+  const [codelistUtils] = CodelistService()
+
   const [recipientValue, setRecipientValue] = useState<Value>(
-    value ? [{ id: value, label: codelist.getShortname(EListName.THIRD_PARTY, value) }] : []
+    value ? [{ id: value, label: codelistUtils.getShortname(EListName.THIRD_PARTY, value) }] : []
   )
 
   return (
@@ -60,7 +62,7 @@ const FieldRecipient = (props: IFieldRecipientProps) => {
       name="recipient"
       render={({ form }: FieldProps<IDisclosureFormValues>) => (
         <Select
-          options={codelist.getParsedOptions(EListName.THIRD_PARTY)}
+          options={codelistUtils.getParsedOptions(EListName.THIRD_PARTY)}
           onChange={({ value }) => {
             setRecipientValue(value)
             form.setFieldValue('recipient', value.length > 0 ? value[0].id : undefined)
@@ -128,10 +130,12 @@ type TModalThirdPartyProps = {
 const ModalThirdParty = (props: TModalThirdPartyProps) => {
   const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } =
     props
+  const [codelistUtils] = CodelistService()
+
   const [isPanelExpanded, togglePanel] = useReducer((prevState) => !prevState, false)
 
   return (
-    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width='992px'>
+    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width="992px">
       <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
@@ -245,9 +249,12 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                             <div>
                               <Select
                                 clearable
-                                options={codelist
+                                options={codelistUtils
                                   .getCountryCodesOutsideEu()
-                                  .map((code) => ({ id: code.code, label: code.description }))
+                                  .map((code: ICountryCode) => ({
+                                    id: code.code,
+                                    label: code.description,
+                                  }))
                                   .filter(
                                     (code) => !formikBag.values.abroad.countries.includes(code.id)
                                   )}
@@ -264,7 +271,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                               <div>
                                 {renderTagList(
                                   formikBag.values.abroad.countries.map((country) =>
-                                    codelist.countryName(country)
+                                    codelistUtils.countryName(country)
                                   ),
                                   arrayHelpers
                                 )}
