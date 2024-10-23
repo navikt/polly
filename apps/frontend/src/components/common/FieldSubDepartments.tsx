@@ -1,7 +1,7 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 interface IFieldSubDepartmentsProps {
@@ -10,6 +10,7 @@ interface IFieldSubDepartmentsProps {
 
 const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
   const { formikBag } = props
+  const [codelistUtils] = CodelistService()
 
   return (
     <FieldArray
@@ -19,9 +20,12 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
           <div className="w-full">
             <Select
               clearable
-              options={codelist
+              options={codelistUtils
                 .getParsedOptions(EListName.SUB_DEPARTMENT)
-                .filter((code) => !formikBag.values.affiliation.subDepartments.includes(code.id))}
+                .filter(
+                  (code: IGetParsedOptionsProps) =>
+                    !formikBag.values.affiliation.subDepartments.includes(code.id)
+                )}
               onChange={({ value }) => {
                 arrayHelpers.form.setFieldValue('affiliation.subDepartments', [
                   ...formikBag.values.affiliation.subDepartments,
@@ -35,7 +39,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
             <div>
               {renderTagList(
                 formikBag.values.affiliation.subDepartments.map((subDepartment: string) =>
-                  codelist.getShortname(EListName.SUB_DEPARTMENT, subDepartment)
+                  codelistUtils.getShortname(EListName.SUB_DEPARTMENT, subDepartment)
                 ),
                 arrayHelpers
               )}
