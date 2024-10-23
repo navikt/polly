@@ -329,8 +329,6 @@ const ProcessList = ({
   const handleAddDocument = async (
     formValues: IAddDocumentToProcessFormValues
   ): Promise<boolean> => {
-    const [codelistUtils] = CodelistService()
-
     try {
       const policies: IPolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
         subjectCategories: infoType.subjectCategories.map((category) => category.code),
