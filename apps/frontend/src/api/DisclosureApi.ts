@@ -132,7 +132,7 @@ export const convertFormValuesToDisclosure = (values: IDisclosureFormValues) => 
 
 export const convertDisclosureToFormValues: (disclosure: IDisclosure) => IDisclosureFormValues = (
   disclosure
-) => {
+): IDisclosureFormValues => {
   return {
     id: disclosure.id,
     recipient: disclosure.recipient.code || '',
