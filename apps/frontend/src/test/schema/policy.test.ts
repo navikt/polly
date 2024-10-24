@@ -1,4 +1,4 @@
-import { policySchema } from '../../components/common/schema'
+import { policySchema } from '../../components/common/schemaValidation'
 import { ELegalBasesUse, IPolicy, IPolicyFormValues, IProcess } from '../../constants'
 import { EListName, ESensitivityLevel } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
