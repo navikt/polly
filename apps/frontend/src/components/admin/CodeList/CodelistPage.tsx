@@ -7,7 +7,7 @@ import { ICodeListFormValues } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
 import { CodelistService, ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
-import { useAwait, useForceUpdate } from '../../../util'
+import { useForceUpdate } from '../../../util'
 import CodeListTable from './CodeListStyledTable'
 import CreateCodeListModal from './ModalCreateCodeList'
 
@@ -25,7 +25,7 @@ const CodeListPage = () => {
   const [createCodeListModal, setCreateCodeListModal] = useState(false)
   const [errorOnResponse, setErrorOnResponse] = useState(null)
   const forceUpdate: () => void = useForceUpdate()
-  useAwait(codelistUtils.fetchData(), setLoading)
+  // useAwait(codelistUtils.fetchData(), setLoading)
 
   ampli.logEvent('besøk', {
     side: 'Admin',

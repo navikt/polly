@@ -4,7 +4,6 @@ import { useState } from 'react'
 import AlphabeticList from '../components/common/AlphabeticList'
 import { ampli } from '../service/Amplitude'
 import { CodelistService, EListName, ICode } from '../service/Codelist'
-import { useAwait } from '../util'
 
 interface ICodeListPageProps {
   listName: EListName
@@ -17,7 +16,9 @@ const CodelistPage = (props: ICodeListPageProps) => {
   const [codelistUtils] = CodelistService()
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  useAwait(codelistUtils.fetchData(), setIsLoading)
+  // useAwait(codelistUtils.fetchData(), setIsLoading)
+
+  isLoading ? setIsLoading(true) : setIsLoading(false)
 
   ampli.logEvent('besøk', {
     side: 'Listevisning',

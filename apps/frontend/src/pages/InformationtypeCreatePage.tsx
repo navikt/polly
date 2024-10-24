@@ -9,7 +9,6 @@ import { IInformationtypeFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
-import { useAwait } from '../util'
 
 const InformationtypeCreatePage = () => {
   const [codelistUtils] = CodelistService()
@@ -39,7 +38,9 @@ const InformationtypeCreatePage = () => {
 
   const hasAccess = () => user.canWrite()
 
-  useAwait(codelistUtils.fetchData(), setLoading)
+  // useAwait(codelistUtils.fetchData(), setLoading)
+
+  isLoading ? setLoading(true) : setLoading(false)
 
   return (
     <Fragment>

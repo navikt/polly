@@ -37,7 +37,7 @@ import {
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
 import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { user } from '../../service/User'
-import { theme, useAwait } from '../../util'
+import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
 import AccordionProcess from './Accordion/AccordionProcess'
@@ -87,7 +87,9 @@ const ProcessList = ({
   const [exportHref, setExportHref] = useState<string>('')
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
 
-  useAwait(codelistUtils.fetchData(), setCodelistLoading)
+  // useAwait(codelistUtils.fetchData(), setCodelistLoading)
+
+  codelistLoading ? setCodelistLoading(true) : setCodelistLoading(false)
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
 

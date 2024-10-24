@@ -99,17 +99,19 @@ export const CodelistService = () => {
   }, [])
 
   const fetchData = async (refresh?: boolean): Promise<void> => {
-    const codeListPromise = getAllCodelists(refresh)
+    const codeListPromise = await getAllCodelists(refresh)
       .then(handleGetCodelistResponse)
       .catch((error: any) => setError(error.message))
-    const allCountriesPromise = getAllCountries()
+    const allCountriesPromise = await getAllCountries()
       .then((codes: ICountryCode[]) => setCountries(codes))
       .catch((error: any) => setError(error.message))
-    const countriesPromise = getCountriesOutsideEUEEA()
+    const countriesPromise = await getCountriesOutsideEUEEA()
       .then((codes: ICountryCode[]) => setCountriesOutsideEUEEA(codes))
       .catch((error: any) => setError(error.message))
 
     if (lists === undefined || refresh) {
+      console.log('lists', lists)
+
       Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
     }
   }
