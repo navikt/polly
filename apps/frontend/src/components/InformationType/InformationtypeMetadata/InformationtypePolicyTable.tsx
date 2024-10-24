@@ -6,7 +6,7 @@ import {
   IPolicy,
   IPolicyAlert,
   IProcessAlert,
-  policySort,
+  getPolicySort,
 } from '../../../constants'
 import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { useTable } from '../../../util/hooks'
@@ -26,7 +26,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformation
   const [codelistUtils] = CodelistService()
 
   const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(policies, {
-    sorting: policySort,
+    sorting: getPolicySort(codelistUtils),
     initialSortColumn: showPurpose ? 'purposes' : 'process',
   })
   const [alerts, setAlerts] = useState<TAlerts>()

@@ -16,7 +16,8 @@ import {
 } from '../../../service/Codelist'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { paddingZero } from '../../common/Style'
-import { legalBasisSchema } from '../../common/schema'
+import { legalBasisSchema } from '../../common/schemaValidation'
+import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
 
 const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
@@ -85,7 +86,7 @@ const CardLegalBasis = ({
   return (
     <Formik
       onSubmit={(values) => submit(values)}
-      validationSchema={legalBasisSchema()}
+      validationSchema={legalBasisSchema(codelistUtils)}
       initialValues={initialValues}
       render={(form: FormikProps<ILegalBasisFormValues>) => (
         <Card>
@@ -162,7 +163,7 @@ const CardLegalBasis = ({
                 <StatefulInput
                   {...field}
                   initialState={{ value: initValue.description }}
-                  // placeholder={customizeNationalLawPlaceholder(gdpr)}
+                  placeholder={customizeNationalLawPlaceholder(form.values.gdpr || '')}
                   error={!!form.errors.description && !!form.submitCount}
                   startEnhancer={() => (
                     <span>

@@ -29,7 +29,7 @@ import { Error, ModalLabel } from '../../common/ModalSchema'
 import { RadioBoolButton } from '../../common/Radio'
 import { renderTagList } from '../../common/TagList'
 import FieldProductTeam from '../../common/form/FieldProductTeam'
-import { processSchema } from '../../common/schema'
+import { processSchema } from '../../common/schemaValidation'
 import { DateFieldsProcessModal } from '../DateFieldsProcessModal'
 import BoolField from '../common/BoolField'
 import DpiaItems from '../common/DpiaItems'
@@ -125,7 +125,7 @@ const ModalProcess = ({
           onSubmit={(values) => {
             submit(values)
           }}
-          validationSchema={processSchema()}
+          validationSchema={processSchema(codelistUtils)}
           render={(formikBag: FormikProps<IProcessFormValues>) => {
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
               console.debug(formikBag.errors)

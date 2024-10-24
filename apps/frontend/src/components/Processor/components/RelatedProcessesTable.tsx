@@ -1,5 +1,6 @@
 import { Fragment } from 'react/jsx-runtime'
-import { IProcess, processSort } from '../../../constants'
+import { IProcess, getProcessSort } from '../../../constants'
+import { CodelistService } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
@@ -10,8 +11,10 @@ type TRelatedProcessesTableProps = {
 }
 
 const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps) => {
+  const [codelistUtils] = CodelistService()
+
   const [table, sortColumn] = useTable<IProcess, keyof IProcess>(relatedProcesses, {
-    sorting: processSort,
+    sorting: getProcessSort(codelistUtils),
     initialSortColumn: 'name',
   })
 

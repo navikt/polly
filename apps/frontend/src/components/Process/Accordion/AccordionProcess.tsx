@@ -24,7 +24,7 @@ import {
 } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { TPathParams } from '../../../pages/ProcessPage'
-import { ICode } from '../../../service/Codelist'
+import { CodelistService, ICode } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
@@ -77,6 +77,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     submitAddDocument,
     errorDocumentModal,
   } = props
+  const history: NavigateFunction = useNavigate()
+  const [codelistUtils] = CodelistService()
 
   const [showEditProcessModal, setShowEditProcessModal] = useState(false)
   const [showCreatePolicyModal, setShowCreatePolicyModal] = useState(false)
@@ -89,7 +91,6 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const purposeRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
-  const history: NavigateFunction = useNavigate()
 
   const hasAccess = (): boolean => user.canWrite()
 
@@ -344,6 +345,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               setShowAddBatchInfoTypesModal(true)
             }}
             errorOnCreate={errorPolicyModal}
+            codelistUtils={codelistUtils}
           />
 
           <DeleteAllPolicyModal

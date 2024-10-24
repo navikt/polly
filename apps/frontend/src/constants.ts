@@ -1,4 +1,4 @@
-import { CodelistService, EListName, ICode } from './service/Codelist'
+import { EListName, ICode, ICodelistProps } from './service/Codelist'
 import { TColumnCompares } from './util/hooks'
 
 export enum ELegalBasesUse {
@@ -287,20 +287,22 @@ export interface IPolicy {
   documentIds?: string[]
 }
 
-const [codelistUtils] = CodelistService()
-
-export const policySort: TColumnCompares<IPolicy> = {
-  purposes: (a, b) =>
-    codelistUtils
-      .getShortnameForCode(a.purposes[0])
-      .localeCompare(codelistUtils.getShortnameForCode(b.purposes[0]), 'nb'),
-  informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
-  process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
-  subjectCategories: (a, b) =>
-    codelistUtils
-      .getShortnameForCode(a.subjectCategories[0])
-      .localeCompare(codelistUtils.getShortnameForCode(b.subjectCategories[0]), 'nb'),
-  legalBases: (a, b) => a.legalBases.length - b.legalBases.length,
+export const getPolicySort = (codelistUtils: ICodelistProps): TColumnCompares<IPolicy> => {
+  return {
+    purposes: (a, b) =>
+      codelistUtils &&
+      codelistUtils
+        .getShortnameForCode(a.purposes[0])
+        .localeCompare(codelistUtils.getShortnameForCode(b.purposes[0]), 'nb'),
+    informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
+    process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
+    subjectCategories: (a, b) =>
+      codelistUtils &&
+      codelistUtils
+        .getShortnameForCode(a.subjectCategories[0])
+        .localeCompare(codelistUtils.getShortnameForCode(b.subjectCategories[0]), 'nb'),
+    legalBases: (a, b) => a.legalBases.length - b.legalBases.length,
+  }
 }
 
 export const disclosureSort: TColumnCompares<IDisclosure> = {
@@ -324,16 +326,18 @@ export const documentSort: TColumnCompares<IDocumentInfoTypeUse> = {
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
-export const processSort: TColumnCompares<IProcess> = {
-  name: (a, b) => a.name.localeCompare(b.name),
-  purposes: (a, b) =>
-    codelistUtils
-      .getShortnameForCode(a.purposes[0])
-      .localeCompare(codelistUtils.getShortnameForCode(b.purposes[0]), 'nb'),
-  affiliation: (a) =>
-    (a.affiliation.department?.shortName || '').localeCompare(
-      a.affiliation.department?.shortName || ''
-    ),
+export const getProcessSort = (codelistUtils: ICodelistProps): TColumnCompares<IProcess> => {
+  return {
+    name: (a, b) => a.name.localeCompare(b.name),
+    purposes: (a, b) =>
+      codelistUtils
+        .getShortnameForCode(a.purposes[0])
+        .localeCompare(codelistUtils.getShortnameForCode(b.purposes[0]), 'nb'),
+    affiliation: (a) =>
+      (a.affiliation.department?.shortName || '').localeCompare(
+        a.affiliation.department?.shortName || ''
+      ),
+  }
 }
 
 export const dpProcessSort: TColumnCompares<IDpProcess> = {

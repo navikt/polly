@@ -77,7 +77,7 @@ export const LegalPage = () => {
           />
         </div>
       </div>
-      <ProcessTable processes={processes} />
+      {processes && <ProcessTable processes={processes} />}
     </div>
   )
 }

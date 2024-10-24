@@ -21,7 +21,7 @@ import SelectInformationTypes from '../common/SelectInformationTypes'
 import SelectProcess from '../common/SelectProcess'
 import { renderTagList } from '../common/TagList'
 import FieldProductTeam from '../common/form/FieldProductTeam'
-import { disclosureSchema } from '../common/schema'
+import { disclosureSchema } from '../common/schemaValidation'
 
 interface IFieldRecipientProps {
   value?: string
@@ -128,7 +128,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
               processIds: values.processes.map((process) => process.id),
             })
           }}
-          validationSchema={disclosureSchema()}
+          validationSchema={disclosureSchema(codelistUtils)}
         >
           {(formikBag: FormikProps<IDisclosureFormValues>) => (
             <Form>

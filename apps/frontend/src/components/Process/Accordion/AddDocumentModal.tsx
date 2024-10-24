@@ -32,7 +32,7 @@ import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Spinner } from '../../common/Spinner'
-import { addDocumentToProcessSchema } from '../../common/schema'
+import { addDocumentToProcessSchema } from '../../common/schemaValidation'
 
 type TAddDocumentProps = {
   isOpen: boolean

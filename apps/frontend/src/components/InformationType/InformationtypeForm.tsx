@@ -23,7 +23,7 @@ import { disableEnter } from '../../util/helper-functions'
 import { Error } from '../common/ModalSchema'
 import { renderTagList } from '../common/TagList'
 import FieldProductTeam from '../common/form/FieldProductTeam'
-import { infoTypeSchema } from '../common/schema'
+import { infoTypeSchema } from '../common/schemaValidation'
 
 type TFormProps = {
   formInitialValues: IInformationtypeFormValues

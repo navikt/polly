@@ -20,7 +20,7 @@ import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
+import { addBatchInfoTypesToProcessSchema } from '../../common/schemaValidation'
 
 type TAddBatchInformationTypesProps = {
   isOpen: boolean
