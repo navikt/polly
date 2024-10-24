@@ -87,10 +87,7 @@ export interface IMakeIdLabelForAllCodeListsProps {
 }
 
 export const CodelistService = () => {
-  console.log('CodelistService FØØØØR')
-
   const [lists, setLists] = useState<IAllCodelists | undefined>()
-  console.log('CodelistService ETTTTTTER')
   const [error, setError] = useState<string | undefined>()
   const [countries, setCountries] = useState<ICountryCode[] | undefined>()
   const [countriesOutsideEUEEA, setCountriesOutsideEUEEA] = useState<ICountryCode[] | undefined>()
@@ -102,8 +99,6 @@ export const CodelistService = () => {
   }, [])
 
   const fetchData = async (refresh?: boolean): Promise<[void, void, void]> => {
-    console.log('fetchData')
-
     const codeListPromise = getAllCodelists(refresh)
       .then(handleGetCodelistResponse)
       .catch((error: any) => setError(error.message))
