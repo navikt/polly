@@ -24,7 +24,7 @@ import { useAwait } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { createDocumentSchema } from '../../common/schema'
+import { createDocumentSchema } from '../../common/schemaValidation'
 import InformationTypesTable from './InformationTypesTable'
 
 const labelProps: BlockProps = {

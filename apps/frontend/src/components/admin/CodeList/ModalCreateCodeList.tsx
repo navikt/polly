@@ -1,7 +1,7 @@
 import { BodyShort, Button, Modal, TextField, Textarea } from '@navikt/ds-react'
 import { ErrorMessage, Field, FieldProps, Form, Formik } from 'formik'
 import { ICodeListFormValues } from '../../../constants'
-import { codeListSchema } from '../../common/schema'
+import { codeListSchema } from '../../common/schemaValidation'
 
 type TModalCreateProps = {
   title: string

@@ -1,27 +1,33 @@
-import { disclosureSchema } from '../../components/common/schema'
+import { disclosureSchema } from '../../components/common/schemaValidation'
 import { IDisclosureFormValues } from '../../constants'
+import { CodelistService } from '../../service/Codelist'
 import '../config/schemaValidator'
 
-const schema = disclosureSchema()
-const disclosure: () => IDisclosureFormValues = () => ({
-  name: 'name',
-  recipientPurpose: 'PURPOSE',
-  abroad: {
-    countries: [],
-  },
-  legalBases: [],
-  legalBasesOpen: false,
-  processes: [],
-  processIds: [],
-  assessedConfidentiality: false,
-  confidentialityDescription: 'test',
-})
+it('Disclosure', () => {
+  const [codelistUtils] = CodelistService()
 
-test('Disclosure ok', () => {
-  expect(disclosure()).toBeSchema(schema)
-})
+  const schema = disclosureSchema(codelistUtils)
 
-test('Disclosure errors', () => {
-  expect({ ...disclosure(), name: '' }).toBeSchemaErrorAt(schema, 'name')
-  expect({ ...disclosure(), recipientPurpose: '' }).toBeSchemaErrorAt(schema, 'recipientPurpose')
+  const disclosure: () => IDisclosureFormValues = () => ({
+    name: 'name',
+    recipientPurpose: 'PURPOSE',
+    abroad: {
+      countries: [],
+    },
+    legalBases: [],
+    legalBasesOpen: false,
+    processes: [],
+    processIds: [],
+    assessedConfidentiality: false,
+    confidentialityDescription: 'test',
+  })
+
+  test('Disclosure ok', () => {
+    expect(disclosure()).toBeSchema(schema)
+  })
+
+  test('Disclosure errors', () => {
+    expect({ ...disclosure(), name: '' }).toBeSchemaErrorAt(schema, 'name')
+    expect({ ...disclosure(), recipientPurpose: '' }).toBeSchemaErrorAt(schema, 'recipientPurpose')
+  })
 })

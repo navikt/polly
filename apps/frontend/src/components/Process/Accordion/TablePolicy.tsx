@@ -11,7 +11,7 @@ import {
   IPolicyFormValues,
   IProcess,
   IProcessAlert,
-  policySort,
+  getPolicySort,
 } from '../../../constants'
 import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { theme } from '../../../util'
@@ -50,7 +50,7 @@ const TablePolicy = ({
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(process.policies, {
-    sorting: policySort,
+    sorting: getPolicySort(codelistUtils),
     initialSortColumn: 'informationType',
   })
   const [alert, setAlert] = useState<IProcessAlert>()
@@ -204,6 +204,7 @@ const TablePolicy = ({
           isEdit={true}
           submit={submitEditPolicy}
           errorOnCreate={errorPolicyModal}
+          codelistUtils={codelistUtils}
         />
       )}
 

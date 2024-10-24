@@ -1,4 +1,4 @@
-import { codeListSchema } from '../../components/common/schema'
+import { codeListSchema } from '../../components/common/schemaValidation'
 import { EListName, ICode } from '../../service/Codelist'
 import '../config/schemaValidator'
 

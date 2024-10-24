@@ -1,4 +1,4 @@
-import { infoTypeSchema } from '../../components/common/schema'
+import { infoTypeSchema } from '../../components/common/schemaValidation'
 import { IInformationtypeFormValues } from '../../constants'
 import '../config/schemaValidator'
 

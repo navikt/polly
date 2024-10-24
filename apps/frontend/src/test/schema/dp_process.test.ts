@@ -1,4 +1,4 @@
-import { dpProcessSchema } from '../../components/common/schema'
+import { dpProcessSchema } from '../../components/common/schemaValidation'
 import { IDpProcessFormValues } from '../../constants'
 import '../config/schemaValidator'
 

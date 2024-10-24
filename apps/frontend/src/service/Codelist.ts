@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
 export enum EListName {
@@ -87,21 +87,38 @@ export interface IMakeIdLabelForAllCodeListsProps {
 }
 
 export const CodelistService = () => {
+  console.log('CodelistService FØØØØR')
+
   const [lists, setLists] = useState<IAllCodelists | undefined>()
+  console.log('CodelistService ETTTTTTER')
   const [error, setError] = useState<string | undefined>()
   const [countries, setCountries] = useState<ICountryCode[] | undefined>()
   const [countriesOutsideEUEEA, setCountriesOutsideEUEEA] = useState<ICountryCode[] | undefined>()
 
+  useEffect(() => {
+    ;(async () => {
+      await fetchData()
+    })()
+  }, [])
+
   const fetchData = async (refresh?: boolean): Promise<[void, void, void]> => {
+    console.log('fetchData')
+
     const codeListPromise = getAllCodelists(refresh)
       .then(handleGetCodelistResponse)
       .catch((error: any) => setError(error.message))
     const allCountriesPromise = getAllCountries()
-      .then((codes) => setCountries(codes))
+      .then((codes: ICountryCode[]) => setCountries(codes))
       .catch((error: any) => setError(error.message))
     const countriesPromise = getCountriesOutsideEUEEA()
-      .then((codes) => setCountriesOutsideEUEEA(codes))
+      .then((codes: ICountryCode[]) => setCountriesOutsideEUEEA(codes))
       .catch((error: any) => setError(error.message))
+
+    if (lists === undefined || refresh) {
+      return getAllCodelists(refresh)
+        .then(handleGetCodelistResponse)
+        .catch((error: any) => (error = error.message))
+    }
     return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
   }
 
