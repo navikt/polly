@@ -9,7 +9,7 @@ import {
 } from '../../constants'
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
 import { CodelistService, EListName } from '../../service/Codelist'
-import { theme, useAwait } from '../../util'
+import { theme } from '../../util'
 import RouteLink from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
 import { cardShadow } from '../common/Style'
@@ -114,13 +114,16 @@ type TDepartmentsProps = {
 }
 const Departments = (props: TDepartmentsProps) => {
   const { data } = props
-  const [codelistUtils] = CodelistService()
+  // const [codelistUtils] = CodelistService()
 
   const [loading, setLoading] = useState(true)
-  useAwait(codelistUtils.fetchData(), setLoading)
+  // useAwait(codelistUtils.fetchData(), setLoading)
 
   if (loading) {
+    setLoading(true)
     return <Spinner />
+  } else {
+    setLoading(false)
   }
 
   const sortedData = () =>
