@@ -55,34 +55,35 @@ it('Schema', () => {
   })
 })
 
+const addDocumentData: () => IAddDocumentToProcessFormValues = () => ({
+  document: {
+    id: 'id',
+    name: 'name',
+    description: 'desc',
+    informationTypes: [],
+    dataAccessClass: dataAccessClassCode,
+  },
+  informationTypes: [
+    {
+      informationType: {
+        id: 'it_id',
+        name: 'name',
+        sensitivity: senCode,
+      },
+      informationTypeId: 'it_id',
+      subjectCategories: [subCode],
+    },
+  ],
+  process: {
+    id: 'proc_id',
+    name: 'name',
+    purposes: [purposeCode],
+  },
+  linkDocumentToPolicies: true,
+})
+
 it('AddDocument', () => {
   const addDocumentSchema = addDocumentToProcessSchema()
-  const addDocumentData: () => IAddDocumentToProcessFormValues = () => ({
-    document: {
-      id: 'id',
-      name: 'name',
-      description: 'desc',
-      informationTypes: [],
-      dataAccessClass: dataAccessClassCode,
-    },
-    informationTypes: [
-      {
-        informationType: {
-          id: 'it_id',
-          name: 'name',
-          sensitivity: senCode,
-        },
-        informationTypeId: 'it_id',
-        subjectCategories: [subCode],
-      },
-    ],
-    process: {
-      id: 'proc_id',
-      name: 'name',
-      purposes: [purposeCode],
-    },
-    linkDocumentToPolicies: true,
-  })
 
   test('Add Document ok', () => {
     expect(addDocumentData()).toBeSchema(addDocumentSchema)
