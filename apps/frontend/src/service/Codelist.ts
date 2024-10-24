@@ -98,7 +98,7 @@ export const CodelistService = () => {
     })()
   }, [])
 
-  const fetchData = async (refresh?: boolean): Promise<[void, void, void]> => {
+  const fetchData = async (refresh?: boolean): Promise<void> => {
     const codeListPromise = getAllCodelists(refresh)
       .then(handleGetCodelistResponse)
       .catch((error: any) => setError(error.message))
@@ -110,11 +110,8 @@ export const CodelistService = () => {
       .catch((error: any) => setError(error.message))
 
     if (lists === undefined || refresh) {
-      return getAllCodelists(refresh)
-        .then(handleGetCodelistResponse)
-        .catch((error: any) => (error = error.message))
+      Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
     }
-    return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
   }
 
   const handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>): void => {
