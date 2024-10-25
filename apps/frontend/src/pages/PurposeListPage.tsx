@@ -65,7 +65,23 @@ export const PurposeListPage = () => {
       if (isExternal) {
         url += '&documentAccess=EXTERNAL'
       }
-      return await axios.get(url)
+      await axios.get(url, { responseType: 'blob' }).then((response) => {
+        const fileName = 'Behandlinger_for_' + purpose.shortName
+        fileName.replace(' ', '_')
+
+        const href = URL.createObjectURL(response.data)
+
+        // create "a" HTML element with href to file & click
+        const link = document.createElement('a')
+        link.href = href
+        link.setAttribute('download', fileName + '.docx') //or any other extension
+        document.body.appendChild(link)
+        link.click()
+
+        // clean up "a" element & remove ObjectURL
+        document.body.removeChild(link)
+        URL.revokeObjectURL(href)
+      })
     })
   }
 
