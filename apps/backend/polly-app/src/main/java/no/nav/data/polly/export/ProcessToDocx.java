@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.common.utils.ZipUtils;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistStaticService;
@@ -13,6 +14,7 @@ import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.export.domain.DocumentAccess;
+import no.nav.data.polly.export.domain.FileData;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
@@ -61,6 +63,7 @@ import org.docx4j.wml.TrPr;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -101,6 +104,27 @@ public class ProcessToDocx {
     private final CommonCodeService commonCodeService;
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
     private static final String headingExternalProcessList = "Dokumentet inneholder følgende ferdigstilte behandlinger (%s)";
+
+
+    public byte[] generateZipForAllPurpose(DocumentAccess documentAccess) throws IOException {
+        ZipUtils zipUtils = new ZipUtils();
+        List<FileData> zipFiles = new ArrayList<>();
+        List<Codelist> allPurposes = CodelistStaticService.getCodelists(ListName.PURPOSE);
+
+        allPurposes.forEach((purpose) -> {
+            String wordFileName = "Behandlinger_for_" + purpose.getShortName().replace(' ', '_') + ".docx";
+            byte[] document = generateDocFor(ListName.PURPOSE, purpose.getCode(), documentAccess);
+
+            zipFiles.add(FileData.builder()
+                            .fileName(wordFileName)
+                            .file(document)
+                    .build());
+
+        });
+
+        return zipUtils.zipOutputStream(zipFiles);
+    }
+
 
     public byte[] generateDocForProcess(Process process, DocumentAccess documentAccess) {
         var doc = new DocumentBuilder();

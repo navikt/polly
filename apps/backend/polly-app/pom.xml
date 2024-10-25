@@ -84,6 +84,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- ZipFile -->
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>2.11.5</version>
+        </dependency>
+
         <!-- Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>

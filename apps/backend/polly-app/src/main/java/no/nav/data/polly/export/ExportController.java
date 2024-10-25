@@ -127,6 +127,25 @@ public class ExportController {
         response.flushBuffer();
     }
 
+
+    @Operation(summary = "Get export for all purposes")
+    @ApiResponse(description = "Doc fetched", content = @Content(schema = @Schema(implementation = byte[].class)))
+    @Transactional(readOnly = true) // TODO: Flytt dette inn til tjenestelaget
+    @SneakyThrows
+    @GetMapping(value = "/process/allpurpose", produces = "application/zip")
+    public void getExportForAllProcess(
+            HttpServletResponse response,
+            @RequestParam(name = "documentAccess", required = false, defaultValue = "INTERNAL") DocumentAccess documentAccess
+    ) {
+
+        byte[] zipFile = processToDocx.generateZipForAllPurpose(documentAccess);
+
+        response.setContentType("application/zip");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=archive.zip");
+        StreamUtils.copy(zipFile, response.getOutputStream());
+        response.flushBuffer();
+    }
+
     private String cleanCodelistName(ListName listName, String codelist) {
         return CodelistStaticService.getCodelist(listName, codelist).getShortName().replaceAll("[^a-zA-Z\\d]", "-");
     }
