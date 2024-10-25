@@ -1,7 +1,7 @@
 import { faFileWord } from '@fortawesome/free-solid-svg-icons'
 import { Modal } from '@navikt/ds-react'
-import axios from 'axios'
 import { Plus } from 'baseui/icon'
+import { StyledLink } from 'baseui/link'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -15,7 +15,6 @@ import ModalProcess from '../components/Process/Accordion/ModalProcess'
 import Button from '../components/common/Button/CustomButton'
 import { IProcessFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { EListName, codelist } from '../service/Codelist'
 import { user } from '../service/User'
 import { env } from '../util/env'
 import { PurposeList } from './ListSearchPage'
@@ -27,7 +26,6 @@ export const PurposeListPage = () => {
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
   const [errorProcessModal, setErrorProcessModal] = useState(null)
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
-  const purposes = codelist.getCodes(EListName.PURPOSE)
 
   ampli.logEvent('besøk', {
     side: 'Behandlinger',
@@ -57,32 +55,6 @@ export const PurposeListPage = () => {
     } catch (error: any) {
       setErrorProcessModal(error.message)
     }
-  }
-
-  const handleExport = async (isExternal: boolean) => {
-    purposes.forEach(async (purpose) => {
-      let url = `${env.pollyBaseUrl}/export/process?purpose=${purpose.code}`
-      if (isExternal) {
-        url += '&documentAccess=EXTERNAL'
-      }
-      await axios.get(url, { responseType: 'blob' }).then((response) => {
-        const fileName = 'Behandlinger_for_' + purpose.shortName
-        fileName.replace(' ', '_')
-
-        const href = URL.createObjectURL(response.data)
-
-        // create "a" HTML element with href to file & click
-        const link = document.createElement('a')
-        link.href = href
-        link.setAttribute('download', fileName + '.docx') //or any other extension
-        document.body.appendChild(link)
-        link.click()
-
-        // clean up "a" element & remove ObjectURL
-        document.body.removeChild(link)
-        URL.revokeObjectURL(href)
-      })
-    })
   }
 
   return (
@@ -143,25 +115,22 @@ export const PurposeListPage = () => {
           onClose={() => setIsExportModalOpen(false)}
         >
           <Modal.Body>
-            <Button
-              kind="outline"
-              size="xsmall"
-              icon={faFileWord}
-              marginRight
-              onClick={() => handleExport(false)}
+            <StyledLink
+              style={{ textDecoration: 'none' }}
+              href={`${env.pollyBaseUrl}/export/process/allpurpose`}
             >
-              Eksport for intern bruk
-            </Button>
-
-            <Button
-              kind="outline"
-              size="xsmall"
-              icon={faFileWord}
-              marginRight
-              onClick={() => handleExport(true)}
+              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
+                Eksport for intern bruk
+              </Button>
+            </StyledLink>
+            <StyledLink
+              style={{ textDecoration: 'none' }}
+              href={`${env.pollyBaseUrl}/export/process/allpurpose?documentAccess=EXTERNAL`}
             >
-              Eksport for ekstern bruk
-            </Button>
+              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
+                Eksport for ekstern bruk
+              </Button>
+            </StyledLink>
           </Modal.Body>
         </Modal>
 
