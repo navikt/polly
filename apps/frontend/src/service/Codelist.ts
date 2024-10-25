@@ -99,20 +99,18 @@ export const CodelistService = () => {
   }, [])
 
   const fetchData = async (refresh?: boolean): Promise<void> => {
-    const codeListPromise = await getAllCodelists(refresh)
-      .then(handleGetCodelistResponse)
-      .catch((error: any) => setError(error.message))
-    const allCountriesPromise = await getAllCountries()
-      .then((codes: ICountryCode[]) => setCountries(codes))
-      .catch((error: any) => setError(error.message))
-    const countriesPromise = await getCountriesOutsideEUEEA()
-      .then((codes: ICountryCode[]) => setCountriesOutsideEUEEA(codes))
-      .catch((error: any) => setError(error.message))
-
     if (lists === undefined || refresh) {
-      console.log('lists', lists)
+      const codeListPromise = await getAllCodelists(refresh)
+        .then(handleGetCodelistResponse)
+        .catch((error: any) => setError(error.message))
+      const allCountriesPromise = await getAllCountries()
+        .then((codes: ICountryCode[]) => setCountries(codes))
+        .catch((error: any) => setError(error.message))
+      const countriesPromise = await getCountriesOutsideEUEEA()
+        .then((codes: ICountryCode[]) => setCountriesOutsideEUEEA(codes))
+        .catch((error: any) => setError(error.message))
 
-      Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
+      await Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
     }
   }
 
