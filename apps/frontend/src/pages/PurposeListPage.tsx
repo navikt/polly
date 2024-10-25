@@ -1,3 +1,6 @@
+import { faFileWord } from '@fortawesome/free-solid-svg-icons'
+import { Modal } from '@navikt/ds-react'
+import axios from 'axios'
 import { Plus } from 'baseui/icon'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import { useState } from 'react'
@@ -12,7 +15,9 @@ import ModalProcess from '../components/Process/Accordion/ModalProcess'
 import Button from '../components/common/Button/CustomButton'
 import { IProcessFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
+import { EListName, codelist } from '../service/Codelist'
 import { user } from '../service/User'
+import { env } from '../util/env'
 import { PurposeList } from './ListSearchPage'
 import { ESection, genProcessPath } from './ProcessPage'
 
@@ -21,6 +26,8 @@ export const PurposeListPage = () => {
   const hasAccess = () => user.canWrite()
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
   const [errorProcessModal, setErrorProcessModal] = useState(null)
+  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
+  const purposes = codelist.getCodes(EListName.PURPOSE)
 
   ampli.logEvent('besøk', {
     side: 'Behandlinger',
@@ -52,6 +59,16 @@ export const PurposeListPage = () => {
     }
   }
 
+  const handleExport = async (isExternal: boolean) => {
+    purposes.forEach(async (purpose) => {
+      let url = `${env.pollyBaseUrl}/export/process?purpose=${purpose.code}`
+      if (isExternal) {
+        url += '&documentAccess=EXTERNAL'
+      }
+      return await axios.get(url)
+    })
+  }
+
   return (
     <div role="main">
       <>
@@ -62,7 +79,19 @@ export const PurposeListPage = () => {
             <LabelLarge>Velg overordnet behandlingsaktivitet</LabelLarge>
           </div>
 
-          <div className="mt-auto">
+          <div className="mt-auto flex items-center">
+            {hasAccess() && (
+              <Button
+                onClick={() => setIsExportModalOpen(true)}
+                kind="outline"
+                size="xsmall"
+                icon={faFileWord}
+                marginRight
+              >
+                Eksportér alle behandlinger
+              </Button>
+            )}
+
             {hasAccess() && (
               <Button
                 size="xsmall"
@@ -91,6 +120,35 @@ export const PurposeListPage = () => {
           isEdit={false}
           initialValues={convertProcessToFormValues()}
         />
+
+        <Modal
+          header={{ heading: 'Velg eksport metode' }}
+          open={isExportModalOpen}
+          onClose={() => setIsExportModalOpen(false)}
+        >
+          <Modal.Body>
+            <Button
+              kind="outline"
+              size="xsmall"
+              icon={faFileWord}
+              marginRight
+              onClick={() => handleExport(false)}
+            >
+              Eksport for intern bruk
+            </Button>
+
+            <Button
+              kind="outline"
+              size="xsmall"
+              icon={faFileWord}
+              marginRight
+              onClick={() => handleExport(true)}
+            >
+              Eksport for ekstern bruk
+            </Button>
+          </Modal.Body>
+        </Modal>
+
         <PurposeList />
       </>
     </div>
