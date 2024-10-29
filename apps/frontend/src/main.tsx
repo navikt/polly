@@ -13,12 +13,11 @@ import { theme, useAwait } from './util'
 const engine = new Styletron()
 
 const Main = () => {
-  const [codelistUtils] = CodelistService()
-  useAwait(codelistUtils.fetchData())
-
   // all pages need these
   // useAwait(codelist.wait())
   useAwait(user.wait())
+  const [codelistUtils] = CodelistService()
+  useAwait(codelistUtils.fetchData())
 
   return (
     <Fragment>
