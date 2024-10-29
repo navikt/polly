@@ -96,6 +96,24 @@ export const useTeamSearch = () => {
   ]
 }
 
+export const useTeamSearchOptions = async (searchParam: string) => {
+  if (searchParam && searchParam.length > 2) {
+    const teams = (await searchTeam(searchParam)).content
+
+    const searchResult = teams.map((team: ITeam) => {
+      return {
+        ...team,
+        value: team.id,
+        label: team.name,
+      }
+    })
+
+    return searchResult
+  }
+
+  return []
+}
+
 export const useTeamResourceSearch = () => {
   const [teamResourceSearch, setTeamResourceSearch] = useDebouncedState<string>('', 200)
   const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
