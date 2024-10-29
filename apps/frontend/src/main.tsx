@@ -7,14 +7,14 @@ import AppRoutes from './AppRoutes'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
 import { CodelistService } from './service/Codelist'
-import { user } from './service/User'
 import { theme, useAwait } from './util'
+import { useAwaitUser } from './util/hooks'
 
 const engine = new Styletron()
 
 const Main = () => {
   // all pages need these
-  useAwait(user.wait())
+  useAwaitUser()
   const [codelistUtils] = CodelistService()
   useAwait(codelistUtils.fetchData())
 
