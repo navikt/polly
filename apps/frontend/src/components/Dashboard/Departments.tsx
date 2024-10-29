@@ -114,10 +114,7 @@ type TDepartmentsProps = {
 }
 const Departments = (props: TDepartmentsProps) => {
   const { data } = props
-  // const [codelistUtils] = CodelistService()
-
   const [loading, setLoading] = useState(true)
-  // useAwait(codelistUtils.fetchData(), setLoading)
 
   if (loading) {
     setLoading(true)

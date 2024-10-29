@@ -16,7 +16,6 @@ const CodelistPage = (props: ICodeListPageProps) => {
   const [codelistUtils] = CodelistService()
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  // useAwait(codelistUtils.fetchData(), setIsLoading)
 
   isLoading ? setIsLoading(true) : setIsLoading(false)
 

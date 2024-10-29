@@ -87,8 +87,6 @@ const ProcessList = ({
   const [exportHref, setExportHref] = useState<string>('')
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
 
-  // useAwait(codelistUtils.fetchData(), setCodelistLoading)
-
   codelistLoading ? setCodelistLoading(true) : setCodelistLoading(false)
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])

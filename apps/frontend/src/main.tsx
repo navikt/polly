@@ -14,7 +14,6 @@ const engine = new Styletron()
 
 const Main = () => {
   // all pages need these
-  // useAwait(codelist.wait())
   useAwait(user.wait())
   const [codelistUtils] = CodelistService()
   useAwait(codelistUtils.fetchData())

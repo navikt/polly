@@ -25,7 +25,6 @@ const CodeListPage = () => {
   const [createCodeListModal, setCreateCodeListModal] = useState(false)
   const [errorOnResponse, setErrorOnResponse] = useState(null)
   const forceUpdate: () => void = useForceUpdate()
-  // useAwait(codelistUtils.fetchData(), setLoading)
 
   ampli.logEvent('besøk', {
     side: 'Admin',
