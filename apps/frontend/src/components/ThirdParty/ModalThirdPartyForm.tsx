@@ -50,31 +50,29 @@ interface IFieldRecipientProps {
 
 const FieldRecipient = (props: IFieldRecipientProps) => {
   const { value, disabled } = props
-  const [recipientValue, setRecipientValue] = useState<string>(
-    value ? value : ''
-  )
+  const [recipientValue, setRecipientValue] = useState<string>(value ? value : '')
 
   return (
     <Field
       name="recipient"
       render={({ form }: FieldProps<IDisclosureFormValues>) => (
         <Select
+          className="w-full"
           label=""
           hideLabel
-          aria-label="Mottaker"
+          aria-label="Velg mottaker"
           onChange={(event) => {
             setRecipientValue(event.target.value)
-            form.setFieldValue(
-              'recipient',
-              event.target.value ? event.target.value : undefined
-            )
+            form.setFieldValue('recipient', event.target.value ? event.target.value : undefined)
           }}
           value={recipientValue}
           disabled={disabled}
         >
           <option value="">Velg mottaker</option>
           {codelist.getParsedOptions(EListName.THIRD_PARTY).map((thirdparty) => (
-            <option key={thirdparty.id} value={thirdparty.id}>{thirdparty.label}</option>
+            <option key={thirdparty.id} value={thirdparty.id}>
+              {thirdparty.label}
+            </option>
           ))}
         </Select>
       )}
@@ -253,21 +251,31 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                           <div className="w-full">
                             <div>
                               <Select
-                                clearable
-                                options={codelist
+                                label=""
+                                hideLabel
+                                aria-label="Velg land"
+                                onChange={(event) => {
+                                  if (event.target.value) {
+                                    arrayHelpers.form.setFieldValue('abroad.countries', [
+                                      ...formikBag.values.abroad.countries,
+                                      event.target.value,
+                                    ])
+                                  }
+                                }}
+                              >
+                                <option value="">Velg land</option>
+                                {codelist
                                   .getCountryCodesOutsideEu()
                                   .map((code) => ({ id: code.code, label: code.description }))
                                   .filter(
                                     (code) => !formikBag.values.abroad.countries.includes(code.id)
-                                  )}
-                                onChange={({ value }) => {
-                                  arrayHelpers.form.setFieldValue('abroad.countries', [
-                                    ...formikBag.values.abroad.countries,
-                                    ...value.map((v) => v.id),
-                                  ])
-                                }}
-                                maxDropdownHeight={'400px'}
-                              />
+                                  )
+                                  .map((country) => (
+                                    <option key={country.id} value={country.id}>
+                                      {country.label}
+                                    </option>
+                                  ))}
+                              </Select>
                             </div>
                             <div>
                               <div>
