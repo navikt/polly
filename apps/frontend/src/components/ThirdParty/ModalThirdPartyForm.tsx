@@ -1,7 +1,6 @@
-import { Button, Modal } from '@navikt/ds-react'
+import { Button, Modal, Select } from '@navikt/ds-react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { Input } from 'baseui/input'
-import { Select, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import {
   Field,
@@ -51,8 +50,8 @@ interface IFieldRecipientProps {
 
 const FieldRecipient = (props: IFieldRecipientProps) => {
   const { value, disabled } = props
-  const [recipientValue, setRecipientValue] = useState<Value>(
-    value ? [{ id: value, label: codelist.getShortname(EListName.THIRD_PARTY, value) }] : []
+  const [recipientValue, setRecipientValue] = useState<string>(
+    value ? value : ''
   )
 
   return (
@@ -60,14 +59,24 @@ const FieldRecipient = (props: IFieldRecipientProps) => {
       name="recipient"
       render={({ form }: FieldProps<IDisclosureFormValues>) => (
         <Select
-          options={codelist.getParsedOptions(EListName.THIRD_PARTY)}
-          onChange={({ value }) => {
-            setRecipientValue(value)
-            form.setFieldValue('recipient', value.length > 0 ? value[0].id : undefined)
+          label=""
+          hideLabel
+          aria-label="Mottaker"
+          onChange={(event) => {
+            setRecipientValue(event.target.value)
+            form.setFieldValue(
+              'recipient',
+              event.target.value ? event.target.value : undefined
+            )
           }}
           value={recipientValue}
           disabled={disabled}
-        />
+        >
+          <option value="">Velg mottaker</option>
+          {codelist.getParsedOptions(EListName.THIRD_PARTY).map((thirdparty) => (
+            <option key={thirdparty.id} value={thirdparty.id}>{thirdparty.label}</option>
+          ))}
+        </Select>
       )}
     />
   )
@@ -131,7 +140,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
   const [isPanelExpanded, togglePanel] = useReducer((prevState) => !prevState, false)
 
   return (
-    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width='992px'>
+    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width="992px">
       <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
