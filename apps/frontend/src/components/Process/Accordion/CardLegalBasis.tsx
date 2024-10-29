@@ -1,20 +1,21 @@
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Detail } from '@navikt/ds-react'
+import { Button, Detail, Select } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input'
 import { KIND as NKIND, Notification } from 'baseui/notification'
-import { Select, TYPE, Value } from 'baseui/select'
+//import { Value} from 'baseui/select'
 import { LabelMedium } from 'baseui/typography'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
-import { useState } from 'react'
+//import {useState} from 'react'
 import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
 import { EListName, ESensitivityLevel, codelist } from '../../../service/Codelist'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { paddingZero } from '../../common/Style'
 import { legalBasisSchema } from '../../common/schema'
-import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
+
+//import {customizeNationalLawPlaceholder} from './PlaceholderCustomizer'
 
 const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
@@ -57,7 +58,7 @@ const CardLegalBasis = ({
   titleSubmitButton,
   sensitivityLevel,
 }: ICardLegalBasisProps) => {
-  const [gdpr, setGdpr] = useState<Value>(
+  /*const [gdpr, setGdpr] = useState<Value>(
     initValue.gdpr
       ? codelist
           .getParsedOptions(EListName.GDPR_ARTICLE)
@@ -70,7 +71,7 @@ const CardLegalBasis = ({
           .getParsedOptions(EListName.NATIONAL_LAW)
           .filter((value) => value.id === initValue.nationalLaw)
       : []
-  )
+  )*/
   // Must be complete to achieve touched on submit
   const initialValues: ILegalBasisFormValues = {
     gdpr: initValue.gdpr,
@@ -108,22 +109,25 @@ const CardLegalBasis = ({
               name="gdpr"
               render={() => (
                 <Select
-                  options={getOptionsBySensitivityLevel()}
-                  placeholder={
+                  label={
                     sensitivityLevel === ESensitivityLevel.ART9
                       ? 'Velg fra artikkel 9'
                       : 'Velg fra artikkel 6'
                   }
-                  maxDropdownHeight="300px"
-                  type={TYPE.search}
-                  onChange={({ value }) => {
-                    setGdpr(value)
-                    form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
+                  onChange={(event) => {
+                    //setGdpr(event)
+                    form.setFieldValue('gdpr', event.target.value)
                   }}
-                  value={gdpr}
+                  //value={gdpr}
                   error={!!form.errors.gdpr && !!form.submitCount}
-                  overrides={{ Placeholder: { style: { color: 'black' } } }}
-                />
+                >
+                  <option value=""> </option>
+                  {getOptionsBySensitivityLevel().map((artikkel) => (
+                    <option value={artikkel.id} key={artikkel.id}>
+                      {artikkel.label}
+                    </option>
+                  ))}
+                </Select>
               )}
             />
           </div>
@@ -136,17 +140,23 @@ const CardLegalBasis = ({
               name="nationalLaw"
               render={() => (
                 <Select
-                  options={codelist.getParsedOptions(EListName.NATIONAL_LAW)}
-                  placeholder="Velg lov eller forskrift"
-                  maxDropdownHeight="300px"
-                  type={TYPE.search}
-                  onChange={({ value }) => {
-                    setNationalLaw(value)
-                    form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
+                  label="Velg lov eller forskrift"
+                  hideLabel
+                  aria-label="Velg lov eller forskrift"
+                  onChange={(event) => {
+                    //  setNationalLaw(event.target.value)
+                    form.setFieldValue('nationalLaw', event.target.value)
                   }}
-                  value={nationalLaw}
+                  value={form.values.nationalLaw}
                   error={!!form.errors.nationalLaw && !!form.submitCount}
-                />
+                >
+                  <option value="">Velg lov eller forskrift</option>
+                  {codelist.getParsedOptions(EListName.NATIONAL_LAW).map((lov) => (
+                    <option value={lov.id} key={lov.id}>
+                      {lov.label}
+                    </option>
+                  ))}
+                </Select>
               )}
             />
           </div>
@@ -160,7 +170,7 @@ const CardLegalBasis = ({
                 <StatefulInput
                   {...field}
                   initialState={{ value: initValue.description }}
-                  placeholder={customizeNationalLawPlaceholder(gdpr)}
+                  // placeholder={customizeNationalLawPlaceholder(gdpr)}
                   error={!!form.errors.description && !!form.submitCount}
                   startEnhancer={() => (
                     <span>
