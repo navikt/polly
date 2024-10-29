@@ -38,8 +38,6 @@ const InformationtypeCreatePage = () => {
 
   const hasAccess = () => user.canWrite()
 
-  // useAwait(codelistUtils.fetchData(), setLoading)
-
   isLoading ? setLoading(true) : setLoading(false)
 
   return (
