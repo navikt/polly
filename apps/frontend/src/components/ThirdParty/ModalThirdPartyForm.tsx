@@ -16,7 +16,6 @@ import { IDisclosureFormValues, IDocument } from '../../constants'
 import { EListName, codelist } from '../../service/Codelist'
 import { theme } from '../../util'
 import BoolField from '../Process/common/BoolField'
-import FieldDepartment from '../Process/common/FieldDepartment'
 import FieldLegalBasis from '../Process/common/FieldLegalBasis'
 import PanelTitle from '../Process/common/PanelTitle'
 import { Error, ModalLabel } from '../common/ModalSchema'
@@ -369,14 +368,23 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                       </div>
                     </div>
 
-                    <div className="flex w-full justify-between">
-                      <div className="w-[48%]">
-                        <FieldDepartment
-                          department={formikBag.values.department}
-                          fieldName="department"
-                        />
-                      </div>
-                    </div>
+                    <Select
+                      className="flex justify-between w-[48%]"
+                      label="Velg avdeling"
+                      hideLabel
+                      aria-label="Velg avdeling"
+                      onChange={(event) => {
+                        formikBag.setFieldValue('department', event.target.value)
+                      }}
+                      value={formikBag.values.department}
+                    >
+                      <option value="">Velg avdeling</option>
+                      {codelist.getParsedOptions(EListName.DEPARTMENT).map((department) => (
+                        <option key={department.id} value={department.id}>
+                          {department.label}
+                        </option>
+                      ))}
+                    </Select>
 
                     <div className="flex w-full justify-between mt-2.5">
                       <div className="w-[48%]">
