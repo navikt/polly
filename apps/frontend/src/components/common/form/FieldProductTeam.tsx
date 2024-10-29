@@ -1,7 +1,9 @@
-import { Option, Select, Value } from 'baseui/select'
+import { Option, Value } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps } from 'formik'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { getTeam, mapTeamToOption, useTeamSearch } from '../../../api/GetAllApi'
+import { useEffect, useState } from 'react'
+import { getTeam, mapTeamToOption, useTeamSearchOptions } from '../../../api/GetAllApi'
+import { ITeam } from '../../../constants'
+import CustomSearchSelect from '../AsyncSelectComponents'
 import { Error } from '../ModalSchema'
 import { renderTagList } from '../TagList'
 
@@ -10,7 +12,6 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
   const [values, setValues] = useState<Value>(
     productTeams.map((team) => ({ id: team, label: team }))
   )
-  const [teamSearchResult, setTeamSearch, teamSearchLoading] = useTeamSearch()
 
   useEffect(() => {
     ;(async () => {
@@ -35,23 +36,14 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
         name={fieldName}
         render={(arrayHelpers: FieldArrayRenderProps) => (
           <div className="w-full">
-            <div className="w-full">
-              <Select
-                clearable
-                options={teamSearchResult}
-                onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue(fieldName, [
-                    ...productTeams,
-                    ...value.map((value) => value.id),
-                  ])
-                }}
-                onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setTeamSearch(event.currentTarget.value)
-                }
-                isLoading={teamSearchLoading}
-                overrides={{ Placeholder: { style: { color: 'black' } } }}
-              />
-            </div>
+            <CustomSearchSelect
+              ariaLabel="Søk etter team"
+              placeholder=""
+              loadOptions={useTeamSearchOptions}
+              onChange={(value: ITeam) => {
+                arrayHelpers.form.setFieldValue(fieldName, [...productTeams, value.id])
+              }}
+            />
             <div>
               <div>
                 {renderTagList(values.map((value) => value.label) as string[], arrayHelpers)}

@@ -23,6 +23,7 @@ export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
   const { ariaLabel, placeholder, onChange, loadOptions } = props
   return (
     <AsyncSelect
+      className="w-full"
       aria-label={ariaLabel}
       placeholder={placeholder}
       components={{ DropdownIndicator }}

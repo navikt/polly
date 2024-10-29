@@ -1,7 +1,5 @@
-import { Button, Modal } from '@navikt/ds-react'
-import { Accordion, Panel } from 'baseui/accordion'
+import { Accordion, Button, Modal, Select } from '@navikt/ds-react'
 import { Input } from 'baseui/input'
-import { Select, Value } from 'baseui/select'
 import { Textarea } from 'baseui/textarea'
 import {
   Field,
@@ -12,14 +10,11 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { KeyboardEvent, useReducer, useState } from 'react'
+import { KeyboardEvent, useState } from 'react'
 import { IDisclosureFormValues, IDocument } from '../../constants'
 import { EListName, codelist } from '../../service/Codelist'
-import { theme } from '../../util'
 import BoolField from '../Process/common/BoolField'
-import FieldDepartment from '../Process/common/FieldDepartment'
 import FieldLegalBasis from '../Process/common/FieldLegalBasis'
-import PanelTitle from '../Process/common/PanelTitle'
 import { Error, ModalLabel } from '../common/ModalSchema'
 import SelectDocument from '../common/SelectDocument'
 import SelectInformationTypes from '../common/SelectInformationTypes'
@@ -28,22 +23,6 @@ import { renderTagList } from '../common/TagList'
 import FieldProductTeam from '../common/form/FieldProductTeam'
 import { disclosureSchema } from '../common/schema'
 
-const panelOverrides = {
-  Header: {
-    style: {
-      paddingLeft: 0,
-    },
-  },
-  Content: {
-    style: {
-      backgroundColor: theme.colors.white,
-    },
-  },
-  ToggleIcon: {
-    component: () => null,
-  },
-}
-
 interface IFieldRecipientProps {
   value?: string
   disabled: boolean | undefined
@@ -51,23 +30,31 @@ interface IFieldRecipientProps {
 
 const FieldRecipient = (props: IFieldRecipientProps) => {
   const { value, disabled } = props
-  const [recipientValue, setRecipientValue] = useState<Value>(
-    value ? [{ id: value, label: codelist.getShortname(EListName.THIRD_PARTY, value) }] : []
-  )
+  const [recipientValue, setRecipientValue] = useState<string>(value ? value : '')
 
   return (
     <Field
       name="recipient"
       render={({ form }: FieldProps<IDisclosureFormValues>) => (
         <Select
-          options={codelist.getParsedOptions(EListName.THIRD_PARTY)}
-          onChange={({ value }) => {
-            setRecipientValue(value)
-            form.setFieldValue('recipient', value.length > 0 ? value[0].id : undefined)
+          className="w-full"
+          label=""
+          hideLabel
+          aria-label="Velg mottaker"
+          onChange={(event) => {
+            setRecipientValue(event.target.value)
+            form.setFieldValue('recipient', event.target.value ? event.target.value : undefined)
           }}
           value={recipientValue}
           disabled={disabled}
-        />
+        >
+          <option value="">Velg mottaker</option>
+          {codelist.getParsedOptions(EListName.THIRD_PARTY).map((thirdparty) => (
+            <option key={thirdparty.id} value={thirdparty.id}>
+              {thirdparty.label}
+            </option>
+          ))}
+        </Select>
       )}
     />
   )
@@ -128,10 +115,9 @@ type TModalThirdPartyProps = {
 const ModalThirdParty = (props: TModalThirdPartyProps) => {
   const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } =
     props
-  const [isPanelExpanded, togglePanel] = useReducer((prevState) => !prevState, false)
 
   return (
-    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width='992px'>
+    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width="992px">
       <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
@@ -244,21 +230,32 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                           <div className="w-full">
                             <div>
                               <Select
-                                clearable
-                                options={codelist
+                                className="w-full"
+                                label=""
+                                hideLabel
+                                aria-label="Velg land"
+                                onChange={(event) => {
+                                  if (event.target.value) {
+                                    arrayHelpers.form.setFieldValue('abroad.countries', [
+                                      ...formikBag.values.abroad.countries,
+                                      event.target.value,
+                                    ])
+                                  }
+                                }}
+                              >
+                                <option value="">Velg land</option>
+                                {codelist
                                   .getCountryCodesOutsideEu()
                                   .map((code) => ({ id: code.code, label: code.description }))
                                   .filter(
                                     (code) => !formikBag.values.abroad.countries.includes(code.id)
-                                  )}
-                                onChange={({ value }) => {
-                                  arrayHelpers.form.setFieldValue('abroad.countries', [
-                                    ...formikBag.values.abroad.countries,
-                                    ...value.map((v) => v.id),
-                                  ])
-                                }}
-                                maxDropdownHeight={'400px'}
-                              />
+                                  )
+                                  .map((country) => (
+                                    <option key={country.id} value={country.id}>
+                                      {country.label}
+                                    </option>
+                                  ))}
+                              </Select>
                             </div>
                             <div>
                               <div>
@@ -325,74 +322,68 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                   </>
                 )}
 
-                <Accordion
-                  overrides={{
-                    Root: {
-                      style: {
-                        marginTop: '25px',
-                      },
-                    },
-                  }}
-                >
-                  <Panel
-                    key="organizing"
-                    title={
-                      <ModalLabel
-                        label={<PanelTitle title="Organisering" expanded={isPanelExpanded} />}
-                      />
-                    }
-                    overrides={{ ...panelOverrides }}
+                <Accordion className="mt-5">
+                  <Accordion.Item>
+                    <Accordion.Header>Organisering</Accordion.Header>
+                    <Accordion.Content>
+                      <div className="flex w-full justify-between">
+                        <div className="w-[48%]">
+                          <ModalLabel
+                            label="Avdeling"
+                            tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
+                          />
+                        </div>
+                      </div>
+
+                      <Select
+                        className="flex justify-between w-[48%]"
+                        label="Velg avdeling"
+                        hideLabel
+                        aria-label="Velg avdeling"
+                        onChange={(event) => {
+                          formikBag.setFieldValue('department', event.target.value)
+                        }}
+                        value={formikBag.values.department}
+                      >
+                        <option value="">Velg avdeling</option>
+                        {codelist.getParsedOptions(EListName.DEPARTMENT).map((department) => (
+                          <option key={department.id} value={department.id}>
+                            {department.label}
+                          </option>
+                        ))}
+                      </Select>
+
+                      <div className="flex w-full justify-between mt-2.5">
+                        <div className="w-[48%]">
+                          <ModalLabel
+                            label="Team (Oppslag i Teamkatalogen)"
+                            tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
+                            fullwidth={true}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex w-full justify-between">
+                        <div className="w-[48%]">
+                          <FieldProductTeam
+                            productTeams={formikBag.values.productTeams || []}
+                            fieldName="productTeams"
+                          />
+                        </div>
+                      </div>
+                    </Accordion.Content>
+                  </Accordion.Item>
+                  <Accordion.Item
+                    onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
                   >
-                    <div className="flex w-full justify-between">
-                      <div className="w-[48%]">
-                        <ModalLabel
-                          label="Avdeling"
-                          tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
-                        />
+                    <Accordion.Header>Behandlingsgrunnlag TEST</Accordion.Header>
+                    <Accordion.Content>
+                      <div className="mt-4">
+                        <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
                       </div>
-                    </div>
-
-                    <div className="flex w-full justify-between">
-                      <div className="w-[48%]">
-                        <FieldDepartment
-                          department={formikBag.values.department}
-                          fieldName="department"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex w-full justify-between mt-2.5">
-                      <div className="w-[48%]">
-                        <ModalLabel
-                          label="Team (Oppslag i Teamkatalogen)"
-                          tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
-                          fullwidth={true}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex w-full justify-between">
-                      <div className="w-[48%]">
-                        <FieldProductTeam
-                          productTeams={formikBag.values.productTeams || []}
-                          fieldName="productTeams"
-                        />
-                      </div>
-                    </div>
-                  </Panel>
-                  <Panel
-                    title={<PanelTitle title="Behandlingsgrunnlag" expanded={isPanelExpanded} />}
-                    onChange={() => {
-                      togglePanel()
-                      formikBag.setFieldValue('legalBasesOpen', !isPanelExpanded)
-                    }}
-                    overrides={{ ...panelOverrides }}
-                  >
-                    <div className="mt-4">
-                      <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
-                    </div>
-                    <Error fieldName="legalBasesOpen" fullWidth={true} />
-                  </Panel>
+                      <Error fieldName="legalBasesOpen" fullWidth={true} />
+                    </Accordion.Content>
+                  </Accordion.Item>
                 </Accordion>
               </Modal.Body>
 

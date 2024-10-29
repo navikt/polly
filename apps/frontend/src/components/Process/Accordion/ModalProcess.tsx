@@ -1,4 +1,4 @@
-import { Panel, PanelOverrides, StatelessAccordion } from 'baseui/accordion'
+import { Accordion } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { FlexGridItem } from 'baseui/flex-grid'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
@@ -19,7 +19,6 @@ import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
 import { EListName, codelist } from '../../../service/Codelist'
-import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
@@ -44,7 +43,6 @@ import FieldLegalBasis from '../common/FieldLegalBasis'
 import FieldName from '../common/FieldName'
 import FieldPurpose from '../common/FieldPurpose'
 import FieldRiskOwner from '../common/FieldRiskOwner'
-import PanelTitle from '../common/PanelTitle'
 import RetentionItems from '../common/RetentionItems'
 
 type TModalProcessProps = {
@@ -55,22 +53,6 @@ type TModalProcessProps = {
   errorOnCreate: any | undefined
   submit: (process: IProcessFormValues) => void
   onClose: () => void
-}
-
-const panelOverrides: PanelOverrides = {
-  Header: {
-    style: {
-      paddingLeft: '0',
-    },
-  },
-  Content: {
-    style: {
-      backgroundColor: theme.colors.white,
-    },
-  },
-  ToggleIcon: {
-    component: () => null,
-  },
 }
 
 const ModalProcess = ({
@@ -249,285 +231,235 @@ const ModalProcess = ({
                     </div>
                   </CustomizedModalBlock>
 
-                  <StatelessAccordion
-                    overrides={{
-                      Root: {
-                        style: {
-                          marginTop: '25px',
-                        },
-                      },
-                    }}
-                    expanded={expanded}
-                    onChange={(event) => setExpanded(event.expanded)}
-                  >
-                    <Panel
-                      key="organizing"
-                      title={
-                        <ModalLabel
-                          label={
-                            <PanelTitle
-                              title="Organisering"
-                              expanded={expanded.indexOf('organizing') >= 0}
-                            />
-                          }
-                        />
-                      }
-                      overrides={{ ...panelOverrides }}
-                    >
-                      <div className="flex w-full justify-between">
-                        <div className="w-[48%]">
-                          <ModalLabel
-                            label="Avdeling"
-                            tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
-                          />
-                        </div>
-                        <div className="w-[48%]">
-                          <ModalLabel
-                            label="Linja"
-                            tooltip="Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres."
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex w-full justify-between">
-                        <div className="w-[48%]">
-                          <FieldDepartment department={formikBag.values.affiliation.department} />
-                        </div>
-                        <div className="w-[48%]">
-                          <FieldSubDepartments formikBag={formikBag} />
-                        </div>
-                      </div>
-
-                      <div className="flex w-full justify-between mt-2.5">
-                        <div className="w-[48%]">
-                          <ModalLabel
-                            label="Team (Oppslag i Teamkatalogen)"
-                            tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
-                            fullwidth={true}
-                          />
-                        </div>
-                        <div className="w-[48%]">
-                          <ModalLabel
-                            fullwidth
-                            label="Felles behandlingsansvarlig"
-                            tooltip="Er NAV behandlingsansvarlig sammen med annen virksomhet?"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex w-full justify-between">
-                        <div className="w-[48]">
-                          <FieldProductTeam
-                            productTeams={formikBag.values.affiliation.productTeams}
-                            fieldName="affiliation.productTeams"
-                          />
-                        </div>
-                        <div className="w-[48%]">
-                          {showResponsibleSelect && (
-                            <FieldCommonExternalProcessResponsible
-                              thirdParty={formikBag.values.commonExternalProcessResponsible}
-                              hideSelect={() => setShowResponsibleSelect(false)}
-                            />
-                          )}
-                          {!showResponsibleSelect && (
-                            <RadioBoolButton
-                              value={showResponsibleSelect}
-                              setValue={(value) => setShowResponsibleSelect(!!value)}
-                              omitUndefined
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </Panel>
-
-                    <Panel
-                      key="legalBasis"
-                      title={
-                        <PanelTitle
-                          title="Behandlingsgrunnlag for hele behandlingen"
-                          expanded={expanded.indexOf('legalBasis') >= 0}
-                        />
-                      }
-                      overrides={{ ...panelOverrides }}
-                    >
-                      <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
-                      <Error fieldName="legalBasesOpen" fullWidth={true} />
-                    </Panel>
-
-                    <Panel
-                      key="automation"
-                      title={
-                        <PanelTitle
-                          title="Automatisering og profilering"
-                          expanded={expanded.indexOf('automation') >= 0}
-                        />
-                      }
-                      overrides={{ ...panelOverrides }}
-                    >
-                      <div className="flex w-full mt-4">
-                        <ModalLabel
-                          label="Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling?"
-                          tooltip="Med helautomatisert behandling menes behandling som fører til en individuell avgjørelser eller vedtak uten menneskelig involvering"
-                          fullwidth={true}
-                        />
-                        <BoolField
-                          fieldName="automaticProcessing"
-                          value={formikBag.values.automaticProcessing}
-                          justifyContent={'flex-end'}
-                        />
-                      </div>
-                      <div className="flex w-full mt-4">
-                        <ModalLabel
-                          label="Benyttes profilering"
-                          tooltip="Med profilering menes det å utlede nye egenskaper, tilbøyeligheter eller behov hos en bruker etter sammenligning med andre brukere i liknende omstendigheter"
-                        />
-                        <BoolField
-                          fieldName="profiling"
-                          value={formikBag.values.profiling}
-                          justifyContent={'flex-end'}
-                        />
-                      </div>
-                    </Panel>
-
-                    <Panel
-                      key="dataProcessor"
-                      title={
-                        <PanelTitle
-                          title="Databehandler"
-                          expanded={expanded.indexOf('dataProcessor') >= 0}
-                        />
-                      }
-                      overrides={{ ...panelOverrides }}
-                    >
-                      <div className="flex w-full mt-0">
-                        <ModalLabel
-                          label="Benyttes databehandler(e)"
-                          tooltip="En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne."
-                        />
-                        <BoolField
-                          fieldName="dataProcessing.dataProcessor"
-                          value={formikBag.values.dataProcessing.dataProcessor}
-                        />
-                      </div>
-
-                      {formikBag.values.dataProcessing.dataProcessor && (
-                        <>
-                          <div className="flex w-full mt-4">
-                            <ModalLabel label="Databehandler" />
-                            <FieldDataProcessors
-                              formikBag={formikBag}
-                              dataProcessors={dataProcessors}
-                              options={processorList.map((processor: IProcessor) => {
-                                return {
-                                  id: processor.id,
-                                  label: processor.name,
-                                }
-                              })}
+                  <Accordion>
+                    <Accordion.Item>
+                      <Accordion.Header>Organisering</Accordion.Header>
+                      <Accordion.Content>
+                        <div className="flex w-full justify-between">
+                          <div className="w-[48%]">
+                            <ModalLabel
+                              label="Avdeling"
+                              tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
                             />
                           </div>
-                          <Error fieldName="dataProcessing.processors" />
-                          <FlexGridItem></FlexGridItem>
-                        </>
-                      )}
-                    </Panel>
-                    <Panel
-                      key="retention"
-                      title={
-                        <PanelTitle
-                          title="Lagringsbehov"
-                          expanded={expanded.indexOf('retention') >= 0}
-                        />
-                      }
-                      overrides={{ ...panelOverrides }}
-                    >
-                      <RetentionItems formikBag={formikBag} />
-                    </Panel>
+                          <div className="w-[48%]">
+                            <ModalLabel
+                              label="Linja"
+                              tooltip="Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres."
+                            />
+                          </div>
+                        </div>
 
-                    <Panel
-                      key="dpia"
-                      title={
-                        <PanelTitle
-                          title="Personkonsekvensvurdering (PVK)"
-                          expanded={expanded.indexOf('dpia') >= 0}
-                        />
-                      }
-                      overrides={{ ...panelOverrides }}
-                    >
-                      <DpiaItems formikBag={formikBag} />
-                    </Panel>
-                    <Panel
-                      key="disclosure"
-                      title={
-                        <PanelTitle
-                          title="Utlevering"
-                          expanded={expanded.indexOf('disclosure') >= 0}
-                        />
-                      }
-                      overrides={{ ...panelOverrides }}
-                    >
-                      <CustomizedModalBlock first>
-                        <ModalLabel label="Avsender" />
-                        <FieldDispatcher formikBag={formikBag} />
-                      </CustomizedModalBlock>
+                        <div className="flex w-full justify-between">
+                          <div className="w-[48%]">
+                            <FieldDepartment department={formikBag.values.affiliation.department} />
+                          </div>
+                          <div className="w-[48%]">
+                            <FieldSubDepartments formikBag={formikBag} />
+                          </div>
+                        </div>
 
-                      <div className="w-full flex mb-[5px]">
-                        <ModalLabel label="Mottaker" />
-                        <Select
-                          value={thirdParty}
-                          options={codelist
-                            .getParsedOptions(EListName.THIRD_PARTY)
-                            .filter((thirdParty) => thirdParty.id != 'NAV')}
-                          onChange={({ value }) => {
-                            setThirdParty(value)
-                          }}
-                          overrides={{ Placeholder: { style: { color: 'black' } } }}
-                        />
-                      </div>
+                        <div className="flex w-full justify-between mt-2.5">
+                          <div className="w-[48%]">
+                            <ModalLabel
+                              label="Team (Oppslag i Teamkatalogen)"
+                              tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
+                              fullwidth={true}
+                            />
+                          </div>
+                          <div className="w-[48%]">
+                            <ModalLabel
+                              fullwidth
+                              label="Felles behandlingsansvarlig"
+                              tooltip="Er NAV behandlingsansvarlig sammen med annen virksomhet?"
+                            />
+                          </div>
+                        </div>
 
-                      <FieldArray
-                        name="disclosures"
-                        render={(arrayHelpers: FieldArrayRenderProps) => (
+                        <div className="flex w-full justify-between">
+                          <div className="w-[48%]">
+                            <FieldProductTeam
+                              productTeams={formikBag.values.affiliation.productTeams}
+                              fieldName="affiliation.productTeams"
+                            />
+                          </div>
+                          <div className="w-[48%]">
+                            {showResponsibleSelect && (
+                              <FieldCommonExternalProcessResponsible
+                                thirdParty={formikBag.values.commonExternalProcessResponsible}
+                                hideSelect={() => setShowResponsibleSelect(false)}
+                              />
+                            )}
+                            {!showResponsibleSelect && (
+                              <RadioBoolButton
+                                value={showResponsibleSelect}
+                                setValue={(value) => setShowResponsibleSelect(!!value)}
+                                omitUndefined
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </Accordion.Content>
+                    </Accordion.Item>
+                    <Accordion.Item
+                      onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
+                    >
+                      <Accordion.Header className="z-0">
+                        Behandlingsgrunnlag for hele behandlingen
+                      </Accordion.Header>
+                      <Accordion.Content>
+                        <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
+                        <Error fieldName="legalBasesOpen" fullWidth={true} />
+                      </Accordion.Content>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                      <Accordion.Header className="z-0">
+                        Automatisering og profilering
+                      </Accordion.Header>
+                      <Accordion.Content>
+                        {' '}
+                        <div className="flex w-full mt-4">
+                          <ModalLabel
+                            label="Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling?"
+                            tooltip="Med helautomatisert behandling menes behandling som fører til en individuell avgjørelser eller vedtak uten menneskelig involvering"
+                            fullwidth={true}
+                          />
+                          <BoolField
+                            fieldName="automaticProcessing"
+                            value={formikBag.values.automaticProcessing}
+                            justifyContent={'flex-end'}
+                          />
+                        </div>
+                        <div className="flex w-full mt-4">
+                          <ModalLabel
+                            label="Benyttes profilering"
+                            tooltip="Med profilering menes det å utlede nye egenskaper, tilbøyeligheter eller behov hos en bruker etter sammenligning med andre brukere i liknende omstendigheter"
+                          />
+                          <BoolField
+                            fieldName="profiling"
+                            value={formikBag.values.profiling}
+                            justifyContent={'flex-end'}
+                          />
+                        </div>
+                      </Accordion.Content>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                      <Accordion.Header className="z-0">Databehandler</Accordion.Header>
+                      <Accordion.Content>
+                        {' '}
+                        <div className="flex w-full mt-0">
+                          <ModalLabel
+                            label="Benyttes databehandler(e)"
+                            tooltip="En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne."
+                          />
+                          <BoolField
+                            fieldName="dataProcessing.dataProcessor"
+                            value={formikBag.values.dataProcessing.dataProcessor}
+                          />
+                        </div>
+                        {formikBag.values.dataProcessing.dataProcessor && (
                           <>
-                            <div className="w-full">
-                              <div className="w-full flex">
-                                <ModalLabel label="Utleveringer" />
-                                <div className="w-full">
-                                  <Select
-                                    disabled={thirdParty.length === 0}
-                                    noResultsMsg="Ingen eksisterende utleveringer passer til søket. Opprett ny utlevering før du legger den til her."
-                                    options={disclosures.filter(
-                                      (disclosure: IDisclosure) =>
-                                        !formikBag.values.disclosures
-                                          .map((value: IDisclosure) => value.id)
-                                          .includes(disclosure.id)
-                                    )}
-                                    onChange={(params: OnChangeParams) => {
-                                      arrayHelpers.form.setFieldValue('disclosures', [
-                                        ...formikBag.values.disclosures,
-                                        ...params.value.map((value) => value),
-                                      ])
-                                    }}
-                                    labelKey="name"
-                                    valueKey="id"
-                                    overrides={{ Placeholder: { style: { color: 'black' } } }}
-                                  />
-                                  <div>
-                                    {renderTagList(
-                                      formikBag.values.disclosures.map(
+                            <div className="flex w-full mt-4">
+                              <ModalLabel label="Databehandler" />
+                              <FieldDataProcessors
+                                formikBag={formikBag}
+                                dataProcessors={dataProcessors}
+                                options={processorList.map((processor: IProcessor) => {
+                                  return {
+                                    id: processor.id,
+                                    label: processor.name,
+                                  }
+                                })}
+                              />
+                            </div>
+                            <Error fieldName="dataProcessing.processors" />
+                            <FlexGridItem></FlexGridItem>
+                          </>
+                        )}
+                      </Accordion.Content>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                      <Accordion.Header className="z-0">Lagringsbehov</Accordion.Header>
+                      <Accordion.Content>
+                        <RetentionItems formikBag={formikBag} />
+                      </Accordion.Content>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                      <Accordion.Header className="z-0">
+                        Personkonsekvensvurdering (PVK)
+                      </Accordion.Header>
+                      <Accordion.Content>
+                        <DpiaItems formikBag={formikBag} />
+                      </Accordion.Content>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                      <Accordion.Header className="z-0">Utlevering</Accordion.Header>
+                      <Accordion.Content>
+                        <CustomizedModalBlock first>
+                          <ModalLabel label="Avsender" />
+                          <FieldDispatcher formikBag={formikBag} />
+                        </CustomizedModalBlock>
+
+                        <div className="w-full flex mb-[5px]">
+                          <ModalLabel label="Mottaker" />
+                          <Select
+                            value={thirdParty}
+                            options={codelist
+                              .getParsedOptions(EListName.THIRD_PARTY)
+                              .filter((thirdParty) => thirdParty.id != 'NAV')}
+                            onChange={({ value }) => {
+                              setThirdParty(value)
+                            }}
+                            overrides={{ Placeholder: { style: { color: 'black' } } }}
+                          />
+                        </div>
+
+                        <FieldArray
+                          name="disclosures"
+                          render={(arrayHelpers: FieldArrayRenderProps) => (
+                            <>
+                              <div className="w-full">
+                                <div className="w-full flex">
+                                  <ModalLabel label="Utleveringer" />
+                                  <div className="w-full">
+                                    <Select
+                                      disabled={thirdParty.length === 0}
+                                      noResultsMsg="Ingen eksisterende utleveringer passer til søket. Opprett ny utlevering før du legger den til her."
+                                      options={disclosures.filter(
                                         (disclosure: IDisclosure) =>
-                                          disclosure.recipient.shortName + ':' + disclosure.name
-                                      ),
-                                      arrayHelpers
-                                    )}
+                                          !formikBag.values.disclosures
+                                            .map((value: IDisclosure) => value.id)
+                                            .includes(disclosure.id)
+                                      )}
+                                      onChange={(params: OnChangeParams) => {
+                                        arrayHelpers.form.setFieldValue('disclosures', [
+                                          ...formikBag.values.disclosures,
+                                          ...params.value.map((value) => value),
+                                        ])
+                                      }}
+                                      labelKey="name"
+                                      valueKey="id"
+                                      overrides={{ Placeholder: { style: { color: 'black' } } }}
+                                    />
+                                    <div>
+                                      {renderTagList(
+                                        formikBag.values.disclosures.map(
+                                          (disclosure: IDisclosure) =>
+                                            disclosure.recipient.shortName + ':' + disclosure.name
+                                        ),
+                                        arrayHelpers
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </>
-                        )}
-                      />
-                    </Panel>
-                  </StatelessAccordion>
+                            </>
+                          )}
+                        />
+                      </Accordion.Content>
+                    </Accordion.Item>
+                  </Accordion>
+
                   <CustomizedModalBlock>
                     <ModalLabel label="Status på utfylling" />
                     <div className="flex w-full mt-4">
