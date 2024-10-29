@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
 export enum EListName {
@@ -262,7 +262,11 @@ export const CodelistService = () => {
     makeIdLabelForAllCodeLists,
   }
 
-  return [utils, lists] as [ICodelistProps, IAllCodelists | undefined]
+  return [utils, lists, setLists] as [
+    ICodelistProps,
+    IAllCodelists | undefined,
+    Dispatch<SetStateAction<IAllCodelists | undefined>>,
+  ]
 }
 
 // class CodelistService {
