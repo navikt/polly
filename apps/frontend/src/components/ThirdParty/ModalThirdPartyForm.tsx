@@ -250,6 +250,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                           <div className="w-full">
                             <div>
                               <Select
+                                className="w-full"
                                 label=""
                                 hideLabel
                                 aria-label="Velg land"

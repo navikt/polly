@@ -58,20 +58,6 @@ const CardLegalBasis = ({
   titleSubmitButton,
   sensitivityLevel,
 }: ICardLegalBasisProps) => {
-  /*const [gdpr, setGdpr] = useState<Value>(
-    initValue.gdpr
-      ? codelist
-          .getParsedOptions(EListName.GDPR_ARTICLE)
-          .filter((value) => value.id === initValue.gdpr)
-      : []
-  )
-  const [nationalLaw, setNationalLaw] = useState<Value>(
-    initValue.nationalLaw
-      ? codelist
-          .getParsedOptions(EListName.NATIONAL_LAW)
-          .filter((value) => value.id === initValue.nationalLaw)
-      : []
-  )*/
   // Must be complete to achieve touched on submit
   const initialValues: ILegalBasisFormValues = {
     gdpr: initValue.gdpr,
@@ -109,19 +95,18 @@ const CardLegalBasis = ({
               name="gdpr"
               render={() => (
                 <Select
+                  className="w-full"
                   label={
                     sensitivityLevel === ESensitivityLevel.ART9
                       ? 'Velg fra artikkel 9'
                       : 'Velg fra artikkel 6'
                   }
                   onChange={(event) => {
-                    //setGdpr(event)
                     form.setFieldValue('gdpr', event.target.value)
                   }}
-                  //value={gdpr}
                   error={!!form.errors.gdpr && !!form.submitCount}
                 >
-                  <option value=""> </option>
+                  <option value="">Velg gdpr</option>
                   {getOptionsBySensitivityLevel().map((artikkel) => (
                     <option value={artikkel.id} key={artikkel.id}>
                       {artikkel.label}
@@ -140,11 +125,11 @@ const CardLegalBasis = ({
               name="nationalLaw"
               render={() => (
                 <Select
+                  className="w-full"
                   label="Velg lov eller forskrift"
                   hideLabel
                   aria-label="Velg lov eller forskrift"
                   onChange={(event) => {
-                    //  setNationalLaw(event.target.value)
                     form.setFieldValue('nationalLaw', event.target.value)
                   }}
                   value={form.values.nationalLaw}
