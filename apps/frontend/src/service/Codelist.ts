@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
@@ -99,7 +98,10 @@ export const CodelistService = () => {
   }, [])
 
   const fetchData = async (refresh?: boolean): Promise<void> => {
-    if (lists === undefined || refresh) {
+    if (
+      (lists === undefined && countries === undefined && countriesOutsideEUEEA === undefined) ||
+      refresh
+    ) {
       const codeListPromise = await getAllCodelists(refresh)
         .then(handleGetCodelistResponse)
         .catch((error: any) => setError(error.message))
@@ -114,11 +116,11 @@ export const CodelistService = () => {
     }
   }
 
-  const handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>): void => {
-    if (typeof response.data === 'object' && response.data !== null) {
-      setLists(response.data)
+  const handleGetCodelistResponse = (response: IAllCodelists): void => {
+    if (typeof response === 'object' && response !== null) {
+      setLists(response)
     } else {
-      setError(response.data)
+      setError(response)
     }
   }
 
