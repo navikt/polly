@@ -8,7 +8,7 @@ import { LastEvents } from '../components/admin/audit/LastEvents'
 import { RecentEditsByUser } from '../components/admin/audit/RecentEditsByUser'
 import { Markdown } from '../components/common/Markdown'
 import { cardShadow } from '../components/common/Style'
-import { IDashboardData, ISettings } from '../constants'
+import { EProcessStatusFilter, IDashboardData, ISettings } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
@@ -32,7 +32,7 @@ export const MainPage = () => {
   }, [])
 
   useEffect(() => {
-    getDashboard().then(setDashboardData)
+    getDashboard(EProcessStatusFilter.All).then(setDashboardData)
   }, [])
 
   const cardOverrides = {
