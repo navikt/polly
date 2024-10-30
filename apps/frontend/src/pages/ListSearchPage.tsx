@@ -1,6 +1,6 @@
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AlphabeticList from '../components/common/AlphabeticList'
 import { ampli } from '../service/Amplitude'
 import { CodelistService, EListName, ICode } from '../service/Codelist'
@@ -17,7 +17,11 @@ const CodelistPage = (props: ICodeListPageProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  isLoading ? setIsLoading(true) : setIsLoading(false)
+  useEffect(() => {
+    if (codelistUtils.isLoaded()) {
+      setIsLoading(false)
+    }
+  }, [codelistUtils])
 
   ampli.logEvent('besøk', {
     side: 'Listevisning',

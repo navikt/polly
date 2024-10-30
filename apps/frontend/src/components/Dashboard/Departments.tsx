@@ -1,17 +1,15 @@
 import { Button, Tooltip } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { LabelLarge, ParagraphMedium } from 'baseui/typography'
-import { useState } from 'react'
 import {
   IDepartmentDashCount as DepartmentProcess,
   EProcessStatus,
   IDashboardData,
 } from '../../constants'
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
-import { CodelistService, EListName } from '../../service/Codelist'
+import { CodelistService, EListName, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util'
 import RouteLink from '../common/RouteLink'
-import { Spinner } from '../common/Spinner'
 import { cardShadow } from '../common/Style'
 
 interface ITextWithNumberProps {
@@ -38,20 +36,26 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
   )
 }
 
-const parsedDepartmentName = (department: string): string => {
-  const [codelistUtils] = CodelistService()
-
-  if (department === 'OESA') return 'ØSA'
-  return codelistUtils.getCode(EListName.DEPARTMENT, department)?.code as string
+const parsedDepartmentName = (department: string, codelistUtils: ICodelistProps): string => {
+  if (department === 'OESA') {
+    return 'ØSA'
+  } else {
+    const departmentCode = codelistUtils.getCode(EListName.DEPARTMENT, department)
+    if (departmentCode) {
+      return departmentCode.code
+    } else {
+      return 'fant ikke'
+    }
+  }
 }
 
 type TDepartmentCardProps = {
   department: DepartmentProcess
+  codelistUtils: ICodelistProps
 }
 
 const DepartmentCard = (props: TDepartmentCardProps) => {
-  const { department } = props
-  const [codelistUtils] = CodelistService()
+  const { department, codelistUtils } = props
 
   return (
     <Tooltip
@@ -65,7 +69,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               style={{ textDecoration: 'none' }}
             >
               <LabelLarge color={theme.colors.accent300} $style={{ textAlign: 'center' }}>
-                {parsedDepartmentName(department.department)}
+                {parsedDepartmentName(department.department, codelistUtils)}
               </LabelLarge>
             </RouteLink>
 
@@ -114,25 +118,21 @@ type TDepartmentsProps = {
 }
 const Departments = (props: TDepartmentsProps) => {
   const { data } = props
-  const [loading, setLoading] = useState(true)
+  const [codelistUtils] = CodelistService()
 
-  if (loading) {
-    setLoading(true)
-    return <Spinner />
-  } else {
-    setLoading(false)
-  }
-
-  const sortedData = () =>
-    data.departments.sort((a, b) =>
-      parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department))
+  const sortedData = () => {
+    return data.departments.sort((a, b) =>
+      parsedDepartmentName(a.department, codelistUtils).localeCompare(
+        parsedDepartmentName(b.department, codelistUtils)
+      )
     )
+  }
 
   return (
     <div className="w-full flex flex-wrap justify-between">
       {sortedData().map((department: DepartmentProcess, index: number) => (
         <div key={index} className="mt-4">
-          <DepartmentCard department={department} />
+          <DepartmentCard department={department} codelistUtils={codelistUtils} />
         </div>
       ))}
     </div>
