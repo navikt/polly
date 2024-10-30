@@ -294,6 +294,7 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                                   codes={[disclosure.department]}
                                   commaSeparator
                                   linkCodelist
+                                  codelistUtils={codelistUtils}
                                 />
                               )}
                               {!disclosure.department?.code && 'Ikke angitt'}

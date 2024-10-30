@@ -2,7 +2,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, ReactNode } from 'react'
 import { TNavigableItem } from '../../constants'
-import { CodelistService, EListName, ICode } from '../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util'
 import { Markdown } from './Markdown'
 import RouteLink, { urlForObject } from './RouteLink'
@@ -49,11 +49,11 @@ interface IContentProps {
   list?: EListName
   linkCodelist?: boolean
   markdown?: boolean
+  codelistUtils: ICodelistProps
 }
 
 const Content = (props: IContentProps) => {
-  const { item, list, linkCodelist, markdown } = props
-  const [codelistUtils] = CodelistService()
+  const { item, list, linkCodelist, markdown, codelistUtils } = props
 
   return (
     <>
@@ -82,10 +82,11 @@ type TDotTagsParams = {
   list?: EListName
   noFlex?: boolean
   wrapText?: boolean
+  codelistUtils: ICodelistProps
 }
 
 export const DotTags = (props: TDotTagsParams) => {
-  const { commaSeparator, codes, noFlex, wrapText } = props
+  const { commaSeparator, codes, noFlex, wrapText, codelistUtils } = props
   const items = props.items || codes?.map((code) => code.code) || []
 
   return (
@@ -95,7 +96,7 @@ export const DotTags = (props: TDotTagsParams) => {
         <div className="inline">
           {items.map((item: string, index: number) => (
             <Fragment key={index}>
-              <Content {...props} item={item} />
+              <Content {...props} codelistUtils={codelistUtils} item={item} />
               <span>{index < items.length - 1 ? ', ' : ''}</span>
             </Fragment>
           ))}
@@ -107,7 +108,7 @@ export const DotTags = (props: TDotTagsParams) => {
             <div key={index} className={`${index < items.length ? 'mr-1.5' : '0px'}`}>
               <DotTag wrapText={wrapText}>
                 {' '}
-                <Content {...props} item={item} />{' '}
+                <Content {...props} codelistUtils={codelistUtils} item={item} />{' '}
               </DotTag>
             </div>
           ))}

@@ -185,6 +185,7 @@ const DpProcessView = () => {
                 list={EListName.SYSTEM}
                 codes={dpProcess.affiliation.products}
                 linkCodelist
+                codelistUtils={codelistUtils}
               />
             )}
           </DataText>
@@ -199,6 +200,7 @@ const DpProcessView = () => {
                     codes={[dpProcess?.affiliation.department]}
                     commaSeparator
                     linkCodelist
+                    codelistUtils={codelistUtils}
                   />{' '}
                 </span>
               </div>
@@ -213,6 +215,7 @@ const DpProcessView = () => {
                     list={EListName.SUB_DEPARTMENT}
                     codes={dpProcess?.affiliation.subDepartments}
                     linkCodelist
+                    codelistUtils={codelistUtils}
                   />
                 </div>
               </div>
@@ -238,7 +241,11 @@ const DpProcessView = () => {
                 {isDataProcessingAgreementsAvailable && (
                   <div className="flex items-center">
                     <div className="whitespace-nowrap mt-1 mr-0">Ref. til databehandleravtale</div>
-                    <DotTags items={dpProcess?.dataProcessingAgreements} markdown />
+                    <DotTags
+                      items={dpProcess?.dataProcessingAgreements}
+                      markdown
+                      codelistUtils={codelistUtils}
+                    />
                   </div>
                 )}
               </div>

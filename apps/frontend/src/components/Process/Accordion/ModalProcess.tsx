@@ -233,7 +233,7 @@ const ModalProcess = ({
                       label="System"
                       tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
                     />
-                    <FieldProduct formikBag={formikBag} />
+                    <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
@@ -296,7 +296,10 @@ const ModalProcess = ({
                           <FieldDepartment department={formikBag.values.affiliation.department} />
                         </div>
                         <div className="w-[48%]">
-                          <FieldSubDepartments formikBag={formikBag} />
+                          <FieldSubDepartments
+                            formikBag={formikBag}
+                            codelistUtils={codelistUtils}
+                          />
                         </div>
                       </div>
 
@@ -469,7 +472,7 @@ const ModalProcess = ({
                     >
                       <CustomizedModalBlock first>
                         <ModalLabel label="Avsender" />
-                        <FieldDispatcher formikBag={formikBag} />
+                        <FieldDispatcher formikBag={formikBag} codelistUtils={codelistUtils} />
                       </CustomizedModalBlock>
 
                       <div className="w-full flex mb-[5px]">
