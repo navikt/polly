@@ -1,16 +1,16 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
+import { EListName, ICodelistProps, IGetParsedOptionsProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 interface IFieldSubDepartmentsProps {
   formikBag: FormikProps<IProcessFormValues> | FormikProps<IDpProcessFormValues>
+  codelistUtils: ICodelistProps
 }
 
 const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
-  const { formikBag } = props
-  const [codelistUtils] = CodelistService()
+  const { formikBag, codelistUtils } = props
 
   return (
     <FieldArray

@@ -1,5 +1,6 @@
 import { FormikProps } from 'formik'
 import { IDpProcessFormValues } from '../../../constants'
+import { ICodelistProps } from '../../../service/Codelist'
 import FieldSubDepartments from '../../common/FieldSubDepartments'
 import { ModalLabel } from '../../common/ModalSchema'
 import FieldProductTeam from '../../common/form/FieldProductTeam'
@@ -7,10 +8,11 @@ import FieldDpProcessDepartment from './FieldDpProcessDepartment'
 
 type TFieldDpProcessAffiliationProps = {
   formikBag: FormikProps<IDpProcessFormValues>
+  codelistUtils: ICodelistProps
 }
 
 const FieldDpProcessAffiliation = (props: TFieldDpProcessAffiliationProps) => {
-  const { formikBag } = props
+  const { formikBag, codelistUtils } = props
 
   return (
     <>
@@ -34,7 +36,7 @@ const FieldDpProcessAffiliation = (props: TFieldDpProcessAffiliationProps) => {
           <FieldDpProcessDepartment department={formikBag.values.affiliation.department} />
         </div>
         <div className="w-[48%]">
-          <FieldSubDepartments formikBag={formikBag} />
+          <FieldSubDepartments formikBag={formikBag} codelistUtils={codelistUtils} />
         </div>
       </div>
 

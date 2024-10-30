@@ -31,6 +31,8 @@ import { TeamList } from '../../common/Team'
 import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
+  const [codelistUtils] = CodelistService()
+
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
       return (
@@ -53,6 +55,7 @@ const showDpiaRequiredField = (dpia?: IDpia) => {
                 ? `${getNoDpiaLabel(r)} (${dpia.grounds})`
                 : getNoDpiaLabel(r)
             })}
+            codelistUtils={codelistUtils}
           />
         </>
       )
@@ -172,7 +175,11 @@ const ProcessData = (props: IProcessDataProps) => {
         {process.usesAllInformationTypes
           ? 'Bruker potensielt alle personkategorier'
           : !!subjectCategoriesSummarised.length && (
-              <DotTags list={EListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised} />
+              <DotTags
+                list={EListName.SUBJECT_CATEGORY}
+                codes={subjectCategoriesSummarised}
+                codelistUtils={codelistUtils}
+              />
             )}
       </DataText>
 
@@ -186,6 +193,7 @@ const ProcessData = (props: IProcessDataProps) => {
                 codes={[process.affiliation.department]}
                 commaSeparator
                 linkCodelist
+                codelistUtils={codelistUtils}
               />{' '}
             </span>
           </div>
@@ -199,6 +207,7 @@ const ProcessData = (props: IProcessDataProps) => {
                 list={EListName.SUB_DEPARTMENT}
                 codes={process.affiliation.subDepartments}
                 linkCodelist
+                codelistUtils={codelistUtils}
               />
             </div>
           </div>
@@ -228,7 +237,12 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="System" text={''}>
-        <DotTags list={EListName.SYSTEM} codes={process.affiliation.products} linkCodelist />
+        <DotTags
+          list={EListName.SYSTEM}
+          codes={process.affiliation.products}
+          linkCodelist
+          codelistUtils={codelistUtils}
+        />
       </DataText>
 
       <DataText label="Automatisering og profilering" text={''}>
@@ -309,7 +323,11 @@ const ProcessData = (props: IProcessDataProps) => {
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
         <DataText label="Avsender" text={''}>
-          <DotTags list={EListName.SYSTEM} codes={process.affiliation.disclosureDispatchers} />
+          <DotTags
+            list={EListName.SYSTEM}
+            codes={process.affiliation.disclosureDispatchers}
+            codelistUtils={codelistUtils}
+          />
         </DataText>
       )}
 

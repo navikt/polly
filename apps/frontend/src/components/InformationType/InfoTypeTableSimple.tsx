@@ -1,7 +1,7 @@
 import { HeadingXLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { IInformationType, informationTypeSort } from '../../constants'
-import { EListName } from '../../service/Codelist'
+import { CodelistService, EListName } from '../../service/Codelist'
 import { theme } from '../../util'
 import { useTable } from '../../util/hooks'
 import { DotTags } from '../common/DotTag'
@@ -17,6 +17,8 @@ type TTableProps = {
 }
 
 export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableProps) => {
+  const [codelistUtils] = CodelistService()
+
   const [informationTypeList, setInformationTypeList] = useState<IInformationType[]>(
     informationTypes || []
   )
@@ -76,6 +78,7 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
                     codes={row.sources}
                     linkCodelist
                     commaSeparator
+                    codelistUtils={codelistUtils}
                   />
                 </Cell>
               </Row>

@@ -1,16 +1,16 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { CodelistService, EListName } from '../../service/Codelist'
+import { EListName, ICodelistProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 type TFieldDispatcherProps = {
   formikBag: FormikProps<IProcessFormValues> | FormikProps<IDpProcessFormValues>
+  codelistUtils: ICodelistProps
 }
 
 const FieldDispatcher = (props: TFieldDispatcherProps) => {
-  const { formikBag } = props
-  const [codelistUtils] = CodelistService()
+  const { formikBag, codelistUtils } = props
 
   return (
     <FieldArray

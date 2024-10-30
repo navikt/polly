@@ -5,7 +5,7 @@ import { StyledLink } from 'baseui/link'
 import { useEffect, useState } from 'react'
 import { getTerm, mapTermToOption } from '../../../api/GetAllApi'
 import { IInformationType, ITerm } from '../../../constants'
-import { EListName, ICode } from '../../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { termUrl } from '../../../util/config'
 import { DotTags } from '../../common/DotTag'
@@ -22,6 +22,7 @@ interface IDescriptionDataProps {
 
 const DescriptionData = (props: IDescriptionDataProps) => {
   const { termId, description, keywords } = props
+  const [codelistUtils] = CodelistService()
   const [term, setTerm] = useState(termId)
   const [termError, setTermError] = useState(false)
 
@@ -57,7 +58,10 @@ const DescriptionData = (props: IDescriptionDataProps) => {
         )}
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label="Søkeord" text={<DotTags items={keywords} />} />
+        <TextWithLabel
+          label="Søkeord"
+          text={<DotTags items={keywords} codelistUtils={codelistUtils} />}
+        />
       </FlexGridItem>
       <FlexGridItem>
         <TextWithLabel label="Nyttig å vite om opplysningstypen">
@@ -80,6 +84,8 @@ interface IPropertDataProps {
 const PropertyData = (props: IPropertDataProps) => {
   const { orgMaster, sources, categories, productTeams, sensitivity } = props
 
+  const [codelistUtils] = CodelistService()
+
   return (
     <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
       <FlexGridItem>
@@ -89,12 +95,19 @@ const PropertyData = (props: IPropertDataProps) => {
             codes={orgMaster ? [orgMaster] : []}
             linkCodelist
             commaSeparator
+            codelistUtils={codelistUtils}
           />
         </TextWithLabel>
       </FlexGridItem>
       <FlexGridItem>
         <TextWithLabel label="Kilder">
-          <DotTags list={EListName.THIRD_PARTY} codes={sources} linkCodelist commaSeparator />
+          <DotTags
+            list={EListName.THIRD_PARTY}
+            codes={sources}
+            linkCodelist
+            commaSeparator
+            codelistUtils={codelistUtils}
+          />
         </TextWithLabel>
       </FlexGridItem>
       <FlexGridItem>
@@ -105,7 +118,13 @@ const PropertyData = (props: IPropertDataProps) => {
       </FlexGridItem>
       <FlexGridItem>
         <TextWithLabel label="Kategorier">
-          <DotTags list={EListName.CATEGORY} codes={categories} linkCodelist commaSeparator />
+          <DotTags
+            list={EListName.CATEGORY}
+            codes={categories}
+            linkCodelist
+            commaSeparator
+            codelistUtils={codelistUtils}
+          />
         </TextWithLabel>
       </FlexGridItem>
       <FlexGridItem>
