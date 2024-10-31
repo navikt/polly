@@ -18,7 +18,7 @@ import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
-import { EListName, CodelistService } from '../../../service/Codelist'
+import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
@@ -46,6 +46,7 @@ import FieldRiskOwner from '../common/FieldRiskOwner'
 import RetentionItems from '../common/RetentionItems'
 
 type TModalProcessProps = {
+  codelistUtils: ICodelistProps
   title: string
   isOpen: boolean
   isEdit?: boolean
@@ -56,6 +57,7 @@ type TModalProcessProps = {
 }
 
 const ModalProcess = ({
+  codelistUtils,
   submit,
   errorOnCreate,
   onClose,
@@ -63,8 +65,6 @@ const ModalProcess = ({
   initialValues,
   title,
 }: TModalProcessProps) => {
-  const [codelistUtils] = CodelistService()
-
   const [expanded, setExpanded] = useState<Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(
     !!initialValues.commonExternalProcessResponsible
@@ -257,7 +257,10 @@ const ModalProcess = ({
                             <FieldDepartment department={formikBag.values.affiliation.department} />
                           </div>
                           <div className="w-[48%]">
-                            <FieldSubDepartments formikBag={formikBag} codelistUtils={codelistUtils} />
+                            <FieldSubDepartments
+                              formikBag={formikBag}
+                              codelistUtils={codelistUtils}
+                            />
                           </div>
                         </div>
 
@@ -399,7 +402,7 @@ const ModalProcess = ({
                       <Accordion.Content>
                         <CustomizedModalBlock first>
                           <ModalLabel label="Avsender" />
-                          <FieldDispatcher formikBag={formikBag} codelistUtils={codelistUtils}/>
+                          <FieldDispatcher formikBag={formikBag} codelistUtils={codelistUtils} />
                         </CustomizedModalBlock>
 
                         <div className="w-full flex mb-[5px]">

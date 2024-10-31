@@ -13,7 +13,7 @@ import {
   IProcess,
   IProcessor,
 } from '../../../constants'
-import { CodelistService, EListName } from '../../../service/Codelist'
+import { CodelistService, EListName, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import {
@@ -80,11 +80,11 @@ export const processStatusText = (status: EProcessStatus | undefined) => {
 interface IProcessDataProps {
   process: IProcess
   disclosures: IDisclosure[]
+  codelistUtils: ICodelistProps
 }
 
 const ProcessData = (props: IProcessDataProps) => {
-  const { process, disclosures } = props
-  const [codelistUtils] = CodelistService()
+  const { process, disclosures, codelistUtils } = props
 
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])

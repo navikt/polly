@@ -4,10 +4,11 @@ import { Tag } from '@navikt/ds-react'
 import { LabelLarge } from 'baseui/typography'
 import { Ref, RefObject, createRef } from 'react'
 import { IProcessShort } from '../../../constants'
-import { CodelistService, EListName, ICode } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 
 type TAccordionTitleProps = {
+  codelistUtils: ICodelistProps
   process: IProcessShort
   expanded: boolean
   forwardRef?: Ref<any>
@@ -16,9 +17,7 @@ type TAccordionTitleProps = {
 export const InformationTypeRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
 
 const AccordionTitle = (props: TAccordionTitleProps) => {
-  const { process, expanded, forwardRef } = props
-  const [codelistUtils] = CodelistService()
-
+  const { process, expanded, forwardRef, codelistUtils } = props
   const today: string = new Date().toISOString().split('T')[0]
 
   const isActive: boolean = today < process.end

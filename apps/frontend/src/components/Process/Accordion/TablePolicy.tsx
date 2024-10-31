@@ -13,7 +13,7 @@ import {
   IProcessAlert,
   getPolicySort,
 } from '../../../constants'
-import { CodelistService, EListName, ICode } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import { Sensitivity } from '../../InformationType/Sensitivity'
@@ -24,6 +24,7 @@ import { Cell, HeadCell, Row, Table } from '../../common/Table'
 import ModalPolicy from './ModalPolicy'
 
 type TTablePurposeProps = {
+  codelistUtils: ICodelistProps
   process: IProcess
   hasAccess: boolean
   errorPolicyModal: string | null
@@ -37,6 +38,7 @@ export type TDocs = {
 }
 
 const TablePolicy = ({
+  codelistUtils,
   process,
   hasAccess,
   errorPolicyModal,
@@ -44,8 +46,6 @@ const TablePolicy = ({
   submitEditPolicy,
   submitDeletePolicy,
 }: TTablePurposeProps) => {
-  const [codelistUtils] = CodelistService()
-
   const [currentPolicy, setCurrentPolicy] = useState<IPolicy>()
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)

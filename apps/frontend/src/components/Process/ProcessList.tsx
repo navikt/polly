@@ -94,7 +94,9 @@ const ProcessList = ({
   }, [processId])
 
   useEffect(() => {
-    setCodelistLoading(!codelistUtils.isLoaded())
+    if (lists) {
+      setCodelistLoading(!codelistUtils.isLoaded())
+    }
   }, [lists])
 
   useEffect(() => {
@@ -446,6 +448,7 @@ const ProcessList = ({
 
       {!isLoadingProcessList && (
         <AccordionProcess
+          codelistUtils={codelistUtils}
           isLoading={isLoadingProcess}
           processList={processList}
           setProcessList={setProcessList}
@@ -465,6 +468,7 @@ const ProcessList = ({
       )}
       {!codelistLoading && (
         <ModalProcess
+          codelistUtils={codelistUtils}
           title="Opprett ny behandling"
           onClose={() => {
             setErrorProcessModal('')
