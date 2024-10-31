@@ -251,7 +251,7 @@ const ModalPolicy = ({
                 <Error fieldName="legalBasesUse" />
 
                 {formikBag.values.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES && (
-                  <FieldLegalBasis formikBag={formikBag} />
+                  <FieldLegalBasis formikBag={formikBag} codelistUtils={codelistUtils} />
                 )}
               </ModalBody>
               <Error fieldName="legalBasesOpen" fullWidth={true} />

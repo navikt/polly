@@ -241,7 +241,10 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                                   )
                                   .map((legalBasis, index) => (
                                     <div key={index}>
-                                      <LegalBasisView legalBasis={legalBasis} />
+                                      <LegalBasisView
+                                        legalBasis={legalBasis}
+                                        codelistUtils={codelistUtils}
+                                      />
                                     </div>
                                   ))}
                               </DataText>

@@ -8,7 +8,7 @@ import {
   IProcessAlert,
   getPolicySort,
 } from '../../../constants'
-import { CodelistService, EListName, ICode } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { useTable } from '../../../util/hooks'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
@@ -18,12 +18,13 @@ import { Cell, HeadCell, Row, Table } from '../../common/Table'
 type TTableInformationtypeProps = {
   policies: Array<IPolicy>
   showPurpose: boolean
+  codelistUtils: ICodelistProps
 }
 
 type TAlerts = { [id: string]: IPolicyAlert }
 
-const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformationtypeProps) => {
-  const [codelistUtils] = CodelistService()
+const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
+  const { policies, showPurpose, codelistUtils } = props
 
   const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(policies, {
     sorting: getPolicySort(codelistUtils),
@@ -107,14 +108,22 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformation
             <div>
               {row.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES &&
                 row.legalBases &&
-                row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
+                row.legalBases.length > 0 && (
+                  <ListLegalBasesInTable
+                    legalBases={row.legalBases}
+                    codelistUtils={codelistUtils}
+                  />
+                )}
 
               {!(
                 row.legalBasesUse === ELegalBasesUse.EXCESS_INFO ||
                 row.legalBasesUse === ELegalBasesUse.UNRESOLVED
               ) &&
                 row.process.legalBases && (
-                  <ListLegalBasesInTable legalBases={row.process.legalBases} />
+                  <ListLegalBasesInTable
+                    legalBases={row.process.legalBases}
+                    codelistUtils={codelistUtils}
+                  />
                 )}
 
               <LegalBasesNotClarified alert={alerts && alerts[row.id]} />

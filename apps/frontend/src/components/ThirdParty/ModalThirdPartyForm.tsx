@@ -384,7 +384,11 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                     <Accordion.Header>Behandlingsgrunnlag</Accordion.Header>
                     <Accordion.Content>
                       <div className="mt-4">
-                        <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
+                        <FieldLegalBasis
+                          formikBag={formikBag}
+                          openArt6OnEmpty
+                          codelistUtils={codelistUtils}
+                        />
                       </div>
                       <Error fieldName="legalBasesOpen" fullWidth={true} />
                     </Accordion.Content>

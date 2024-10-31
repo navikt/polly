@@ -149,7 +149,10 @@ const TablePolicy = ({
                   />
 
                   {row.legalBases && row.legalBases.length > 0 && (
-                    <ListLegalBasesInTable legalBases={row.legalBases} />
+                    <ListLegalBasesInTable
+                      legalBases={row.legalBases}
+                      codelistUtils={codelistUtils}
+                    />
                   )}
                 </div>
               </Cell>

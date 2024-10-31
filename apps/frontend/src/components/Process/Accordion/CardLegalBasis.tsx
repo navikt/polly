@@ -188,7 +188,7 @@ const CardLegalBasis = ({
             <>
               <div className="flex mt-4 w-full">Forhåndsvisning</div>
               <div className="flex mt-4 w-full ">
-                <LegalBasisView legalBasisForm={form.values} />
+                <LegalBasisView legalBasisForm={form.values} codelistUtils={codelistUtils} />
               </div>
             </>
           )}

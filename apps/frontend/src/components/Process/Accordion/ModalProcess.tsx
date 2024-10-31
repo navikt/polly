@@ -313,7 +313,11 @@ const ModalProcess = ({
                         Behandlingsgrunnlag for hele behandlingen
                       </Accordion.Header>
                       <Accordion.Content>
-                        <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
+                        <FieldLegalBasis
+                          formikBag={formikBag}
+                          openArt6OnEmpty
+                          codelistUtils={codelistUtils}
+                        />
                         <Error fieldName="legalBasesOpen" fullWidth={true} />
                       </Accordion.Content>
                     </Accordion.Item>

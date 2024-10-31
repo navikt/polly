@@ -5,7 +5,7 @@ import { StyledLink } from 'baseui/link'
 import { useEffect, useState } from 'react'
 import { getTerm, mapTermToOption } from '../../../api/GetAllApi'
 import { IInformationType, ITerm } from '../../../constants'
-import { CodelistService, EListName, ICode } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { termUrl } from '../../../util/config'
 import { DotTags } from '../../common/DotTag'
@@ -18,11 +18,11 @@ interface IDescriptionDataProps {
   termId?: string
   description?: string
   keywords: string[]
+  codelistUtils: ICodelistProps
 }
 
 const DescriptionData = (props: IDescriptionDataProps) => {
-  const { termId, description, keywords } = props
-  const [codelistUtils] = CodelistService()
+  const { termId, description, keywords, codelistUtils } = props
   const [term, setTerm] = useState(termId)
   const [termError, setTermError] = useState(false)
 
@@ -79,12 +79,11 @@ interface IPropertDataProps {
   productTeams: string[]
   keywords: string[]
   sensitivity: ICode
+  codelistUtils: ICodelistProps
 }
 
 const PropertyData = (props: IPropertDataProps) => {
-  const { orgMaster, sources, categories, productTeams, sensitivity } = props
-
-  const [codelistUtils] = CodelistService()
+  const { orgMaster, sources, categories, productTeams, sensitivity, codelistUtils } = props
 
   return (
     <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
@@ -141,10 +140,11 @@ const PropertyData = (props: IPropertDataProps) => {
 
 interface IMetaDataProps {
   informationtype: IInformationType
+  codelistUtils: ICodelistProps
 }
 
 const Metadata = (props: IMetaDataProps) => {
-  const { informationtype } = props
+  const { informationtype, codelistUtils } = props
 
   return (
     <div className="flex mb-4">
@@ -153,6 +153,7 @@ const Metadata = (props: IMetaDataProps) => {
           termId={informationtype.term}
           description={informationtype.description}
           keywords={informationtype.keywords}
+          codelistUtils={codelistUtils}
         />
       </div>
       <div className="w-[60%] pl-24 border-solid border-l-[1px] border-[#AFAFAF]">
@@ -163,6 +164,7 @@ const Metadata = (props: IMetaDataProps) => {
           categories={informationtype.categories || []}
           keywords={informationtype.keywords || []}
           sensitivity={informationtype.sensitivity}
+          codelistUtils={codelistUtils}
         />
       </div>
     </div>

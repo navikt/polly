@@ -7,7 +7,7 @@ import { Key } from 'react'
 import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 import { IPolicy } from '../../../constants'
 import { TPurposeMap } from '../../../pages/InformationtypePage'
-import { CodelistService, EListName, ICode } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { useQueryParam } from '../../../util/hooks'
 import { toggleOverride } from '../../common/Accordion'
 import { paddingZero } from '../../common/Style'
@@ -29,14 +29,14 @@ const reducePolicyList = (list: IPolicy[]) => {
 
 export interface IAccordionInformationtypeProps {
   policies: IPolicy[]
+  codelistUtils: ICodelistProps
 }
 
 const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
-  const { policies } = props
+  const { policies, codelistUtils } = props
   const selectedPurpose = useQueryParam('purpose')
   const navigate: NavigateFunction = useNavigate()
   const location: Location<any> = useLocation()
-  const [codelistUtils] = CodelistService()
 
   if (!policies) return <ParagraphMedium>Fant ingen formål</ParagraphMedium>
   if (!codelistUtils.isLoaded())
@@ -69,7 +69,11 @@ const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
             Content: { style: paddingZero },
           }}
         >
-          <InformationtypePolicyTable policies={getPolicylistForPurpose(key)} showPurpose={false} />
+          <InformationtypePolicyTable
+            policies={getPolicylistForPurpose(key)}
+            showPurpose={false}
+            codelistUtils={codelistUtils}
+          />
         </Panel>
       ))}
     </Accordion>

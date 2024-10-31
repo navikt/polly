@@ -20,12 +20,11 @@ import { processString } from '../../util/string-processor'
 interface ILegalBasisViewProps {
   legalBasis?: ILegalBasis
   legalBasisForm?: ILegalBasisFormValues
+  codelistUtils: ICodelistProps
 }
 
 export const LegalBasisView = (props: ILegalBasisViewProps) => {
-  const [codelistUtils] = CodelistService()
-
-  const { legalBasis, legalBasisForm } = props
+  const { legalBasis, legalBasisForm, codelistUtils } = props
   const input = legalBasis ? legalBasis : legalBasisForm
   if (!input) return null
   const { description } = input
@@ -185,10 +184,11 @@ interface IListLegalBasesProps {
   onRemove: (index: number) => void
   onEdit: (index: number) => void
   sensitivityLevel?: ESensitivityLevel.ART6 | ESensitivityLevel.ART9
+  codelistUtils: ICodelistProps
 }
 
 export const ListLegalBases = (props: IListLegalBasesProps) => {
-  const { legalBases, onRemove, onEdit, sensitivityLevel } = props
+  const { legalBases, onRemove, onEdit, sensitivityLevel, codelistUtils } = props
 
   if (!legalBases) return null
 
@@ -249,7 +249,7 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
             <ParagraphMedium
               $style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}
             >
-              <LegalBasisView legalBasisForm={legalBasis} />
+              <LegalBasisView legalBasisForm={legalBasis} codelistUtils={codelistUtils} />
             </ParagraphMedium>
           </ListItem>
         ))}
@@ -259,10 +259,11 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
 
 interface IListLegalBasesInTableProps {
   legalBases: ILegalBasis[]
+  codelistUtils: ICodelistProps
 }
 
 export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
-  const { legalBases } = props
+  const { legalBases, codelistUtils } = props
 
   return (
     <div>
@@ -270,7 +271,7 @@ export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
         {legalBases.map((legalBasis: ILegalBasis, index: number) => (
           <div className="mb-2" key={index}>
             <li>
-              <LegalBasisView legalBasis={legalBasis} />
+              <LegalBasisView legalBasis={legalBasis} codelistUtils={codelistUtils} />
             </li>
           </div>
         ))}

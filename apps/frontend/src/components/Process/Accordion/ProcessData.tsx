@@ -135,7 +135,7 @@ const ProcessData = (props: IProcessDataProps) => {
             )
             .map((legalBasis: ILegalBasis, index: number) => (
               <div key={index}>
-                <LegalBasisView legalBasis={legalBasis} />
+                <LegalBasisView legalBasis={legalBasis} codelistUtils={codelistUtils} />
               </div>
             ))}
         </DataText>
