@@ -400,7 +400,7 @@ export const codeListSchema: () => yup.ObjectSchema<ICode> = () =>
     list: yup.mixed<EListName>().required(requredMessage),
     code: yup
       .string()
-      .matches(/^[A-Z_]+$/, 'Der er ikke tilatt med små bokstaver, mellomrom, æ, ø og å i code.')
+      .matches(/^[A-Z0-9_]+$/, 'Der er ikke tilatt med små bokstaver, mellomrom, æ, ø og å i code.')
       .required(requredMessage),
     shortName: yup.string().required(requredMessage),
     description: yup.string().required(requredMessage),
