@@ -72,7 +72,7 @@ const ProcessList = ({
   getCount,
 }: TProcessListProps) => {
   const navigate = useNavigate()
-  const [codelistUtils] = CodelistService()
+  const [codelistUtils, lists] = CodelistService()
 
   const [processList, setProcessList] = useState<IProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = useState<IProcess | undefined>()
@@ -87,13 +87,15 @@ const ProcessList = ({
   const [exportHref, setExportHref] = useState<string>('')
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
 
-  codelistLoading ? setCodelistLoading(true) : setCodelistLoading(false)
-
   useEffect(() => getCount && getCount(processList.length), [processList.length])
 
   useEffect(() => {
     processId && getProcessById(processId)
   }, [processId])
+
+  useEffect(() => {
+    setCodelistLoading(!codelistUtils.isLoaded())
+  }, [lists])
 
   useEffect(() => {
     ;(async () => {

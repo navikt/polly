@@ -7,7 +7,12 @@ import { Tooltip } from 'baseui/tooltip'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
-import { CodelistService, EListName, ESensitivityLevel } from '../../service/Codelist'
+import {
+  CodelistService,
+  EListName,
+  ESensitivityLevel,
+  ICodelistProps,
+} from '../../service/Codelist'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
@@ -42,7 +47,7 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
     EListName.NATIONAL_LAW,
     nationalLaw
   )
-    ? legalBasisLinkProcessor(nationalLaw, description)
+    ? legalBasisLinkProcessor(codelistUtils, nationalLaw, description)
     : description
 
   return (
@@ -53,18 +58,14 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   )
 }
 
-const lovdataBase = (nationalLaw: string): string => {
-  const [codelistUtils] = CodelistService()
-
+const lovdataBase = (codelistUtils: ICodelistProps, nationalLaw: string): string => {
   return (
     (codelistUtils.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) +
     codelistUtils.getDescription(EListName.NATIONAL_LAW, nationalLaw)
   )
 }
 
-const legalBasisLinkProcessor = (law: string, text?: string) => {
-  const [codelistUtils] = CodelistService()
-
+const legalBasisLinkProcessor = (codelistUtils: ICodelistProps, law: string, text?: string) => {
   const lawCode: string = codelistUtils.getDescription(EListName.NATIONAL_LAW, law)
   if (!lawCode.match(/^\d+.*/)) {
     return text
@@ -82,7 +83,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
       fn: (key: string, result: string[]) => (
         <StyledLink
           key={key}
-          href={`${lovdataBase(law)}/§${result[3]}`}
+          href={`${lovdataBase(codelistUtils, law)}/§${result[3]}`}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -95,7 +96,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
       fn: (key: string, result: string[]) => (
         <StyledLink
           key={key}
-          href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`}
+          href={`${lovdataBase(codelistUtils, law)}/KAPITTEL_${result[2]}`}
           target="_blank"
           rel="noopener noreferrer"
         >

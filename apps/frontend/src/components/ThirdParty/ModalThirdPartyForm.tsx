@@ -12,7 +12,7 @@ import {
 } from 'formik'
 import { KeyboardEvent, useState } from 'react'
 import { IDisclosureFormValues, IDocument } from '../../constants'
-import { EListName, CodelistService, ICountryCode } from '../../service/Codelist'
+import { CodelistService, EListName, ICountryCode } from '../../service/Codelist'
 import BoolField from '../Process/common/BoolField'
 import FieldLegalBasis from '../Process/common/FieldLegalBasis'
 import { Error, ModalLabel } from '../common/ModalSchema'
@@ -114,7 +114,8 @@ type TModalThirdPartyProps = {
 }
 
 const ModalThirdParty = (props: TModalThirdPartyProps) => {
-  const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } = props
+  const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } =
+    props
   const [codelistUtils] = CodelistService()
 
   return (
@@ -380,7 +381,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                   <Accordion.Item
                     onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
                   >
-                    <Accordion.Header>Behandlingsgrunnlag TEST</Accordion.Header>
+                    <Accordion.Header>Behandlingsgrunnlag</Accordion.Header>
                     <Accordion.Content>
                       <div className="mt-4">
                         <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
