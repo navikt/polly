@@ -103,7 +103,7 @@
     "@types/react-dom": "^18.0.2",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.6",
-    "@types/shortid": "0.0.32",
+    "@types/shortid": "2.2.0",
     "@types/styletron-engine-atomic": "^1.1.0",
     "@types/styletron-react": "^5.0.2",
     "@types/styletron-standard": "^2.0.1",
