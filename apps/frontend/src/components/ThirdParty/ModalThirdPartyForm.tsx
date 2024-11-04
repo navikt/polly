@@ -376,7 +376,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                   <Accordion.Item
                     onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
                   >
-                    <Accordion.Header>Behandlingsgrunnlag TEST</Accordion.Header>
+                    <Accordion.Header>Behandlingsgrunnlag</Accordion.Header>
                     <Accordion.Content>
                       <div className="mt-4">
                         <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />

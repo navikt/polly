@@ -33,7 +33,7 @@ export const LastEvents = () => {
         <div className="w-full flex justify-between">
           <div className="pr-2 overflow-hidden whitespace-nowrap text-ellipsis">
             <AuditActionIcon action={event.action} />
-            {event.name} TEST
+            {event.name}
           </div>
           <div className="min-w-32 text-right">
             <CustomizedStatefulTooltip
