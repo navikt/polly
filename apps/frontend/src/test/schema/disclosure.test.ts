@@ -2,7 +2,7 @@ import { disclosureSchema } from '../../components/common/schemaValidation'
 import { IDisclosureFormValues } from '../../constants'
 import '../config/schemaValidator'
 
-it('Disclosure', () => {
+describe('Disclosure', () => {
   const schema = disclosureSchema()
 
   const disclosure: () => IDisclosureFormValues = () => ({
@@ -19,11 +19,11 @@ it('Disclosure', () => {
     confidentialityDescription: 'test',
   })
 
-  test('Disclosure ok', () => {
+  it('Disclosure ok', () => {
     expect(disclosure()).toBeSchema(schema)
   })
 
-  test('Disclosure errors', () => {
+  it('Disclosure errors', () => {
     expect({ ...disclosure(), name: '' }).toBeSchemaErrorAt(schema, 'name')
     expect({ ...disclosure(), recipientPurpose: '' }).toBeSchemaErrorAt(schema, 'recipientPurpose')
   })

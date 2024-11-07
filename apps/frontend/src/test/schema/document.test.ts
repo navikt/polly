@@ -19,7 +19,7 @@ const subCode = addCode(EListName.SUBJECT_CATEGORY, 'SUB')
 const purposeCode = addCode(EListName.PURPOSE, 'PURPOSE')
 const dataAccessClassCode = addCode(EListName.DATA_ACCESS_CLASS, 'ACCESS')
 
-it('Schema', () => {
+describe('Schema', () => {
   const schema = createDocumentSchema()
   const createDocument: () => ICreateDocumentFormValues = () => ({
     name: 'name',
@@ -33,11 +33,11 @@ it('Schema', () => {
     dataAccessClass: 'ACCESS',
   })
 
-  test('CreateDocument ok', () => {
+  it('CreateDocument ok', () => {
     expect(createDocument()).toBeSchema(schema)
   })
 
-  test('CreateDocument errors', () => {
+  it('CreateDocument errors', () => {
     expect({ ...createDocument(), name: '' }).toBeSchemaErrorAt(schema, 'name')
     expect({ ...createDocument(), description: '' }).toBeSchemaErrorAt(schema, 'description')
     expect({ ...createDocument(), informationTypes: [] }).toBeSchemaErrorAt(
@@ -82,14 +82,14 @@ const addDocumentData: () => IAddDocumentToProcessFormValues = () => ({
   linkDocumentToPolicies: true,
 })
 
-it('AddDocument', () => {
+describe('AddDocument', () => {
   const addDocumentSchema = addDocumentToProcessSchema()
 
-  test('Add Document ok', () => {
+  it('Add Document ok', () => {
     expect(addDocumentData()).toBeSchema(addDocumentSchema)
   })
 
-  test('Add Document errors', () => {
+  it('Add Document errors', () => {
     expect({ ...addDocumentData(), informationTypes: [] }).toBeSchemaErrorAt(
       addDocumentSchema,
       'informationTypes'
@@ -105,7 +105,7 @@ it('AddDocument', () => {
   })
 })
 
-it('Policy', () => {
+describe('Policy', () => {
   const policy: IPolicy = {
     id: 'id',
     process: {
@@ -129,11 +129,11 @@ it('Policy', () => {
     linkDocumentToPolicies: false,
   })
 
-  test('Add Batch ok', () => {
+  it('Add Batch ok', () => {
     expect(addBatch()).toBeSchema(addBatchSchema)
   })
 
-  test('Add Batch errors', () => {
+  it('Add Batch errors', () => {
     expect({ ...addBatch(), informationTypes: [] }).toBeSchemaErrorAt(
       addBatchSchema,
       'informationTypes'
@@ -144,7 +144,7 @@ it('Policy', () => {
     )
   })
 
-  test('Add Batch policy combo already exists', () => {
+  it('Add Batch policy combo already exists', () => {
     const toAdd = addBatch()
     toAdd.informationTypes[0].informationType.id = 'it_id2'
     expect(toAdd).toBeSchemaErrorAt(

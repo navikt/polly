@@ -31,31 +31,31 @@ export const createProcess = (): IProcessFormValues => ({
   disclosures: [],
 })
 
-it('Process', () => {
+describe('Process', () => {
   const purposeList = [addCode(EListName.PURPOSE, 'PURPOSE')]
 
   const schema = processSchema(purposeList)
 
-  test('Process ok', () => {
+  it('Process ok', () => {
     expect(createProcess()).toBeSchema(schema)
   })
 
-  test('Process purposes required', () => {
+  it('Process purposes required', () => {
     const process = { ...createProcess(), purposes: [] }
     expect(process).toBeSchemaErrorAt(schema, 'purposes')
   })
 
-  test('Process status needs to be a type ProcessStatus', () => {
+  it('Process status needs to be a type ProcessStatus', () => {
     const process = { ...createProcess(), status: '' }
     expect(process).toBeSchemaErrorAt(schema, 'status')
   })
 
-  test('Process disclosures required', () => {
+  it('Process disclosures required', () => {
     const process = { ...createProcess(), disclosures: '' }
     expect(process).toBeSchemaErrorAt(schema, 'disclosures')
   })
 
-  test('Process legalBasis', () => {
+  it('Process legalBasis', () => {
     let process = {
       ...createProcess(),
       legalBases: [{ gdpr: NATIONAL_LAW_GDPR_ARTICLES[0], description: '', nationalLaw: '' }],

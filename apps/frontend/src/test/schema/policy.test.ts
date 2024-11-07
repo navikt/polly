@@ -4,7 +4,7 @@ import { EListName, ESensitivityLevel, ICode } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 
-it('Policy', () => {
+describe('Policy', () => {
   const senCode: ICode = addCode(EListName.SENSITIVITY, ESensitivityLevel.ART6)
   const senCode9: ICode = addCode(EListName.SENSITIVITY, ESensitivityLevel.ART9)
   const subCode: ICode = addCode(EListName.SUBJECT_CATEGORY, 'PERSON')
@@ -51,11 +51,11 @@ it('Policy', () => {
     documentIds: [],
   })
 
-  test('Policy ok', () => {
+  it('Policy ok', () => {
     expect(createPolicy()).toBeSchema(schema)
   })
 
-  test('Policy ok UNRESOLVED', () => {
+  it('Policy ok UNRESOLVED', () => {
     const policy: IPolicyFormValues = createPolicy()
     policy.legalBases = []
     policy.process = { ...policy.process, legalBases: [] }
@@ -63,7 +63,7 @@ it('Policy', () => {
     expect(policy).toBeSchema(schema)
   })
 
-  test('Policy ok EXCESS_INFO', () => {
+  it('Policy ok EXCESS_INFO', () => {
     const policy: IPolicyFormValues = createPolicy()
     policy.legalBases = []
     policy.process = { ...policy.process, legalBases: [] }
@@ -71,13 +71,13 @@ it('Policy', () => {
     expect(policy).toBeSchema(schema)
   })
 
-  test('Policy missingLegalBasisForDedicated', () => {
+  it('Policy missingLegalBasisForDedicated', () => {
     const policy: IPolicyFormValues = createPolicy()
     policy.legalBases = []
     expect(policy).toBeSchemaErrorAt(schema, 'legalBasesUse', 'Ingen behandlingsgrunnlag valgt')
   })
 
-  test('Policy missingArt6LegalBasisForInfoType', () => {
+  it('Policy missingArt6LegalBasisForInfoType', () => {
     const policy: IPolicyFormValues = createPolicy()
     policy.process = { ...policy.process, legalBases: [] }
     policy.legalBases = []
@@ -89,7 +89,7 @@ it('Policy', () => {
     )
   })
 
-  test('Policy missingArt9LegalBasisForSensitiveInfoType', () => {
+  it('Policy missingArt9LegalBasisForSensitiveInfoType', () => {
     const policy: IPolicyFormValues = createPolicy()
     if (policy.informationType) {
       policy.informationType = { ...policy.informationType, sensitivity: senCode9 }
@@ -117,7 +117,7 @@ it('Policy', () => {
     expect(policy).toBeSchema(schema)
   })
 
-  test('Policy informationType-SubjectCategory combo already exists', () => {
+  it('Policy informationType-SubjectCategory combo already exists', () => {
     const policy: IPolicyFormValues = createPolicy()
     policy.informationType = { ...otherPolicy.informationType }
     expect(policy).toBeSchemaErrorAt(
