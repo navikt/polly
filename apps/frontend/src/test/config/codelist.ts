@@ -1,9 +1,9 @@
 // Mock codelist
 import { CodelistService, EListName } from '../../service/Codelist'
 
-const [, lists, setLists] = CodelistService()
-
 export const addCode = (list: EListName, code: string) => {
+  const [, lists, setLists] = CodelistService()
+
   setLists({ codelist: {} })
   const newCode = {
     list,
