@@ -138,12 +138,11 @@ const missingArt9LegalBasisForSensitiveInfoType = (
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
   const reqArt9: boolean =
     informationType && informationType.sensitivity.code === ESensitivityLevel.ART9
-  const missingArt9 = policy.legalBases.filter(
-    (legalBase: ILegalBasisFormValues) =>
-      legalBase && legalBase.gdpr && legalBase.gdpr.startsWith(ARTICLE_9_PREFIX)
+  const missingArt9 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
+    legalBase && legalBase.gdpr ? legalBase.gdpr.startsWith(ARTICLE_9_PREFIX) : undefined
   ).length
-  const processMissingArt9 = policy.process.legalBases.filter((legalBase: ILegalBasis) =>
-    legalBase.gdpr.code.startsWith(ARTICLE_9_PREFIX)
+  const processMissingArt9 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
+    legalBase.gdpr.code ? legalBase.gdpr.code.startsWith(ARTICLE_9_PREFIX) : undefined
   ).length
   return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
 }
@@ -156,12 +155,11 @@ const missingArt6LegalBasisForInfoType = (policy: IPolicyFormValues) => {
   const ownLegalBasis: boolean =
     policy.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES ||
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
-  const missingArt6 = policy.legalBases.filter(
-    (legalBase: ILegalBasisFormValues) =>
-      legalBase && legalBase.gdpr && legalBase.gdpr.startsWith(ARTICLE_6_PREFIX)
+  const missingArt6 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
+    legalBase && legalBase.gdpr ? legalBase.gdpr.startsWith(ARTICLE_6_PREFIX) : undefined
   ).length
-  const processMissingArt6 = !policy.process.legalBases.filter((legalBase: ILegalBasis) =>
-    legalBase.gdpr.code.startsWith(ARTICLE_6_PREFIX)
+  const processMissingArt6 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
+    legalBase.gdpr.code ? legalBase.gdpr.code.startsWith(ARTICLE_6_PREFIX) : undefined
   ).length
   return ownLegalBasis && missingArt6 && processMissingArt6
 }
