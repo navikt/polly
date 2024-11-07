@@ -123,7 +123,7 @@ describe('Policy', () => {
     legalBasesUse: ELegalBasesUse.INHERITED_FROM_PROCESS,
   }
 
-  const addBatchSchema = addBatchInfoTypesToProcessSchema([policy])
+  const addBatchSchema = addBatchInfoTypesToProcessSchema([policy], [subCode])
   const addBatch: () => IAddDocumentToProcessFormValues = () => ({
     ...addDocumentData(),
     linkDocumentToPolicies: false,

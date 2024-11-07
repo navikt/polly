@@ -169,14 +169,16 @@ const missingArt6LegalBasisForInfoType = (policy: IPolicyFormValues) => {
 const subjectCategoryExists = (
   path: string,
   policy: IPolicyFormValues,
-  context: yup.TestContext<any>
+  context: yup.TestContext<any>,
+  subjectCategoryList: ICode[]
 ) => {
   return subjectCategoryExistsGen(
     policy.informationType as IInformationTypeShort,
     policy.subjectCategories,
     path,
     context,
-    policy.otherPolicies
+    policy.otherPolicies,
+    subjectCategoryList
   )
 }
 
@@ -184,14 +186,16 @@ const subjectCategoryExistsBatch = (
   path: string,
   otherPolicies: IPolicy[],
   it: IDocumentInfoTypeUse,
-  context: yup.TestContext<any>
+  context: yup.TestContext<any>,
+  subjectCategoryList: ICode[]
 ) => {
   return subjectCategoryExistsGen(
     it.informationType,
     it.subjectCategories.map((subjectCategory) => subjectCategory.code),
     path,
     context,
-    otherPolicies
+    otherPolicies,
+    subjectCategoryList
   )
 }
 
@@ -381,7 +385,9 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
     disclosures: yup.array<IDisclosure>().required(),
   })
 
-export const policySchema: () => yup.ObjectSchema<IPolicyFormValues> = () =>
+export const policySchema: (subjectCategoryList: ICode[]) => yup.ObjectSchema<IPolicyFormValues> = (
+  subjectCategoryList
+) =>
   yup.object({
     informationType: yup
       .mixed<IInformationTypeShort>()
@@ -412,7 +418,7 @@ export const policySchema: () => yup.ObjectSchema<IPolicyFormValues> = () =>
         message: 'placeholder',
         test: function (_val: string[], context: yup.TestContext<yup.AnyObject>) {
           const { parent, path } = this
-          return subjectCategoryExists(path, parent, context)
+          return subjectCategoryExists(path, parent, context, subjectCategoryList)
         },
       }),
     legalBasesUse: yup
@@ -441,8 +447,9 @@ export const policySchema: () => yup.ObjectSchema<IPolicyFormValues> = () =>
   })
 
 export const addBatchInfoTypesToProcessSchema: (
-  otherPolicies: IPolicy[]
-) => yup.ObjectSchema<IAddDocumentToProcessFormValues> = (otherPolicies) =>
+  otherPolicies: IPolicy[],
+  subjectCategoryList: ICode[]
+) => yup.ObjectSchema<IAddDocumentToProcessFormValues> = (otherPolicies, subjectCategoryList) =>
   yup.object({
     informationTypes: yup
       .array()
@@ -457,7 +464,13 @@ export const addBatchInfoTypesToProcessSchema: (
               context: yup.TestContext<any>
             ) {
               const { path } = this
-              return subjectCategoryExistsBatch(path, otherPolicies, informationTypeUse, context)
+              return subjectCategoryExistsBatch(
+                path,
+                otherPolicies,
+                informationTypeUse,
+                context,
+                subjectCategoryList
+              )
             },
           })
       )

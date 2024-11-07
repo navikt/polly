@@ -159,7 +159,7 @@ const ModalPolicy = ({
     <div className="w-[750px] px-8">
       <Formik
         initialValues={initialValues}
-        validationSchema={policySchema()}
+        validationSchema={policySchema(codelistUtils.getCodes(EListName.SUBJECT_CATEGORY))}
         onSubmit={(values: IPolicyFormValues) => {
           submit(values)
           onClose()

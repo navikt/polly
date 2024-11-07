@@ -12,7 +12,7 @@ describe('Policy', () => {
   const gdprCode: ICode = addCode(EListName.GDPR_ARTICLE, 'ART61A')
   const gdprCode9: ICode = addCode(EListName.GDPR_ARTICLE, 'ART9A')
 
-  const schema = policySchema()
+  const schema = policySchema([subCode])
 
   const otherPolicy: IPolicy = {
     id: 'id',
