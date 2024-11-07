@@ -26,8 +26,8 @@ export enum ESensitivityLevel {
 }
 
 // Refers to GDPR_ARTICLE codelist
-const ARTICLE_6_PREFIX = 'ART6'
-const ARTICLE_9_PREFIX = 'ART9'
+export const ARTICLE_6_PREFIX = 'ART6'
+export const ARTICLE_9_PREFIX = 'ART9'
 export const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
 export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
 

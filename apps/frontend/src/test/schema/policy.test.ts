@@ -1,12 +1,10 @@
 import { policySchema } from '../../components/common/schemaValidation'
 import { ELegalBasesUse, IPolicy, IPolicyFormValues, IProcess } from '../../constants'
-import { CodelistService, EListName, ESensitivityLevel, ICode } from '../../service/Codelist'
+import { EListName, ESensitivityLevel, ICode } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 
 it('Policy', () => {
-  const [codelistUtils] = CodelistService()
-
   const senCode: ICode = addCode(EListName.SENSITIVITY, ESensitivityLevel.ART6)
   const senCode9: ICode = addCode(EListName.SENSITIVITY, ESensitivityLevel.ART9)
   const subCode: ICode = addCode(EListName.SUBJECT_CATEGORY, 'PERSON')
@@ -14,7 +12,7 @@ it('Policy', () => {
   const gdprCode: ICode = addCode(EListName.GDPR_ARTICLE, 'ART61A')
   const gdprCode9: ICode = addCode(EListName.GDPR_ARTICLE, 'ART9A')
 
-  const schema = policySchema(codelistUtils)
+  const schema = policySchema()
 
   const otherPolicy: IPolicy = {
     id: 'id',

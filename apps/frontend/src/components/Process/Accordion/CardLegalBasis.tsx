@@ -86,7 +86,7 @@ const CardLegalBasis = ({
   return (
     <Formik
       onSubmit={(values) => submit(values)}
-      validationSchema={legalBasisSchema(codelistUtils)}
+      validationSchema={legalBasisSchema()}
       initialValues={initialValues}
       render={(form: FormikProps<ILegalBasisFormValues>) => (
         <Card>

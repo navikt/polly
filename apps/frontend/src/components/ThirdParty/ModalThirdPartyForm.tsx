@@ -129,7 +129,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
               processIds: values.processes.map((process) => process.id),
             })
           }}
-          validationSchema={disclosureSchema(codelistUtils)}
+          validationSchema={disclosureSchema()}
         >
           {(formikBag: FormikProps<IDisclosureFormValues>) => (
             <Form>

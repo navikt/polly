@@ -1,12 +1,9 @@
 import { disclosureSchema } from '../../components/common/schemaValidation'
 import { IDisclosureFormValues } from '../../constants'
-import { CodelistService } from '../../service/Codelist'
 import '../config/schemaValidator'
 
 it('Disclosure', () => {
-  const [codelistUtils] = CodelistService()
-
-  const schema = disclosureSchema(codelistUtils)
+  const schema = disclosureSchema()
 
   const disclosure: () => IDisclosureFormValues = () => ({
     name: 'name',

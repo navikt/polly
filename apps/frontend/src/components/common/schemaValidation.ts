@@ -22,7 +22,16 @@ import {
   IProcessorFormValues,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
-import { CodelistService, EListName, ICode, ICodelistProps } from '../../service/Codelist'
+import {
+  ARTICLE_6_PREFIX,
+  ARTICLE_9_PREFIX,
+  DESCRIPTION_GDPR_ARTICLES,
+  EListName,
+  ESensitivityLevel,
+  ICode,
+  ICodelistProps,
+  NATIONAL_LAW_GDPR_ARTICLES,
+} from '../../service/Codelist'
 import { subjectCategoryExistsGen } from './schema'
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
@@ -125,17 +134,17 @@ const missingArt9LegalBasisForSensitiveInfoType = (
   informationType: IInformationTypeShort,
   policy: IPolicyFormValues
 ) => {
-  const [codelistUtils] = CodelistService()
   const ownLegalBasis: boolean =
     policy.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES ||
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
   const reqArt9: boolean =
-    informationType && codelistUtils.requiresArt9(informationType.sensitivity.code)
-  const missingArt9 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
-    codelistUtils.isArt9(legalBase.gdpr)
+    informationType && informationType.sensitivity.code === ESensitivityLevel.ART9
+  const missingArt9 = policy.legalBases.filter(
+    (legalBase: ILegalBasisFormValues) =>
+      legalBase && legalBase.gdpr && legalBase.gdpr.startsWith(ARTICLE_9_PREFIX)
   ).length
-  const processMissingArt9 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
-    codelistUtils.isArt9(legalBase.gdpr.code)
+  const processMissingArt9 = policy.process.legalBases.filter((legalBase: ILegalBasis) =>
+    legalBase.gdpr.code.startsWith(ARTICLE_9_PREFIX)
   ).length
   return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
 }
@@ -145,15 +154,15 @@ const missingLegalBasisForDedicated = (policy: IPolicyFormValues) => {
 }
 
 const missingArt6LegalBasisForInfoType = (policy: IPolicyFormValues) => {
-  const [codelistUtils] = CodelistService()
   const ownLegalBasis: boolean =
     policy.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES ||
     policy.legalBasesUse === ELegalBasesUse.INHERITED_FROM_PROCESS
-  const missingArt6 = !policy.legalBases.filter((legalBase: ILegalBasisFormValues) =>
-    codelistUtils.isArt6(legalBase.gdpr)
+  const missingArt6 = policy.legalBases.filter(
+    (legalBase: ILegalBasisFormValues) =>
+      legalBase && legalBase.gdpr && legalBase.gdpr.startsWith(ARTICLE_6_PREFIX)
   ).length
-  const processMissingArt6 = !policy.process.legalBases?.filter((legalBase: ILegalBasis) =>
-    codelistUtils.isArt6(legalBase.gdpr.code)
+  const processMissingArt6 = !policy.process.legalBases.filter((legalBase: ILegalBasis) =>
+    legalBase.gdpr.code.startsWith(ARTICLE_6_PREFIX)
   ).length
   return ownLegalBasis && missingArt6 && processMissingArt6
 }
@@ -238,18 +247,16 @@ export const createDocumentSchema: () => yup.ObjectSchema<ICreateDocumentFormVal
       .required(),
   })
 
-export const legalBasisSchema: (
-  codelistUtils: ICodelistProps
-) => yup.ObjectSchema<ILegalBasisFormValues> = (codelistUtils: ICodelistProps) =>
+export const legalBasisSchema: () => yup.ObjectSchema<ILegalBasisFormValues> = () =>
   yup.object({
     gdpr: yup.string().required(requiredMessage),
     nationalLaw: yup.string().when('gdpr', {
-      is: (gdpr?: string) => codelistUtils.requiresNationalLaw(gdpr),
+      is: (gdpr?: string) => NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdpr || '') >= 0,
       then: () => yup.string().required('Artikkelen krever nasjonal lov'),
       otherwise: () => yup.string(),
     }),
     description: yup.string().when('gdpr', {
-      is: (gdpr?: string) => codelistUtils.requiresDescription(gdpr),
+      is: (gdpr?: string) => DESCRIPTION_GDPR_ARTICLES.indexOf(gdpr || '') >= 0,
       then: () => yup.string().required('Artikkelen krever ytterligere beskrivelse'),
       otherwise: () => yup.string(),
     }),
@@ -276,9 +283,7 @@ export const disclosureAbroadSchema: () => yup.ObjectSchema<IDisclosureAbroad> =
     businessArea: yup.string(),
   })
 
-export const disclosureSchema: (
-  codelistUtils: ICodelistProps
-) => yup.ObjectSchema<IDisclosureFormValues> = (codelistUtils: ICodelistProps) =>
+export const disclosureSchema: () => yup.ObjectSchema<IDisclosureFormValues> = () =>
   yup.object({
     id: yup.string(),
     recipient: yup.string(),
@@ -287,7 +292,7 @@ export const disclosureSchema: (
     description: yup.string(),
     documentId: yup.string(),
     document: ignore().nullable(),
-    legalBases: yup.array().of(legalBasisSchema(codelistUtils).required()).required(),
+    legalBases: yup.array().of(legalBasisSchema().required()).required(),
     legalBasesOpen: yup.boolean().oneOf([false], legalBasesOpenMessage).required(),
     start: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
     end: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
@@ -350,7 +355,7 @@ export const processSchema: (
       disclosureDispatchers: yup.array().of(yup.string().required()).required(),
     }),
     commonExternalProcessResponsible: yup.string(),
-    legalBases: yup.array().of(legalBasisSchema(codelistUtils).required()).required(),
+    legalBases: yup.array().of(legalBasisSchema().required()).required(),
     legalBasesOpen: yup.boolean().oneOf([false], legalBasesOpenMessage).required(),
     start: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
     end: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
@@ -377,9 +382,7 @@ export const processSchema: (
     disclosures: yup.array<IDisclosure>().required(),
   })
 
-export const policySchema: (
-  codelistUtils: ICodelistProps
-) => yup.ObjectSchema<IPolicyFormValues> = (codelistUtils: ICodelistProps) =>
+export const policySchema: () => yup.ObjectSchema<IPolicyFormValues> = () =>
   yup.object({
     informationType: yup
       .mixed<IInformationTypeShort>()
@@ -425,7 +428,7 @@ export const policySchema: (
           return !missingLegalBasisForDedicated(parent)
         },
       }),
-    legalBases: yup.array().of(legalBasisSchema(codelistUtils).required()).required(),
+    legalBases: yup.array().of(legalBasisSchema().required()).required(),
     legalBasesOpen: yup.boolean().oneOf([false], legalBasesOpenMessage).required(),
     process: yup.object({
       id: yup.string().required(),
