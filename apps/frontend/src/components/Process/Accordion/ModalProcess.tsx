@@ -125,7 +125,7 @@ const ModalProcess = ({
           onSubmit={(values) => {
             submit(values)
           }}
-          validationSchema={processSchema(codelistUtils)}
+          validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
           render={(formikBag: FormikProps<IProcessFormValues>) => {
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
               console.debug(formikBag.errors)

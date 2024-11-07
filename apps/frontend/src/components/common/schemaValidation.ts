@@ -29,7 +29,6 @@ import {
   EListName,
   ESensitivityLevel,
   ICode,
-  ICodelistProps,
   NATIONAL_LAW_GDPR_ARTICLES,
 } from '../../service/Codelist'
 import { subjectCategoryExistsGen } from './schema'
@@ -326,9 +325,9 @@ const addBatchInfoTypeUseSchema: () => yup.ObjectSchema<IDocumentInfoTypeUse> = 
     subjectCategories: yup.array<any>().required(requiredMessage).min(1, requiredMessage),
   })
 
-export const processSchema: (
-  codelistUtils: ICodelistProps
-) => yup.ObjectSchema<IProcessFormValues> = (codelistUtils: ICodelistProps) =>
+export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessFormValues> = (
+  purposeList: ICode[]
+) =>
   yup.object({
     id: yup.string(),
     name: yup.string().max(max, maxError()).required(requiredMessage),
@@ -338,7 +337,7 @@ export const processSchema: (
         yup
           .string()
           .oneOf(
-            codelistUtils.getCodes(EListName.PURPOSE).map((p) => p.code),
+            purposeList.map((p) => p.code),
             requiredMessage
           )
           .required()

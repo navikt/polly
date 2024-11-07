@@ -1,6 +1,6 @@
 import { processSchema } from '../../components/common/schemaValidation'
 import { EProcessStatus, ILegalBasisFormValues, IProcessFormValues } from '../../constants'
-import { CodelistService, EListName, NATIONAL_LAW_GDPR_ARTICLES } from '../../service/Codelist'
+import { EListName, NATIONAL_LAW_GDPR_ARTICLES } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 
@@ -32,11 +32,9 @@ export const createProcess = (): IProcessFormValues => ({
 })
 
 it('Process', () => {
-  addCode(EListName.PURPOSE, 'PURPOSE')
+  const purposeList = [addCode(EListName.PURPOSE, 'PURPOSE')]
 
-  const [codelistUtils] = CodelistService()
-
-  const schema = processSchema(codelistUtils)
+  const schema = processSchema(purposeList)
 
   test('Process ok', () => {
     expect(createProcess()).toBeSchema(schema)
