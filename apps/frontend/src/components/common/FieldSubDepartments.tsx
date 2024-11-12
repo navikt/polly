@@ -1,7 +1,7 @@
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { EListName, ICodelistProps, IGetParsedOptionsProps } from '../../service/Codelist'
+import { EListName, ICodelistProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 interface IFieldSubDepartmentsProps {
