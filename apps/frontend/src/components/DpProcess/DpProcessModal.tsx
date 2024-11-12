@@ -152,7 +152,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     open={expanded === 'subDataProcessor'}
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'subDataProcessor')}
                   >
-                    <Accordion.Header>Underdatabehandler</Accordion.Header>
+                    <Accordion.Header className="z-0">Underdatabehandler</Accordion.Header>
 
                     <Accordion.Content>
                       <FieldDpProcessSubDataProcessor
@@ -166,7 +166,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     open={expanded === 'retention'}
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'retention')}
                   >
-                    <Accordion.Header>Lagringsbehov</Accordion.Header>
+                    <Accordion.Header className="z-0">Lagringsbehov</Accordion.Header>
                     <Accordion.Content>
                       <RetentionItems formikBag={formikBag} />
                     </Accordion.Content>

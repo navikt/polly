@@ -1,4 +1,4 @@
-import { Select, Value } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
@@ -13,17 +13,7 @@ const FieldDpProcessExternalProcessResponsible = (
 ) => {
   const { thirdParty } = props
   const [codelistUtils] = CodelistService()
-
-  const [value, setValue] = useState<Value>(
-    thirdParty
-      ? [
-          {
-            id: thirdParty,
-            label: codelistUtils.getShortname(EListName.THIRD_PARTY, thirdParty),
-          },
-        ]
-      : []
-  )
+  const [value, setValue] = useState<string>(thirdParty ? thirdParty : '')
 
   return (
     <Field
@@ -31,14 +21,21 @@ const FieldDpProcessExternalProcessResponsible = (
       render={({ form }: FieldProps<IDpProcessFormValues>) => (
         <div className="w-full">
           <Select
-            options={codelistUtils.getParsedOptions(EListName.THIRD_PARTY)}
-            onChange={({ value }) => {
-              setValue(value)
-              form.setFieldValue('externalProcessResponsible', value.length > 0 ? value[0].id : '')
-            }}
+            label=""
+            hideLabel
             value={value}
-            placeholder=""
-          />
+            onChange={(event) => {
+              setValue(event.target.value)
+              form.setFieldValue('externalProcessResponsible', event.target.value)
+            }}
+          >
+            <option value="">Velg behandlingsansvarlig</option>
+            {codelistUtils.getParsedOptions(EListName.THIRD_PARTY).map((code) => (
+              <option key={code.id} value={code.id}>
+                {code.label}
+              </option>
+            ))}
+          </Select>
         </div>
       )}
     />

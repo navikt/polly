@@ -1,4 +1,4 @@
-import { Select, Value } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
@@ -11,17 +11,7 @@ interface IFieldDpProcessDepartment {
 const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
   const { department } = props
   const [codelistUtils] = CodelistService()
-
-  const [value, setValue] = useState<Value>(
-    department
-      ? [
-          {
-            id: department,
-            label: codelistUtils.getShortname(EListName.DEPARTMENT, department),
-          },
-        ]
-      : []
-  )
+  const [value, setValue] = useState<string>(department ? department : '')
 
   return (
     <Field
@@ -29,13 +19,21 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
       render={({ form }: FieldProps<IDpProcessFormValues>) => (
         <div className="w-full">
           <Select
-            options={codelistUtils.getParsedOptions(EListName.DEPARTMENT)}
-            onChange={({ value }) => {
-              setValue(value)
-              form.setFieldValue('affiliation.department', value.length > 0 ? value[0].id : '')
-            }}
+            label=""
+            hideLabel
             value={value}
-          />
+            onChange={(event) => {
+              setValue(event.target.value)
+              form.setFieldValue('affiliation.department', event.target.value)
+            }}
+          >
+            <option value="">Velg avdeling</option>
+            {codelistUtils.getParsedOptions(EListName.DEPARTMENT).map((department) => (
+              <option key={department.id} value={department.id}>
+                {department.label}
+              </option>
+            ))}
+          </Select>
         </div>
       )}
     />
