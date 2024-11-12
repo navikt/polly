@@ -23,7 +23,7 @@ import {
   TNavigableItem,
   TSearchType,
 } from '../../constants'
-import { CodelistService, EListName, ICode } from '../../service/Codelist'
+import { CodelistService, EListName, ICode, ICodelistProps } from '../../service/Codelist'
 import { prefixBiasedSort } from '../../util/sort'
 import { searchResultColor } from '../../util/theme'
 import { noOptionMessage, selectOverrides } from '../common/AsyncSelectComponents'
@@ -45,10 +45,9 @@ const searchCodelist = (
   search: string,
   list: EListName & TNavigableItem,
   typeName: string,
-  backgroundColor: string
+  backgroundColor: string,
+  codelistUtils: ICodelistProps
 ) => {
-  const [codelistUtils] = CodelistService()
-
   return codelistUtils
     .getCodes(list)
     .filter((code: ICode) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
@@ -62,9 +61,12 @@ const searchCodelist = (
     }))
 }
 
-const getCodelistByListnameAndType = (search: string, list: EListName, typeName: string) => {
-  const [codelistUtils] = CodelistService()
-
+const getCodelistByListnameAndType = (
+  search: string,
+  list: EListName,
+  typeName: string,
+  codelistUtils: ICodelistProps
+) => {
   return codelistUtils
     .getCodes(list)
     .filter((code: ICode) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
@@ -111,19 +113,44 @@ export const MainSearch = () => {
   const useMainSearchOption = async (searchParam: string) => {
     if (searchParam && searchParam.length > 2) {
       if (type === 'purpose') {
-        return getCodelistByListnameAndType(searchParam, EListName.PURPOSE, 'Formål')
+        return getCodelistByListnameAndType(searchParam, EListName.PURPOSE, 'Formål', codelistUtils)
       } else if (type === 'department') {
-        return getCodelistByListnameAndType(searchParam, EListName.DEPARTMENT, 'Avdeling')
+        return getCodelistByListnameAndType(
+          searchParam,
+          EListName.DEPARTMENT,
+          'Avdeling',
+          codelistUtils
+        )
       } else if (type === 'subDepartment') {
-        return getCodelistByListnameAndType(searchParam, EListName.SUB_DEPARTMENT, 'Linja')
+        return getCodelistByListnameAndType(
+          searchParam,
+          EListName.SUB_DEPARTMENT,
+          'Linja',
+          codelistUtils
+        )
       } else if (type === 'thirdParty') {
-        return getCodelistByListnameAndType(searchParam, EListName.THIRD_PARTY, 'Ekstern part')
+        return getCodelistByListnameAndType(
+          searchParam,
+          EListName.THIRD_PARTY,
+          'Ekstern part',
+          codelistUtils
+        )
       } else if (type === 'system') {
-        return getCodelistByListnameAndType(searchParam, EListName.SYSTEM, 'System')
+        return getCodelistByListnameAndType(searchParam, EListName.SYSTEM, 'System', codelistUtils)
       } else if (type === 'nationalLaw') {
-        return getCodelistByListnameAndType(searchParam, EListName.NATIONAL_LAW, 'Nasjonal lov')
+        return getCodelistByListnameAndType(
+          searchParam,
+          EListName.NATIONAL_LAW,
+          'Nasjonal lov',
+          codelistUtils
+        )
       } else if (type === 'gdprArticle') {
-        return getCodelistByListnameAndType(searchParam, EListName.GDPR_ARTICLE, 'GDPR artikkel')
+        return getCodelistByListnameAndType(
+          searchParam,
+          EListName.GDPR_ARTICLE,
+          'GDPR artikkel',
+          codelistUtils
+        )
       } else {
         let searchResult: TSearchItem[] = []
 
@@ -150,7 +177,8 @@ export const MainSearch = () => {
               searchParam,
               EListName.PURPOSE,
               'Behandlingsaktivitet',
-              searchResultColor.purposeBackground
+              searchResultColor.purposeBackground,
+              codelistUtils
             )
           )
           add(
@@ -158,7 +186,8 @@ export const MainSearch = () => {
               searchParam,
               EListName.DEPARTMENT,
               'Avdeling',
-              searchResultColor.departmentBackground
+              searchResultColor.departmentBackground,
+              codelistUtils
             )
           )
           add(
@@ -166,7 +195,8 @@ export const MainSearch = () => {
               searchParam,
               EListName.SUB_DEPARTMENT,
               'Linja',
-              searchResultColor.subDepartmentBackground
+              searchResultColor.subDepartmentBackground,
+              codelistUtils
             )
           )
           add(
@@ -174,7 +204,8 @@ export const MainSearch = () => {
               searchParam,
               EListName.THIRD_PARTY,
               'Ekstern part',
-              searchResultColor.thirdPartyBackground
+              searchResultColor.thirdPartyBackground,
+              codelistUtils
             )
           )
           add(
@@ -182,7 +213,8 @@ export const MainSearch = () => {
               searchParam,
               EListName.SYSTEM,
               'System',
-              searchResultColor.systemBackground
+              searchResultColor.systemBackground,
+              codelistUtils
             )
           )
           add(
@@ -190,7 +222,8 @@ export const MainSearch = () => {
               searchParam,
               EListName.NATIONAL_LAW,
               'Nasjonal lov',
-              searchResultColor.nationalLawBackground
+              searchResultColor.nationalLawBackground,
+              codelistUtils
             )
           )
           add(
@@ -198,7 +231,8 @@ export const MainSearch = () => {
               searchParam,
               EListName.GDPR_ARTICLE,
               'GDPR artikkel',
-              searchResultColor.gdprBackground
+              searchResultColor.gdprBackground,
+              codelistUtils
             )
           )
         }
@@ -321,8 +355,8 @@ export const MainSearch = () => {
             })()
           )
         }
-        await Promise.all(searches)
 
+        await Promise.all(searches)
         return searchResult
       }
     }

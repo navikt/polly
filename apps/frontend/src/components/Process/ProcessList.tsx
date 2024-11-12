@@ -482,7 +482,7 @@ const ProcessList = ({
             purposes:
               section === ESection.purpose
                 ? [codelistUtils.getCode(EListName.PURPOSE, code) as ICode]
-                : undefined,
+                : [],
             affiliation: {
               department:
                 section === ESection.department

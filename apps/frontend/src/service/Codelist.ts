@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
@@ -87,10 +86,10 @@ export interface IMakeIdLabelForAllCodeListsProps {
 }
 
 export const CodelistService = () => {
-  const [lists, setLists] = useState<IAllCodelists>({ codelist: {} })
+  const [lists, setLists] = useState<IAllCodelists>()
   const [error, setError] = useState<string | undefined>()
-  const [countries, setCountries] = useState<ICountryCode[]>([])
-  const [countriesOutsideEUEEA, setCountriesOutsideEUEEA] = useState<ICountryCode[]>([])
+  const [countries, setCountries] = useState<ICountryCode[]>()
+  const [countriesOutsideEUEEA, setCountriesOutsideEUEEA] = useState<ICountryCode[]>()
 
   useEffect(() => {
     ;(async () => {
@@ -100,7 +99,7 @@ export const CodelistService = () => {
 
   const fetchData = async (refresh?: boolean): Promise<void> => {
     if (
-      (_.isEmpty(lists.codelist) && countries.length === 0 && countriesOutsideEUEEA.length === 0) ||
+      (lists === undefined && countries === undefined && countriesOutsideEUEEA === undefined) ||
       refresh
     ) {
       const codeListPromise = await getAllCodelists(refresh)
