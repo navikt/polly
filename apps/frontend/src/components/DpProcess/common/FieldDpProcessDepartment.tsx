@@ -21,10 +21,8 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
             hideLabel
             value={value}
             onChange={(event) => {
-              if (event.target.value) {
-                setValue(event.target.value)
-                form.setFieldValue('affiliation.department', event.target.value)
-              }
+              setValue(event.target.value)
+              form.setFieldValue('affiliation.department', event.target.value)
             }}
           >
             <option value="">Velg avdeling</option>

@@ -1,4 +1,4 @@
-import { Select } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
 import { EListName, codelist } from '../../service/Codelist'
@@ -19,18 +19,27 @@ const FieldProduct = (props: TFieldProductsProps) => {
           <div className="w-full">
             <div className="w-full">
               <Select
-                clearable
-                options={codelist
-                  .getParsedOptions(EListName.SYSTEM)
-                  .filter((option) => !formikBag.values.affiliation.products.includes(option.id))}
-                onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue('affiliation.products', [
-                    ...formikBag.values.affiliation.products,
-                    ...value.map((v) => v.id),
-                  ])
+                label=""
+                hideLabel
+                onChange={(event) => {
+                  if (event.target.value) {
+                    arrayHelpers.form.setFieldValue('affiliation.products', [
+                      ...formikBag.values.affiliation.products,
+                      event.target.value,
+                    ])
+                  }
                 }}
-                overrides={{ Placeholder: { style: { color: 'black' } } }}
-              />
+              >
+                <option value="">Velg system</option>
+                {codelist
+                  .getParsedOptions(EListName.SYSTEM)
+                  .filter((option) => !formikBag.values.affiliation.products.includes(option.id))
+                  .map((code) => (
+                    <option key={code.id} value={code.id}>
+                      {code.label}
+                    </option>
+                  ))}
+              </Select>
             </div>
             <div>
               {renderTagList(
