@@ -1,4 +1,4 @@
-import { Select } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
 import { EListName, codelist } from '../../service/Codelist'
@@ -18,18 +18,27 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
         <div className="w-full">
           <div className="w-full">
             <Select
-              clearable
-              options={codelist
-                .getParsedOptions(EListName.SUB_DEPARTMENT)
-                .filter((code) => !formikBag.values.affiliation.subDepartments.includes(code.id))}
-              onChange={({ value }) => {
-                arrayHelpers.form.setFieldValue('affiliation.subDepartments', [
-                  ...formikBag.values.affiliation.subDepartments,
-                  ...value.map((value) => value.id),
-                ])
+              label=""
+              hideLabel
+              onChange={(event) => {
+                if (event.target.value) {
+                  arrayHelpers.form.setFieldValue('affiliation.subDepartments', [
+                    ...formikBag.values.affiliation.subDepartments,
+                    event.target.value,
+                  ])
+                }
               }}
-              overrides={{ Placeholder: { style: { color: 'black' } } }}
-            />
+            >
+              <option value="">Velg linje</option>
+              {codelist
+                .getParsedOptions(EListName.SUB_DEPARTMENT)
+                .filter((code) => !formikBag.values.affiliation.subDepartments.includes(code.id))
+                .map((code) => (
+                  <option key={code.id} value={code.id}>
+                    {code.label}
+                  </option>
+                ))}
+            </Select>
           </div>
           <div>
             <div>
