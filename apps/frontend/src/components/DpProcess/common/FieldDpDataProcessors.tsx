@@ -1,4 +1,5 @@
-import { OnChangeParams, Option, Select } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
+import { Option } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -36,31 +37,29 @@ const FieldDpDataProcessors = (props: TFieldDpDataProcessorsProps) => {
           <div className="w-full">
             <div className="w-full">
               <Select
-                clearable
-                noResultsMsg="Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
-                options={options
-                  .sort((a, b) =>
-                    (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString())
-                  )
-                  .filter(
-                    (dataProcessing) =>
-                      !formikBag.values.subDataProcessing.processors.includes(
-                        dataProcessing.id ? dataProcessing.id.toString() : ''
-                      )
-                  )}
-                onChange={(params: OnChangeParams) => {
-                  if (params.value[0].id && params.value[0].label) {
-                    subDataProcessors.set(
-                      params.value[0].id.toString(),
-                      params.value[0].label.toString()
-                    )
+                label="test"
+                hideLabel
+                onChange={(event) => {
+                  if (event.target.value) {
+                    subDataProcessors.set(event.target.id.toString(), event.target.value.toString())
                   }
                   arrayHelpers.form.setFieldValue('subDataProcessing.processors', [
                     ...(formikBag.values.subDataProcessing.processors || []),
-                    ...params.value.map((value) => value.id),
+                    event.target.value,
                   ])
                 }}
-              />
+              >
+                <option value="">Velg system</option>
+                {options
+                  .filter(
+                    (option) => !formikBag.values.affiliation.products.includes(option.id as string)
+                  )
+                  .map((code) => (
+                    <option key={code.id} value={code.id}>
+                      {code.label}
+                    </option>
+                  ))}
+              </Select>
             </div>
             <div>
               {formikBag.values.subDataProcessing.processors &&
