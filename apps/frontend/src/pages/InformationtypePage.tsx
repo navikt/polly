@@ -41,13 +41,12 @@ const InformationtypePage = () => {
   const [documents, setDocuments] = useState<IDocument[]>()
   const [categoryUsages, setCategoryUsages] = useState<ICodeUsage[]>()
 
-  ampli.logEvent('besøk', {
-    side: 'Opplysningstyper',
-    url: '/informationtype/',
-    app: 'Behandlingskatalogen',
-  })
-
   useEffect(() => {
+    ampli.logEvent('besøk', {
+      side: 'Opplysningstyper',
+      url: '/informationtype/',
+      app: 'Behandlingskatalogen',
+    })
     ;(async () => {
       const response: ICategoryUsage = await getCodelistUsageByListName(EListName.CATEGORY)
       setCategoryUsages(response.codesInUse)

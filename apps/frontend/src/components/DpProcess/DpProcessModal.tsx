@@ -2,12 +2,13 @@ import { Accordion, Button, Modal, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik } from 'formik'
 import { useState } from 'react'
 import { IDpProcessFormValues } from '../../constants'
+import { CodelistService } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
 import BoolField from '../Process/common/BoolField'
 import CustomizedModalBlock from '../common/CustomizedModalBlock'
 import FieldProduct from '../common/FieldProduct'
 import { Error, ModalLabel } from '../common/ModalSchema'
-import { dpProcessSchema } from '../common/schema'
+import { dpProcessSchema } from '../common/schemaValidation'
 import FieldDescription from './common/FieldDescription'
 import FieldDpProcessAffiliation from './common/FieldDpProcessAffiliation'
 import FieldDpProcessDataProcessingAgreements from './common/FieldDpProcessDataProcessingAgreements'
@@ -27,6 +28,7 @@ type TModalDpProcessProps = {
 
 const DpProcessModal = (props: TModalDpProcessProps) => {
   const { initialValues, errorOnCreate, isOpen, submit, onClose } = props
+  const [codelistUtils] = CodelistService()
   const [expanded, setExpanded] = useState<string>('')
 
   const onOpenChangeAction = (open: boolean, key: string): void =>
@@ -123,7 +125,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     label="System"
                     tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
                   />
-                  <FieldProduct formikBag={formikBag} />
+                  <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
                 </CustomizedModalBlock>
 
                 <div className="flex w-full mt-4">
@@ -139,7 +141,10 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                   >
                     <Accordion.Header>Organisering</Accordion.Header>
                     <Accordion.Content>
-                      <FieldDpProcessAffiliation formikBag={formikBag} />
+                      <FieldDpProcessAffiliation
+                        formikBag={formikBag}
+                        codelistUtils={codelistUtils}
+                      />
                     </Accordion.Content>
                   </Accordion.Item>
 

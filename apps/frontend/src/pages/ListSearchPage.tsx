@@ -1,10 +1,9 @@
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AlphabeticList from '../components/common/AlphabeticList'
 import { ampli } from '../service/Amplitude'
-import { EListName, codelist } from '../service/Codelist'
-import { useAwait } from '../util'
+import { CodelistService, EListName, ICode } from '../service/Codelist'
 
 interface ICodeListPageProps {
   listName: EListName
@@ -13,9 +12,16 @@ interface ICodeListPageProps {
 }
 
 const CodelistPage = (props: ICodeListPageProps) => {
-  const {listName, baseUrl, title} = props
+  const { listName, baseUrl, title } = props
+  const [codelistUtils] = CodelistService()
+
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  useAwait(codelist.wait(), setIsLoading)
+
+  useEffect(() => {
+    if (codelistUtils.isLoaded()) {
+      setIsLoading(false)
+    }
+  }, [codelistUtils])
 
   ampli.logEvent('besøk', {
     side: 'Listevisning',
@@ -26,8 +32,8 @@ const CodelistPage = (props: ICodeListPageProps) => {
 
   const codes =
     listName === EListName.THIRD_PARTY
-      ? codelist.getCodes(listName).filter((l) => l.shortName !== 'NAV')
-      : codelist.getCodes(listName)
+      ? codelistUtils.getCodes(listName).filter((listName: ICode) => listName.shortName !== 'NAV')
+      : codelistUtils.getCodes(listName)
 
   return (
     <>
@@ -35,7 +41,7 @@ const CodelistPage = (props: ICodeListPageProps) => {
       {isLoading && <Spinner />}
       {!!codes.length && (
         <AlphabeticList
-          items={codes.map((c) => ({ id: c.code, label: c.shortName }))}
+          items={codes.map((code: ICode) => ({ id: code.code, label: code.shortName }))}
           baseUrl={baseUrl}
         />
       )}
@@ -43,6 +49,12 @@ const CodelistPage = (props: ICodeListPageProps) => {
   )
 }
 
-export const ThirdPartyListPage = () => <CodelistPage listName={EListName.THIRD_PARTY} baseUrl="/thirdparty/" title="Eksterne parter" />
-export const SystemListPage = () => <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" />
-export const PurposeList = () => <CodelistPage listName={EListName.PURPOSE} baseUrl="/process/purpose/" />
+export const ThirdPartyListPage = () => (
+  <CodelistPage listName={EListName.THIRD_PARTY} baseUrl="/thirdparty/" title="Eksterne parter" />
+)
+export const SystemListPage = () => (
+  <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" />
+)
+export const PurposeList = () => (
+  <CodelistPage listName={EListName.PURPOSE} baseUrl="/process/purpose/" />
+)

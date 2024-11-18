@@ -1,10 +1,11 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IProcessFormValues } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, IGetParsedOptionsProps } from '../../../service/Codelist'
 
 const FieldPurpose = (props: { formikBag: FormikProps<IProcessFormValues> }) => {
   const { formikBag } = props
+  const [codelistUtils] = CodelistService()
 
   return (
     <FieldArray
@@ -12,10 +13,15 @@ const FieldPurpose = (props: { formikBag: FormikProps<IProcessFormValues> }) => 
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
           <Select
-            value={codelist.getParsedOptionsForList(EListName.PURPOSE, formikBag.values.purposes)}
-            options={codelist
+            value={codelistUtils.getParsedOptionsForList(
+              EListName.PURPOSE,
+              formikBag.values.purposes
+            )}
+            options={codelistUtils
               .getParsedOptions(EListName.PURPOSE)
-              .filter((option) => !formikBag.values.purposes.includes(option.id))}
+              .filter(
+                (option: IGetParsedOptionsProps) => !formikBag.values.purposes.includes(option.id)
+              )}
             onChange={({ value }) => {
               arrayHelpers.form.setFieldValue(
                 'purposes',

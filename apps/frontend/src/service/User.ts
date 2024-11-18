@@ -10,93 +10,134 @@ export enum EGroup {
   ADMIN = 'ADMIN',
 }
 
-class UserService {
-  loaded = false
-  userInfo: IUserInfo = { loggedIn: false, groups: [] }
-  error?: string
-  promise: Promise<any>
+interface IUserProps {
+  isLoggedIn: () => boolean
+  getIdent: () => string
+  getEmail: () => string
+  getName: () => string
+  getGivenName: () => string
+  getFamilyName: () => string
+  hasGroup: (group: string) => boolean
+  canRead: () => boolean
+  getGroups: () => string[]
+  getGroupsHumanReadable: () => string[]
+  canWrite: () => boolean
+  isSuper: () => boolean
+  isAdmin: () => boolean
+  wait: () => Promise<any>
+  isLoaded: () => boolean
+}
 
-  constructor() {
-    this.promise = this.fetchData()
-  }
+const UserService = async (): Promise<IUserProps> => {
+  let loaded: boolean
+  let userInfo: IUserInfo = { loggedIn: false, groups: [] }
+  let error: string
 
-  private fetchData = async () => {
-    return getUserInfo()
-      .then(this.handleGetResponse)
-      .catch((error) => {
-        this.error = error.message
-        this.loaded = true
+  const fetchData = async (): Promise<void> => {
+    return await getUserInfo()
+      .then((response: AxiosResponse<IUserInfo, any>) => {
+        if (response.status === 200) {
+          handleGetResponse(response)
+        }
+      })
+      .catch((error: any) => {
+        error = error.message
+        console.debug({ error })
+        loaded = true
       })
   }
 
-  handleGetResponse = (response: AxiosResponse<IUserInfo>) => {
+  const promise: Promise<any> = fetchData()
+
+  const handleGetResponse = (response: AxiosResponse<IUserInfo>): void => {
     if (typeof response.data === 'object' && response.data !== null) {
-      this.userInfo = response.data
+      userInfo = response.data
     } else {
-      this.error = response.data
+      error = response.data
+      console.debug({ error })
     }
-    this.loaded = true
+    loaded = true
   }
 
-  isLoggedIn(): boolean {
-    return this.userInfo.loggedIn
+  const isLoggedIn = (): boolean => {
+    return userInfo.loggedIn
   }
 
-  public getIdent(): string {
-    return this.userInfo.ident ?? ''
+  const getIdent = (): string => {
+    return userInfo.ident ?? ''
   }
 
-  public getEmail(): string {
-    return this.userInfo.email ?? ''
+  const getEmail = (): string => {
+    return userInfo.email ?? ''
   }
 
-  public getName(): string {
-    return this.userInfo.name ?? ''
+  const getName = (): string => {
+    return userInfo.name ?? ''
   }
 
-  public getGivenName(): string {
-    return this.userInfo.givenName ?? ''
+  const getGivenName = (): string => {
+    return userInfo.givenName ?? ''
   }
 
-  public getFamilyName(): string {
-    return this.userInfo.familyName ?? ''
+  const getFamilyName = (): string => {
+    return userInfo.familyName ?? ''
   }
 
-  public getGroups(): string[] {
-    return this.userInfo.groups
+  const getGroups = (): string[] => {
+    return userInfo.groups
   }
 
-  public getGroupsHumanReadable(): string[] {
-    return this.userInfo.groups.map((group) => (tekster as any)[group] || group)
+  const getGroupsHumanReadable = (): string[] => {
+    return userInfo.groups.map((group: string) => (tekster as any)[group] || group)
   }
 
-  public hasGroup(group: string): boolean {
-    return this.getGroups().indexOf(group) >= 0
+  const hasGroup = (group: string): boolean => {
+    return getGroups().indexOf(group) >= 0
   }
 
-  public canRead(): boolean {
-    return this.hasGroup(EGroup.READ)
+  const canRead = (): boolean => {
+    return hasGroup(EGroup.READ)
   }
 
-  public canWrite(): boolean {
-    return this.hasGroup(EGroup.WRITE)
+  const canWrite = (): boolean => {
+    return hasGroup(EGroup.WRITE)
   }
 
-  public isSuper(): boolean {
-    return this.hasGroup(EGroup.SUPER)
+  const isSuper = (): boolean => {
+    return hasGroup(EGroup.SUPER)
   }
 
-  public isAdmin(): boolean {
-    return this.hasGroup(EGroup.ADMIN)
+  const isAdmin = (): boolean => {
+    return hasGroup(EGroup.ADMIN)
   }
 
-  async wait() {
-    await this.promise
+  const wait = async (): Promise<void> => {
+    await promise
   }
 
-  isLoaded(): boolean {
-    return this.loaded
+  const isLoaded = (): boolean => {
+    return loaded
+  }
+
+  return {
+    isLoggedIn,
+    getIdent,
+    getEmail,
+    getName,
+    getGivenName,
+    getFamilyName,
+    getGroups,
+    getGroupsHumanReadable,
+    hasGroup,
+    canRead,
+    canWrite,
+    isSuper,
+    isAdmin,
+    wait,
+    isLoaded,
   }
 }
 
-export const user = new UserService()
+export const user: IUserProps = await UserService().then((response: IUserProps) => {
+  return response
+})

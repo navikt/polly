@@ -15,11 +15,11 @@ import {
 import { Fragment, useEffect, useState } from 'react'
 import { getInformationTypesShort } from '../../../api/GetAllApi'
 import { ELegalBasesUse, IInformationTypeShort, IPolicyFormValues } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { policySchema } from '../../common/schema'
+import { policySchema } from '../../common/schemaValidation'
 import FieldLegalBasis from '../common/FieldLegalBasis'
 import { TDocs } from './TablePolicy'
 
@@ -134,6 +134,7 @@ type TModalPolicyProps = {
   submit: (values: IPolicyFormValues) => void
   onClose: () => void
   addBatch?: () => void
+  codelistUtils: ICodelistProps
 }
 
 const ModalPolicy = ({
@@ -145,6 +146,7 @@ const ModalPolicy = ({
   docs,
   title,
   addBatch,
+  codelistUtils,
 }: TModalPolicyProps) => (
   <Modal
     onClose={onClose}
@@ -157,7 +159,7 @@ const ModalPolicy = ({
     <div className="w-[750px] px-8">
       <Formik
         initialValues={initialValues}
-        validationSchema={policySchema()}
+        validationSchema={policySchema(codelistUtils.getCodes(EListName.SUBJECT_CATEGORY))}
         onSubmit={(values: IPolicyFormValues) => {
           submit(values)
           onClose()
@@ -201,7 +203,7 @@ const ModalPolicy = ({
                             !!formikBag.touched.subjectCategories
                           }
                         >
-                          {codelist
+                          {codelistUtils
                             .getParsedOptionsFilterOutSelected(
                               EListName.SUBJECT_CATEGORY,
                               formikBag.values.subjectCategories
@@ -213,7 +215,7 @@ const ModalPolicy = ({
                             ))}
                         </Select>
                         {renderTagList(
-                          codelist.getShortnames(
+                          codelistUtils.getShortnames(
                             EListName.SUBJECT_CATEGORY,
                             formikBag.values.subjectCategories
                           ),
@@ -249,7 +251,7 @@ const ModalPolicy = ({
                 <Error fieldName="legalBasesUse" />
 
                 {formikBag.values.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES && (
-                  <FieldLegalBasis formikBag={formikBag} />
+                  <FieldLegalBasis formikBag={formikBag} codelistUtils={codelistUtils} />
                 )}
               </ModalBody>
               <Error fieldName="legalBasesOpen" fullWidth={true} />

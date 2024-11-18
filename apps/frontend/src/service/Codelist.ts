@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '../api/GetAllApi'
 
 export enum EListName {
@@ -25,164 +25,251 @@ export enum ESensitivityLevel {
 }
 
 // Refers to GDPR_ARTICLE codelist
-const ARTICLE_6_PREFIX = 'ART6'
-const ARTICLE_9_PREFIX = 'ART9'
+export const ARTICLE_6_PREFIX = 'ART6'
+export const ARTICLE_9_PREFIX = 'ART9'
 export const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
 export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
 
 const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT_'
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
-class CodelistService {
-  lists?: IAllCodelists
-  error?: string
-  promise: Promise<any>
-  countries?: ICountryCode[]
-  countriesOutsideEUEEA?: ICountryCode[]
+export interface ICodelistProps {
+  fetchData: (refresh?: boolean) => Promise<any>
+  isLoaded: () => string | IAllCodelists | undefined
+  getCodes: (list: EListName) => ICode[]
+  getCode: (list: EListName, codeName: string) => ICode | undefined
+  valid: (list: EListName, codeName?: string) => boolean
+  getShortnameForCode: (code: ICode) => string
+  getShortnameForCodes: (codes: ICode[]) => string
+  getShortname: (list: EListName, codeName: string) => string
+  getShortnames: (list: EListName, codeNames: string[]) => string[]
+  getDescription: (list: EListName, codeName: string) => string
+  getParsedOptions: (listName: EListName) => IGetParsedOptionsProps[]
+  getParsedOptionsForList: (
+    listName: EListName,
+    selected: string[]
+  ) => IGetParsedOptionsForListProps[]
+  getParsedOptionsFilterOutSelected: (
+    listName: EListName,
+    currentSelected: string[]
+  ) => IGetParsedOptionsFilterOutSelectedProps[]
+  isForskrift: (nationalLawCode?: string) => boolean | '' | undefined
+  countryName: (code: string) => string
+  getCountryCodesOutsideEu: () => ICountryCode[] | []
+  requiresNationalLaw: (gdprCode?: string) => boolean | '' | undefined
+  requiresDescription: (gdprCode?: string) => boolean | '' | undefined
+  requiresArt9: (sensitivityCode?: string) => boolean
+  isArt6: (gdprCode?: string) => string | boolean | undefined
+  isArt9: (gdprCode?: string) => string | boolean | undefined
+  showSubDepartment: (departmentCode?: string) => boolean | '' | undefined
+  makeIdLabelForAllCodeLists: () => IMakeIdLabelForAllCodeListsProps[]
+}
 
-  constructor() {
-    this.promise = this.fetchData()
-  }
+export interface IGetParsedOptionsProps {
+  id: string
+  label: string
+}
 
-  private fetchData = async (refresh?: boolean) => {
-    const codeListPromise = getAllCodelists(refresh)
-      .then(this.handleGetCodelistResponse)
-      .catch((err) => (this.error = err.message))
-    const allCountriesPromise = getAllCountries()
-      .then((codes) => (this.countries = codes))
-      .catch((err) => (this.error = err.message))
-    const countriesPromise = getCountriesOutsideEUEEA()
-      .then((codes) => (this.countriesOutsideEUEEA = codes))
-      .catch((err) => (this.error = err.message))
-    return Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
-  }
+interface IGetParsedOptionsForListProps {
+  id: string
+  label: string
+}
 
-  handleGetCodelistResponse = (response: AxiosResponse<IAllCodelists>) => {
-    if (typeof response.data === 'object' && response.data !== null) {
-      this.lists = response.data
-    } else {
-      this.error = response.data
+interface IGetParsedOptionsFilterOutSelectedProps {
+  id: string
+  label: string
+}
+
+export interface IMakeIdLabelForAllCodeListsProps {
+  id: string
+  label: string
+}
+
+export const CodelistService = () => {
+  const [lists, setLists] = useState<IAllCodelists>()
+  const [error, setError] = useState<string | undefined>()
+  const [countries, setCountries] = useState<ICountryCode[]>()
+  const [countriesOutsideEUEEA, setCountriesOutsideEUEEA] = useState<ICountryCode[]>()
+
+  useEffect(() => {
+    ;(async () => {
+      await fetchData()
+    })()
+  }, [])
+
+  const fetchData = async (refresh?: boolean): Promise<void> => {
+    if (
+      (lists === undefined && countries === undefined && countriesOutsideEUEEA === undefined) ||
+      refresh
+    ) {
+      const codeListPromise = await getAllCodelists(refresh)
+        .then(handleGetCodelistResponse)
+        .catch((error: any) => setError(error.message))
+      const allCountriesPromise = await getAllCountries()
+        .then((codes: ICountryCode[]) => setCountries(codes))
+        .catch((error: any) => setError(error.message))
+      const countriesPromise = await getCountriesOutsideEUEEA()
+        .then((codes: ICountryCode[]) => setCountriesOutsideEUEEA(codes))
+        .catch((error: any) => setError(error.message))
+
+      await Promise.all([codeListPromise, allCountriesPromise, countriesPromise])
     }
   }
 
-  refreshCodeLists() {
-    this.promise = this.fetchData(true)
-    return this.promise
+  const handleGetCodelistResponse = (response: IAllCodelists): void => {
+    if (typeof response === 'object' && response !== null) {
+      setLists(response)
+    } else {
+      setError(response)
+    }
   }
 
-  async wait() {
-    await this.promise
+  const isLoaded = (): string | IAllCodelists | undefined => {
+    return lists || error
   }
 
-  isLoaded() {
-    return this.lists || this.error
+  const getAllCountryCodes = (): ICountryCode[] | [] => {
+    return countries || []
   }
 
-  getAllCountryCodes() {
-    return this.countries || []
+  const getCountryCodesOutsideEu = (): ICountryCode[] | [] => {
+    return countriesOutsideEUEEA || []
   }
 
-  getCountryCodesOutsideEu() {
-    return this.countriesOutsideEUEEA || []
+  const countryName = (code: string): string => {
+    return (
+      getAllCountryCodes().find((country: ICountryCode) => country.code === code)?.description ||
+      code
+    )
   }
 
-  countryName(code: string): string {
-    return this.getAllCountryCodes().find((c) => c.code === code)?.description || code
-  }
-
-  getCodes(list: EListName): ICode[] {
-    return this.lists && this.lists.codelist[list]
-      ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName))
+  const getCodes = (list: EListName): ICode[] => {
+    return lists && lists.codelist[list]
+      ? lists.codelist[list].sort((c1: ICode, c2: ICode) =>
+          c1.shortName.localeCompare(c2.shortName)
+        )
       : []
   }
 
-  getCode(list: EListName, codeName: string): ICode | undefined {
-    return this.getCodes(list).find((c) => c.code === codeName)
+  const getCode = (list: EListName, codeName: string): ICode | undefined => {
+    return getCodes(list).find((code: ICode) => code.code === codeName)
   }
 
-  valid(list: EListName, codeName?: string): boolean {
-    return !!codeName && !!this.getCode(list, codeName)
+  const valid = (list: EListName, codeName?: string): boolean => {
+    return !!codeName && !!getCode(list, codeName)
   }
 
-  getShortnameForCode(code: ICode) {
-    return this.getShortname(code.list, code.code)
+  const getShortnameForCode = (code: ICode): string => {
+    return getShortname(code.list, code.code)
   }
 
-  getShortnameForCodes(codes: ICode[]) {
-    return codes.map((c) => this.getShortname(c.list, c.code)).join(', ')
+  const getShortnameForCodes = (codes: ICode[]): string => {
+    return codes.map((code: ICode) => getShortname(code.list, code.code)).join(', ')
   }
 
-  getShortname(list: EListName, codeName: string) {
-    const code = this.getCode(list, codeName)
+  const getShortname = (list: EListName, codeName: string): string => {
+    const code: ICode | undefined = getCode(list, codeName)
     return code ? code.shortName : codeName
   }
 
-  getShortnames(list: EListName, codeNames: string[]) {
-    return codeNames.map((codeName) => this.getShortname(list, codeName))
+  const getShortnames = (list: EListName, codeNames: string[]): string[] => {
+    return codeNames.map((codeName: string) => getShortname(list, codeName))
   }
 
-  getDescription(list: EListName, codeName: string) {
-    const code = this.getCode(list, codeName)
+  const getDescription = (list: EListName, codeName: string): string => {
+    const code: ICode | undefined = getCode(list, codeName)
     return code ? code.description : codeName
   }
 
-  getParsedOptions(listName: EListName): { id: string; label: string }[] {
-    return this.getCodes(listName).map((code: ICode) => {
+  const getParsedOptions = (listName: EListName): IGetParsedOptionsProps[] => {
+    return getCodes(listName).map((code: ICode) => {
       return { id: code.code, label: code.shortName }
     })
   }
 
-  getParsedOptionsForList(
+  const getParsedOptionsForList = (
     listName: EListName,
     selected: string[]
-  ): { id: string; label: string }[] {
-    return selected.map((code) => ({ id: code, label: this.getShortname(listName, code) }))
+  ): IGetParsedOptionsForListProps[] => {
+    return selected.map((code: string) => ({ id: code, label: getShortname(listName, code) }))
   }
 
-  getParsedOptionsFilterOutSelected(
+  const getParsedOptionsFilterOutSelected = (
     listName: EListName,
     currentSelected: string[]
-  ): { id: string; label: string }[] {
-    const parsedOptions = this.getParsedOptions(listName)
+  ): IGetParsedOptionsFilterOutSelectedProps[] => {
+    const parsedOptions = getParsedOptions(listName)
     return !currentSelected
       ? parsedOptions
-      : parsedOptions.filter((option) => (currentSelected.includes(option.id) ? null : option.id))
+      : parsedOptions.filter((option: { id: string; label: string }) =>
+          currentSelected.includes(option.id) ? null : option.id
+        )
   }
 
-  requiresNationalLaw(gdprCode?: string) {
+  const requiresNationalLaw = (gdprCode?: string): boolean | '' | undefined => {
     return gdprCode && NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdprCode) >= 0
   }
 
-  requiresDescription(gdprCode?: string) {
+  const requiresDescription = (gdprCode?: string): boolean | '' | undefined => {
     return gdprCode && DESCRIPTION_GDPR_ARTICLES.indexOf(gdprCode) >= 0
   }
 
-  requiresArt9(sensitivityCode?: string) {
+  const requiresArt9 = (sensitivityCode?: string): boolean => {
     return sensitivityCode === ESensitivityLevel.ART9
   }
 
-  isArt6(gdprCode?: string) {
+  const isArt6 = (gdprCode?: string): string | boolean | undefined => {
     return gdprCode && gdprCode.startsWith(ARTICLE_6_PREFIX)
   }
 
-  isArt9(gdprCode?: string) {
+  const isArt9 = (gdprCode?: string): string | boolean | undefined => {
     return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
   }
 
-  isForskrift(nationalLawCode?: string) {
+  const isForskrift = (nationalLawCode?: string): boolean | '' | undefined => {
     return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
   }
 
-  showSubDepartment(departmentCode?: string) {
+  const showSubDepartment = (departmentCode?: string): boolean | '' | undefined => {
     return departmentCode && DEPARTMENTS_WITH_SUB_DEPARTMENTS.indexOf(departmentCode) >= 0
   }
 
-  makeIdLabelForAllCodeLists() {
-    return Object.keys(EListName).map((key) => ({ id: key, label: key }))
+  const makeIdLabelForAllCodeLists = (): IMakeIdLabelForAllCodeListsProps[] => {
+    return Object.keys(EListName).map((key: string) => ({ id: key, label: key }))
   }
-}
 
-export const codelist = new CodelistService()
+  const utils: ICodelistProps = {
+    fetchData,
+    isLoaded,
+    getCodes,
+    getCode,
+    valid,
+    getShortnameForCode,
+    getShortnameForCodes,
+    getShortnames,
+    getShortname,
+    getDescription,
+    getParsedOptions,
+    getParsedOptionsForList,
+    getParsedOptionsFilterOutSelected,
+    isForskrift,
+    countryName,
+    getCountryCodesOutsideEu,
+    requiresNationalLaw,
+    requiresDescription,
+    requiresArt9,
+    isArt6,
+    isArt9,
+    showSubDepartment,
+    makeIdLabelForAllCodeLists,
+  }
+
+  return [utils, lists, setLists] as [
+    ICodelistProps,
+    IAllCodelists | undefined,
+    Dispatch<SetStateAction<IAllCodelists | undefined>>,
+  ]
+}
 
 export interface IAllCodelists {
   codelist: IList

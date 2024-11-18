@@ -6,7 +6,6 @@ import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import { IInformationType, IInformationtypeFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
-import { codelist } from '../service/Codelist'
 
 const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = useState(true)
@@ -58,7 +57,6 @@ const InformationtypeEditPage = () => {
       } catch (error: any) {
         handleAxiosError(error)
       }
-      await codelist.wait()
       setLoading(false)
     }
     fetchData()

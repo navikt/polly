@@ -13,7 +13,7 @@ import {
   IProcess,
   IProcessor,
 } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import {
@@ -31,6 +31,8 @@ import { TeamList } from '../../common/Team'
 import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
+  const [codelistUtils] = CodelistService()
+
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
       return (
@@ -53,6 +55,7 @@ const showDpiaRequiredField = (dpia?: IDpia) => {
                 ? `${getNoDpiaLabel(r)} (${dpia.grounds})`
                 : getNoDpiaLabel(r)
             })}
+            codelistUtils={codelistUtils}
           />
         </>
       )
@@ -77,10 +80,12 @@ export const processStatusText = (status: EProcessStatus | undefined) => {
 interface IProcessDataProps {
   process: IProcess
   disclosures: IDisclosure[]
+  codelistUtils: ICodelistProps
 }
 
 const ProcessData = (props: IProcessDataProps) => {
-  const { process, disclosures } = props
+  const { process, disclosures, codelistUtils } = props
+
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])
 
@@ -124,13 +129,13 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
           {process.legalBases
             .sort((a, b) =>
-              codelist
+              codelistUtils
                 .getShortname(EListName.GDPR_ARTICLE, a.gdpr.code)
-                .localeCompare(codelist.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code))
+                .localeCompare(codelistUtils.getShortname(EListName.GDPR_ARTICLE, b.gdpr.code))
             )
             .map((legalBasis: ILegalBasis, index: number) => (
               <div key={index}>
-                <LegalBasisView legalBasis={legalBasis} />
+                <LegalBasisView legalBasis={legalBasis} codelistUtils={codelistUtils} />
               </div>
             ))}
         </DataText>
@@ -170,7 +175,11 @@ const ProcessData = (props: IProcessDataProps) => {
         {process.usesAllInformationTypes
           ? 'Bruker potensielt alle personkategorier'
           : !!subjectCategoriesSummarised.length && (
-              <DotTags list={EListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised} />
+              <DotTags
+                list={EListName.SUBJECT_CATEGORY}
+                codes={subjectCategoriesSummarised}
+                codelistUtils={codelistUtils}
+              />
             )}
       </DataText>
 
@@ -184,6 +193,7 @@ const ProcessData = (props: IProcessDataProps) => {
                 codes={[process.affiliation.department]}
                 commaSeparator
                 linkCodelist
+                codelistUtils={codelistUtils}
               />{' '}
             </span>
           </div>
@@ -197,6 +207,7 @@ const ProcessData = (props: IProcessDataProps) => {
                 list={EListName.SUB_DEPARTMENT}
                 codes={process.affiliation.subDepartments}
                 linkCodelist
+                codelistUtils={codelistUtils}
               />
             </div>
           </div>
@@ -216,7 +227,7 @@ const ProcessData = (props: IProcessDataProps) => {
           <span>
             {process.commonExternalProcessResponsible ? (
               <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>
-                {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+                {codelistUtils.getShortnameForCode(process.commonExternalProcessResponsible)}
               </RouteLink>
             ) : (
               'Nei'
@@ -226,7 +237,12 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="System" text={''}>
-        <DotTags list={EListName.SYSTEM} codes={process.affiliation.products} linkCodelist />
+        <DotTags
+          list={EListName.SYSTEM}
+          codes={process.affiliation.products}
+          linkCodelist
+          codelistUtils={codelistUtils}
+        />
       </DataText>
 
       <DataText label="Automatisering og profilering" text={''}>
@@ -307,7 +323,11 @@ const ProcessData = (props: IProcessDataProps) => {
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
         <DataText label="Avsender" text={''}>
-          <DotTags list={EListName.SYSTEM} codes={process.affiliation.disclosureDispatchers} />
+          <DotTags
+            list={EListName.SYSTEM}
+            codes={process.affiliation.disclosureDispatchers}
+            codelistUtils={codelistUtils}
+          />
         </DataText>
       )}
 

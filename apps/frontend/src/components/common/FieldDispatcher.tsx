@@ -1,15 +1,16 @@
 import { Select } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { EListName, ICodelistProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 type TFieldDispatcherProps = {
   formikBag: FormikProps<IProcessFormValues> | FormikProps<IDpProcessFormValues>
+  codelistUtils: ICodelistProps
 }
 
 const FieldDispatcher = (props: TFieldDispatcherProps) => {
-  const { formikBag } = props
+  const { formikBag, codelistUtils } = props
 
   return (
     <FieldArray
@@ -20,7 +21,7 @@ const FieldDispatcher = (props: TFieldDispatcherProps) => {
             <div className="w-full">
               <Select
                 clearable
-                options={codelist
+                options={codelistUtils
                   .getParsedOptions(EListName.SYSTEM)
                   .filter(
                     (option) =>
@@ -38,7 +39,7 @@ const FieldDispatcher = (props: TFieldDispatcherProps) => {
             <div>
               {renderTagList(
                 formikBag.values.affiliation.disclosureDispatchers.map((disclosureDispatcher) =>
-                  codelist.getShortname(EListName.SYSTEM, disclosureDispatcher)
+                  codelistUtils.getShortname(EListName.SYSTEM, disclosureDispatcher)
                 ),
                 arrayHelpers
               )}

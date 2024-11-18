@@ -18,13 +18,13 @@ import {
 import { useState } from 'react'
 import { searchDocuments } from '../../../api/GetAllApi'
 import { IDocument, IDocumentFormValues } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { useAwait } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { createDocumentSchema } from '../../common/schema'
+import { createDocumentSchema } from '../../common/schemaValidation'
 import InformationTypesTable from './InformationTypesTable'
 
 const labelProps: BlockProps = {
@@ -38,13 +38,18 @@ type TDocumentFormProps = {
 
 const DocumentForm = (props: TDocumentFormProps) => {
   const { initialValues, handleSubmit } = props
+  const [codelistUtils] = CodelistService()
+
   const initialValueDataAccessClass = () => {
-    if (!initialValues.dataAccessClass || !codelist.isLoaded()) return []
+    if (!initialValues.dataAccessClass || !codelistUtils.isLoaded()) return []
 
     return [
       {
         id: initialValues.dataAccessClass,
-        label: codelist.getShortname(EListName.DATA_ACCESS_CLASS, initialValues.dataAccessClass),
+        label: codelistUtils.getShortname(
+          EListName.DATA_ACCESS_CLASS,
+          initialValues.dataAccessClass
+        ),
       },
     ]
   }
@@ -128,7 +133,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
                   </div>
 
                   <Select
-                    options={codelist.getParsedOptions(EListName.DATA_ACCESS_CLASS)}
+                    options={codelistUtils.getParsedOptions(EListName.DATA_ACCESS_CLASS)}
                     value={dataAccessClass as Value}
                     placeholder={
                       formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'

@@ -35,9 +35,9 @@ import {
   IProcessShort,
 } from '../../constants'
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { user } from '../../service/User'
-import { theme, useAwait } from '../../util'
+import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
 import AccordionProcess from './Accordion/AccordionProcess'
@@ -71,6 +71,9 @@ const ProcessList = ({
   isEditable,
   getCount,
 }: TProcessListProps) => {
+  const navigate = useNavigate()
+  const [codelistUtils, lists] = CodelistService()
+
   const [processList, setProcessList] = useState<IProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = useState<IProcess | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
@@ -81,17 +84,20 @@ const ProcessList = ({
   const [isLoadingProcess, setIsLoadingProcess] = useState(true)
   const current_location = useLocation()
   const [codelistLoading, setCodelistLoading] = useState(true)
-  const navigate = useNavigate()
   const [exportHref, setExportHref] = useState<string>('')
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
-
-  useAwait(codelist.wait(), setCodelistLoading)
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
 
   useEffect(() => {
     processId && getProcessById(processId)
   }, [processId])
+
+  useEffect(() => {
+    if (lists) {
+      setCodelistLoading(!codelistUtils.isLoaded())
+    }
+  }, [lists])
 
   useEffect(() => {
     ;(async () => {
@@ -442,6 +448,7 @@ const ProcessList = ({
 
       {!isLoadingProcessList && (
         <AccordionProcess
+          codelistUtils={codelistUtils}
           isLoading={isLoadingProcess}
           processList={processList}
           setProcessList={setProcessList}
@@ -461,6 +468,7 @@ const ProcessList = ({
       )}
       {!codelistLoading && (
         <ModalProcess
+          codelistUtils={codelistUtils}
           title="Opprett ny behandling"
           onClose={() => {
             setErrorProcessModal('')
@@ -473,25 +481,25 @@ const ProcessList = ({
           initialValues={convertProcessToFormValues({
             purposes:
               section === ESection.purpose
-                ? [codelist.getCode(EListName.PURPOSE, code) as ICode]
-                : undefined,
+                ? [codelistUtils.getCode(EListName.PURPOSE, code) as ICode]
+                : [],
             affiliation: {
               department:
                 section === ESection.department
-                  ? codelist.getCode(EListName.DEPARTMENT, code)
+                  ? codelistUtils.getCode(EListName.DEPARTMENT, code)
                   : undefined,
               subDepartments:
                 section === ESection.subdepartment
-                  ? [codelist.getCode(EListName.SUB_DEPARTMENT, code) as ICode]
+                  ? [codelistUtils.getCode(EListName.SUB_DEPARTMENT, code) as ICode]
                   : [],
               products:
                 section === ESection.system
-                  ? [codelist.getCode(EListName.SYSTEM, code) as ICode]
+                  ? [codelistUtils.getCode(EListName.SYSTEM, code) as ICode]
                   : [],
               productTeams: section === ESection.team ? [code] : [],
               disclosureDispatchers:
                 section === ESection.system
-                  ? [codelist.getCode(EListName.SYSTEM, code) as ICode]
+                  ? [codelistUtils.getCode(EListName.SYSTEM, code) as ICode]
                   : [],
             },
           })}

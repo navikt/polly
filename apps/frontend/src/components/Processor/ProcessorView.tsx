@@ -20,7 +20,7 @@ import {
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
 import { ampli } from '../../service/Amplitude'
-import { codelist } from '../../service/Codelist'
+import { CodelistService } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme } from '../../util'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -34,6 +34,8 @@ import ProcessorModal from './ProcessorModal'
 import RelatedProcessesTable from './components/RelatedProcessesTable'
 
 const ProcessorView = () => {
+  const [codelistUtils] = CodelistService()
+
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [currentProcessor, setCurrentProcessor] = useState<IProcessor>()
   const [relatedProcesses, setRelatedProcess] = useState<IProcess[]>([])
@@ -218,7 +220,7 @@ const ProcessorView = () => {
                             <div className="flex whitespace-pre-wrap m-0 text-base">
                               {currentProcessor.transferGroundsOutsideEU && (
                                 <span>
-                                  {codelist.getShortnameForCode(
+                                  {codelistUtils.getShortnameForCode(
                                     currentProcessor.transferGroundsOutsideEU
                                   )}{' '}
                                 </span>
@@ -238,7 +240,7 @@ const ProcessorView = () => {
                               <div className="flex whitespace-pre-wrap m-0 text-base">
                                 <span>
                                   {currentProcessor.countries
-                                    .map((c) => codelist.countryName(c))
+                                    .map((country: string) => codelistUtils.countryName(country))
                                     .join(', ')}
                                 </span>
                               </div>

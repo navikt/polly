@@ -2,7 +2,7 @@ import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName } from '../../../service/Codelist'
 
 interface IFieldDpProcessExternalProcessResponsible {
   thirdParty?: string
@@ -12,6 +12,7 @@ const FieldDpProcessExternalProcessResponsible = (
   props: IFieldDpProcessExternalProcessResponsible
 ) => {
   const { thirdParty } = props
+  const [codelistUtils] = CodelistService()
   const [value, setValue] = useState<string>(thirdParty ? thirdParty : '')
 
   return (
@@ -29,7 +30,7 @@ const FieldDpProcessExternalProcessResponsible = (
             }}
           >
             <option value="">Velg behandlingsansvarlig</option>
-            {codelist.getParsedOptions(EListName.THIRD_PARTY).map((code) => (
+            {codelistUtils.getParsedOptions(EListName.THIRD_PARTY).map((code) => (
               <option key={code.id} value={code.id}>
                 {code.label}
               </option>

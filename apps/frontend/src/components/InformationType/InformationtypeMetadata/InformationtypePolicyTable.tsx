@@ -6,9 +6,9 @@ import {
   IPolicy,
   IPolicyAlert,
   IProcessAlert,
-  policySort,
+  getPolicySort,
 } from '../../../constants'
-import { EListName, ICode, codelist } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { useTable } from '../../../util/hooks'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
@@ -18,13 +18,16 @@ import { Cell, HeadCell, Row, Table } from '../../common/Table'
 type TTableInformationtypeProps = {
   policies: Array<IPolicy>
   showPurpose: boolean
+  codelistUtils: ICodelistProps
 }
 
 type TAlerts = { [id: string]: IPolicyAlert }
 
-const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformationtypeProps) => {
+const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
+  const { policies, showPurpose, codelistUtils } = props
+
   const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(policies, {
-    sorting: policySort,
+    sorting: getPolicySort(codelistUtils),
     initialSortColumn: showPurpose ? 'purposes' : 'process',
   })
   const [alerts, setAlerts] = useState<TAlerts>()
@@ -78,7 +81,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformation
                 {row.purposes.map((purpose: ICode, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/process/purpose/${purpose.code}`}>
-                      {codelist.getShortnameForCode(purpose)}
+                      {codelistUtils.getShortnameForCode(purpose)}
                     </RouteLink>
                   </div>
                 ))}
@@ -96,7 +99,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformation
           <Cell>
             {row.subjectCategories
               .map((subjectCategory: ICode) =>
-                codelist.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+                codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
               )
               .join(', ')}
           </Cell>
@@ -105,14 +108,22 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TTableInformation
             <div>
               {row.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES &&
                 row.legalBases &&
-                row.legalBases.length > 0 && <ListLegalBasesInTable legalBases={row.legalBases} />}
+                row.legalBases.length > 0 && (
+                  <ListLegalBasesInTable
+                    legalBases={row.legalBases}
+                    codelistUtils={codelistUtils}
+                  />
+                )}
 
               {!(
                 row.legalBasesUse === ELegalBasesUse.EXCESS_INFO ||
                 row.legalBasesUse === ELegalBasesUse.UNRESOLVED
               ) &&
                 row.process.legalBases && (
-                  <ListLegalBasesInTable legalBases={row.process.legalBases} />
+                  <ListLegalBasesInTable
+                    legalBases={row.process.legalBases}
+                    codelistUtils={codelistUtils}
+                  />
                 )}
 
               <LegalBasesNotClarified alert={alerts && alerts[row.id]} />

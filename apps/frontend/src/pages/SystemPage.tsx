@@ -26,7 +26,7 @@ export const SystemPage = () => {
           <Tabs defaultValue="behandlinger">
             <Tabs.List>
               <Tabs.Tab value="behandlinger" label="Behandlinger" />
-              <Tabs.Tab value="opplysningstyper" label="opplysningstyper" />
+              <Tabs.Tab value="opplysningstyper" label="Opplysningstyper" />
             </Tabs.List>
             <Tabs.Panel value="behandlinger">
               <ProcessList

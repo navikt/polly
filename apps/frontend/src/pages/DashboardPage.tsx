@@ -17,7 +17,9 @@ export const DashboardPage = () => {
     processStatus ? (processStatus as EProcessStatusFilter) : EProcessStatusFilter.All
   )
 
-  ampli.logEvent('besøk', { side: 'Dashboard', url: '/dashboard/', app: 'Behandlingskatalogen' })
+  useEffect(() => {
+    ampli.logEvent('besøk', { side: 'Dashboard', url: '/dashboard/', app: 'Behandlingskatalogen' })
+  }, [])
 
   useEffect(() => {
     ;(async () => {

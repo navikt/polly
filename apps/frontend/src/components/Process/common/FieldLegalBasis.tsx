@@ -8,7 +8,7 @@ import {
   IPolicyFormValues,
   IProcessFormValues,
 } from '../../../constants'
-import { ESensitivityLevel } from '../../../service/Codelist'
+import { ESensitivityLevel, ICodelistProps } from '../../../service/Codelist'
 import { ListLegalBases } from '../../common/LegalBasis'
 import CardLegalBasis from '../Accordion/CardLegalBasis'
 
@@ -18,10 +18,11 @@ type TFieldLegalBasisProps = {
     | FormikProps<IPolicyFormValues>
     | FormikProps<IDisclosureFormValues>
   openArt6OnEmpty?: boolean
+  codelistUtils: ICodelistProps
 }
 
 const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
-  const { formikBag } = props
+  const { formikBag, codelistUtils } = props
 
   const [selectedLegalBasis, setSelectedLegalBasis] = useState<ILegalBasisFormValues>()
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = useState<number>()
@@ -88,6 +89,7 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
 
                 <div>
                   <ListLegalBases
+                    codelistUtils={codelistUtils}
                     sensitivityLevel={ESensitivityLevel.ART6}
                     legalBases={formikBag.values.legalBases}
                     onRemove={(index: number) => arrayHelpers.remove(index)}
@@ -122,6 +124,7 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
                 </Tooltip>
                 <div>
                   <ListLegalBases
+                    codelistUtils={codelistUtils}
                     sensitivityLevel={ESensitivityLevel.ART9}
                     legalBases={formikBag.values.legalBases}
                     onRemove={(index: number) => {

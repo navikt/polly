@@ -13,7 +13,7 @@ import { getResourceById } from '../../api/GetAllApi'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
 import { IDpProcess, IDpProcessFormValues, IProcessor } from '../../constants'
 import { ampli } from '../../service/Amplitude'
-import { EListName, codelist } from '../../service/Codelist'
+import { CodelistService, EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
@@ -34,6 +34,8 @@ const DpProcessView = () => {
       id?: string
     }>
   > = useParams<{ id?: string }>()
+  const [codelistUtils] = CodelistService()
+
   const [dpProcess, setDpProcess] = useState<IDpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
   const [showModal, setShowModal] = useState(false)
@@ -152,7 +154,7 @@ const DpProcessView = () => {
             <span>
               {dpProcess?.externalProcessResponsible ? (
                 <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
-                  {codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}
+                  {codelistUtils.getShortnameForCode(dpProcess.externalProcessResponsible)}
                 </RouteLink>
               ) : (
                 'Nei'
@@ -183,6 +185,7 @@ const DpProcessView = () => {
                 list={EListName.SYSTEM}
                 codes={dpProcess.affiliation.products}
                 linkCodelist
+                codelistUtils={codelistUtils}
               />
             )}
           </DataText>
@@ -197,6 +200,7 @@ const DpProcessView = () => {
                     codes={[dpProcess?.affiliation.department]}
                     commaSeparator
                     linkCodelist
+                    codelistUtils={codelistUtils}
                   />{' '}
                 </span>
               </div>
@@ -211,6 +215,7 @@ const DpProcessView = () => {
                     list={EListName.SUB_DEPARTMENT}
                     codes={dpProcess?.affiliation.subDepartments}
                     linkCodelist
+                    codelistUtils={codelistUtils}
                   />
                 </div>
               </div>
@@ -236,7 +241,11 @@ const DpProcessView = () => {
                 {isDataProcessingAgreementsAvailable && (
                   <div className="flex items-center">
                     <div className="whitespace-nowrap mt-1 mr-0">Ref. til databehandleravtale</div>
-                    <DotTags items={dpProcess?.dataProcessingAgreements} markdown />
+                    <DotTags
+                      items={dpProcess?.dataProcessingAgreements}
+                      markdown
+                      codelistUtils={codelistUtils}
+                    />
                   </div>
                 )}
               </div>

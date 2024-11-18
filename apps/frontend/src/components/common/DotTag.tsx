@@ -2,7 +2,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, ReactNode } from 'react'
 import { TNavigableItem } from '../../constants'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util'
 import { Markdown } from './Markdown'
 import RouteLink, { urlForObject } from './RouteLink'
@@ -49,10 +49,11 @@ interface IContentProps {
   list?: EListName
   linkCodelist?: boolean
   markdown?: boolean
+  codelistUtils: ICodelistProps
 }
 
 const Content = (props: IContentProps) => {
-  const { item, list, linkCodelist, markdown } = props
+  const { item, list, linkCodelist, markdown, codelistUtils } = props
 
   return (
     <>
@@ -60,10 +61,10 @@ const Content = (props: IContentProps) => {
         <>
           {linkCodelist && (
             <RouteLink href={urlForObject(list as EListName & TNavigableItem, item)}>
-              {codelist.getShortname(list as EListName & TNavigableItem, item)}
+              {codelistUtils.getShortname(list as EListName & TNavigableItem, item)}
             </RouteLink>
           )}
-          {!linkCodelist && <>{codelist.getShortname(list, item)}</>}
+          {!linkCodelist && <>{codelistUtils.getShortname(list, item)}</>}
         </>
       )}
       {!list && markdown && <Markdown source={item} />}
@@ -81,10 +82,11 @@ type TDotTagsParams = {
   list?: EListName
   noFlex?: boolean
   wrapText?: boolean
+  codelistUtils: ICodelistProps
 }
 
 export const DotTags = (props: TDotTagsParams) => {
-  const { commaSeparator, codes, noFlex, wrapText } = props
+  const { commaSeparator, codes, noFlex, wrapText, codelistUtils } = props
   const items = props.items || codes?.map((code) => code.code) || []
 
   return (
@@ -94,7 +96,7 @@ export const DotTags = (props: TDotTagsParams) => {
         <div className="inline">
           {items.map((item: string, index: number) => (
             <Fragment key={index}>
-              <Content {...props} item={item} />
+              <Content {...props} codelistUtils={codelistUtils} item={item} />
               <span>{index < items.length - 1 ? ', ' : ''}</span>
             </Fragment>
           ))}
@@ -106,7 +108,7 @@ export const DotTags = (props: TDotTagsParams) => {
             <div key={index} className={`${index < items.length ? 'mr-1.5' : '0px'}`}>
               <DotTag wrapText={wrapText}>
                 {' '}
-                <Content {...props} item={item} />{' '}
+                <Content {...props} codelistUtils={codelistUtils} item={item} />{' '}
               </DotTag>
             </div>
           ))}

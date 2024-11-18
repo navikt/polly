@@ -14,13 +14,13 @@ import {
   IPageResponse,
   IProcess,
 } from '../../../constants'
-import { EListName, ICode, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { addBatchInfoTypesToProcessSchema } from '../../common/schema'
+import { addBatchInfoTypesToProcessSchema } from '../../common/schemaValidation'
 
 type TAddBatchInformationTypesProps = {
   isOpen: boolean
@@ -32,6 +32,8 @@ type TAddBatchInformationTypesProps = {
 
 export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesProps) => {
   const { isOpen, submit, onClose, process, error } = props
+  const [codelistUtils] = CodelistService()
+
   const [infoTypes, setInfoTypes] = useState<IInformationType[]>([])
   const [searchLoading, setSearchLoading] = useState<boolean>(false)
   const [system, setSystem] = useState<Value>([])
@@ -55,7 +57,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
   }
 
   const mapToUse = (informationType: IInformationType): IDocumentInfoTypeUse => {
-    const userCode = codelist.getCode(EListName.SUBJECT_CATEGORY, 'BRUKER')
+    const userCode: ICode | undefined = codelistUtils.getCode(EListName.SUBJECT_CATEGORY, 'BRUKER')
 
     return {
       informationType: informationType,
@@ -75,7 +77,10 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
             linkDocumentToPolicies: false,
           } as IAddDocumentToProcessFormValues
         }
-        validationSchema={addBatchInfoTypesToProcessSchema(process.policies)}
+        validationSchema={addBatchInfoTypesToProcessSchema(
+          process.policies,
+          codelistUtils.getCodes(EListName.SUBJECT_CATEGORY)
+        )}
         render={(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
           return (
             <Form onKeyDown={disableEnter}>
@@ -86,7 +91,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                     <ModalLabel label="Master i NAV" />
                     <Select
                       isLoading={searchLoading}
-                      options={codelist.getParsedOptions(EListName.SYSTEM)}
+                      options={codelistUtils.getParsedOptions(EListName.SYSTEM)}
                       maxDropdownHeight="400px"
                       value={system}
                       placeholder="System"
@@ -175,7 +180,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                         Personkategori:{' '}
                                       </LabelSmall>
                                       <Select
-                                        options={codelist.getParsedOptions(
+                                        options={codelistUtils.getParsedOptions(
                                           EListName.SUBJECT_CATEGORY
                                         )}
                                         value={informationTypeMap.subjectCategories.map(

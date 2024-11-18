@@ -24,7 +24,7 @@ import {
 } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { TPathParams } from '../../../pages/ProcessPage'
-import { ICode } from '../../../service/Codelist'
+import { ICode, ICodelistProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
@@ -43,6 +43,7 @@ import ProcessData from './ProcessData'
 import TablePolicy from './TablePolicy'
 
 type TAccordionProcessProps = {
+  codelistUtils: ICodelistProps
   isLoading: boolean
   processList: IProcessShort[]
   currentProcess?: IProcess
@@ -62,6 +63,7 @@ type TAccordionProcessProps = {
 
 const AccordionProcess = (props: TAccordionProcessProps) => {
   const {
+    codelistUtils,
     isLoading,
     currentProcess,
     onChangeProcess,
@@ -77,6 +79,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     submitAddDocument,
     errorDocumentModal,
   } = props
+  const history: NavigateFunction = useNavigate()
 
   const [showEditProcessModal, setShowEditProcessModal] = useState(false)
   const [showCreatePolicyModal, setShowCreatePolicyModal] = useState(false)
@@ -89,7 +92,6 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const purposeRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
-  const history: NavigateFunction = useNavigate()
 
   const hasAccess = (): boolean => user.canWrite()
 
@@ -198,6 +200,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                 <Panel
                   title={
                     <AccordionTitle
+                      codelistUtils={codelistUtils}
                       process={process}
                       expanded={expanded}
                       forwardRef={expanded ? purposeRef : undefined}
@@ -235,7 +238,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                           editProcess={() => setShowEditProcessModal(true)}
                           deleteProcess={() => setShowDeleteModal(true)}
                         />
-                        <ProcessData process={currentProcess} disclosures={disclosures} />
+                        <ProcessData
+                          process={currentProcess}
+                          disclosures={disclosures}
+                          codelistUtils={codelistUtils}
+                        />
                         <div>
                           <div className="flex justify-end">
                             <span>
@@ -284,6 +291,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                       </div>
 
                       <TablePolicy
+                        codelistUtils={codelistUtils}
                         process={currentProcess}
                         hasAccess={hasAccess()}
                         errorPolicyModal={errorPolicyModal}
@@ -302,6 +310,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       {!!currentProcess && (
         <>
           <ModalProcess
+            codelistUtils={codelistUtils}
             key={currentProcess.id}
             title="Redigér behandling"
             onClose={() => setShowEditProcessModal(false)}
@@ -344,6 +353,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               setShowAddBatchInfoTypesModal(true)
             }}
             errorOnCreate={errorPolicyModal}
+            codelistUtils={codelistUtils}
           />
 
           <DeleteAllPolicyModal

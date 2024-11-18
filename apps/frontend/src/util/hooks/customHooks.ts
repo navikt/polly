@@ -34,15 +34,19 @@ export function useUpdateOnChange(value: any) {
   }, [value])
 }
 
-export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<boolean>>) {
+export function useAwait<T>(promise: Promise<T>, setLoading?: Dispatch<SetStateAction<boolean>>) {
   const update: () => void = useForceUpdate()
 
   useEffect(() => {
     ;(async () => {
-      setLoading && setLoading(true)
-      await p
+      if (setLoading) {
+        setLoading(true)
+      }
+      await promise
       update()
-      setLoading && setLoading(false)
+      if (setLoading) {
+        setLoading(false)
+      }
     })()
   }, [])
 }

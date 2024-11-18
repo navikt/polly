@@ -1,4 +1,4 @@
-import { dataProcessorSchema } from '../../components/common/schema'
+import { dataProcessorSchema } from '../../components/common/schemaValidation'
 import { IProcessorFormValues } from '../../constants'
 import '../config/schemaValidator'
 

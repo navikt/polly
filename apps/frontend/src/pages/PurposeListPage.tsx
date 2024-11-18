@@ -15,6 +15,7 @@ import ModalProcess from '../components/Process/Accordion/ModalProcess'
 import Button from '../components/common/Button/CustomButton'
 import { IProcessFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
+import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
 import { env } from '../util/env'
 import { PurposeList } from './ListSearchPage'
@@ -26,6 +27,7 @@ export const PurposeListPage = () => {
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
   const [errorProcessModal, setErrorProcessModal] = useState(null)
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
+  const [codelistUtils] = CodelistService()
 
   ampli.logEvent('besøk', {
     side: 'Behandlinger',
@@ -100,6 +102,7 @@ export const PurposeListPage = () => {
         <div className="mb-6" />
 
         <ModalProcess
+          codelistUtils={codelistUtils}
           title="Opprett ny behandling"
           onClose={() => setShowCreateProcessModal(false)}
           isOpen={showCreateProcessModal}

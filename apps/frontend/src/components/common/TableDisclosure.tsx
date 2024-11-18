@@ -13,6 +13,7 @@ import {
   disclosureSort,
 } from '../../constants'
 import { canViewAlerts } from '../../pages/AlertEventPage'
+import { ICodelistProps } from '../../service/Codelist'
 import { useTable } from '../../util/hooks'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 import Button from './Button/CustomButton'
@@ -28,6 +29,7 @@ type TTableDisclosureProps = {
   submitEditDisclosure?: (disclosure: IDisclosureFormValues) => Promise<boolean>
   errorModal?: string
   onCloseModal?: () => void
+  codelistUtils: ICodelistProps
 }
 
 type TAlerts = { [k: string]: IDisclosureAlert }
@@ -39,6 +41,7 @@ const TableDisclosure = ({
   errorModal,
   editable,
   onCloseModal,
+  codelistUtils,
 }: TTableDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [showEditModal, setShowEditModal] = useState<boolean>()
@@ -94,6 +97,7 @@ const TableDisclosure = ({
       >
         {table.data.map((row: IDisclosure, index: number) => (
           <DisclosureRow
+            codelistUtils={codelistUtils}
             key={index}
             disclosure={row}
             editable={editable}
@@ -182,6 +186,7 @@ interface IDisclosureRowProps {
   setSelectedDisclosure: (disclosure: IDisclosure) => void
   showEditModal: () => void
   showDeleteModal: () => void
+  codelistUtils: ICodelistProps
 }
 
 const DisclosureRow = (props: IDisclosureRowProps) => {
@@ -193,6 +198,7 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
     setSelectedDisclosure,
     showEditModal,
     showDeleteModal,
+    codelistUtils,
   } = props
   const navigate: NavigateFunction = useNavigate()
   const hasAlert: boolean = alert?.missingArt6
@@ -217,7 +223,9 @@ const DisclosureRow = (props: IDisclosureRowProps) => {
       <Cell>{disclosure.recipientPurpose}</Cell>
       <Cell>{disclosure.description}</Cell>
       <Cell>
-        {disclosure.legalBases && <ListLegalBasesInTable legalBases={disclosure.legalBases} />}
+        {disclosure.legalBases && (
+          <ListLegalBasesInTable legalBases={disclosure.legalBases} codelistUtils={codelistUtils} />
+        )}
       </Cell>
       <Cell small>
         {hasAlert && canViewAlerts() && (

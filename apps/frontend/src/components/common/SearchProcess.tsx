@@ -2,7 +2,7 @@ import { OnChangeParams, Select, TYPE } from 'baseui/select'
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IPageResponse, IProcess } from '../../constants'
-import { EListName, ICode, codelist } from '../../service/Codelist'
+import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { useDebouncedState } from '../../util'
 
 type TSearchProcessProps = {
@@ -12,6 +12,8 @@ type TSearchProcessProps = {
 
 const SearchProcess = (props: TSearchProcessProps) => {
   const { selectedProcess, setSelectedProcess } = props
+  const [codelistUtils] = CodelistService()
+
   const [processList, setProcessList] = useState<IProcess[]>([])
   const [search, setSearch] = useDebouncedState<string>('', 400)
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -22,7 +24,7 @@ const SearchProcess = (props: TSearchProcessProps) => {
         setLoading(true)
         const response: IPageResponse<IProcess> = await searchProcess(search)
         let content: IProcess[] = response.content
-        const purposes: ICode[] = codelist
+        const purposes: ICode[] = codelistUtils
           .getCodes(EListName.PURPOSE)
           .filter((code: ICode) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
         const processesPromise: Promise<any>[] = []

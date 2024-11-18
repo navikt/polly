@@ -2,7 +2,7 @@ import { Select, Value } from 'baseui/select'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName } from '../../../service/Codelist'
 
 interface IFieldDepartmentProps {
   department?: string
@@ -11,12 +11,14 @@ interface IFieldDepartmentProps {
 
 const FieldDepartment = (props: IFieldDepartmentProps) => {
   const { department } = props
+  const [codelistUtils] = CodelistService()
+
   const [value, setValue] = useState<Value>(
     department
       ? [
           {
             id: department,
-            label: codelist.getShortname(EListName.DEPARTMENT, department),
+            label: codelistUtils.getShortname(EListName.DEPARTMENT, department),
           },
         ]
       : []
@@ -28,7 +30,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
       render={({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
           <Select
-            options={codelist.getParsedOptions(EListName.DEPARTMENT)}
+            options={codelistUtils.getParsedOptions(EListName.DEPARTMENT)}
             onChange={({ value }) => {
               setValue(value)
               form.setFieldValue(

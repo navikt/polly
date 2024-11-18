@@ -11,9 +11,9 @@ import {
   IPolicyFormValues,
   IProcess,
   IProcessAlert,
-  policySort,
+  getPolicySort,
 } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import { Sensitivity } from '../../InformationType/Sensitivity'
@@ -24,6 +24,7 @@ import { Cell, HeadCell, Row, Table } from '../../common/Table'
 import ModalPolicy from './ModalPolicy'
 
 type TTablePurposeProps = {
+  codelistUtils: ICodelistProps
   process: IProcess
   hasAccess: boolean
   errorPolicyModal: string | null
@@ -37,6 +38,7 @@ export type TDocs = {
 }
 
 const TablePolicy = ({
+  codelistUtils,
   process,
   hasAccess,
   errorPolicyModal,
@@ -48,7 +50,7 @@ const TablePolicy = ({
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(process.policies, {
-    sorting: policySort,
+    sorting: getPolicySort(codelistUtils),
     initialSortColumn: 'informationType',
   })
   const [alert, setAlert] = useState<IProcessAlert>()
@@ -135,8 +137,8 @@ const TablePolicy = ({
 
               <Cell>
                 {row.subjectCategories
-                  .map((subjectCategory) =>
-                    codelist.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+                  .map((subjectCategory: ICode) =>
+                    codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
                   )
                   .join(', ')}
               </Cell>
@@ -147,7 +149,10 @@ const TablePolicy = ({
                   />
 
                   {row.legalBases && row.legalBases.length > 0 && (
-                    <ListLegalBasesInTable legalBases={row.legalBases} />
+                    <ListLegalBasesInTable
+                      legalBases={row.legalBases}
+                      codelistUtils={codelistUtils}
+                    />
                   )}
                 </div>
               </Cell>
@@ -202,6 +207,7 @@ const TablePolicy = ({
           isEdit={true}
           submit={submitEditPolicy}
           errorOnCreate={errorPolicyModal}
+          codelistUtils={codelistUtils}
         />
       )}
 

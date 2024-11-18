@@ -1,15 +1,16 @@
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { EListName, ICodelistProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 interface IFieldSubDepartmentsProps {
   formikBag: FormikProps<IProcessFormValues> | FormikProps<IDpProcessFormValues>
+  codelistUtils: ICodelistProps
 }
 
 const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
-  const { formikBag } = props
+  const { formikBag, codelistUtils } = props
 
   return (
     <FieldArray
@@ -30,7 +31,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
               }}
             >
               <option value="">Velg linje</option>
-              {codelist
+              {codelistUtils
                 .getParsedOptions(EListName.SUB_DEPARTMENT)
                 .filter((code) => !formikBag.values.affiliation.subDepartments.includes(code.id))
                 .map((code) => (
@@ -44,7 +45,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
             <div>
               {renderTagList(
                 formikBag.values.affiliation.subDepartments.map((subDepartment: string) =>
-                  codelist.getShortname(EListName.SUB_DEPARTMENT, subDepartment)
+                  codelistUtils.getShortname(EListName.SUB_DEPARTMENT, subDepartment)
                 ),
                 arrayHelpers
               )}

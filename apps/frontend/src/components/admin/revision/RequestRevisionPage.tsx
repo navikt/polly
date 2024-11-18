@@ -5,7 +5,7 @@ import * as yup from 'yup'
 import { searchProcessOptions, useAllAreas } from '../../../api/GetAllApi'
 import {EProcessSelection, IProcessRevisionRequest, IProductArea} from '../../../constants'
 import { ampli } from '../../../service/Amplitude'
-import { EListName, codelist } from '../../../service/Codelist'
+import { CodelistService, EListName, IGetParsedOptionsProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import AsyncSelect from 'react-select/async'
 import {Alert, Button, Heading, Label, Loader, Radio, RadioGroup, Select, Tabs, Textarea} from '@navikt/ds-react'
@@ -47,12 +47,12 @@ const requestRevision = async (request: IProcessRevisionRequest) => {
 }
 
 interface IRequestRevisionPageProps {
-  close?: () => void
   processId?: string
 }
 
 export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const { processId } = props
+  const [codelistUtils] = CodelistService()
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -64,7 +64,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     type: 'Trenger revidering',
   })
 
-  const departments = codelist.getParsedOptions(EListName.DEPARTMENT)
+  const departments: IGetParsedOptionsProps[] = codelistUtils.getParsedOptions(EListName.DEPARTMENT)
   const areas: IProductArea[] = useAllAreas()
 
   const save = async (request: IProcessRevisionRequest) => {
@@ -179,7 +179,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     label="Avdeling"
                     hideLabel
                     onChange={(ev) => formikBag.setFieldValue('department', ev.currentTarget.value)}
-                    value={formikBag.values.department!}
+                    value={formikBag.values.department || ''}
                     error={formikBag.errors.department}
                   >
                     <option key="" value="">
@@ -199,7 +199,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                     label="Område"
                     hideLabel
                     onChange={(ev) => formikBag.setFieldValue('productAreaId', ev.currentTarget.value)}
-                    value={formikBag.values.productAreaId!}
+                    value={formikBag.values.productAreaId || ''}
                     error={formikBag.errors.productAreaId}
                   >
                     <option key="" value="">

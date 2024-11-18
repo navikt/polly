@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { IDisclosure, IDocument, IInformationType, IPolicy } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
+import { CodelistService, ICodelistProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
@@ -29,9 +30,11 @@ interface IInformationtypeMetadataProps {
 
 interface IPurposesProps {
   policies: IPolicy[]
+  codelistUtils: ICodelistProps
 }
 
-const Purposes = ({ policies }: IPurposesProps) => {
+const Purposes = (props: IPurposesProps) => {
+  const { policies, codelistUtils } = props
   const selectedPurpose: string | undefined = useQueryParam('purpose')
   const [accordion, setAccordion] = useState(!!selectedPurpose)
 
@@ -43,9 +46,13 @@ const Purposes = ({ policies }: IPurposesProps) => {
         </Button>
       </div>
       {accordion ? (
-        <AccordionInformationType policies={policies} />
+        <AccordionInformationType policies={policies} codelistUtils={codelistUtils} />
       ) : (
-        <InformationtypePolicyTable policies={policies} showPurpose={true} />
+        <InformationtypePolicyTable
+          policies={policies}
+          showPurpose={true}
+          codelistUtils={codelistUtils}
+        />
       )}
     </div>
   )
@@ -53,14 +60,16 @@ const Purposes = ({ policies }: IPurposesProps) => {
 
 interface IDisclosuresProps {
   disclosures: IDisclosure[]
+  codelistUtils: ICodelistProps
 }
 
-const Disclosures = ({ disclosures }: IDisclosuresProps) => (
+const Disclosures = ({ disclosures, codelistUtils }: IDisclosuresProps) => (
   <TableDisclosure
     list={disclosures}
     showRecipient
     editable={false}
     onCloseModal={() => console.debug('skal fjerrens også!')}
+    codelistUtils={codelistUtils}
   />
 )
 
@@ -68,6 +77,7 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
   const { informationtype, policies, disclosures, documents } = props
   const [activeTab, setActiveTab] = useState('purposes')
   const navigate: NavigateFunction = useNavigate()
+  const [codelistUtils] = CodelistService()
 
   return (
     <>
@@ -78,7 +88,7 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
             {user.canWrite() && <InformationTypeBannerButtons id={informationtype.id} />}
           </div>
 
-          <Metadata informationtype={informationtype} />
+          <Metadata informationtype={informationtype} codelistUtils={codelistUtils} />
 
           <div className="flex justify-end mb-4">
             {canViewAlerts() && (
@@ -107,13 +117,15 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
               {!policies && (
                 <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />
               )}
-              {policies && <Purposes policies={policies} />}
+              {policies && <Purposes policies={policies} codelistUtils={codelistUtils} />}
             </Tab>
             <Tab key="disclose" title="Utleveringer til ekstern part" overrides={tabOverride}>
               {!disclosures && (
                 <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />
               )}
-              {disclosures && <Disclosures disclosures={disclosures} />}
+              {disclosures && (
+                <Disclosures disclosures={disclosures} codelistUtils={codelistUtils} />
+              )}
             </Tab>
             <Tab key="document" title="Dokumenter" overrides={tabOverride}>
               {!documents && (

@@ -1,15 +1,16 @@
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { EListName, codelist } from '../../service/Codelist'
+import { EListName, ICodelistProps } from '../../service/Codelist'
 import { renderTagList } from './TagList'
 
 type TFieldProductsProps = {
   formikBag: FormikProps<IProcessFormValues> | FormikProps<IDpProcessFormValues>
+  codelistUtils: ICodelistProps
 }
 
 const FieldProduct = (props: TFieldProductsProps) => {
-  const { formikBag } = props
+  const { formikBag, codelistUtils } = props
 
   return (
     <FieldArray
@@ -31,7 +32,7 @@ const FieldProduct = (props: TFieldProductsProps) => {
                 }}
               >
                 <option value="">Velg system</option>
-                {codelist
+                {codelistUtils
                   .getParsedOptions(EListName.SYSTEM)
                   .filter((option) => !formikBag.values.affiliation.products.includes(option.id))
                   .map((code) => (
@@ -44,7 +45,7 @@ const FieldProduct = (props: TFieldProductsProps) => {
             <div>
               {renderTagList(
                 formikBag.values.affiliation.products.map((product: string) =>
-                  codelist.getShortname(EListName.SYSTEM, product)
+                  codelistUtils.getShortname(EListName.SYSTEM, product)
                 ),
                 arrayHelpers
               )}

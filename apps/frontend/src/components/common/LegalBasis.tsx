@@ -7,7 +7,12 @@ import { Tooltip } from 'baseui/tooltip'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
-import { EListName, ESensitivityLevel, codelist } from '../../service/Codelist'
+import {
+  CodelistService,
+  EListName,
+  ESensitivityLevel,
+  ICodelistProps,
+} from '../../service/Codelist'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
@@ -15,10 +20,11 @@ import { processString } from '../../util/string-processor'
 interface ILegalBasisViewProps {
   legalBasis?: ILegalBasis
   legalBasisForm?: ILegalBasisFormValues
+  codelistUtils: ICodelistProps
 }
 
 export const LegalBasisView = (props: ILegalBasisViewProps) => {
-  const { legalBasis, legalBasisForm } = props
+  const { legalBasis, legalBasisForm, codelistUtils } = props
   const input = legalBasis ? legalBasis : legalBasisForm
   if (!input) return null
   const { description } = input
@@ -32,15 +38,15 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
         : ''
 
   const gdprDisplay: string | undefined =
-    gdpr && codelist.getShortname(EListName.GDPR_ARTICLE, gdpr)
+    gdpr && codelistUtils.getShortname(EListName.GDPR_ARTICLE, gdpr)
   const nationalLawDisplay: string | undefined =
-    nationalLaw && codelist.getShortname(EListName.NATIONAL_LAW, nationalLaw)
+    nationalLaw && codelistUtils.getShortname(EListName.NATIONAL_LAW, nationalLaw)
 
-  const descriptionText: string | JSX.Element[] | undefined = codelist.valid(
+  const descriptionText: string | JSX.Element[] | undefined = codelistUtils.valid(
     EListName.NATIONAL_LAW,
     nationalLaw
   )
-    ? legalBasisLinkProcessor(nationalLaw, description)
+    ? legalBasisLinkProcessor(codelistUtils, nationalLaw, description)
     : description
 
   return (
@@ -51,12 +57,15 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   )
 }
 
-const lovdataBase = (nationalLaw: string): string =>
-  (codelist.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) +
-  codelist.getDescription(EListName.NATIONAL_LAW, nationalLaw)
+const lovdataBase = (codelistUtils: ICodelistProps, nationalLaw: string): string => {
+  return (
+    (codelistUtils.isForskrift(nationalLaw) ? env.lovdataForskriftBaseUrl : env.lovdataLovBaseUrl) +
+    codelistUtils.getDescription(EListName.NATIONAL_LAW, nationalLaw)
+  )
+}
 
-const legalBasisLinkProcessor = (law: string, text?: string) => {
-  const lawCode: string = codelist.getDescription(EListName.NATIONAL_LAW, law)
+const legalBasisLinkProcessor = (codelistUtils: ICodelistProps, law: string, text?: string) => {
+  const lawCode: string = codelistUtils.getDescription(EListName.NATIONAL_LAW, law)
   if (!lawCode.match(/^\d+.*/)) {
     return text
   }
@@ -73,7 +82,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
       fn: (key: string, result: string[]) => (
         <StyledLink
           key={key}
-          href={`${lovdataBase(law)}/§${result[3]}`}
+          href={`${lovdataBase(codelistUtils, law)}/§${result[3]}`}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -86,7 +95,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => {
       fn: (key: string, result: string[]) => (
         <StyledLink
           key={key}
-          href={`${lovdataBase(law)}/KAPITTEL_${result[2]}`}
+          href={`${lovdataBase(codelistUtils, law)}/KAPITTEL_${result[2]}`}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -161,9 +170,11 @@ const isLegalBasisFilteredBySensitivity = (
   legalBasis: ILegalBasisFormValues,
   sensitivityLevel?: ESensitivityLevel
 ) => {
+  const [codelistUtils] = CodelistService()
+
   return (
-    (sensitivityLevel === ESensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
-    (sensitivityLevel === ESensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr)) ||
+    (sensitivityLevel === ESensitivityLevel.ART6 && codelistUtils.isArt6(legalBasis.gdpr)) ||
+    (sensitivityLevel === ESensitivityLevel.ART9 && codelistUtils.isArt9(legalBasis.gdpr)) ||
     !sensitivityLevel
   )
 }
@@ -173,10 +184,11 @@ interface IListLegalBasesProps {
   onRemove: (index: number) => void
   onEdit: (index: number) => void
   sensitivityLevel?: ESensitivityLevel.ART6 | ESensitivityLevel.ART9
+  codelistUtils: ICodelistProps
 }
 
 export const ListLegalBases = (props: IListLegalBasesProps) => {
-  const { legalBases, onRemove, onEdit, sensitivityLevel } = props
+  const { legalBases, onRemove, onEdit, sensitivityLevel, codelistUtils } = props
 
   if (!legalBases) return null
 
@@ -237,7 +249,7 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
             <ParagraphMedium
               $style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}
             >
-              <LegalBasisView legalBasisForm={legalBasis} />
+              <LegalBasisView legalBasisForm={legalBasis} codelistUtils={codelistUtils} />
             </ParagraphMedium>
           </ListItem>
         ))}
@@ -247,10 +259,11 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
 
 interface IListLegalBasesInTableProps {
   legalBases: ILegalBasis[]
+  codelistUtils: ICodelistProps
 }
 
 export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
-  const { legalBases } = props
+  const { legalBases, codelistUtils } = props
 
   return (
     <div>
@@ -258,7 +271,7 @@ export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
         {legalBases.map((legalBasis: ILegalBasis, index: number) => (
           <div className="mb-2" key={index}>
             <li>
-              <LegalBasisView legalBasis={legalBasis} />
+              <LegalBasisView legalBasis={legalBasis} codelistUtils={codelistUtils} />
             </li>
           </div>
         ))}

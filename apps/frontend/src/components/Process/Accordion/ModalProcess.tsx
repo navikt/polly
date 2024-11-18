@@ -18,7 +18,7 @@ import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
-import { EListName, codelist } from '../../../service/Codelist'
+import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
@@ -29,7 +29,7 @@ import { Error, ModalLabel } from '../../common/ModalSchema'
 import { RadioBoolButton } from '../../common/Radio'
 import { renderTagList } from '../../common/TagList'
 import FieldProductTeam from '../../common/form/FieldProductTeam'
-import { processSchema } from '../../common/schema'
+import { processSchema } from '../../common/schemaValidation'
 import { DateFieldsProcessModal } from '../DateFieldsProcessModal'
 import BoolField from '../common/BoolField'
 import DpiaItems from '../common/DpiaItems'
@@ -46,6 +46,7 @@ import FieldRiskOwner from '../common/FieldRiskOwner'
 import RetentionItems from '../common/RetentionItems'
 
 type TModalProcessProps = {
+  codelistUtils: ICodelistProps
   title: string
   isOpen: boolean
   isEdit?: boolean
@@ -56,6 +57,7 @@ type TModalProcessProps = {
 }
 
 const ModalProcess = ({
+  codelistUtils,
   submit,
   errorOnCreate,
   onClose,
@@ -123,7 +125,7 @@ const ModalProcess = ({
           onSubmit={(values) => {
             submit(values)
           }}
-          validationSchema={processSchema()}
+          validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
           render={(formikBag: FormikProps<IProcessFormValues>) => {
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
               console.debug(formikBag.errors)
@@ -213,7 +215,7 @@ const ModalProcess = ({
                       label="System"
                       tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
                     />
-                    <FieldProduct formikBag={formikBag} />
+                    <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
@@ -255,7 +257,10 @@ const ModalProcess = ({
                             <FieldDepartment department={formikBag.values.affiliation.department} />
                           </div>
                           <div className="w-[48%]">
-                            <FieldSubDepartments formikBag={formikBag} />
+                            <FieldSubDepartments
+                              formikBag={formikBag}
+                              codelistUtils={codelistUtils}
+                            />
                           </div>
                         </div>
 
@@ -308,7 +313,11 @@ const ModalProcess = ({
                         Behandlingsgrunnlag for hele behandlingen
                       </Accordion.Header>
                       <Accordion.Content>
-                        <FieldLegalBasis formikBag={formikBag} openArt6OnEmpty />
+                        <FieldLegalBasis
+                          formikBag={formikBag}
+                          openArt6OnEmpty
+                          codelistUtils={codelistUtils}
+                        />
                         <Error fieldName="legalBasesOpen" fullWidth={true} />
                       </Accordion.Content>
                     </Accordion.Item>
@@ -397,14 +406,14 @@ const ModalProcess = ({
                       <Accordion.Content>
                         <CustomizedModalBlock first>
                           <ModalLabel label="Avsender" />
-                          <FieldDispatcher formikBag={formikBag} />
+                          <FieldDispatcher formikBag={formikBag} codelistUtils={codelistUtils} />
                         </CustomizedModalBlock>
 
                         <div className="w-full flex mb-[5px]">
                           <ModalLabel label="Mottaker" />
                           <Select
                             value={thirdParty}
-                            options={codelist
+                            options={codelistUtils
                               .getParsedOptions(EListName.THIRD_PARTY)
                               .filter((thirdParty) => thirdParty.id != 'NAV')}
                             onChange={({ value }) => {
