@@ -90,7 +90,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [showRevisionModal, setShowRevisionModal] = useState(false)
   const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
-  const purposeRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
+  const purposeRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(null)
+
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
 
   const hasAccess = (): boolean => user.canWrite()
@@ -154,7 +155,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     params.processId &&
       !isLoading &&
       setTimeout(() => {
-        purposeRef.current && window.scrollTo({ top: purposeRef.current.offsetTop - 40 })
+        purposeRef.current && window.scrollTo({ top: purposeRef.current.offsetTop - 30 })
       }, 200)
   }, [isLoading])
 
@@ -175,7 +176,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   }
 
   return (
-    <div>
+    <div className="mt-3">
       <Accordion>
         {processList &&
           processList
@@ -199,12 +200,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                     onChangeProcess(open ? process.id : undefined)
                   }}
                 >
-                  <Accordion.Header>
+                  <Accordion.Header ref={expanded ? purposeRef : undefined}>
                     <AccordionTitle
                       codelistUtils={codelistUtils}
                       process={process}
                       expanded={expanded}
-                      forwardRef={expanded ? purposeRef : undefined}
                       noChevron
                     />
                   </Accordion.Header>
