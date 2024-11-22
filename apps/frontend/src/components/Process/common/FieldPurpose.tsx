@@ -2,11 +2,13 @@ import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { CodelistService, EListName } from '../../../service/Codelist'
+import { EListName, ICodelistProps } from '../../../service/Codelist'
 
-const FieldPurpose = (props: { formikBag: FormikProps<IProcessFormValues> }) => {
-  const { formikBag } = props
-  const [codelistUtils] = CodelistService()
+const FieldPurpose = (props: {
+  formikBag: FormikProps<IProcessFormValues>
+  codelistUtils: ICodelistProps
+}) => {
+  const { formikBag, codelistUtils } = props
   const [selectedValue, setSelectedValue] = useState<string>(
     formikBag.values.purposes && formikBag.values.purposes.length > 0
       ? formikBag.values.purposes[0]

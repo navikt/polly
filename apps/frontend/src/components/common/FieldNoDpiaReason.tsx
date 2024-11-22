@@ -1,4 +1,4 @@
-import { Select } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { ENoDpiaReason, IProcessFormValues } from '../../constants'
 import { getNoDpiaLabel } from '../../util/helper-functions'
@@ -19,25 +19,29 @@ const FieldNoDpiaReason = (props: TFieldNoDpiaReasonProps) => {
           <div className="w-full">
             <div className="w-full">
               <Select
-                clearable
-                placeholder="Velg en eller flere begrunnelser"
-                options={Object.keys(ENoDpiaReason)
+                label="Velg begrunnelse"
+                hideLabel
+                onChange={(event) => {
+                  if (event.target.value) {
+                    arrayHelpers.form.setFieldValue('dpia.noDpiaReasons', [
+                      ...formikBag.values.dpia.noDpiaReasons,
+                      event.target.value,
+                    ])
+                  }
+                }}
+              >
+                <option value="">Velg begrunnelse</option>
+                {Object.keys(ENoDpiaReason)
                   .filter(
                     (reason: string) => formikBag.values.dpia.noDpiaReasons.indexOf(reason) === -1
                   )
-                  .map((reason: string) => {
-                    return {
-                      label: getNoDpiaLabel(reason),
-                      id: reason,
-                    }
-                  })}
-                onChange={({ value }) => {
-                  arrayHelpers.form.setFieldValue('dpia.noDpiaReasons', [
-                    ...formikBag.values.dpia.noDpiaReasons,
-                    ...value.map((value) => value.id),
-                  ])
-                }}
-              />
+                  .map((reason: string) => (
+                    <option value={reason} key={reason}>
+                      {' '}
+                      {getNoDpiaLabel(reason)}
+                    </option>
+                  ))}
+              </Select>
             </div>
             <div>
               {renderTagList(

@@ -1,8 +1,7 @@
-import { Accordion, Modal } from '@navikt/ds-react'
+import { Accordion, Modal, Select } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { FlexGridItem } from 'baseui/flex-grid'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
-import { OnChangeParams, Select, Value } from 'baseui/select'
 import {
   Field,
   FieldArray,
@@ -70,7 +69,7 @@ const ModalProcess = ({
   )
 
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
-  const [thirdParty, setThirdParty] = useState<Value>([])
+  const [thirdParty, setThirdParty] = useState<string>('')
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const [processorList, setProcessorList] = useState<IProcessor[]>([])
 
@@ -93,8 +92,8 @@ const ModalProcess = ({
 
   useEffect(() => {
     ;(async () => {
-      if (thirdParty.length > 0 && thirdParty[0].id) {
-        const result = await getDisclosuresByRecipient(thirdParty[0].id.toString())
+      if (thirdParty) {
+        const result = await getDisclosuresByRecipient(thirdParty)
         setDisclosures(result)
       }
     })()
@@ -143,7 +142,7 @@ const ModalProcess = ({
                       label="Overordnet behandlingsaktivitet"
                       tooltip="Et kort navn som beskriver hva behandlingen går ut på. Eksempel: Saksbehandling, håndtere brukerhenvendelser eller rekruttering."
                     />
-                    <FieldPurpose formikBag={formikBag} />
+                    <FieldPurpose formikBag={formikBag} codelistUtils={codelistUtils} />
                   </CustomizedModalBlock>
                   <Error fieldName="purposes" />
 
@@ -242,7 +241,10 @@ const ModalProcess = ({
 
                         <div className="flex w-full justify-between">
                           <div className="w-[48%]">
-                            <FieldDepartment department={formikBag.values.affiliation.department} />
+                            <FieldDepartment
+                              codelistUtils={codelistUtils}
+                              department={formikBag.values.affiliation.department}
+                            />
                           </div>
                           <div className="w-[48%]">
                             <FieldSubDepartments
@@ -400,15 +402,22 @@ const ModalProcess = ({
                         <div className="w-full flex mb-[5px]">
                           <ModalLabel label="Mottaker" />
                           <Select
+                            className="w-full"
+                            label="Velg Mottaker"
+                            hideLabel
                             value={thirdParty}
-                            options={codelistUtils
+                            onChange={(event) => setThirdParty(event.target.value)}
+                          >
+                            <option value="">Velg mottaker</option>
+                            {codelistUtils
                               .getParsedOptions(EListName.THIRD_PARTY)
-                              .filter((thirdParty) => thirdParty.id != 'NAV')}
-                            onChange={({ value }) => {
-                              setThirdParty(value)
-                            }}
-                            overrides={{ Placeholder: { style: { color: 'black' } } }}
-                          />
+                              .filter((thirdParty) => thirdParty.id != 'NAV')
+                              .map((mottaker) => (
+                                <option key={mottaker.id} value={mottaker.id}>
+                                  {mottaker.label}
+                                </option>
+                              ))}
+                          </Select>
                         </div>
 
                         <FieldArray
@@ -420,24 +429,34 @@ const ModalProcess = ({
                                   <ModalLabel label="Utleveringer" />
                                   <div className="w-full">
                                     <Select
-                                      disabled={thirdParty.length === 0}
-                                      noResultsMsg="Ingen eksisterende utleveringer passer til søket. Opprett ny utlevering før du legger den til her."
-                                      options={disclosures.filter(
-                                        (disclosure: IDisclosure) =>
-                                          !formikBag.values.disclosures
-                                            .map((value: IDisclosure) => value.id)
-                                            .includes(disclosure.id)
-                                      )}
-                                      onChange={(params: OnChangeParams) => {
-                                        arrayHelpers.form.setFieldValue('disclosures', [
-                                          ...formikBag.values.disclosures,
-                                          ...params.value.map((value) => value),
-                                        ])
+                                      disabled={thirdParty === ''}
+                                      label="Velg utleveringer"
+                                      hideLabel
+                                      onChange={(event) => {
+                                        if (event.target.value) {
+                                          arrayHelpers.form.setFieldValue('disclosures', [
+                                            ...formikBag.values.disclosures,
+                                            disclosures.filter(
+                                              (disclosure) => disclosure.id === event.target.value
+                                            )[0],
+                                          ])
+                                        }
                                       }}
-                                      labelKey="name"
-                                      valueKey="id"
-                                      overrides={{ Placeholder: { style: { color: 'black' } } }}
-                                    />
+                                    >
+                                      <option value="">Velg utlevering</option>
+                                      {disclosures
+                                        .filter(
+                                          (disclosure: IDisclosure) =>
+                                            !formikBag.values.disclosures
+                                              .map((value: IDisclosure) => value.id)
+                                              .includes(disclosure.id)
+                                        )
+                                        .map((disclosure) => (
+                                          <option key={disclosure.id} value={disclosure.id}>
+                                            {disclosure.name}
+                                          </option>
+                                        ))}
+                                    </Select>
                                     <div>
                                       {renderTagList(
                                         formikBag.values.disclosures.map(
