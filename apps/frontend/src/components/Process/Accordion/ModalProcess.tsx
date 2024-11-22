@@ -72,6 +72,7 @@ const ModalProcess = ({
   const [thirdParty, setThirdParty] = useState<string>('')
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const [processorList, setProcessorList] = useState<IProcessor[]>([])
+  const [legalBasesOpen, setLegalBasesOpen] = useState<boolean>(false)
 
   const expand: (panelKey: string) => void = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
@@ -297,17 +298,23 @@ const ModalProcess = ({
                       </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item
-                      onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
+                      open={legalBasesOpen}
+                      onOpenChange={(open) => {
+                        setLegalBasesOpen(open)
+                        formikBag.setFieldValue('legalBasesOpen', open)
+                      }}
                     >
                       <Accordion.Header className="z-0">
                         Behandlingsgrunnlag for hele behandlingen
                       </Accordion.Header>
                       <Accordion.Content>
-                        <FieldLegalBasis
-                          formikBag={formikBag}
-                          openArt6OnEmpty
-                          codelistUtils={codelistUtils}
-                        />
+                        {legalBasesOpen && (
+                          <FieldLegalBasis
+                            formikBag={formikBag}
+                            openArt6OnEmpty
+                            codelistUtils={codelistUtils}
+                          />
+                        )}
                         <Error fieldName="legalBasesOpen" fullWidth={true} />
                       </Accordion.Content>
                     </Accordion.Item>
@@ -513,7 +520,9 @@ const ModalProcess = ({
                     <Button type="button" kind={KIND.tertiary} onClick={onClose}>
                       Avbryt
                     </Button>
-                    <Button type="submit">Lagre</Button>
+                    <Button type="button" onClick={() => formikBag.submitForm()}>
+                      Lagre
+                    </Button>
                   </div>
                 </Modal.Footer>
               </Form>
