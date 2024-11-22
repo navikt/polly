@@ -245,11 +245,13 @@ const ProcessList = ({
     }
   }
 
-  const handleDeleteProcess = async (process: IProcess): Promise<boolean> => {
+  const handleDeleteProcess = async (processToDelete: IProcess): Promise<boolean> => {
     try {
-      await deleteProcess(process.id)
+      await deleteProcess(processToDelete.id)
       setProcessList(
-        sortProcess(processList.filter((process: IProcessShort) => process.id !== process.id))
+        sortProcess(
+          processList.filter((process: IProcessShort) => process.id !== processToDelete.id)
+        )
       )
       setErrorProcessModal('')
       return true
