@@ -1,11 +1,19 @@
-import { Select } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { CodelistService, EListName, IGetParsedOptionsProps } from '../../../service/Codelist'
+import { EListName, ICodelistProps } from '../../../service/Codelist'
 
-const FieldPurpose = (props: { formikBag: FormikProps<IProcessFormValues> }) => {
-  const { formikBag } = props
-  const [codelistUtils] = CodelistService()
+const FieldPurpose = (props: {
+  formikBag: FormikProps<IProcessFormValues>
+  codelistUtils: ICodelistProps
+}) => {
+  const { formikBag, codelistUtils } = props
+  const [selectedValue, setSelectedValue] = useState<string>(
+    formikBag.values.purposes && formikBag.values.purposes.length > 0
+      ? formikBag.values.purposes[0]
+      : ''
+  )
 
   return (
     <FieldArray
@@ -13,23 +21,21 @@ const FieldPurpose = (props: { formikBag: FormikProps<IProcessFormValues> }) => 
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
           <Select
-            value={codelistUtils.getParsedOptionsForList(
-              EListName.PURPOSE,
-              formikBag.values.purposes
-            )}
-            options={codelistUtils
-              .getParsedOptions(EListName.PURPOSE)
-              .filter(
-                (option: IGetParsedOptionsProps) => !formikBag.values.purposes.includes(option.id)
-              )}
-            onChange={({ value }) => {
-              arrayHelpers.form.setFieldValue(
-                'purposes',
-                value.map((value) => value.id)
-              )
+            label="Velg overordnet behandlingsaktivitet"
+            hideLabel
+            value={selectedValue}
+            onChange={(event) => {
+              setSelectedValue(event.target.value)
+              arrayHelpers.form.setFieldValue('purposes', [event.target.value])
             }}
-            overrides={{ Placeholder: { style: { color: 'black' } } }}
-          />
+          >
+            <option value="">Velg overordnet behandlingsaktivitet</option>
+            {codelistUtils.getParsedOptions(EListName.PURPOSE).map((codeList, index) => (
+              <option key={index + '_' + codeList.id} value={codeList.id}>
+                {codeList.label}
+              </option>
+            ))}
+          </Select>
         </div>
       )}
     />

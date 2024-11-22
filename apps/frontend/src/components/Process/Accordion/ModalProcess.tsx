@@ -1,9 +1,7 @@
-import { Accordion } from '@navikt/ds-react'
+import { Accordion, Modal, Select } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { FlexGridItem } from 'baseui/flex-grid'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
-import { OnChangeParams, Select, Value } from 'baseui/select'
 import {
   Field,
   FieldArray,
@@ -71,9 +69,10 @@ const ModalProcess = ({
   )
 
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
-  const [thirdParty, setThirdParty] = useState<Value>([])
+  const [thirdParty, setThirdParty] = useState<string>('')
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const [processorList, setProcessorList] = useState<IProcessor[]>([])
+  const [legalBasesOpen, setLegalBasesOpen] = useState<boolean>(false)
 
   const expand: (panelKey: string) => void = (panelKey: string) => {
     if (expanded.indexOf(panelKey) < 0) {
@@ -94,8 +93,8 @@ const ModalProcess = ({
 
   useEffect(() => {
     ;(async () => {
-      if (thirdParty.length > 0 && thirdParty[0].id) {
-        const result = await getDisclosuresByRecipient(thirdParty[0].id.toString())
+      if (thirdParty) {
+        const result = await getDisclosuresByRecipient(thirdParty)
         setDisclosures(result)
       }
     })()
@@ -111,14 +110,7 @@ const ModalProcess = ({
   }, [])
 
   return (
-    <Modal
-      onClose={onClose}
-      isOpen={isOpen}
-      closeable={false}
-      animate
-      size={SIZE.auto}
-      role={ROLE.dialog}
-    >
+    <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width="960px">
       <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
@@ -136,11 +128,7 @@ const ModalProcess = ({
             }
             return (
               <Form onKeyDown={disableEnter}>
-                <ModalHeader>
-                  <div className="flex justify-center mb-8">{title}</div>
-                </ModalHeader>
-
-                <ModalBody>
+                <Modal.Body>
                   <CustomizedModalBlock first>
                     <ModalLabel
                       label="Navn"
@@ -155,7 +143,7 @@ const ModalProcess = ({
                       label="Overordnet behandlingsaktivitet"
                       tooltip="Et kort navn som beskriver hva behandlingen går ut på. Eksempel: Saksbehandling, håndtere brukerhenvendelser eller rekruttering."
                     />
-                    <FieldPurpose formikBag={formikBag} />
+                    <FieldPurpose formikBag={formikBag} codelistUtils={codelistUtils} />
                   </CustomizedModalBlock>
                   <Error fieldName="purposes" />
 
@@ -254,7 +242,10 @@ const ModalProcess = ({
 
                         <div className="flex w-full justify-between">
                           <div className="w-[48%]">
-                            <FieldDepartment department={formikBag.values.affiliation.department} />
+                            <FieldDepartment
+                              codelistUtils={codelistUtils}
+                              department={formikBag.values.affiliation.department}
+                            />
                           </div>
                           <div className="w-[48%]">
                             <FieldSubDepartments
@@ -307,17 +298,23 @@ const ModalProcess = ({
                       </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item
-                      onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
+                      open={legalBasesOpen}
+                      onOpenChange={(open) => {
+                        setLegalBasesOpen(open)
+                        formikBag.setFieldValue('legalBasesOpen', open)
+                      }}
                     >
                       <Accordion.Header className="z-0">
                         Behandlingsgrunnlag for hele behandlingen
                       </Accordion.Header>
                       <Accordion.Content>
-                        <FieldLegalBasis
-                          formikBag={formikBag}
-                          openArt6OnEmpty
-                          codelistUtils={codelistUtils}
-                        />
+                        {legalBasesOpen && (
+                          <FieldLegalBasis
+                            formikBag={formikBag}
+                            openArt6OnEmpty
+                            codelistUtils={codelistUtils}
+                          />
+                        )}
                         <Error fieldName="legalBasesOpen" fullWidth={true} />
                       </Accordion.Content>
                     </Accordion.Item>
@@ -412,15 +409,22 @@ const ModalProcess = ({
                         <div className="w-full flex mb-[5px]">
                           <ModalLabel label="Mottaker" />
                           <Select
+                            className="w-full"
+                            label="Velg Mottaker"
+                            hideLabel
                             value={thirdParty}
-                            options={codelistUtils
+                            onChange={(event) => setThirdParty(event.target.value)}
+                          >
+                            <option value="">Velg mottaker</option>
+                            {codelistUtils
                               .getParsedOptions(EListName.THIRD_PARTY)
-                              .filter((thirdParty) => thirdParty.id != 'NAV')}
-                            onChange={({ value }) => {
-                              setThirdParty(value)
-                            }}
-                            overrides={{ Placeholder: { style: { color: 'black' } } }}
-                          />
+                              .filter((thirdParty) => thirdParty.id != 'NAV')
+                              .map((mottaker) => (
+                                <option key={mottaker.id} value={mottaker.id}>
+                                  {mottaker.label}
+                                </option>
+                              ))}
+                          </Select>
                         </div>
 
                         <FieldArray
@@ -432,24 +436,34 @@ const ModalProcess = ({
                                   <ModalLabel label="Utleveringer" />
                                   <div className="w-full">
                                     <Select
-                                      disabled={thirdParty.length === 0}
-                                      noResultsMsg="Ingen eksisterende utleveringer passer til søket. Opprett ny utlevering før du legger den til her."
-                                      options={disclosures.filter(
-                                        (disclosure: IDisclosure) =>
-                                          !formikBag.values.disclosures
-                                            .map((value: IDisclosure) => value.id)
-                                            .includes(disclosure.id)
-                                      )}
-                                      onChange={(params: OnChangeParams) => {
-                                        arrayHelpers.form.setFieldValue('disclosures', [
-                                          ...formikBag.values.disclosures,
-                                          ...params.value.map((value) => value),
-                                        ])
+                                      disabled={thirdParty === ''}
+                                      label="Velg utleveringer"
+                                      hideLabel
+                                      onChange={(event) => {
+                                        if (event.target.value) {
+                                          arrayHelpers.form.setFieldValue('disclosures', [
+                                            ...formikBag.values.disclosures,
+                                            disclosures.filter(
+                                              (disclosure) => disclosure.id === event.target.value
+                                            )[0],
+                                          ])
+                                        }
                                       }}
-                                      labelKey="name"
-                                      valueKey="id"
-                                      overrides={{ Placeholder: { style: { color: 'black' } } }}
-                                    />
+                                    >
+                                      <option value="">Velg utlevering</option>
+                                      {disclosures
+                                        .filter(
+                                          (disclosure: IDisclosure) =>
+                                            !formikBag.values.disclosures
+                                              .map((value: IDisclosure) => value.id)
+                                              .includes(disclosure.id)
+                                        )
+                                        .map((disclosure) => (
+                                          <option key={disclosure.id} value={disclosure.id}>
+                                            {disclosure.name}
+                                          </option>
+                                        ))}
+                                    </Select>
                                     <div>
                                       {renderTagList(
                                         formikBag.values.disclosures.map(
@@ -494,9 +508,9 @@ const ModalProcess = ({
                       />
                     </div>
                   </CustomizedModalBlock>
-                </ModalBody>
+                </Modal.Body>
 
-                <ModalFooter
+                <Modal.Footer
                   style={{
                     borderTop: 0,
                   }}
@@ -506,9 +520,11 @@ const ModalProcess = ({
                     <Button type="button" kind={KIND.tertiary} onClick={onClose}>
                       Avbryt
                     </Button>
-                    <ModalButton type="submit">Lagre</ModalButton>
+                    <Button type="button" onClick={() => formikBag.submitForm()}>
+                      Lagre
+                    </Button>
                   </div>
-                </ModalFooter>
+                </Modal.Footer>
               </Form>
             )
           }}
