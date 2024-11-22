@@ -373,6 +373,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
             submit={(formValues) =>
               submitAddDocument(formValues).then(() => setShowAddBatchInfoTypesModal(false))
             }
+            codelistUtils={codelistUtils}
             process={currentProcess}
             error={errorDocumentModal}
           />
