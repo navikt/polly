@@ -198,7 +198,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                           onChange={(event) => {
                                             informationTypesProps.replace(index, {
                                               ...informationTypeMap,
-                                              subjectCategories: [event.target.value],
+                                              subjectCategories: [{ code: event.target.value }],
                                             })
                                           }}
                                         >
