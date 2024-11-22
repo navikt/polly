@@ -1,7 +1,6 @@
-import { Accordion } from '@navikt/ds-react'
+import { Accordion, Modal } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { FlexGridItem } from 'baseui/flex-grid'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
 import { OnChangeParams, Select, Value } from 'baseui/select'
 import {
@@ -111,14 +110,7 @@ const ModalProcess = ({
   }, [])
 
   return (
-    <Modal
-      onClose={onClose}
-      isOpen={isOpen}
-      closeable={false}
-      animate
-      size={SIZE.auto}
-      role={ROLE.dialog}
-    >
+    <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width="960px">
       <div className="w-[960px] px-8">
         <Formik
           initialValues={initialValues}
@@ -136,11 +128,7 @@ const ModalProcess = ({
             }
             return (
               <Form onKeyDown={disableEnter}>
-                <ModalHeader>
-                  <div className="flex justify-center mb-8">{title}</div>
-                </ModalHeader>
-
-                <ModalBody>
+                <Modal.Body>
                   <CustomizedModalBlock first>
                     <ModalLabel
                       label="Navn"
@@ -494,9 +482,9 @@ const ModalProcess = ({
                       />
                     </div>
                   </CustomizedModalBlock>
-                </ModalBody>
+                </Modal.Body>
 
-                <ModalFooter
+                <Modal.Footer
                   style={{
                     borderTop: 0,
                   }}
@@ -506,9 +494,9 @@ const ModalProcess = ({
                     <Button type="button" kind={KIND.tertiary} onClick={onClose}>
                       Avbryt
                     </Button>
-                    <ModalButton type="submit">Lagre</ModalButton>
+                    <Button type="submit">Lagre</Button>
                   </div>
-                </ModalFooter>
+                </Modal.Footer>
               </Form>
             )
           }}
