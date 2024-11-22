@@ -1,6 +1,6 @@
 import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { Accordion } from '@navikt/ds-react'
 import { Plus } from 'baseui/icon'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
@@ -176,12 +176,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   return (
     <div>
-      <StatelessAccordion
-        onChange={({ expanded }) =>
-          onChangeProcess(expanded.length ? (expanded[0] as string) : undefined)
-        }
-        expanded={params.processId ? [params.processId] : []}
-      >
+      <Accordion>
         {processList &&
           processList
             .sort((a, b) => {
@@ -197,114 +192,105 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               const expanded = params.processId === process.id
 
               return (
-                <Panel
-                  title={
+                <Accordion.Item
+                  key={process.id}
+                  open={expanded}
+                  onOpenChange={(open) => {
+                    onChangeProcess(open ? process.id : undefined)
+                  }}
+                >
+                  <Accordion.Header>
                     <AccordionTitle
                       codelistUtils={codelistUtils}
                       process={process}
                       expanded={expanded}
                       forwardRef={expanded ? purposeRef : undefined}
+                      noChevron
                     />
-                  }
-                  key={process.id}
-                  overrides={{
-                    ToggleIcon: {
-                      component: () => null,
-                    },
-                    Content: {
-                      style: {
-                        backgroundColor: theme.colors.white,
-                        // Outline width
-                        paddingTop: '4px',
-                        paddingBottom: '4px',
-                        paddingLeft: '4px',
-                        paddingRight: '4px',
-                      },
-                    },
-                  }}
-                >
-                  {isLoading && (
-                    <div className="p-2.5">
-                      <Spinner $size={theme.sizing.scale1200} />
-                    </div>
-                  )}
-
-                  {!isLoading && currentProcess && (
-                    <div className="outline outline-4 outline-[#E2E2E2]">
-                      <div className="px-6 pt-6">
-                        <ProcessButtonGroup
-                          process={process}
-                          hasAccess={hasAccess()}
-                          editProcess={() => setShowEditProcessModal(true)}
-                          deleteProcess={() => setShowDeleteModal(true)}
-                        />
-                        <ProcessData
-                          process={currentProcess}
-                          disclosures={disclosures}
-                          codelistUtils={codelistUtils}
-                        />
-                        <div>
-                          <div className="flex justify-end">
-                            <span>
-                              <i>{`Sist endret av ${currentProcess.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcess.changeStamp?.lastModifiedDate)}`}</i>
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex pt-6 w-full justify-between">
-                          <div className="flex">
-                            {canViewAlerts() && (
-                              <div className="mr-auto">
-                                <Button
-                                  type="button"
-                                  kind="tertiary"
-                                  size="xsmall"
-                                  icon={faExclamationCircle}
-                                  onClick={() => history(`/alert/events/process/${process.id}`)}
-                                >
-                                  Varsler
-                                </Button>
-                              </div>
-                            )}
-                            {(user.isAdmin() || user.isSuper()) && (
-                              <div className="mr-auto">
-                                <Button
-                                  type="button"
-                                  kind="tertiary"
-                                  size="xsmall"
-                                  icon={faGavel}
-                                  onClick={() => setShowRevisionModal(true)}
-                                >
-                                  Ny revidering
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                          {hasAccess() && (
-                            <div className="flex justify-center">
-                              <div ref={InformationTypeRef} />
-                              {renderAddDocumentButton()}
-                              {renderCreatePolicyButton()}
-                              {renderDeleteAllPolicyButton()}
-                            </div>
-                          )}
-                        </div>
+                  </Accordion.Header>
+                  <Accordion.Content>
+                    {expanded && isLoading && (
+                      <div className="p-2.5">
+                        <Spinner $size={theme.sizing.scale1200} />
                       </div>
+                    )}
 
-                      <TablePolicy
-                        codelistUtils={codelistUtils}
-                        process={currentProcess}
-                        hasAccess={hasAccess()}
-                        errorPolicyModal={errorPolicyModal}
-                        errorDeleteModal={errorPolicyModal}
-                        submitEditPolicy={submitEditPolicy}
-                        submitDeletePolicy={submitDeletePolicy}
-                      />
-                    </div>
-                  )}
-                </Panel>
+                    {expanded && !isLoading && currentProcess && (
+                      <div className="outline outline-4 outline-[#E2E2E2]">
+                        <div className="px-6 pt-6">
+                          <ProcessButtonGroup
+                            process={process}
+                            hasAccess={hasAccess()}
+                            editProcess={() => setShowEditProcessModal(true)}
+                            deleteProcess={() => setShowDeleteModal(true)}
+                          />
+                          <ProcessData
+                            process={currentProcess}
+                            disclosures={disclosures}
+                            codelistUtils={codelistUtils}
+                          />
+                          <div>
+                            <div className="flex justify-end">
+                              <span>
+                                <i>{`Sist endret av ${currentProcess.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcess.changeStamp?.lastModifiedDate)}`}</i>
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex pt-6 w-full justify-between">
+                            <div className="flex">
+                              {canViewAlerts() && (
+                                <div className="mr-auto">
+                                  <Button
+                                    type="button"
+                                    kind="tertiary"
+                                    size="xsmall"
+                                    icon={faExclamationCircle}
+                                    onClick={() => history(`/alert/events/process/${process.id}`)}
+                                  >
+                                    Varsler
+                                  </Button>
+                                </div>
+                              )}
+                              {(user.isAdmin() || user.isSuper()) && (
+                                <div className="mr-auto">
+                                  <Button
+                                    type="button"
+                                    kind="tertiary"
+                                    size="xsmall"
+                                    icon={faGavel}
+                                    onClick={() => setShowRevisionModal(true)}
+                                  >
+                                    Ny revidering
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {hasAccess() && (
+                              <div className="flex justify-center">
+                                <div ref={InformationTypeRef} />
+                                {renderAddDocumentButton()}
+                                {renderCreatePolicyButton()}
+                                {renderDeleteAllPolicyButton()}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <TablePolicy
+                          codelistUtils={codelistUtils}
+                          process={currentProcess}
+                          hasAccess={hasAccess()}
+                          errorPolicyModal={errorPolicyModal}
+                          errorDeleteModal={errorPolicyModal}
+                          submitEditPolicy={submitEditPolicy}
+                          submitDeletePolicy={submitDeletePolicy}
+                        />
+                      </div>
+                    )}
+                  </Accordion.Content>
+                </Accordion.Item>
               )
             })}
-      </StatelessAccordion>
+      </Accordion>
       {!processList.length && <LabelMedium margin="1rem">Ingen behandlinger</LabelMedium>}
 
       {!!currentProcess && (
