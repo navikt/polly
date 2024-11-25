@@ -1,6 +1,6 @@
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { HeadingMedium, LabelLarge } from 'baseui/typography'
+import { Button, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAll } from '../api/GetAllApi'
@@ -11,12 +11,9 @@ import {
 } from '../api/ProcessorApi'
 import ProcessorModal from '../components/Processor/ProcessorModal'
 import AlphabeticList from '../components/common/AlphabeticList'
-import Button from '../components/common/Button/CustomButton'
-import { Spinner } from '../components/common/Spinner'
 import { IProcessor, IProcessorFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
-import { theme } from '../util'
 
 export const ProcessorListPage = () => {
   const [processors, setProcessors] = useState<IProcessor[]>([])
@@ -58,18 +55,14 @@ export const ProcessorListPage = () => {
 
   return (
     <>
-      {isLoading && <Spinner size={theme.sizing.scale1200} />}
+      {isLoading && <Loader size="large" />}
       {!isLoading && (
         <>
-          <HeadingMedium>Databehandlere</HeadingMedium>
-          <div className="flex w-full justify-between">
-            <div>
-              <LabelLarge>Databehandlere</LabelLarge>
-            </div>
-
+          <Heading size="large">Databehandlere</Heading>
+          <div className="flex w-full justify-end">
             <div className="mt-auto">
               {hasAccess() && (
-                <Button kind="outline" onClick={() => setShowCreateProcessorModal(true)}>
+                <Button variant="secondary" onClick={() => setShowCreateProcessorModal(true)}>
                   <FontAwesomeIcon icon={faPlusCircle} />
                   &nbsp;Opprett ny databehandler
                 </Button>
