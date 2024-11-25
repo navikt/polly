@@ -1,5 +1,4 @@
-import { Spinner } from 'baseui/spinner'
-import { HeadingMedium } from 'baseui/typography'
+import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import AlphabeticList from '../components/common/AlphabeticList'
 import { ampli } from '../service/Amplitude'
@@ -37,8 +36,8 @@ const CodelistPage = (props: ICodeListPageProps) => {
 
   return (
     <>
-      {title && <HeadingMedium>{title}</HeadingMedium>}
-      {isLoading && <Spinner />}
+      {title && <Heading size="large">{title}</Heading>}
+      {isLoading && <Loader size="large" />}
       {!!codes.length && (
         <AlphabeticList
           items={codes.map((code: ICode) => ({ id: code.code, label: code.shortName }))}
