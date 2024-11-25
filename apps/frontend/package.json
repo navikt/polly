@@ -34,7 +34,7 @@
     "react-localization": "^1.0.15",
     "react-markdown": "^9.0.0",
     "react-process-string": "^1.2.0",
-    "react-router-dom": "^6.2.1",
+    "react-router-dom": "^7.0.1",
     "react-select": "^5.8.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
