@@ -1,28 +1,19 @@
-import { Select, Value } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { CodelistService, EListName } from '../../../service/Codelist'
+import { EListName, ICodelistProps } from '../../../service/Codelist'
 
 interface IFieldDepartmentProps {
+  codelistUtils: ICodelistProps
   department?: string
   fieldName?: string
 }
 
 const FieldDepartment = (props: IFieldDepartmentProps) => {
-  const { department } = props
-  const [codelistUtils] = CodelistService()
+  const { codelistUtils, department } = props
 
-  const [value, setValue] = useState<Value>(
-    department
-      ? [
-          {
-            id: department,
-            label: codelistUtils.getShortname(EListName.DEPARTMENT, department),
-          },
-        ]
-      : []
-  )
+  const [value, setValue] = useState<string>(department ? department : '')
 
   return (
     <Field
@@ -30,17 +21,24 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
       render={({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
           <Select
-            options={codelistUtils.getParsedOptions(EListName.DEPARTMENT)}
-            onChange={({ value }) => {
-              setValue(value)
+            label="Velg avdeling"
+            hideLabel
+            value={value}
+            onChange={(event) => {
+              setValue(event.target.value)
               form.setFieldValue(
                 props.fieldName ? props.fieldName : 'affiliation.department',
-                value.length > 0 ? value[0].id : ''
+                value
               )
             }}
-            value={value}
-            overrides={{ Placeholder: { style: { color: 'black' } } }}
-          />
+          >
+            <option value="">Velg avdeling</option>
+            {codelistUtils.getParsedOptions(EListName.DEPARTMENT).map((department) => (
+              <option key={department.id} value={department.id}>
+                {department.label}
+              </option>
+            ))}
+          </Select>
         </div>
       )}
     />

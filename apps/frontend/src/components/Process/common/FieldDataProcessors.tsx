@@ -1,14 +1,19 @@
-import { OnChangeParams, Option, Select } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import { IProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
+type TDatabehandlerOption = {
+  id: string
+  label: string
+}
+
 type TFieldDataProcessorsProps = {
   formikBag: FormikProps<IProcessFormValues>
   dataProcessors?: Map<string, string>
-  options: Option[]
+  options: TDatabehandlerOption[]
 }
 
 const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
@@ -34,9 +39,24 @@ const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
           <div className="w-full">
             <div className="w-full">
               <Select
-                clearable
-                noResultsMsg="Databehandler er ikke registrert i løsningen. Registrer databehandleren først."
-                options={options
+                label="Velg databehandler"
+                hideLabel
+                onChange={(event) => {
+                  if (event.target.value) {
+                    dataProcessors.set(
+                      event.target.value,
+                      options.filter((option) => option.id === event.target.value)[0].label
+                    )
+
+                    arrayHelpers.form.setFieldValue('dataProcessing.processors', [
+                      ...(formikBag.values.dataProcessing.processors || []),
+                      event.target.value,
+                    ])
+                  }
+                }}
+              >
+                <option value="">Velg databehandler</option>
+                {options
                   .sort((a, b) =>
                     (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString())
                   )
@@ -45,20 +65,13 @@ const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
                       !formikBag.values.dataProcessing.processors.includes(
                         dataProcessing.id ? dataProcessing.id.toString() : ''
                       )
-                  )}
-                onChange={(params: OnChangeParams) => {
-                  if (params.value[0].id && params.value[0].label) {
-                    dataProcessors.set(
-                      params.value[0].id.toString(),
-                      params.value[0].label.toString()
-                    )
-                  }
-                  arrayHelpers.form.setFieldValue('dataProcessing.processors', [
-                    ...(formikBag.values.dataProcessing.processors || []),
-                    ...params.value.map((value) => value.id),
-                  ])
-                }}
-              />
+                  )
+                  .map((databehandler) => (
+                    <option key={databehandler.id} value={databehandler.id}>
+                      {databehandler.label}
+                    </option>
+                  ))}
+              </Select>
             </div>
             <div>
               {formikBag.values.dataProcessing.processors &&

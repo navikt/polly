@@ -1,6 +1,5 @@
-import { Select } from '@navikt/ds-react'
+import { Modal, Select } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Radio, RadioGroup } from 'baseui/radio'
 import { Tag, VARIANT } from 'baseui/tag'
 import {
@@ -148,14 +147,7 @@ const ModalPolicy = ({
   addBatch,
   codelistUtils,
 }: TModalPolicyProps) => (
-  <Modal
-    onClose={onClose}
-    isOpen={isOpen}
-    closeable={false}
-    animate
-    size={SIZE.auto}
-    role={ROLE.dialog}
-  >
+  <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width="750px">
     <div className="w-[750px] px-8">
       <Formik
         initialValues={initialValues}
@@ -168,18 +160,15 @@ const ModalPolicy = ({
         {(formikBag: FormikProps<IPolicyFormValues>) => {
           return (
             <Form onKeyDown={disableEnter}>
-              <ModalHeader>
-                <div className="flex justify-around mb-8">
-                  {title}
-                  {addBatch && (
-                    <Button type="button" kind="secondary" size="compact" onClick={addBatch}>
-                      Legg til flere fra et system
-                    </Button>
-                  )}
-                </div>
-              </ModalHeader>
+              <div className="mb-8">
+                {addBatch && (
+                  <Button type="button" kind="secondary" size="compact" onClick={addBatch}>
+                    Legg til flere fra et system
+                  </Button>
+                )}
+              </div>
 
-              <ModalBody>
+              <Modal.Body>
                 <div className="flex w-full mt-4">
                   <ModalLabel label="Opplysningstype" />
                   <FieldInformationType />
@@ -253,18 +242,18 @@ const ModalPolicy = ({
                 {formikBag.values.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES && (
                   <FieldLegalBasis formikBag={formikBag} codelistUtils={codelistUtils} />
                 )}
-              </ModalBody>
+              </Modal.Body>
               <Error fieldName="legalBasesOpen" fullWidth={true} />
 
-              <ModalFooter>
+              <Modal.Footer>
                 <div className="flex justify-end">
                   <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
                   <Button type="button" kind={KIND.tertiary} onClick={onClose}>
                     Avbryt
                   </Button>
-                  <ModalButton type="submit">Lagre</ModalButton>
+                  <Button type="submit">Lagre</Button>
                 </div>
-              </ModalFooter>
+              </Modal.Footer>
             </Form>
           )
         }}

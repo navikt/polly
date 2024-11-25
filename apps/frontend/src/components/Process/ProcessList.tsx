@@ -245,11 +245,13 @@ const ProcessList = ({
     }
   }
 
-  const handleDeleteProcess = async (process: IProcess): Promise<boolean> => {
+  const handleDeleteProcess = async (processToDelete: IProcess): Promise<boolean> => {
     try {
-      await deleteProcess(process.id)
+      await deleteProcess(processToDelete.id)
       setProcessList(
-        sortProcess(processList.filter((process: IProcessShort) => process.id !== process.id))
+        sortProcess(
+          processList.filter((process: IProcessShort) => process.id !== processToDelete.id)
+        )
       )
       setErrorProcessModal('')
       return true
@@ -295,15 +297,15 @@ const ProcessList = ({
       return false
     }
   }
-  const handleDeletePolicy = async (policy?: IPolicy): Promise<boolean> => {
-    if (!policy) return false
+  const handleDeletePolicy = async (policyToDelete?: IPolicy): Promise<boolean> => {
+    if (!policyToDelete) return false
     try {
-      await deletePolicy(policy.id)
+      await deletePolicy(policyToDelete.id)
       if (currentProcess) {
         setCurrentProcess({
           ...currentProcess,
           policies: [
-            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== policy.id),
+            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== policyToDelete.id),
           ],
         })
         setErrorPolicyModal(null)

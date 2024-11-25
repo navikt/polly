@@ -1,10 +1,8 @@
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button } from '@navikt/ds-react'
+import { Button, Modal } from '@navikt/ds-react'
 import { useStyletron } from 'baseui'
 import { ListItem } from 'baseui/list'
-import { Modal, ModalBody, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { OnChangeParams, Option, Select, TYPE } from 'baseui/select'
 import { Tooltip } from 'baseui/tooltip'
 import { ParagraphSmall } from 'baseui/typography'
 import {
@@ -17,7 +15,7 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getDefaultProcessDocument, searchDocuments } from '../../../api/GetAllApi'
 import {
   IAddDocumentToProcessFormValues,
@@ -27,9 +25,9 @@ import {
   IProcess,
 } from '../../../constants'
 import { CodelistService, EListName, ICode } from '../../../service/Codelist'
-import { useDebouncedState } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
+import CustomSearchSelect from '../../common/AsyncSelectComponents'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import { Spinner } from '../../common/Spinner'
 import { addDocumentToProcessSchema } from '../../common/schemaValidation'
@@ -100,11 +98,26 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
 export const AddDocumentModal = (props: TAddDocumentProps) => {
   const { isOpen, submit, addDefaultDocument, process, error } = props
   const [defaultDoc, setDefaultDoc] = useState<IDocument | undefined>()
-  const [documents, setDocuments] = useState<IDocument[]>([])
-  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
-  const [searchLoading, setSearchLoading] = useState<boolean>(false)
-
   const loading = !defaultDoc
+
+  const useSearchDocumentOption = async (searchParam: string) => {
+    if (searchParam && searchParam.length > 2) {
+      const dokumenter: IDocument[] = (await searchDocuments(searchParam)).content
+
+      const searchResult = dokumenter
+        .filter((document) => !!document.informationTypes.length)
+        .map((dokument) => {
+          return {
+            ...dokument,
+            value: dokument.id,
+            label: dokument.name,
+          }
+        })
+
+      return searchResult
+    }
+    return []
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -112,20 +125,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
     })()
   }, [])
 
-  useEffect(() => {
-    ;(async () => {
-      if (documentSearch && documentSearch.length > 2) {
-        setSearchLoading(true)
-        const res = await searchDocuments(documentSearch)
-        setDocuments(res.content)
-        setSearchLoading(false)
-      }
-    })()
-  }, [documentSearch])
-
   const onCloseModal = () => {
-    setDocumentSearch('')
-    setDocuments([])
     props.onClose()
   }
 
@@ -149,7 +149,12 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
   }
 
   return (
-    <Modal onClose={onCloseModal} isOpen={isOpen} animate size={SIZE.auto} role={ROLE.dialog}>
+    <Modal
+      onClose={onCloseModal}
+      open={isOpen}
+      width="750px"
+      header={{ heading: 'Legg til opplysningstyper fra dokument' }}
+    >
       {loading && <Spinner />}
       {!loading && (
         <Formik
@@ -178,8 +183,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
 
             return (
               <Form onKeyDown={disableEnter}>
-                <ModalHeader>Legg til opplysningstyper fra dokument</ModalHeader>
-                <ModalBody>
+                <Modal.Body className="min-h-[500px]">
                   <div className="w-[750px] px-8">
                     <div className="flex w-full mt-4">
                       <ModalLabel label="Dokument" />
@@ -187,29 +191,16 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                         name="document"
                         render={({ form }: FieldProps<IAddDocumentToProcessFormValues>) => (
                           <>
-                            <Select
-                              clearable={false}
-                              isLoading={searchLoading}
-                              noResultsMsg="Ingen"
-                              maxDropdownHeight="400px"
-                              searchable={true}
-                              type={TYPE.search}
-                              options={documents}
-                              placeholder="Søk dokumenter"
-                              value={form.values.document ? [form.values.document as Option] : []}
-                              onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-                                setDocumentSearch(event.currentTarget.value)
-                              }
-                              onChange={(params: OnChangeParams) => {
-                                const document = params.value[0] as IDocument
-                                formik.setFieldValue('defaultDocument', false)
-                                selectDocument(document, false)
+                            <CustomSearchSelect
+                              ariaLabel="Søk dokumenter"
+                              placeholder=""
+                              loadOptions={useSearchDocumentOption}
+                              onChange={(value: IDocument | undefined) => {
+                                if (value) {
+                                  form.setFieldValue('defaultDocument', false)
+                                  selectDocument(value, false)
+                                }
                               }}
-                              error={!!form.errors.document && !!form.submitCount}
-                              filterOptions={(options) =>
-                                options.filter((doc) => !!doc.informationTypes.length)
-                              }
-                              labelKey="name"
                             />
                             {!formik.values.document && defaultDoc && (
                               <Button
@@ -247,8 +238,8 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                     )}
                     <Error fieldName="informationTypes" />
                   </div>
-                </ModalBody>
-                <ModalFooter>
+                </Modal.Body>
+                <Modal.Footer>
                   <div className="flex justify-end">
                     <div className="self-end">{error && <p>{error}</p>}</div>
                     <Button type="button" variant="tertiary" onClick={onCloseModal}>
@@ -256,7 +247,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                     </Button>
                     <Button type="submit">Legg til</Button>
                   </div>
-                </ModalFooter>
+                </Modal.Footer>
               </Form>
             )
           }}
