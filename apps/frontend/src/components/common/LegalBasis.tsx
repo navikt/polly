@@ -7,12 +7,7 @@ import { Tooltip } from 'baseui/tooltip'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
-import {
-  CodelistService,
-  EListName,
-  ESensitivityLevel,
-  ICodelistProps,
-} from '../../service/Codelist'
+import { EListName, ESensitivityLevel, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
@@ -168,10 +163,9 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
 
 const isLegalBasisFilteredBySensitivity = (
   legalBasis: ILegalBasisFormValues,
+  codelistUtils: ICodelistProps,
   sensitivityLevel?: ESensitivityLevel
 ) => {
-  const [codelistUtils] = CodelistService()
-
   return (
     (sensitivityLevel === ESensitivityLevel.ART6 && codelistUtils.isArt6(legalBasis.gdpr)) ||
     (sensitivityLevel === ESensitivityLevel.ART9 && codelistUtils.isArt9(legalBasis.gdpr)) ||
@@ -196,7 +190,7 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
     <Fragment>
       {legalBases
         .filter((legalBase: ILegalBasisFormValues) =>
-          isLegalBasisFilteredBySensitivity(legalBase, sensitivityLevel)
+          isLegalBasisFilteredBySensitivity(legalBase, codelistUtils, sensitivityLevel)
         )
         .map((legalBasis: ILegalBasisFormValues, index: number) => (
           <ListItem

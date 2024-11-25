@@ -9,9 +9,9 @@ import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
 import {
-  CodelistService,
   EListName,
   ESensitivityLevel,
+  ICodelistProps,
   IGetParsedOptionsProps,
 } from '../../../service/Codelist'
 import { LegalBasisView } from '../../common/LegalBasis'
@@ -46,6 +46,7 @@ const renderCardHeader = (text: string, sensitivityLevel: ESensitivityLevel) => 
 )
 
 interface ICardLegalBasisProps {
+  codelistUtils: ICodelistProps
   initValue: ILegalBasisFormValues
   hideCard: () => void
   submit: (val: ILegalBasisFormValues) => void
@@ -54,14 +55,13 @@ interface ICardLegalBasisProps {
 }
 
 const CardLegalBasis = ({
+  codelistUtils,
   submit,
   hideCard,
   initValue,
   titleSubmitButton,
   sensitivityLevel,
 }: ICardLegalBasisProps) => {
-  const [codelistUtils] = CodelistService()
-
   // Must be complete to achieve touched on submit
   const initialValues: ILegalBasisFormValues = {
     gdpr: initValue.gdpr,

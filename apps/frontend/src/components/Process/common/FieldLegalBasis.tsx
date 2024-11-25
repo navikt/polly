@@ -44,6 +44,7 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
         <>
           {formikBag.values.legalBasesOpen && (
             <CardLegalBasis
+              codelistUtils={codelistUtils}
               titleSubmitButton={selectedLegalBasis ? 'Oppdater' : 'Legg til'}
               initValue={selectedLegalBasis || {}}
               hideCard={() => {
