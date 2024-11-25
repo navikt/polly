@@ -41,37 +41,35 @@ export const SettingsPage = () => {
   }, [])
 
   return (
-    <div>
-      <>
-        <Heading size="large">Innstillinger</Heading>
-        {loading ? (
-          <Loader size="large" />
-        ) : error || !settings ? (
-          { error }
-        ) : (
-          <div>
-            <DefaultProcessDocument
-              documentId={settings.defaultProcessDocument}
-              setDocumentId={(defaultProcessDocument) =>
-                setSettings({ ...settings, defaultProcessDocument })
-              }
-            />
-            <FrontpageMessage
-              message={settings?.frontpageMessage}
-              setMessage={(frontpageMessage) => setSettings({ ...settings, frontpageMessage })}
-            />
-            <div className="flex justify-end mt-6 gap-2">
-              <Button variant="secondary" onClick={load}>
-                Avbryt
-              </Button>
-              <Button type="button" onClick={save}>
-                Lagre
-              </Button>
-            </div>
+    <>
+      <Heading size="large">Innstillinger</Heading>
+      {loading ? (
+        <Loader size="large" />
+      ) : error || !settings ? (
+        { error }
+      ) : (
+        <div>
+          <DefaultProcessDocument
+            documentId={settings.defaultProcessDocument}
+            setDocumentId={(defaultProcessDocument) =>
+              setSettings({ ...settings, defaultProcessDocument })
+            }
+          />
+          <FrontpageMessage
+            message={settings?.frontpageMessage}
+            setMessage={(frontpageMessage) => setSettings({ ...settings, frontpageMessage })}
+          />
+          <div className="flex justify-end mt-6 gap-2">
+            <Button variant="secondary" onClick={load}>
+              Avbryt
+            </Button>
+            <Button type="button" onClick={save}>
+              Lagre
+            </Button>
           </div>
-        )}
-      </>
-    </div>
+        </div>
+      )}
+    </>
   )
 }
 
