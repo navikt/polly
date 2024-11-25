@@ -36,7 +36,11 @@ const CodelistPage = (props: ICodeListPageProps) => {
 
   return (
     <>
-      {title && <Heading size="large">{title}</Heading>}
+      {title && (
+        <Heading className="mb-2" size="large">
+          {title}
+        </Heading>
+      )}
       {isLoading && <Loader size="large" />}
       {!!codes.length && (
         <AlphabeticList
