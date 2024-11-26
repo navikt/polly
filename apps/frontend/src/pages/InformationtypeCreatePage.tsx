@@ -1,4 +1,3 @@
-import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
 import { Fragment, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -13,7 +12,6 @@ import { user } from '../service/User'
 const InformationtypeCreatePage = () => {
   const [codelistUtils] = CodelistService()
 
-  const [isLoading, setLoading] = useState(true)
   const [errorSubmit, setErrorSubmit] = useState(null)
   const navigate = useNavigate()
 
@@ -38,33 +36,23 @@ const InformationtypeCreatePage = () => {
 
   const hasAccess = () => user.canWrite()
 
-  isLoading ? setLoading(true) : setLoading(false)
-
   return (
     <Fragment>
-      {!hasAccess() ? (
-        <ErrorNotAllowed />
-      ) : (
+      {!hasAccess() && <ErrorNotAllowed />}
+      {hasAccess() && (
         <>
-          {isLoading ? (
-            <Spinner $size={30} />
-          ) : (
+          <HeadingMedium>Opprett opplysningstype</HeadingMedium>
+          {codelistUtils && (
             <>
-              <HeadingMedium>Opprett opplysningstype</HeadingMedium>
-              {codelistUtils ? (
-                <>
-                  <InformationtypeForm
-                    formInitialValues={mapInfoTypeToFormVals({})}
-                    submit={handleSubmit}
-                    isEdit={false}
-                  />
-                  {errorSubmit && <p>{errorSubmit}</p>}
-                </>
-              ) : (
-                <p>Feil i henting av codelist</p>
-              )}
+              <InformationtypeForm
+                formInitialValues={mapInfoTypeToFormVals({})}
+                submit={handleSubmit}
+                isEdit={false}
+              />
+              {errorSubmit && <p>{errorSubmit}</p>}
             </>
           )}
+          {!codelistUtils && <p>Feil i henting av codelist</p>}
         </>
       )}
     </Fragment>
