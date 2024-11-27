@@ -1,18 +1,18 @@
 import { Select, Value } from 'baseui/select'
 import { useEffect, useState } from 'react'
 import { IDocumentInfoTypeUse } from '../../../constants'
-import { CodelistService, EListName, ICode } from '../../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 
 const FieldSubjectCategory = (props: {
   documentInformationType: IDocumentInfoTypeUse
   handleChange: (values: IDocumentInfoTypeUse) => void
+  codelistUtils: ICodelistProps
 }) => {
-  const { documentInformationType, handleChange } = props
-  const [codelistUtils] = CodelistService()
+  const { documentInformationType, handleChange, codelistUtils } = props
 
   const [value, setValue] = useState<Value>(
     documentInformationType.subjectCategories.map((subjectCategory: ICode) => {
-      return { id: subjectCategory.code, label: subjectCategory.shortName }
+      return { id: subjectCategory?.code, label: subjectCategory?.shortName }
     })
   )
 

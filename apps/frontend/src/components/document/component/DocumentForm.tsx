@@ -156,7 +156,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
             <FieldArray
               name="informationTypes"
               render={(arrayHelpers: FieldArrayRenderProps) => (
-                <InformationTypesTable arrayHelpers={arrayHelpers} />
+                <InformationTypesTable codelistUtils={codelistUtils} arrayHelpers={arrayHelpers} />
               )}
             />
           </div>
