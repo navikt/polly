@@ -4,7 +4,7 @@ import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
 import { FieldArrayRenderProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
 import shortid from 'shortid'
-import { IDocumentInfoTypeUse } from '../../../constants'
+import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'
 import { ICodelistProps } from '../../../service/Codelist'
 import Button from '../../common/Button/CustomButton'
 import { Error } from '../../common/ModalSchema'
@@ -66,7 +66,9 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
               <FieldSubjectCategory
                 codelistUtils={codelistUtils}
                 documentInformationType={row}
-                handleChange={(values: IDocumentInfoTypeUse) => arrayHelpers.replace(index, values)}
+                handleChange={(values: IDocumentInformationTypes) =>
+                  arrayHelpers.replace(index, values)
+                }
               />
             </StyledCell>
             <StyledCell style={{ maxWidth: '10%', justifyContent: 'center' }}>

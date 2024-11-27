@@ -1,11 +1,11 @@
 import { Select, Value } from 'baseui/select'
 import { useEffect, useState } from 'react'
-import { IDocumentInfoTypeUse } from '../../../constants'
+import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 
 const FieldSubjectCategory = (props: {
   documentInformationType: IDocumentInfoTypeUse
-  handleChange: (values: IDocumentInfoTypeUse) => void
+  handleChange: (values: IDocumentInformationTypes) => void
   codelistUtils: ICodelistProps
 }) => {
   const { documentInformationType, handleChange, codelistUtils } = props
@@ -19,10 +19,7 @@ const FieldSubjectCategory = (props: {
   useEffect(() => {
     handleChange({
       ...documentInformationType,
-      subjectCategories: [...value].map(
-        (category) =>
-          codelistUtils.getCode(EListName.SUBJECT_CATEGORY, category.id as string) as ICode
-      ),
+      subjectCategories: [...value].map((category) => category.id as string),
     })
   }, [])
 
@@ -33,10 +30,7 @@ const FieldSubjectCategory = (props: {
         setValue(value)
         handleChange({
           ...documentInformationType,
-          subjectCategories: [...value].map(
-            (category) =>
-              codelistUtils.getCode(EListName.SUBJECT_CATEGORY, category.id as string) as ICode
-          ),
+          subjectCategories: [...value].map((category) => category.id as string),
         })
       }}
       value={value}
