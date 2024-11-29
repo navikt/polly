@@ -7,11 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.TokenExpiredException;
 import no.nav.data.common.security.dto.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -27,15 +30,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @RequiredArgsConstructor
 public class AzureTokenConsumer {
 
-    private final RestClient azureRestClient;
+    private final RestTemplate azureRestClient;
 
-    @Value("${AZURE_APP_CLIENT_ID}")
+    @Value("${azure.activedirectory.client-id}")
     private String clientId;
 
-    @Value("${AZURE_APP_CLIENT_SECRET}")
+    @Value("${azure.activedirectory.client-secret}")
     private String clientSecret;
 
-    @Value("${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}")
+    @Value("${azure.activedirectory.openid-config-token-endpoint}")
     private String azureAdTokenEndpoint;
 
     private Map<String, Token> tokens = new HashMap<>();
@@ -73,22 +76,18 @@ public class AzureTokenConsumer {
 
     private void updateToken(String scope) {
         var formParameters = formParameters(scope);
+        var headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setBasicAuth(clientId, clientSecret);
 
-        var response = azureRestClient.post()
-                .uri(azureAdTokenEndpoint)
-                .headers(httpHeaders -> {
-                    httpHeaders.setAccept(Collections.singletonList(APPLICATION_JSON));
-                    httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                    httpHeaders.setBasicAuth(clientId, clientSecret);
-                })
-                .body(formParameters)
-                .retrieve()
-                .body(AccessTokenResponse.class);
 
-        if (response != null) {
+        var response = azureRestClient.exchange(azureAdTokenEndpoint, HttpMethod.POST, new HttpEntity<>(formParameters, headers), AccessTokenResponse.class);
+
+        if (response.getBody() != null) {
             var token = Token.builder()
-                    .accessToken(response.getAccessToken())
-                    .expiry(now().plusSeconds(response.getExpiresIn()))
+                    .accessToken(response.getBody().getAccessToken())
+                    .expiry(now().plusSeconds(response.getBody().getExpiresIn()))
                     .build();
             tokens.put(scope, token);
         }
