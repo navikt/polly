@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 @Data
 public class NavCommonCodeProps {
 
-    private boolean enabled  = true;
     private String getWithTextUrl;
     private String countriesCode;
     private String eeaCountriesCode;

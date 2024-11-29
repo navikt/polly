@@ -40,7 +40,7 @@ public class NavCommonCodeClient {
     @Value("${app.scope.kodeverk}")
     private String kodeverkScope;
 
-    @Value("${app.common-code.tokened-header}")
+    @Value("${polly.security.client.enabled}")
     private boolean tokenedHeader;
 
     public NavCommonCodeClient(RestTemplate restTemplate, NavCommonCodeProps props, AzureTokenProvider azureTokenProvider) {
