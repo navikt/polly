@@ -110,10 +110,10 @@ public class AzureTokenProvider implements TokenProvider {
         return new GraphServiceClient(authenticationProvider);
     }
 
-    String getConsumerToken(String resource, String appIdUri) {
+    public String getConsumerToken(String scope, String appIdUri) {
         return Credential.getCredential()
                 .filter(Credential::hasAuth)
-                .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().decryptRefreshToken(), resource))
+                .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().decryptRefreshToken(), scope))
                 .orElseGet(() -> TOKEN_TYPE + getApplicationTokenForResource(appIdUri));
     }
 
@@ -223,10 +223,10 @@ public class AzureTokenProvider implements TokenProvider {
     /**
      * access token for app user
      */
-    private IAuthenticationResult acquireTokenByCredential(String resource) {
+    private IAuthenticationResult acquireTokenByCredential(String scope) {
         try {
-            log.debug("Looking up application token for resource {}", resource);
-            return msalClient.acquireToken(ClientCredentialParameters.builder(Set.of(resource)).build()).get();
+            log.debug("Looking up application token for scope {}", scope);
+            return msalClient.acquireToken(ClientCredentialParameters.builder(Set.of(scope)).build()).get();
         } catch (Exception e) {
             throw new TechnicalException("Failed to get access token for credential", e);
         }

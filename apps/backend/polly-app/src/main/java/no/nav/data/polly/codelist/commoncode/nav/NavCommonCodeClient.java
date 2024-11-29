@@ -2,10 +2,15 @@ package no.nav.data.polly.codelist.commoncode.nav;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import no.nav.data.common.security.azure.AzureTokenProvider;
 import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.commoncode.nav.dto.CommonCode;
 import no.nav.data.polly.codelist.commoncode.nav.dto.CommonCodeList;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.UUID.randomUUID;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.find;
 
@@ -24,12 +30,20 @@ public class NavCommonCodeClient {
 
     private final RestTemplate restTemplate;
     private final NavCommonCodeProps props;
+    private final AzureTokenProvider azureTokenProvider;
 
     private final LoadingCache<String, List<CommonCodeResponse>> cache;
 
-    public NavCommonCodeClient(RestTemplate restTemplate, NavCommonCodeProps props) {
+    @Value("${app.name}")
+    private String appName;
+
+    @Value("${app.scope.kodeverk}")
+    private String kodeverkScope;
+
+    public NavCommonCodeClient(RestTemplate restTemplate, NavCommonCodeProps props, AzureTokenProvider azureTokenProvider) {
         this.restTemplate = restTemplate;
         this.props = props;
+        this.azureTokenProvider = azureTokenProvider;
         this.cache = Caffeine.newBuilder().recordStats()
                 .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(100).build(this::getCodeList);
@@ -49,7 +63,12 @@ public class NavCommonCodeClient {
     }
 
     private List<CommonCodeResponse> getCodeList(String codeName) {
-        var resp = restTemplate.getForEntity(props.getGetWithTextUrl(), CommonCodeList.class, codeName, props.getLang());
+        var headers = new HttpHeaders();
+        headers.set("Nav-Call-Id", randomUUID().toString());
+        headers.set("Nav-Consumer-Id", appName);
+        headers.setBearerAuth(azureTokenProvider.getConsumerToken(kodeverkScope, "kodeverk-api"));
+
+        var resp = restTemplate.exchange(props.getGetWithTextUrl(), HttpMethod.GET, new HttpEntity<>(headers), CommonCodeList.class, codeName, props.getLang());
         Assert.notNull(resp.getBody(), "No response from common-code");
         return resp.getBody()
                 .getBetydninger().entrySet()
