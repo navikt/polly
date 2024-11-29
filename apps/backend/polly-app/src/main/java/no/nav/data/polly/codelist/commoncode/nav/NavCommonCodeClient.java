@@ -40,6 +40,9 @@ public class NavCommonCodeClient {
     @Value("${app.scope.kodeverk}")
     private String kodeverkScope;
 
+    @Value("${app.common-code.tokened-header}")
+    private boolean tokenedHeader;
+
     public NavCommonCodeClient(RestTemplate restTemplate, NavCommonCodeProps props, AzureTokenProvider azureTokenProvider) {
         this.restTemplate = restTemplate;
         this.props = props;
@@ -66,7 +69,9 @@ public class NavCommonCodeClient {
         var headers = new HttpHeaders();
         headers.set("Nav-Call-Id", randomUUID().toString());
         headers.set("Nav-Consumer-Id", appName);
-        headers.setBearerAuth(azureTokenProvider.getConsumerToken(kodeverkScope, "kodeverk-api"));
+        if(tokenedHeader) {
+            headers.setBearerAuth(azureTokenProvider.getApplicationTokenForResource(kodeverkScope));
+        }
 
         var resp = restTemplate.exchange(props.getGetWithTextUrl(), HttpMethod.GET, new HttpEntity<>(headers), CommonCodeList.class, codeName, props.getLang());
         Assert.notNull(resp.getBody(), "No response from common-code");

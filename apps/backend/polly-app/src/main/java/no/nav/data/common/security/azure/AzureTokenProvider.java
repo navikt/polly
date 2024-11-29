@@ -110,7 +110,7 @@ public class AzureTokenProvider implements TokenProvider {
         return new GraphServiceClient(authenticationProvider);
     }
 
-    public String getConsumerToken(String scope, String appIdUri) {
+    String getConsumerToken(String scope, String appIdUri) {
         return Credential.getCredential()
                 .filter(Credential::hasAuth)
                 .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().decryptRefreshToken(), scope))
@@ -183,9 +183,9 @@ public class AzureTokenProvider implements TokenProvider {
         return aadAuthProps.getClientId() + "/.default";
     }
 
-    String getApplicationTokenForResource(String resource) {
-        log.trace("Getting application token for resource {}", resource);
-        return requireNonNull(accessTokenCache.get("credential" + resource, cacheKey -> acquireTokenByCredential(resource))).accessToken();
+    public String getApplicationTokenForResource(String scope) {
+        log.trace("Getting application token for resource {}", scope);
+        return requireNonNull(accessTokenCache.get("credential" + scope, cacheKey -> acquireTokenByCredential(scope))).accessToken();
     }
 
     private String getAccessTokenForResource(String refreshToken, String resource) {
