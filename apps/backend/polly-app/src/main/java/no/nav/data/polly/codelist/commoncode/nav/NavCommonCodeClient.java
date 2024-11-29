@@ -2,7 +2,7 @@ package no.nav.data.polly.codelist.commoncode.nav;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import no.nav.data.common.security.azure.AzureTokenProvider;
+import no.nav.data.common.security.azure.AzureTokenConsumer;
 import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.commoncode.nav.dto.CommonCode;
@@ -30,7 +30,7 @@ public class NavCommonCodeClient {
 
     private final RestTemplate restTemplate;
     private final NavCommonCodeProps props;
-    private final AzureTokenProvider azureTokenProvider;
+    private final AzureTokenConsumer azureTokenConsumer;
 
     private final LoadingCache<String, List<CommonCodeResponse>> cache;
 
@@ -43,10 +43,10 @@ public class NavCommonCodeClient {
     @Value("${polly.security.client.enabled}")
     private boolean tokenedHeader;
 
-    public NavCommonCodeClient(RestTemplate restTemplate, NavCommonCodeProps props, AzureTokenProvider azureTokenProvider) {
+    public NavCommonCodeClient(RestTemplate restTemplate, NavCommonCodeProps props, AzureTokenConsumer azureTokenConsumer) {
         this.restTemplate = restTemplate;
         this.props = props;
-        this.azureTokenProvider = azureTokenProvider;
+        this.azureTokenConsumer = azureTokenConsumer;
         this.cache = Caffeine.newBuilder().recordStats()
                 .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(100).build(this::getCodeList);
@@ -70,7 +70,7 @@ public class NavCommonCodeClient {
         headers.set("Nav-Call-Id", randomUUID().toString());
         headers.set("Nav-Consumer-Id", appName);
         if(tokenedHeader) {
-            headers.setBearerAuth(azureTokenProvider.getApplicationTokenForResource(kodeverkScope));
+            headers.setBearerAuth(azureTokenConsumer.getToken(kodeverkScope));
         }
 
         var resp = restTemplate.exchange(props.getGetWithTextUrl(), HttpMethod.GET, new HttpEntity<>(headers), CommonCodeList.class, codeName, props.getLang());
