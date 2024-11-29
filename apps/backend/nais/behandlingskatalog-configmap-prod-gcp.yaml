@@ -1,5 +1,7 @@
 apiVersion: v1
 data:
+  APP_NAME: behandlingskatalog-backend
+  APP_SCOPE_KODEVERK: api://prod-gcp.team-rocket.kodeverk-api/.default
   AZURE_APP_MAIL_USER: srvPollyMail@nav.no
   AZURE_CLIENT_GROUPS: 7d275d5e-59a5-473d-b530-a9091b3de4c6
   AZURE_CLIENT_GROUPS_ADMIN: bf05a29f-6f80-4da1-b419-22c802fd41e7
