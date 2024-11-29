@@ -2,6 +2,7 @@ package no.nav.data.common.security.azure;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.TokenExpiredException;
 import no.nav.data.common.security.dto.AccessTokenResponse;
@@ -26,13 +27,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AzureTokenConsumer {
 
-    private final RestTemplate azureRestClient;
-
-    public AzureTokenConsumer(RestTemplate azureRestClient) {
-        this.azureRestClient = azureRestClient;
-    }
+    private final RestTemplate restTemplate;
 
     @Value("${azure.activedirectory.client-id}")
     private String clientId;
@@ -84,7 +82,7 @@ public class AzureTokenConsumer {
         headers.setBasicAuth(clientId, clientSecret);
 
 
-        var response = azureRestClient.exchange(azureAdTokenEndpoint, HttpMethod.POST, new HttpEntity<>(formParameters, headers), AccessTokenResponse.class);
+        var response = restTemplate.exchange(azureAdTokenEndpoint, HttpMethod.POST, new HttpEntity<>(formParameters, headers), AccessTokenResponse.class);
 
         if (response.getBody() != null) {
             var token = Token.builder()
