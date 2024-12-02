@@ -34,6 +34,8 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
   useEffect(() => {
     if (formikBag.values.legalBases.length == 0 && props.openArt6OnEmpty) {
       formikBag.setFieldValue('legalBasesOpen', true)
+    } else {
+      formikBag.setFieldValue('legalBasesOpen', false)
     }
   }, [])
 
