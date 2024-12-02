@@ -32,10 +32,10 @@ public class AzureTokenConsumer {
 
     private final RestTemplate restTemplate;
 
-    @Value("${azure.activedirectory.client-id}")
+    @Value("${azure.activedirectory.plain-client-id}")
     private String clientId;
 
-    @Value("${azure.activedirectory.client-secret}")
+    @Value("${azure.activedirectory.plain-client-secret}")
     private String clientSecret;
 
     @Value("${azure.activedirectory.openid-config-token-endpoint}")
