@@ -81,7 +81,6 @@ public class AzureTokenConsumer {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setBasicAuth(clientId, clientSecret);
 
-
         var response = restTemplate.exchange(azureAdTokenEndpoint, HttpMethod.POST, new HttpEntity<>(formParameters, headers), AccessTokenResponse.class);
 
         if (response.getBody() != null) {
@@ -95,7 +94,7 @@ public class AzureTokenConsumer {
 
     private MultiValueMap<String, String> formParameters(String scope) {
         MultiValueMap<String, String> formParameters = new LinkedMultiValueMap<>();
-        formParameters.add("grant_type", "client_credentials");
+        formParameters.add("grant-type", "client_credentials");
         formParameters.add("scope", scope);
 
         return formParameters;
