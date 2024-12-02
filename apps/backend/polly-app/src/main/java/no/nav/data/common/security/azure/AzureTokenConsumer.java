@@ -94,7 +94,7 @@ public class AzureTokenConsumer {
 
     private MultiValueMap<String, String> formParameters(String scope) {
         MultiValueMap<String, String> formParameters = new LinkedMultiValueMap<>();
-        formParameters.add("grant-type", "client_credentials");
+        formParameters.add("grant_type", "client_credentials");
         formParameters.add("scope", scope);
 
         return formParameters;
