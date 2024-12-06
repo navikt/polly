@@ -34,7 +34,6 @@
     "react-localization": "^1.0.15",
     "react-markdown": "^9.0.0",
     "react-process-string": "^1.2.0",
-    "react-router-dom": "^7.0.2",
     "react-select": "^5.8.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
@@ -102,7 +101,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/react-helmet": "^6.1.0",
-    "@types/react-router-dom": "^5.1.6",
+    "@types/react-router-dom": "^5.3.3",
     "@types/shortid": "2.2.0",
     "@types/styletron-engine-atomic": "^1.1.0",
     "@types/styletron-react": "^5.0.2",
@@ -121,6 +120,7 @@
     "react-scripts": "5.0.1",
     "tailwindcss": "^3.3.3",
     "ts-jest": "^29.0.1",
-    "ts-node": "^10.4.0"
+    "ts-node": "^10.4.0",
+    "react-router-dom": "^7.0.2"
   }
 }
