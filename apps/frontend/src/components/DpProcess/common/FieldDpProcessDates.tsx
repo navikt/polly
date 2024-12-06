@@ -1,10 +1,7 @@
-import { faCalendar, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Tooltip } from '@navikt/ds-react'
-import { Datepicker } from 'baseui/datepicker'
-import nb from 'date-fns/locale/nb'
+import { Button, DatePicker, Tooltip, useDatepicker } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
-import moment, { Moment } from 'moment'
 import { useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
 import { theme } from '../../../util'
@@ -13,12 +10,6 @@ import { Error } from '../../common/ModalSchema'
 interface IDateModalProps {
   showDates: boolean
   showLabels?: boolean
-}
-
-function dateToDateString(date: Date | (Date | null | undefined)[] | Date[] | null | undefined) {
-  if (!date) return undefined
-  const moment1: Moment = moment(date as Date)
-  return moment1.format(moment.HTML5_FMT.DATE)
 }
 
 interface ILabelWithTooltipProps {
@@ -47,6 +38,7 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
 export const FieldDpProcessDates = (props: IDateModalProps) => {
   const { showLabels } = props
   const [showDates, setShowDates] = useState<boolean>(props.showDates)
+  const { datepickerProps, inputProps } = useDatepicker({})
 
   return (
     <>
@@ -82,25 +74,26 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
               <div className="w-[50%] mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="start">
-                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
-                      <Datepicker
-                        placeholder="Velg fra og med dato "
-                        value={field.value ? new Date(field.value) : undefined}
-                        onChange={({ date }) => {
-                          form.setFieldValue('start', dateToDateString(date))
+                    {({ form }: FieldProps<string, IDpProcessFormValues>) => (
+                      <DatePicker
+                        {...datepickerProps}
+                        onSelect={(date: any) => {
+                          const dateSingle: Date = Array.isArray(date) ? date[0] : date
+                          if (dateSingle) {
+                            const newDate = dateSingle.setDate(dateSingle.getDate() + 1)
+                            const formatedDate = new Date(newDate)
+                            form.setFieldValue('start', formatedDate.toISOString().split('T')[0])
+                          } else form.setFieldValue('start', undefined)
                         }}
-                        locale={nb}
-                        formatString={'dd-MM-yyyy'}
-                        error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
-                        clearable
-                        overrides={{
-                          Input: {
-                            props: {
-                              startEnhancer: () => <FontAwesomeIcon icon={faCalendar} />,
-                            },
-                          },
-                        }}
-                      />
+                      >
+                        <DatePicker.Input
+                          className="mb-2"
+                          {...inputProps}
+                          value={form.values['start']}
+                          label="Velg fra og med dato"
+                          error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
+                        />
+                      </DatePicker>
                     )}
                   </Field>
                 </div>
@@ -109,25 +102,26 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
               <div className="w-[50%]">
                 <div className="flex w-full mt-4">
                   <Field name="end">
-                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
-                      <Datepicker
-                        placeholder="Velg til og med dato"
-                        value={field.value ? new Date(field.value) : undefined}
-                        onChange={({ date }) => {
-                          form.setFieldValue('end', dateToDateString(date))
+                    {({ form }: FieldProps<string, IDpProcessFormValues>) => (
+                      <DatePicker
+                        {...datepickerProps}
+                        onSelect={(date: any) => {
+                          const dateSingle: Date = Array.isArray(date) ? date[0] : date
+                          if (dateSingle) {
+                            const newDate = dateSingle.setDate(dateSingle.getDate() + 1)
+                            const formatedDate = new Date(newDate)
+                            form.setFieldValue('end', formatedDate.toISOString().split('T')[0])
+                          } else form.setFieldValue('end', undefined)
                         }}
-                        formatString={'dd-MM-yyyy'}
-                        error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
-                        locale={nb}
-                        clearable
-                        overrides={{
-                          Input: {
-                            props: {
-                              startEnhancer: () => <FontAwesomeIcon icon={faCalendar} />,
-                            },
-                          },
-                        }}
-                      />
+                      >
+                        <DatePicker.Input
+                          className="mb-2"
+                          {...inputProps}
+                          value={form.values['end']}
+                          label="Velg til og med dato"
+                          error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
+                        />
+                      </DatePicker>
                     )}
                   </Field>
                 </div>
