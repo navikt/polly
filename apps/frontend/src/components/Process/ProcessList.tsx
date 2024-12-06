@@ -90,7 +90,9 @@ const ProcessList = ({
   useEffect(() => getCount && getCount(processList.length), [processList.length])
 
   useEffect(() => {
-    processId && getProcessById(processId)
+    if (processId) {
+      getProcessById(processId)
+    }
   }, [processId])
 
   useEffect(() => {
@@ -147,11 +149,19 @@ const ProcessList = ({
       let list: IProcessShort[]
 
       if (current_location.pathname.includes('team')) {
-        let response: IPageResponse<IProcess> = await getProcessesFor({ productTeam: code })
-        response.content ? (list = response.content as IProcessShort[]) : (list = [])
+        const response: IPageResponse<IProcess> = await getProcessesFor({ productTeam: code })
+        if (response.content) {
+          list = response.content as IProcessShort[]
+        } else {
+          list = []
+        }
       } else if (current_location.pathname.includes('productarea')) {
-        let response: IPageResponse<IProcess> = await getProcessesFor({ productArea: code })
-        response.content ? (list = response.content as IProcessShort[]) : (list = [])
+        const response: IPageResponse<IProcess> = await getProcessesFor({ productArea: code })
+        if (response.content) {
+          list = response.content as IProcessShort[]
+        } else {
+          list = []
+        }
       } else {
         list = (await getCodelistUsage(listName as EListName, code)).processes
       }

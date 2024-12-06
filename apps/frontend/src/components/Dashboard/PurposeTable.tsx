@@ -31,7 +31,7 @@ const PurposeTable = () => {
       changeTitle()
       if (filterName && filterValue) {
         if (department) {
-          let response: IProcessShort[] = await getProcessByStateAndStatusForDepartment(
+          const response: IProcessShort[] = await getProcessByStateAndStatusForDepartment(
             filterName,
             filterValue,
             filterStatus,
@@ -39,7 +39,7 @@ const PurposeTable = () => {
           )
           setFiltered(response)
         } else if (productareaId) {
-          let response: IProcessShort[] = await getProcessByStateAndStatusForProductArea(
+          const response: IProcessShort[] = await getProcessByStateAndStatusForProductArea(
             filterName,
             filterValue,
             filterStatus,
@@ -47,7 +47,7 @@ const PurposeTable = () => {
           )
           setFiltered(response)
         } else {
-          let response: IProcessShort[] = await getProcessByStateAndStatus(
+          const response: IProcessShort[] = await getProcessByStateAndStatus(
             filterName,
             filterValue,
             filterStatus

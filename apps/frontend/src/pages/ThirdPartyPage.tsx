@@ -140,7 +140,11 @@ const ThirdPartyPage = () => {
   }, [params.thirdPartyCode])
 
   const handleOnOpenChange = (isOpen: boolean, accordionKey: string): void => {
-    isOpen ? setExpandedAccordion(accordionKey) : setExpandedAccordion('')
+    if (isOpen) {
+      setExpandedAccordion(accordionKey)
+    } else {
+      setExpandedAccordion('')
+    }
   }
 
   return (

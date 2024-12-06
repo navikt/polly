@@ -152,11 +152,13 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
         setDisclosures(await getDisclosuresByProcessId(params.processId))
       }
     })()
-    params.processId &&
-      !isLoading &&
+    if (params.processId && !isLoading) {
       setTimeout(() => {
-        purposeRef.current && window.scrollTo({ top: purposeRef.current.offsetTop - 30 })
+        if (purposeRef.current) {
+          window.scrollTo({ top: purposeRef.current.offsetTop - 30 })
+        }
       }, 200)
+    }
   }, [isLoading])
 
   useEffect(() => {
@@ -302,9 +304,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
             onClose={() => setShowEditProcessModal(false)}
             isOpen={showEditProcessModal}
             submit={async (values: IProcessFormValues) => {
-              ;(await submitEditProcess(values))
-                ? setShowEditProcessModal(false)
-                : setShowEditProcessModal(true)
+              if (await submitEditProcess(values)) {
+                setShowEditProcessModal(false)
+              } else {
+                setShowEditProcessModal(true)
+              }
             }}
             errorOnCreate={errorProcessModal}
             isEdit={true}

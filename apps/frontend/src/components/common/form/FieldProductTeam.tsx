@@ -21,6 +21,7 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
           try {
             vals.push(mapTeamToOption(await getTeam(team), index))
           } catch (error: any) {
+            console.debug(error)
             vals.push({ team, label: 'na: ' + team, index })
           }
         })()
