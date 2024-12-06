@@ -30,6 +30,7 @@ const FieldDpProcessDataProcessingAgreements = (
       {(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
           <TextField
+            className="w-full"
             label=""
             hideLabel
             placeholder="(f.eks. lenke til Websak, Confluence e.l.)"

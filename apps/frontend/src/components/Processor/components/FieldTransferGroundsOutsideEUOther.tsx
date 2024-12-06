@@ -6,6 +6,7 @@ const FieldTransferGroundsOutsideEUOther = () => (
   <Field name="transferGroundsOutsideEUOther">
     {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
       <TextField
+        className="w-full"
         label=""
         hideLabel
         {...field}

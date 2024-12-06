@@ -95,7 +95,9 @@ const DocumentForm = (props: TDocumentFormProps) => {
             <div>
               <LabelMedium {...labelProps}>Navn</LabelMedium>
               <Field name="name">
-                {(props: FieldProps) => <TextField label="" hideLabel {...props.field} />}
+                {(props: FieldProps) => (
+                  <TextField className="w-full" label="" hideLabel {...props.field} />
+                )}
               </Field>
               <Error fieldName="name" fullWidth={true} />
             </div>
@@ -103,7 +105,9 @@ const DocumentForm = (props: TDocumentFormProps) => {
           <div className="w-[50%] mb-8">
             <LabelMedium {...labelProps}>Beskrivelse</LabelMedium>
             <Field name="description">
-              {(props: FieldProps) => <Textarea label="" hideLabel {...props.field} />}
+              {(props: FieldProps) => (
+                <Textarea className="w-full" label="" hideLabel {...props.field} />
+              )}
             </Field>
             <Error fieldName="description" fullWidth={true} />
           </div>
