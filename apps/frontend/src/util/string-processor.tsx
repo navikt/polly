@@ -1,5 +1,3 @@
-import { JSX } from 'react'
-
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { JSX } from 'react'
 
