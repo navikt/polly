@@ -53,9 +53,8 @@ const CreateCodeListModal = ({
         {({ errors, submitForm }) => (
           <Form>
             <Modal.Body>
-              <Field
-                name="code"
-                render={({ field }: FieldProps) => (
+              <Field name="code">
+                {({ field }: FieldProps) => (
                   <TextField
                     className="w-full"
                     {...field}
@@ -63,10 +62,9 @@ const CreateCodeListModal = ({
                     error={errors.code && <ErrorMessage name="code" />}
                   />
                 )}
-              />
-              <Field
-                name="shortName"
-                render={({ field }: FieldProps) => (
+              </Field>
+              <Field name="shortName">
+                {({ field }: FieldProps) => (
                   <TextField
                     className="w-full mt-4"
                     {...field}
@@ -74,10 +72,9 @@ const CreateCodeListModal = ({
                     error={errors.shortName && <ErrorMessage name="shortName" />}
                   />
                 )}
-              />
-              <Field
-                name="description"
-                render={({ field }: FieldProps) => (
+              </Field>
+              <Field name="description">
+                {({ field }: FieldProps) => (
                   <Textarea
                     className="w-full mt-4"
                     {...field}
@@ -86,7 +83,7 @@ const CreateCodeListModal = ({
                     error={errors.description && <ErrorMessage name="description" />}
                   />
                 )}
-              />
+              </Field>
             </Modal.Body>
             <Modal.Footer>
               {errorOnCreate && <BodyShort>{errorOnCreate}</BodyShort>}

@@ -147,9 +147,8 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
               flexGridRowGap="scale1000"
             >
               <FlexGridItem>
-                <Field
-                  name="name"
-                  render={({ form, field }: FieldProps) => (
+                <Field name="name">
+                  {({ form, field }: FieldProps) => (
                     <div>
                       <div className="mb-2 self-center">
                         <LabelMedium>Navn</LabelMedium>
@@ -162,7 +161,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       />
                     </div>
                   )}
-                />
+                </Field>
                 <Error fieldName="name" fullWidth />
               </FlexGridItem>
 
@@ -253,9 +252,8 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
               </FlexGridItem>
 
               <FlexGridItem>
-                <FieldArray
-                  name="keywords"
-                  render={(arrayHelpers: FieldArrayRenderProps) => (
+                <FieldArray name="keywords">
+                  {(arrayHelpers: FieldArrayRenderProps) => (
                     <div>
                       <div className="mb-2 self-center">
                         <LabelMedium>Søkeord</LabelMedium>
@@ -277,7 +275,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       {renderTagList(formikBag.values.keywords, arrayHelpers)}
                     </div>
                   )}
-                />
+                </FieldArray>
                 <Error fieldName="keywords" fullWidth />
               </FlexGridItem>
 
@@ -325,9 +323,8 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
               </FlexGridItem>
 
               <FlexGridItem>
-                <Field
-                  name="description"
-                  render={({ field, form }: FieldProps) => (
+                <Field name="description">
+                  {({ field, form }: FieldProps) => (
                     <div>
                       <div className="mb-2 self-center">
                         <LabelMedium>Nyttig å vite om opplysningstypen</LabelMedium>
@@ -344,7 +341,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       />
                     </div>
                   )}
-                />
+                </Field>
               </FlexGridItem>
 
               <FlexGridItem>

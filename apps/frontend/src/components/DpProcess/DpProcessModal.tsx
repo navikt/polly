@@ -57,9 +57,8 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     label="Navn"
                     tooltip="Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring."
                   />
-                  <Field
-                    name="name"
-                    render={({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
+                  <Field name="name">
+                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
                       <TextField
                         className="w-full"
                         label="name"
@@ -68,7 +67,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                         error={!!form.errors.name && form.touched.name}
                       />
                     )}
-                  />
+                  </Field>
                 </CustomizedModalBlock>
                 <Error fieldName={'name'} />
 
