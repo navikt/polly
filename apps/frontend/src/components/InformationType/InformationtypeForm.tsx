@@ -259,21 +259,23 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       <div className="mb-2 self-center">
                         <LabelMedium>Søkeord</LabelMedium>
                       </div>
-                      <TextField
-                        className="w-full"
-                        label=""
-                        hideLabel
-                        value={currentKeywordValue}
-                        onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
-                        onBlur={() => onAddKeyword(arrayHelpers)}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') onAddKeyword(arrayHelpers)
-                        }}
-                        ref={keywordsRef}
-                      />
-                      <Button type="button" onClick={() => onAddKeyword(arrayHelpers)}>
-                        <PlusIcon aria-hidden />
-                      </Button>
+                      <div className="flex w-full">
+                        <TextField
+                          className="w-full"
+                          label=""
+                          hideLabel
+                          value={currentKeywordValue}
+                          onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
+                          onBlur={() => onAddKeyword(arrayHelpers)}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') onAddKeyword(arrayHelpers)
+                          }}
+                          ref={keywordsRef}
+                        />
+                        <Button type="button" onClick={() => onAddKeyword(arrayHelpers)}>
+                          <PlusIcon aria-hidden />
+                        </Button>
+                      </div>
                       {renderTagList(formikBag.values.keywords, arrayHelpers)}
                     </div>
                   )}

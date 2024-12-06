@@ -29,22 +29,24 @@ const FieldDpProcessDataProcessingAgreements = (
     <FieldArray name="dataProcessingAgreements">
       {(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
-          <TextField
-            className="w-full"
-            label=""
-            hideLabel
-            placeholder="(f.eks. lenke til Websak, Confluence e.l.)"
-            value={currentKeywordValue}
-            onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') onAddAgreement(arrayHelpers)
-            }}
-            onBlur={() => onAddAgreement(arrayHelpers)}
-            ref={agreementRef}
-          />
-          <Button type="button" onClick={() => onAddAgreement(arrayHelpers)}>
-            <PlusIcon aria-hidden />
-          </Button>
+          <div className="flex w-full">
+            <TextField
+              className="w-full"
+              label=""
+              hideLabel
+              placeholder="(f.eks. lenke til Websak, Confluence e.l.)"
+              value={currentKeywordValue}
+              onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') onAddAgreement(arrayHelpers)
+              }}
+              onBlur={() => onAddAgreement(arrayHelpers)}
+              ref={agreementRef}
+            />
+            <Button type="button" onClick={() => onAddAgreement(arrayHelpers)}>
+              <PlusIcon aria-hidden />
+            </Button>
+          </div>
           {renderTagList(formikBag.values.dataProcessingAgreements, arrayHelpers)}
         </div>
       )}

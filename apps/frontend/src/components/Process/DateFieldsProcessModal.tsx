@@ -90,8 +90,8 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
                           className="mb-2"
                           {...inputProps}
                           value={form.values['start']}
-                          label="Velg dato"
-                          error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
+                          label="Velg fra og med dato"
+                          error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
                         />
                       </DatePicker>
                     )}
@@ -118,7 +118,7 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
                           className="mb-2"
                           {...inputProps}
                           value={form.values['end']}
-                          label="Velg dato"
+                          label="Velg til og med dato"
                           error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
                         />
                       </DatePicker>
