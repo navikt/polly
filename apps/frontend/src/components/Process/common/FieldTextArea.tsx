@@ -1,4 +1,4 @@
-import { Textarea } from 'baseui/textarea'
+import { Textarea } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 
 interface IFieldTextareaProps {
@@ -16,8 +16,9 @@ export const FieldTextarea = (props: IFieldTextareaProps) => {
       name={fieldName}
       render={({ field }: FieldProps<string>) => (
         <Textarea
+          label=""
+          hideLabel
           {...field}
-          size="compact"
           rows={rows}
           placeholder={placeHolder ? placeHolder : ''}
         />

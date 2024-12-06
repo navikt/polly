@@ -1,5 +1,4 @@
-import { SIZE as InputSIZE } from 'baseui/input'
-import { Textarea } from 'baseui/textarea'
+import { Textarea } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { IProcessFormValues } from '../../../constants'
 
@@ -8,9 +7,9 @@ const FieldAdditionalDescription = () => (
     name="additionalDescription"
     render={({ field, form }: FieldProps<string, IProcessFormValues>) => (
       <Textarea
+        label=""
+        hideLabel
         {...field}
-        type="input"
-        size={InputSIZE.default}
         error={!!form.errors.additionalDescription && form.touched.additionalDescription}
       />
     )}

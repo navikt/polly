@@ -1,9 +1,8 @@
+import { TextField, Textarea } from '@navikt/ds-react'
 import { BlockProps } from 'baseui/block'
-import { Input, SIZE } from 'baseui/input'
 import { StyledLink } from 'baseui/link'
 import { Notification } from 'baseui/notification'
 import { OnChangeParams, Option, Select, Value } from 'baseui/select'
-import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
 import {
   Field,
@@ -96,14 +95,16 @@ const DocumentForm = (props: TDocumentFormProps) => {
             <div>
               <LabelMedium {...labelProps}>Navn</LabelMedium>
               <Field name="name">
-                {(props: FieldProps) => <Input type="text" size={SIZE.default} {...props.field} />}
+                {(props: FieldProps) => <TextField label="" hideLabel {...props.field} />}
               </Field>
               <Error fieldName="name" fullWidth={true} />
             </div>
           </div>
           <div className="w-[50%] mb-8">
             <LabelMedium {...labelProps}>Beskrivelse</LabelMedium>
-            <Field name="description">{(props: FieldProps) => <Textarea {...props.field} />}</Field>
+            <Field name="description">
+              {(props: FieldProps) => <Textarea label="" hideLabel {...props.field} />}
+            </Field>
             <Error fieldName="description" fullWidth={true} />
           </div>
 

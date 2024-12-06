@@ -75,7 +75,7 @@ export const AuditPage = () => {
             hideLabel
             value={idInput}
             placeholder="ID"
-            onChange={(e) => setIdInput(format((e.target as HTMLInputElement).value))}
+            onChange={(e) => setIdInput(format(e.target.value))}
           />
         </AuditLabel>
       </div>

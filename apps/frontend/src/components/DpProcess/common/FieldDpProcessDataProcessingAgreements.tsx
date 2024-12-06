@@ -1,8 +1,7 @@
-import { Button, SHAPE } from 'baseui/button'
-import { Plus } from 'baseui/icon'
-import { Input } from 'baseui/input'
+import { PlusIcon } from '@navikt/aksel-icons'
+import { Button, TextField } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { KeyboardEvent, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
@@ -15,9 +14,7 @@ const FieldDpProcessDataProcessingAgreements = (
 ) => {
   const { formikBag } = props
   const [currentKeywordValue, setCurrentKeywordValue] = useState('')
-  const agreementRef = useRef<HTMLInputElement | HTMLTextAreaElement>(
-    {} as HTMLInputElement | HTMLTextAreaElement
-  )
+  const agreementRef = useRef<HTMLInputElement>({} as HTMLInputElement)
 
   const onAddAgreement = (arrayHelpers: FieldArrayRenderProps) => {
     if (!currentKeywordValue) return
@@ -33,25 +30,21 @@ const FieldDpProcessDataProcessingAgreements = (
       name="dataProcessingAgreements"
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
-          <Input
-            type="text"
-            size="compact"
+          <TextField
+            label=""
+            hideLabel
             placeholder="(f.eks. lenke til Websak, Confluence e.l.)"
             value={currentKeywordValue}
             onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
-            onKeyDown={(event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            onKeyDown={(event) => {
               if (event.key === 'Enter') onAddAgreement(arrayHelpers)
             }}
             onBlur={() => onAddAgreement(arrayHelpers)}
-            inputRef={agreementRef}
-            overrides={{
-              After: () => (
-                <Button type="button" size="compact" shape={SHAPE.square}>
-                  <Plus />
-                </Button>
-              ),
-            }}
+            ref={agreementRef}
           />
+          <Button type="button" onClick={() => onAddAgreement(arrayHelpers)}>
+            <PlusIcon aria-hidden />
+          </Button>
           {renderTagList(formikBag.values.dataProcessingAgreements, arrayHelpers)}
         </div>
       )}

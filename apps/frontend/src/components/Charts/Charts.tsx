@@ -204,7 +204,12 @@ const Charts = (props: TChartsProps) => {
       )}
 
       <div className="mt-10 w-full">
-        <Card overrides={cardShadow}>
+        <Card
+          overrides={cardShadow}
+          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+            return !!placeHolder
+          }}
+        >
           <div>
             <ParagraphMedium>
               Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}

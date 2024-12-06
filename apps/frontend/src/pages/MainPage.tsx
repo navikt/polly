@@ -36,6 +36,7 @@ export const MainPage = () => {
   }, [])
 
   const cardOverrides = {
+    Action: {},
     Root: {
       style: {
         ...cardShadow.Root.style,
@@ -62,13 +63,23 @@ export const MainPage = () => {
           <div className="w-full flex justify-between mb-6 flex-wrap">
             {user.isLoggedIn() && (
               <div className="flex w-[48%] mb-6 min-h-[550px]">
-                <Card overrides={cardOverrides}>
+                <Card
+                  overrides={cardOverrides}
+                  hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+                    return !!placeHolder
+                  }}
+                >
                   <RecentEditsByUser />
                 </Card>
               </div>
             )}
             <div className="flex w-[48%] mb-6 min-h-[550px]">
-              <Card overrides={cardOverrides}>
+              <Card
+                overrides={cardOverrides}
+                hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+                  return !!placeHolder
+                }}
+              >
                 <LastEvents />
               </Card>
             </div>
@@ -76,7 +87,12 @@ export const MainPage = () => {
             <div
               className={`min-h-[550px] ${user.isLoggedIn() ? 'w-full mt-12 mb-[2px]' : 'w-[48%] mt-[2px] mb-6'}`}
             >
-              <Card overrides={cardShadow}>
+              <Card
+                overrides={cardShadow}
+                hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+                  return !!placeHolder
+                }}
+              >
                 <Markdown source={settings?.frontpageMessage} escapeHtml={false} />
               </Card>
             </div>

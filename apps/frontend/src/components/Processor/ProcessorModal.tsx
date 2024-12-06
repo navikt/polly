@@ -1,6 +1,6 @@
+import { TextField } from '@navikt/ds-react'
 import { Panel, PanelOverrides, StatelessAccordion } from 'baseui/accordion'
 import { Button, KIND } from 'baseui/button'
-import { Input, SIZE as InputSIZE } from 'baseui/input'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { Field, FieldProps, Form, Formik } from 'formik'
 import { Key, useEffect, useState } from 'react'
@@ -93,10 +93,10 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                   <ModalLabel label="Navn på databehandler" />
                   <Field name="name">
                     {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
-                      <Input
+                      <TextField
+                        label=""
+                        hideLabel
                         {...field}
-                        type="input"
-                        size={InputSIZE.default}
                         error={!!form.errors.name && form.touched.name}
                       />
                     )}
@@ -111,10 +111,10 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                   />
                   <Field name="contract">
                     {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
-                      <Input
+                      <TextField
+                        label=""
+                        hideLabel
                         {...field}
-                        type="input"
-                        size={InputSIZE.default}
                         error={!!form.errors.contract && form.touched.contract}
                       />
                     )}

@@ -1,9 +1,8 @@
-import { Button, SHAPE } from 'baseui/button'
+import { PlusIcon } from '@navikt/aksel-icons'
+import { TextField, Textarea } from '@navikt/ds-react'
+import { Button } from 'baseui/button'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { Plus } from 'baseui/icon'
-import { Input } from 'baseui/input'
 import { OnChangeParams, Option, Select, TYPE, Value } from 'baseui/select'
-import { Textarea } from 'baseui/textarea'
 import { LabelMedium } from 'baseui/typography'
 import {
   Field,
@@ -15,7 +14,7 @@ import {
   FormikHelpers,
   FormikProps,
 } from 'formik'
-import { ChangeEvent, Fragment, KeyboardEvent, useEffect, useRef, useState } from 'react'
+import { Fragment, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api/GetAllApi'
 import { IInformationType, IInformationtypeFormValues } from '../../constants'
 import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
@@ -61,9 +60,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
     return [mapTermToOption(await getTerm(formInitialValues.term))]
   }
 
-  const keywordsRef = useRef<HTMLInputElement | HTMLTextAreaElement>(
-    {} as HTMLInputElement | HTMLTextAreaElement
-  )
+  const keywordsRef = useRef<HTMLInputElement>({} as HTMLInputElement)
 
   const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
@@ -157,7 +154,12 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       <div className="mb-2 self-center">
                         <LabelMedium>Navn</LabelMedium>
                       </div>
-                      <Input {...field} error={!!form.errors.name && !!form.submitCount} />
+                      <TextField
+                        label=""
+                        hideLabel
+                        {...field}
+                        error={!!form.errors.name && !!form.submitCount}
+                      />
                     </div>
                   )}
                 />
@@ -258,28 +260,20 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       <div className="mb-2 self-center">
                         <LabelMedium>Søkeord</LabelMedium>
                       </div>
-                      <Input
-                        type="text"
+                      <TextField
+                        label=""
+                        hideLabel
                         value={currentKeywordValue}
-                        onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-                          setCurrentKeywordValue(event.currentTarget.value)
-                        }
+                        onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
                         onBlur={() => onAddKeyword(arrayHelpers)}
                         onKeyDown={(event) => {
                           if (event.key === 'Enter') onAddKeyword(arrayHelpers)
                         }}
-                        inputRef={keywordsRef}
-                        overrides={{
-                          After: () => (
-                            <Button type="button" shape={SHAPE.square}>
-                              <Plus />
-                            </Button>
-                          ),
-                        }}
-                        error={
-                          !!arrayHelpers.form.errors.keywords && !!arrayHelpers.form.submitCount
-                        }
+                        ref={keywordsRef}
                       />
+                      <Button type="button" onClick={() => onAddKeyword(arrayHelpers)}>
+                        <PlusIcon aria-hidden />
+                      </Button>
                       {renderTagList(formikBag.values.keywords, arrayHelpers)}
                     </div>
                   )}
@@ -339,6 +333,8 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         <LabelMedium>Nyttig å vite om opplysningstypen</LabelMedium>
                       </div>
                       <Textarea
+                        label=""
+                        hideLabel
                         onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
                           if (event.key === 'Enter')
                             form.setFieldValue('description', form.values.description + '\n')

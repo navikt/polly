@@ -38,6 +38,7 @@ const cardOverrides = (hover: boolean) => {
         }
       },
     },
+    Action: {},
   } as CardOverrides
 }
 
@@ -54,7 +55,12 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
   return (
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <RouteLink href={to} hideUnderline={true}>
-        <Card overrides={cardOverrides(hover)}>
+        <Card
+          overrides={cardOverrides(hover)}
+          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+            return !!placeHolder
+          }}
+        >
           <div>
             <div className="flex justify-center">
               <ParagraphLarge
