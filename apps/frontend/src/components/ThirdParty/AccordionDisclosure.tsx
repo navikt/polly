@@ -92,7 +92,9 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
   } = props
 
   useEffect(() => {
-    expand && renewDisclosureDetails(expand)
+    if (expand) {
+      renewDisclosureDetails(expand)
+    }
   }, [expand])
 
   const renewDisclosureDetails = async (disclosureId: string) => {
@@ -343,7 +345,9 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
             }
           }}
           onClose={() => {
-            onCloseModal && onCloseModal()
+            if (onCloseModal) {
+              onCloseModal()
+            }
             setShowEditModal(false)
           }}
           errorOnCreate={errorModal}

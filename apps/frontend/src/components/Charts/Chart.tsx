@@ -185,8 +185,8 @@ const Visualization = (props: TVisualizationProps) => {
                     onMouseOver={() => setHover(index)}
                     onClick={data.onClick}
                     onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        data.onClick
+                      if (event.key === 'Enter' && data.onClick) {
+                        data.onClick()
                       }
                     }}
                   >

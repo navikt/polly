@@ -80,7 +80,9 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
 
   useEffect(() => {
     ;(async () => {
-      show && setAudits(await getAudits(page - 1, limit, table))
+      if (show) {
+        setAudits(await getAudits(page - 1, limit, table))
+      }
     })()
   }, [page, limit, show, table])
 

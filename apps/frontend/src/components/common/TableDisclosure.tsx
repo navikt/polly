@@ -121,7 +121,9 @@ const TableDisclosure = ({
               : setShowEditModal(true)
           }
           onClose={() => {
-            onCloseModal && onCloseModal()
+            if (onCloseModal) {
+              onCloseModal()
+            }
             setShowEditModal(false)
           }}
           errorOnCreate={errorModal}
