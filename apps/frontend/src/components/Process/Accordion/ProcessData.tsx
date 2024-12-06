@@ -316,7 +316,7 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="Er det behov for PVK?" text={''}>
-        <div>
+        <div className="break-words">
           <span>{showDpiaRequiredField(process.dpia)}</span>
         </div>
       </DataText>

@@ -1,5 +1,6 @@
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { BodyLong } from '@navikt/ds-react'
 import { Fragment, ReactNode } from 'react'
 import { TNavigableItem } from '../../constants'
 import { EListName, ICode, ICodelistProps } from '../../service/Codelist'
@@ -38,7 +39,7 @@ export const DotTag = (props: IDotTagProps) => {
           style={{ fontSize: '.45rem' }}
         />
         <div className="inline mr-1" />
-        <div className=" whitespace-nowrap">{props.children}</div>
+        <div>{props.children}</div>
       </div>
     </>
   )
@@ -56,7 +57,7 @@ const Content = (props: IContentProps) => {
   const { item, list, linkCodelist, markdown, codelistUtils } = props
 
   return (
-    <>
+    <div className="break-words">
       {list && (
         <>
           {linkCodelist && (
@@ -68,8 +69,8 @@ const Content = (props: IContentProps) => {
         </>
       )}
       {!list && markdown && <Markdown source={item} />}
-      {!list && !markdown && item}
-    </>
+      {!list && !markdown && <BodyLong className="break-word">{item}</BodyLong>}
+    </div>
   )
 }
 
