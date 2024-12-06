@@ -2,7 +2,7 @@ import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tag } from '@navikt/ds-react'
 import { LabelLarge } from 'baseui/typography'
-import { Ref, RefObject, createRef } from 'react'
+import { Ref, createRef } from 'react'
 import { IProcessShort } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
@@ -15,7 +15,7 @@ type TAccordionTitleProps = {
   noChevron?: boolean
 }
 
-export const InformationTypeRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
+export const InformationTypeRef = createRef<HTMLDivElement>()
 
 const AccordionTitle = (props: TAccordionTitleProps) => {
   const { process, expanded, forwardRef, codelistUtils, noChevron } = props
