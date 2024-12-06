@@ -66,6 +66,7 @@ export const hideBorder = {
 }
 
 export const cardShadow = {
+  Action: {},
   Root: {
     style: {
       ...hideBorder,

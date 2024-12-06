@@ -62,7 +62,12 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
       content={codelistUtils.getCode(EListName.DEPARTMENT, department.department)?.shortName || ''}
     >
       <Button type="button" variant="tertiary-neutral">
-        <Card overrides={cardShadow}>
+        <Card
+          overrides={cardShadow}
+          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+            return !!placeHolder
+          }}
+        >
           <div className="flex flex-col items-center justify-around w-24 h-28">
             <RouteLink
               href={genProcessPath(ESection.department, department.department, undefined)}

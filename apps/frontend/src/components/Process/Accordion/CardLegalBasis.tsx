@@ -89,7 +89,12 @@ const CardLegalBasis = ({
       validationSchema={legalBasisSchema()}
       initialValues={initialValues}
       render={(form: FormikProps<ILegalBasisFormValues>) => (
-        <Card>
+        <Card
+          overrides={{ Action: {} }}
+          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+            return !!placeHolder
+          }}
+        >
           {renderCardHeader(
             sensitivityLevel === ESensitivityLevel.ART9
               ? 'Behandlingsgrunnlag for særlige kategorier'

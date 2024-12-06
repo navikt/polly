@@ -1,4 +1,4 @@
-import { Input, SIZE as InputSIZE } from 'baseui/input'
+import { TextField } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { IProcessFormValues } from '../../../constants'
 
@@ -6,12 +6,7 @@ const FieldName = () => (
   <Field
     name="name"
     render={({ field, form }: FieldProps<string, IProcessFormValues>) => (
-      <Input
-        {...field}
-        type="input"
-        size={InputSIZE.default}
-        error={!!form.errors.name && form.touched.name}
-      />
+      <TextField {...field} label="" hideLabel error={!!form.errors.name && form.touched.name} />
     )}
   />
 )

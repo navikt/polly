@@ -1,4 +1,4 @@
-import { Input } from 'baseui/input'
+import { TextField } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 
 interface IFieldInputProps {
@@ -14,7 +14,7 @@ const FieldInput = (props: IFieldInputProps) => {
     <Field
       name={fieldName}
       render={({ field }: FieldProps<string>) => (
-        <Input {...field} size="compact" placeholder={placeHolder ? placeHolder : ''} />
+        <TextField label="" hideLabel {...field} placeholder={placeHolder ? placeHolder : ''} />
       )}
     />
   )

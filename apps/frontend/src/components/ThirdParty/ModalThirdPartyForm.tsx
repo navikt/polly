@@ -1,6 +1,4 @@
-import { Accordion, Button, Modal, Select } from '@navikt/ds-react'
-import { Input } from 'baseui/input'
-import { Textarea } from 'baseui/textarea'
+import { Accordion, Button, Modal, Select, TextField, Textarea } from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -76,6 +74,8 @@ const FieldTextarea = (props: IFieldTextareaProps) => {
       render={({ field, form }: FieldProps<string, IDisclosureFormValues>) => (
         <Textarea
           {...field}
+          label=""
+          hideLabel
           placeholder={placeholder}
           rows={4}
           onKeyDown={(enter: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -98,7 +98,9 @@ const FieldInput = (props: IFieldInputProps) => {
   return (
     <Field
       name={fieldName}
-      render={({ field }: FieldProps<string, IDisclosureFormValues>) => <Input {...field} />}
+      render={({ field }: FieldProps<string, IDisclosureFormValues>) => (
+        <TextField {...field} label="" hideLabel />
+      )}
     />
   )
 }

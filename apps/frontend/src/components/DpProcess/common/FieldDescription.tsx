@@ -1,5 +1,4 @@
-import { SIZE as InputSIZE } from 'baseui/input'
-import { Textarea } from 'baseui/textarea'
+import { Textarea } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { IDpProcessFormValues } from '../../../constants'
 
@@ -8,9 +7,9 @@ const FieldDescription = () => (
     name="description"
     render={({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
       <Textarea
+        label=""
+        hideLabel
         {...field}
-        type="input"
-        size={InputSIZE.default}
         error={!!form.errors.description && form.touched.description}
       />
     )}

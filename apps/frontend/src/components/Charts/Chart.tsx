@@ -153,10 +153,14 @@ const Visualization = (props: TVisualizationProps) => {
           Root: {
             style: hideBorder,
           },
+          Action: {},
           Contents: {
             style: { ...marginAll(theme.sizing.scale400) },
           },
           Body: { style: { marginBottom: 0 } },
+        }}
+        hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
+          return !!placeHolder
         }}
       >
         <div onMouseLeave={() => setHover(-1)}>
