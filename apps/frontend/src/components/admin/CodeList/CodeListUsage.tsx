@@ -1,5 +1,5 @@
 import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
-import { ChangeEvent, RefObject, createRef, useEffect, useState } from 'react'
+import { ChangeEvent, createRef, useEffect, useState } from 'react'
 import { replaceCodelistUsage } from '../../../api/GetAllApi'
 import {
   EObjectType,
@@ -171,7 +171,7 @@ export const Usage = (props: IUsageProps) => {
 
   const [showReplace, setShowReplace] = useState(false)
   const [newValue, setNewValue] = useState<string>()
-  const ref: RefObject<HTMLDivElement> = createRef<HTMLDivElement>()
+  const ref = createRef<HTMLDivElement>()
 
   useEffect(() => {
     setShowReplace(false)

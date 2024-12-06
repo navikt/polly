@@ -2,7 +2,7 @@ import { Button, SHAPE } from 'baseui/button'
 import { Plus } from 'baseui/icon'
 import { Input } from 'baseui/input'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { KeyboardEvent, RefObject, useRef, useState } from 'react'
+import { KeyboardEvent, useRef, useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
@@ -15,7 +15,9 @@ const FieldDpProcessDataProcessingAgreements = (
 ) => {
   const { formikBag } = props
   const [currentKeywordValue, setCurrentKeywordValue] = useState('')
-  const agreementRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
+  const agreementRef = useRef<HTMLInputElement | HTMLTextAreaElement>(
+    {} as HTMLInputElement | HTMLTextAreaElement
+  )
 
   const onAddAgreement = (arrayHelpers: FieldArrayRenderProps) => {
     if (!currentKeywordValue) return

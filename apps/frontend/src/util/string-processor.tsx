@@ -1,3 +1,5 @@
+import { JSX } from 'react'
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const reactProcessString = require('react-process-string')
 export const processString = reactProcessString as (

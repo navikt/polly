@@ -15,7 +15,7 @@ import {
   FormikHelpers,
   FormikProps,
 } from 'formik'
-import { ChangeEvent, Fragment, KeyboardEvent, RefObject, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, Fragment, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api/GetAllApi'
 import { IInformationType, IInformationtypeFormValues } from '../../constants'
 import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
@@ -61,7 +61,9 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
     return [mapTermToOption(await getTerm(formInitialValues.term))]
   }
 
-  const keywordsRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
+  const keywordsRef = useRef<HTMLInputElement | HTMLTextAreaElement>(
+    {} as HTMLInputElement | HTMLTextAreaElement
+  )
 
   const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 

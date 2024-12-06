@@ -1,6 +1,6 @@
 import { Spinner } from 'baseui/icon'
 import { ParagraphLarge } from 'baseui/typography'
-import { useEffect, useState } from 'react'
+import { JSX, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { getDisclosure, getPolicy, getProcess } from './api/GetAllApi'
 import PurposeTable from './components/Dashboard/PurposeTable'

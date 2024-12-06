@@ -5,7 +5,7 @@ import { Plus } from 'baseui/icon'
 import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { LabelMedium } from 'baseui/typography'
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import {
   convertProcessToFormValues,
@@ -90,7 +90,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [showRevisionModal, setShowRevisionModal] = useState(false)
   const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
-  const purposeRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(null)
+  const purposeRef = useRef<HTMLButtonElement>(null)
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
 
