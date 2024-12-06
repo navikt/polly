@@ -94,6 +94,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                   <Field name="name">
                     {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
                       <TextField
+                        className="w-full"
                         label=""
                         hideLabel
                         {...field}
@@ -112,6 +113,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                   <Field name="contract">
                     {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
                       <TextField
+                        className="w-full"
                         label=""
                         hideLabel
                         {...field}

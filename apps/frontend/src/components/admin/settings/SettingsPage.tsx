@@ -131,6 +131,7 @@ const FrontpageMessage = (props: IFrontpageMessageProps) => {
       <div className="w-full flex">
         <div className="w-1/2 mr-4">
           <Textarea
+            className="w-full"
             label="Forsidemelding"
             value={message}
             minRows={16}

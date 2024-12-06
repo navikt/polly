@@ -6,6 +6,7 @@ const FieldPurposeDescription = () => (
   <Field name="purposeDescription">
     {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
       <Textarea
+        className="w-full"
         label=""
         hideLabel
         {...field}

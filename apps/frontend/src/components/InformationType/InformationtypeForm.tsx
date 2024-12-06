@@ -154,6 +154,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         <LabelMedium>Navn</LabelMedium>
                       </div>
                       <TextField
+                        className="w-full"
                         label=""
                         hideLabel
                         {...field}
@@ -259,6 +260,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         <LabelMedium>Søkeord</LabelMedium>
                       </div>
                       <TextField
+                        className="w-full"
                         label=""
                         hideLabel
                         value={currentKeywordValue}

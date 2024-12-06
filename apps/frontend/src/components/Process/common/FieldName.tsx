@@ -5,7 +5,13 @@ import { IProcessFormValues } from '../../../constants'
 const FieldName = () => (
   <Field name="name">
     {({ field, form }: FieldProps<string, IProcessFormValues>) => (
-      <TextField {...field} label="" hideLabel error={!!form.errors.name && form.touched.name} />
+      <TextField
+        className="w-full"
+        {...field}
+        label=""
+        hideLabel
+        error={!!form.errors.name && form.touched.name}
+      />
     )}
   </Field>
 )

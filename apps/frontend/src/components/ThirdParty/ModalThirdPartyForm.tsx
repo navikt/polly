@@ -97,7 +97,7 @@ const FieldInput = (props: IFieldInputProps) => {
   return (
     <Field name={fieldName}>
       {({ field }: FieldProps<string, IDisclosureFormValues>) => (
-        <TextField {...field} label="" hideLabel />
+        <TextField className="w-full" {...field} label="" hideLabel />
       )}
     </Field>
   )
