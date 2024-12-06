@@ -64,7 +64,8 @@ export function useRefs<T>(ids: string[]) {
 }
 
 export function useQuery() {
-  return new URLSearchParams(useLocation().search)
+  const location = useLocation()
+  return new URLSearchParams(location.search)
 }
 
 export function useQueryParam<T extends string>(queryParam: string) {
