@@ -3,9 +3,8 @@ import { Field, FieldProps } from 'formik'
 import { IDpProcessFormValues } from '../../../constants'
 
 const FieldPurposeDescription = () => (
-  <Field
-    name="purposeDescription"
-    render={({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
+  <Field name="purposeDescription">
+    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
       <Textarea
         label=""
         hideLabel
@@ -13,7 +12,7 @@ const FieldPurposeDescription = () => (
         error={!!form.errors.purposeDescription && form.touched.purposeDescription}
       />
     )}
-  />
+  </Field>
 )
 
 export default FieldPurposeDescription

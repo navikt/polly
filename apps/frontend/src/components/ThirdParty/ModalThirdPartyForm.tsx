@@ -69,9 +69,8 @@ const FieldTextarea = (props: IFieldTextareaProps) => {
   const { fieldName, fieldValue, placeholder } = props
 
   return (
-    <Field
-      name={fieldName}
-      render={({ field, form }: FieldProps<string, IDisclosureFormValues>) => (
+    <Field name={fieldName}>
+      {({ field, form }: FieldProps<string, IDisclosureFormValues>) => (
         <Textarea
           {...field}
           label=""
@@ -83,7 +82,7 @@ const FieldTextarea = (props: IFieldTextareaProps) => {
           }}
         />
       )}
-    />
+    </Field>
   )
 }
 
@@ -96,12 +95,11 @@ const FieldInput = (props: IFieldInputProps) => {
   const { fieldName } = props
 
   return (
-    <Field
-      name={fieldName}
-      render={({ field }: FieldProps<string, IDisclosureFormValues>) => (
+    <Field name={fieldName}>
+      {({ field }: FieldProps<string, IDisclosureFormValues>) => (
         <TextField {...field} label="" hideLabel />
       )}
-    />
+    </Field>
   )
 }
 

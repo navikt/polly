@@ -11,12 +11,11 @@ const FieldInput = (props: IFieldInputProps) => {
   const { fieldName, placeHolder } = props
 
   return (
-    <Field
-      name={fieldName}
-      render={({ field }: FieldProps<string>) => (
+    <Field name={fieldName}>
+      {({ field }: FieldProps<string>) => (
         <TextField label="" hideLabel {...field} placeholder={placeHolder ? placeHolder : ''} />
       )}
-    />
+    </Field>
   )
 }
 

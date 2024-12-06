@@ -12,9 +12,8 @@ export const FieldTextarea = (props: IFieldTextareaProps) => {
   const { fieldName, rows, placeHolder } = props
 
   return (
-    <Field
-      name={fieldName}
-      render={({ field }: FieldProps<string>) => (
+    <Field name={fieldName}>
+      {({ field }: FieldProps<string>) => (
         <Textarea
           label=""
           hideLabel
@@ -23,6 +22,6 @@ export const FieldTextarea = (props: IFieldTextareaProps) => {
           placeholder={placeHolder ? placeHolder : ''}
         />
       )}
-    />
+    </Field>
   )
 }
