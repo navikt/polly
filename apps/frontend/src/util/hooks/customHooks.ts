@@ -1,5 +1,4 @@
 import { Dispatch, RefObject, SetStateAction, createRef, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
 
 export function useDebouncedState<T>(
   initialValue: T,
@@ -64,7 +63,7 @@ export function useRefs<T>(ids: string[]) {
 }
 
 export function useQuery() {
-  const location = useLocation()
+  const location = window.location
   return new URLSearchParams(location.search)
 }
 
