@@ -102,8 +102,11 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                 <Error fieldName="purposeDescription" />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label="Gyldighetsperiode for behandlingen" />
-                  <FieldDpProcessDates showDates={true} showLabels={true} />
+                  <ModalLabel
+                    label="Gyldighetsperiode for behandlingen"
+                    tooltip="Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
+                  />
+                  <FieldDpProcessDates />
                 </CustomizedModalBlock>
 
                 <div className="flex w-full mt-4">
