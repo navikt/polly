@@ -1,9 +1,9 @@
+import { Radio, RadioGroup, Stack } from '@navikt/ds-react'
 import { FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getAll } from '../../../api/GetAllApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { IDpProcessFormValues, IProcessor } from '../../../constants'
-import BoolField from '../../Process/common/BoolField'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import FieldDpDataProcessors from './FieldDpDataProcessors'
 
@@ -16,6 +16,14 @@ const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorPr
   const { formikBag, initialValues } = props
   const [processorList, setProcessorList] = useState<IProcessor[]>([])
   const [subDataProcessors, setSubDataProcessors] = useState(new Map<string, string>())
+
+  const YES = 'YES',
+    NO = 'NO',
+    UNCLARIFIED = 'UNCLARIFIED'
+  const boolToRadio = (bool?: boolean) => {
+    return bool === null || bool === undefined ? UNCLARIFIED : bool ? YES : NO
+  }
+  const radioToBool = (radio: string) => (radio === UNCLARIFIED ? undefined : radio === YES)
 
   useEffect(() => {
     ;(async () => {
@@ -44,10 +52,26 @@ const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorPr
           label="Benyttes underdatabehandler(e)?"
           tooltip="En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler."
         />
-        <BoolField
+        <div className="flex flex-col">
+          {/*        <BoolField
           fieldName="subDataProcessing.dataProcessor"
           value={formikBag.values.subDataProcessing.dataProcessor}
-        />
+        />*/}
+          <RadioGroup
+            legend={'Benyttes underdatabehandler(e)?'}
+            hideLegend
+            value={boolToRadio(formikBag.values.subDataProcessing.dataProcessor)}
+            onChange={(value) => {
+              formikBag.setFieldValue('subDataProcessing.dataProcessor', radioToBool(value))
+            }}
+          >
+            <Stack gap="0 6">
+              <Radio value={YES}>Ja</Radio>
+              <Radio value={NO}>Nei</Radio>
+              <Radio value={UNCLARIFIED}>Uavklart</Radio>
+            </Stack>
+          </RadioGroup>
+        </div>
       </div>
 
       {formikBag.values.subDataProcessing.dataProcessor && (
