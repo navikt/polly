@@ -1,7 +1,7 @@
 import { BodyLong, Heading, TextField } from '@navikt/ds-react'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { getAuditLog } from '../../../api/AuditApi'
 import { IAuditLog } from '../../../constants'
 import { ampli } from '../../../service/Amplitude'

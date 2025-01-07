@@ -4,7 +4,7 @@ import { Notification } from 'baseui/notification'
 import { Tab } from 'baseui/tabs'
 import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
 import { Key, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router'
 import {
   deleteDocument,
   getAll,

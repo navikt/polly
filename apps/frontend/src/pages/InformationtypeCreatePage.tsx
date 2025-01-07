@@ -1,6 +1,6 @@
 import { HeadingMedium } from 'baseui/typography'
 import { Fragment, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { createInformationType, mapInfoTypeToFormVals } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'

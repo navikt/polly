@@ -1,7 +1,7 @@
 import { Tabs } from '@navikt/ds-react'
 import { HeadingSmall } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { getDashboard, getInformationTypesBy } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'

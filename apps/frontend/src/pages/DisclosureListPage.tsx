@@ -3,7 +3,7 @@ import { ButtonGroup } from 'baseui/button-group'
 import { Plus } from 'baseui/icon'
 import { HeadingLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import {
   IDisclosureSummary,

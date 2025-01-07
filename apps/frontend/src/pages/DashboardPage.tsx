@@ -1,6 +1,6 @@
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { getDashboard } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
 import Departments from '../components/Dashboard/Departments'

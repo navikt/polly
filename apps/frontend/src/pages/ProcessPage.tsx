@@ -1,7 +1,7 @@
 import { HeadingSmall } from 'baseui/typography'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
-import { generatePath, useLocation, useParams } from 'react-router-dom'
+import { generatePath, useLocation, useParams } from 'react-router'
 import { processPath, processPathNoId } from '../AppRoutes'
 import { getDashboard, getDisclosureByDepartment } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'

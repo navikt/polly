@@ -1,7 +1,7 @@
 import { Spinner } from 'baseui/icon'
 import { ParagraphLarge } from 'baseui/typography'
 import { JSX, useEffect, useState } from 'react'
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router'
 import { getDisclosure, getPolicy, getProcess } from './api/GetAllApi'
 import PurposeTable from './components/Dashboard/PurposeTable'
 import DpProcessView from './components/DpProcess/DpProcessView'

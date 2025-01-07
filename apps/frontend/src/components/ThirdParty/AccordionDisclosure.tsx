@@ -4,7 +4,7 @@ import { StyledLink } from 'baseui/link'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium, ParagraphSmall } from 'baseui/typography'
 import { Fragment, Key, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api/GetAllApi'
 import {

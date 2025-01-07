@@ -3,7 +3,7 @@ import { KIND } from 'baseui/button'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { ParagraphMedium } from 'baseui/typography'
 import { Fragment, useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { convertDisclosureToFormValues } from '../../api/GetAllApi'
 import {

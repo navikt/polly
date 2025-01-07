@@ -2,7 +2,7 @@ import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tooltip } from '@navikt/ds-react'
 import { ParagraphMedium } from 'baseui/typography'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import RouteLink from '../common/RouteLink'
 
 interface INavItemProps {

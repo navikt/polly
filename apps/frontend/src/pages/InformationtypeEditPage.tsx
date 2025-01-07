@@ -1,7 +1,7 @@
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
 import { Fragment, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router'
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import { IInformationType, IInformationtypeFormValues } from '../constants'

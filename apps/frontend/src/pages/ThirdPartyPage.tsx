@@ -4,7 +4,7 @@ import { Plus } from 'baseui/icon'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { getAllDpProcesses } from '../api/DpProcessApi'
 import {
   createDisclosure,

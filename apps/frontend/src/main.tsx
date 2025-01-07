@@ -1,5 +1,5 @@
 import { BaseProvider } from 'baseui'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 import { Fragment } from 'react/jsx-runtime'
 import { Client as Styletron } from 'styletron-engine-atomic'
 import { Provider as StyletronProvider } from 'styletron-react'

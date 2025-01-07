@@ -2,7 +2,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   deleteDpProcess,
   dpProcessToFormValues,
