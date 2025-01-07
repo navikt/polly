@@ -1,8 +1,6 @@
-import { faFileWord } from '@fortawesome/free-solid-svg-icons'
-import { Modal } from '@navikt/ds-react'
-import { Plus } from 'baseui/icon'
-import { StyledLink } from 'baseui/link'
-import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
+import { faFileWord, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { BodyShort, Button, Heading, Link, Modal } from '@navikt/ds-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -12,7 +10,6 @@ import {
   updateDisclosure,
 } from '../api/GetAllApi'
 import ModalProcess from '../components/Process/Accordion/ModalProcess'
-import Button from '../components/common/Button/CustomButton'
 import { IProcessFormValues } from '../constants'
 import { ampli } from '../service/Amplitude'
 import { CodelistService } from '../service/Codelist'
@@ -62,38 +59,28 @@ export const PurposeListPage = () => {
   return (
     <div role="main">
       <>
-        <HeadingXXLarge>Behandlingsaktiviteter</HeadingXXLarge>
-
+        <Heading size="xlarge">Behandlingsaktiviteter</Heading>
         <div className="flex w-full justify-between">
           <div>
-            <LabelLarge>Velg overordnet behandlingsaktivitet</LabelLarge>
+            <BodyShort>Velg overordnet behandlingsaktivitet</BodyShort>
           </div>
 
           <div className="mt-auto flex items-center">
             {hasAccess() && (
               <Button
+                className="mr-4"
+                variant="secondary"
                 onClick={() => setIsExportModalOpen(true)}
-                kind="outline"
-                size="xsmall"
-                icon={faFileWord}
-                marginRight
               >
-                Eksportér alle behandlinger
+                <FontAwesomeIcon icon={faFileWord} />
+                &nbsp;Eksportér alle behandlinger
               </Button>
             )}
 
             {hasAccess() && (
-              <Button
-                size="xsmall"
-                kind={'outline'}
-                onClick={() => setShowCreateProcessModal(true)}
-                startEnhancer={
-                  <div className="flex justify-center">
-                    <Plus size={22} />
-                  </div>
-                }
-              >
-                Opprett ny behandling
+              <Button variant="secondary" onClick={() => setShowCreateProcessModal(true)}>
+                <FontAwesomeIcon icon={faPlusCircle} />
+                &nbsp;Opprett ny behandling
               </Button>
             )}
           </div>
@@ -118,22 +105,18 @@ export const PurposeListPage = () => {
           onClose={() => setIsExportModalOpen(false)}
         >
           <Modal.Body>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={`${env.pollyBaseUrl}/export/process/allpurpose`}
-            >
-              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
-                Eksport for intern bruk
+            <Link className="mr-4" href={`${env.pollyBaseUrl}/export/process/allpurpose`}>
+              <Button size="small" variant="secondary">
+                <FontAwesomeIcon icon={faFileWord} />
+                &nbsp;Eksport for intern bruk
               </Button>
-            </StyledLink>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={`${env.pollyBaseUrl}/export/process/allpurpose?documentAccess=EXTERNAL`}
-            >
-              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
-                Eksport for ekstern bruk
+            </Link>
+            <Link href={`${env.pollyBaseUrl}/export/process/allpurpose?documentAccess=EXTERNAL`}>
+              <Button size="small" variant="secondary">
+                <FontAwesomeIcon icon={faFileWord} />
+                &nbsp;Eksport for ekstern bruk
               </Button>
-            </StyledLink>
+            </Link>
           </Modal.Body>
         </Modal>
 
