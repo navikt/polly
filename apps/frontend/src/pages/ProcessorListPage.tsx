@@ -2,7 +2,7 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { getAll } from '../api/GetAllApi'
 import {
   convertProcessorToFormValues,

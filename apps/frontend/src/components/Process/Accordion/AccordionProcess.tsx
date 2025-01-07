@@ -6,7 +6,7 @@ import { Modal, ModalBody, SIZE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { LabelMedium } from 'baseui/typography'
 import { useEffect, useRef, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   convertProcessToFormValues,
   getDisclosuresByProcessId,

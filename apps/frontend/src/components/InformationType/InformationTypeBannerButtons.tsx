@@ -4,7 +4,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router'
 import {
   deleteInformationType,
   getDocumentsForInformationType,

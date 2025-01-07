@@ -1,5 +1,5 @@
 import { HeadingMedium } from 'baseui/typography'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { Fragment } from 'react/jsx-runtime'
 import { createInformationTypesDocument } from '../api/GetAllApi'
 import DocumentForm from '../components/document/component/DocumentForm'

@@ -1,9 +1,9 @@
 import { Select } from '@navikt/ds-react'
 import { LabelMedium } from 'baseui/typography'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { EProcessStatusFilter } from '../../constants'
 import { theme } from '../../util'
-import { useState } from 'react'
 
 interface IFilterDashboardStatusProps {
   setFilter: React.Dispatch<React.SetStateAction<EProcessStatusFilter>>
@@ -13,7 +13,9 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
   const { setFilter } = props
   const navigate: NavigateFunction = useNavigate()
   const { processStatus } = useParams<{ processStatus: EProcessStatusFilter }>()
-  const [selectValue, setSelectValue] = useState<string>(processStatus ? (processStatus as EProcessStatusFilter) : EProcessStatusFilter.All)
+  const [selectValue, setSelectValue] = useState<string>(
+    processStatus ? (processStatus as EProcessStatusFilter) : EProcessStatusFilter.All
+  )
 
   return (
     <div className="w-full flex flex-row-reverse mt-4">

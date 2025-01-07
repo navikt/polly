@@ -1,7 +1,7 @@
 import { useStyletron } from 'baseui'
 import { KIND } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router'
 import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
 import { EListName } from '../../service/Codelist'
 import { AuditButton } from '../admin/audit/AuditButton'

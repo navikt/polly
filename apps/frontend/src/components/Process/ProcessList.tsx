@@ -5,7 +5,7 @@ import { Modal, ModalBody, ModalHeader, SIZE as ModalSize, ROLE } from 'baseui/m
 import { Spinner } from 'baseui/spinner'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,

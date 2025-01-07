@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api/GetAllApi'
 import {
   convertProcessorToFormValues,

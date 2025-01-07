@@ -1,6 +1,6 @@
 import { Card } from 'baseui/card'
 import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router'
 import {
   EProcessField,
   EProcessState,

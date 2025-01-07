@@ -1,4 +1,4 @@
-import { NavigateFunction } from 'react-router-dom'
+import { NavigateFunction } from 'react-router'
 import { EProcessField, EProcessState, EProcessStatusFilter } from '../constants'
 import { ESection } from '../pages/ProcessPage'
 
