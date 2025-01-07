@@ -24,7 +24,7 @@
         <java.version>17</java.version>
         <start-class>no.nav.data.AppStarter</start-class>
         <hypersistence-utils-hibernate-63.version>3.9.0</hypersistence-utils-hibernate-63.version>
-        <springdoc-openapi-starter-webmvc-ui.version>2.8.0</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.1</springdoc-openapi-starter-webmvc-ui.version>
         <simpleclient.version>0.16.0</simpleclient.version>
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
         <docx4j.version>11.5.1</docx4j.version>
