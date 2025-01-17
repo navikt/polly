@@ -13,7 +13,7 @@
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "amplitude-js": "^8.0.0",
     "axios": "1.7.9",
-    "baseui": "^13.0.0",
+    "baseui": "^15.0.0",
     "core-js": "^3.7.0",
     "flag-icon-css": "^4.1.6",
     "formik": "^2.2.4",
