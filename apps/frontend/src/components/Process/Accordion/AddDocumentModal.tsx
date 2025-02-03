@@ -59,7 +59,10 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
           <div className="flex w-full justify-between">
             <div className="flex justify-between w-[90%] items-center">
               <div>
-                <Sensitivity sensitivity={informationType.informationType.sensitivity} />
+                <Sensitivity
+                  sensitivity={informationType.informationType.sensitivity}
+                  codelistUtils={codelistUtils}
+                />
                 &nbsp;
                 {informationType.informationType.name}
               </div>

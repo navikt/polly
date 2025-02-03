@@ -68,7 +68,8 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
               <Row key={index}>
                 <Cell>
                   <RouteLink href={`/informationtype/${row.id}`}>
-                    <Sensitivity sensitivity={row.sensitivity} /> {row.name}
+                    <Sensitivity sensitivity={row.sensitivity} codelistUtils={codelistUtils} />{' '}
+                    {row.name}
                   </RouteLink>
                 </Cell>
                 <Cell>{row.description}</Cell>

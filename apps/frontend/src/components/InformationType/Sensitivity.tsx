@@ -1,6 +1,6 @@
 import { faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CodelistService, EListName, ESensitivityLevel, ICode } from '../../service/Codelist'
+import { EListName, ESensitivityLevel, ICode, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util/theme'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 
@@ -13,12 +13,10 @@ export function sensitivityColor(code: string) {
   }
 }
 
-export const Sensitivity = (props: { sensitivity: ICode }) => {
-  const [codelistUtils] = CodelistService()
-
+export const Sensitivity = (props: { sensitivity: ICode; codelistUtils: ICodelistProps }) => {
   return (
     <CustomizedStatefulTooltip
-      content={`${codelistUtils.getDescription(EListName.SENSITIVITY, props.sensitivity.code)}`}
+      content={`${props.codelistUtils.getDescription(EListName.SENSITIVITY, props.sensitivity.code)}`}
       icon={
         <FontAwesomeIcon icon={faUserShield} color={sensitivityColor(props.sensitivity.code)} />
       }
