@@ -23,7 +23,7 @@ const Main = () => {
       <StyletronProvider value={engine}>
         <BaseProvider theme={theme}>
           <BrowserRouter window={window}>
-            <div className="flex h-full min-h-screen w-full bg-bg-default">
+            <div className="flex h-full min-h-screen w-full bg-white">
               <div className="min-w-60 min-h-full">
                 <SideBar />
               </div>
