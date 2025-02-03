@@ -116,7 +116,10 @@ const TablePolicy = ({
               <Cell>
                 <div className="flex w-full justify-between">
                   <div>
-                    <Sensitivity sensitivity={row.informationType.sensitivity} />
+                    <Sensitivity
+                      sensitivity={row.informationType.sensitivity}
+                      codelistUtils={codelistUtils}
+                    />
                     &nbsp;
                     <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
                       {row.informationType.name}

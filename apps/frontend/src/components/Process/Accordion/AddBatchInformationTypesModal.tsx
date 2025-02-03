@@ -183,6 +183,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                           sensitivity={
                                             informationTypeMap.informationType.sensitivity
                                           }
+                                          codelistUtils={codelistUtils}
                                         />
                                         &nbsp;
                                         {informationTypeMap.informationType.name}

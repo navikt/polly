@@ -230,7 +230,10 @@ export const AlertEventPage = () => {
             <Cell>
               {event.informationType ? (
                 <ObjectLink id={event.informationType.id} type={EObjectType.INFORMATION_TYPE}>
-                  <Sensitivity sensitivity={event.informationType.sensitivity} />
+                  <Sensitivity
+                    sensitivity={event.informationType.sensitivity}
+                    codelistUtils={codelistUtils}
+                  />
                   &nbsp;
                   {event.informationType.name}
                 </ObjectLink>
