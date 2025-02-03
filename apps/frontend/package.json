@@ -133,7 +133,6 @@
     "react-scripts": "5.0.1",
     "tailwindcss": "^4.0.3",
     "ts-jest": "^29.2.5",
-    "jest-fixed-jsdom": "^0.0.9",
     "ts-node": "^10.4.0"
   }
 }
