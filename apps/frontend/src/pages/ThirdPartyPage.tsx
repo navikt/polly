@@ -166,7 +166,7 @@ const ThirdPartyPage = () => {
 
           <Accordion>
             <Accordion.Item
-              className="bg-bg-default"
+              className="bg-white"
               open={expandedAccordion === 'disclosure'}
               onOpenChange={(open: boolean) => handleOnOpenChange(open, 'disclosure')}
             >
@@ -202,7 +202,7 @@ const ThirdPartyPage = () => {
             </Accordion.Item>
 
             <Accordion.Item
-              className="bg-bg-default"
+              className="bg-white"
               open={expandedAccordion === 'informationtype'}
               onOpenChange={(open: boolean) => handleOnOpenChange(open, 'informationtype')}
             >
@@ -214,7 +214,7 @@ const ThirdPartyPage = () => {
 
             {params.thirdPartyCode && (
               <Accordion.Item
-                className="bg-bg-default"
+                className="bg-white"
                 open={expandedAccordion === 'dpprocess'}
                 onOpenChange={(open: boolean) => handleOnOpenChange(open, 'dpprocess')}
               >
@@ -225,7 +225,7 @@ const ThirdPartyPage = () => {
               </Accordion.Item>
             )}
             <Accordion.Item
-              className="bg-bg-default"
+              className="bg-white"
               open={expandedAccordion === 'process'}
               onOpenChange={(open: boolean) => handleOnOpenChange(open, 'process')}
             >
