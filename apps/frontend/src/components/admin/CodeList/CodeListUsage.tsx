@@ -208,7 +208,7 @@ export const Usage = (props: IUsageProps) => {
             {codelistUtils
               .getParsedOptions(usage.listName)
               .map((code: IGetParsedOptionsProps, index: number) => (
-                <option key={index + '_' + code.label} value={code.label}>
+                <option key={index + '_' + code.label} value={code.id}>
                   {code.label}
                 </option>
               ))}
