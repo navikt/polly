@@ -30,7 +30,7 @@ export const ARTICLE_9_PREFIX = 'ART9'
 export const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
 export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
 
-const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT_'
+const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT'
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
 export interface ICodelistProps {
@@ -227,7 +227,7 @@ export const CodelistService = () => {
   }
 
   const isForskrift = (nationalLawCode?: string): boolean | '' | undefined => {
-    return nationalLawCode && nationalLawCode.startsWith(LOVDATA_FORSKRIFT_PREFIX)
+    return nationalLawCode && nationalLawCode.includes(LOVDATA_FORSKRIFT_PREFIX)
   }
 
   const showSubDepartment = (departmentCode?: string): boolean | '' | undefined => {
