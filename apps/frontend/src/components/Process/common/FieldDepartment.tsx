@@ -1,13 +1,11 @@
 import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
-import { IProcessFormValues } from '../../../constants'
 import { EListName, ICodelistProps } from '../../../service/Codelist'
 
 interface IFieldDepartmentProps {
   codelistUtils: ICodelistProps
   department?: string
-  fieldName?: string
 }
 
 const FieldDepartment = (props: IFieldDepartmentProps) => {
@@ -16,9 +14,8 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
   const [value, setValue] = useState<string>(department ? department : '')
 
   return (
-    <Field
-      name={props.fieldName ? props.fieldName : 'affiliation.department'}
-      render={({ form }: FieldProps<IProcessFormValues>) => (
+    <Field name="affiliation.department">
+      {(fieldProps: FieldProps) => (
         <div className="w-full">
           <Select
             label="Velg avdeling"
@@ -26,10 +23,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
             value={value}
             onChange={(event) => {
               setValue(event.target.value)
-              form.setFieldValue(
-                props.fieldName ? props.fieldName : 'affiliation.department',
-                value
-              )
+              fieldProps.form.setFieldValue('affiliation.department', event.target.value)
             }}
           >
             <option value="">Velg avdeling</option>
@@ -41,7 +35,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
           </Select>
         </div>
       )}
-    />
+    </Field>
   )
 }
 
