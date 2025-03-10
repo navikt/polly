@@ -371,10 +371,7 @@ const ModalProcess = ({
                                 formikBag={formikBag}
                                 dataProcessors={dataProcessors}
                                 options={processorList.map((processor: IProcessor) => {
-                                  return {
-                                    id: processor.id,
-                                    label: processor.name,
-                                  }
+                                  return { id: processor.id, label: processor.name }
                                 })}
                               />
                             </div>
@@ -430,53 +427,51 @@ const ModalProcess = ({
                         <FieldArray
                           name="disclosures"
                           render={(arrayHelpers: FieldArrayRenderProps) => (
-                            <>
-                              <div className="w-full">
-                                <div className="w-full flex">
-                                  <ModalLabel label="Utleveringer" />
-                                  <div className="w-full">
-                                    <Select
-                                      disabled={thirdParty === ''}
-                                      label="Velg utleveringer"
-                                      hideLabel
-                                      onChange={(event) => {
-                                        if (event.target.value) {
-                                          arrayHelpers.form.setFieldValue('disclosures', [
-                                            ...formikBag.values.disclosures,
-                                            disclosures.filter(
-                                              (disclosure) => disclosure.id === event.target.value
-                                            )[0],
-                                          ])
-                                        }
-                                      }}
-                                    >
-                                      <option value="">Velg utlevering</option>
-                                      {disclosures
-                                        .filter(
-                                          (disclosure: IDisclosure) =>
-                                            !formikBag.values.disclosures
-                                              .map((value: IDisclosure) => value.id)
-                                              .includes(disclosure.id)
-                                        )
-                                        .map((disclosure) => (
-                                          <option key={disclosure.id} value={disclosure.id}>
-                                            {disclosure.name}
-                                          </option>
-                                        ))}
-                                    </Select>
-                                    <div>
-                                      {renderTagList(
-                                        formikBag.values.disclosures.map(
-                                          (disclosure: IDisclosure) =>
-                                            disclosure.recipient.shortName + ':' + disclosure.name
-                                        ),
-                                        arrayHelpers
-                                      )}
-                                    </div>
+                            <div className="w-full">
+                              <div className="w-full flex">
+                                <ModalLabel label="Utleveringer" />
+                                <div className="w-full">
+                                  <Select
+                                    disabled={thirdParty === ''}
+                                    label="Velg utleveringer"
+                                    hideLabel
+                                    onChange={(event) => {
+                                      if (event.target.value) {
+                                        arrayHelpers.form.setFieldValue('disclosures', [
+                                          ...formikBag.values.disclosures,
+                                          disclosures.filter(
+                                            (disclosure) => disclosure.id === event.target.value
+                                          )[0],
+                                        ])
+                                      }
+                                    }}
+                                  >
+                                    <option value="">Velg utlevering</option>
+                                    {disclosures
+                                      .filter(
+                                        (disclosure: IDisclosure) =>
+                                          !formikBag.values.disclosures
+                                            .map((value: IDisclosure) => value.id)
+                                            .includes(disclosure.id)
+                                      )
+                                      .map((disclosure) => (
+                                        <option key={disclosure.id} value={disclosure.id}>
+                                          {disclosure.name}
+                                        </option>
+                                      ))}
+                                  </Select>
+                                  <div>
+                                    {renderTagList(
+                                      formikBag.values.disclosures.map(
+                                        (disclosure: IDisclosure) =>
+                                          disclosure.recipient.shortName + ':' + disclosure.name
+                                      ),
+                                      arrayHelpers
+                                    )}
                                   </div>
                                 </div>
                               </div>
-                            </>
+                            </div>
                           )}
                         />
                       </Accordion.Content>
@@ -510,11 +505,7 @@ const ModalProcess = ({
                   </CustomizedModalBlock>
                 </Modal.Body>
 
-                <Modal.Footer
-                  style={{
-                    borderTop: 0,
-                  }}
-                >
+                <Modal.Footer style={{ borderTop: 0 }}>
                   <div className="flex justify-end">
                     <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
                     <Button type="button" kind={KIND.tertiary} onClick={onClose}>

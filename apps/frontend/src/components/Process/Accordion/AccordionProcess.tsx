@@ -297,54 +297,59 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
       {!!currentProcess && (
         <>
-          <ModalProcess
-            codelistUtils={codelistUtils}
-            key={currentProcess.id}
-            title="Redigér behandling"
-            onClose={() => setShowEditProcessModal(false)}
-            isOpen={showEditProcessModal}
-            submit={async (values: IProcessFormValues) => {
-              if (await submitEditProcess(values)) {
-                setShowEditProcessModal(false)
-              } else {
-                setShowEditProcessModal(true)
-              }
-            }}
-            errorOnCreate={errorProcessModal}
-            isEdit={true}
-            initialValues={{
-              ...convertProcessToFormValues(currentProcess),
-              disclosures: disclosures,
-            }}
-          />
-          <ModalPolicy
-            title="Legg til opplysningstyper brukt i behandlingen"
-            initialValues={{
-              legalBasesOpen: false,
-              informationType: undefined,
-              legalBasesUse: ELegalBasesUse.INHERITED_FROM_PROCESS,
-              process: currentProcess,
-              purposes: currentProcess.purposes.map((purpose: ICode) => purpose.code),
-              subjectCategories: [],
-              legalBases: [],
-              documentIds: [],
-              otherPolicies: currentProcess.policies,
-            }}
-            isEdit={false}
-            onClose={() => setShowCreatePolicyModal(false)}
-            isOpen={showCreatePolicyModal}
-            submit={(values: IPolicyFormValues) => {
-              submitCreatePolicy(values)
-                .then(() => setShowCreatePolicyModal(false))
-                .catch(() => setShowCreatePolicyModal(true))
-            }}
-            addBatch={() => {
-              setShowCreatePolicyModal(false)
-              setShowAddBatchInfoTypesModal(true)
-            }}
-            errorOnCreate={errorPolicyModal}
-            codelistUtils={codelistUtils}
-          />
+          {showEditProcessModal && (
+            <ModalProcess
+              codelistUtils={codelistUtils}
+              key={currentProcess.id}
+              title="Redigér behandling"
+              onClose={() => setShowEditProcessModal(false)}
+              isOpen={showEditProcessModal}
+              submit={async (values: IProcessFormValues) => {
+                if (await submitEditProcess(values)) {
+                  setShowEditProcessModal(false)
+                } else {
+                  setShowEditProcessModal(true)
+                }
+              }}
+              errorOnCreate={errorProcessModal}
+              isEdit={true}
+              initialValues={{
+                ...convertProcessToFormValues(currentProcess),
+                disclosures: disclosures,
+              }}
+            />
+          )}
+
+          {showCreatePolicyModal && (
+            <ModalPolicy
+              title="Legg til opplysningstyper brukt i behandlingen"
+              initialValues={{
+                legalBasesOpen: false,
+                informationType: undefined,
+                legalBasesUse: ELegalBasesUse.INHERITED_FROM_PROCESS,
+                process: currentProcess,
+                purposes: currentProcess.purposes.map((purpose: ICode) => purpose.code),
+                subjectCategories: [],
+                legalBases: [],
+                documentIds: [],
+                otherPolicies: currentProcess.policies,
+              }}
+              isEdit={false}
+              onClose={() => setShowCreatePolicyModal(false)}
+              isOpen={showCreatePolicyModal}
+              submit={(values: IPolicyFormValues) => {
+                submitCreatePolicy(values)
+                  .then(() => setShowCreatePolicyModal(false))
+                  .catch(() => setShowCreatePolicyModal(true))
+              }}
+              addBatch={() => {
+                setShowCreatePolicyModal(false)
+                setShowAddBatchInfoTypesModal(true)
+              }}
+              errorOnCreate={errorPolicyModal}
+              codelistUtils={codelistUtils}
+            />
+          )}
 
           <DeleteAllPolicyModal
             isOpen={showDeleteAllPolicyModal}
