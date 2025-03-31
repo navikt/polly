@@ -111,7 +111,7 @@ const RetentionItems = (props: IProps) => {
         <FieldInput
           fieldName="retention.retentionDescription"
           fieldValue={formikBag.values.retention.retentionDescription}
-          placeHolder="(f.eks. lenke til P360, Confluence e.l.)"
+          placeHolder="(f.eks. lenke til Public 360, Confluence e.l.)"
         />
       </div>
       <Error fieldName="retention.retentionDescription" />
