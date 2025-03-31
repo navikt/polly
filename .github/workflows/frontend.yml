@@ -64,7 +64,7 @@ jobs:
           team: teamdatajegerne
           push_image: true
           image_suffix: frontend
-          context: ./apps/frontend
+          docker_context: ./apps/frontend
           
   deploy-dev-gcp:
     name: Frontend - deploy Dev GCP
