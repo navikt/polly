@@ -58,7 +58,7 @@ jobs:
 
       - name: Build and push
         if: github.ref == 'refs/heads/prod' || github.ref == 'refs/heads/master'
-        uses: docker/build-push-action@v6
+        uses: nais/docker-build-push@v0
         id: docker-build-push
         with:
           team: teamdatajegerne
