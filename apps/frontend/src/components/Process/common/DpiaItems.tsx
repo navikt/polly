@@ -34,7 +34,7 @@ const DpiaItems = (props: IProps) => {
             <FieldInput
               fieldName="dpia.refToDpia"
               fieldValue={formikBag.values.dpia?.refToDpia}
-              placeHolder="(f.eks. lenke til Websak, Confluence e.l.)"
+              placeHolder="(f.eks. lenke til Public 360, Confluence e.l.)"
             />
           </div>
         </>

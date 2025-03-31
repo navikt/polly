@@ -34,7 +34,7 @@ const FieldDpProcessDataProcessingAgreements = (
               className="w-full"
               label=""
               hideLabel
-              placeholder="(f.eks. lenke til Websak, Confluence e.l.)"
+              placeholder="(f.eks. lenke til Public 360, Confluence e.l.)"
               value={currentKeywordValue}
               onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
               onKeyDown={(event) => {
