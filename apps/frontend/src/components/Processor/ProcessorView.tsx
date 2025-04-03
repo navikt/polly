@@ -260,7 +260,7 @@ const ProcessorView = () => {
                 )}
               </div>
               <ProcessorModal
-                title="Databehandler"
+                title="Redigér Databehandler"
                 isOpen={showEditProcessorModal}
                 initialValues={convertProcessorToFormValues(currentProcessor)}
                 submit={handleEditDataProcessor}

@@ -1,19 +1,13 @@
-import { TextField } from '@navikt/ds-react'
-import { Panel, PanelOverrides, StatelessAccordion } from 'baseui/accordion'
-import { Button, KIND } from 'baseui/button'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Accordion, Button, Modal, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik } from 'formik'
-import { Key, useEffect, useState } from 'react'
-import { getResourcesByIds } from '../../api/GetAllApi'
+import { useEffect, useState } from 'react'
+import { getResourcesByIds, useTeamResourceSearchOptions } from '../../api/GetAllApi'
 import { IProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
-import { theme } from '../../util'
 import { disableEnter } from '../../util/helper-functions'
 import BoolField from '../Process/common/BoolField'
-import PanelTitle from '../Process/common/PanelTitle'
-import CustomizedModalBlock from '../common/CustomizedModalBlock'
+import CustomSearchSelect from '../common/AsyncSelectComponents'
 import { Error, ModalLabel } from '../common/ModalSchema'
 import { dataProcessorSchema } from '../common/schemaValidation'
-import FieldContractOwner from './components/FieldContractOwner'
 import FieldCountries from './components/FieldCountries'
 import FieldNote from './components/FieldNote'
 import FieldOperationalContractManagers from './components/FieldOperationalContractManagers'
@@ -29,25 +23,8 @@ type TModalProcessorProps = {
   onClose: () => void
 }
 
-const panelOverrides: PanelOverrides = {
-  Header: {
-    style: {
-      paddingLeft: '0',
-    },
-  },
-  Content: {
-    style: {
-      backgroundColor: theme.colors.white,
-    },
-  },
-  ToggleIcon: {
-    component: () => null,
-  },
-}
-
 const ProcessorModal = (props: TModalProcessorProps) => {
   const { title, isOpen, initialValues, errorMessage, submit, onClose } = props
-  const [expanded, setExpanded] = useState<Key[]>([])
   const [operationalContractManagers, setOperationalContractManagers] = useState(
     new Map<string, string>()
   )
@@ -69,11 +46,11 @@ const ProcessorModal = (props: TModalProcessorProps) => {
   return (
     <Modal
       onClose={onClose}
-      isOpen={isOpen}
-      closeable={false}
-      animate
-      size={SIZE.auto}
-      role={ROLE.dialog}
+      open={isOpen}
+      header={{
+        heading: title,
+        closeButton: false,
+      }}
     >
       <div className="w-[960px] px-8">
         <Formik
@@ -85,146 +62,122 @@ const ProcessorModal = (props: TModalProcessorProps) => {
         >
           {(formikBag) => (
             <Form onKeyDown={disableEnter}>
-              <ModalHeader>
-                <div className="flex justify-center mb-8">{title}</div>
-              </ModalHeader>
-              <ModalBody>
-                <CustomizedModalBlock>
-                  <ModalLabel label="Navn på databehandler" />
-                  <Field name="name">
-                    {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
-                      <TextField
-                        className="w-full"
-                        label=""
-                        hideLabel
-                        {...field}
-                        error={!!form.errors.name && form.touched.name}
-                      />
-                    )}
-                  </Field>
-                </CustomizedModalBlock>
+              <Modal.Body>
+                <Field name="name">
+                  {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
+                    <TextField
+                      className="w-full"
+                      label="Navn på databehandler"
+                      {...field}
+                      error={!!form.errors.name && form.touched.name}
+                    />
+                  )}
+                </Field>
+
                 <Error fieldName={'name'} />
 
-                <CustomizedModalBlock>
-                  <ModalLabel
-                    label="Ref. på databehandleravtale"
-                    tooltip="Referanse til avtalen, gjerne URL til avtalen i WebSak e.l."
-                  />
-                  <Field name="contract">
-                    {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
-                      <TextField
-                        className="w-full"
-                        label=""
-                        hideLabel
-                        {...field}
-                        error={!!form.errors.contract && form.touched.contract}
+                <Field name="contract">
+                  {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
+                    <TextField
+                      className="w-full"
+                      label="Ref. på databehandleravtale"
+                      description="Referanse til avtalen, gjerne URL til avtalen i Public 360 e.l."
+                      {...field}
+                      error={!!form.errors.contract && form.touched.contract}
+                    />
+                  )}
+                </Field>
+
+                <Error fieldName={'contract'} />
+
+                <div className="w-full">
+                  <Field name="contractOwner">
+                    {({ form }: FieldProps<string, IProcessorFormValues>) => (
+                      <CustomSearchSelect
+                        ariaLabel="Avtaleeier"
+                        placeholder=""
+                        onChange={(event: any) => {
+                          if (event) {
+                            form.setFieldValue('contractOwner', event.id)
+                          }
+                        }}
+                        loadOptions={useTeamResourceSearchOptions}
                       />
                     )}
                   </Field>
-                </CustomizedModalBlock>
-                <Error fieldName={'contract'} />
+                </div>
 
-                <CustomizedModalBlock>
-                  <ModalLabel
-                    label="Avtaleeier"
-                    tooltip="Den som formelt står som eier av avtalen med databehandler."
-                  />
-                  <FieldContractOwner contractOwner={formikBag.values.contractOwner} />
-                </CustomizedModalBlock>
+                <ModalLabel
+                  label="Fagansvarlig"
+                  tooltip="De(n) som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne."
+                />
+                <FieldOperationalContractManagers
+                  formikBag={formikBag}
+                  resources={operationalContractManagers}
+                />
 
-                <CustomizedModalBlock>
-                  <ModalLabel
-                    label="Fagansvarlig"
-                    tooltip="De(n) som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne."
-                  />
-                  <FieldOperationalContractManagers
-                    formikBag={formikBag}
-                    resources={operationalContractManagers}
-                  />
-                </CustomizedModalBlock>
+                <ModalLabel
+                  label="Merknad"
+                  tooltip="Eventuelle vesentlige merknader/begrensninger som bruker av databehandleren må være ekstra oppmerksom på."
+                />
+                <FieldNote />
 
-                <CustomizedModalBlock>
-                  <ModalLabel
-                    label="Merknad"
-                    tooltip="Eventuelle vesentlige merknader/begrensninger som bruker av databehandleren må være ekstra oppmerksom på."
-                  />
-                  <FieldNote />
-                </CustomizedModalBlock>
+                <Accordion>
+                  <Accordion.Item>
+                    <Accordion.Header>
+                      <span>Overføres data til utlandet</span>
+                    </Accordion.Header>
+                    <Accordion.Content>
+                      <div className="flex w-full mt-0">
+                        <ModalLabel label="Behandler databehandler personopplysninger utenfor EU/EØS?" />
+                        <BoolField fieldName="outsideEU" value={formikBag.values.outsideEU} />
+                      </div>
 
-                <StatelessAccordion
-                  overrides={{
-                    Root: {
-                      style: {
-                        marginTop: '25px',
-                      },
-                    },
-                  }}
-                  expanded={expanded}
-                  onChange={(event) => setExpanded(event.expanded)}
-                >
-                  <Panel
-                    key={'transfer'}
-                    title={
-                      <PanelTitle
-                        title="Overføres data til utlandet"
-                        expanded={expanded.indexOf('transfer') >= 0}
-                      />
-                    }
-                    overrides={{ ...panelOverrides }}
-                  >
-                    <div className="flex w-full mt-0">
-                      <ModalLabel label="Behandler databehandler personopplysninger utenfor EU/EØS?" />
-                      <BoolField fieldName="outsideEU" value={formikBag.values.outsideEU} />
-                    </div>
+                      {formikBag.values.outsideEU && (
+                        <>
+                          <div className="flex w-full mt-4">
+                            <ModalLabel label="Overføringsgrunnlag for behandling utenfor EU/EØS" />
+                            <FieldTransferGroundsOutsideEU
+                              code={formikBag.values.transferGroundsOutsideEU}
+                            />
+                          </div>
+                          <Error fieldName="transferGroundsOutsideEU" />
 
-                    {formikBag.values.outsideEU && (
-                      <>
-                        <div className="flex w-full mt-4">
-                          <ModalLabel label="Overføringsgrunnlag for behandling utenfor EU/EØS" />
-                          <FieldTransferGroundsOutsideEU
-                            code={formikBag.values.transferGroundsOutsideEU}
-                          />
-                        </div>
-                        <Error fieldName="transferGroundsOutsideEU" />
+                          {formikBag.values.transferGroundsOutsideEU ===
+                            TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
+                            <div className="flex w-full mt-4">
+                              <ModalLabel
+                                label="Andre overføringsgrunnlag"
+                                tooltip='Du har valgt at overføringsgrunnlaget er "annet", spesifiser grunnlaget her.'
+                              />
+                              <FieldTransferGroundsOutsideEUOther />
+                            </div>
+                          )}
+                          <Error fieldName="transferGroundsOutsideEUOther" />
 
-                        {formikBag.values.transferGroundsOutsideEU ===
-                          TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
                           <div className="flex w-full mt-4">
                             <ModalLabel
-                              label="Andre overføringsgrunnlag"
-                              tooltip='Du har valgt at overføringsgrunnlaget er "annet", spesifiser grunnlaget her.'
+                              label="Land"
+                              tooltip="I hvilke(t) land lagrer databehandleren personopplysninger i?"
                             />
-                            <FieldTransferGroundsOutsideEUOther />
+                            <FieldCountries formikBag={formikBag} />
                           </div>
-                        )}
-                        <Error fieldName="transferGroundsOutsideEUOther" />
-
-                        <div className="flex w-full mt-4">
-                          <ModalLabel
-                            label="Land"
-                            tooltip="I hvilke(t) land lagrer databehandleren personopplysninger i?"
-                          />
-                          <FieldCountries formikBag={formikBag} />
-                        </div>
-                        <Error fieldName="countries" />
-                      </>
-                    )}
-                  </Panel>
-                </StatelessAccordion>
-              </ModalBody>
-              <ModalFooter
-                style={{
-                  borderTop: 0,
-                }}
-              >
+                          <Error fieldName="countries" />
+                        </>
+                      )}
+                    </Accordion.Content>
+                  </Accordion.Item>
+                </Accordion>
+              </Modal.Body>
+              <Modal.Footer>
                 <div className="flex justify-end">
                   <div className="self-end">{errorMessage && <p>{errorMessage}</p>}</div>
-                  <Button type="button" kind={KIND.tertiary} onClick={onClose}>
+                  <Button type="button" variant="tertiary" onClick={onClose}>
                     Avbryt
                   </Button>
-                  <ModalButton type="submit">Lagre</ModalButton>
+                  <Button type="submit">Lagre</Button>
                 </div>
-              </ModalFooter>
+              </Modal.Footer>
             </Form>
           )}
         </Formik>
