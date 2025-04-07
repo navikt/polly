@@ -1,6 +1,6 @@
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, DatePicker, Tooltip, useDatepicker } from '@navikt/ds-react'
+import { Button, DatePicker, Tooltip } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../constants'
@@ -38,7 +38,6 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
 export const DateFieldsProcessModal = (props: IDateModalProps) => {
   const { showLabels } = props
   const [showDates, setShowDates] = useState<boolean>(props.showDates)
-  const { datepickerProps, inputProps } = useDatepicker({})
 
   return (
     <>
@@ -76,7 +75,6 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
                   <Field name="start">
                     {({ form }: FieldProps<string, IProcessFormValues>) => (
                       <DatePicker
-                        {...datepickerProps}
                         onSelect={(date: any) => {
                           const dateSingle: Date = Array.isArray(date) ? date[0] : date
                           if (dateSingle) {
@@ -88,7 +86,6 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
                       >
                         <DatePicker.Input
                           className="mb-2"
-                          {...inputProps}
                           value={form.values['start']}
                           label="Velg fra og med dato"
                           error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
@@ -104,7 +101,6 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
                   <Field name="end">
                     {({ form }: FieldProps<string, IProcessFormValues>) => (
                       <DatePicker
-                        {...datepickerProps}
                         onSelect={(date: any) => {
                           const dateSingle: Date = Array.isArray(date) ? date[0] : date
                           if (dateSingle) {
@@ -116,7 +112,6 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
                       >
                         <DatePicker.Input
                           className="mb-2"
-                          {...inputProps}
                           value={form.values['end']}
                           label="Velg til og med dato"
                           error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
