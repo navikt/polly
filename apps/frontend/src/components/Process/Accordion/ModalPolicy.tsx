@@ -74,7 +74,7 @@ const FieldInformationType = () => {
             }}
             error={!!form.errors.informationType && !!form.submitCount}
           >
-            <option value="">Søk opplysningsyper</option>
+            <option value="">Søk opplysningstyper</option>
             {infoTypes.map((infoType: IInformationTypeShort) => (
               <option key={infoType.id} value={infoType.id}>
                 {infoType.name}
