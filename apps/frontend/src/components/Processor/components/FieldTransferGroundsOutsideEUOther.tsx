@@ -7,8 +7,8 @@ const FieldTransferGroundsOutsideEUOther = () => (
     {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
       <TextField
         className="w-full"
-        label=""
-        hideLabel
+        label="Andre overføringsgrunnlag"
+        description='Du har valgt at overføringsgrunnlaget er "annet", spesifiser grunnlaget her.'
         {...field}
         error={
           !!form.errors.transferGroundsOutsideEUOther && form.touched.transferGroundsOutsideEUOther

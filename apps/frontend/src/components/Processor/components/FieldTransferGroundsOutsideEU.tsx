@@ -1,44 +1,31 @@
-import { Select, Value } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
-import { useState } from 'react'
 import { IProcessorFormValues } from '../../../constants'
 import { CodelistService, EListName } from '../../../service/Codelist'
 
-interface IProps {
-  code?: string
-}
-
-const FieldTransferGroundsOutsideEU = (props: IProps) => {
-  const { code } = props
+const FieldTransferGroundsOutsideEU = () => {
   const [codelistUtils] = CodelistService()
-
-  const [value, setValue] = useState<Value>(
-    code
-      ? [
-          {
-            id: code,
-            label: codelistUtils.getShortname(EListName.TRANSFER_GROUNDS_OUTSIDE_EU, code),
-          },
-        ]
-      : []
-  )
 
   return (
     <Field name="transferGroundsOutsideEU">
       {({ form }: FieldProps<string, IProcessorFormValues>) => (
-        <div className="w-full">
-          <Select
-            options={codelistUtils.getParsedOptions(EListName.TRANSFER_GROUNDS_OUTSIDE_EU)}
-            onChange={({ value }) => {
-              setValue(value)
-              form.setFieldValue('transferGroundsOutsideEU', value.length > 0 ? value[0].id : '')
-            }}
-            value={value}
-            error={
-              !!(form.errors.transferGroundsOutsideEU && form.touched.transferGroundsOutsideEU)
-            }
-          />
-        </div>
+        <Select
+          className="mt-4"
+          value={form.values.transferGroundsOutsideEU}
+          label="Overføringsgrunnlag for behandling utenfor EU/EØS"
+          description="Velg grunnlag"
+          onChange={(event) => {
+            form.setFieldValue('transferGroundsOutsideEU', event.target.value)
+          }}
+          error={!!(form.errors.transferGroundsOutsideEU && form.submitCount)}
+        >
+          <option value="">Velg grunnlag</option>
+          {codelistUtils.getParsedOptions(EListName.TRANSFER_GROUNDS_OUTSIDE_EU).map((grunnlag) => (
+            <option value={grunnlag.id} key={grunnlag.id}>
+              {grunnlag.label}
+            </option>
+          ))}
+        </Select>
       )}
     </Field>
   )
