@@ -32,7 +32,7 @@ const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps
               $style={{ maxWidth: '25%' }}
             />
             <HeadCell
-              title="Behandling ja"
+              title="Behandling"
               column={'name'}
               tableState={[table, sortColumn]}
               $style={{ maxWidth: '25%' }}

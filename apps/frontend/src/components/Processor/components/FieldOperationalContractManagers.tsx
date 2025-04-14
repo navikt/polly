@@ -1,6 +1,6 @@
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import { getResourcesByIds, useTeamResourceSearchOptions } from '../../../api/GetAllApi'
+import { getResourcesByIds, useTeamResourceSearchOptions } from '../../../api/TeamApi'
 import { IProcessorFormValues } from '../../../constants'
 import CustomSearchSelect from '../../common/AsyncSelectComponents'
 import { LabelWithDescription } from '../../common/LabelWithTooltip'

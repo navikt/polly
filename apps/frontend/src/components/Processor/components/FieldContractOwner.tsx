@@ -1,7 +1,7 @@
 import { Field, FieldProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import AsyncSelect from 'react-select/async'
-import { getResourceById, useTeamResourceSearchOptions } from '../../../api/GetAllApi'
+import { getResourceById, useTeamResourceSearchOptions } from '../../../api/TeamApi'
 import { IProcessorFormValues, ITeamResource } from '../../../constants'
 import {
   DropdownIndicator,
