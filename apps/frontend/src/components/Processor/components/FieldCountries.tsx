@@ -19,6 +19,7 @@ const FieldCountries = (props: IProps) => {
       {(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full mt-4">
           <Select
+            id="countries"
             label="Land"
             description="I hvilke(t) land lagrer databehandleren personopplysninger i?"
             onChange={(event) => {

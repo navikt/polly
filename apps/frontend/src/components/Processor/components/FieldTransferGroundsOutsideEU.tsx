@@ -10,6 +10,7 @@ const FieldTransferGroundsOutsideEU = () => {
     <Field name="transferGroundsOutsideEU">
       {({ form }: FieldProps<string, IProcessorFormValues>) => (
         <Select
+          id="transferGroundsOutsideEU"
           className="mt-4"
           value={form.values.transferGroundsOutsideEU}
           label="Overføringsgrunnlag for behandling utenfor EU/EØS"
@@ -17,7 +18,6 @@ const FieldTransferGroundsOutsideEU = () => {
           onChange={(event) => {
             form.setFieldValue('transferGroundsOutsideEU', event.target.value)
           }}
-          error={!!(form.errors.transferGroundsOutsideEU && form.submitCount)}
         >
           <option value="">Velg grunnlag</option>
           {codelistUtils.getParsedOptions(EListName.TRANSFER_GROUNDS_OUTSIDE_EU).map((grunnlag) => (

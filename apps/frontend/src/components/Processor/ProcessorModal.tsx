@@ -1,8 +1,9 @@
-import { Button, Modal, Radio, RadioGroup, TextField } from '@navikt/ds-react'
+import { Button, ErrorSummary, Modal, Radio, RadioGroup, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik } from 'formik'
+import { useRef, useState } from 'react'
 import { IProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
 import { disableEnter } from '../../util/helper-functions'
-import { Error } from '../common/ModalSchema'
+import { FormError } from '../common/ModalSchema'
 import { dataProcessorSchema } from '../common/schemaValidation'
 import FieldContractOwner from './components/FieldContractOwner'
 import FieldCountries from './components/FieldCountries'
@@ -22,6 +23,8 @@ type TModalProcessorProps = {
 
 const ProcessorModal = (props: TModalProcessorProps) => {
   const { title, isOpen, initialValues, errorMessage, submit, onClose } = props
+  const errorSummaryRef = useRef<HTMLDivElement>(null)
+  const [validateOnBlur, setValidateOnBlur] = useState(false)
 
   return (
     <Modal
@@ -38,36 +41,34 @@ const ProcessorModal = (props: TModalProcessorProps) => {
         }}
         initialValues={initialValues}
         validationSchema={dataProcessorSchema()}
+        validateOnBlur={false}
+        validateOnChange={validateOnBlur}
       >
         {(formikBag) => (
           <Form onKeyDown={disableEnter}>
             <Modal.Body>
               <Field name="name">
-                {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
+                {({ field }: FieldProps<string, IProcessorFormValues>) => (
                   <TextField
+                    id="name"
                     className="w-full"
                     label="Navn på databehandler"
                     {...field}
-                    error={!!form.errors.name && form.touched.name}
                   />
                 )}
               </Field>
-
-              <Error fieldName={'name'} />
+              <FormError fieldName="name" akselStyling />
 
               <Field name="contract">
-                {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
+                {({ field }: FieldProps<string, IProcessorFormValues>) => (
                   <TextField
                     className="w-full mt-4"
                     label="Ref. på databehandleravtale"
                     description="Referanse til avtalen, gjerne URL til avtalen i Public 360 e.l."
                     {...field}
-                    error={!!form.errors.contract && form.touched.contract}
                   />
                 )}
               </Field>
-
-              <Error fieldName={'contract'} />
 
               <FieldContractOwner formikBag={formikBag} />
 
@@ -81,7 +82,6 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                 legend="Overføres data til utlandet"
                 description="Behandler databehandler personopplysninger utenfor EU/EØS?"
                 onChange={(value) => formikBag.setFieldValue('outsideEU', value)}
-                error={formikBag.errors.outsideEU}
               >
                 <Radio value={true}>Ja</Radio>
                 <Radio value={false}>Nei</Radio>
@@ -90,24 +90,34 @@ const ProcessorModal = (props: TModalProcessorProps) => {
 
               {formikBag.values.outsideEU && (
                 <>
-                  <div className="mt-4">
-                    <FieldTransferGroundsOutsideEU />
-                  </div>
-                  <Error fieldName="transferGroundsOutsideEU" />
+                  <FieldTransferGroundsOutsideEU />
+                  <FormError fieldName="transferGroundsOutsideEU" akselStyling />
 
                   {formikBag.values.transferGroundsOutsideEU ===
                     TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
-                    <div className="mt-4">
+                    <>
                       <FieldTransferGroundsOutsideEUOther />
-                    </div>
+                      <FormError fieldName="transferGroundsOutsideEUOther" akselStyling />
+                    </>
                   )}
-                  <Error fieldName="transferGroundsOutsideEUOther" />
 
-                  <div className="mt-4">
-                    <FieldCountries formikBag={formikBag} />
-                  </div>
-                  <Error fieldName="countries" />
+                  <FieldCountries formikBag={formikBag} />
+                  <FormError fieldName="countries" akselStyling />
                 </>
+              )}
+              {Object.values(formikBag.errors).some(Boolean) && (
+                <ErrorSummary
+                  ref={errorSummaryRef}
+                  heading="Du må rette disse feilene før du kan fortsette"
+                >
+                  {Object.entries(formikBag.errors)
+                    .filter(([, error]) => error)
+                    .map(([key, error]) => (
+                      <ErrorSummary.Item href={`#${key}`} key={key}>
+                        {error as string}
+                      </ErrorSummary.Item>
+                    ))}
+                </ErrorSummary>
               )}
             </Modal.Body>
             <Modal.Footer>
@@ -116,7 +126,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                 <Button type="button" variant="secondary" onClick={onClose}>
                   Avbryt
                 </Button>
-                <Button type="submit" variant="primary">
+                <Button type="submit" variant="primary" onClick={() => setValidateOnBlur(true)}>
                   Lagre
                 </Button>
               </div>
