@@ -32,10 +32,7 @@ const FieldOperationalContractManagers = (props: TFieldOperationalContractManage
     <FieldArray name="operationalContractManagers">
       {(arrayHelpers: FieldArrayRenderProps) => (
         <div className="mt-4">
-          <LabelWithDescription
-            label="Fagansvarlig"
-            description="De(n) som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne."
-          />
+          <LabelWithDescription label="Angi de(n) fagansvarlige som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne." />
           <CustomSearchSelect
             ariaLabel="Fagansvarlig"
             placeholder=""

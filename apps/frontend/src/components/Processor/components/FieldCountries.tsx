@@ -20,13 +20,12 @@ const FieldCountries = (props: IProps) => {
         <div className="w-full mt-4">
           <Select
             id="countries"
-            label="Land"
-            description="I hvilke(t) land lagrer databehandleren personopplysninger i?"
+            label="I hvilke(t) land lagrer databehandleren personopplysninger i?"
             onChange={(event) => {
               arrayHelpers.form.setFieldValue('countries', [...countries, event.target.value])
             }}
           >
-            <option value="">Velg land</option>
+            <option value=""></option>
             {codelistUtils
               .getCountryCodesOutsideEu()
               .filter((land) => !countries.includes(land.code))

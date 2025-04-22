@@ -155,7 +155,7 @@ const ProcessorView = () => {
       {!isLoading && currentProcessor && (
         <>
           <div>
-            <DataText label="Ref. på databehandleravtale">
+            <DataText label="Referanse til databehandleravtale">
               {currentProcessor.contract
                 ? shortenLinksInText(currentProcessor.contract)
                 : 'Ikke utfylt'}
