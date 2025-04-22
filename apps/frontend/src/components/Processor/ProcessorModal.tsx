@@ -2,7 +2,6 @@ import { Button, ErrorSummary, Modal, Radio, RadioGroup, TextField } from '@navi
 import { Field, FieldProps, Form, Formik } from 'formik'
 import { useRef, useState } from 'react'
 import { IProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
-import { disableEnter } from '../../util/helper-functions'
 import { FormError } from '../common/ModalSchema'
 import { dataProcessorSchema } from '../common/schemaValidation'
 import FieldContractOwner from './components/FieldContractOwner'
@@ -45,7 +44,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
         validateOnChange={validateOnBlur}
       >
         {(formikBag) => (
-          <Form onKeyDown={disableEnter}>
+          <Form>
             <Modal.Body>
               <Field name="name">
                 {({ field }: FieldProps<string, IProcessorFormValues>) => (
