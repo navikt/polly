@@ -83,7 +83,7 @@ const dpDataProcessingSchema: () => yup.ObjectSchema<IDataProcessingFormValues> 
 export const dataProcessorSchema: () => yup.ObjectSchema<IProcessorFormValues> = () =>
   yup.object({
     id: yup.string(),
-    name: yup.string().max(max, maxError()).required(requiredMessage),
+    name: yup.string().max(max, maxError()).required('Databehandler må ha et navn'),
     contractOwner: yup.string(),
     operationalContractManagers: yup.array().of(yup.string().required()).required(),
     note: yup.string(),
@@ -91,7 +91,7 @@ export const dataProcessorSchema: () => yup.ObjectSchema<IProcessorFormValues> =
     outsideEU: yup.boolean(),
     transferGroundsOutsideEU: yup.string().test({
       name: 'transferGrounds',
-      message: requiredMessage,
+      message: 'Du må velge et behandlingsgrunnlag',
       test: function () {
         const { parent } = this
         return !transferGroundsOutsideEUMissing(parent)
@@ -99,7 +99,7 @@ export const dataProcessorSchema: () => yup.ObjectSchema<IProcessorFormValues> =
     }),
     transferGroundsOutsideEUOther: yup.string().test({
       name: 'transferGroundsOther',
-      message: requiredMessage,
+      message: 'Du må spesifisere overføringsgrunnlaget',
       test: function () {
         const { parent } = this
         return !transferGroundsOutsideEUOtherMissing(parent)
@@ -117,7 +117,7 @@ export const dataProcessorSchema: () => yup.ObjectSchema<IProcessorFormValues> =
           if (!error) return true
           return this.createError({
             path: 'countries',
-            message: requiredMessage,
+            message: 'Du må angi hvilke(t) land',
           })
         },
       }),

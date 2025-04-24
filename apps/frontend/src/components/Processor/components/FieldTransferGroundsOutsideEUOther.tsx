@@ -4,15 +4,12 @@ import { IProcessorFormValues } from '../../../constants'
 
 const FieldTransferGroundsOutsideEUOther = () => (
   <Field name="transferGroundsOutsideEUOther">
-    {({ field, form }: FieldProps<string, IProcessorFormValues>) => (
+    {({ field }: FieldProps<string, IProcessorFormValues>) => (
       <TextField
-        className="w-full"
-        label=""
-        hideLabel
+        id="transferGroundsOutsideEUOther"
+        className="w-full mt-4"
+        label="Spesifiser overføringsgrunnlaget"
         {...field}
-        error={
-          !!form.errors.transferGroundsOutsideEUOther && form.touched.transferGroundsOutsideEUOther
-        }
       />
     )}
   </Field>

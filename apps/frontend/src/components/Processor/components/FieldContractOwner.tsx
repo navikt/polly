@@ -1,48 +1,64 @@
-import { Select, Value } from 'baseui/select'
-import { Field, FieldProps } from 'formik'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { getResourceById, useTeamResourceSearch } from '../../../api/GetAllApi'
-import { IProcessorFormValues } from '../../../constants'
+import { Field, FieldProps, FormikProps } from 'formik'
+import { useEffect, useState } from 'react'
+import AsyncSelect from 'react-select/async'
+import { getResourceById, useTeamResourceSearchOptions } from '../../../api/TeamApi'
+import { IProcessorFormValues, ITeamResource } from '../../../constants'
+import {
+  DropdownIndicator,
+  noOptionMessage,
+  selectOverrides,
+} from '../../common/AsyncSelectComponents'
+import { LabelWithDescription } from '../../common/LabelWithTooltip'
 
-interface IProps {
-  contractOwner?: string
+type TFieldContractOwnerProps = {
+  formikBag: FormikProps<IProcessorFormValues>
 }
 
-const FieldContractOwner = (props: IProps) => {
-  const { contractOwner } = props
-  const [value, setValue] = useState<Value>()
-  const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] =
-    useTeamResourceSearch()
+const FieldContractOwner = (props: TFieldContractOwnerProps) => {
+  const { formikBag } = props
+  const [displayName, setDisplayName] = useState<ITeamResource>()
 
   useEffect(() => {
     ;(async () => {
-      if (contractOwner) {
-        setValue([{ id: contractOwner, label: (await getResourceById(contractOwner)).fullName }])
-      } else {
-        setValue([])
+      if (formikBag.values.contractOwner) {
+        setDisplayName(await getResourceById(formikBag.values.contractOwner))
       }
     })()
-  }, [contractOwner])
+  }, [formikBag.values.contractOwner])
 
   return (
-    <Field name="contractOwner">
-      {({ form }: FieldProps<IProcessorFormValues>) => (
-        <div className="w-full">
-          <Select
-            options={teamResourceSearchResult}
-            onChange={({ value }) => {
-              setValue(value)
-              form.setFieldValue('contractOwner', value && value.length > 0 ? value[0].id : '')
+    <div className="w-full mt-4">
+      <LabelWithDescription
+        label="Avtaleeier"
+        description="Den som formelt står som eier av avtalen"
+      />
+      <Field name="contractOwner">
+        {({ form }: FieldProps<string, IProcessorFormValues>) => (
+          <AsyncSelect
+            className="w-full"
+            aria-label="Avtaleeier"
+            placeholder=""
+            components={{ DropdownIndicator }}
+            noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
+            controlShouldRenderValue={true}
+            loadingMessage={() => 'Søker...'}
+            isClearable={!!form.values.contractOwner}
+            loadOptions={useTeamResourceSearchOptions}
+            onChange={(event: any) => {
+              if (event) {
+                form.setFieldValue('contractOwner', event.id).finally()
+              }
+              if (event === null) {
+                form.setFieldValue('contractOwner', '').finally()
+                setDisplayName(undefined)
+              }
             }}
-            onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setTeamResourceSearch(event.currentTarget.value)
-            }
-            value={value}
-            isLoading={teamResourceSearchLoading}
+            styles={selectOverrides}
+            value={{ id: displayName?.navIdent, label: displayName?.fullName }}
           />
-        </div>
-      )}
-    </Field>
+        )}
+      </Field>
+    </div>
   )
 }
 export default FieldContractOwner

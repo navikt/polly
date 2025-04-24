@@ -1,8 +1,8 @@
-import { Select } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IProcessorFormValues } from '../../../constants'
-import { CodelistService, ICountryCode } from '../../../service/Codelist'
-import { renderTagList } from '../../common/TagList'
+import { CodelistService } from '../../../service/Codelist'
+import { RenderTagList } from '../../common/RenderTagList'
 
 interface IProps {
   formikBag: FormikProps<IProcessorFormValues>
@@ -17,31 +17,28 @@ const FieldCountries = (props: IProps) => {
   return (
     <FieldArray name="countries">
       {(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="w-full">
-          <div className="w-full">
-            <Select
-              clearable
-              options={codelistUtils
-                .getCountryCodesOutsideEu()
-                .map((code: ICountryCode) => ({ id: code.code, label: code.description }))
-                .filter((code) => !countries.includes(code.id))}
-              onChange={({ value }) => {
-                arrayHelpers.form.setFieldValue('countries', [
-                  ...countries,
-                  ...value.map((value) => value.id),
-                ])
-              }}
-              maxDropdownHeight={'400px'}
-            />
-          </div>
-          <div>
-            <div>
-              {renderTagList(
-                countries.map((country: string) => codelistUtils.countryName(country)),
-                arrayHelpers
-              )}
-            </div>
-          </div>
+        <div className="w-full mt-4">
+          <Select
+            id="countries"
+            label="I hvilke(t) land lagrer databehandleren personopplysninger i?"
+            onChange={(event) => {
+              arrayHelpers.form.setFieldValue('countries', [...countries, event.target.value])
+            }}
+          >
+            <option value=""></option>
+            {codelistUtils
+              .getCountryCodesOutsideEu()
+              .filter((land) => !countries.includes(land.code))
+              .map((land) => (
+                <option value={land.code} key={land.code}>
+                  {land.description}
+                </option>
+              ))}
+          </Select>
+          <RenderTagList
+            list={countries.map((country: string) => codelistUtils.countryName(country))}
+            onRemove={arrayHelpers.remove}
+          />
         </div>
       )}
     </FieldArray>

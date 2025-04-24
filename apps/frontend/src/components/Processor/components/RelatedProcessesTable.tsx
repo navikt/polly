@@ -1,88 +1,91 @@
-import { Fragment } from 'react/jsx-runtime'
-import { IProcess, getProcessSort } from '../../../constants'
-import { CodelistService } from '../../../service/Codelist'
-import { theme } from '../../../util'
-import { useTable } from '../../../util/hooks'
-import RouteLink from '../../common/RouteLink'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import { Link, SortState, Table } from '@navikt/ds-react'
+import { useState } from 'react'
+import { IProcess } from '../../../constants'
+import { handleSort } from '../../../util/handleTableSort'
 
 type TRelatedProcessesTableProps = {
   relatedProcesses: IProcess[]
 }
 
 const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps) => {
-  const [codelistUtils] = CodelistService()
+  const [sort, setSort] = useState<SortState>()
 
-  const [table, sortColumn] = useTable<IProcess, keyof IProcess>(relatedProcesses, {
-    sorting: getProcessSort(codelistUtils),
-    initialSortColumn: 'name',
+  let sortedData: IProcess[] = relatedProcesses
+
+  const comparator = (a: IProcess, b: IProcess, orderBy: string): number => {
+    switch (orderBy) {
+      case 'purposes':
+        return a.purposes[0].shortName.localeCompare(b.purposes[0].shortName)
+      case 'name':
+        return (a.name || '').localeCompare(b.name || '')
+      case 'affiliation':
+        return (a.affiliation.department?.shortName || '').localeCompare(
+          b.affiliation.department?.shortName || ''
+        )
+      default:
+        return 0
+    }
+  }
+
+  sortedData = sortedData.sort((a: IProcess, b: IProcess) => {
+    if (sort) {
+      return sort.direction === 'ascending'
+        ? comparator(b, a, sort.orderBy)
+        : comparator(a, b, sort.orderBy)
+    }
+    return 1
   })
 
   return (
-    <>
-      <Table
-        emptyText="Ingen"
-        backgroundColor={theme.colors.primary100}
-        headers={
-          <>
-            <HeadCell
-              title="Overordnet behandlingsaktivitet"
-              column={'purposes'}
-              tableState={[table, sortColumn]}
-              $style={{ maxWidth: '25%' }}
-            />
-            <HeadCell
-              title="Behandling ja"
-              column={'name'}
-              tableState={[table, sortColumn]}
-              $style={{ maxWidth: '25%' }}
-            />
-            <HeadCell
-              title="Avdeling"
-              column={'affiliation'}
-              tableState={[table, sortColumn]}
-              $style={{ maxWidth: '25%' }}
-            />
-            <HeadCell title="System" $style={{ maxWidth: '25%' }} />
-          </>
-        }
-      >
-        {table.data.map((row: IProcess, index: number) => (
-          <Fragment key={index}>
-            <Row>
-              <div className="flex w-full justify-between">
-                <Cell $style={{ maxWidth: '25%' }}>
-                  <RouteLink href={`/process/purpose/${row.purposes[0].code}`}>
-                    {row.purposes[0].shortName}
-                  </RouteLink>
-                </Cell>
-                <Cell $style={{ maxWidth: '25%' }}>
-                  <RouteLink href={`/process/${row.id}`} width="25%">
-                    {row.name}
-                  </RouteLink>
-                </Cell>
-                <Cell $style={{ maxWidth: '25%' }}>
-                  <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>
-                    {row.affiliation.department?.shortName}
-                  </RouteLink>
-                </Cell>
-                <Cell $style={{ maxWidth: '25%' }}>
-                  <div>
-                    {row.affiliation.products.map((product, index) => (
-                      <div className="mr-[10%]" key={index}>
-                        <RouteLink href={`/process/system/${product.code}`}>
-                          {product.shortName}
-                        </RouteLink>
-                      </div>
-                    ))}
-                  </div>
-                </Cell>
-              </div>
-            </Row>
-          </Fragment>
+    <Table
+      size="large"
+      zebraStripes
+      sort={sort}
+      onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}
+    >
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader sortKey="purposes" className="w-1/5" sortable>
+            Overordnet behandlingsaktivitet
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortKey="name" className="w-2/5" sortable>
+            {' '}
+            Behandling
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortKey="affiliation" className="w-1/5" sortable>
+            Avdeling
+          </Table.ColumnHeader>
+          <Table.ColumnHeader>System</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {sortedData.map((row: IProcess, index: number) => (
+          <Table.Row key={index}>
+            <Table.DataCell>
+              <Link href={`/process/purpose/${row.purposes[0].code}`}>
+                {row.purposes[0].shortName}
+              </Link>
+            </Table.DataCell>
+            <Table.DataCell>
+              <Link href={`/process/${row.id}`}>{row.name}</Link>
+            </Table.DataCell>
+            <Table.DataCell>
+              <Link href={`/process/department/${row.affiliation.department?.code}`}>
+                {row.affiliation.department?.shortName}
+              </Link>
+            </Table.DataCell>
+            <Table.DataCell>
+              {' '}
+              {row.affiliation.products.map((product, index) => (
+                <div className="" key={index}>
+                  <Link href={`/process/system/${product.code}`}>{product.shortName}</Link>
+                </div>
+              ))}
+            </Table.DataCell>
+          </Table.Row>
         ))}
-      </Table>
-    </>
+      </Table.Body>
+    </Table>
   )
 }
 
