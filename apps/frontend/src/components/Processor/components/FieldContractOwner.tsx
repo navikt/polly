@@ -42,7 +42,7 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
             noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
             controlShouldRenderValue={true}
             loadingMessage={() => 'Søker...'}
-            isClearable
+            isClearable={!!form.values.contractOwner}
             loadOptions={useTeamResourceSearchOptions}
             onChange={(event: any) => {
               if (event) {
