@@ -1,4 +1,4 @@
-import { BodyShort, Button, Link, List, Modal } from '@navikt/ds-react'
+import { BodyShort, Button, Heading, Link, List, Modal } from '@navikt/ds-react'
 import { IDisclosure, IProcess } from '../../../constants'
 import { user } from '../../../service/User'
 
@@ -38,7 +38,8 @@ export const DeleteProcessModal = (props: IDeleteProcessProps) => {
               <BodyShort spacing>Bekreft sletting av behandlingen {process.name}</BodyShort>
             )}
             {(!!process.policies.length || !!disclosures.length) && (
-              <List as="ul" title="Disse koblingene må fjernes">
+              <List as="ul">
+                <Heading size="medium">Disse koblingene må fjernes</Heading>
                 {!!process.policies.length && (
                   <List.Item>{`Kan ikke slette behandlingen ${process.name}, den inneholder fortsatt ${process.policies.length} opplysningstype(r)`}</List.Item>
                 )}
