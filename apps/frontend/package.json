@@ -101,7 +101,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@craco/craco": "^7.1.0",
     "@types/amplitude-js": "^8.0.0",
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.14.165",
     "@types/node": "^24.0.0",
     "@types/randomcolor": "^0.5.5",
