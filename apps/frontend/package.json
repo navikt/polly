@@ -94,7 +94,7 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version",
-      "ie 11" 
+      "ie 11"
     ]
   },
   "devDependencies": {
@@ -129,7 +129,7 @@
     "prettier": "3.6.0",
     "react-scripts": "5.0.1",
     "tailwindcss": "^4.0.3",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2"
   }
 }
