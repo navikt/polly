@@ -18,7 +18,7 @@
     "baseui": "^13.0.0",
     "core-js": "^3.43.0",
     "flag-icon-css": "^4.1.7",
-    "formik": "^2.2.4",
+    "formik": "^2.4.6",
     "husky": "^9.1.6",
     "json-diff-kit": "^1.0.29",
     "lint-staged": "^16.0.0",
