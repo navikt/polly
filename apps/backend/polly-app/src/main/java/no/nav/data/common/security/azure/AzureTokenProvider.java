@@ -153,6 +153,14 @@ public class AzureTokenProvider implements TokenProvider {
     }
 
     @Override
+    public String getConsumerToken(String resource) {
+        return Credential.getCredential()
+                .filter(Credential::hasAuth)
+                .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().decryptRefreshToken(), resource))
+                .orElseGet(() -> TOKEN_TYPE + getApplicationTokenForResource(resource));
+    }
+
+    @Override
     public String createSession(String sessionId, String code, String redirectUri) {
         try {
             log.debug("Looking up token for auth code");
