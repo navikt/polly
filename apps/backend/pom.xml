@@ -32,6 +32,7 @@
 
         <microsoft-graph.version>6.29.0</microsoft-graph.version>
         <msal4j.version>1.19.1</msal4j.version>
+        <graphql.version>22.0</graphql.version>
 
         <!-- transitive versions -->
         <commons-compress.version>1.27.1</commons-compress.version>
@@ -51,6 +52,23 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- GraphQL -->
+        <dependency>
+            <groupId>org.springframework.graphql</groupId>
+            <artifactId>spring-graphql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-graphql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>${graphql.version}</version>
         </dependency>
     </dependencies>
 
