@@ -78,6 +78,10 @@ spec:
         - application: nada-backend
           namespace: nada
     outbound:
+      rules:
+        - application: nom-api
+          namespace: nom
+          cluster: {{cluster_location}}
       external:
         - host: {{teamcat_ingress}}
         - host: {{termcat_ingress}}

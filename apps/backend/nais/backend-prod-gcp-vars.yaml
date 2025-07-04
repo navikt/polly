@@ -1,6 +1,7 @@
 appname: behandlingskatalog-backend
 teamcat_ingress: teamkatalog-api.intern.nav.no
 termcat_ingress: begrepskatalog-api.intern.nav.no
+cluster_location: prod-gcp
 ingresses:
   - https://behandlingskatalog-backend.intern.nav.no
   - https://polly.intern.nav.no
