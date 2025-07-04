@@ -1,0 +1,60 @@
+scalar DateTime
+scalar Date
+scalar NonNegativeInt
+
+# Queries
+
+type Query {
+    # nom queries
+    orgEnhet(where: OrgEnhetSearch!): OrgEnhet
+}
+
+# nom types and inputs
+
+input OrgEnhetSearch {
+    agressoId: String
+    orgNiv: String
+    navn: String
+    id: String
+}
+
+type Organisering {
+    retning: Retning!
+    orgEnhet : OrgEnhet!
+}
+
+type OrgEnhet {
+    id: ID!
+    navn: String!
+    organiseringer (retning: Retning) : [Organisering!]!
+    orgEnhetsType: OrgEnhetsType
+    nomNivaa: NomNivaa
+}
+
+enum Retning {
+    over,
+    under,
+}
+
+enum NomNivaa {
+    LINJEENHET
+    DRIFTSENHET
+    ARBEIDSOMRAADE
+}
+
+enum OrgEnhetsType {
+    ARBEIDSLIVSSENTER
+    NAV_ARBEID_OG_YTELSER
+    ARBEIDSRAADGIVNING
+    DIREKTORAT
+    DIR
+    FYLKE
+    NAV_FAMILIE_OG_PENSJONSYTELSER
+    HJELPEMIDLER_OG_TILRETTELEGGING
+    KLAGEINSTANS
+    NAV_KONTAKTSENTER
+    KONTROLL_KONTROLLENHET
+    NAV_KONTOR
+    TILTAK
+    NAV_OKONOMITJENESTE
+}
