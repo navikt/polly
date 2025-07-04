@@ -21,6 +21,8 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 public class AffiliationResponse {
 
     private CodelistResponse department;
+    private String nomDepartmentId;
+    private String nomDepartmentName;
     @Singular
     private List<CodelistResponse> subDepartments;
     @Singular
@@ -33,6 +35,8 @@ public class AffiliationResponse {
     public static AffiliationResponse buildFrom(Affiliation aff) {
         return AffiliationResponse.builder()
                 .department(aff.getDepartmentCodeResponse())
+                .nomDepartmentId(aff.getNomDepartmentId())
+                .nomDepartmentName(aff.getNomDepartmentName())
                 .subDepartments(aff.getSubDepartmentCodeResponses())
                 .productTeams(nullToEmptyList(aff.getProductTeams()))
                 .products(aff.getProductCodeResponses())

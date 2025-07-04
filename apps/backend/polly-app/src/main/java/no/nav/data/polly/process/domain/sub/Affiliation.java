@@ -17,6 +17,8 @@ import java.util.List;
 public class Affiliation {
 
     private String department;
+    private String nomDepartmentId;
+    private String nomDepartmentName;
     private List<String> subDepartments;
     private List<String> productTeams;
     private List<String> products;

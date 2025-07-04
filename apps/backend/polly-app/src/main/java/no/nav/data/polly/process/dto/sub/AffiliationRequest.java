@@ -29,6 +29,8 @@ public class AffiliationRequest implements Validated {
 
     @Schema(description = "Codelist DEPARTMENT")
     private String department;
+    private String nomDepartmentId;
+    private String nomDepartmentName;
     @Singular
     @Schema(description = "Codelist SUB_DEPARTMENT")
     private List<String> subDepartments;
@@ -44,6 +46,8 @@ public class AffiliationRequest implements Validated {
     @Override
     public void format() {
         setDepartment(toUpperCaseAndTrim(getDepartment()));
+        setNomDepartmentId(getNomDepartmentId());
+        setNomDepartmentName(getNomDepartmentName());
         setSubDepartments(formatListToUppercase(getSubDepartments()));
         setProductTeams(formatList(getProductTeams()));
         setProducts(formatListToUppercase(getProducts()));
@@ -60,6 +64,8 @@ public class AffiliationRequest implements Validated {
     public Affiliation convertToAffiliation() {
         return Affiliation.builder()
                 .department(getDepartment())
+                .nomDepartmentId(getNomDepartmentId())
+                .nomDepartmentName(getNomDepartmentName())
                 .subDepartments(copyOf(getSubDepartments()))
                 .productTeams(copyOf(getProductTeams()))
                 .products(copyOf(getProducts()))
