@@ -48,7 +48,14 @@ public class WebSecurityConfig {
                 "/userinfo",
                 "/internal/**",
                 "/swagger*/**",
-                "/process/shortbyid"
+                "/process/shortbyid",
+
+                // Graphql
+                "/playground*/**",
+                "/voyager*/**",
+                "/vendor/voyager/**",
+                "/vendor/playground/**",
+                "/graphql*/**"
         );
 
         allowGetAndOptions(http,
