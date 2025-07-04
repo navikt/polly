@@ -91,5 +91,11 @@ spec:
     - configmap: behandlingskatalogcfg
     - secret: polly-enckey
     - secret: polly-mail-pwd
+  env:
+  {{ #each env}}
+   - name: {{this.name } }
+     value: {{this.value}}
+  {{/each}}
+
   filesFrom:
     - secret: polly-aareg-integration-key

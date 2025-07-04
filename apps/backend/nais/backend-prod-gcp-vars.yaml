@@ -13,3 +13,6 @@ azuregroupid:
   - "7d275d5e-59a5-473d-b530-a9091b3de4c6"
   - "bf05a29f-6f80-4da1-b419-22c802fd41e7"
   - "b0d4bdd3-40fc-4feb-8147-a18388d3edfa"
+env:
+  - name: CLIENT_NOM_GRAPHQL_URL
+    value: http://nom-api.nom.svc.cluster.local/graphql
