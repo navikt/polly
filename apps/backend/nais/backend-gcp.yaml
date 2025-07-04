@@ -93,7 +93,7 @@ spec:
     - secret: polly-mail-pwd
   env:
   {{#each env}}
-   - name: {{this.name } }
+   - name: {{this.name}}
      value: {{this.value}}
   {{/each}}
 
