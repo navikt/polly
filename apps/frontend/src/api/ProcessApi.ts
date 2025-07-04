@@ -153,6 +153,8 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     purposes: purposes?.map((p) => p.code) || [],
     affiliation: {
       department: affiliation?.department?.code || '',
+      nomDepartmentId: affiliation?.nomDepartmentId || '',
+      nomDepartmentName: affiliation?.nomDepartmentName || '',
       subDepartments: affiliation?.subDepartments.map((sd) => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
       products: affiliation?.products.map((p) => p.code) || [],
@@ -255,7 +257,7 @@ export const useProcessSearch = () => {
 
 export const searchProcessOptions = async (searchParam: string) => {
   if (searchParam && searchParam.length > 2) {
-    const behandlinger  = ( await searchProcess(searchParam)).content
+    const behandlinger = (await searchProcess(searchParam)).content
     if (behandlinger && behandlinger.length) {
       return behandlinger.map((behandling) => {
         return {
@@ -264,7 +266,7 @@ export const searchProcessOptions = async (searchParam: string) => {
             'B' +
             behandling.number +
             ' ' +
-            behandling.purposes[0].shortName+
+            behandling.purposes[0].shortName +
             ': ' +
             behandling.name,
           ...behandling,

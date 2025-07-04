@@ -23,6 +23,7 @@ public class ReplaceCodelistRequest implements Validated {
     private String list;
     private String oldCode;
     private String newCode;
+    private String newCodeName;
 
     @JsonIgnore
     public ListName getListAsListName() {
@@ -37,7 +38,7 @@ public class ReplaceCodelistRequest implements Validated {
     public void validate(FieldValidator validator) {
         validator.checkRequiredEnum(Fields.list, getList(), ListName.class);
         ListName listName = getListAsListName();
-        if (listName != null) {
+        if (listName != null && !listName.equals(ListName.DEPARTMENT)) {
             validator.checkRequiredCodelist(Fields.oldCode, getOldCode(), listName);
             validator.checkRequiredCodelist(Fields.newCode, getNewCode(), listName);
         }
@@ -52,7 +53,8 @@ public class ReplaceCodelistRequest implements Validated {
     public void format() {
         setList(toUpperCaseAndTrim(list));
         setOldCode(toUpperCaseAndTrim(oldCode));
-        setNewCode(toUpperCaseAndTrim(newCode));
+        setNewCode(list.equals(ListName.DEPARTMENT.name()) ? newCode : toUpperCaseAndTrim(newCode));
+        setNewCodeName(newCodeName);
     }
 
 }

@@ -127,6 +127,8 @@ export const convertFormValuesToDisclosure = (values: IDisclosureFormValues) => 
     confidentialityDescription: values.confidentialityDescription,
     productTeams: values.productTeams,
     department: values.department,
+    nomDepartmentId: values.nomDepartmentId,
+    nomDepartmentName: values.nomDepartmentName,
   }
 }
 
@@ -163,6 +165,8 @@ export const convertDisclosureToFormValues: (disclosure: IDisclosure) => IDisclo
     },
     productTeams: disclosure.productTeams || [],
     department: disclosure?.department?.code || '',
+    nomDepartmentId: disclosure?.nomDepartmentId || '',
+    nomDepartmentName: disclosure?.nomDepartmentName || '',
     processIds: disclosure.processIds || [],
     administrationArchiveCaseNumber: disclosure.administrationArchiveCaseNumber || '',
     thirdCountryReceiver: mapBool(disclosure.thirdCountryReceiver),

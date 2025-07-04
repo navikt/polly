@@ -183,7 +183,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         private CodeUsageResponse replaceCode(String list, String code, String newCode) {
             ResponseEntity<CodeUsageResponse> response = restTemplate
-                    .postForEntity("/codelist/usage/replace", new ReplaceCodelistRequest(list, code, newCode), CodeUsageResponse.class);
+                    .postForEntity("/codelist/usage/replace", new ReplaceCodelistRequest(list, code, newCode, ""), CodeUsageResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
             return response.getBody();

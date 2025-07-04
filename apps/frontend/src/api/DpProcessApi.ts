@@ -71,6 +71,8 @@ export const dpProcessToFormValues = (dpProcess: Partial<IDpProcess>): IDpProces
   return {
     affiliation: {
       department: affiliation?.department?.code || '',
+      nomDepartmentId: affiliation?.nomDepartmentId || '',
+      nomDepartmentName: affiliation?.nomDepartmentName || '',
       subDepartments: affiliation?.subDepartments.map((sd) => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
       products: affiliation?.products.map((p) => p.code) || [],

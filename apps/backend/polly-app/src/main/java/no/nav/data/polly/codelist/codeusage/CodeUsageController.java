@@ -61,7 +61,7 @@ public class CodeUsageController {
         log.info("Received request to replace all usage of code {} with code {} in list {}", request.getOldCode(), request.getNewCode(), request.getList());
         request.formatAndValidate();
 
-        CodeUsageResponse codeUsage = service.replaceUsage(request.getListAsListName(), request.getOldCode(), request.getNewCode());
+        CodeUsageResponse codeUsage = service.replaceUsage(request.getListAsListName(), request.getOldCode(), request.getNewCode(), request.getNewCodeName());
         log.info("The code {} in list {} is used in: {}", request.getOldCode(), request.getListAsListName(), codeUsage);
         return ResponseEntity.ok(codeUsage);
     }

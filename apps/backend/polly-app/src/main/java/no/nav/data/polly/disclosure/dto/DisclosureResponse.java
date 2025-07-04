@@ -49,6 +49,8 @@ public class DisclosureResponse {
     private Boolean assessedConfidentiality;
     private String confidentialityDescription;
     private CodelistResponse department;
+    private String nomDepartmentId;
+    private String nomDepartmentName;
     private List<String> productTeams;
 
     public boolean isActive() {

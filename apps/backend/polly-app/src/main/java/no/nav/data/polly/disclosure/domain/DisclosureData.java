@@ -33,6 +33,8 @@ public class DisclosureData {
     private List<UUID> processIds;
     private List<UUID> informationTypeIds;
     private String department;
+    private String nomDepartmentId;
+    private String nomDepartmentName;
     private List<String> productTeams;
 
     @Valid

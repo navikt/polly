@@ -54,6 +54,9 @@ public class DisclosureRequest implements RequestElement {
     private Boolean assessedConfidentiality;
     private String confidentialityDescription;
     private String department;
+    private String nomDepartmentId;
+    private String nomDepartmentName;
+
     private List<String> productTeams;
 
     private boolean update;

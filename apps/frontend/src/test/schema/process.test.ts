@@ -9,6 +9,8 @@ export const createProcess = (): IProcessFormValues => ({
   purposes: ['PURPOSE'],
   affiliation: {
     productTeams: [],
+    nomDepartmentId: '',
+    nomDepartmentName: '',
     products: [],
     subDepartments: [],
     disclosureDispatchers: [],

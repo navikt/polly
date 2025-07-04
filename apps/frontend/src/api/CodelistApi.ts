@@ -26,13 +26,15 @@ export const getCodelistUsage = async (listname: EListName, code: string) => {
 export const replaceCodelistUsage = async (
   listname: EListName,
   oldCode: string,
-  newCode: string
+  newCode: string,
+  newCodeName?: string
 ) => {
   return (
     await axios.post<ICodeUsage>(`${env.pollyBaseUrl}/codelist/usage/replace`, {
       list: listname,
       oldCode,
       newCode,
+      newCodeName,
     })
   ).data
 }

@@ -107,7 +107,7 @@ public class CodeUsageService {
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
-    public CodeUsageResponse replaceUsage(ListName listName, String oldCode, String newCode) {
+    public CodeUsageResponse replaceUsage(ListName listName, String oldCode, String newCode, String newCodeName) {
         var usage = findCodeUsage(listName, oldCode);
         if (usage.isInUse()) {
             switch (listName) {
@@ -141,8 +141,14 @@ public class CodeUsageService {
                         convert(getDisclosures(usage), p -> p.getData().getLegalBases())
                 );
                 case DEPARTMENT -> {
-                    getProcesses(usage).forEach(p -> p.getData().getAffiliation().setDepartment(newCode));
-                    getDpProcesses(usage).forEach(p -> p.getData().getAffiliation().setDepartment(newCode));
+                    getProcesses(usage).forEach(p -> {
+                        p.getData().getAffiliation().setNomDepartmentId(newCode);
+                        p.getData().getAffiliation().setNomDepartmentName(newCodeName);
+                    });
+                    getDpProcesses(usage).forEach(p -> {
+                        p.getData().getAffiliation().setNomDepartmentId(newCode);
+                        p.getData().getAffiliation().setNomDepartmentName(newCodeName);
+                    });
                 }
                 case SUB_DEPARTMENT -> {
                     getProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getSubDepartments(), oldCode, newCode));

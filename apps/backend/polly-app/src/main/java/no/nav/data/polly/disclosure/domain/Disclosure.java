@@ -73,6 +73,8 @@ public class Disclosure extends Auditable {
         data.setAssessedConfidentiality(request.getAssessedConfidentiality());
         data.setConfidentialityDescription(request.getConfidentialityDescription());
         data.setDepartment(request.getDepartment());
+        data.setNomDepartmentId(request.getNomDepartmentId());
+        data.setNomDepartmentName(request.getNomDepartmentName());
         data.setProductTeams(copyOf(request.getProductTeams()));
         return this;
     }
@@ -97,6 +99,8 @@ public class Disclosure extends Auditable {
                 .assessedConfidentiality(data.getAssessedConfidentiality())
                 .confidentialityDescription(data.getConfidentialityDescription())
                 .department(CodelistStaticService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment()))
+                .nomDepartmentId(data.getNomDepartmentId())
+                .nomDepartmentName(data.getNomDepartmentName())
                 .productTeams(copyOf(data.getProductTeams()))
                 .changeStamp(convertChangeStampResponse())
                 .build();

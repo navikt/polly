@@ -128,7 +128,6 @@ export interface IProcessRevisionRequest {
   completedOnly: boolean
 }
 
-
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
 export interface IInformationtypeFormValues {
@@ -181,6 +180,8 @@ export interface IProcessFormValues {
 
 export interface IAffiliationFormValues {
   department?: string
+  nomDepartmentId?: string
+  nomDepartmentName?: string
   subDepartments: string[]
   productTeams: string[]
   products: string[]
@@ -189,6 +190,8 @@ export interface IAffiliationFormValues {
 
 export interface IAffiliation {
   department?: ICode
+  nomDepartmentId?: string
+  nomDepartmentName?: string
   subDepartments: ICode[]
   productTeams: string[]
   products: ICode[]
@@ -566,6 +569,8 @@ export interface IDisclosureFormValues {
   confidentialityDescription?: string
   productTeams?: string[]
   department?: string
+  nomDepartmentId?: string
+  nomDepartmentName?: string
 }
 
 export interface IDisclosureAbroad {
@@ -595,6 +600,8 @@ export interface IDisclosure extends IDurationed {
   confidentialityDescription?: string
   productTeams?: string[]
   department?: ICode
+  nomDepartmentId?: string
+  nomDepartmentName?: string
 
   changeStamp: IChangeStamp
 }

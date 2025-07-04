@@ -200,6 +200,8 @@ const subjectCategoryExistsBatch = (
 const affiliationSchema: () => yup.ObjectSchema<IAffiliationFormValues> = () =>
   yup.object({
     department: yup.string(),
+    nomDepartmentId: yup.string(),
+    nomDepartmentName: yup.string(),
     subDepartments: yup.array().of(yup.string().required()).required(),
     productTeams: yup.array().of(yup.string().required()).required(),
     products: yup.array().of(yup.string().required()).required(),
@@ -308,6 +310,8 @@ export const disclosureSchema: () => yup.ObjectSchema<IDisclosureFormValues> = (
     assessedConfidentiality: yup.boolean().required(requiredMessage),
     confidentialityDescription: yup.string().required(requiredMessage),
     department: yup.string(),
+    nomDepartmentId: yup.string(),
+    nomDepartmentName: yup.string(),
     productTeams: yup.array<any>(),
   })
 
@@ -350,6 +354,8 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
     additionalDescription: yup.string(),
     affiliation: yup.object({
       department: yup.string(),
+      nomDepartmentId: yup.string(),
+      nomDepartmentName: yup.string(),
       subDepartments: yup.array().of(yup.string().required()).required(),
       productTeams: yup.array().of(yup.string().required()).required(),
       products: yup.array().of(yup.string().required()).required(),

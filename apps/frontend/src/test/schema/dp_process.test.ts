@@ -8,6 +8,8 @@ const createDp: () => IDpProcessFormValues = () => ({
   dataProcessingAgreements: [],
   affiliation: {
     department: '',
+    nomDepartmentId: '',
+    nomDepartmentName: '',
     productTeams: [],
     products: [],
     subDepartments: [],
