@@ -149,6 +149,10 @@ public class CodeUsageService {
                         p.getData().getAffiliation().setNomDepartmentId(newCode);
                         p.getData().getAffiliation().setNomDepartmentName(newCodeName);
                     });
+                    getDisclosures(usage).forEach(d -> {
+                        d.getData().setNomDepartmentId(newCode);
+                        d.getData().setNomDepartmentName(newCodeName);
+                    });
                 }
                 case SUB_DEPARTMENT -> {
                     getProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getSubDepartments(), oldCode, newCode));
@@ -230,6 +234,7 @@ public class CodeUsageService {
     private List<UsedInInstance> findDisclosures(ListName listName, String code) {
         return convert(switch (listName) {
             case GDPR_ARTICLE -> disclosureRepository.findByGDPRArticle(code);
+            case DEPARTMENT -> disclosureRepository.findByDepartment(code);
             case NATIONAL_LAW -> disclosureRepository.findByNationalLaw(code);
             case THIRD_PARTY -> disclosureRepository.findByRecipient(code);
             default -> List.<Disclosure>of();

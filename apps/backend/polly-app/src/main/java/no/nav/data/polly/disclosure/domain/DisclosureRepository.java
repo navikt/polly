@@ -1,5 +1,6 @@
 package no.nav.data.polly.disclosure.domain;
 
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,6 @@ public interface DisclosureRepository extends JpaRepository<Disclosure, UUID>, D
     @Query(value = "select * from disclosure where jsonb_array_length(data -> 'legalBases') = 0 ", nativeQuery = true)
     List<Disclosure> findByNoLegalBases();
 
+    @Query(value = "select * from disclosure where data ->> 'department' = ?1", nativeQuery = true)
+    List<Disclosure> findByDepartment(String department);
 }
