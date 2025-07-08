@@ -245,6 +245,8 @@ public abstract class IntegrationTestBase {
                         .start(LocalDate.now()).end(LocalDate.now())
                         .affiliation(Affiliation.builder()
                                 .department(department)
+                                .nomDepartmentId(department)
+                                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, department)).getShortName())
                                 .subDepartments(List.of(subDepartment))
                                 .productTeams(List.of("ProductTeam"))
                                 .products(List.of(product))
@@ -265,6 +267,8 @@ public abstract class IntegrationTestBase {
                         .start(LocalDate.now()).end(LocalDate.now())
                         .affiliation(Affiliation.builder()
                                 .department(department)
+                                .nomDepartmentId(department)
+                                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, department)).getShortName())
                                 .subDepartments(List.of(subDepartment))
                                 .productTeams(List.of("ProductTeam"))
                                 .products(List.of(product))
@@ -302,6 +306,8 @@ public abstract class IntegrationTestBase {
                 .productTeams(List.of("teamid1"))
                 .products(List.of("PESYS"))
                 .department("DEP")
+                .nomDepartmentId("DEP")
+                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")).getShortName())
                 .subDepartment("SUBDEP")
                 .build();
     }
@@ -409,6 +415,8 @@ public abstract class IntegrationTestBase {
     protected AffiliationResponse affiliationResponse() {
         return AffiliationResponse.builder()
                 .department(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")))
+                .nomDepartmentId("DEP")
+                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")).getShortName())
                 .subDepartment(CodelistResponse.buildFrom(getCodelist(ListName.SUB_DEPARTMENT, "SUBDEP")))
                 .productTeam("teamid1")
                 .product(CodelistResponse.buildFrom(getCodelist(ListName.SYSTEM, "PESYS")))
