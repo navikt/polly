@@ -59,7 +59,22 @@ public class NomGraphClient {
 
     private Map<String, OrgEnhet> getAvdelingCache() {
         if (securityProperties.isDev()) {
-            var devAvdelinger = List.of(createDevAvdeling("avdeling_1"), createDevAvdeling("avdeling_2"));
+            var devAvdelinger = List.of(
+                    createDevAvdeling("avdeling1", "Avdeling for brukeropplevelser"),
+                    createDevAvdeling("avdeling_2", "Internrevisjon"),
+                    createDevAvdeling("avdeling_3", "Kunnskapsavdelingen"),
+                    createDevAvdeling("avdeling_4", "Velferdsavdelingen"),
+                    createDevAvdeling("avdeling_5", "Kommunikasjonsavdelingen"),
+                    createDevAvdeling("avdeling_6", "Avdeling for mennesker og organisasjon"),
+                    createDevAvdeling("avdeling_7", "Ytelsesavdelingen"),
+                    createDevAvdeling("avdeling_8", "Juridisk avdeling"),
+                    createDevAvdeling("avdeling_9", "Arbeids- og velferdsdirektør"),
+                    createDevAvdeling("avdeling_10", "Klageinstans"),
+                    createDevAvdeling("avdeling_11", "Arbeidsavdelingen"),
+                    createDevAvdeling("avdeling_12", "Økonomi- og styringsavdelingen"),
+                    createDevAvdeling("avdeling_13", "Sekretariatet"),
+                    createDevAvdeling("avdeling_14", "Teknologiavdelingen")
+            );
             return safeStream(devAvdelinger)
                     .collect(Collectors.toMap(OrgEnhet::getId, Function.identity()));
         } else {
@@ -127,7 +142,7 @@ public class NomGraphClient {
         return scopeTemplate.formatted(securityProperties.isDev() ? "dev" : "prod");
     }
 
-    private OrgEnhet createDevAvdeling(String id) {
-        return OrgEnhet.builder().id(id).navn(id).build();
+    private OrgEnhet createDevAvdeling(String id, String navn) {
+        return OrgEnhet.builder().id(id).navn(navn).build();
     }
 }

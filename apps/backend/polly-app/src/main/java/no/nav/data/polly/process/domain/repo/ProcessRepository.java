@@ -15,10 +15,10 @@ import java.util.UUID;
 @Repository
 public interface ProcessRepository extends JpaRepository<Process, UUID>, ProcessRepositoryCustom {
 
-    @Query(value = "select * from process where data #>> '{affiliation,department}' = ?1", nativeQuery = true)
+    @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
     List<Process> findByDepartment(String department);
 
-    @Query(value = "select cast(process_id as text) from process where data #>> '{affiliation,department}' = ?1", nativeQuery = true)
+    @Query(value = "select cast(process_id as text) from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
     List<UUID> findIdByDepartment(String department);
 
     @Query(value = "select * from process where data ->> 'commonExternalProcessResponsible' = ?1", nativeQuery = true)
@@ -45,7 +45,7 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select jsonb_array_elements(data -> 'purposes') ->> 0 as code, count(p) as count from Process p group by code", nativeQuery = true)
     List<ProcessCount> countPurpose();
 
-    @Query(value = "select data #>> '{affiliation,department}' as code, count(1) as count from process group by code", nativeQuery = true)
+    @Query(value = "select data #>> '{affiliation,nomDepartmentId}' as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countDepartment();
 
     @Query(value = "select jsonb_array_elements(data #> '{affiliation,subDepartments}') ->> 0 as code, count(1) as count from process group by code", nativeQuery = true)
