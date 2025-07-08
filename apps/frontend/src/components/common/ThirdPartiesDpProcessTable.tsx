@@ -51,8 +51,8 @@ const ThirdPartiesDpProcessTable = ({ dpProcesses }: TTableDpProcessType) => {
           <Cell>{<RouteLink href={`/dpprocess/${row.id}`}>{row.name}</RouteLink>}</Cell>
           <Cell>{row.description}</Cell>
           <Cell>
-            <RouteLink href={`/process/department/${row.affiliation.department?.code}`}>
-              {row.affiliation.department?.shortName}
+            <RouteLink href={`/process/department/${row.affiliation.nomDepartmentId}`}>
+              {row.affiliation.nomDepartmentName}
             </RouteLink>
           </Cell>
           <Cell>

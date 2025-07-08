@@ -11,7 +11,7 @@ export const handleExcelExport = (processes: IProcessShortWithEmail[], fileName:
     const newProcessObject: any = {}
 
     newProcessObject['Behandling'] = p.purposes[0].shortName + ': ' + p.name
-    newProcessObject['Avdeling'] = p.affiliation.department?.shortName
+    newProcessObject['Avdeling'] = p.affiliation.nomDepartmentName
     newProcessObject['Status'] = processStatusText(p.status)
     newProcessObject['Felles behandlingsansvarlig'] = p.commonExternalProcessResponsible?.shortName
     newProcessObject['Sist endret av'] = p.changeStamp.lastModifiedBy
