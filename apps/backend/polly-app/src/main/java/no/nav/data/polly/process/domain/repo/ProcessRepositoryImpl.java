@@ -138,7 +138,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
         Map<String, Object> params = new HashMap<>();
         if (stateDbRequest.getDepartment() != null) {
-            sql += " and data #>> '{affiliation,department}' = :department";
+            sql += " and data #>> '{affiliation,nomDepartmentId}' = :department";
             params.put("department", stateDbRequest.getDepartment());
         }
         if (stateDbRequest.getTeamIds() != null) {
