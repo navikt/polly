@@ -243,8 +243,7 @@ const ModalProcess = ({
                         <div className="flex w-full justify-between">
                           <div className="w-[48%]">
                             <FieldDepartment
-                              codelistUtils={codelistUtils}
-                              department={formikBag.values.affiliation.department}
+                              department={formikBag.values.affiliation.nomDepartmentId}
                             />
                           </div>
                           <div className="w-[48%]">

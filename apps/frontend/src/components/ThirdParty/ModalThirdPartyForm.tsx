@@ -8,8 +8,9 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { KeyboardEvent, useState } from 'react'
-import { IDisclosureFormValues, IDocument } from '../../constants'
+import { KeyboardEvent, useEffect, useState } from 'react'
+import { getAvdelingOptions } from '../../api/NomApi'
+import { IDisclosureFormValues, IDocument, TOption } from '../../constants'
 import { CodelistService, EListName, ICountryCode } from '../../service/Codelist'
 import BoolField from '../Process/common/BoolField'
 import FieldLegalBasis from '../Process/common/FieldLegalBasis'
@@ -116,7 +117,14 @@ type TModalThirdPartyProps = {
 const ModalThirdParty = (props: TModalThirdPartyProps) => {
   const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } =
     props
+  const [alleAvdelingOptions, setAlleAvdelingOptions] = useState<TOption[]>([])
   const [codelistUtils] = CodelistService()
+
+  useEffect(() => {
+    ;(async () => {
+      await getAvdelingOptions().then(setAlleAvdelingOptions)
+    })()
+  }, [])
 
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width="992px">
@@ -345,14 +353,20 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                         label="Velg avdeling"
                         hideLabel
                         aria-label="Velg avdeling"
-                        onChange={(event) => {
-                          formikBag.setFieldValue('department', event.target.value)
+                        onChange={async (event) => {
+                          await formikBag.setFieldValue('nomDepartmentName', event.target.value)
+                          await formikBag.setFieldValue(
+                            'nomDepartmentName',
+                            alleAvdelingOptions.filter(
+                              (avdeling) => avdeling.value === event.target.value
+                            )[0].label
+                          )
                         }}
-                        value={formikBag.values.department}
+                        value={formikBag.values.nomDepartmentName}
                       >
                         <option value="">Velg avdeling</option>
-                        {codelistUtils.getParsedOptions(EListName.DEPARTMENT).map((department) => (
-                          <option key={department.id} value={department.id}>
+                        {alleAvdelingOptions.map((department) => (
+                          <option key={department.value} value={department.value}>
                             {department.label}
                           </option>
                         ))}

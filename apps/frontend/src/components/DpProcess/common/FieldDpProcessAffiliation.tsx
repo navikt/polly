@@ -33,7 +33,7 @@ const FieldDpProcessAffiliation = (props: TFieldDpProcessAffiliationProps) => {
 
       <div className="flex w-full justify-between">
         <div className="w-[48%]">
-          <FieldDpProcessDepartment department={formikBag.values.affiliation.department} />
+          <FieldDpProcessDepartment department={formikBag.values.affiliation.nomDepartmentId} />
         </div>
         <div className="w-[48%]">
           <FieldSubDepartments formikBag={formikBag} codelistUtils={codelistUtils} />

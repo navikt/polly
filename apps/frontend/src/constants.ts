@@ -855,3 +855,18 @@ export enum ENomNivaa {
   DRIFTSENHET = 'DRIFTSENHET',
   ARBEIDSOMRAADE = 'ARBEIDSOMRAADE',
 }
+
+export type TOption = Readonly<{
+  value?: string | number
+  label?: React.ReactNode
+}>
+
+export type TSearchItem = {
+  id: string
+  sortKey: string
+  typeName: string
+  tagColor?: string
+  label: string
+  type: TNavigableItem
+  number?: number
+}

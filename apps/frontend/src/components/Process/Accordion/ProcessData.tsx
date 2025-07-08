@@ -184,21 +184,19 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="Organisering" text={''}>
-        {process.affiliation.department && (
+        {process.affiliation.nomDepartmentId && (
           <div>
             <span>Avdeling: </span>
             <span>
               <DotTags
-                list={EListName.DEPARTMENT}
-                codes={[process.affiliation.department]}
+                items={[process.affiliation.nomDepartmentId]}
                 commaSeparator
-                linkCodelist
                 codelistUtils={codelistUtils}
               />{' '}
             </span>
           </div>
         )}
-        {!process.affiliation.department && <span>Avdeling: Ikke utfylt</span>}
+        {!process.affiliation.nomDepartmentId && <span>Avdeling: Ikke utfylt</span>}
         {!!process.affiliation.subDepartments.length && (
           <div>
             <div className="flex">
