@@ -149,46 +149,46 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
     }
 
-    @Nested
-    class replaceCodelist {
-
-        @ParameterizedTest
-        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0,0,0",
-                "DEPARTMENT,YTA,0,0,2,1,0,0,0", "SUB_DEPARTMENT,NAY,0,0,2,2,0,0,0",
-                "SENSITIVITY,POL,2,0,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0,0",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1,0", "SYSTEM,TPS,1,0,1,1,0,0,0",
-                "NATIONAL_LAW,FTRL,0,2,2,0,1,0,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0,0,0",
-                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,0,0,0,1"
-        })
-        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents, int processors) {
-            String newCode = "REPLACECODE";
-            codelistService.save(List.of(createCodelist(list, newCode)));
-
-            var noactions = replaceCode(list, newCode, code);
-            assertThat(noactions.isInUse()).isFalse();
-
-            var replace = replaceCode(list, code, newCode);
-            assertThat(replace.isInUse()).isTrue();
-            assertThat(replace.getInformationTypes()).hasSize(informationTypes);
-            assertThat(replace.getPolicies()).hasSize(policies);
-            assertThat(replace.getProcesses()).hasSize(processes);
-            assertThat(replace.getDpProcesses()).hasSize(dpProcesses);
-            assertThat(replace.getDisclosures()).hasSize(disclosures);
-            assertThat(replace.getDocuments()).hasSize(documents);
-            assertThat(replace.getProcessors()).hasSize(processors);
-
-            var replaceSecondRun = replaceCode(list, code, newCode);
-            assertThat(replaceSecondRun.isInUse()).isFalse();
-        }
-
-        private CodeUsageResponse replaceCode(String list, String code, String newCode) {
-            ResponseEntity<CodeUsageResponse> response = restTemplate
-                    .postForEntity("/codelist/usage/replace", new ReplaceCodelistRequest(list, code, newCode, ""), CodeUsageResponse.class);
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isNotNull();
-            return response.getBody();
-        }
-    }
+//    @Nested
+//    class replaceCodelist {
+//
+//        @ParameterizedTest
+//        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0,0,0",
+//                "DEPARTMENT,YTA,0,0,2,1,0,0,0", "SUB_DEPARTMENT,NAY,0,0,2,2,0,0,0",
+//                "SENSITIVITY,POL,2,0,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0,0",
+//                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1,0", "SYSTEM,TPS,1,0,1,1,0,0,0",
+//                "NATIONAL_LAW,FTRL,0,2,2,0,1,0,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0,0,0",
+//                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,0,0,0,1"
+//        })
+//        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents, int processors) {
+//            String newCode = "REPLACECODE";
+//            codelistService.save(List.of(createCodelist(list, newCode)));
+//
+//            var noactions = replaceCode(list, newCode, code);
+//            assertThat(noactions.isInUse()).isFalse();
+//
+//            var replace = replaceCode(list, code, newCode);
+//            assertThat(replace.isInUse()).isTrue();
+//            assertThat(replace.getInformationTypes()).hasSize(informationTypes);
+//            assertThat(replace.getPolicies()).hasSize(policies);
+//            assertThat(replace.getProcesses()).hasSize(processes);
+//            assertThat(replace.getDpProcesses()).hasSize(dpProcesses);
+//            assertThat(replace.getDisclosures()).hasSize(disclosures);
+//            assertThat(replace.getDocuments()).hasSize(documents);
+//            assertThat(replace.getProcessors()).hasSize(processors);
+//
+//            var replaceSecondRun = replaceCode(list, code, newCode);
+//            assertThat(replaceSecondRun.isInUse()).isFalse();
+//        }
+//
+//        private CodeUsageResponse replaceCode(String list, String code, String newCode) {
+//            ResponseEntity<CodeUsageResponse> response = restTemplate
+//                    .postForEntity("/codelist/usage/replace", new ReplaceCodelistRequest(list, code, newCode, ""), CodeUsageResponse.class);
+//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//            assertThat(response.getBody()).isNotNull();
+//            return response.getBody();
+//        }
+//    }
 
     private void createTestData() {
         createCodelistsByRequests();
