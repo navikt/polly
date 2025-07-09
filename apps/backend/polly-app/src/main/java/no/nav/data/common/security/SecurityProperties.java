@@ -36,4 +36,8 @@ public class SecurityProperties {
         return env.equals(Constants.DEV_ENV);
     }
 
+    public boolean isProd() {
+        return env.equals(Constants.PROD_ENV);
+    }
+
 }

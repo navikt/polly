@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import no.nav.data.polly.commoncode.CommonCodeMocks;
+import no.nav.data.polly.nom.NomAvdelingMocks;
 import no.nav.data.polly.teams.TeamcatMocks;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -40,6 +41,7 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
 
     private void stubCommon() {
         TeamcatMocks.mock();
+        NomAvdelingMocks.mock();
         CommonCodeMocks.mock();
     }
 

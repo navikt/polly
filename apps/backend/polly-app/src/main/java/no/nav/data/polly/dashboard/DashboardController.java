@@ -72,7 +72,8 @@ public class DashboardController {
     @ApiResponse(description = "Data fetched")
     @GetMapping
     public ResponseEntity<DashResponse> getDashboardData(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
-        return ResponseEntity.ok(requireNonNull(dashDataCache.get(filter)));
+        var response = dashDataCache.get(filter);
+        return ResponseEntity.ok(requireNonNull(response));
     }
 
     private DashResponse calcDash(ProcessStatusFilter filter) {

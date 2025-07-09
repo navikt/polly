@@ -17,6 +17,7 @@ public class OrgEnhetGraphqlResponse {
     private DataWrapper data;
     private ArrayNode errors;
 
+    @Builder
     @Data
     public static class DataWrapper {
 
