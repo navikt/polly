@@ -18,7 +18,7 @@ public interface DpProcessRepository extends JpaRepository<DpProcess, UUID>, DpP
     @Query(value = "select * from dp_process where data ->> 'name' = ?1", nativeQuery = true)
     Optional<DpProcess> findByName(String name);
 
-    @Query(value = "select * from dp_process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
+    @Query(value = "select * from dp_process where data #>> '{affiliation,department}' = ?1", nativeQuery = true)
     List<DpProcess> findByDepartment(String department);
 
     @Query(value = "select * from dp_process where data ->> 'externalProcessResponsible' = ?1", nativeQuery = true)

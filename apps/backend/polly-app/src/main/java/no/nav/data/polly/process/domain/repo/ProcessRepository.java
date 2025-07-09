@@ -15,7 +15,7 @@ import java.util.UUID;
 @Repository
 public interface ProcessRepository extends JpaRepository<Process, UUID>, ProcessRepositoryCustom {
 
-    @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
+    @Query(value = "select * from process where data #>> '{affiliation,department}' = ?1", nativeQuery = true)
     List<Process> findByDepartment(String department);
 
     @Query(value = "select cast(process_id as text) from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
