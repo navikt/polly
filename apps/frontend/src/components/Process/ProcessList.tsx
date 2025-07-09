@@ -23,6 +23,7 @@ import {
   updatePolicy,
   updateProcess,
 } from '../../api/GetAllApi'
+import { getAvdelingByNomId } from '../../api/NomApi'
 import {
   ELegalBasesUse,
   EProcessStatus,
@@ -86,8 +87,17 @@ const ProcessList = ({
   const [codelistLoading, setCodelistLoading] = useState(true)
   const [exportHref, setExportHref] = useState<string>('')
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
+  const [nomAvdelingName, setNomAvdelingName] = useState<string>('')
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
+
+  useEffect(() => {
+    ;(async () => {
+      if (section === ESection.department) {
+        await getAvdelingByNomId(code).then((response) => setNomAvdelingName(response.navn))
+      }
+    })()
+  }, [section])
 
   useEffect(() => {
     if (processId) {
@@ -500,6 +510,8 @@ const ProcessList = ({
                 section === ESection.department
                   ? codelistUtils.getCode(EListName.DEPARTMENT, code)
                   : undefined,
+              nomDepartmentId: section === ESection.department ? code : undefined,
+              nomDepartmentName: nomAvdelingName,
               subDepartments:
                 section === ESection.subdepartment
                   ? [codelistUtils.getCode(EListName.SUB_DEPARTMENT, code) as ICode]
