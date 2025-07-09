@@ -1,10 +1,11 @@
 import axios from 'axios'
-import { IOrgEnhet, TSearchItem } from '../constants'
+import { IOrgEnhet, IPageResponse, TSearchItem } from '../constants'
 import { EListName } from '../service/Codelist'
 import { env } from '../util/env'
 
 export const getAllNomAvdelinger = async () => {
-  return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/avdelinger`)).data
+  return (await axios.get<IPageResponse<IOrgEnhet>>(`${env.pollyBaseUrl}/nom/avdelinger`)).data
+    .content
 }
 
 export const getAvdelingByNomId = async (id: string) => {
