@@ -189,7 +189,7 @@ export const Usage = (props: IUsageProps) => {
   const replace = async (): Promise<void> => {
     if (newValue && usage) {
       const newCodeName =
-        usage.code === EListName.DEPARTMENT
+        usage.listName === EListName.DEPARTMENT
           ? alleAvdelingOptions.filter((avdeling) => avdeling.id === newValue)[0].navn
           : undefined
       await replaceCodelistUsage(usage.listName, usage.code, newValue, newCodeName).then(() =>

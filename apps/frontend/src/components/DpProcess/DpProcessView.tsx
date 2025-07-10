@@ -200,6 +200,8 @@ const DpProcessView = () => {
                     commaSeparator
                     linkCodelist
                     codelistUtils={codelistUtils}
+                    list={EListName.DEPARTMENT}
+                    customId={dpProcess.affiliation.nomDepartmentId}
                   />{' '}
                 </span>
               </div>
