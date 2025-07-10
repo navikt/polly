@@ -4,6 +4,7 @@ import { StyledLink } from 'baseui/link'
 import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api/GetAllApi'
+import { getAvdelingByNomId } from '../../api/NomApi'
 import { IProductArea, ITeam } from '../../constants'
 import { ESection, listNameForSection } from '../../pages/ProcessPage'
 import { CodelistService, EListName } from '../../service/Codelist'
@@ -21,6 +22,7 @@ interface IPageHeaderProps {
 export const PageHeader = (props: IPageHeaderProps) => {
   const { code, section } = props
   const [codelistUtils] = CodelistService()
+  const [nomAvdelingNavn, setNomAvdelingNavn] = useState<string>('')
 
   const [isLoading, setLoading] = useState(false)
   const [team, setTeam] = useState<ITeam>()
@@ -31,9 +33,10 @@ export const PageHeader = (props: IPageHeaderProps) => {
       setLoading(true)
       if (section === 'team') {
         setTeam(await getTeam(code))
-      }
-      if (section === 'productarea') {
+      } else if (section === 'productarea') {
         setProductArea(await getProductArea(code))
+      } else if (section === 'department') {
+        setNomAvdelingNavn((await getAvdelingByNomId(code)).navn)
       }
       setLoading(false)
     })()
@@ -41,6 +44,9 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
   const getTitle = () => {
     const currentListName: EListName | undefined = listNameForSection(section)
+    if (section === ESection.department) {
+      return nomAvdelingNavn
+    }
     if (currentListName !== undefined) {
       return codelistUtils.getShortname(currentListName, code)
     }
@@ -55,7 +61,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
   const metadataTitle = () => {
     if (section === ESection.subdepartment) return 'Linja'
-    else if (section === ESection.department) return 'Avdeling'
+    else if (section === ESection.department) return ''
     else if (section === ESection.team) return 'Team'
     else if (section === ESection.productarea) return 'Produktområde'
     else if (section === ESection.system) return 'System'
@@ -66,6 +72,9 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
   const getDescription = () => {
     const currentListName: EListName | undefined = listNameForSection(section)
+    if (section === ESection.department) {
+      return ''
+    }
     if (currentListName) {
       return codelistUtils.getDescription(currentListName, code)
     }

@@ -298,6 +298,9 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                                   items={[disclosure.nomDepartmentName]}
                                   commaSeparator
                                   codelistUtils={codelistUtils}
+                                  linkCodelist
+                                  list={EListName.DEPARTMENT}
+                                  customId={disclosure.nomDepartmentId}
                                 />
                               )}
                               {!disclosure.nomDepartmentName && 'Ikke angitt'}
