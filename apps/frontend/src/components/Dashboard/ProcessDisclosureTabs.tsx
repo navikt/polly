@@ -8,6 +8,7 @@ import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '
 import { ESection } from '../../pages/ProcessPage'
 import { EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
+import DpProcessTable from '../DpProcess/DpProcessTable'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
@@ -40,6 +41,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     isEditable,
     thirdTabTitle,
     thirdTabContent,
+    dpProcessData,
   } = props
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
@@ -137,15 +139,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
       </Tabs.Panel>
       <Tabs.Panel value="dpprocess">
         <div className="my-2">
-          <ProcessList
-            code={code}
-            listName={listName}
-            processId={processId}
-            filter={filter}
-            section={section}
-            moveScroll={moveScroll}
-            isEditable={isEditable}
-          />
+          <DpProcessTable dpProcesses={dpProcessData} />
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="utleveringer">
