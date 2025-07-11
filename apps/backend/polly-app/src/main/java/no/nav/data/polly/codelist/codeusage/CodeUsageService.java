@@ -78,7 +78,9 @@ public class CodeUsageService {
     }
 
     public void validateListName(String list) {
-        requestValidator.validateListName(list);
+        if (!Objects.equals(list, "DEPARTMENT")) {
+            requestValidator.validateListName(list);
+        }
     }
 
     void validateRequests(String listName, String code) {
