@@ -23,6 +23,6 @@ public interface DisclosureRepository extends JpaRepository<Disclosure, UUID>, D
     @Query(value = "select * from disclosure where jsonb_array_length(data -> 'legalBases') = 0 ", nativeQuery = true)
     List<Disclosure> findByNoLegalBases();
 
-    @Query(value = "select * from disclosure where data ->> 'department' = ?1", nativeQuery = true)
+    @Query(value = "select * from disclosure where data ->> 'nomDepartmentId' = ?1", nativeQuery = true)
     List<Disclosure> findByDepartment(String department);
 }
