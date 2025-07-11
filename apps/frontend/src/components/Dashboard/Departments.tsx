@@ -1,13 +1,15 @@
 import { Button, Tooltip } from '@navikt/ds-react'
 import { Card } from 'baseui/card'
 import { LabelLarge, ParagraphMedium } from 'baseui/typography'
+import { useEffect, useState } from 'react'
+import { getAllNomAvdelinger, getAvdelingByNomId } from '../../api/NomApi'
 import {
   IDepartmentDashCount as DepartmentProcess,
   EProcessStatus,
   IDashboardData,
+  IOrgEnhet,
 } from '../../constants'
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
-import { CodelistService, EListName, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util'
 import RouteLink from '../common/RouteLink'
 import { cardShadow } from '../common/Style'
@@ -36,31 +38,26 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
   )
 }
 
-const parsedDepartmentName = (department: string, codelistUtils: ICodelistProps): string => {
-  if (department === 'OESA') {
-    return 'ØSA'
-  } else {
-    const departmentCode = codelistUtils.getCode(EListName.DEPARTMENT, department)
-    if (departmentCode) {
-      return departmentCode.code
-    } else {
-      return 'fant ikke'
-    }
-  }
-}
-
 type TDepartmentCardProps = {
   department: DepartmentProcess
-  codelistUtils: ICodelistProps
 }
 
 const DepartmentCard = (props: TDepartmentCardProps) => {
-  const { department, codelistUtils } = props
+  const { department } = props
+  const [nomDepartmentName, setNomDepartmentName] = useState<string>('')
+
+  useEffect(() => {
+    ;(async () => {
+      if (department.department) {
+        await getAvdelingByNomId(department.department).then((response) => {
+          setNomDepartmentName(response.navn)
+        })
+      }
+    })()
+  }, [department])
 
   return (
-    <Tooltip
-      content={codelistUtils.getCode(EListName.DEPARTMENT, department.department)?.shortName || ''}
-    >
+    <Tooltip content={nomDepartmentName}>
       <Button type="button" variant="tertiary-neutral">
         <Card
           overrides={cardShadow}
@@ -74,7 +71,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               style={{ textDecoration: 'none' }}
             >
               <LabelLarge color={theme.colors.accent300} $style={{ textAlign: 'center' }}>
-                {parsedDepartmentName(department.department, codelistUtils)}
+                {nomDepartmentName !== '' ? nomDepartmentName : 'Fant ikke'}
               </LabelLarge>
             </RouteLink>
 
@@ -123,21 +120,30 @@ type TDepartmentsProps = {
 }
 const Departments = (props: TDepartmentsProps) => {
   const { data } = props
-  const [codelistUtils] = CodelistService()
+  const [alleNomAvdelinger, setAlleNomAvdelinger] = useState<IOrgEnhet[]>([])
+
+  useEffect(() => {
+    ;(async () => {
+      await getAllNomAvdelinger().then(setAlleNomAvdelinger)
+    })()
+  }, [])
 
   const sortedData = () => {
-    return data.departments.sort((a, b) =>
-      parsedDepartmentName(a.department, codelistUtils).localeCompare(
-        parsedDepartmentName(b.department, codelistUtils)
-      )
-    )
+    return data.departments.sort((a, b) => {
+      const avdelingA: string =
+        alleNomAvdelinger.filter((avdeling) => avdeling.id === a.department)[0]?.navn || 'Fant ikke'
+      const avdelingB: string =
+        alleNomAvdelinger.filter((avdeling) => avdeling.id === b.department)[0]?.navn || 'Fant ikke'
+
+      return avdelingA.localeCompare(avdelingB)
+    })
   }
 
   return (
     <div className="w-full flex flex-wrap justify-between">
       {sortedData().map((department: DepartmentProcess, index: number) => (
         <div key={index} className="mt-4">
-          <DepartmentCard department={department} codelistUtils={codelistUtils} />
+          <DepartmentCard department={department} />
         </div>
       ))}
     </div>
