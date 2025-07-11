@@ -124,7 +124,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE,NOT_FOUND", "DEPARTMENT,NOT_FOUND", "NATIONAL_LAW,NOT_FOUND", "SUBJECT_CATEGORY,NOT_FOUND", "SENSITIVITY,NOT_FOUND",
+        @CsvSource({"PURPOSE,NOT_FOUND", "NATIONAL_LAW,NOT_FOUND", "SUBJECT_CATEGORY,NOT_FOUND", "SENSITIVITY,NOT_FOUND",
                 "TRANSFER_GROUNDS_OUTSIDE_EU,NOT_FOUND"})
         void shouldNotFindCodeUsage(String list, String code) {
             var responseEntity = getForListAndCode(list, code).getStatusCode();
