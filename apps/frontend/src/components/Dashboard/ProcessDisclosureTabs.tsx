@@ -4,7 +4,7 @@ import { Plus } from 'baseui/icon'
 import { HeadingXLarge } from 'baseui/typography'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
-import { EProcessStatus, IDisclosure, IDisclosureFormValues } from '../../constants'
+import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
 import { ESection } from '../../pages/ProcessPage'
 import { EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
@@ -15,6 +15,7 @@ import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 interface IProps {
   disclosureData: IDisclosure[]
   setDisclosureData: Dispatch<SetStateAction<IDisclosure[]>>
+  dpProcessData: IDpProcess[]
   code: string
   section: ESection
   isEditable: boolean
@@ -117,10 +118,24 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     <Tabs defaultValue="behandlinger">
       <Tabs.List>
         <Tabs.Tab value="behandlinger" label="Behandlinger" />
+        <Tabs.Tab value="dpprocess" label="NAV som databehandler" />
         <Tabs.Tab value="utleveringer" label="Utleveringer" />
         {thirdTabTitle && <Tabs.Tab value={thirdTabTitle} label={thirdTabTitle} />}
       </Tabs.List>
       <Tabs.Panel value="behandlinger">
+        <div className="my-2">
+          <ProcessList
+            code={code}
+            listName={listName}
+            processId={processId}
+            filter={filter}
+            section={section}
+            moveScroll={moveScroll}
+            isEditable={isEditable}
+          />
+        </div>
+      </Tabs.Panel>
+      <Tabs.Panel value="dpprocess">
         <div className="my-2">
           <ProcessList
             code={code}

@@ -28,6 +28,22 @@ export const getDpProcessByPageAndSize = async (pageNumber: number, pageSize: nu
   ).data
 }
 
+export const getDpProcessByDepartment = async (department: string) => {
+  return (
+    await axios.get<IPageResponse<IDpProcess>>(
+      `${env.pollyBaseUrl}/dpprocess/department/${department}`
+    )
+  ).data
+}
+
+export const getDpProcessByProductTeam = async (productTeam: string) => {
+  return (
+    await axios.get<IPageResponse<IDpProcess>>(
+      `${env.pollyBaseUrl}/dpprocess/productTeam/${productTeam}`
+    )
+  ).data
+}
+
 export const getDpProcess = async (id: string) => {
   return (await axios.get<IDpProcess>(`${env.pollyBaseUrl}/dpprocess/${id}`)).data
 }

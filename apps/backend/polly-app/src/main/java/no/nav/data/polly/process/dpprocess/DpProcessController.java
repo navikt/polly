@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
+import no.nav.data.polly.disclosure.domain.Disclosure;
+import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -88,6 +91,24 @@ public class DpProcessController {
         return ResponseEntity.ok(new RestResponsePage<>(convert(processes, DpProcess::convertToResponse)));
     }
 
+    @Operation(summary = "Get DpProcesses by department")
+    @ApiResponse(description = "DpProcesses fetched")
+    @GetMapping("/department/{department}")
+    public ResponseEntity<RestResponsePage<DpProcessResponse>> getByDepartment(@PathVariable String department) {
+        log.info("Received request for DpProcesses with department={}", department);
+        var dpProcessList = new ArrayList<>(repository.findByDepartment(department));
+        return ResponseEntity.ok(new RestResponsePage<>(convert(dpProcessList, DpProcess::convertToResponse)));
+    }
+
+    @Operation(summary = "Get DpProcesses by productTeam")
+    @ApiResponse(description = "DpProcesses fetched")
+    @GetMapping("/productTeam/{productTeam}")
+    public ResponseEntity<RestResponsePage<DpProcessResponse>> getByProductTeam(@PathVariable String productTeam) {
+        log.info("Received request for DpProcesses with productTeam={}", productTeam);
+        var dpProcessList = new ArrayList<>(repository.findByProductTeam(productTeam));
+        return returnResults(new RestResponsePage<>(convert(dpProcessList, DpProcess::convertToResponse)));
+    }
+
     @Operation(summary = "Create DpProcesses")
     @ApiResponse(responseCode = "201", description = "DpProcesses to be created successfully accepted")
     @PostMapping
@@ -133,6 +154,11 @@ public class DpProcessController {
     }
 
     static class DpProcessPage extends RestResponsePage<DpProcessResponse> {
+    }
+
+    private ResponseEntity<RestResponsePage<DpProcessResponse>> returnResults(RestResponsePage<DpProcessResponse> page) {
+        log.info("Returned {} DpProcesses", page.getNumberOfElements());
+        return ResponseEntity.ok(page);
     }
 
 }
