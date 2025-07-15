@@ -37,7 +37,7 @@
     "react-markdown": "10.1.0",
     "react-process-string": "^1.2.0",
     "react-router": "^7.6.3",
-    "react-select": "^5.10.1",
+    "react-select": "^5.10.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "shortid": "^2.2.17",
