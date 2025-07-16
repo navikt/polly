@@ -102,7 +102,7 @@
     "@craco/craco": "^7.1.0",
     "@types/amplitude-js": "^8.0.0",
     "@types/jest": "30.0.0",
-    "@types/lodash": "^4.17.19",
+    "@types/lodash": "^4.17.20",
     "@types/node": "^24.0.8",
     "@types/randomcolor": "^0.5.9",
     "@types/react": "^19.1.8",
