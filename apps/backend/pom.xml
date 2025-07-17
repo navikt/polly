@@ -31,7 +31,7 @@
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
 
         <microsoft-graph.version>6.29.0</microsoft-graph.version>
-        <msal4j.version>1.19.1</msal4j.version>
+        <msal4j.version>1.22.0</msal4j.version>
         <graphql.version>22.0</graphql.version>
 
         <!-- transitive versions -->
