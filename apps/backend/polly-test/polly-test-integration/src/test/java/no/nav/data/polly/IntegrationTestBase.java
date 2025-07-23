@@ -34,6 +34,7 @@ import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.AiUsageDescription;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
@@ -42,14 +43,7 @@ import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
-import no.nav.data.polly.process.dto.sub.AffiliationRequest;
-import no.nav.data.polly.process.dto.sub.AffiliationResponse;
-import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
-import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
-import no.nav.data.polly.process.dto.sub.DpiaRequest;
-import no.nav.data.polly.process.dto.sub.DpiaResponse;
-import no.nav.data.polly.process.dto.sub.RetentionRequest;
-import no.nav.data.polly.process.dto.sub.RetentionResponse;
+import no.nav.data.polly.process.dto.sub.*;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
@@ -294,6 +288,7 @@ public abstract class IntegrationTestBase {
                                         .automaticProcessing(true)
                                         .profiling(true)
                                         .dataProcessing(DataProcessingRequest.convertToDataProcessingNullSafe(dataProcessingRequest()))
+                                        .aiUsageDescription(aiUsageDescriptionRequest().convertToAiUsageDescription())
                                         .retention(convertRetention(retentionRequest()))
                                         .dpia(convertDpia(dpiaRequest()))
                                         .status(ProcessStatus.IN_PROGRESS)
@@ -322,6 +317,10 @@ public abstract class IntegrationTestBase {
 
     protected RetentionRequest retentionRequest() {
         return RetentionRequest.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build();
+    }
+
+    protected AiUsageDescriptionRequest aiUsageDescriptionRequest() {
+        return AiUsageDescriptionRequest.builder().build();
     }
 
     protected DataProcessingRequest dataProcessingRequest() {
