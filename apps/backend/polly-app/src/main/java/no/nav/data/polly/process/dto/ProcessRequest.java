@@ -78,6 +78,7 @@ public class ProcessRequest implements RequestElement {
 
         setAffiliation(getAffiliation() != null ? getAffiliation() : new AffiliationRequest());
         setDataProcessing(getDataProcessing() != null ? getDataProcessing() : new DataProcessingRequest());
+        setAiUsageDescription(getAiUsageDescription() != null ? getAiUsageDescription() : new AiUsageDescriptionRequest());
         setRetention(getRetention() != null ? getRetention() : new RetentionRequest());
         setDpia(getDpia() != null ? getDpia() : new DpiaRequest());
 
