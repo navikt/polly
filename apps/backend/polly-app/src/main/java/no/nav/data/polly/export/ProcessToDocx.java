@@ -478,9 +478,13 @@ public class ProcessToDocx {
 
                if (aiUsageDescription.getStartDate() == null  && aiUsageDescription.getEndDate() == null) {
                    textList.add(text("Dato for bruk av KI-systemer: Ingen dato satt"));
-               } else if (aiUsageDescription.getStartDate() != null && aiUsageDescription.getEndDate() == null) {
+               }
+               else if (aiUsageDescription.getStartDate() != null && aiUsageDescription.getEndDate() != null) {
+                   textList.add(text("Dato for bruk av KI-systemer: ", aiUsageDescription.getStartDate().format(df), " - ", aiUsageDescription.getEndDate().format(df) ));
+               }
+               else if (aiUsageDescription.getStartDate() != null && aiUsageDescription.getEndDate() == null) {
                    textList.add(text("Dato for bruk av KI-systemer: ",aiUsageDescription.getStartDate().format(df), " - Uavklart" ));
-               } else {
+               }   else {
                    textList.add(text("Dato for bruk av KI-systemer: ", "Uavklart - ", aiUsageDescription.getEndDate().format(df) ));
                }
 
