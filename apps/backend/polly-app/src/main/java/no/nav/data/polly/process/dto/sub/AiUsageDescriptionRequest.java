@@ -42,8 +42,8 @@ public class AiUsageDescriptionRequest implements Validated {
                 .aiUsage(aiUsage)
                 .description(description)
                 .reusingPersonalInformation(reusingPersonalInformation)
-                .startDate(DateUtil.parseStart(startDate))
-                .endDate(DateUtil.parseEnd(endDate))
+                .startDate(DateUtil.parse(startDate))
+                .endDate(DateUtil.parse(endDate))
                 .registryNumber(registryNumber)
                 .build();
     }
