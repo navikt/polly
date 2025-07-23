@@ -22,10 +22,7 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
-import no.nav.data.polly.process.domain.sub.DataProcessing;
-import no.nav.data.polly.process.domain.sub.Dpia;
-import no.nav.data.polly.process.domain.sub.NoDpiaReason;
-import no.nav.data.polly.process.domain.sub.Retention;
+import no.nav.data.polly.process.domain.sub.*;
 import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
@@ -309,7 +306,7 @@ public class ProcessToDocx {
                     text("Helautomatisk behandling: ", boolToText(data.getAutomaticProcessing())),
                     text("Profilering: ", boolToText(data.getProfiling()))
             );
-
+            aiUsageDescription(process.getData().getAiUsageDescription(), documentAccess);
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors, documentAccess);
@@ -462,6 +459,37 @@ public class ProcessToDocx {
                 case NO_PROFILING_OR_AUTOMATION -> " • Ingen bruk av profilering eller automatisering";
                 case OTHER -> " • Annet";
             };
+        }
+
+        private void aiUsageDescription(AiUsageDescription aiUsageDescription , DocumentAccess documentAccess) {
+            if (documentAccess.equals(DocumentAccess.EXTERNAL) ) {
+                return;
+            } else {
+                addHeading4("Kunstig intelligens");
+
+                var textList = new ArrayList<Text>();
+                textList.add(text("KI-systemer benyttes: ", boolToText(aiUsageDescription.getAiUsage())));
+
+                if (aiUsageDescription.getAiUsage()) {
+                    textList.add(text("Hvilken rolle har KI-systemet? ", aiUsageDescription.getDescription()));
+                }
+
+                textList.add(text("Personopplysninger gjenbrukes til å utvikle KI-systemer: ",boolToText(aiUsageDescription.getReusingPersonalInformation())));
+
+               if (aiUsageDescription.getStartDate() == null  && aiUsageDescription.getEndDate() == null) {
+                   textList.add(text("Dato for bruk av KI-systemer: Ingen dato satt"));
+               } else if (aiUsageDescription.getStartDate() != null && aiUsageDescription.getEndDate() == null) {
+                   textList.add(text("Dato for bruk av KI-systemer: ",aiUsageDescription.getStartDate().format(df), " - Uavklart" ));
+               } else {
+                   textList.add(text("Dato for bruk av KI-systemer: ", "Uavklart - ", aiUsageDescription.getEndDate().format(df) ));
+               }
+
+                if (aiUsageDescription.getReusingPersonalInformation()) {
+                    textList.add(text("Registreringsnummer i modellregister:", aiUsageDescription.getRegistryNumber()));
+                }
+
+                addTexts(textList);
+            }
         }
 
         private void dataProcessing(DataProcessing data, List<Processor> processors, DocumentAccess documentAccess) {
