@@ -407,6 +407,7 @@ public abstract class IntegrationTestBase {
                 .usesAllInformationTypes(true)
                 .automaticProcessing(true)
                 .profiling(true)
+                .aiUsageDescription(AiUsageDescription.builder().startDate(LocalDate.now()).endDate(LocalDate.now()).build())
                 .dataProcessing(dataProcessingResponse())
                 .retention(retentionResponse())
                 .dpia(dpiaResponse())
