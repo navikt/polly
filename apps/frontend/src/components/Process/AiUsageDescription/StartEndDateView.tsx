@@ -15,14 +15,15 @@ export const StartEndDateView: FunctionComponent<TProps> = (props) => {
     ? moment(aiUsageDescription.endDate).locale('nb')
     : undefined
 
-  const startDateView: string = startDate?.locale('nb').format('ll') || ''
-  const endDateView: string = endDate?.locale('nb').format('ll') || ''
+  const startDateView: string = startDate?.locale('nb').format('ll') || 'Uavklart'
+  const endDateView: string = endDate?.locale('nb').format('ll') || 'Uavklart'
 
-  return (
-    <span>
-      {startDateView} - {endDateView}
-    </span>
-  )
+  const dateView =
+    startDate === undefined && endDate === undefined
+      ? 'Ingen dato satt'
+      : `${startDateView} - ${endDateView}`
+
+  return <span>{dateView}</span>
 }
 
 export default StartEndDateView
