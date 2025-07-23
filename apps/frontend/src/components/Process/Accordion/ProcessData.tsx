@@ -1,4 +1,4 @@
-import { Tooltip } from '@navikt/ds-react'
+import { BodyLong, Tooltip } from '@navikt/ds-react'
 import { ProgressBar } from 'baseui/progress-bar'
 import { isNil, sum, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
@@ -257,6 +257,29 @@ const ProcessData = (props: IProcessDataProps) => {
           <span>Profilering: </span>
           <span>{boolToText(process.profiling)}</span>
         </div>
+      </DataText>
+
+      <DataText label="Kunstig intelligens" text={''}>
+        <div>
+          <span>KI-systemer benyttes: </span>
+          <span>{boolToText(process.aiUsageDescription.aiUsage)}</span>
+        </div>
+        {process.aiUsageDescription.aiUsage && (
+          <div>
+            <BodyLong>Hvilken rolle har KI-systemet? </BodyLong>
+            <BodyLong>{process.aiUsageDescription.description}</BodyLong>
+          </div>
+        )}
+        <div>
+          <span>Personopplysninger gjenbrukes til å utvikle KI-systemer: </span>
+          <span>{boolToText(process.aiUsageDescription.reusingPersonalInformation)}</span>
+        </div>
+        {process.aiUsageDescription.reusingPersonalInformation && (
+          <div>
+            <BodyLong>Registreringsnummer i modellregister: </BodyLong>
+            <BodyLong>{process.aiUsageDescription.registryNumber}</BodyLong>
+          </div>
+        )}
       </DataText>
 
       <DataText label="Databehandler" text={''}>
