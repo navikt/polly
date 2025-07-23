@@ -1,4 +1,4 @@
-import { Accordion, Modal, Select } from '@navikt/ds-react'
+import { Accordion, Modal, Select, Textarea } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { FlexGridItem } from 'baseui/flex-grid'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
@@ -28,6 +28,7 @@ import { RadioBoolButton } from '../../common/Radio'
 import { renderTagList } from '../../common/TagList'
 import FieldProductTeam from '../../common/form/FieldProductTeam'
 import { processSchema } from '../../common/schemaValidation'
+import { DateFieldsAiUsageDescriptionModal } from '../AiUsageDescriptionField/DateFieldsAiUsageDescriptionModal'
 import { DateFieldsProcessModal } from '../DateFieldsProcessModal'
 import BoolField from '../common/BoolField'
 import DpiaItems from '../common/DpiaItems'
@@ -346,6 +347,77 @@ const ModalProcess = ({
                             justifyContent={'flex-end'}
                           />
                         </div>
+                      </Accordion.Content>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                      <Accordion.Header className="z-0">Kunstig intelligens</Accordion.Header>
+                      <Accordion.Content>
+                        {' '}
+                        <div className="flex w-full mt-4">
+                          <ModalLabel
+                            label="Benyttes det KI-systemer for å gjennomføre behandlingen?"
+                            tooltip="Registrér om KI-systemer brukes for å realisere formålet med behandlingen."
+                            fullwidth={true}
+                          />
+                          <BoolField
+                            fieldName="aiUsageDescription.aiUsage"
+                            value={formikBag.values.aiUsageDescription.aiUsage}
+                            justifyContent={'flex-end'}
+                          />
+                        </div>
+                        {formikBag.values.aiUsageDescription.aiUsage && (
+                          <div className="flex w-full mt-4">
+                            <ModalLabel label="Hvilken rolle har KI-systemet? Beskriv for alle KI-systemer som benyttes." />
+                            <Field name="aiUsageDescription.description">
+                              {({ field, form }: FieldProps<string, IProcessFormValues>) => (
+                                <Textarea
+                                  className="w-full"
+                                  label=""
+                                  hideLabel
+                                  {...field}
+                                  error={
+                                    !!form.errors.aiUsageDescription?.description &&
+                                    form.touched.aiUsageDescription?.description
+                                  }
+                                />
+                              )}
+                            </Field>
+                          </div>
+                        )}
+                        <div className="flex w-full mt-4">
+                          <ModalLabel
+                            label="Gjenbrukes personopplysningene til å utvikle KI-systemer?"
+                            tooltip="Registrer her dersom personopplysninger innhentet til dette formålet brukes også til utvikling av KI-algoritmer/ systemer. Dette gjelder påstartede prosjekter for å utvikle KI-systemer, som muligens vil bli satt i produksjon i fremtiden."
+                          />
+                          <BoolField
+                            fieldName="aiUsageDescription.reusingPersonalInformation"
+                            value={formikBag.values.aiUsageDescription.reusingPersonalInformation}
+                            justifyContent={'flex-end'}
+                          />
+                        </div>
+                        <div className="flex w-full mt-4">
+                          <ModalLabel label="Velg datoer for bruk av KI-systemer" />
+                          <DateFieldsAiUsageDescriptionModal showDates={true} />
+                        </div>
+                        {formikBag.values.aiUsageDescription.reusingPersonalInformation && (
+                          <div className="flex w-full mt-4">
+                            <ModalLabel label="Hvilken rolle har KI-systemet? Beskriv for alle KI-systemer som benyttes." />
+                            <Field name="aiUsageDescription.registryNumber">
+                              {({ field, form }: FieldProps<string, IProcessFormValues>) => (
+                                <Textarea
+                                  className="w-full"
+                                  label=""
+                                  hideLabel
+                                  {...field}
+                                  error={
+                                    !!form.errors.aiUsageDescription?.registryNumber &&
+                                    form.touched.aiUsageDescription?.registryNumber
+                                  }
+                                />
+                              )}
+                            </Field>
+                          </div>
+                        )}
                       </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
