@@ -173,7 +173,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
       aiUsage: mapBool(aiUsageDescription?.aiUsage),
       description: aiUsageDescription?.description || '',
       reusingPersonalInformation: mapBool(aiUsageDescription?.reusingPersonalInformation),
-      startDate: aiUsageDescription?.startDate || env.defaultStartDate,
+      startDate: aiUsageDescription?.startDate || undefined,
       endDate: aiUsageDescription?.endDate || undefined,
       registryNumber: aiUsageDescription?.registryNumber || '',
     },

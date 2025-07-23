@@ -376,7 +376,7 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
         message: 'Feltet er påkrevd',
         test: function (description) {
           const { parent } = this
-          if (parent.aiUsageDescription?.aiUsage && description === '') {
+          if (parent.aiUsage && (description === '' || description === undefined)) {
             return false
           }
           return true
@@ -390,7 +390,10 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
         message: 'Feltet er påkrevd',
         test: function (registryNumber) {
           const { parent } = this
-          if (parent.aiUsageDescription?.reusingPersonalInformation && registryNumber === '') {
+          if (
+            parent.reusingPersonalInformation &&
+            (registryNumber === '' || registryNumber === undefined)
+          ) {
             return false
           }
           return true
