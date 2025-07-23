@@ -13,6 +13,7 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.domain.sub.AiUsageDescription;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
@@ -50,6 +51,7 @@ public class ProcessResponse {
     private boolean usesAllInformationTypes;
     private Boolean automaticProcessing;
     private Boolean profiling;
+    private AiUsageDescription aiUsageDescription;
     private DataProcessingResponse dataProcessing;
     private RetentionResponse retention;
     private DpiaResponse dpia;

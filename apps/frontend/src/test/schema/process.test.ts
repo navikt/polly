@@ -21,6 +21,11 @@ export const createProcess = (): IProcessFormValues => ({
     dataProcessor: true,
     processors: [],
   },
+  aiUsageDescription: {
+    aiUsage: false,
+    description: 'test',
+    reusingPersonalInformation: false,
+  },
   retention: {
     retentionMonths: 2,
     retentionStart: 'august',

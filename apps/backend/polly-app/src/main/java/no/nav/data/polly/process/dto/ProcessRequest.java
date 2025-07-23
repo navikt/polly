@@ -13,10 +13,8 @@ import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.domain.ProcessStatus;
-import no.nav.data.polly.process.dto.sub.AffiliationRequest;
-import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
-import no.nav.data.polly.process.dto.sub.DpiaRequest;
-import no.nav.data.polly.process.dto.sub.RetentionRequest;
+import no.nav.data.polly.process.domain.sub.AiUsageDescription;
+import no.nav.data.polly.process.dto.sub.*;
 
 import java.util.List;
 
@@ -54,6 +52,7 @@ public class ProcessRequest implements RequestElement {
     private boolean usesAllInformationTypes;
     private Boolean automaticProcessing;
     private Boolean profiling;
+    private AiUsageDescriptionRequest aiUsageDescription;
     private DataProcessingRequest dataProcessing;
     private RetentionRequest retention;
     private DpiaRequest dpia;
@@ -102,6 +101,8 @@ public class ProcessRequest implements RequestElement {
         validator.validateType(Fields.dataProcessing, dataProcessing);
         validator.validateType(Fields.retention, retention);
         validator.validateType(Fields.dpia, dpia);
+        validator.validateType(Fields.aiUsageDescription, aiUsageDescription);
+        validator.checkDate(Fields.end, end);
     }
 
 }

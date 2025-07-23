@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
-import no.nav.data.polly.process.domain.sub.Affiliation;
-import no.nav.data.polly.process.domain.sub.DataProcessing;
-import no.nav.data.polly.process.domain.sub.Dpia;
-import no.nav.data.polly.process.domain.sub.Retention;
+import no.nav.data.polly.process.domain.sub.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,6 +48,8 @@ public class ProcessData {
     private Boolean automaticProcessing;
     private Boolean profiling;
     @Default
+    private AiUsageDescription aiUsageDescription = new AiUsageDescription();
+    @Default
     private DataProcessing dataProcessing = new DataProcessing();
     @Default
     private Retention retention = new Retention();
@@ -62,6 +61,13 @@ public class ProcessData {
 
     public Period toPeriod() {
         return new Period(start, end);
+    }
+
+    public AiUsageDescription getAiUsageDescription() {
+        if (aiUsageDescription == null) {
+            aiUsageDescription = new AiUsageDescription();
+        }
+        return aiUsageDescription;
     }
 
     public DataProcessing getDataProcessing() {

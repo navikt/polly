@@ -369,6 +369,7 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
     automaticProcessing: yup.boolean(),
     usesAllInformationTypes: yup.boolean(),
     profiling: yup.boolean(),
+    aiUsageDescription: yup.object(),
     dataProcessing: dataProcessingSchema(),
     retention: yup.object({
       retentionPlan: yup.boolean(),

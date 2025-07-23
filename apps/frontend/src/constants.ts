@@ -172,6 +172,7 @@ export interface IProcessFormValues {
   status?: EProcessStatus
   usesAllInformationTypes?: boolean
   automaticProcessing?: boolean
+  aiUsageDescription: IAiUsageDescription
   profiling?: boolean
   dataProcessing: IDataProcessingFormValues
   retention: IRetention
@@ -413,9 +414,19 @@ export interface IProcess extends IDurationed {
   usesAllInformationTypes: boolean
   automaticProcessing?: boolean
   profiling?: boolean
+  aiUsageDescription: IAiUsageDescription
   dataProcessing: IDataProcessing
   retention: IRetention
   revisionText?: string
+}
+
+export interface IAiUsageDescription {
+  aiUsage?: boolean
+  description?: string
+  reusingPersonalInformation?: boolean
+  startDate?: string
+  endDate?: string
+  registryNumber?: string
 }
 
 export interface IDpProcess extends IDurationed {
