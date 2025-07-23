@@ -470,7 +470,7 @@ public class ProcessToDocx {
                 var textList = new ArrayList<Text>();
                 textList.add(text("KI-systemer benyttes: ", boolToText(aiUsageDescription.getAiUsage())));
 
-                if (aiUsageDescription.getAiUsage()) {
+                if (aiUsageDescription.getAiUsage() != null && aiUsageDescription.getAiUsage().equals(true)) {
                     textList.add(text("Hvilken rolle har KI-systemet? ", aiUsageDescription.getDescription()));
                 }
 
@@ -484,7 +484,7 @@ public class ProcessToDocx {
                    textList.add(text("Dato for bruk av KI-systemer: ", "Uavklart - ", aiUsageDescription.getEndDate().format(df) ));
                }
 
-                if (aiUsageDescription.getReusingPersonalInformation()) {
+                if (aiUsageDescription.getReusingPersonalInformation() != null && aiUsageDescription.getReusingPersonalInformation().equals(true)) {
                     textList.add(text("Registreringsnummer i modellregister:", aiUsageDescription.getRegistryNumber()));
                 }
 
