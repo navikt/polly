@@ -246,6 +246,7 @@ public abstract class IntegrationTestBase {
                                 .products(List.of(product))
                                 .build())
                         .commonExternalProcessResponsible(commonExternalProcessResponsible)
+                        .aiUsageDescription(AiUsageDescription.builder().startDate(LocalDate.now()).endDate(LocalDate.now()).build())
                         .legalBases(legalBases)
                         .dataProcessing(DataProcessing.builder().dataProcessor(true).build())
                         .build())
@@ -320,7 +321,9 @@ public abstract class IntegrationTestBase {
     }
 
     protected AiUsageDescriptionRequest aiUsageDescriptionRequest() {
-        return AiUsageDescriptionRequest.builder().build();
+        return AiUsageDescriptionRequest.builder()
+                .startDate(LocalDate.now().toString()).endDate(LocalDate.now().toString())
+                .build();
     }
 
     protected DataProcessingRequest dataProcessingRequest() {
