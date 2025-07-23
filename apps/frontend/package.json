@@ -14,7 +14,7 @@
     "@tailwindcss/postcss": "^4.1.11",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
     "amplitude-js": "^8.0.0",
-    "axios": "1.10.0",
+    "axios": "1.11.0",
     "baseui": "^13.0.0",
     "core-js": "^3.44.0",
     "flag-icon-css": "^4.1.7",
