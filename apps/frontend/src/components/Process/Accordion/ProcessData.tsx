@@ -28,6 +28,7 @@ import { LegalBasisView } from '../../common/LegalBasis'
 import { boolToText } from '../../common/Radio'
 import RouteLink, { ObjectLink } from '../../common/RouteLink'
 import { TeamList } from '../../common/Team'
+import StartEndDateView from '../AiUsageDescription/StartEndDateView'
 import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
@@ -273,6 +274,10 @@ const ProcessData = (props: IProcessDataProps) => {
         <div>
           <span>Personopplysninger gjenbrukes til å utvikle KI-systemer: </span>
           <span>{boolToText(process.aiUsageDescription.reusingPersonalInformation)}</span>
+        </div>
+        <div>
+          <span>Dato for bruk av KI-systemer: </span>
+          <StartEndDateView aiUsageDescription={process.aiUsageDescription} />
         </div>
         {process.aiUsageDescription.reusingPersonalInformation && (
           <div>
