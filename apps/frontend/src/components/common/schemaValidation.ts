@@ -369,7 +369,34 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
     automaticProcessing: yup.boolean(),
     usesAllInformationTypes: yup.boolean(),
     profiling: yup.boolean(),
-    aiUsageDescription: yup.object(),
+    aiUsageDescription: yup.object({
+      aiUsage: yup.boolean(),
+      description: yup.string().test({
+        name: 'descriptionTest',
+        message: 'Feltet er påkrevd',
+        test: function (description) {
+          const { parent } = this
+          if (parent.aiUsage && description === '') {
+            return false
+          }
+          return true
+        },
+      }),
+      reusingPersonalInformation: yup.boolean(),
+      startDate: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
+      endDate: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
+      registryNumber: yup.string().test({
+        name: 'registryNumberTest',
+        message: 'Feltet er påkrevd',
+        test: function (registryNumber) {
+          const { parent } = this
+          if (parent.reusingPersonalInformation && registryNumber === '') {
+            return false
+          }
+          return true
+        },
+      }),
+    }),
     dataProcessing: dataProcessingSchema(),
     retention: yup.object({
       retentionPlan: yup.boolean(),
