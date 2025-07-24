@@ -128,6 +128,7 @@ public class DashboardController {
             dashes.forEach(DashCount::dpiaReferenceMissing);
         }
 
+        dashes.stream().map(DashCount::getAiUsage).forEach(d -> count(d, pd.map((data) -> data.getAiUsageDescription().getAiUsage()).orElse(null)));
         dashes.stream().map(DashCount::getProfiling).forEach(d -> count(d, pd.map(ProcessData::getProfiling).orElse(null)));
         dashes.stream().map(DashCount::getAutomation).forEach(d -> count(d, pd.map(ProcessData::getAutomaticProcessing).orElse(null)));
         var ret = pd.map(ProcessData::getRetention);
