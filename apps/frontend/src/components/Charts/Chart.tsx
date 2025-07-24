@@ -200,7 +200,7 @@ const Visualization = (props: TVisualizationProps) => {
                       <FontAwesomeIcon icon={faCircle} color={data.color} />
                       <div className="min-w-10 flex justify-end">{data.size}</div>
                       {!hidePercent && (
-                        <div className="min-w-10 flex justify-end">
+                        <div className="min-w-10 ml-1 flex justify-end">
                           {(data.fraction * 100).toFixed(0)}%
                         </div>
                       )}
