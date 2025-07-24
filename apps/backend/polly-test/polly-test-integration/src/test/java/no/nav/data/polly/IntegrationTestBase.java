@@ -322,6 +322,7 @@ public abstract class IntegrationTestBase {
 
     protected AiUsageDescriptionRequest aiUsageDescriptionRequest() {
         return AiUsageDescriptionRequest.builder()
+                .aiUsage(true)
                 .startDate(LocalDate.now().toString()).endDate(LocalDate.now().toString())
                 .build();
     }
@@ -407,7 +408,7 @@ public abstract class IntegrationTestBase {
                 .usesAllInformationTypes(true)
                 .automaticProcessing(true)
                 .profiling(true)
-                .aiUsageDescription(AiUsageDescription.builder().startDate(LocalDate.now()).endDate(LocalDate.now()).build())
+                .aiUsageDescription(AiUsageDescription.builder().aiUsage(true).startDate(LocalDate.now()).endDate(LocalDate.now()).build())
                 .dataProcessing(dataProcessingResponse())
                 .retention(retentionResponse())
                 .dpia(dpiaResponse())
