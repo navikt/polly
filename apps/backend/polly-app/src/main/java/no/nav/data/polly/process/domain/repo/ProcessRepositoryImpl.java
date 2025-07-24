@@ -161,6 +161,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         var loc = switch (processField) {
             case DPIA -> " data #> '{dpia,needForDpia}' %s ";
             case PROFILING -> " data #> '{profiling}' %s ";
+            case AIUSAGE -> " data #> '{aiUsageDescription,aiUsage}' %s ";
             case AUTOMATION -> " data #> '{automaticProcessing}' %s ";
             case RETENTION -> " data #> '{retention,retentionPlan}' %s ";
             case RETENTION_DATA -> " data #> '{retention,retentionStart}' %1$s or data #> '{retention,retentionMonths}' %1$s ";

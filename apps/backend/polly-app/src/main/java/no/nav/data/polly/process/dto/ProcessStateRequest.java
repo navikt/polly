@@ -23,7 +23,7 @@ public class ProcessStateRequest implements Validated {
     }
 
     public enum ProcessField {
-        DPIA, PROFILING, AUTOMATION, RETENTION, RETENTION_DATA,
+        DPIA, PROFILING, AIUSAGE, AUTOMATION, RETENTION, RETENTION_DATA,
         DATA_PROCESSOR,
 
         // Not real true/false/null field, see repository
