@@ -44,6 +44,7 @@ export enum EProcessField {
   DPIA = 'DPIA',
   DPIA_REFERENCE_MISSING = 'DPIA_REFERENCE_MISSING',
   PROFILING = 'PROFILING',
+  AIUSAGE = 'AIUSAGE',
   AUTOMATION = 'AUTOMATION',
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
@@ -807,6 +808,7 @@ interface IDashCount {
   processesMissingArt6: number
   processesMissingArt9: number
   dpia: ICounter
+  aiUsage: ICounter
   profiling: ICounter
   automation: ICounter
   retention: ICounter
