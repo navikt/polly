@@ -13,7 +13,7 @@
     "@navikt/ds-tailwind": "^7.25.1",
     "@tailwindcss/postcss": "^4.1.11",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
-    "amplitude-js": "^8.0.0",
+    "amplitude-js": "^8.21.9",
     "axios": "1.11.0",
     "baseui": "^13.0.0",
     "core-js": "^3.44.0",
@@ -100,7 +100,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@craco/craco": "^7.1.0",
-    "@types/amplitude-js": "^8.0.0",
+    "@types/amplitude-js": "^8.16.5",
     "@types/jest": "30.0.0",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.1.0",
