@@ -99,6 +99,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@craco/craco": "^7.1.0",
     "@types/amplitude-js": "^8.16.5",
     "@types/jest": "30.0.0",
