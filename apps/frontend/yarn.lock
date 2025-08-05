@@ -2318,7 +2318,7 @@
 
 "@navikt/ds-tokens@^7.25.1":
   version "7.25.1"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-tokens/7.25.1/516b0728d4c1173d3440960345a23e150e46e517#516b0728d4c1173d3440960345a23e150e46e517"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-tokens/-/ds-tokens-7.25.1.tgz#516b0728d4c1173d3440960345a23e150e46e517"
   integrity sha512-cFdl+mjhQCXrDhzTKzYExD6nKjUhRjWnOY9vehqUiW70JTQR4DKcwD6JJDLNCdF3mHChM0o6OU5Y1l3NBqK2pA==
 
 "@next/mdx@^13.3.1":
