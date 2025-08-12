@@ -20,7 +20,7 @@
     "flag-icon-css": "4.1.7",
     "formik": "2.4.6",
     "husky": "9.1.7",
-    "json-diff-kit": "1.0.32",
+    "json-diff-kit": "1.0.33",
     "lint-staged": "16.1.2",
     "lodash": "4.17.21",
     "moment": "2.30.1",
