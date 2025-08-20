@@ -1714,10 +1714,10 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "7.0.0"
 
-"@fortawesome/react-fontawesome@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@fortawesome/react-fontawesome/-/react-fontawesome-0.2.3.tgz#bde1bc0fd67693e140d5d21b2e4f6faea8aae657"
-  integrity sha512-HlJco8RDY8NrzFVjy23b/7mNS4g9NegcrBG3n7jinwpc2x/AmSVk53IhWniLYM4szYLxRAFTAGwGn0EIlclDeQ==
+"@fortawesome/react-fontawesome@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@fortawesome/react-fontawesome/-/react-fontawesome-0.2.5.tgz#ebcaebf687eeb86887f4d40966e71325258c40eb"
+  integrity sha512-55xAmidU/xWPVUK2IlG0c4LK+7pk75Qnwh7PcmjxlUTUibbI0+txjAB2ucF3TQZOXHOcjBcpoF8R75b59OxNmg==
   dependencies:
     prop-types "^15.8.1"
 
@@ -2288,12 +2288,7 @@
     "@emnapi/runtime" "^1.4.3"
     "@tybys/wasm-util" "^0.10.0"
 
-"@navikt/aksel-icons@7.27.1":
-  version "7.27.1"
-  resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-7.27.1.tgz#4ea08e7aefff24137cbbb6ad63173ffae1916036"
-  integrity sha512-XfV2hqkwcAe3b+tPSrt1aLJH19SOLUyvJ5QaMPs3HzcA/lPztcoyc3R+w9Gz8fwJjCqopinvI2j2vkmUDrk55w==
-
-"@navikt/aksel-icons@^7.28.1":
+"@navikt/aksel-icons@7.28.1", "@navikt/aksel-icons@^7.28.1":
   version "7.28.1"
   resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-7.28.1.tgz#a17d463dfd055d17cb8ed24b48e264ce055b39aa"
   integrity sha512-fB2trZb6D8R2ThAaaSAYLDt2xepG3QB1Sq7Yd+XF2mI4y80wrhwirjzCFMqOKaKweq4Rrmial2iJuaTb52+bWA==
