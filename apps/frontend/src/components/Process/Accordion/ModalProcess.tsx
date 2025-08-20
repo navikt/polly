@@ -401,7 +401,7 @@ const ModalProcess = ({
                         </div>
                         {formikBag.values.aiUsageDescription.reusingPersonalInformation && (
                           <div className="flex w-full mt-4">
-                            <ModalLabel label="Hvilken rolle har KI-systemet? Beskriv for alle KI-systemer som benyttes." />
+                            <ModalLabel label="Registreringsnummer i modellregisteret. Ved flere systemer, oppgi alle registreringsnumre." />
                             <Field name="aiUsageDescription.registryNumber">
                               {({ field, form }: FieldProps<string, IProcessFormValues>) => (
                                 <Textarea
