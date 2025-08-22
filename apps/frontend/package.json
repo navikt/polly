@@ -16,7 +16,7 @@
     "amplitude-js": "8.0.0",
     "axios": "1.11.0",
     "baseui": "13.0.0",
-    "core-js": "3.45.0",
+    "core-js": "3.45.1",
     "flag-icon-css": "4.1.7",
     "formik": "2.4.6",
     "husky": "9.1.7",
