@@ -218,7 +218,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                     )}
 
                     {expanded && !isLoading && currentProcess && (
-                      <div className="outline outline-4 outline-[#E2E2E2]">
+                      <div className="outline-4 outline-[#E2E2E2]">
                         <div className="px-6 pt-6">
                           <ProcessButtonGroup
                             process={process}
