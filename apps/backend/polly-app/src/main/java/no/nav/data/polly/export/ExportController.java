@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.integration.nom.NomGraphClient;
+import no.nav.data.integration.nom.domain.OrgEnhet;
 import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
@@ -49,6 +51,8 @@ public class ExportController {
     private final CodelistRequestValidator codelistRequestValidator;
     private final ProcessToDocx processToDocx;
     private final TeamService teamService;
+    private final NomGraphClient nomGraphClient;
+
 
     @Operation(summary = "Get export for process")
     @ApiResponse(description = "Doc fetched", content = @Content(schema = @Schema(implementation = byte[].class)))
@@ -116,11 +120,20 @@ public class ExportController {
                 throw new ValidationException("No paramater given");
             }
 
+            String depNameClean;
             if (list != ListName.DEPARTMENT) {
                 codelistRequestValidator.validateListNameAndCode(list.name(), code);
+                depNameClean = cleanCodelistName(list, code);
+            } else {
+                Optional<OrgEnhet> nomAvdeling = nomGraphClient.getAvdelingById(code);
+                if (nomAvdeling.isPresent()) {
+                    depNameClean = nomAvdeling.get().getNavn();
+                } else {
+                    depNameClean = code;
+                }
             }
+
             doc = processToDocx.generateDocFor(list, code, documentAccess);
-            String depNameClean = cleanCodelistName(list, code);
             filename = "behandling_" + list.name().toLowerCase() + "_" + depNameClean + ".docx";
 
         }
