@@ -115,7 +115,10 @@ public class ExportController {
             } else {
                 throw new ValidationException("No paramater given");
             }
-            codelistRequestValidator.validateListNameAndCode(list.name(), code);
+
+            if (list != ListName.DEPARTMENT) {
+                codelistRequestValidator.validateListNameAndCode(list.name(), code);
+            }
             doc = processToDocx.generateDocFor(list, code, documentAccess);
             String depNameClean = cleanCodelistName(list, code);
             filename = "behandling_" + list.name().toLowerCase() + "_" + depNameClean + ".docx";
