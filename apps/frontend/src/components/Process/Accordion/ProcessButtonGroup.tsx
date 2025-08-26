@@ -1,6 +1,6 @@
 import { faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Modal } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
-import { Modal, ModalBody, ModalHeader, ROLE, SIZE } from 'baseui/modal'
 import { useState } from 'react'
 import { EProcessStatus, IProcessShort } from '../../../constants'
 import { env } from '../../../util/env'
@@ -33,15 +33,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
       </Button>
 
       <Modal
-        closeable
-        animate
-        size={SIZE.auto}
-        role={ROLE.dialog}
-        isOpen={isExportModalOpen}
+        open={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
+        header={{ heading: 'Velg eksportmetode' }}
       >
-        <ModalHeader>Velg eksportmetode</ModalHeader>
-        <ModalBody>
+        <Modal.Body>
           <StyledLink
             style={{ textDecoration: 'none' }}
             href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}
@@ -64,7 +60,7 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
               Eksport for ekstern bruk
             </Button>
           </StyledLink>
-        </ModalBody>
+        </Modal.Body>
       </Modal>
 
       {hasAccess && (

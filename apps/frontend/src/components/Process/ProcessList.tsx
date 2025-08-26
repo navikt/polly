@@ -1,7 +1,6 @@
 import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Select } from '@navikt/ds-react'
+import { Modal, Select } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
-import { Modal, ModalBody, ModalHeader, SIZE as ModalSize, ROLE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
@@ -403,15 +402,11 @@ const ProcessList = ({
           )}
         </div>
         <Modal
-          closeable
-          animate
-          size={ModalSize.auto}
-          role={ROLE.dialog}
-          isOpen={isExportModalOpen}
+          open={isExportModalOpen}
           onClose={() => setIsExportModalOpen(false)}
+          header={{ heading: 'Velg eksport metode' }}
         >
-          <ModalHeader>Velg eksport metode</ModalHeader>
-          <ModalBody>
+          <Modal.Body>
             <StyledLink
               style={{ textDecoration: 'none' }}
               href={
@@ -436,7 +431,7 @@ const ProcessList = ({
                 Eksport for ekstern bruk
               </Button>
             </StyledLink>
-          </ModalBody>
+          </Modal.Body>
         </Modal>
         <div className="w-1/4">
           <Select
