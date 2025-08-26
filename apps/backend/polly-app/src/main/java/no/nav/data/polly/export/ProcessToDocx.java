@@ -6,6 +6,8 @@ import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.utils.ZipUtils;
+import no.nav.data.integration.nom.NomGraphClient;
+import no.nav.data.integration.nom.domain.OrgEnhet;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistStaticService;
@@ -101,6 +103,7 @@ public class ProcessToDocx {
     private final CommonCodeService commonCodeService;
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
     private static final String headingExternalProcessList = "Dokumentet inneholder følgende ferdigstilte behandlinger (%s)";
+    private final NomGraphClient nomGraphClient;
 
 
     public byte[] generateZipForAllPurpose(DocumentAccess documentAccess) throws IOException {
@@ -203,11 +206,28 @@ public class ProcessToDocx {
 
         processes = getProcesses(processes, documentAccess);
 
-        Codelist codelist = CodelistStaticService.getCodelist(list, code);
+        String subtitle;
+        String description;
+        if (list != ListName.DEPARTMENT) {
+            Codelist codelist = CodelistStaticService.getCodelist(list, code);
+            subtitle = codelist.getShortName();
+            description = codelist.getDescription();
+        } else {
+            Optional<OrgEnhet> orgEnhet = nomGraphClient.getAvdelingById(code);
+            description = "Ingen beskrivelse for nom avdeling";
+            if (orgEnhet.isPresent()) {
+                subtitle = orgEnhet.get().getNavn();
+            } else {
+                subtitle = code;
+            }
+        }
+
         var doc = new DocumentBuilder();
-        doc.addTitle(title + ": " + codelist.getShortName());
+        doc.addTitle(title + ": " + subtitle);
         doc.addText("Eksportert " + formatter.format(date));
-        doc.addText(codelist.getDescription());
+        if(list == ListName.DEPARTMENT) {
+            doc.addText(description);
+        }
 
         if (documentAccess.equals(DocumentAccess.INTERNAL)) {
             doc.addHeading1(String.format(headingProcessList, processes.size()));
