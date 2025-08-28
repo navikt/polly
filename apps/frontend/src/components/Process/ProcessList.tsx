@@ -1,6 +1,5 @@
-import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Modal, Select } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { Select } from '@navikt/ds-react'
 import { Spinner } from 'baseui/spinner'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
@@ -42,6 +41,7 @@ import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
+import ExportProcessModal from './Export/ExportProcessModal'
 
 type TProcessListProps = {
   section: ESection
@@ -85,7 +85,6 @@ const ProcessList = ({
   const current_location = useLocation()
   const [codelistLoading, setCodelistLoading] = useState(true)
   const [exportHref, setExportHref] = useState<string>('')
-  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const [nomAvdelingName, setNomAvdelingName] = useState<string>('')
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
@@ -139,19 +138,6 @@ const ProcessList = ({
   }
 
   const hasAccess = (): boolean => user.canWrite()
-
-  const listNameToUrl = () =>
-    listName &&
-    (
-      {
-        DEPARTMENT: 'department',
-        SUB_DEPARTMENT: 'subDepartment',
-        PURPOSE: 'purpose',
-        SYSTEM: 'system',
-        DATA_PROCESSOR: 'processor',
-        THIRD_PARTY: 'thirdparty',
-      } as { [l: string]: string }
-    )[listName]
 
   const getProcessList = async (): Promise<void> => {
     try {
@@ -381,15 +367,12 @@ const ProcessList = ({
     <>
       <div className="flex flex-row-reverse items-center">
         <div>
-          <Button
-            onClick={() => setIsExportModalOpen(true)}
-            kind="outline"
-            size="xsmall"
-            icon={faFileWord}
-            marginRight
-          >
-            Eksportér
-          </Button>
+          <ExportProcessModal
+            listName={listName}
+            code={code}
+            marginRight={true}
+            exportHref={exportHref}
+          />
           {isEditable && hasAccess() && (
             <Button
               size="xsmall"
@@ -401,38 +384,6 @@ const ProcessList = ({
             </Button>
           )}
         </div>
-        <Modal
-          open={isExportModalOpen}
-          onClose={() => setIsExportModalOpen(false)}
-          header={{ heading: 'Velg eksport metode' }}
-        >
-          <Modal.Body>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={
-                exportHref
-                  ? exportHref
-                  : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`
-              }
-            >
-              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
-                Eksport for intern bruk
-              </Button>
-            </StyledLink>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={
-                exportHref
-                  ? exportHref
-                  : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`
-              }
-            >
-              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
-                Eksport for ekstern bruk
-              </Button>
-            </StyledLink>
-          </Modal.Body>
-        </Modal>
         <div className="w-1/4">
           <Select
             label="Status filter"

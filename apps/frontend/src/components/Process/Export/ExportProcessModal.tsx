@@ -1,22 +1,24 @@
-import { faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faFileWord } from '@fortawesome/free-solid-svg-icons'
 import { BodyLong, Loader, Modal } from '@navikt/ds-react'
 import axios from 'axios'
-import { useState } from 'react'
-import { EProcessStatus, IProcessShort } from '../../../constants'
+import { FunctionComponent, useState } from 'react'
+import { EListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
-import { AuditButton } from '../../admin/audit/AuditButton'
 import Button from '../../common/Button/CustomButton'
-import { InformationTypeRef } from './AccordionTitle'
 
-interface IProcessButtonGroupProps {
-  process: IProcessShort
-  hasAccess: boolean
-  editProcess: () => void
-  deleteProcess: () => void
+type TProps = {
+  code: string
+  listName?: EListName
+  marginRight?: boolean
+  exportHref?: string
 }
 
-export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
-  const { process, hasAccess, editProcess, deleteProcess } = props
+export const ExportProcessModal: FunctionComponent<TProps> = ({
+  code,
+  listName,
+  marginRight,
+  exportHref,
+}) => {
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const [isExportLoading, setIsExportLoading] = useState<boolean>(false)
   const [exportError, setExportError] = useState<string>('')
@@ -38,19 +40,30 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
       })
   }
 
+  const listNameToUrl = () =>
+    listName &&
+    (
+      {
+        DEPARTMENT: 'department',
+        SUB_DEPARTMENT: 'subDepartment',
+        PURPOSE: 'purpose',
+        SYSTEM: 'system',
+        DATA_PROCESSOR: 'processor',
+        THIRD_PARTY: 'thirdparty',
+      } as { [l: string]: string }
+    )[listName]
+
   return (
-    <div className="flex justify-end mb-3">
-      <AuditButton id={process.id} marginRight />
+    <>
       <Button
         onClick={() => setIsExportModalOpen(true)}
         kind="outline"
         size="xsmall"
         icon={faFileWord}
-        marginRight
+        marginRight={marginRight}
       >
         Eksportér
       </Button>
-
       {isExportModalOpen && (
         <Modal
           open={isExportModalOpen}
@@ -68,7 +81,10 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                   icon={faFileWord}
                   marginRight
                   onClick={async () => {
-                    await handleExport(`${env.pollyBaseUrl}/export/process?processId=${process.id}`)
+                    const exportUrl = exportHref
+                      ? exportHref
+                      : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`
+                    await handleExport(exportUrl)
                   }}
                 >
                   Eksport for intern bruk
@@ -78,11 +94,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                   size="xsmall"
                   icon={faFileWord}
                   marginRight
-                  disabled={process.status !== EProcessStatus.COMPLETED}
                   onClick={async () => {
-                    await handleExport(
-                      `${env.pollyBaseUrl}/export/process?processId=${process.id}&documentAccess=EXTERNAL`
-                    )
+                    const exportUrl = exportHref
+                      ? exportHref
+                      : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`
+                    await handleExport(exportUrl)
                   }}
                 >
                   Eksport for ekstern bruk
@@ -92,32 +108,7 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
           </Modal.Body>
         </Modal>
       )}
-
-      {hasAccess && (
-        <>
-          <Button kind="outline" size="xsmall" icon={faEdit} onClick={editProcess} marginRight>
-            Redigér
-          </Button>
-
-          <Button
-            kind="outline"
-            size="xsmall"
-            icon={faEdit}
-            onClick={() => {
-              if (InformationTypeRef && InformationTypeRef.current) {
-                InformationTypeRef.current.scrollIntoView()
-              }
-            }}
-            marginRight
-          >
-            Rediger opplysningstyper
-          </Button>
-
-          <Button kind="outline" size="xsmall" icon={faTrash} onClick={deleteProcess}>
-            Slett
-          </Button>
-        </>
-      )}
-    </div>
+    </>
   )
 }
+export default ExportProcessModal
