@@ -181,7 +181,7 @@ const Charts = (props: TChartsProps) => {
         <TriChart
           counter={chartData.aiUsage}
           processStatus={processStatus}
-          title="Ki systemer benyttes"
+          title="KI systemer benyttes"
           processField={EProcessField.AIUSAGE}
           onClickPieChartSlice={handleClickPieChartSlice}
         />

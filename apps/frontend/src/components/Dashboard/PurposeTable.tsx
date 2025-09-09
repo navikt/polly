@@ -88,7 +88,7 @@ const PurposeTable = () => {
     } else if (filterName === EProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle('Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part')
     } else if (filterName === EProcessField.AIUSAGE && filterValue) {
-      setTitle(`KI systeme benyttes: ${translateToNorwegian(filterValue)} `)
+      setTitle(`KI systemer benyttes: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === EProcessField.DPIA_REFERENCE_MISSING) {
       setTitle('Ref. til PVK ikke angitt')
     }
