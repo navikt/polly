@@ -52,6 +52,8 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
         await getAvdelingByNomId(department.department).then((response) => {
           setNomDepartmentName(response.navn)
         })
+      } else {
+        setNomDepartmentName('Ingen avdeling')
       }
     })()
   }, [department])
@@ -67,7 +69,11 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
         >
           <div className="flex flex-col items-center justify-around w-52 h-28">
             <RouteLink
-              href={genProcessPath(ESection.department, department.department, undefined)}
+              href={genProcessPath(
+                ESection.department,
+                department.department ? department.department : 'INGEN',
+                undefined
+              )}
               style={{ textDecoration: 'none' }}
             >
               <LabelLarge color={theme.colors.accent300} $style={{ textAlign: 'center' }}>
@@ -129,14 +135,30 @@ const Departments = (props: TDepartmentsProps) => {
   }, [])
 
   const sortedData = () => {
-    return data.departments.sort((a, b) => {
-      const avdelingA: string =
-        alleNomAvdelinger.filter((avdeling) => avdeling.id === a.department)[0]?.navn || 'Fant ikke'
-      const avdelingB: string =
-        alleNomAvdelinger.filter((avdeling) => avdeling.id === b.department)[0]?.navn || 'Fant ikke'
+    return data.departments
+      .sort((a, b) => {
+        if (a.department === '') {
+          return 1
+        }
 
-      return avdelingA.localeCompare(avdelingB)
-    })
+        if (b.department === '') {
+          return -1
+        }
+
+        if (a.department !== '' && b.department !== '') {
+          const avdelingA: string =
+            alleNomAvdelinger.filter((avdeling) => avdeling.id === a.department)[0]?.navn ||
+            'Fant ikke'
+          const avdelingB: string =
+            alleNomAvdelinger.filter((avdeling) => avdeling.id === b.department)[0]?.navn ||
+            'Fant ikke'
+
+          return avdelingA.localeCompare(avdelingB)
+        } else {
+          return 0
+        }
+      })
+      .filter((department) => department.department !== '')
   }
 
   return (
