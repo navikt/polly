@@ -275,10 +275,13 @@ const ProcessData = (props: IProcessDataProps) => {
           <span>Personopplysninger gjenbrukes til å utvikle KI-systemer: </span>
           <span>{boolToText(process.aiUsageDescription.reusingPersonalInformation)}</span>
         </div>
-        <div>
-          <span>Dato for bruk av KI-systemer: </span>
-          <StartEndDateView aiUsageDescription={process.aiUsageDescription} />
-        </div>
+        {(process.aiUsageDescription.aiUsage ||
+          process.aiUsageDescription.reusingPersonalInformation) && (
+          <div>
+            <span>Dato for bruk av KI-systemer: </span>
+            <StartEndDateView aiUsageDescription={process.aiUsageDescription} />
+          </div>
+        )}
         {process.aiUsageDescription.reusingPersonalInformation && (
           <div>
             <BodyLong>Registreringsnummer i modellregister: </BodyLong>

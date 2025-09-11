@@ -395,10 +395,13 @@ const ModalProcess = ({
                             justifyContent={'flex-end'}
                           />
                         </div>
-                        <div className="flex w-full mt-4">
-                          <ModalLabel label="Velg datoer for bruk av KI-systemer" />
-                          <DateFieldsAiUsageDescriptionModal showDates={true} />
-                        </div>
+                        {(formikBag.values.aiUsageDescription.aiUsage ||
+                          formikBag.values.aiUsageDescription.reusingPersonalInformation) && (
+                          <div className="flex w-full mt-4">
+                            <ModalLabel label="Velg datoer for bruk av KI-systemer" />
+                            <DateFieldsAiUsageDescriptionModal showDates={true} />
+                          </div>
+                        )}
                         {formikBag.values.aiUsageDescription.reusingPersonalInformation && (
                           <div className="flex w-full mt-4">
                             <ModalLabel label="Registreringsnummer i modellregisteret. Ved flere systemer, oppgi alle registreringsnumre." />

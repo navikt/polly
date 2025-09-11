@@ -383,8 +383,38 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
         },
       }),
       reusingPersonalInformation: yup.boolean(),
-      startDate: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
-      endDate: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
+      startDate: yup.string().test({
+        name: 'startDateTest',
+        message: incorrectDateMessage,
+        test: function (startDate) {
+          const { parent } = this
+          if (parent.aiUsage || parent.reusingPersonalInformation) {
+            if (startDate && startDate.match(DATE_REGEX)) {
+              return true
+            } else {
+              return false
+            }
+          } else {
+            return true
+          }
+        },
+      }),
+      endDate: yup.string().test({
+        name: 'endDateTest',
+        message: incorrectDateMessage,
+        test: function (endDate) {
+          const { parent } = this
+          if (parent.aiUsage || parent.reusingPersonalInformation) {
+            if (endDate && endDate.match(DATE_REGEX)) {
+              return true
+            } else {
+              return false
+            }
+          } else {
+            return true
+          }
+        },
+      }),
       registryNumber: yup.string().test({
         name: 'registryNumberTest',
         message: 'Feltet er påkrevd',
