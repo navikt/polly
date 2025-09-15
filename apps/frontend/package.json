@@ -6,7 +6,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "7.0.0",
     "@fortawesome/free-solid-svg-icons": "7.0.0",
-    "@fortawesome/react-fontawesome": "0.2.5",
+    "@fortawesome/react-fontawesome": "3.0.2",
     "@navikt/aksel-icons": "7.28.1",
     "@navikt/ds-css": "7.28.1",
     "@navikt/ds-react": "7.28.1",
