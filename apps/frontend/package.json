@@ -8,7 +8,7 @@
     "@fortawesome/free-solid-svg-icons": "7.0.0",
     "@fortawesome/react-fontawesome": "0.2.5",
     "@navikt/aksel-icons": "7.28.1",
-    "@navikt/ds-css": "7.28.1",
+    "@navikt/ds-css": "7.31.0",
     "@navikt/ds-react": "7.28.1",
     "@navikt/ds-tailwind": "7.28.1",
     "@tailwindcss/postcss": "4.1.12",
