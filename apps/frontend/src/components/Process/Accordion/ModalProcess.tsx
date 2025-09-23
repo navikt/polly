@@ -1,4 +1,4 @@
-import { Accordion, Modal, Select, Textarea } from '@navikt/ds-react'
+import { Accordion, Alert, Modal, Select, Textarea } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { FlexGridItem } from 'baseui/flex-grid'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
@@ -350,7 +350,22 @@ const ModalProcess = ({
                       </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
-                      <Accordion.Header className="z-0">Kunstig intelligens</Accordion.Header>
+                      <Accordion.Header className="z-0">
+                        <div className="flex">
+                          Kunstig intelligens
+                          {formikBag.errors.aiUsageDescription &&
+                            ((!!formikBag.errors.aiUsageDescription.description &&
+                              formikBag.touched.aiUsageDescription?.description) ||
+                              (!!formikBag.errors.aiUsageDescription.registryNumber &&
+                                formikBag.touched.aiUsageDescription?.registryNumber) ||
+                              (!!formikBag.errors.aiUsageDescription.startDate &&
+                                formikBag.touched.aiUsageDescription?.startDate)) && (
+                              <Alert variant="error" inline className="ml-5">
+                                Inneholder feil
+                              </Alert>
+                            )}
+                        </div>
+                      </Accordion.Header>
                       <Accordion.Content>
                         {' '}
                         <div className="flex w-full mt-4">

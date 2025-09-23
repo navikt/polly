@@ -30,7 +30,7 @@ const SideBar = () => (
   <div className="h-full w-60 bg-[#3e3832] flex flex-col" role="navigation">
     <div className="h-full fixed flex flex-col">
       <Brand />
-      <div className="top-[150px] flex-1 ml-4 pl-4">
+      <div className="top-[150px] flex-1 pl-4">
         <NavItem
           to="/process"
           text="Behandlinger"
