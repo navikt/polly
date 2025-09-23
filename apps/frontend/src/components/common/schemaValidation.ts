@@ -399,22 +399,7 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
           }
         },
       }),
-      endDate: yup.string().test({
-        name: 'endDateTest',
-        message: incorrectDateMessage,
-        test: function (endDate) {
-          const { parent } = this
-          if (parent.aiUsage || parent.reusingPersonalInformation) {
-            if (endDate && endDate.match(DATE_REGEX)) {
-              return true
-            } else {
-              return false
-            }
-          } else {
-            return true
-          }
-        },
-      }),
+      endDate: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
       registryNumber: yup.string().test({
         name: 'registryNumberTest',
         message: 'Feltet er påkrevd',
