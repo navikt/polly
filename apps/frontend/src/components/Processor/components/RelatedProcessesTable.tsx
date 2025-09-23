@@ -19,8 +19,8 @@ const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps
       case 'name':
         return (a.name || '').localeCompare(b.name || '')
       case 'affiliation':
-        return (a.affiliation.department?.shortName || '').localeCompare(
-          b.affiliation.department?.shortName || ''
+        return (a.affiliation.nomDepartmentName || '').localeCompare(
+          b.affiliation.nomDepartmentName || ''
         )
       default:
         return 0
@@ -70,8 +70,8 @@ const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps
               <Link href={`/process/${row.id}`}>{row.name}</Link>
             </Table.DataCell>
             <Table.DataCell>
-              <Link href={`/process/department/${row.affiliation.department?.code}`}>
-                {row.affiliation.department?.shortName}
+              <Link href={`/process/department/${row.affiliation.nomDepartmentId}`}>
+                {row.affiliation.nomDepartmentName}
               </Link>
             </Table.DataCell>
             <Table.DataCell>

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
+import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.integration.nom.domain.OrgEnhet;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,16 +23,15 @@ import java.util.List;
 @Tag(name = "Nom", description = "Nom")
 public class NomController {
 
-
     private final NomGraphClient nomGraphClient;
 
     @Operation(summary = "Get All Avdelinger")
     @ApiResponse(description = "ok")
     @GetMapping("/avdelinger")
-    public ResponseEntity<List<OrgEnhet>> getAllAvdelinger() {
+    public RestResponsePage<OrgEnhet> getAllAvdelinger() {
         log.info("Get all avdelinger from nom");
         List<OrgEnhet> response = nomGraphClient.getAllAvdelinger();
-        return ResponseEntity.ok(response);
+        return new RestResponsePage<>(response);
     }
 
     @Operation(summary = "Get avdeling by nom id")
@@ -53,5 +53,8 @@ public class NomController {
         log.info("Get nom by id");
         OrgEnhet response = nomGraphClient.getById(id);
         return ResponseEntity.ok(response);
+    }
+
+    public static class AvdelingList extends RestResponsePage<OrgEnhet> {
     }
 }

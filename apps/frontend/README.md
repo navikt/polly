@@ -2,6 +2,7 @@
 
 # Frontend for Behandlingskatalogen
 
+
 ## Requires node 17
 
 ### Install dependencies

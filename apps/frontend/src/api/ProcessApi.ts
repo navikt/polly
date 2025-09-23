@@ -138,6 +138,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     usesAllInformationTypes,
     automaticProcessing,
     profiling,
+    aiUsageDescription,
     dataProcessing,
     retention,
     dpia,
@@ -168,6 +169,14 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     usesAllInformationTypes: process && !!usesAllInformationTypes,
     automaticProcessing: process ? mapBool(automaticProcessing) : false,
     profiling: process ? mapBool(profiling) : false,
+    aiUsageDescription: {
+      aiUsage: mapBool(aiUsageDescription?.aiUsage),
+      description: aiUsageDescription?.description || '',
+      reusingPersonalInformation: mapBool(aiUsageDescription?.reusingPersonalInformation),
+      startDate: aiUsageDescription?.startDate || undefined,
+      endDate: aiUsageDescription?.endDate || undefined,
+      registryNumber: aiUsageDescription?.registryNumber || '',
+    },
     dataProcessing: {
       dataProcessor: mapBool(dataProcessing?.dataProcessor),
       processors: dataProcessing?.processors || [],
@@ -209,6 +218,14 @@ export const convertFormValuesToProcess = (values: IProcessFormValues) => {
     usesAllInformationTypes: values.usesAllInformationTypes,
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
+    aiUsageDescription: {
+      aiUsage: values.aiUsageDescription.aiUsage,
+      description: values.aiUsageDescription.description,
+      reusingPersonalInformation: values.aiUsageDescription.reusingPersonalInformation,
+      startDate: values.aiUsageDescription.startDate,
+      endDate: values.aiUsageDescription.endDate,
+      registryNumber: values.aiUsageDescription.registryNumber,
+    },
     dataProcessing: {
       dataProcessor: values.dataProcessing.dataProcessor,
       processors: values.dataProcessing.processors || [],

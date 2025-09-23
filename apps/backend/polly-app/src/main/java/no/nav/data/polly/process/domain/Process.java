@@ -23,10 +23,12 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.AiUsageDescription;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
+import no.nav.data.polly.process.dto.sub.AiUsageDescriptionRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import org.hibernate.annotations.Type;
@@ -96,6 +98,7 @@ public class Process extends Auditable {
                 .usesAllInformationTypes(data.isUsesAllInformationTypes())
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
+                .aiUsageDescription(data.getAiUsageDescription())
                 .dataProcessing(DataProcessingResponse.buildFrom(data.getDataProcessing()))                
                 .retention(data.getRetention().convertToResponse())
                 .dpia(data.getDpia().convertToResponse())
@@ -133,6 +136,7 @@ public class Process extends Auditable {
         data.setUsesAllInformationTypes(request.isUsesAllInformationTypes());
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());
+        data.setAiUsageDescription(request.getAiUsageDescription() == null ? new AiUsageDescription() : request.getAiUsageDescription().convertToAiUsageDescription());
         data.setDataProcessing(DataProcessingRequest.convertToDataProcessingNullSafe(request.getDataProcessing()));
         data.setRetention(convertRetention(request.getRetention()));
         data.setDpia(convertDpia(request.getDpia()));

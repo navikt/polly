@@ -7,10 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import no.nav.data.common.storage.domain.GenericStorage;
+import no.nav.data.integration.nom.NomGraphClient;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertRepository;
-import no.nav.data.polly.codelist.CodelistStaticService;
-import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.dashboard.dto.DashResponse;
 import no.nav.data.polly.dashboard.dto.DashResponse.Counter;
 import no.nav.data.polly.dashboard.dto.DashResponse.DashCount;
@@ -62,6 +61,7 @@ public class DashboardController {
     private final ProcessRepository processRepository;
     private final DpProcessRepository dpProcessRepository;
     private final DisclosureRepository disclosureRepository;
+    private final NomGraphClient nomGraphClient;
     private final AlertRepository alertRepository;
     private final TeamService teamService;
     private final LoadingCache<ProcessStatusFilter, DashResponse> dashDataCache = Caffeine.newBuilder()
@@ -72,13 +72,15 @@ public class DashboardController {
     @ApiResponse(description = "Data fetched")
     @GetMapping
     public ResponseEntity<DashResponse> getDashboardData(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
-        return ResponseEntity.ok(requireNonNull(dashDataCache.get(filter)));
+        var response = dashDataCache.get(filter);
+        return ResponseEntity.ok(requireNonNull(response));
     }
 
     private DashResponse calcDash(ProcessStatusFilter filter) {
         var dash = new DashResponse();
         // init all departments and load teamId -> productArea mapping
-        CodelistStaticService.getCodelist(ListName.DEPARTMENT).forEach(d -> dash.department(d.getCode()));
+        var nomAvdeling = nomGraphClient.getAllAvdelinger();
+        nomAvdeling.forEach(d -> dash.department(d.getId()));
         teamService.getAllTeams().forEach(t -> dash.registerTeam(t.getId(), t.getProductAreaId()));
 
         doPaged(processRepository, 50, processes -> {
@@ -126,6 +128,7 @@ public class DashboardController {
             dashes.forEach(DashCount::dpiaReferenceMissing);
         }
 
+        dashes.stream().map(DashCount::getAiUsage).forEach(d -> count(d, pd.map((data) -> data.getAiUsageDescription().getAiUsage()).orElse(null)));
         dashes.stream().map(DashCount::getProfiling).forEach(d -> count(d, pd.map(ProcessData::getProfiling).orElse(null)));
         dashes.stream().map(DashCount::getAutomation).forEach(d -> count(d, pd.map(ProcessData::getAutomaticProcessing).orElse(null)));
         var ret = pd.map(ProcessData::getRetention);
@@ -157,7 +160,7 @@ public class DashboardController {
     private ArrayList<DashCount> getDashes(DashResponse dash, Affiliation affiliation) {
         var dashes = new ArrayList<DashCount>();
         dashes.add(dash.getAll());
-        Optional.ofNullable(affiliation.getDepartment()).ifPresent(dep -> dashes.add(dash.department(dep)));
+        Optional.ofNullable(affiliation.getNomDepartmentId()).ifPresent(dep -> dashes.add(dash.department(dep)));
         // A team might be stored that doesnt exist, producing nulls here
         nullToEmptyList(affiliation.getProductTeams()).stream().map(dash::team).filter(Objects::nonNull).forEach(dashes::add);
         return dashes;

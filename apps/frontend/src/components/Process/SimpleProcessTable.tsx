@@ -59,8 +59,8 @@ export const SimpleProcessTable = (props: IProps) => {
             (b.purposes[0].shortName || '') + ': ' + b.name || ''
           ),
         affiliation: (a, b) =>
-          (a.affiliation.department?.shortName || ' ').localeCompare(
-            b.affiliation.department?.shortName || ' '
+          (a.affiliation.nomDepartmentName || ' ').localeCompare(
+            b.affiliation.nomDepartmentName || ' '
           ),
         status: (a, b) => (a.status || '').localeCompare(b.status || ''),
         commonExternalProcessResponsible: (a, b) =>
@@ -139,11 +139,11 @@ export const SimpleProcessTable = (props: IProps) => {
               </RouteLink>
             </Cell>
             <Cell $style={cellStyle}>
-              {process.affiliation.department === null ? (
+              {process.affiliation.nomDepartmentId === null ? (
                 ''
               ) : (
-                <RouteLink href={`/process/department/${process.affiliation.department?.code}`}>
-                  {process.affiliation.department?.shortName}
+                <RouteLink href={`/process/department/${process.affiliation.nomDepartmentId}`}>
+                  {process.affiliation.nomDepartmentName}
                 </RouteLink>
               )}
             </Cell>

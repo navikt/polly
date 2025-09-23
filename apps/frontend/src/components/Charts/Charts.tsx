@@ -177,6 +177,16 @@ const Charts = (props: TChartsProps) => {
         />
       </div>
 
+      <div className={chartCardStyle}>
+        <TriChart
+          counter={chartData.aiUsage}
+          processStatus={processStatus}
+          title="KI systemer benyttes"
+          processField={EProcessField.AIUSAGE}
+          onClickPieChartSlice={handleClickPieChartSlice}
+        />
+      </div>
+
       {all.disclosures !== undefined && (
         <div className={chartCardStyle}>
           <Chart

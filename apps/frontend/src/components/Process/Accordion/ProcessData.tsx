@@ -1,4 +1,4 @@
-import { Tooltip } from '@navikt/ds-react'
+import { BodyLong, Tooltip } from '@navikt/ds-react'
 import { ProgressBar } from 'baseui/progress-bar'
 import { isNil, sum, uniqBy } from 'lodash'
 import { useEffect, useState } from 'react'
@@ -28,6 +28,7 @@ import { LegalBasisView } from '../../common/LegalBasis'
 import { boolToText } from '../../common/Radio'
 import RouteLink, { ObjectLink } from '../../common/RouteLink'
 import { TeamList } from '../../common/Team'
+import StartEndDateView from '../AiUsageDescription/StartEndDateView'
 import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
@@ -184,21 +185,24 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="Organisering" text={''}>
-        {process.affiliation.department && (
+        {process.affiliation.nomDepartmentName && process.affiliation.nomDepartmentId && (
           <div>
             <span>Avdeling: </span>
             <span>
               <DotTags
-                list={EListName.DEPARTMENT}
-                codes={[process.affiliation.department]}
+                items={[process.affiliation.nomDepartmentName]}
                 commaSeparator
-                linkCodelist
                 codelistUtils={codelistUtils}
+                linkCodelist
+                list={EListName.DEPARTMENT}
+                customId={process.affiliation.nomDepartmentId}
               />{' '}
             </span>
           </div>
         )}
-        {!process.affiliation.department && <span>Avdeling: Ikke utfylt</span>}
+        {!process.affiliation.nomDepartmentName && !process.affiliation.nomDepartmentId && (
+          <span>Avdeling: Ikke utfylt</span>
+        )}
         {!!process.affiliation.subDepartments.length && (
           <div>
             <div className="flex">
@@ -254,6 +258,36 @@ const ProcessData = (props: IProcessDataProps) => {
           <span>Profilering: </span>
           <span>{boolToText(process.profiling)}</span>
         </div>
+      </DataText>
+
+      <DataText label="Kunstig intelligens" text={''}>
+        <div>
+          <span>KI-systemer benyttes: </span>
+          <span>{boolToText(process.aiUsageDescription.aiUsage)}</span>
+        </div>
+        {process.aiUsageDescription.aiUsage && (
+          <div>
+            <BodyLong>Hvilken rolle har KI-systemet? </BodyLong>
+            <BodyLong>{process.aiUsageDescription.description}</BodyLong>
+          </div>
+        )}
+        <div>
+          <span>Personopplysninger gjenbrukes til å utvikle KI-systemer: </span>
+          <span>{boolToText(process.aiUsageDescription.reusingPersonalInformation)}</span>
+        </div>
+        {(process.aiUsageDescription.aiUsage ||
+          process.aiUsageDescription.reusingPersonalInformation) && (
+          <div>
+            <span>Dato for bruk av KI-systemer: </span>
+            <StartEndDateView aiUsageDescription={process.aiUsageDescription} />
+          </div>
+        )}
+        {process.aiUsageDescription.reusingPersonalInformation && (
+          <div>
+            <BodyLong>Registreringsnummer i modellregister: </BodyLong>
+            <BodyLong>{process.aiUsageDescription.registryNumber}</BodyLong>
+          </div>
+        )}
       </DataText>
 
       <DataText label="Databehandler" text={''}>

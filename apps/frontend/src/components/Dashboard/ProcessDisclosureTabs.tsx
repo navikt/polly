@@ -4,10 +4,11 @@ import { Plus } from 'baseui/icon'
 import { HeadingXLarge } from 'baseui/typography'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
-import { EProcessStatus, IDisclosure, IDisclosureFormValues } from '../../constants'
+import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
 import { ESection } from '../../pages/ProcessPage'
 import { EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
+import DpProcessTable from '../DpProcess/DpProcessTable'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
@@ -15,6 +16,7 @@ import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 interface IProps {
   disclosureData: IDisclosure[]
   setDisclosureData: Dispatch<SetStateAction<IDisclosure[]>>
+  dpProcessData: IDpProcess[]
   code: string
   section: ESection
   isEditable: boolean
@@ -39,6 +41,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     isEditable,
     thirdTabTitle,
     thirdTabContent,
+    dpProcessData,
   } = props
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
@@ -117,6 +120,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     <Tabs defaultValue="behandlinger">
       <Tabs.List>
         <Tabs.Tab value="behandlinger" label="Behandlinger" />
+        <Tabs.Tab value="dpprocess" label="NAV som databehandler" />
         <Tabs.Tab value="utleveringer" label="Utleveringer" />
         {thirdTabTitle && <Tabs.Tab value={thirdTabTitle} label={thirdTabTitle} />}
       </Tabs.List>
@@ -131,6 +135,11 @@ export const ProcessDisclosureTabs = (props: IProps) => {
             moveScroll={moveScroll}
             isEditable={isEditable}
           />
+        </div>
+      </Tabs.Panel>
+      <Tabs.Panel value="dpprocess">
+        <div className="my-2">
+          <DpProcessTable dpProcesses={dpProcessData} />
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="utleveringer">

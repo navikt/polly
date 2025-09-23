@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,6 +87,8 @@ public class DashResponse {
 
         private long processesUsingAllInfoTypes;
 
+        @Builder.Default
+        private Counter aiUsage = new Counter();
         @Builder.Default
         private Counter dpia = new Counter();
         private long dpiaReferenceMissing;

@@ -3,6 +3,7 @@ import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { generatePath, useLocation, useParams } from 'react-router'
 import { processPath, processPathNoId } from '../AppRoutes'
+import { getDpProcessByDepartment } from '../api/DpProcessApi'
 import { getDashboard, getDisclosureByDepartment } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
@@ -13,6 +14,7 @@ import {
   EProcessStatusFilter,
   IDepartmentDashCount,
   IDisclosure,
+  IDpProcess,
   IProcess,
 } from '../constants'
 import { ampli } from '../service/Amplitude'
@@ -49,6 +51,7 @@ const ProcessPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [chartData, setChartData] = useState<IDepartmentDashCount>()
   const [disclosureData, setDisclosureData] = useState<IDisclosure[]>([])
+  const [dpProcessData, setDpProcessData] = useState<IDpProcess[]>([])
   const filter = useQueryParam<EProcessStatus>('filter')
   const params = useParams<TPathParams>()
   const { section, code, processId } = params
@@ -86,6 +89,8 @@ const ProcessPage = () => {
         if (code) {
           const disclosureResponse = await getDisclosureByDepartment(code)
           if (disclosureResponse) setDisclosureData(disclosureResponse.content)
+          const dpProcessResponse = await getDpProcessByDepartment(code)
+          if (dpProcessResponse) setDpProcessData(dpProcessResponse.content)
         }
 
         setIsLoading(false)
@@ -118,6 +123,7 @@ const ProcessPage = () => {
               <ProcessDisclosureTabs
                 disclosureData={disclosureData}
                 setDisclosureData={setDisclosureData}
+                dpProcessData={dpProcessData}
                 code={code}
                 listName={listNameForSection(section)}
                 processId={processId}

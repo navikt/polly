@@ -86,7 +86,7 @@ class ProcessRevisionIT extends IntegrationTestBase {
     void revisionDepartment() {
         MdcUtils.setUser("A123456 - Name");
         Process processOne = createProcess();
-        processOne.getData().setAffiliation(Affiliation.builder().department("DEP").build());
+        processOne.getData().setAffiliation(Affiliation.builder().department("DEP").nomDepartmentId("DEP").nomDepartmentName("dep").build());
         processRepository.save(processOne);
         MdcUtils.setUser("A123457 - Name");
         Process processTwo = createProcess();

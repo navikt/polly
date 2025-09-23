@@ -34,6 +34,7 @@ import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.AiUsageDescription;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
@@ -42,14 +43,7 @@ import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
-import no.nav.data.polly.process.dto.sub.AffiliationRequest;
-import no.nav.data.polly.process.dto.sub.AffiliationResponse;
-import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
-import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
-import no.nav.data.polly.process.dto.sub.DpiaRequest;
-import no.nav.data.polly.process.dto.sub.DpiaResponse;
-import no.nav.data.polly.process.dto.sub.RetentionRequest;
-import no.nav.data.polly.process.dto.sub.RetentionResponse;
+import no.nav.data.polly.process.dto.sub.*;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
@@ -245,11 +239,14 @@ public abstract class IntegrationTestBase {
                         .start(LocalDate.now()).end(LocalDate.now())
                         .affiliation(Affiliation.builder()
                                 .department(department)
+                                .nomDepartmentId(department)
+                                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, department)).getShortName())
                                 .subDepartments(List.of(subDepartment))
                                 .productTeams(List.of("ProductTeam"))
                                 .products(List.of(product))
                                 .build())
                         .commonExternalProcessResponsible(commonExternalProcessResponsible)
+                        .aiUsageDescription(AiUsageDescription.builder().startDate(LocalDate.now()).endDate(LocalDate.now()).build())
                         .legalBases(legalBases)
                         .dataProcessing(DataProcessing.builder().dataProcessor(true).build())
                         .build())
@@ -265,6 +262,8 @@ public abstract class IntegrationTestBase {
                         .start(LocalDate.now()).end(LocalDate.now())
                         .affiliation(Affiliation.builder()
                                 .department(department)
+                                .nomDepartmentId(department)
+                                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, department)).getShortName())
                                 .subDepartments(List.of(subDepartment))
                                 .productTeams(List.of("ProductTeam"))
                                 .products(List.of(product))
@@ -290,6 +289,7 @@ public abstract class IntegrationTestBase {
                                         .automaticProcessing(true)
                                         .profiling(true)
                                         .dataProcessing(DataProcessingRequest.convertToDataProcessingNullSafe(dataProcessingRequest()))
+                                        .aiUsageDescription(aiUsageDescriptionRequest().convertToAiUsageDescription())
                                         .retention(convertRetention(retentionRequest()))
                                         .dpia(convertDpia(dpiaRequest()))
                                         .status(ProcessStatus.IN_PROGRESS)
@@ -302,6 +302,8 @@ public abstract class IntegrationTestBase {
                 .productTeams(List.of("teamid1"))
                 .products(List.of("PESYS"))
                 .department("DEP")
+                .nomDepartmentId("DEP")
+                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")).getShortName())
                 .subDepartment("SUBDEP")
                 .build();
     }
@@ -316,6 +318,13 @@ public abstract class IntegrationTestBase {
 
     protected RetentionRequest retentionRequest() {
         return RetentionRequest.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build();
+    }
+
+    protected AiUsageDescriptionRequest aiUsageDescriptionRequest() {
+        return AiUsageDescriptionRequest.builder()
+                .aiUsage(true)
+                .startDate(LocalDate.now().toString()).endDate(LocalDate.now().toString())
+                .build();
     }
 
     protected DataProcessingRequest dataProcessingRequest() {
@@ -399,6 +408,7 @@ public abstract class IntegrationTestBase {
                 .usesAllInformationTypes(true)
                 .automaticProcessing(true)
                 .profiling(true)
+                .aiUsageDescription(AiUsageDescription.builder().aiUsage(true).startDate(LocalDate.now()).endDate(LocalDate.now()).build())
                 .dataProcessing(dataProcessingResponse())
                 .retention(retentionResponse())
                 .dpia(dpiaResponse())
@@ -409,6 +419,8 @@ public abstract class IntegrationTestBase {
     protected AffiliationResponse affiliationResponse() {
         return AffiliationResponse.builder()
                 .department(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")))
+                .nomDepartmentId("DEP")
+                .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")).getShortName())
                 .subDepartment(CodelistResponse.buildFrom(getCodelist(ListName.SUB_DEPARTMENT, "SUBDEP")))
                 .productTeam("teamid1")
                 .product(CodelistResponse.buildFrom(getCodelist(ListName.SYSTEM, "PESYS")))

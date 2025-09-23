@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Collections.replaceAll;
@@ -77,11 +78,15 @@ public class CodeUsageService {
     }
 
     public void validateListName(String list) {
-        requestValidator.validateListName(list);
+        if (!Objects.equals(list, "DEPARTMENT")) {
+            requestValidator.validateListName(list);
+        }
     }
 
     void validateRequests(String listName, String code) {
-        validateRequests(List.of(CodeUsageRequest.builder().listName(listName).code(code).build()));
+        if (!Objects.equals(listName, "DEPARTMENT")) {
+            validateRequests(List.of(CodeUsageRequest.builder().listName(listName).code(code).build()));
+        }
     }
 
     void validateRequests(List<CodeUsageRequest> requests) {

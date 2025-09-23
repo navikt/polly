@@ -6,6 +6,8 @@ import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.utils.ZipUtils;
+import no.nav.data.integration.nom.NomGraphClient;
+import no.nav.data.integration.nom.domain.OrgEnhet;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistStaticService;
@@ -22,10 +24,7 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
-import no.nav.data.polly.process.domain.sub.DataProcessing;
-import no.nav.data.polly.process.domain.sub.Dpia;
-import no.nav.data.polly.process.domain.sub.NoDpiaReason;
-import no.nav.data.polly.process.domain.sub.Retention;
+import no.nav.data.polly.process.domain.sub.*;
 import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
@@ -104,6 +103,7 @@ public class ProcessToDocx {
     private final CommonCodeService commonCodeService;
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
     private static final String headingExternalProcessList = "Dokumentet inneholder følgende ferdigstilte behandlinger (%s)";
+    private final NomGraphClient nomGraphClient;
 
 
     public byte[] generateZipForAllPurpose(DocumentAccess documentAccess) throws IOException {
@@ -206,11 +206,28 @@ public class ProcessToDocx {
 
         processes = getProcesses(processes, documentAccess);
 
-        Codelist codelist = CodelistStaticService.getCodelist(list, code);
+        String subtitle;
+        String description;
+        if (list != ListName.DEPARTMENT) {
+            Codelist codelist = CodelistStaticService.getCodelist(list, code);
+            subtitle = codelist.getShortName();
+            description = codelist.getDescription();
+        } else {
+            Optional<OrgEnhet> orgEnhet = nomGraphClient.getAvdelingById(code);
+            description = "Ingen beskrivelse for nom avdeling";
+            if (orgEnhet.isPresent()) {
+                subtitle = orgEnhet.get().getNavn();
+            } else {
+                subtitle = code;
+            }
+        }
+
         var doc = new DocumentBuilder();
-        doc.addTitle(title + ": " + codelist.getShortName());
+        doc.addTitle(title + ": " + subtitle);
         doc.addText("Eksportert " + formatter.format(date));
-        doc.addText(codelist.getDescription());
+        if(list == ListName.DEPARTMENT) {
+            doc.addText(description);
+        }
 
         if (documentAccess.equals(DocumentAccess.INTERNAL)) {
             doc.addHeading1(String.format(headingProcessList, processes.size()));
@@ -309,7 +326,7 @@ public class ProcessToDocx {
                     text("Helautomatisk behandling: ", boolToText(data.getAutomaticProcessing())),
                     text("Profilering: ", boolToText(data.getProfiling()))
             );
-
+            aiUsageDescription(process.getData().getAiUsageDescription(), documentAccess);
             List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
             var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
             dataProcessing(process.getData().getDataProcessing(), processors, documentAccess);
@@ -462,6 +479,41 @@ public class ProcessToDocx {
                 case NO_PROFILING_OR_AUTOMATION -> " • Ingen bruk av profilering eller automatisering";
                 case OTHER -> " • Annet";
             };
+        }
+
+        private void aiUsageDescription(AiUsageDescription aiUsageDescription , DocumentAccess documentAccess) {
+            if (documentAccess.equals(DocumentAccess.EXTERNAL) ) {
+                return;
+            } else {
+                addHeading4("Kunstig intelligens");
+
+                var textList = new ArrayList<Text>();
+                textList.add(text("KI-systemer benyttes: ", boolToText(aiUsageDescription.getAiUsage())));
+
+                if (aiUsageDescription.getAiUsage() != null && aiUsageDescription.getAiUsage().equals(true)) {
+                    textList.add(text("Hvilken rolle har KI-systemet? ", aiUsageDescription.getDescription()));
+                }
+
+                textList.add(text("Personopplysninger gjenbrukes til å utvikle KI-systemer: ",boolToText(aiUsageDescription.getReusingPersonalInformation())));
+
+               if (aiUsageDescription.getStartDate() == null  && aiUsageDescription.getEndDate() == null) {
+                   textList.add(text("Dato for bruk av KI-systemer: Ingen dato satt"));
+               }
+               else if (aiUsageDescription.getStartDate() != null && aiUsageDescription.getEndDate() != null) {
+                   textList.add(text("Dato for bruk av KI-systemer: ", aiUsageDescription.getStartDate().format(df), " - ", aiUsageDescription.getEndDate().format(df) ));
+               }
+               else if (aiUsageDescription.getStartDate() != null && aiUsageDescription.getEndDate() == null) {
+                   textList.add(text("Dato for bruk av KI-systemer: ",aiUsageDescription.getStartDate().format(df), " - Uavklart" ));
+               }   else {
+                   textList.add(text("Dato for bruk av KI-systemer: ", "Uavklart - ", aiUsageDescription.getEndDate().format(df) ));
+               }
+
+                if (aiUsageDescription.getReusingPersonalInformation() != null && aiUsageDescription.getReusingPersonalInformation().equals(true)) {
+                    textList.add(text("Registreringsnummer i modellregister:", aiUsageDescription.getRegistryNumber()));
+                }
+
+                addTexts(textList);
+            }
         }
 
         private void dataProcessing(DataProcessing data, List<Processor> processors, DocumentAccess documentAccess) {

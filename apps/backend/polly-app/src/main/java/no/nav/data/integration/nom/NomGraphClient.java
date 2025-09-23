@@ -12,6 +12,7 @@ import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.integration.nom.domain.OrgEnhet;
 import no.nav.data.integration.nom.domain.Organisering;
 import no.nav.data.integration.nom.dto.OrgEnhetGraphqlResponse;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
@@ -59,7 +60,22 @@ public class NomGraphClient {
 
     private Map<String, OrgEnhet> getAvdelingCache() {
         if (securityProperties.isDev()) {
-            var devAvdelinger = List.of(createDevAvdeling("avdeling_1"), createDevAvdeling("avdeling_2"));
+            var devAvdelinger = List.of(
+                    createDevAvdeling("avdeling1", "Avdeling for brukeropplevelser"),
+                    createDevAvdeling("avdeling_2", "Internrevisjon"),
+                    createDevAvdeling("avdeling_3", "Kunnskapsavdelingen"),
+                    createDevAvdeling("avdeling_4", "Velferdsavdelingen"),
+                    createDevAvdeling("avdeling_5", "Kommunikasjonsavdelingen"),
+                    createDevAvdeling("avdeling_6", "Avdeling for mennesker og organisasjon"),
+                    createDevAvdeling("avdeling_7", "Ytelsesavdelingen"),
+                    createDevAvdeling("avdeling_8", "Juridisk avdeling"),
+                    createDevAvdeling("avdeling_9", "Arbeids- og velferdsdirektør"),
+                    createDevAvdeling("avdeling_10", "Klageinstans"),
+                    createDevAvdeling("avdeling_11", "Arbeidsavdelingen"),
+                    createDevAvdeling("avdeling_12", "Økonomi- og styringsavdelingen"),
+                    createDevAvdeling("avdeling_13", "Sekretariatet"),
+                    createDevAvdeling("avdeling_14", "Teknologiavdelingen")
+            );
             return safeStream(devAvdelinger)
                     .collect(Collectors.toMap(OrgEnhet::getId, Function.identity()));
         } else {
@@ -115,19 +131,25 @@ public class NomGraphClient {
 
     @SneakyThrows
     private ClientHttpRequestInterceptor tokenInterceptor() {
-        return (request, body, execution) -> {
-            String token = tokenProvider.getConsumerToken(getScope());
-            log.debug("tokenInterceptor adding token: %s... for scope '%s'".formatted((token != null && token.length() > 12 ? token.substring(0, 11) : token), getScope()));
-            request.getHeaders().add(HttpHeaders.AUTHORIZATION, token);
-            return execution.execute(request, body);
-        };
+        if (securityProperties.isProd()) {
+            return (request, body, execution) -> {
+                String token = tokenProvider.getConsumerToken(getScope());
+                log.debug("tokenInterceptor adding token: %s... for scope '%s'".formatted((token != null && token.length() > 12 ? token.substring(0, 11) : token), getScope()));
+                request.getHeaders().add(HttpHeaders.AUTHORIZATION, token);
+                return execution.execute(request, body);
+            };
+        }  else {
+            return (request, body, execution) -> {
+                return execution.execute(request, body);
+            };
+        }
     }
 
     private String getScope() {
         return scopeTemplate.formatted(securityProperties.isDev() ? "dev" : "prod");
     }
 
-    private OrgEnhet createDevAvdeling(String id) {
-        return OrgEnhet.builder().id(id).navn(id).build();
+    private OrgEnhet createDevAvdeling(String id, String navn) {
+        return OrgEnhet.builder().id(id).navn(navn).build();
     }
 }

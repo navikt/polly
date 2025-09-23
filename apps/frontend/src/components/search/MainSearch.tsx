@@ -13,6 +13,7 @@ import {
   searchProductArea,
   searchTeam,
 } from '../../api/GetAllApi'
+import { getAvdelingSearchItem } from '../../api/NomApi'
 import {
   EObjectType,
   IDocument,
@@ -115,12 +116,7 @@ export const MainSearch = () => {
       if (type === 'purpose') {
         return getCodelistByListnameAndType(searchParam, EListName.PURPOSE, 'Formål', codelistUtils)
       } else if (type === 'department') {
-        return getCodelistByListnameAndType(
-          searchParam,
-          EListName.DEPARTMENT,
-          'Avdeling',
-          codelistUtils
-        )
+        return await getAvdelingSearchItem(searchParam, EListName.DEPARTMENT, 'Avdeling')
       } else if (type === 'subDepartment') {
         return getCodelistByListnameAndType(
           searchParam,
@@ -166,7 +162,7 @@ export const MainSearch = () => {
           return prefixBiasedSort(searchParam, a.sortKey, b.sortKey)
         }
 
-        const add: (items: TSearchItem[]) => void = (items: TSearchItem[]) => {
+        const add: (items: TSearchItem[]) => void = async (items: TSearchItem[]) => {
           results = [...results, ...items].sort(compareFn)
           searchResult = results
         }
@@ -182,12 +178,11 @@ export const MainSearch = () => {
             )
           )
           add(
-            searchCodelist(
+            await getAvdelingSearchItem(
               searchParam,
               EListName.DEPARTMENT,
               'Avdeling',
-              searchResultColor.departmentBackground,
-              codelistUtils
+              searchResultColor.departmentBackground
             )
           )
           add(

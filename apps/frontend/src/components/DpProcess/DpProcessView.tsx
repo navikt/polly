@@ -191,16 +191,17 @@ const DpProcessView = () => {
           </DataText>
 
           <DataText label="Organisering" text="">
-            {dpProcess?.affiliation.department ? (
+            {dpProcess?.affiliation.nomDepartmentId ? (
               <div>
                 <span>Avdeling: </span>
                 <span>
                   <DotTags
-                    list={EListName.DEPARTMENT}
-                    codes={[dpProcess?.affiliation.department]}
+                    items={[dpProcess?.affiliation.nomDepartmentName || '']}
                     commaSeparator
                     linkCodelist
                     codelistUtils={codelistUtils}
+                    list={EListName.DEPARTMENT}
+                    customId={dpProcess.affiliation.nomDepartmentId}
                   />{' '}
                 </span>
               </div>

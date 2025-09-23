@@ -1,10 +1,12 @@
 import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
 import { ChangeEvent, createRef, useEffect, useState } from 'react'
 import { replaceCodelistUsage } from '../../../api/GetAllApi'
+import { getAllNomAvdelinger } from '../../../api/NomApi'
 import {
   EObjectType,
   ICodeUsage,
   IDpProcessShort,
+  IOrgEnhet,
   IProcessShort,
   IUse,
   IUseWithPurpose,
@@ -168,7 +170,7 @@ interface IUsageProps {
 export const Usage = (props: IUsageProps) => {
   const { usage, refresh } = props
   const [codelistUtils] = CodelistService()
-
+  const [alleAvdelingOptions, setAlleAvdelingOptions] = useState<IOrgEnhet[]>([])
   const [showReplace, setShowReplace] = useState(false)
   const [newValue, setNewValue] = useState<string>()
   const ref = createRef<HTMLDivElement>()
@@ -178,9 +180,21 @@ export const Usage = (props: IUsageProps) => {
     setTimeout(() => ref.current && window.scrollTo({ top: ref.current.offsetTop }), 200)
   }, [usage])
 
+  useEffect(() => {
+    ;(async () => {
+      await getAllNomAvdelinger().then(setAlleAvdelingOptions)
+    })()
+  }, [])
+
   const replace = async (): Promise<void> => {
     if (newValue && usage) {
-      await replaceCodelistUsage(usage.listName, usage.code, newValue).then(() => refresh())
+      const newCodeName =
+        usage.listName === EListName.DEPARTMENT
+          ? alleAvdelingOptions.filter((avdeling) => avdeling.id === newValue)[0].navn
+          : undefined
+      await replaceCodelistUsage(usage.listName, usage.code, newValue, newCodeName).then(() =>
+        refresh()
+      )
     }
   }
 
@@ -205,13 +219,22 @@ export const Usage = (props: IUsageProps) => {
             onChange={(params: ChangeEvent<HTMLSelectElement>) => setNewValue(params.target.value)}
           >
             <option value="">Ny verdi</option>
-            {codelistUtils
-              .getParsedOptions(usage.listName)
-              .map((code: IGetParsedOptionsProps, index: number) => (
-                <option key={index + '_' + code.label} value={code.id}>
-                  {code.label}
+
+            {usage.listName === EListName.DEPARTMENT &&
+              alleAvdelingOptions.map((department, index) => (
+                <option key={index + '_' + department.navn} value={department.id}>
+                  {department.navn}
                 </option>
               ))}
+
+            {usage.listName !== EListName.DEPARTMENT &&
+              codelistUtils
+                .getParsedOptions(usage.listName)
+                .map((code: IGetParsedOptionsProps, index: number) => (
+                  <option key={index + '_' + code.label} value={code.id}>
+                    {code.label}
+                  </option>
+                ))}
           </Select>
 
           <Button type="button" onClick={replace} disabled={!newValue}>

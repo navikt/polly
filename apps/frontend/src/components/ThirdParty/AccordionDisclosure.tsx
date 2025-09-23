@@ -293,16 +293,17 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
                           <div>
                             <DataText label="Avdeling">
-                              {disclosure.department?.code && (
+                              {disclosure.nomDepartmentName && (
                                 <DotTags
-                                  list={EListName.DEPARTMENT}
-                                  codes={[disclosure.department]}
+                                  items={[disclosure.nomDepartmentName]}
                                   commaSeparator
-                                  linkCodelist
                                   codelistUtils={codelistUtils}
+                                  linkCodelist
+                                  list={EListName.DEPARTMENT}
+                                  customId={disclosure.nomDepartmentId}
                                 />
                               )}
-                              {!disclosure.department?.code && 'Ikke angitt'}
+                              {!disclosure.nomDepartmentName && 'Ikke angitt'}
                             </DataText>
 
                             <DataText label="Team">

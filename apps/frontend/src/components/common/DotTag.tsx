@@ -50,18 +50,21 @@ interface IContentProps {
   list?: EListName
   linkCodelist?: boolean
   markdown?: boolean
+  customId?: string
   codelistUtils: ICodelistProps
 }
 
 const Content = (props: IContentProps) => {
-  const { item, list, linkCodelist, markdown, codelistUtils } = props
+  const { item, list, linkCodelist, markdown, customId, codelistUtils } = props
 
   return (
     <div className="break-words">
       {list && (
         <>
           {linkCodelist && (
-            <RouteLink href={urlForObject(list as EListName & TNavigableItem, item)}>
+            <RouteLink
+              href={urlForObject(list as EListName & TNavigableItem, customId ? customId : item)}
+            >
               {codelistUtils.getShortname(list as EListName & TNavigableItem, item)}
             </RouteLink>
           )}
@@ -84,6 +87,7 @@ type TDotTagsParams = {
   noFlex?: boolean
   wrapText?: boolean
   codelistUtils: ICodelistProps
+  customId?: string
 }
 
 export const DotTags = (props: TDotTagsParams) => {

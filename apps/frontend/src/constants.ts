@@ -44,6 +44,7 @@ export enum EProcessField {
   DPIA = 'DPIA',
   DPIA_REFERENCE_MISSING = 'DPIA_REFERENCE_MISSING',
   PROFILING = 'PROFILING',
+  AIUSAGE = 'AIUSAGE',
   AUTOMATION = 'AUTOMATION',
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
@@ -172,6 +173,7 @@ export interface IProcessFormValues {
   status?: EProcessStatus
   usesAllInformationTypes?: boolean
   automaticProcessing?: boolean
+  aiUsageDescription: IAiUsageDescription
   profiling?: boolean
   dataProcessing: IDataProcessingFormValues
   retention: IRetention
@@ -413,9 +415,19 @@ export interface IProcess extends IDurationed {
   usesAllInformationTypes: boolean
   automaticProcessing?: boolean
   profiling?: boolean
+  aiUsageDescription: IAiUsageDescription
   dataProcessing: IDataProcessing
   retention: IRetention
   revisionText?: string
+}
+
+export interface IAiUsageDescription {
+  aiUsage?: boolean
+  description?: string
+  reusingPersonalInformation?: boolean
+  startDate?: string
+  endDate?: string
+  registryNumber?: string
 }
 
 export interface IDpProcess extends IDurationed {
@@ -796,6 +808,7 @@ interface IDashCount {
   processesMissingArt6: number
   processesMissingArt9: number
   dpia: ICounter
+  aiUsage: ICounter
   profiling: ICounter
   automation: ICounter
   retention: ICounter
@@ -824,4 +837,49 @@ export interface ICounter {
   yes: number
   no: number
   unknown: number
+}
+
+export interface IOrgEnhet {
+  id: string
+  navn: string
+  orgEnhetsType: EOrgEnhetsType
+  nomNivaa: ENomNivaa
+}
+
+export enum EOrgEnhetsType {
+  ARBEIDSLIVSSENTER = 'ARBEIDSLIVSSENTER',
+  NAV_ARBEID_OG_YTELSER = 'NAV_ARBEID_OG_YTELSER',
+  ARBEIDSRAADGIVNING = 'ARBEIDSRAADGIVNING',
+  DIREKTORAT = 'DIREKTORAT',
+  DIR = 'DIR',
+  FYLKE = 'FYLKE',
+  NAV_FAMILIE_OG_PENSJONSYTELSER = 'NAV_FAMILIE_OG_PENSJONSYTELSER',
+  HJELPEMIDLER_OG_TILRETTELEGGING = 'HJELPEMIDLER_OG_TILRETTELEGGING',
+  KLAGEINSTANS = 'KLAGEINSTANS',
+  NAV_KONTAKTSENTER = 'NAV_KONTAKTSENTER',
+  KONTROLL_KONTROLLENHET = 'KONTROLL_KONTROLLENHET',
+  NAV_KONTOR = 'NAV_KONTOR',
+  TILTAK = 'TILTAK',
+  NAV_OKONOMITJENESTE = 'NAV_OKONOMITJENESTE',
+}
+
+export enum ENomNivaa {
+  LINJEENHET = 'LINJEENHET',
+  DRIFTSENHET = 'DRIFTSENHET',
+  ARBEIDSOMRAADE = 'ARBEIDSOMRAADE',
+}
+
+export type TOption = Readonly<{
+  value?: string | number
+  label?: React.ReactNode
+}>
+
+export type TSearchItem = {
+  id: string
+  sortKey: string
+  typeName: string
+  tagColor?: string
+  label: string
+  type: TNavigableItem
+  number?: number
 }

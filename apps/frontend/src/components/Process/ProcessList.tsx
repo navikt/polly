@@ -1,7 +1,5 @@
-import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Select } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
-import { Modal, ModalBody, ModalHeader, SIZE as ModalSize, ROLE } from 'baseui/modal'
 import { Spinner } from 'baseui/spinner'
 import { HeadingXLarge, LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
@@ -23,6 +21,7 @@ import {
   updatePolicy,
   updateProcess,
 } from '../../api/GetAllApi'
+import { getAvdelingByNomId } from '../../api/NomApi'
 import {
   ELegalBasesUse,
   EProcessStatus,
@@ -42,6 +41,7 @@ import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
+import ExportProcessModal from './Export/ExportProcessModal'
 
 type TProcessListProps = {
   section: ESection
@@ -85,9 +85,17 @@ const ProcessList = ({
   const current_location = useLocation()
   const [codelistLoading, setCodelistLoading] = useState(true)
   const [exportHref, setExportHref] = useState<string>('')
-  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
+  const [nomAvdelingName, setNomAvdelingName] = useState<string>('')
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
+
+  useEffect(() => {
+    ;(async () => {
+      if (section === ESection.department) {
+        await getAvdelingByNomId(code).then((response) => setNomAvdelingName(response.navn))
+      }
+    })()
+  }, [section])
 
   useEffect(() => {
     if (processId) {
@@ -129,20 +137,7 @@ const ProcessList = ({
     }
   }
 
-  const hasAccess = (): boolean => user.canWrite()
-
-  const listNameToUrl = () =>
-    listName &&
-    (
-      {
-        DEPARTMENT: 'department',
-        SUB_DEPARTMENT: 'subDepartment',
-        PURPOSE: 'purpose',
-        SYSTEM: 'system',
-        DATA_PROCESSOR: 'processor',
-        THIRD_PARTY: 'thirdparty',
-      } as { [l: string]: string }
-    )[listName]
+  const hasAccess = (): boolean => user.canWrite() || user.isAdmin()
 
   const getProcessList = async (): Promise<void> => {
     try {
@@ -372,15 +367,12 @@ const ProcessList = ({
     <>
       <div className="flex flex-row-reverse items-center">
         <div>
-          <Button
-            onClick={() => setIsExportModalOpen(true)}
-            kind="outline"
-            size="xsmall"
-            icon={faFileWord}
-            marginRight
-          >
-            Eksportér
-          </Button>
+          <ExportProcessModal
+            listName={listName}
+            code={code}
+            marginRight={true}
+            exportHref={exportHref}
+          />
           {isEditable && hasAccess() && (
             <Button
               size="xsmall"
@@ -392,42 +384,6 @@ const ProcessList = ({
             </Button>
           )}
         </div>
-        <Modal
-          closeable
-          animate
-          size={ModalSize.auto}
-          role={ROLE.dialog}
-          isOpen={isExportModalOpen}
-          onClose={() => setIsExportModalOpen(false)}
-        >
-          <ModalHeader>Velg eksport metode</ModalHeader>
-          <ModalBody>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={
-                exportHref
-                  ? exportHref
-                  : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`
-              }
-            >
-              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
-                Eksport for intern bruk
-              </Button>
-            </StyledLink>
-            <StyledLink
-              style={{ textDecoration: 'none' }}
-              href={
-                exportHref
-                  ? exportHref
-                  : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`
-              }
-            >
-              <Button kind="outline" size="xsmall" icon={faFileWord} marginRight>
-                Eksport for ekstern bruk
-              </Button>
-            </StyledLink>
-          </ModalBody>
-        </Modal>
         <div className="w-1/4">
           <Select
             label="Status filter"
@@ -500,6 +456,8 @@ const ProcessList = ({
                 section === ESection.department
                   ? codelistUtils.getCode(EListName.DEPARTMENT, code)
                   : undefined,
+              nomDepartmentId: section === ESection.department ? code : undefined,
+              nomDepartmentName: nomAvdelingName,
               subDepartments:
                 section === ESection.subdepartment
                   ? [codelistUtils.getCode(EListName.SUB_DEPARTMENT, code) as ICode]

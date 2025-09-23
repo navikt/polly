@@ -13,7 +13,8 @@ interface IDataFormat {
   id: string
   name: string
   purposes: ICode[]
-  department?: ICode
+  nomDepartmentId?: string
+  nomDepartmentName?: string
   products: ICode[]
 }
 
@@ -21,8 +22,8 @@ const sorting: TColumnCompares<IDataFormat> = {
   name: (a: IDataFormat, b: IDataFormat) => a.name.localeCompare(b.name),
   purposes: (a: IDataFormat, b: IDataFormat) =>
     (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || ''),
-  department: (a: IDataFormat, b: IDataFormat) =>
-    (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
+  nomDepartmentName: (a: IDataFormat, b: IDataFormat) =>
+    (a.nomDepartmentName || '').localeCompare(b.nomDepartmentName || ''),
   products: (a: IDataFormat, b: IDataFormat) =>
     ((a.products.length && a.products[0].shortName) || '').localeCompare(
       (b.products.length && b.products[0].shortName) || ''
@@ -38,7 +39,8 @@ const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
       id: documentUsage.id,
       name: documentUsage.name,
       purposes: documentUsage.purposes,
-      department: documentUsage.affiliation.department,
+      nomDepartmentId: documentUsage.affiliation.nomDepartmentId,
+      nomDepartmentName: documentUsage.affiliation.nomDepartmentName,
       products: documentUsage.affiliation.products,
     }))
   )
@@ -59,7 +61,11 @@ const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
               tableState={[table, sortColumn]}
             />
             <HeadCell title="Behandling" column="name" tableState={[table, sortColumn]} />
-            <HeadCell title="Avdeling" column="department" tableState={[table, sortColumn]} />
+            <HeadCell
+              title="Avdeling"
+              column="nomDepartmentName"
+              tableState={[table, sortColumn]}
+            />
             <HeadCell title="System" column="products" tableState={[table, sortColumn]} />
           </>
         }
@@ -84,9 +90,9 @@ const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
               </RouteLink>
             </Cell>
             <Cell>
-              {process.department ? (
-                <RouteLink href={`/process/department/${process.department.code}`}>
-                  {process.department.shortName}
+              {process.nomDepartmentName ? (
+                <RouteLink href={`/process/department/${process.nomDepartmentId}`}>
+                  {process.nomDepartmentName}
                 </RouteLink>
               ) : (
                 ''
