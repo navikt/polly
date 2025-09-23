@@ -137,7 +137,7 @@ const ProcessList = ({
     }
   }
 
-  const hasAccess = (): boolean => user.canWrite()
+  const hasAccess = (): boolean => user.canWrite() || user.isAdmin()
 
   const getProcessList = async (): Promise<void> => {
     try {
