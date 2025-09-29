@@ -1,9 +1,5 @@
-import { TextField, Textarea } from '@navikt/ds-react'
-import { BlockProps } from 'baseui/block'
-import { StyledLink } from 'baseui/link'
+import { Label, Link, Select, TextField, Textarea } from '@navikt/ds-react'
 import { Notification } from 'baseui/notification'
-import { OnChangeParams, Option, Select, Value } from 'baseui/select'
-import { LabelMedium } from 'baseui/typography'
 import {
   Field,
   FieldArray,
@@ -22,13 +18,9 @@ import { user } from '../../../service/User'
 import { useAwait } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import Button from '../../common/Button/CustomButton'
-import { Error, ModalLabel } from '../../common/ModalSchema'
+import { Error } from '../../common/ModalSchema'
 import { createDocumentSchema } from '../../common/schemaValidation'
 import InformationTypesTable from './InformationTypesTable'
-
-const labelProps: BlockProps = {
-  marginBottom: '1rem',
-}
 
 type TDocumentFormProps = {
   initialValues: IDocumentFormValues
@@ -39,23 +31,8 @@ const DocumentForm = (props: TDocumentFormProps) => {
   const { initialValues, handleSubmit } = props
   const [codelistUtils] = CodelistService()
 
-  const initialValueDataAccessClass = () => {
-    if (!initialValues.dataAccessClass || !codelistUtils.isLoaded()) return []
-
-    return [
-      {
-        id: initialValues.dataAccessClass,
-        label: codelistUtils.getShortname(
-          EListName.DATA_ACCESS_CLASS,
-          initialValues.dataAccessClass
-        ),
-      },
-    ]
-  }
-
   const [isLoading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState()
-  const [dataAccessClass, setDataAccessClass] = useState<Option>(initialValueDataAccessClass())
 
   const hasAccess = (): boolean => user.canWrite()
   useAwait(user.wait(), setLoading)
@@ -93,20 +70,18 @@ const DocumentForm = (props: TDocumentFormProps) => {
         <Form onKeyDown={disableEnter}>
           <div className="w-[50%] mb-8">
             <div>
-              <LabelMedium {...labelProps}>Navn</LabelMedium>
               <Field name="name">
                 {(props: FieldProps) => (
-                  <TextField className="w-full" label="" hideLabel {...props.field} />
+                  <TextField className="w-full" label="Navn" {...props.field} />
                 )}
               </Field>
               <Error fieldName="name" fullWidth={true} />
             </div>
           </div>
           <div className="w-[50%] mb-8">
-            <LabelMedium {...labelProps}>Beskrivelse</LabelMedium>
             <Field name="description">
               {(props: FieldProps) => (
-                <Textarea className="w-full" label="" hideLabel {...props.field} />
+                <Textarea className="w-full" label="Beskrivelse" {...props.field} />
               )}
             </Field>
             <Error fieldName="description" fullWidth={true} />
@@ -116,48 +91,39 @@ const DocumentForm = (props: TDocumentFormProps) => {
             <Field
               name="dataAccessClass"
               render={({ form }: FieldProps<IDocumentFormValues>) => (
-                <div>
-                  <div className="mb-4">
-                    <ModalLabel
-                      label="Datatilgangsklasse"
-                      description={
-                        <div>
-                          Mer informasjon finner du{' '}
-                          <StyledLink
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={
-                              'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'
-                            }
-                          >
-                            her (åpnes i ny fane)
-                          </StyledLink>
-                        </div>
-                      }
-                    />
-                  </div>
-
-                  <Select
-                    options={codelistUtils.getParsedOptions(EListName.DATA_ACCESS_CLASS)}
-                    value={dataAccessClass as Value}
-                    placeholder={
-                      formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'
-                    }
-                    onChange={(params: OnChangeParams) => {
-                      const dac = params.value.length ? params.value[0] : undefined
-                      setDataAccessClass(dac as Option)
-                      form.setFieldValue('dataAccessClass', dac ? dac.id : undefined)
-                    }}
-                    error={!!form.errors.dataAccessClass && !!form.submitCount}
-                  />
-                </div>
+                <Select
+                  label="Datatilgangsklasse"
+                  description={
+                    <div>
+                      Mer informasjon finner du{' '}
+                      <Link
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'}
+                      >
+                        her (åpnes i ny fane)
+                      </Link>
+                    </div>
+                  }
+                  value={formikProps.values.dataAccessClass}
+                  onChange={async (event) => {
+                    await form.setFieldValue('dataAccessClass', event.target.value)
+                  }}
+                >
+                  <option value="">Velg datatilgangsklasse</option>
+                  {codelistUtils.getParsedOptions(EListName.DATA_ACCESS_CLASS).map((code) => (
+                    <option key={code.id} value={code.id}>
+                      {code.label}
+                    </option>
+                  ))}
+                </Select>
               )}
             />
             <Error fieldName="dataAccessClass" fullWidth={true} />
           </div>
 
           <div className="mt-12">
-            <LabelMedium marginBottom="2rem">Opplysningstyper i dokumentet</LabelMedium>
+            <Label size="medium">Opplysningstyper i dokumentet</Label>
             <FieldArray
               name="informationTypes"
               render={(arrayHelpers: FieldArrayRenderProps) => (
