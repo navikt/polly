@@ -45,7 +45,7 @@
     "styletron-react": "6.1.1",
     "typescript": "5.9.2",
     "xlsx": "0.18.5",
-    "yup": "1.7.0"
+    "yup": "1.7.1"
   },
   "scripts": {
     "start": "craco start",
