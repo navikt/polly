@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { getUserInfo } from '../api/GetAllApi'
+import { getUserInfo } from '../api/UserApi'
 import { IUserInfo } from '../constants'
 import { tekster } from '../util/codeToFineText'
 
@@ -100,7 +100,7 @@ const UserService = async (): Promise<IUserProps> => {
   }
 
   const canWrite = (): boolean => {
-    return hasGroup(EGroup.WRITE)
+    return hasGroup(EGroup.WRITE) || hasGroup(EGroup.ADMIN)
   }
 
   const isSuper = (): boolean => {
