@@ -129,7 +129,7 @@
     "prettier": "3.6.2",
     "react-scripts": "5.0.1",
     "tailwindcss": "4.1.13",
-    "ts-jest": "29.4.1",
+    "ts-jest": "29.4.4",
     "ts-node": "10.9.2"
   }
 }
