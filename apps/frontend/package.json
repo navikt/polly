@@ -9,8 +9,8 @@
     "@fortawesome/react-fontawesome": "3.0.2",
     "@navikt/aksel-icons": "7.31.0",
     "@navikt/ds-css": "7.31.0",
-    "@navikt/ds-react": "7.28.1",
-    "@navikt/ds-tailwind": "7.28.1",
+    "@navikt/ds-react": "7.31.0",
+    "@navikt/ds-tailwind": "7.31.0",
     "@tailwindcss/postcss": "4.1.13",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
     "amplitude-js": "8.0.0",
@@ -128,7 +128,7 @@
     "postcss-import": "16.1.1",
     "prettier": "3.6.2",
     "react-scripts": "5.0.1",
-    "tailwindcss": "4.1.12",
+    "tailwindcss": "4.1.13",
     "ts-jest": "29.4.1",
     "ts-node": "10.9.2"
   }
