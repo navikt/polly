@@ -103,7 +103,7 @@
     "@types/amplitude-js": "8.16.5",
     "@types/jest": "30.0.0",
     "@types/lodash": "4.17.20",
-    "@types/node": "24.6.1",
+    "@types/node": "24.6.2",
     "@types/randomcolor": "0.5.9",
     "@types/react": "19.1.16",
     "@types/react-dom": "19.1.9",
