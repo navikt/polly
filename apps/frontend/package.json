@@ -43,7 +43,7 @@
     "shortid": "2.2.17",
     "styletron-engine-atomic": "1.6.2",
     "styletron-react": "6.1.1",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "xlsx": "0.18.5",
     "yup": "1.7.1"
   },
