@@ -1,7 +1,6 @@
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import AlphabeticList from '../components/common/AlphabeticList'
-import { ampli } from '../service/Amplitude'
 import { CodelistService, EListName, ICode } from '../service/Codelist'
 
 interface ICodeListPageProps {
@@ -21,13 +20,6 @@ const CodelistPage = (props: ICodeListPageProps) => {
       setIsLoading(false)
     }
   }, [codelistUtils])
-
-  ampli.logEvent('besøk', {
-    side: 'Listevisning',
-    url: baseUrl,
-    app: 'Behandlingskatalogen',
-    type: title,
-  })
 
   const codes =
     listName === EListName.THIRD_PARTY

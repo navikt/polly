@@ -6,7 +6,6 @@ import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import { PageHeader } from '../components/common/PageHeader'
 import { IDisclosure, IDpProcess } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { ESection } from './ProcessPage'
 
 export const TeamPage = () => {
@@ -24,8 +23,6 @@ export const TeamPage = () => {
       })()
     }
   }, [teamId])
-
-  ampli.logEvent('besøk', { side: 'Team', url: '/team/:id', app: 'Behandlingskatalogen' })
 
   return (
     <>

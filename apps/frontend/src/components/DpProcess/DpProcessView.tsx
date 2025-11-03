@@ -12,7 +12,6 @@ import {
 import { getResourceById } from '../../api/GetAllApi'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
 import { IDpProcess, IDpProcessFormValues, IProcessor } from '../../constants'
-import { ampli } from '../../service/Amplitude'
 import { CodelistService, EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -41,13 +40,6 @@ const DpProcessView = () => {
   const [showModal, setShowModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [processors, setProcessors] = useState<IProcessor[]>([])
-
-  ampli.logEvent('besøk', {
-    side: 'NAV som databehandler',
-    url: 'dpprocess/:id',
-    app: 'Behandlingskatalogen',
-    type: 'view',
-  })
 
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')

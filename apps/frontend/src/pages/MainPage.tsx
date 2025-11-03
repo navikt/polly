@@ -9,15 +9,12 @@ import { RecentEditsByUser } from '../components/admin/audit/RecentEditsByUser'
 import { Markdown } from '../components/common/Markdown'
 import { cardShadow } from '../components/common/Style'
 import { EProcessStatusFilter, IDashboardData, ISettings } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
 export const MainPage = () => {
   const [settings, setSettings] = useState<ISettings>()
   const [isLoading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<IDashboardData>()
-
-  ampli.logEvent('besøk', { side: 'Hovedside', url: '/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     ;(async () => {

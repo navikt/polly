@@ -1,10 +1,9 @@
-import { Select, Spacer} from '@navikt/ds-react'
-import {BodyShort, Box, Heading, Pagination,} from "@navikt/ds-react";
+import { Select, Spacer } from '@navikt/ds-react'
+import { BodyShort, Box, Heading, Pagination } from '@navikt/ds-react'
 import axios from 'axios'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { IPageResponse } from '../../../constants'
-import { ampli } from '../../../service/Amplitude'
 import { env } from '../../../util/env'
 import { Markdown } from '../../common/Markdown'
 
@@ -35,23 +34,15 @@ export const MailLogPage = () => {
   const [page, setPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(20)
 
-  ampli.logEvent('besøk', {
-    side: 'Admin',
-    url: '/admin/maillog',
-    app: 'Behandlingskatalogen',
-    type: 'Mail log',
-  })
-
   useEffect(() => {
     getMailLog(page - 1, rowsPerPage).then(setLog)
   }, [page, rowsPerPage])
 
-
-
-
   return (
     <div className="w-full px-16" role="main">
-      <Heading className="mt-4" size="large" level="1" spacing>Logg for sendt e-post</Heading>
+      <Heading className="mt-4" size="large" level="1" spacing>
+        Logg for sendt e-post
+      </Heading>
       {log?.content.map((logList: IMailLog, index: number) => {
         let html: string = logList.body
         const bodyIdx: number = logList.body.indexOf('<body>')
@@ -68,21 +59,19 @@ export const MailLogPage = () => {
             <BodyShort>
               #{rowNum} Tid: {moment(logList.time).format('lll')} Til: {logList.to}
             </BodyShort>
-            <BodyShort className="mb-3">
-              Emne: {logList.subject}
-            </BodyShort>
+            <BodyShort className="mb-3">Emne: {logList.subject}</BodyShort>
             <Box
               className="px-2"
               borderWidth="2"
               borderColor="border-subtle"
               borderRadius="large"
-              background="surface-default">
-              <Markdown source={html} escapeHtml={false}/>
+              background="surface-default"
+            >
+              <Markdown source={html} escapeHtml={false} />
             </Box>
           </div>
         )
       })}
-
 
       <div className="flex w-full justify-center items-center mt-3">
         <Select
@@ -97,7 +86,7 @@ export const MailLogPage = () => {
           <option value="50">50</option>
           <option value="100">100</option>
         </Select>
-        <Spacer/>
+        <Spacer />
         <div>
           <Pagination
             page={page}
@@ -107,11 +96,9 @@ export const MailLogPage = () => {
             size="small"
           />
         </div>
-        <Spacer/>
+        <Spacer />
         <BodyShort>Totalt antall rader: {log.totalElements}</BodyShort>
-
       </div>
     </div>
-      )
+  )
 }
-

@@ -5,7 +5,6 @@ import shortid from 'shortid'
 import { getDocument, updateInformationTypesDocument } from '../api/GetAllApi'
 import DocumentForm from '../components/document/component/DocumentForm'
 import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
 
 const convertToDocumentFormValues = (document: IDocument) => {
@@ -30,13 +29,6 @@ const DocumentEditPage = () => {
   const [isLoading, setLoading] = useState(false)
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
-
-  ampli.logEvent('besøk', {
-    side: 'Dokumenter',
-    url: '/document/:id/edit',
-    app: 'Behandlingskatalogen',
-    type: 'Rediger dokument',
-  })
 
   const handleEditDocument = async (values: IDocumentFormValues) => {
     try {
