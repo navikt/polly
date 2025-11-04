@@ -872,6 +872,7 @@ export enum ENomNivaa {
 export type TOption = Readonly<{
   value?: string | number
   label?: React.ReactNode
+  index?: number
 }>
 
 export type TSearchItem = {
