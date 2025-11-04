@@ -12,7 +12,7 @@ replies:
   - http://localhost:8080/oauth2/callback
   - http://localhost:3000/oauth2/callback
 azuregroupid:
-  - "2ee0ef50-718c-43d3-8c05-c839f2dc2490"
+  - "7d275d5e-59a5-473d-b530-a9091b3de4c6"
   - "bf05a29f-6f80-4da1-b419-22c802fd41e7"
   - "b0d4bdd3-40fc-4feb-8147-a18388d3edfa"
 env:
