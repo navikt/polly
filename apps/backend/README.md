@@ -1,7 +1,7 @@
 [![Backend](https://github.com/navikt/polly/workflows/Backend/badge.svg?branch=master)](https://github.com/navikt/polly/actions)
 
 ## Kom i gang
-Prosjektet krever maven og java 17
+Prosjektet krever maven og java 21
 
 #####For å bygge
 
