@@ -1,33 +1,32 @@
-import { Option, Value } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getTeam, mapTeamToOption, useTeamSearchOptions } from '../../../api/GetAllApi'
-import { ITeam } from '../../../constants'
+import { ITeam, TOption } from '../../../constants'
 import CustomSearchSelect from '../AsyncSelectComponents'
 import { Error } from '../ModalSchema'
 import { renderTagList } from '../TagList'
 
 const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) => {
   const { productTeams, fieldName } = props
-  const [values, setValues] = useState<Value>(
-    productTeams.map((team) => ({ id: team, label: team }))
+  const [values, setValues] = useState<TOption[]>(
+    productTeams.map((team) => ({ value: team, label: team }))
   )
 
   useEffect(() => {
     ;(async () => {
-      const vals: Option[] = []
+      const vals: TOption[] = []
       const response: Promise<void>[] = productTeams.map((team: string, index: number) =>
         (async () => {
           try {
             vals.push(mapTeamToOption(await getTeam(team), index))
           } catch (error: any) {
             console.debug(error)
-            vals.push({ team, label: 'na: ' + team, index })
+            vals.push({ value: team, label: 'na: ' + team, index })
           }
         })()
       )
       await Promise.all(response)
-      setValues(vals.sort((value) => value.idx))
+      setValues(vals.sort((value) => value.index || 0))
     })()
   }, [productTeams])
 
