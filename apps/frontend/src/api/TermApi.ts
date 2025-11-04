@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { Option } from 'baseui/select'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { IPageResponse, ITerm } from '../constants'
+import { IPageResponse, ITerm, TOption } from '../constants'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
@@ -15,13 +14,13 @@ export const searchTerm = async (termSearch: string) => {
 }
 
 export const mapTermToOption = (term: ITerm) => ({
-  id: term.id,
+  value: term.id,
   label: term.name + ' - ' + term.description,
 })
 
 export const useTermSearch = () => {
   const [termSearch, setTermSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
+  const [searchResult, setInfoTypeSearchResult] = useState<TOption[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -29,7 +28,7 @@ export const useTermSearch = () => {
       if (termSearch && termSearch.length > 2) {
         setLoading(true)
         const res = await searchTerm(termSearch)
-        const options: Option[] = res.content.map(mapTermToOption)
+        const options: TOption[] = res.content.map(mapTermToOption)
         setInfoTypeSearchResult(options)
         setLoading(false)
       }
@@ -38,7 +37,7 @@ export const useTermSearch = () => {
   }, [termSearch])
 
   return [searchResult, setTermSearch, loading] as [
-    Option[],
+    TOption[],
     Dispatch<SetStateAction<string>>,
     boolean,
   ]
