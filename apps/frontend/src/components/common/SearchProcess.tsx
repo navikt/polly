@@ -1,5 +1,5 @@
-import { OnChangeParams, Select, TYPE } from 'baseui/select'
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Select, TextField } from '@navikt/ds-react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IPageResponse, IProcess } from '../../constants'
 import { CodelistService, EListName, ICode } from '../../service/Codelist'
@@ -10,90 +10,86 @@ type TSearchProcessProps = {
   setSelectedProcess: Dispatch<SetStateAction<IProcess | undefined>>
 }
 
+type TProcessWithNamePurpose = IProcess & { namePurpose: string }
+
 const SearchProcess = (props: TSearchProcessProps) => {
   const { selectedProcess, setSelectedProcess } = props
   const [codelistUtils] = CodelistService()
 
-  const [processList, setProcessList] = useState<IProcess[]>([])
+  const [processList, setProcessList] = useState<TProcessWithNamePurpose[]>([])
   const [search, setSearch] = useDebouncedState<string>('', 400)
   const [isLoading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    ;(async () => {
+    const fetchProcesses = async () => {
       if (search && search.length > 2) {
         setLoading(true)
         const response: IPageResponse<IProcess> = await searchProcess(search)
-        let content: IProcess[] = response.content
+        let content: TProcessWithNamePurpose[] = response.content.map((process) => ({
+          ...process,
+          namePurpose:
+            'B' +
+            process.number +
+            ' ' +
+            (process.purposes !== undefined ? process.purposes[0].shortName : '') +
+            ': ' +
+            process.name,
+        }))
         const purposes: ICode[] = codelistUtils
           .getCodes(EListName.PURPOSE)
-          .filter((code: ICode) => code.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-        const processesPromise: Promise<any>[] = []
-        for (let i = 0; i < purposes.length; i++) {
-          processesPromise.push(getProcessesByPurpose(purposes[i].code))
-        }
-        content = [
-          ...content,
-          ...(await Promise.all(processesPromise))
-            .map((value) => value.content)
-            .flatMap((value) => value),
-        ]
-        content = content
-          .map((process: IProcess) => {
-            return {
-              ...process,
-              namePurpose:
-                'B' +
-                process.number +
-                ' ' +
-                (process.purposes !== undefined ? process.purposes[0].shortName : '') +
-                ': ' +
-                process.name,
-            }
-          })
-          .filter(
-            (p1: IProcess, index: number, self) => index === self.findIndex((p2) => p2.id === p1.id)
-          )
-
+          .filter((code: ICode) => code.shortName.toLowerCase().includes(search.toLowerCase()))
+        const processesPromise: Promise<IPageResponse<IProcess>>[] = purposes.map((purpose) =>
+          getProcessesByPurpose(purpose.code)
+        )
+        const additionalProcesses = (await Promise.all(processesPromise)).flatMap((result) =>
+          result.content.map((process) => ({
+            ...process,
+            namePurpose:
+              'B' +
+              process.number +
+              ' ' +
+              (process.purposes !== undefined ? process.purposes[0].shortName : '') +
+              ': ' +
+              process.name,
+          }))
+        )
+        content = [...content, ...additionalProcesses].filter(
+          (p1, index, self) => index === self.findIndex((p2) => p2.id === p1.id)
+        )
         setProcessList(content)
         setLoading(false)
+      } else {
+        setProcessList([])
       }
-    })()
+    }
+    fetchProcesses()
   }, [search])
 
   return (
     <div className="w-full">
-      <Select
-        options={processList}
-        isLoading={isLoading}
-        clearable
-        searchable={true}
-        noResultsMsg="Ingen"
-        type={TYPE.search}
-        maxDropdownHeight="400px"
+      <TextField
+        label="Søk etter behandlinger"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
         placeholder="Søk etter behandlinger"
-        onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-          setSearch(event.currentTarget.value)
-        }
-        labelKey="namePurpose"
-        value={
-          selectedProcess
-            ? [
-                {
-                  id: selectedProcess?.id,
-                  namePurpose:
-                    (selectedProcess?.purposes !== undefined
-                      ? selectedProcess?.purposes[0].shortName
-                      : '') +
-                    ': ' +
-                    selectedProcess?.name,
-                },
-              ]
-            : []
-        }
-        onChange={(params: OnChangeParams) => {
-          setSelectedProcess(params.value[0] as IProcess)
-        }}
+        disabled={isLoading}
       />
+      <Select
+        label="Velg behandling"
+        value={selectedProcess?.id ?? ''}
+        onChange={(e) => {
+          const selected = processList.find((p) => p.id === e.target.value)
+          setSelectedProcess(selected)
+        }}
+        disabled={isLoading || processList.length === 0}
+      >
+        <option value="">Ingen</option>
+        {processList.map((process) => (
+          <option key={process.id} value={process.id}>
+            {process.namePurpose}
+          </option>
+        ))}
+      </Select>
     </div>
   )
 }
