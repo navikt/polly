@@ -9,7 +9,7 @@ const FieldInformationType = (props: {
   handleChange: (documentInformationType: IDocumentInfoTypeUse) => void
 }) => {
   const { documentInformationType, handleChange } = props
-  const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch()
+  const [searchResult, , setSearchKeyword, isLoading] = useInfoTypeSearch()
   const [selectedInformationType, setSelectedInformationType] = useState<IInformationTypeShort>(
     documentInformationType.informationType
   )
@@ -21,7 +21,7 @@ const FieldInformationType = (props: {
       maxDropdownHeight="400px"
       searchable={true}
       type={TYPE.search}
-      options={searchKeyword}
+      options={searchResult}
       placeholder={selectedInformationType ? '' : 'Søk opplysningstyper'}
       overrides={{
         Popover: {

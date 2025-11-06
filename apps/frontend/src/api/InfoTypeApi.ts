@@ -93,8 +93,9 @@ export const useInfoTypeSearch = () => {
     search()
   }, [infoTypeSearch])
 
-  return [infoTypeSearchResult, setInfoTypeSearch, loading] as [
+  return [infoTypeSearchResult, infoTypeSearch, setInfoTypeSearch, loading] as [
     IInformationTypeShort[],
+    string,
     Dispatch<SetStateAction<string>>,
     boolean,
   ]
