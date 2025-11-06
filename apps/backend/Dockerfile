@@ -1,4 +1,4 @@
-FROM openjdk:18-slim as builder
+FROM eclipse-temurin:25-jdk-ubi10-minimal AS builder
 WORKDIR application
 COPY polly-app/target/app-exec.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
