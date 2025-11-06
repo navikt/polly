@@ -17,7 +17,6 @@ import {
   IDpProcess,
   IProcess,
 } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { EListName } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
 
@@ -56,12 +55,6 @@ const ProcessPage = () => {
   const params = useParams<TPathParams>()
   const { section, code, processId } = params
   const location = useLocation()
-
-  ampli.logEvent('besøk', {
-    side: 'Behandlinger',
-    url: '/process/:section/:code/',
-    app: 'Behandlingskatalogen',
-  })
 
   const moveScroll = () => {
     window.scrollTo(

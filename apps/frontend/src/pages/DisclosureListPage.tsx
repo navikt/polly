@@ -24,7 +24,6 @@ import {
   IDisclosureFormValues,
   IProcess,
 } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { EListName } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
@@ -56,8 +55,6 @@ export const DisclosureListPage = () => {
   const filter = useQueryParam<EFilterType>('filter')
   const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
-
-  ampli.logEvent('besøk', { side: 'Utleveringer', url: '/disclosure', app: 'Behandlingskatalogen' })
 
   const initialFormValues: IDisclosureFormValues = {
     name: '',

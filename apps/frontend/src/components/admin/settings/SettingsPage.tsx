@@ -3,20 +3,12 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { getDocument, getDocumentByPageAndPageSize } from '../../../api/GetAllApi'
 import { getSettings, writeSettings } from '../../../api/SettingsApi'
 import { IDocument, ISettings } from '../../../constants'
-import { ampli } from '../../../service/Amplitude'
 import { Markdown } from '../../common/Markdown'
 
 export const SettingsPage = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState()
   const [settings, setSettings] = useState<ISettings>()
-
-  ampli.logEvent('besøk', {
-    side: 'Admin',
-    url: '/admin/settings',
-    app: 'Behandlingskatalogen',
-    type: 'Instillinger',
-  })
 
   const load = async () => {
     setLoading(true)

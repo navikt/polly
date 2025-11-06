@@ -11,7 +11,6 @@ import {
 } from '../api/GetAllApi'
 import ModalProcess from '../components/Process/Accordion/ModalProcess'
 import { IProcessFormValues } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
 import { env } from '../util/env'
@@ -25,13 +24,6 @@ export const PurposeListPage = () => {
   const [errorProcessModal, setErrorProcessModal] = useState(null)
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const [codelistUtils] = CodelistService()
-
-  ampli.logEvent('besøk', {
-    side: 'Behandlinger',
-    url: '/process',
-    app: 'Behandlingskatalogen',
-    type: 'Velg overordnet behandlingsaktivitet',
-  })
 
   const handleCreateProcess = async (process: IProcessFormValues) => {
     if (!process) return

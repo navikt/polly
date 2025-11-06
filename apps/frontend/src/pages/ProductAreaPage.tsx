@@ -8,19 +8,12 @@ import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'
 import { EProcessStatusFilter, IProductAreaDashCount } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { ESection } from './ProcessPage'
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [chartData, setChartData] = useState<IProductAreaDashCount>()
   const { productAreaId } = useParams<{ productAreaId: string }>()
-
-  ampli.logEvent('besøk', {
-    side: 'ProductAreaPage',
-    url: '/productarea/:productAreaId',
-    app: 'Behandlingskatalogen',
-  })
 
   useEffect(() => {
     ;(async () => {

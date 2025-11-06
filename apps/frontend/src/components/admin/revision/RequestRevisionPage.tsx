@@ -23,7 +23,6 @@ import {
   IProductArea,
   TOption,
 } from '../../../constants'
-import { ampli } from '../../../service/Amplitude'
 import { env } from '../../../util/env'
 
 const initialValues: IProcessRevisionRequest = {
@@ -70,13 +69,6 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [alleAvdelingOptions, setAlleAvdelingOptions] = useState<TOption[]>([])
-
-  ampli.logEvent('besøk', {
-    side: 'Admin',
-    url: '/admin/request-revision',
-    app: 'Behandlingskatalogen',
-    type: 'Trenger revidering',
-  })
 
   useEffect(() => {
     ;(async () => {

@@ -18,7 +18,6 @@ import {
   IAlertEvent,
   IPageResponse,
 } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
@@ -111,8 +110,6 @@ export const AlertEventPage = () => {
   const setLimit = (l: number) => dispatch({ type: 'LIMIT', value: l })
   const setType = (t?: EAlertEventType) => dispatch({ type: 'EVENT_TYPE', value: t })
   const setLevel = (l?: EAlertEventLevel) => dispatch({ type: 'EVENT_LEVEL', value: l })
-
-  ampli.logEvent('besøk', { side: 'Varsler', url: '/alert/events/', app: 'Behandlingskatalogen' })
 
   useEffect(() => {
     getAlertEvents(

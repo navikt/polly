@@ -12,7 +12,6 @@ import {
 import ProcessorModal from '../components/Processor/ProcessorModal'
 import AlphabeticList from '../components/common/AlphabeticList'
 import { IProcessor, IProcessorFormValues } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
 export const ProcessorListPage = () => {
@@ -22,12 +21,6 @@ export const ProcessorListPage = () => {
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
-
-  ampli.logEvent('besøk', {
-    side: 'Databehandlere',
-    url: '/processor',
-    app: 'Behandlingskatalogen',
-  })
 
   const handleCreateProcessor = (processor: IProcessorFormValues) => {
     if (!processor) return

@@ -5,7 +5,6 @@ import { createInformationType, mapInfoTypeToFormVals } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'
 import { IInformationtypeFormValues } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
 
@@ -14,13 +13,6 @@ const InformationtypeCreatePage = () => {
 
   const [errorSubmit, setErrorSubmit] = useState(null)
   const navigate = useNavigate()
-
-  ampli.logEvent('besøk', {
-    side: 'Opplysningstyper',
-    url: '/informationtype/create',
-    app: 'Behandlingskatalogen',
-    type: 'Opprett opplysningstype',
-  })
 
   const handleSubmit = async (values: IInformationtypeFormValues) => {
     if (!values) return

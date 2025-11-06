@@ -21,7 +21,6 @@ import DocumentMetadata from '../components/document/DocumentMetadata'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
 import { IDocument, IProcess } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
 const renderTextWithLabel = (label: string, text: string) => (
@@ -42,8 +41,6 @@ const DocumentPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>()
   const [activeKey, setActiveKey] = useState<string | number | bigint>('containsInformationType')
   const [documents, setDocuments] = useState<IDocument[]>([])
-
-  ampli.logEvent('besøk', { side: 'Dokumenter', url: '/document/', app: 'Behandlingskatalogen' })
 
   useEffect(() => setDocumentId(params.id), [params.id])
 

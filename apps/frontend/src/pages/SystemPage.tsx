@@ -4,18 +4,11 @@ import { getInformationTypesBy } from '../api/GetAllApi'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'
-import { ampli } from '../service/Amplitude'
 import { EListName } from '../service/Codelist'
 import { ESection } from './ProcessPage'
 
 export const SystemPage = () => {
   const { systemCode } = useParams<{ systemCode: string }>()
-
-  ampli.logEvent('besøk', {
-    side: 'Systemer',
-    url: '/system/:systemCode',
-    app: 'Behandlingskatalogen',
-  })
 
   return (
     <>

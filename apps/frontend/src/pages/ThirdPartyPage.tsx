@@ -19,7 +19,6 @@ import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { CodelistService, EListName } from '../service/Codelist'
 import { user } from '../service/User'
 import { ESection } from './ProcessPage'
@@ -42,12 +41,6 @@ const ThirdPartyPage = () => {
   const [error, setError] = useState<string>()
   const [processListCount, setProcessListCount] = useState<number>(0)
   const [expandedAccordion, setExpandedAccordion] = useState<string>(params.section || '')
-
-  ampli.logEvent('besøk', {
-    side: 'Eksterne parter',
-    url: '/thirdparty/:thirdPartyCode/',
-    app: 'Behandlingskatalogen',
-  })
 
   useEffect(() => {
     ;(async () => {

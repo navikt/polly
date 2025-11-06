@@ -18,7 +18,6 @@ import {
   ITeamResource,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
-import { ampli } from '../../service/Amplitude'
 import { CodelistService } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -44,13 +43,6 @@ const ProcessorView = () => {
   )
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const [usageCount, setUsageCount] = useState<number>(0)
-
-  ampli.logEvent('besøk', {
-    side: 'Databehandlere',
-    url: '/processor/:id',
-    app: 'Behandlingskatalogen',
-    type: 'view',
-  })
 
   const hasAccess = (): boolean => user.canWrite()
   const navigate: NavigateFunction = useNavigate()

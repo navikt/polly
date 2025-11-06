@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'
-import { ampli } from '../../../service/Amplitude'
 import { CodelistService, ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import CodeListTable from './CodeListStyledTable'
@@ -23,13 +22,6 @@ const CodeListPage = () => {
   const [listname, setListname] = useState(params.listname)
   const [createCodeListModal, setCreateCodeListModal] = useState(false)
   const [errorOnResponse, setErrorOnResponse] = useState(null)
-
-  ampli.logEvent('besøk', {
-    side: 'Admin',
-    url: '/admin/codelist/',
-    app: 'Behandlingskatalogen',
-    type: 'Kodeverk',
-  })
 
   const currentCodelist: ICode[] | undefined =
     lists && listname ? lists?.codelist[listname] : undefined

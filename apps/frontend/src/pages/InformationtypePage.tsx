@@ -22,7 +22,6 @@ import {
   IInformationType,
   IPolicy,
 } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { EListName } from '../service/Codelist'
 import { user } from '../service/User'
 import { theme } from '../util'
@@ -42,11 +41,6 @@ const InformationtypePage = () => {
   const [categoryUsages, setCategoryUsages] = useState<ICodeUsage[]>()
 
   useEffect(() => {
-    ampli.logEvent('besøk', {
-      side: 'Opplysningstyper',
-      url: '/informationtype/',
-      app: 'Behandlingskatalogen',
-    })
     ;(async () => {
       const response: ICategoryUsage = await getCodelistUsageByListName(EListName.CATEGORY)
       setCategoryUsages(response.codesInUse)
