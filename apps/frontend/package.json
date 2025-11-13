@@ -104,7 +104,7 @@
     "@types/node": "24.10.1",
     "@types/randomcolor": "0.5.9",
     "@types/react": "19.2.3",
-    "@types/react-dom": "19.2.2",
+    "@types/react-dom": "19.2.3",
     "@types/react-helmet": "6.1.11",
     "@types/react-router": "5.1.20",
     "@types/shortid": "2.2.0",
