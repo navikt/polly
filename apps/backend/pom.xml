@@ -92,7 +92,7 @@
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-form</artifactId>
-                <version>1.8.10</version>
+                <version>1.8.11</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
