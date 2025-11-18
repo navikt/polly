@@ -110,7 +110,7 @@
     "@types/shortid": "2.2.0",
     "@types/styletron-engine-atomic": "1.1.4",
     "@types/styletron-react": "5.0.8",
-    "@types/styletron-standard": "2.0.5",
+    "@types/styletron-standard": "2.0.6",
     "@types/yup": "0.32.0",
     "@typescript-eslint/eslint-plugin": "8.46.4",
     "@typescript-eslint/parser": "8.46.4",

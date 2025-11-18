@@ -2987,12 +2987,12 @@
     "@types/react" "*"
     "@types/styletron-standard" "*"
 
-"@types/styletron-standard@*", "@types/styletron-standard@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@types/styletron-standard/-/styletron-standard-2.0.5.tgz#986445b926ffc924fec790b135a0cdbb663253f8"
-  integrity sha512-CLs9GD7SYvahBik8su/1tPwUrPoc4R/Ik4IdBLuXI2uAUyGBH0f3WuF7pjNqxCN7NnjwBbbWvi/X5v7OMnLOcQ==
+"@types/styletron-standard@*", "@types/styletron-standard@2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@types/styletron-standard/-/styletron-standard-2.0.6.tgz#346e4a90b62814262857d264f1abbd9776094f48"
+  integrity sha512-CeClV+XnKFJfI2eyD+HG8i/Zqkys0bCOHamxutugX+UYujbHXLyZqAj/m6jexb81Uat6Wg7atolNiDNjVTz2Dw==
   dependencies:
-    csstype "^3.0.2"
+    csstype "^3.2.2"
 
 "@types/trusted-types@^2.0.2":
   version "2.0.7"
@@ -5052,10 +5052,10 @@ csstype@^2.5.7:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.21.tgz#2efb85b7cc55c80017c66a5ad7cbd931fda3a90e"
   integrity sha512-Z1PhmomIfypOpoMjRQB70jfvy/wxT50qW08YXO5lMIJkrdq4yOTR+AW7FqutScmB9NkLwxo+jU+kZLbofZZq/w==
 
-csstype@^3.0.0, csstype@^3.0.2:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
-  integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
+csstype@^3.0.0, csstype@^3.0.2, csstype@^3.2.2:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
+  integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
 cwise-compiler@^1.1.2:
   version "1.1.3"
