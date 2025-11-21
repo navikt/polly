@@ -87,32 +87,32 @@
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-json</artifactId>
-                <version>1.8.12</version>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-form</artifactId>
-                <version>1.8.12</version>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-multipart</artifactId>
-                <version>1.8.12</version>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-text</artifactId>
-                <version>1.8.11</version>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-authentication-azure</artifactId>
-                <version>1.8.11</version>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-http-okHttp</artifactId>
-                <version>1.8.11</version>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
