@@ -97,7 +97,7 @@
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-multipart</artifactId>
-                <version>1.8.12</version>
+                <version>1.9.0</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
