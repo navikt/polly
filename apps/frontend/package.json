@@ -100,7 +100,7 @@
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@craco/craco": "7.1.0",
     "@types/jest": "30.0.0",
-    "@types/lodash": "4.17.20",
+    "@types/lodash": "4.17.21",
     "@types/node": "24.10.1",
     "@types/randomcolor": "0.5.9",
     "@types/react": "19.2.6",
