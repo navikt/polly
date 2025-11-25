@@ -116,7 +116,7 @@ public class NomGraphClient {
             throw new ValidationException("Invalid avdeling id: " +  avdelingId);
         } else {
             if (securityProperties.isDev()) {
-                var devSeksjoner = List.of(
+                return List.of(
                         createDevOrganisering("seksjon_1", "seksjon 1"),
                         createDevOrganisering("seksjon_2", "seksjon 2"),
                         createDevOrganisering("seksjon_3", "seksjon 3"),
@@ -129,7 +129,6 @@ public class NomGraphClient {
                         createDevOrganisering("seksjon_10", "seksjon 10"),
                         createDevOrganisering("seksjon_11", "seksjon 11")
                 );
-                return devSeksjoner;
             } else {
                 var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", avdelingId));
                 var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
