@@ -87,12 +87,12 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                           (seksjon) => seksjon.value === event.target.value
                         )[0]
 
-                        const finnesAlleredeIListe =
+                        const ikkeFinnesAlleredeIListe =
                           FieldArrayRenderProps.form.values.affiliation.seksjoner.filter(
                             (seksjon: INomSeksjon) => seksjon.nomSeksjonId === event.target.value
                           ).length === 0
 
-                        if (finnesAlleredeIListe) {
+                        if (ikkeFinnesAlleredeIListe) {
                           FieldArrayRenderProps.form.setFieldValue('affiliation.seksjoner', [
                             ...FieldArrayRenderProps.form.values.affiliation.seksjoner,
                             { nomSeksjonId: seksjon.value, nomSeksjonName: seksjon.label },
