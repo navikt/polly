@@ -41,6 +41,11 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
               value={value}
               onChange={async (event) => {
                 setValue(event.target.value)
+
+                if (event.target.value !== fieldProps.form.values.affiliation.nomDepartmentId) {
+                  await fieldProps.form.setFieldValue('affiliation.seksjoner', [])
+                }
+
                 await fieldProps.form.setFieldValue(
                   'affiliation.nomDepartmentId',
                   event.target.value
@@ -50,10 +55,6 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                   alleAvdelingOptions.filter((avdeling) => avdeling.value === event.target.value)[0]
                     .label
                 )
-
-                if (event.target.value !== fieldProps.form.values.affiliation.nomDepartmentId) {
-                  await fieldProps.form.setFieldValue('affiliation.seksjoner', [])
-                }
               }}
             >
               <option value="">Velg sekjson</option>
