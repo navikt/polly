@@ -1,7 +1,7 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   deleteDpProcess,
@@ -11,7 +11,7 @@ import {
 } from '../../api/DpProcessApi'
 import { getResourceById } from '../../api/GetAllApi'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
-import { IDpProcess, IDpProcessFormValues, IProcessor } from '../../constants'
+import { IDpProcess, IDpProcessFormValues, INomSeksjon, IProcessor } from '../../constants'
 import { CodelistService, EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -200,6 +200,25 @@ const DpProcessView = () => {
             ) : (
               <span>Avdeling: Ikke utfylt</span>
             )}
+
+            {dpProcess && dpProcess.affiliation.seksjoner.length !== 0 && (
+              <div>
+                <span>Sekjson: </span>
+                <span>
+                  <div className="inline">
+                    {dpProcess.affiliation.seksjoner.map((seksjon: INomSeksjon, index) => (
+                      <Fragment key={seksjon.nomSeksjonId}>
+                        <>{seksjon.nomSeksjonName}</>
+                        <span>
+                          {index < dpProcess.affiliation.seksjoner.length - 1 ? ', ' : ''}
+                        </span>
+                      </Fragment>
+                    ))}
+                  </div>
+                </span>
+              </div>
+            )}
+
             {!!dpProcess?.affiliation.subDepartments.length && (
               <div>
                 <div className="flex">
