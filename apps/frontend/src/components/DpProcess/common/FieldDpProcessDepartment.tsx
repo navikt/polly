@@ -97,7 +97,7 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
                       }
                     }}
                   >
-                    <option value="">Velg avdeling</option>
+                    <option value="">Velg sekjson</option>
                     {seksjonForAvdeling.map((seksjon) => (
                       <option key={seksjon.value} value={seksjon.value}>
                         {seksjon.label}
