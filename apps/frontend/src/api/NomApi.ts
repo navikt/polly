@@ -8,6 +8,11 @@ export const getAllNomAvdelinger = async () => {
     .content
 }
 
+export const getSeksjonerForNomAvdeling = async (avdelingId: string) => {
+  return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/seksjon/avdeling/${avdelingId}`))
+    .data
+}
+
 export const getAvdelingByNomId = async (id: string) => {
   return (await axios.get<IOrgEnhet>(`${env.pollyBaseUrl}/nom/avdeling/${id}`)).data
 }
@@ -24,6 +29,21 @@ export const getAvdelingOptions = async () => {
         return {
           value: avdeling.id,
           label: avdeling.navn,
+        }
+      })
+      .sort((a, b) => a.label.localeCompare(b.label))
+  }
+  return []
+}
+
+export const getSeksjonOptions = async (avdelingId: string) => {
+  const seksjoner = await getSeksjonerForNomAvdeling(avdelingId)
+  if (seksjoner && seksjoner.length) {
+    return seksjoner
+      .map((seksjon) => {
+        return {
+          value: seksjon.id,
+          label: seksjon.navn,
         }
       })
       .sort((a, b) => a.label.localeCompare(b.label))

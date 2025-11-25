@@ -11,6 +11,7 @@ export const createProcess = (): IProcessFormValues => ({
     productTeams: [],
     nomDepartmentId: '',
     nomDepartmentName: '',
+    seksjoner: [],
     products: [],
     subDepartments: [],
     disclosureDispatchers: [],

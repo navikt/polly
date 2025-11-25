@@ -184,16 +184,23 @@ export interface IAffiliationFormValues {
   department?: string
   nomDepartmentId?: string
   nomDepartmentName?: string
+  seksjoner: INomSeksjon[]
   subDepartments: string[]
   productTeams: string[]
   products: string[]
   disclosureDispatchers: string[]
 }
 
+export interface INomSeksjon {
+  nomSeksjonId: string
+  nomSeksjonName: string
+}
+
 export interface IAffiliation {
   department?: ICode
   nomDepartmentId?: string
   nomDepartmentName?: string
+  seksjoner: INomSeksjon[]
   subDepartments: ICode[]
   productTeams: string[]
   products: ICode[]

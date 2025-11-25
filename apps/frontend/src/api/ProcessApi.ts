@@ -156,6 +156,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
       department: affiliation?.department?.code || '',
       nomDepartmentId: affiliation?.nomDepartmentId || '',
       nomDepartmentName: affiliation?.nomDepartmentName || '',
+      seksjoner: affiliation?.seksjoner || [],
       subDepartments: affiliation?.subDepartments.map((sd) => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
       products: affiliation?.products.map((p) => p.code) || [],
