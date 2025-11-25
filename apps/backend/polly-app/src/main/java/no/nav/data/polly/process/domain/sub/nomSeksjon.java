@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class nomSeksjon {
 
-    private String nomSeksjontId;
+    private String nomSeksjonId;
     private String nomSeksjonName;
 }
