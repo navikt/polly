@@ -1,7 +1,7 @@
 import { BodyLong, Tooltip } from '@navikt/ds-react'
 import { ProgressBar } from 'baseui/progress-bar'
 import { isNil, sum, uniqBy } from 'lodash'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import {
@@ -10,6 +10,7 @@ import {
   IDisclosure,
   IDpia,
   ILegalBasis,
+  INomSeksjon,
   IProcess,
   IProcessor,
 } from '../../../constants'
@@ -197,6 +198,21 @@ const ProcessData = (props: IProcessDataProps) => {
                 list={EListName.DEPARTMENT}
                 customId={process.affiliation.nomDepartmentId}
               />{' '}
+            </span>
+          </div>
+        )}
+        {process.affiliation.seksjoner.length !== 0 && (
+          <div>
+            <span>Sekjson: </span>
+            <span>
+              <div className="inline">
+                {process.affiliation.seksjoner.map((seksjon: INomSeksjon, index) => (
+                  <Fragment key={seksjon.nomSeksjonId}>
+                    <>{seksjon.nomSeksjonName}</>
+                    <span>{index < process.affiliation.seksjoner.length - 1 ? ', ' : ''}</span>
+                  </Fragment>
+                ))}
+              </div>
             </span>
           </div>
         )}

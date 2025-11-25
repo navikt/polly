@@ -458,6 +458,7 @@ const ProcessList = ({
                   : undefined,
               nomDepartmentId: section === ESection.department ? code : undefined,
               nomDepartmentName: nomAvdelingName,
+              seksjoner: [],
               subDepartments:
                 section === ESection.subdepartment
                   ? [codelistUtils.getCode(EListName.SUB_DEPARTMENT, code) as ICode]
