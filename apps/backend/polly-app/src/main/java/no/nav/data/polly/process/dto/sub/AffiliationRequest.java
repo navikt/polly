@@ -12,6 +12,7 @@ import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.Validated;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.nomSeksjon;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class AffiliationRequest implements Validated {
     private String department;
     private String nomDepartmentId;
     private String nomDepartmentName;
+    private List<nomSeksjon> seksjoner;
     @Singular
     @Schema(description = "Codelist SUB_DEPARTMENT")
     private List<String> subDepartments;
@@ -66,6 +68,7 @@ public class AffiliationRequest implements Validated {
                 .department(getDepartment())
                 .nomDepartmentId(getNomDepartmentId())
                 .nomDepartmentName(getNomDepartmentName())
+                .seksjoner(copyOf(getSeksjoner()))
                 .subDepartments(copyOf(getSubDepartments()))
                 .productTeams(copyOf(getProductTeams()))
                 .products(copyOf(getProducts()))
