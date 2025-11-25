@@ -50,6 +50,10 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                   alleAvdelingOptions.filter((avdeling) => avdeling.value === event.target.value)[0]
                     .label
                 )
+
+                if (event.target.value !== fieldProps.form.values.affiliation.nomDepartmentId) {
+                  await fieldProps.form.setFieldValue('affiliation.seksjoner', [])
+                }
               }}
             >
               <option value="">Velg avdeling</option>

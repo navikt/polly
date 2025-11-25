@@ -48,6 +48,9 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
                   alleAvdelingOptions.filter((avdeling) => avdeling.value === event.target.value)[0]
                     .label
                 )
+                if (event.target.value !== form.values.affiliation.nomDepartmentId) {
+                  await form.setFieldValue('affiliation.seksjoner', [])
+                }
               }}
             >
               <option value="">Velg avdeling</option>
