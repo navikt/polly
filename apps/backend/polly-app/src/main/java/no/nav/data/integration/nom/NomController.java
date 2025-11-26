@@ -34,6 +34,15 @@ public class NomController {
         return new RestResponsePage<>(response);
     }
 
+    @Operation(summary = "Get All Fylker")
+    @ApiResponse(description = "ok")
+    @GetMapping("/fylker")
+    public ResponseEntity<List<OrgEnhet>> getAllFylker() {
+        log.info("Get all fylker from nom");
+        List<OrgEnhet> response = nomGraphClient.getAllFylker();
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Get avdeling by nom id")
     @ApiResponse(description = "ok")
     @GetMapping("/avdeling/{id}")

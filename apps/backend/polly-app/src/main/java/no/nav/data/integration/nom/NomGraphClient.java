@@ -148,6 +148,39 @@ public class NomGraphClient {
         }
     }
 
+    public List<OrgEnhet> getAllFylker() {
+            if (securityProperties.isDev()) {
+                return List.of(
+                        createDevOrganisering("fylke_1", "fylke 1"),
+                        createDevOrganisering("fylke_2", "fylke 2"),
+                        createDevOrganisering("fylke_3", "fylke 3"),
+                        createDevOrganisering("fylke_4", "fylke 4"),
+                        createDevOrganisering("fylke_5", "fylke 5"),
+                        createDevOrganisering("fylke_6", "fylke 6"),
+                        createDevOrganisering("fylke_7", "fylke 7"),
+                        createDevOrganisering("fylke_8", "fylke 8"),
+                        createDevOrganisering("fylke_9", "fylke 9"),
+                        createDevOrganisering("fylke_10", "fylke 10"),
+                        createDevOrganisering("fylke_11", "fylke 11")
+                );
+            } else {
+                var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", "ry630r"));
+                var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
+
+                assert res.getBody() != null;
+                assert res.getBody().getData() != null;
+
+                var response = res.getBody().getData();
+
+                if (response.getOrgEnhet() == null) {
+                    return List.of();
+                }
+
+                return response.getOrgEnhet().getOrganiseringer().stream().map(Organisering::getOrgEnhet).toList();
+
+            }
+        }
+
 
     public OrgEnhet getById(String id) {
         var request = new GraphQLRequest(getByIdQuery, Map.of("id", id));
