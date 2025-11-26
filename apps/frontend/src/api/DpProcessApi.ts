@@ -90,6 +90,8 @@ export const dpProcessToFormValues = (dpProcess: Partial<IDpProcess>): IDpProces
       nomDepartmentId: affiliation?.nomDepartmentId || '',
       nomDepartmentName: affiliation?.nomDepartmentName || '',
       seksjoner: affiliation?.seksjoner || [],
+      fylker: affiliation?.fylker || [],
+      navKontorer: affiliation?.navKontorer || [],
       subDepartments: affiliation?.subDepartments.map((sd) => sd.code) || [],
       productTeams: affiliation?.productTeams || [],
       products: affiliation?.products.map((p) => p.code) || [],

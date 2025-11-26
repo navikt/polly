@@ -211,6 +211,24 @@ const affiliationSchema: () => yup.ObjectSchema<IAffiliationFormValues> = () =>
         })
       )
       .required(),
+    fylker: yup
+      .array()
+      .of(
+        yup.object({
+          nomId: yup.string().required(),
+          nomName: yup.string().required(),
+        })
+      )
+      .required(),
+    navKontorer: yup
+      .array()
+      .of(
+        yup.object({
+          nomId: yup.string().required(),
+          nomName: yup.string().required(),
+        })
+      )
+      .required(),
     subDepartments: yup.array().of(yup.string().required()).required(),
     productTeams: yup.array().of(yup.string().required()).required(),
     products: yup.array().of(yup.string().required()).required(),
@@ -371,6 +389,24 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
           yup.object({
             nomSeksjonId: yup.string().required(),
             nomSeksjonName: yup.string().required(),
+          })
+        )
+        .required(),
+      fylker: yup
+        .array()
+        .of(
+          yup.object({
+            nomId: yup.string().required(),
+            nomName: yup.string().required(),
+          })
+        )
+        .required(),
+      navKontorer: yup
+        .array()
+        .of(
+          yup.object({
+            nomId: yup.string().required(),
+            nomName: yup.string().required(),
           })
         )
         .required(),

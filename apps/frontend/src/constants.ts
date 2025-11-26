@@ -185,10 +185,17 @@ export interface IAffiliationFormValues {
   nomDepartmentId?: string
   nomDepartmentName?: string
   seksjoner: INomSeksjon[]
+  fylker: INomData[]
+  navKontorer: INomData[]
   subDepartments: string[]
   productTeams: string[]
   products: string[]
   disclosureDispatchers: string[]
+}
+
+export interface INomData {
+  nomId: string
+  nomName: string
 }
 
 export interface INomSeksjon {
@@ -201,6 +208,8 @@ export interface IAffiliation {
   nomDepartmentId?: string
   nomDepartmentName?: string
   seksjoner: INomSeksjon[]
+  fylker: INomData[]
+  navKontorer: INomData[]
   subDepartments: ICode[]
   productTeams: string[]
   products: ICode[]

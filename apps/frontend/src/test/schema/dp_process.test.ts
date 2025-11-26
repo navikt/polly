@@ -11,6 +11,8 @@ const createDp: () => IDpProcessFormValues = () => ({
     nomDepartmentId: '',
     nomDepartmentName: '',
     seksjoner: [],
+    fylker: [],
+    navKontorer: [],
     productTeams: [],
     products: [],
     subDepartments: [],
