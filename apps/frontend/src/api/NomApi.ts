@@ -21,6 +21,14 @@ export const getByNomId = async (id: string) => {
   return (await axios.get<IOrgEnhet>(`${env.pollyBaseUrl}/nom/${id}`)).data
 }
 
+export const getAllNomFylker = async () => {
+  return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/fylker`)).data
+}
+
+export const searchNavKontorByName = async (searchTerm: string) => {
+  return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/nav-kontor/${searchTerm}`)).data
+}
+
 export const getAvdelingOptions = async () => {
   const avdelinger = await getAllNomAvdelinger()
   if (avdelinger && avdelinger.length) {
