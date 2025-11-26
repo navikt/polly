@@ -57,7 +57,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                 )
               }}
             >
-              <option value="">Velg sekjson</option>
+              <option value="">Velg avdeling</option>
               {alleAvdelingOptions.map((department) => (
                 <option key={department.value} value={department.value}>
                   {department.label}
@@ -101,7 +101,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                       }
                     }}
                   >
-                    <option value="">Velg avdeling</option>
+                    <option value="">Velg sekjson</option>
                     {seksjonForAvdeling.map((seksjon) => (
                       <option key={seksjon.value} value={seksjon.value}>
                         {seksjon.label}
