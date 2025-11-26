@@ -2,7 +2,7 @@ import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getFylkerOptions } from '../../api/NomApi'
-import { IDpProcessFormValues, INomSeksjon, IProcessFormValues, TOption } from '../../constants'
+import { IDpProcessFormValues, INomData, IProcessFormValues, TOption } from '../../constants'
 import { EListName, ICodelistProps } from '../../service/Codelist'
 import { ModalLabel } from './ModalSchema'
 import { renderTagList } from './TagList'
@@ -86,15 +86,15 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
 
                         const ikkeFinnesAlleredeIListe =
                           FieldArrayRenderProps.form.values.affiliation.fylker.filter(
-                            (fylke: INomSeksjon) => fylke.nomSeksjonId === event.target.value
+                            (fylke: INomData) => fylke.nomId === event.target.value
                           ).length === 0
 
                         if (ikkeFinnesAlleredeIListe) {
                           FieldArrayRenderProps.form.setFieldValue('affiliation.fylker', [
                             ...FieldArrayRenderProps.form.values.affiliation.fylker,
                             {
-                              nomSeksjonId: selectedFylke.value,
-                              nomSeksjonName: selectedFylke.label,
+                              nomId: selectedFylke.value,
+                              nomName: selectedFylke.label,
                             },
                           ])
                         }
@@ -113,7 +113,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                   <div>
                     {renderTagList(
                       FieldArrayRenderProps.form.values.affiliation.fylker.map(
-                        (fylke: INomSeksjon) => fylke.nomSeksjonName
+                        (fylke: INomData) => fylke.nomName
                       ),
                       FieldArrayRenderProps
                     )}
