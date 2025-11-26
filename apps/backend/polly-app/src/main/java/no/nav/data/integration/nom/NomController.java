@@ -55,6 +55,15 @@ public class NomController {
         return ResponseEntity.ok(response.get());
     }
 
+    @Operation(summary = "Search nav kontor")
+    @ApiResponse(description = "ok")
+    @GetMapping("/nav-kontor/{searchTerm}")
+    public ResponseEntity<List<OrgEnhet>> searchNavKontor(@PathVariable String searchTerm) {
+        log.info("Search nav kontor by search term");
+        var response = nomGraphClient.searchNavkontorByTerm(searchTerm);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Get seksjon by avdeling id")
     @ApiResponse(description = "ok")
     @GetMapping("/seksjon/avdeling/{id}")
