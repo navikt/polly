@@ -1,5 +1,9 @@
 query searchOrgEnhetByTerm($searchTerm: String!) {
-    searchOrgEnhet(term: $searchTerm) {
+    searchOrgEnhet(term: $searchTerm
+        filter:  {
+            gyldigTomSelection: IKKE_PASSERT
+        }
+    ) {
         navn
         id
         orgEnhetsType

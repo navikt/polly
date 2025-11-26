@@ -7,7 +7,7 @@ scalar NonNegativeInt
 type Query {
     # nom queries
     orgEnhet(where: OrgEnhetSearch!): OrgEnhet
-    searchOrgEnhet(term: String!): [OrgEnhet!]!
+    searchOrgEnhet(term: String! filter: OrgEnhetSearchFilter): [OrgEnhet!]!
 }
 
 # nom types and inputs
@@ -17,6 +17,10 @@ input OrgEnhetSearch {
     orgNiv: String
     navn: String
     id: String
+}
+
+input OrgEnhetSearchFilter {
+    gyldigTomSelection: GyldigTomSelection
 }
 
 type Organisering {
@@ -30,6 +34,12 @@ type OrgEnhet {
     organiseringer (retning: Retning) : [Organisering!]!
     orgEnhetsType: OrgEnhetsType
     nomNivaa: NomNivaa
+}
+
+enum GyldigTomSelection {
+    IKKE_PASSERT
+    PASSERT
+    ALL
 }
 
 enum Retning {
