@@ -11,8 +11,10 @@ import no.nav.data.common.security.SecurityProperties;
 import no.nav.data.common.security.TokenProvider;
 import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.integration.nom.domain.OrgEnhet;
+import no.nav.data.integration.nom.domain.OrgEnhetsType;
 import no.nav.data.integration.nom.domain.Organisering;
 import no.nav.data.integration.nom.dto.OrgEnhetGraphqlResponse;
+import no.nav.data.integration.nom.dto.SearchOrgEnhetGraphqlResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
@@ -45,6 +47,7 @@ public class NomGraphClient {
 
     private static final String getUnderOrganiseringerQuery = readCpFile("nom/graphql/queries/get_all_under_organiseringer.graphql");
     private static final String getByIdQuery = readCpFile("nom/graphql/queries/get_by_id.graphql");
+    private static final String searchOrgenhetByTermQuary = readCpFile("nom/graphql/queries/search_orgenhet_by_term.graphql");
     private static final String scopeTemplate = "api://%s-gcp.nom.nom-api/.default";
 
     private final LoadingCache<String, Map<String, OrgEnhet>> allAvdelingCache = MetricUtils
@@ -148,6 +151,8 @@ public class NomGraphClient {
         }
     }
 
+
+
     public List<OrgEnhet> getAllFylker() {
             if (securityProperties.isDev()) {
                 return List.of(
@@ -181,6 +186,43 @@ public class NomGraphClient {
             }
         }
 
+
+    public List<OrgEnhet> searchNavkontorByTerm(String searchTerm) {
+        if (searchTerm.length() > 2) {
+            if (securityProperties.isDev()) {
+                return List.of(
+                        createDevOrganisering("kontor_1", "kontor 1"),
+                        createDevOrganisering("kontor_2", "kontor 2"),
+                        createDevOrganisering("kontor_3", "kontor 3"),
+                        createDevOrganisering("kontor_4", "kontor 4"),
+                        createDevOrganisering("kontor_5", "kontor 5"),
+                        createDevOrganisering("kontor_6", "kontor 6"),
+                        createDevOrganisering("kontor_7", "kontor 7"),
+                        createDevOrganisering("kontor_8", "kontor 8"),
+                        createDevOrganisering("kontor_9", "kontor 9"),
+                        createDevOrganisering("kontor_10", "kontor 10"),
+                        createDevOrganisering("kontor_11", "kontor 11")
+                );
+            } else {
+                var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("searchTerm", searchTerm));
+                var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, SearchOrgEnhetGraphqlResponse.class);
+
+                assert res.getBody() != null;
+                assert res.getBody().getData() != null;
+
+                var response = res.getBody().getData();
+
+                if (response.getSearchOrgEnhet() == null) {
+                    return List.of();
+                }
+
+                return response.getSearchOrgEnhet().stream().filter(orgEnhet -> orgEnhet.getOrgEnhetsType() == OrgEnhetsType.NAV_KONTOR).toList();
+
+            }
+        } else {
+           return List.of();
+        }
+    }
 
     public OrgEnhet getById(String id) {
         var request = new GraphQLRequest(getByIdQuery, Map.of("id", id));
