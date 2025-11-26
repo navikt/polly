@@ -204,7 +204,7 @@ public class NomGraphClient {
                         createDevOrganisering("kontor_11", "kontor 11")
                 );
             } else {
-                var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("searchTerm", searchTerm));
+                var request = new GraphQLRequest(searchOrgenhetByTermQuary, Map.of("searchTerm", searchTerm));
                 var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, SearchOrgEnhetGraphqlResponse.class);
 
                 assert res.getBody() != null;
