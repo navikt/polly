@@ -102,3 +102,18 @@ export const getAvdelingSearchItem = async (
     return []
   }
 }
+
+export const searchNavKontorOptions = async (searchParam: string) => {
+  if (searchParam && searchParam.length > 2) {
+    const navKontorer = await searchNavKontorByName(searchParam)
+    if (navKontorer && navKontorer.length) {
+      return navKontorer.map((navKontor) => {
+        return {
+          value: navKontor.id,
+          label: navKontor.navn,
+        }
+      })
+    }
+  }
+  return []
+}
