@@ -1,0 +1,8 @@
+query searchOrgEnhetByTerm($searchTerm: String!) {
+    searchOrgEnhet(term: $searchTerm) {
+        navn
+        id
+        orgEnhetsType
+        nomNivaa
+    }
+}
