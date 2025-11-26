@@ -59,6 +59,21 @@ export const getSeksjonOptions = async (avdelingId: string) => {
   return []
 }
 
+export const getFylkerOptions = async () => {
+  const fylker = await getAllNomFylker()
+  if (fylker && fylker.length) {
+    return fylker
+      .map((fylke) => {
+        return {
+          value: fylke.id,
+          label: fylke.navn,
+        }
+      })
+      .sort((a, b) => a.label.localeCompare(b.label))
+  }
+  return []
+}
+
 export const getAvdelingSearchItem = async (
   search: string,
   list: EListName,
