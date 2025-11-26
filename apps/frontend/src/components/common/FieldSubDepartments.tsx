@@ -1,9 +1,10 @@
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import { getFylkerOptions } from '../../api/NomApi'
+import { getFylkerOptions, searchNavKontorOptions } from '../../api/NomApi'
 import { IDpProcessFormValues, INomData, IProcessFormValues, TOption } from '../../constants'
 import { EListName, ICodelistProps } from '../../service/Codelist'
+import CustomSearchSelect from './AsyncSelectComponents'
 import { ModalLabel } from './ModalSchema'
 import { renderTagList } from './TagList'
 
@@ -68,7 +69,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
       />
 
       {formikBag.values.affiliation.subDepartments.includes('NAVFYLKE') && (
-        <div>
+        <div className="mt-3">
           <ModalLabel label="Fylke" tooltip="Angi fylke." />
 
           <FieldArray name="affiliation.fylker">
@@ -102,8 +103,8 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                     }}
                   >
                     <option value="">Velg Fylke</option>
-                    {alleFylker.map((fylke) => (
-                      <option key={fylke.value} value={fylke.value}>
+                    {alleFylker.map((fylke, index) => (
+                      <option key={`${fylke.value}_${index}`} value={fylke.value}>
                         {fylke.label}
                       </option>
                     ))}
@@ -116,6 +117,54 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                         (fylke: INomData) => fylke.nomName
                       ),
                       FieldArrayRenderProps
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </FieldArray>
+        </div>
+      )}
+
+      {formikBag.values.affiliation.subDepartments.includes('NAVKONTORSTAT') && (
+        <div className="mt-3">
+          <ModalLabel label="Kontor" tooltip="Angi Nav kontor." />
+
+          <FieldArray name="affiliation.navKontorer">
+            {(fieldArrayRenderProps: FieldArrayRenderProps) => (
+              <div className="w-full">
+                <div className="w-full">
+                  <CustomSearchSelect
+                    ariaLabel="Søk etter Nav kontor"
+                    placeholder="Søk etter Nav kontor"
+                    loadOptions={searchNavKontorOptions}
+                    onChange={async (event: any) => {
+                      if (event) {
+                        const ikkeFinnesAlleredeIListe =
+                          fieldArrayRenderProps.form.values.affiliation.navKontorer.filter(
+                            (navKontor: INomData) => navKontor.nomId === event.value
+                          ).length === 0
+
+                        if (ikkeFinnesAlleredeIListe) {
+                          fieldArrayRenderProps.form.setFieldValue('affiliation.navKontorer', [
+                            ...fieldArrayRenderProps.form.values.affiliation.navKontorer,
+                            {
+                              nomId: event.value,
+                              nomName: event.label,
+                            },
+                          ])
+                        }
+                      }
+                    }}
+                  />
+                </div>
+                <div>
+                  <div>
+                    {renderTagList(
+                      fieldArrayRenderProps.form.values.affiliation.navKontorer.map(
+                        (navKontor: INomData) => navKontor.nomName
+                      ),
+                      fieldArrayRenderProps
                     )}
                   </div>
                 </div>
