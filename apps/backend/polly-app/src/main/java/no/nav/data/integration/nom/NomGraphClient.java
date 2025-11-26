@@ -216,7 +216,7 @@ public class NomGraphClient {
                     return List.of();
                 }
 
-                return response.getSearchOrgEnhet().stream().filter(orgEnhet -> orgEnhet.getOrgEnhetsType() == OrgEnhetsType.NAV_KONTOR).toList();
+                return response.getSearchOrgEnhet();
 
             }
         } else {
