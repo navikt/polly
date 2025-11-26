@@ -58,13 +58,15 @@ const DpProcessPage = () => {
           )}
         </div>
       </div>
-      <DpProcessModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        initialValues={dpProcessToFormValues({})}
-        submit={handleCreateDpProcess}
-        errorOnCreate={errorDpProcessModal}
-      />
+      {showModal && (
+        <DpProcessModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          initialValues={dpProcessToFormValues({})}
+          submit={handleCreateDpProcess}
+          errorOnCreate={errorDpProcessModal}
+        />
+      )}
       {!isLoading ? <DpProcessTable dpProcesses={dpProcesses} /> : <Spinner $size={30} />}
     </>
   )

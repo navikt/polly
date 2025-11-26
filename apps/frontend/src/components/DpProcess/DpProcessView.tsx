@@ -311,13 +311,15 @@ const DpProcessView = () => {
               </span>
             </div>
           )}
-          <DpProcessModal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-            initialValues={dpProcessToFormValues(dpProcess ? dpProcess : {})}
-            submit={handleEditDpProcess}
-            errorOnCreate={errorDpProcessModal}
-          />
+          {showModal && (
+            <DpProcessModal
+              isOpen={showModal}
+              onClose={() => setShowModal(false)}
+              initialValues={dpProcessToFormValues(dpProcess ? dpProcess : {})}
+              submit={handleEditDpProcess}
+              errorOnCreate={errorDpProcessModal}
+            />
+          )}
           <DpProcessDeleteModal
             title="Bekreft sletting"
             isOpen={showDeleteModal}
