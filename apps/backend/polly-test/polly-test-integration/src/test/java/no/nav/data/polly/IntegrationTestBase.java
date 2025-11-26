@@ -422,6 +422,8 @@ public abstract class IntegrationTestBase {
                 .nomDepartmentId("DEP")
                 .nomDepartmentName(CodelistResponse.buildFrom(getCodelist(ListName.DEPARTMENT, "DEP")).getShortName())
                 .seksjoner(List.of())
+                .fylker(List.of())
+                .navKontorer(List.of())
                 .subDepartment(CodelistResponse.buildFrom(getCodelist(ListName.SUB_DEPARTMENT, "SUBDEP")))
                 .productTeam("teamid1")
                 .product(CodelistResponse.buildFrom(getCodelist(ListName.SYSTEM, "PESYS")))
