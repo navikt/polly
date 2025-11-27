@@ -10,6 +10,7 @@ import {
   IDisclosure,
   IDpia,
   ILegalBasis,
+  INomData,
   INomSeksjon,
   IProcess,
   IProcessor,
@@ -230,6 +231,44 @@ const ProcessData = (props: IProcessDataProps) => {
                 codelistUtils={codelistUtils}
               />
             </div>
+
+            {process.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVFYLKE')
+              .length !== 0 &&
+              process.affiliation.fylker.length !== 0 && (
+                <div className="flex gap-1">
+                  <span>Fylke: </span>
+                  <span>
+                    <div className="inline">
+                      {process.affiliation.fylker.map((fylke: INomData, index) => (
+                        <Fragment key={fylke.nomId}>
+                          <>{fylke.nomName}</>
+                          <span>{index < process.affiliation.fylker.length - 1 ? ', ' : ''}</span>
+                        </Fragment>
+                      ))}
+                    </div>
+                  </span>
+                </div>
+              )}
+
+            {process.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVKONTORSTAT')
+              .length !== 0 &&
+              process.affiliation.navKontorer.length !== 0 && (
+                <div className="flex gap-1">
+                  <span>Nav-kontor: </span>
+                  <span>
+                    <div className="inline">
+                      {process.affiliation.navKontorer.map((kontor: INomData, index) => (
+                        <Fragment key={kontor.nomId}>
+                          <>{kontor.nomName}</>
+                          <span>
+                            {index < process.affiliation.navKontorer.length - 1 ? ', ' : ''}
+                          </span>
+                        </Fragment>
+                      ))}
+                    </div>
+                  </span>
+                </div>
+              )}
           </div>
         )}
 
