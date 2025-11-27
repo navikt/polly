@@ -204,7 +204,7 @@ const ProcessData = (props: IProcessDataProps) => {
         )}
         {process.affiliation.seksjoner.length !== 0 && (
           <div>
-            <span>Sekjson: </span>
+            <span>Seksjon: </span>
             <span>
               <div className="inline">
                 {process.affiliation.seksjoner.map((seksjon: INomSeksjon, index) => (

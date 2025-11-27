@@ -79,7 +79,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
               <div className="w-full">
                 <div className="w-full">
                   <Select
-                    label="Velg sekjson"
+                    label="Velg seksjon"
                     hideLabel
                     onChange={async (event) => {
                       if (event.target.value) {
@@ -101,7 +101,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                       }
                     }}
                   >
-                    <option value="">Velg sekjson</option>
+                    <option value="">Velg seksjon</option>
                     {seksjonForAvdeling.map((seksjon) => (
                       <option key={seksjon.value} value={seksjon.value}>
                         {seksjon.label}
