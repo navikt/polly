@@ -101,7 +101,7 @@
     "@craco/craco": "7.1.0",
     "@types/jest": "30.0.0",
     "@types/lodash": "4.17.21",
-    "@types/node": "24.10.2",
+    "@types/node": "25.0.0",
     "@types/randomcolor": "0.5.9",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
