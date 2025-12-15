@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { Option } from 'baseui/select'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { IPageResponse, IProductArea, ITeam, ITeamResource } from '../constants'
+import { IPageResponse, IProductArea, ITeam, ITeamResource, TOption } from '../constants'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
@@ -61,19 +60,19 @@ export const getResourcesByIds = async (ids: string[]) => {
 }
 
 export const mapTeamResourceToOption = (teamResource: ITeamResource) => ({
-  id: teamResource.navIdent,
+  value: teamResource.navIdent,
   label: teamResource.fullName,
 })
 
-export const mapTeamToOption = (team: ITeam, idx?: number) => ({
-  id: team.id,
+export const mapTeamToOption = (team: ITeam, index?: number) => ({
+  value: team.id,
   label: team.name,
-  idx,
+  index,
 })
 
 export const useTeamSearch = () => {
   const [teamSearch, setTeamSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
+  const [searchResult, setInfoTypeSearchResult] = useState<TOption[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -81,7 +80,7 @@ export const useTeamSearch = () => {
       if (teamSearch && teamSearch.length > 2) {
         setLoading(true)
         const res = await searchTeam(teamSearch)
-        const options: Option[] = res.content.map(mapTeamToOption)
+        const options: TOption[] = res.content.map(mapTeamToOption)
         setInfoTypeSearchResult(options)
         setLoading(false)
       }
@@ -90,7 +89,7 @@ export const useTeamSearch = () => {
   }, [teamSearch])
 
   return [searchResult, setTeamSearch, loading] as [
-    Option[],
+    TOption[],
     Dispatch<SetStateAction<string>>,
     boolean,
   ]
@@ -124,7 +123,7 @@ export const useTeamResourceSearchOptions = async (searchParam: string) => {
 
 export const useTeamResourceSearch = () => {
   const [teamResourceSearch, setTeamResourceSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
+  const [searchResult, setInfoTypeSearchResult] = useState<TOption[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -132,7 +131,7 @@ export const useTeamResourceSearch = () => {
       if (teamResourceSearch && teamResourceSearch.length > 2) {
         setLoading(true)
         const res = await searchResourceByName(teamResourceSearch)
-        const options: Option[] = res.content.map(mapTeamResourceToOption)
+        const options: TOption[] = res.content.map(mapTeamResourceToOption)
         setInfoTypeSearchResult(options)
         setLoading(false)
       }
@@ -141,7 +140,7 @@ export const useTeamResourceSearch = () => {
   }, [teamResourceSearch])
 
   return [searchResult, setTeamResourceSearch, loading] as [
-    Option[],
+    TOption[],
     Dispatch<SetStateAction<string>>,
     boolean,
   ]

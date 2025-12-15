@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Option } from 'baseui/select'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IPageResponse, IProcessor, IProcessorFormValues } from '../constants'
 import { useDebouncedState } from '../util'
@@ -84,7 +83,7 @@ export const convertProcessorToFormValues = (
 
 export const convertProcessorToOption = (processor: IProcessor) => {
   return {
-    id: processor.id,
+    value: processor.id,
     label: processor.name,
   }
 }
@@ -107,16 +106,14 @@ export const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
 
 export const useProcessorSearch = () => {
   const [processorSearch, setProcessorSearch] = useDebouncedState<string>('', 200)
-  const [processorSearchResult, setProcessorSearchResult] = useState<Option[]>([])
+  const [processorSearchResult, setProcessorSearchResult] = useState<IProcessor[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     ;(async () => {
       if (processorSearch && processorSearch.length > 2) {
         setLoading(true)
-        setProcessorSearchResult(
-          (await searchProcessor(processorSearch)).content.map(convertProcessorToOption)
-        )
+        setProcessorSearchResult((await searchProcessor(processorSearch)).content)
         setLoading(false)
       } else {
         setProcessorSearchResult([])

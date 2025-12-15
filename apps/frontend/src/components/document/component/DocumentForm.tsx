@@ -1,8 +1,6 @@
-import { TextField, Textarea } from '@navikt/ds-react'
-import { BlockProps } from 'baseui/block'
+import { Label, Select, TextField, Textarea } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
 import { Notification } from 'baseui/notification'
-import { OnChangeParams, Option, Select, Value } from 'baseui/select'
 import { LabelMedium } from 'baseui/typography'
 import {
   Field,
@@ -26,10 +24,6 @@ import { Error, ModalLabel } from '../../common/ModalSchema'
 import { createDocumentSchema } from '../../common/schemaValidation'
 import InformationTypesTable from './InformationTypesTable'
 
-const labelProps: BlockProps = {
-  marginBottom: '1rem',
-}
-
 type TDocumentFormProps = {
   initialValues: IDocumentFormValues
   handleSubmit: (values: IDocumentFormValues) => Promise<void>
@@ -39,23 +33,8 @@ const DocumentForm = (props: TDocumentFormProps) => {
   const { initialValues, handleSubmit } = props
   const [codelistUtils] = CodelistService()
 
-  const initialValueDataAccessClass = () => {
-    if (!initialValues.dataAccessClass || !codelistUtils.isLoaded()) return []
-
-    return [
-      {
-        id: initialValues.dataAccessClass,
-        label: codelistUtils.getShortname(
-          EListName.DATA_ACCESS_CLASS,
-          initialValues.dataAccessClass
-        ),
-      },
-    ]
-  }
-
   const [isLoading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState()
-  const [dataAccessClass, setDataAccessClass] = useState<Option>(initialValueDataAccessClass())
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
 
   const hasAccess = (): boolean => user.canWrite()
   useAwait(user.wait(), setLoading)
@@ -91,9 +70,9 @@ const DocumentForm = (props: TDocumentFormProps) => {
     >
       {(formikProps: FormikProps<IDocumentFormValues>) => (
         <Form onKeyDown={disableEnter}>
-          <div className="w-[50%] mb-8">
+          <div className="w-[50%] mb-8 mt-3">
             <div>
-              <LabelMedium {...labelProps}>Navn</LabelMedium>
+              <Label>Navn </Label>
               <Field name="name">
                 {(props: FieldProps) => (
                   <TextField className="w-full" label="" hideLabel {...props.field} />
@@ -102,8 +81,8 @@ const DocumentForm = (props: TDocumentFormProps) => {
               <Error fieldName="name" fullWidth={true} />
             </div>
           </div>
-          <div className="w-[50%] mb-8">
-            <LabelMedium {...labelProps}>Beskrivelse</LabelMedium>
+          <div className="w-[50%]">
+            <Label className="mb-10">Beskrivelse</Label>
             <Field name="description">
               {(props: FieldProps) => (
                 <Textarea className="w-full" label="" hideLabel {...props.field} />
@@ -117,7 +96,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
               name="dataAccessClass"
               render={({ form }: FieldProps<IDocumentFormValues>) => (
                 <div>
-                  <div className="mb-4">
+                  <div className="my-4">
                     <ModalLabel
                       label="Datatilgangsklasse"
                       description={
@@ -136,20 +115,21 @@ const DocumentForm = (props: TDocumentFormProps) => {
                       }
                     />
                   </div>
-
                   <Select
-                    options={codelistUtils.getParsedOptions(EListName.DATA_ACCESS_CLASS)}
-                    value={dataAccessClass as Value}
-                    placeholder={
-                      formikProps.values.dataAccessClass ? '' : 'Velg datatilgangsklasse'
-                    }
-                    onChange={(params: OnChangeParams) => {
-                      const dac = params.value.length ? params.value[0] : undefined
-                      setDataAccessClass(dac as Option)
-                      form.setFieldValue('dataAccessClass', dac ? dac.id : undefined)
+                    label="Datatilgangsklasse"
+                    value={formikProps.values.dataAccessClass ?? ''}
+                    onChange={(e) => {
+                      form.setFieldValue('dataAccessClass', e.target.value || undefined)
                     }}
                     error={!!form.errors.dataAccessClass && !!form.submitCount}
-                  />
+                  >
+                    <option value="">Velg datatilgangsklasse</option>
+                    {codelistUtils.getCodes(EListName.DATA_ACCESS_CLASS).map((option) => (
+                      <option key={option.code} value={option.code}>
+                        {option.shortName || option.code}
+                      </option>
+                    ))}
+                  </Select>
                 </div>
               )}
             />
