@@ -1,7 +1,7 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Spinner } from 'baseui/spinner'
 import { HeadingMedium } from 'baseui/typography'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   deleteDpProcess,
@@ -11,8 +11,13 @@ import {
 } from '../../api/DpProcessApi'
 import { getResourceById } from '../../api/GetAllApi'
 import { getProcessorsByIds } from '../../api/ProcessorApi'
-import { IDpProcess, IDpProcessFormValues, IProcessor } from '../../constants'
-import { ampli } from '../../service/Amplitude'
+import {
+  IDpProcess,
+  IDpProcessFormValues,
+  INomData,
+  INomSeksjon,
+  IProcessor,
+} from '../../constants'
 import { CodelistService, EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -41,13 +46,6 @@ const DpProcessView = () => {
   const [showModal, setShowModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [processors, setProcessors] = useState<IProcessor[]>([])
-
-  ampli.logEvent('besøk', {
-    side: 'NAV som databehandler',
-    url: 'dpprocess/:id',
-    app: 'Behandlingskatalogen',
-    type: 'view',
-  })
 
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
@@ -208,6 +206,25 @@ const DpProcessView = () => {
             ) : (
               <span>Avdeling: Ikke utfylt</span>
             )}
+
+            {dpProcess && dpProcess.affiliation.seksjoner.length !== 0 && (
+              <div>
+                <span>Seksjon: </span>
+                <span>
+                  <div className="inline">
+                    {dpProcess.affiliation.seksjoner.map((seksjon: INomSeksjon, index) => (
+                      <Fragment key={seksjon.nomSeksjonId}>
+                        <>{seksjon.nomSeksjonName}</>
+                        <span>
+                          {index < dpProcess.affiliation.seksjoner.length - 1 ? ', ' : ''}
+                        </span>
+                      </Fragment>
+                    ))}
+                  </div>
+                </span>
+              </div>
+            )}
+
             {!!dpProcess?.affiliation.subDepartments.length && (
               <div>
                 <div className="flex">
@@ -219,6 +236,47 @@ const DpProcessView = () => {
                     codelistUtils={codelistUtils}
                   />
                 </div>
+
+                {dpProcess.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVFYLKE')
+                  .length !== 0 &&
+                  dpProcess.affiliation.fylker.length !== 0 && (
+                    <div className="flex gap-1">
+                      <span>Fylke: </span>
+                      <span>
+                        <div className="inline">
+                          {dpProcess.affiliation.fylker.map((fylke: INomData, index) => (
+                            <Fragment key={fylke.nomId}>
+                              <>{fylke.nomName}</>
+                              <span>
+                                {index < dpProcess.affiliation.fylker.length - 1 ? ', ' : ''}
+                              </span>
+                            </Fragment>
+                          ))}
+                        </div>
+                      </span>
+                    </div>
+                  )}
+
+                {dpProcess.affiliation.subDepartments.filter(
+                  (subdep) => subdep.code === 'NAVKONTORSTAT'
+                ).length !== 0 &&
+                  dpProcess.affiliation.navKontorer.length !== 0 && (
+                    <div className="flex gap-1">
+                      <span>Nav-kontor: </span>
+                      <span>
+                        <div className="inline">
+                          {dpProcess.affiliation.navKontorer.map((kontor: INomData, index) => (
+                            <Fragment key={kontor.nomId}>
+                              <>{kontor.nomName}</>
+                              <span>
+                                {index < dpProcess.affiliation.navKontorer.length - 1 ? ', ' : ''}
+                              </span>
+                            </Fragment>
+                          ))}
+                        </div>
+                      </span>
+                    </div>
+                  )}
               </div>
             )}
 
@@ -300,13 +358,15 @@ const DpProcessView = () => {
               </span>
             </div>
           )}
-          <DpProcessModal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-            initialValues={dpProcessToFormValues(dpProcess ? dpProcess : {})}
-            submit={handleEditDpProcess}
-            errorOnCreate={errorDpProcessModal}
-          />
+          {showModal && (
+            <DpProcessModal
+              isOpen={showModal}
+              onClose={() => setShowModal(false)}
+              initialValues={dpProcessToFormValues(dpProcess ? dpProcess : {})}
+              submit={handleEditDpProcess}
+              errorOnCreate={errorDpProcessModal}
+            />
+          )}
           <DpProcessDeleteModal
             title="Bekreft sletting"
             isOpen={showDeleteModal}

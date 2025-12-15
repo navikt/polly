@@ -6,8 +6,7 @@ import { useLocation, useNavigate } from 'react-router'
 import { getProcessesFor } from '../api/GetAllApi'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { IPageResponse, IProcess } from '../constants'
-import { ampli } from '../service/Amplitude'
-import { CodelistService, EListName, ICode } from '../service/Codelist'
+import { CodelistService, EListName } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
 
 export const LegalPage = () => {
@@ -18,12 +17,6 @@ export const LegalPage = () => {
   const location = useLocation()
 
   const [codelistUtils] = CodelistService()
-
-  ampli.logEvent('besøk', {
-    side: 'Legal Page',
-    url: '/process/legal',
-    app: 'Behandlingskatalogen',
-  })
 
   useEffect(() => {
     if (!gdprArticle && !nationalLaw) {

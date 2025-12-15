@@ -19,6 +19,9 @@ public class Affiliation {
     private String department;
     private String nomDepartmentId;
     private String nomDepartmentName;
+    private List<nomSeksjon> seksjoner;
+    private List<NomData> fylker;
+    private List<NomData> navKontorer;
     private List<String> subDepartments;
     private List<String> productTeams;
     private List<String> products;

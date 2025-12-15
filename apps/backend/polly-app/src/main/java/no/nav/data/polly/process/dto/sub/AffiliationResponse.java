@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.NomData;
+import no.nav.data.polly.process.domain.sub.nomSeksjon;
 
 import java.util.List;
 
@@ -23,6 +25,9 @@ public class AffiliationResponse {
     private CodelistResponse department;
     private String nomDepartmentId;
     private String nomDepartmentName;
+    private List<nomSeksjon> seksjoner;
+    private List<NomData> fylker;
+    private List<NomData> navKontorer;
     @Singular
     private List<CodelistResponse> subDepartments;
     @Singular
@@ -37,6 +42,9 @@ public class AffiliationResponse {
                 .department(aff.getDepartmentCodeResponse())
                 .nomDepartmentId(aff.getNomDepartmentId())
                 .nomDepartmentName(aff.getNomDepartmentName())
+                .seksjoner(nullToEmptyList(aff.getSeksjoner()))
+                .fylker(nullToEmptyList(aff.getFylker()))
+                .navKontorer(nullToEmptyList(aff.getNavKontorer()))
                 .subDepartments(aff.getSubDepartmentCodeResponses())
                 .productTeams(nullToEmptyList(aff.getProductTeams()))
                 .products(aff.getProductCodeResponses())

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { getAuditLog } from '../../../api/AuditApi'
 import { IAuditLog } from '../../../constants'
-import { ampli } from '../../../service/Amplitude'
 import { useDebouncedState } from '../../../util'
 import { AuditLabel } from './AuditComponents'
 import { AuditRecentTable } from './AuditRecentTable'
@@ -24,13 +23,6 @@ export const AuditPage = () => {
   const [error, setError] = useState()
   const [auditLog, setAuditLog] = useState<IAuditLog>()
   const [idSearch, setIdInput, idInput] = useDebouncedState(params.id || '', 400)
-
-  ampli.logEvent('besøk', {
-    side: 'Admin',
-    url: '/admin/audit/:id/',
-    app: 'Behandlingskatalogen',
-    type: 'Versjonering',
-  })
 
   const lookupVersion = (id?: string): void => {
     ;(async () => {

@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router'
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import { IInformationType, IInformationtypeFormValues } from '../constants'
-import { ampli } from '../service/Amplitude'
 
 const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = useState(true)
@@ -14,13 +13,6 @@ const InformationtypeEditPage = () => {
   const [informationtype, setInformationType] = useState<IInformationType>()
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
-
-  ampli.logEvent('besøk', {
-    side: 'Opplysningstyper',
-    url: '/informationtype/id:/edit',
-    app: 'Behandlingskatalogen',
-    type: 'Rediger opplysningstype',
-  })
 
   const handleAxiosError = (error: any) => {
     if (error.response) {

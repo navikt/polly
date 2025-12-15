@@ -8,12 +8,25 @@ export const getAllNomAvdelinger = async () => {
     .content
 }
 
+export const getSeksjonerForNomAvdeling = async (avdelingId: string) => {
+  return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/seksjon/avdeling/${avdelingId}`))
+    .data
+}
+
 export const getAvdelingByNomId = async (id: string) => {
   return (await axios.get<IOrgEnhet>(`${env.pollyBaseUrl}/nom/avdeling/${id}`)).data
 }
 
 export const getByNomId = async (id: string) => {
   return (await axios.get<IOrgEnhet>(`${env.pollyBaseUrl}/nom/${id}`)).data
+}
+
+export const getAllNomFylker = async () => {
+  return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/fylker`)).data
+}
+
+export const searchNavKontorByName = async (searchTerm: string) => {
+  return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/nav-kontor/${searchTerm}`)).data
 }
 
 export const getAvdelingOptions = async () => {
@@ -24,6 +37,36 @@ export const getAvdelingOptions = async () => {
         return {
           value: avdeling.id,
           label: avdeling.navn,
+        }
+      })
+      .sort((a, b) => a.label.localeCompare(b.label))
+  }
+  return []
+}
+
+export const getSeksjonOptions = async (avdelingId: string) => {
+  const seksjoner = await getSeksjonerForNomAvdeling(avdelingId)
+  if (seksjoner && seksjoner.length) {
+    return seksjoner
+      .map((seksjon) => {
+        return {
+          value: seksjon.id,
+          label: seksjon.navn,
+        }
+      })
+      .sort((a, b) => a.label.localeCompare(b.label))
+  }
+  return []
+}
+
+export const getFylkerOptions = async () => {
+  const fylker = await getAllNomFylker()
+  if (fylker && fylker.length) {
+    return fylker
+      .map((fylke) => {
+        return {
+          value: fylke.id,
+          label: fylke.navn,
         }
       })
       .sort((a, b) => a.label.localeCompare(b.label))
@@ -58,4 +101,19 @@ export const getAvdelingSearchItem = async (
   } else {
     return []
   }
+}
+
+export const searchNavKontorOptions = async (searchParam: string) => {
+  if (searchParam && searchParam.length > 2) {
+    const navKontorer = await searchNavKontorByName(searchParam)
+    if (navKontorer && navKontorer.length) {
+      return navKontorer.map((navKontor) => {
+        return {
+          value: navKontor.id,
+          label: navKontor.navn,
+        }
+      })
+    }
+  }
+  return []
 }

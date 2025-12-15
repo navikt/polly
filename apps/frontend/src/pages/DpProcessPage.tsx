@@ -9,7 +9,6 @@ import DpProcessModal from '../components/DpProcess/DpProcessModal'
 import DpProcessTable from '../components/DpProcess/DpProcessTable'
 import Button from '../components/common/Button/CustomButton'
 import { IDpProcess, IDpProcessFormValues } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { user } from '../service/User'
 
 const DpProcessPage = () => {
@@ -18,12 +17,6 @@ const DpProcessPage = () => {
   const [dpProcesses, setDpProcesses] = useState<IDpProcess[]>([])
   const [isLoading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
-
-  ampli.logEvent('besøk', {
-    side: 'NAV som databehandler',
-    url: '/dpprocess',
-    app: 'Behandlingskatalogen',
-  })
 
   useEffect(() => {
     ;(async () => {
@@ -65,13 +58,15 @@ const DpProcessPage = () => {
           )}
         </div>
       </div>
-      <DpProcessModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        initialValues={dpProcessToFormValues({})}
-        submit={handleCreateDpProcess}
-        errorOnCreate={errorDpProcessModal}
-      />
+      {showModal && (
+        <DpProcessModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          initialValues={dpProcessToFormValues({})}
+          submit={handleCreateDpProcess}
+          errorOnCreate={errorDpProcessModal}
+        />
+      )}
       {!isLoading ? <DpProcessTable dpProcesses={dpProcesses} /> : <Spinner $size={30} />}
     </>
   )

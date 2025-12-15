@@ -7,7 +7,6 @@ import Departments from '../components/Dashboard/Departments'
 import { FilterDashboardStatus } from '../components/Dashboard/FilterDashboardStatus'
 import { Spinner } from '../components/common/Spinner'
 import { EProcessStatusFilter, IDashboardData } from '../constants'
-import { ampli } from '../service/Amplitude'
 import { theme } from '../util'
 
 export const DashboardPage = () => {
@@ -16,10 +15,6 @@ export const DashboardPage = () => {
   const [dashboardStatus, setDashboardStatus] = useState<EProcessStatusFilter>(
     processStatus ? (processStatus as EProcessStatusFilter) : EProcessStatusFilter.All
   )
-
-  useEffect(() => {
-    ampli.logEvent('besøk', { side: 'Dashboard', url: '/dashboard/', app: 'Behandlingskatalogen' })
-  }, [])
 
   useEffect(() => {
     ;(async () => {

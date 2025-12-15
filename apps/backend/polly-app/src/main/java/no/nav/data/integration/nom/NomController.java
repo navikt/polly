@@ -34,6 +34,15 @@ public class NomController {
         return new RestResponsePage<>(response);
     }
 
+    @Operation(summary = "Get All Fylker")
+    @ApiResponse(description = "ok")
+    @GetMapping("/fylker")
+    public ResponseEntity<List<OrgEnhet>> getAllFylker() {
+        log.info("Get all fylker from nom");
+        List<OrgEnhet> response = nomGraphClient.getAllFylker();
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Get avdeling by nom id")
     @ApiResponse(description = "ok")
     @GetMapping("/avdeling/{id}")
@@ -44,6 +53,24 @@ public class NomController {
             throw new NotFoundException("Couldn't find avdeling " + id);
         }
         return ResponseEntity.ok(response.get());
+    }
+
+    @Operation(summary = "Search nav kontor")
+    @ApiResponse(description = "ok")
+    @GetMapping("/nav-kontor/{searchTerm}")
+    public ResponseEntity<List<OrgEnhet>> searchNavKontor(@PathVariable String searchTerm) {
+        log.info("Search nav kontor by search term");
+        var response = nomGraphClient.searchNavkontorByTerm(searchTerm);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Get seksjon by avdeling id")
+    @ApiResponse(description = "ok")
+    @GetMapping("/seksjon/avdeling/{id}")
+    public ResponseEntity<List<OrgEnhet>> getSeksjonByAvdelingId(@PathVariable String id) {
+        log.info("Get seksjoner by avdeling id");
+        var response = nomGraphClient.getAllSeksjonForAvdeling(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get by id")
