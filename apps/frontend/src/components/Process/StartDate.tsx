@@ -33,6 +33,7 @@ export const StartDate = () => {
             return (
               <DatePicker
                 {...datepickerProps}
+                dropdownCaption
                 toDate={startMax}
                 onSelect={(date: any) => {
                   const dateSingle: Date = Array.isArray(date) ? date[0] : date

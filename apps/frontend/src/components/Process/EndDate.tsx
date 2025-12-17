@@ -30,10 +30,23 @@ export const EndDate = () => {
             const endMin = startDate ? new Date(startDate) : undefined
             if (endMin) endMin.setDate(endMin.getDate() + 1)
 
+            const today = new Date()
+            const globalToDate = new Date(
+              today.getFullYear() + 99,
+              today.getMonth(),
+              today.getDate()
+            )
+            let finalToDate = globalToDate
+            if (endMin && finalToDate.getTime() < endMin.getTime()) {
+              finalToDate = endMin
+            }
+
             return (
               <DatePicker
                 {...datepickerProps}
+                dropdownCaption
                 fromDate={endMin}
+                toDate={finalToDate}
                 onSelect={(date: any) => {
                   const dateSingle: Date = Array.isArray(date) ? date[0] : date
                   if (dateSingle) {
