@@ -56,6 +56,15 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
     return new Date(y, m - 1, d)
   }
 
+  const minDate = (a?: Date, b?: Date) => {
+    if (!a) return b
+    if (!b) return a
+    return a.getTime() <= b.getTime() ? a : b
+  }
+
+  const today = new Date()
+  const globalToDate = new Date(today.getFullYear() + 99, today.getMonth(), today.getDate())
+
   return (
     <>
       {!showDates && (
@@ -95,11 +104,14 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                       const endDate = parseLocalYMD(endVal)
                       const startMax = endDate ? new Date(endDate) : undefined
                       if (startMax) startMax.setDate(startMax.getDate() - 1)
+                      const finalToDate = minDate(startMax, globalToDate)
 
                       return (
                         <DatePicker
                           {...startDatepickerProps}
-                          toDate={startMax}
+                          dropdownCaption
+                          fromDate={undefined}
+                          toDate={finalToDate}
                           onSelect={(date: any) => {
                             const dateSingle: Date = Array.isArray(date) ? date[0] : date
                             if (dateSingle) {
@@ -142,11 +154,14 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                       const startDate = parseLocalYMD(startVal)
                       const endMin = startDate ? new Date(startDate) : undefined
                       if (endMin) endMin.setDate(endMin.getDate() + 1)
+                      const finalFromDate = endMin
 
                       return (
                         <DatePicker
                           {...endDatepickerProps}
-                          fromDate={endMin}
+                          dropdownCaption
+                          fromDate={finalFromDate}
+                          toDate={globalToDate}
                           onSelect={(date: any) => {
                             const dateSingle: Date = Array.isArray(date) ? date[0] : date
                             if (dateSingle) {
