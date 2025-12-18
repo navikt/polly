@@ -28,8 +28,8 @@ interface IUserProps {
   isLoaded: () => boolean
 }
 
-const UserService = async (): Promise<IUserProps> => {
-  let loaded: boolean
+const UserService = (): IUserProps => {
+  let loaded: boolean = false
   let userInfo: IUserInfo = { loggedIn: false, groups: [] }
   let error: string
 
@@ -138,6 +138,4 @@ const UserService = async (): Promise<IUserProps> => {
   }
 }
 
-export const user: IUserProps = await UserService().then((response: IUserProps) => {
-  return response
-})
+export const user: IUserProps = UserService()
