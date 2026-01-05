@@ -38,7 +38,32 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
 export const FieldDpProcessDates = (props: IDateModalProps) => {
   const { showLabels } = props
   const [showDates, setShowDates] = useState<boolean>(props.showDates)
-  const { datepickerProps, inputProps } = useDatepicker({})
+  const { datepickerProps: startDatepickerProps, inputProps: startInputProps } = useDatepicker({})
+
+  const { datepickerProps: endDatepickerProps, inputProps: endInputProps } = useDatepicker({})
+
+  const formatYMD = (d: Date) => {
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
+  }
+
+  const parseLocalYMD = (s?: string) => {
+    if (!s) return undefined
+    const [y, m, d] = s.split('-').map(Number)
+    if (!y || !m || !d) return undefined
+    return new Date(y, m - 1, d)
+  }
+
+  const minDate = (a?: Date, b?: Date) => {
+    if (!a) return b
+    if (!b) return a
+    return a.getTime() <= b.getTime() ? a : b
+  }
+
+  const today = new Date()
+  const globalToDate = new Date(today.getFullYear() + 99, today.getMonth(), today.getDate())
 
   return (
     <>
@@ -74,27 +99,49 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
               <div className="w-[50%] mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="start">
-                    {({ form }: FieldProps<string, IDpProcessFormValues>) => (
-                      <DatePicker
-                        {...datepickerProps}
-                        onSelect={(date: any) => {
-                          const dateSingle: Date = Array.isArray(date) ? date[0] : date
-                          if (dateSingle) {
-                            const newDate = dateSingle.setDate(dateSingle.getDate() + 1)
-                            const formatedDate = new Date(newDate)
-                            form.setFieldValue('start', formatedDate.toISOString().split('T')[0])
-                          } else form.setFieldValue('start', undefined)
-                        }}
-                      >
-                        <DatePicker.Input
-                          className="mb-2"
-                          {...inputProps}
-                          value={form.values['start']}
-                          label="Velg fra og med dato"
-                          error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
-                        />
-                      </DatePicker>
-                    )}
+                    {({ form }: FieldProps<string, IDpProcessFormValues>) => {
+                      const endVal = form.values['end']
+                      const endDate = parseLocalYMD(endVal)
+                      const startMax = endDate ? new Date(endDate) : undefined
+                      if (startMax) startMax.setDate(startMax.getDate() - 1)
+                      const finalToDate = minDate(startMax, globalToDate)
+
+                      return (
+                        <DatePicker
+                          {...startDatepickerProps}
+                          dropdownCaption
+                          fromDate={undefined}
+                          toDate={finalToDate}
+                          onSelect={(date: any) => {
+                            const dateSingle: Date = Array.isArray(date) ? date[0] : date
+                            if (dateSingle) {
+                              const startStr = formatYMD(dateSingle)
+                              form.setFieldValue('start', startStr)
+
+                              const endStr = form.values['end']
+                              if (endStr && startStr >= endStr) {
+                                form.setFieldError('start', 'Fom-dato må være før tom-dato')
+                              } else {
+                                form.setFieldError('start', undefined)
+                              }
+                            } else {
+                              form.setFieldValue('start', undefined)
+                              form.setFieldError('start', undefined)
+                            }
+                          }}
+                        >
+                          <DatePicker.Input
+                            className="mb-2"
+                            {...startInputProps}
+                            value={form.values['start']}
+                            label="Velg fra og med dato"
+                            error={
+                              !!form.errors.start && (form.touched.start || !!form.submitCount)
+                            }
+                          />
+                        </DatePicker>
+                      )
+                    }}
                   </Field>
                 </div>
                 <Error fieldName="start" />
@@ -102,27 +149,47 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
               <div className="w-[50%]">
                 <div className="flex w-full mt-4">
                   <Field name="end">
-                    {({ form }: FieldProps<string, IDpProcessFormValues>) => (
-                      <DatePicker
-                        {...datepickerProps}
-                        onSelect={(date: any) => {
-                          const dateSingle: Date = Array.isArray(date) ? date[0] : date
-                          if (dateSingle) {
-                            const newDate = dateSingle.setDate(dateSingle.getDate() + 1)
-                            const formatedDate = new Date(newDate)
-                            form.setFieldValue('end', formatedDate.toISOString().split('T')[0])
-                          } else form.setFieldValue('end', undefined)
-                        }}
-                      >
-                        <DatePicker.Input
-                          className="mb-2"
-                          {...inputProps}
-                          value={form.values['end']}
-                          label="Velg til og med dato"
-                          error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
-                        />
-                      </DatePicker>
-                    )}
+                    {({ form }: FieldProps<string, IDpProcessFormValues>) => {
+                      const startVal = form.values['start']
+                      const startDate = parseLocalYMD(startVal)
+                      const endMin = startDate ? new Date(startDate) : undefined
+                      if (endMin) endMin.setDate(endMin.getDate() + 1)
+                      const finalFromDate = endMin
+
+                      return (
+                        <DatePicker
+                          {...endDatepickerProps}
+                          dropdownCaption
+                          fromDate={finalFromDate}
+                          toDate={globalToDate}
+                          onSelect={(date: any) => {
+                            const dateSingle: Date = Array.isArray(date) ? date[0] : date
+                            if (dateSingle) {
+                              const endStr = formatYMD(dateSingle)
+                              form.setFieldValue('end', endStr)
+
+                              const startStr = form.values['start']
+                              if (startStr && endStr <= startStr) {
+                                form.setFieldError('end', 'Tom-dato må være etter fom-dato')
+                              } else {
+                                form.setFieldError('end', undefined)
+                              }
+                            } else {
+                              form.setFieldValue('end', undefined)
+                              form.setFieldError('end', undefined)
+                            }
+                          }}
+                        >
+                          <DatePicker.Input
+                            className="mb-2"
+                            {...endInputProps}
+                            value={form.values['end']}
+                            label="Velg til og med dato"
+                            error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
+                          />
+                        </DatePicker>
+                      )
+                    }}
                   </Field>
                 </div>
                 <Error fieldName={'end'} />

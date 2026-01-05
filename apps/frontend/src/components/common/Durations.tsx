@@ -1,7 +1,7 @@
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Tooltip } from '@navikt/ds-react'
-import moment, { Moment } from 'moment/min/moment-with-locales'
+import moment, { Moment } from 'moment'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 

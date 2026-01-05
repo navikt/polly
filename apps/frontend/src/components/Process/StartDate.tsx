@@ -6,30 +6,62 @@ import { Error } from '../common/ModalSchema'
 export const StartDate = () => {
   const { datepickerProps } = useDatepicker()
 
+  const formatYMD = (d: Date) => {
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
+  }
+
+  const parseLocalYMD = (s?: string) => {
+    if (!s) return undefined
+    const [y, m, d] = s.split('-').map(Number)
+    if (!y || !m || !d) return undefined
+    return new Date(y, m - 1, d)
+  }
+
   return (
     <div className="w-1/2 mr-4">
       <div className="flex w-full mt-4">
         <Field name="start">
-          {({ form }: FieldProps<string, IProcessFormValues>) => (
-            <DatePicker
-              {...datepickerProps}
-              onSelect={(date: any) => {
-                const dateSingle: Date = Array.isArray(date) ? date[0] : date
-                if (dateSingle) {
-                  const newDate = dateSingle.setDate(dateSingle.getDate() + 1)
-                  const formatedDate = new Date(newDate)
-                  form.setFieldValue('start', formatedDate.toISOString().split('T')[0])
-                } else form.setFieldValue('start', undefined)
-              }}
-            >
-              <DatePicker.Input
-                className="mb-2"
-                value={form.values['start']}
-                label="Velg fra og med dato"
-                error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
-              />
-            </DatePicker>
-          )}
+          {({ form }: FieldProps<string, IProcessFormValues>) => {
+            const endVal = form.values['end']
+            const endDate = parseLocalYMD(endVal)
+            const startMax = endDate ? new Date(endDate) : undefined
+            if (startMax) startMax.setDate(startMax.getDate() - 1)
+
+            return (
+              <DatePicker
+                {...datepickerProps}
+                dropdownCaption
+                toDate={startMax}
+                onSelect={(date: any) => {
+                  const dateSingle: Date = Array.isArray(date) ? date[0] : date
+                  if (dateSingle) {
+                    const startStr = formatYMD(dateSingle)
+                    form.setFieldValue('start', startStr)
+
+                    const endStr = form.values['end']
+                    if (endStr && startStr >= endStr) {
+                      form.setFieldError('start', 'Fom-dato må være før tom-dato')
+                    } else {
+                      form.setFieldError('start', undefined)
+                    }
+                  } else {
+                    form.setFieldValue('start', undefined)
+                    form.setFieldError('start', undefined)
+                  }
+                }}
+              >
+                <DatePicker.Input
+                  className="mb-2"
+                  value={form.values['start']}
+                  label="Velg fra og med dato"
+                  error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
+                />
+              </DatePicker>
+            )
+          }}
         </Field>
       </div>
       <Error fieldName="start" />

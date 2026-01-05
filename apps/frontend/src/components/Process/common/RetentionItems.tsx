@@ -1,8 +1,7 @@
-import { Slider } from 'baseui/slider'
+import { TextField } from '@navikt/ds-react'
 import { Field, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { theme } from '../../../util'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import BoolField from './BoolField'
 import FieldInput from './FieldInput'
@@ -11,24 +10,8 @@ interface IProps {
   formikBag: FormikProps<IProcessFormValues>
 }
 
-function sliderOverride(suffix: string) {
-  return {
-    ThumbValue: {
-      component: (prop: any) => (
-        <div
-          style={{
-            position: 'absolute',
-            top: `-${theme.sizing.scale800}`,
-            ...theme.typography.font200,
-            backgroundColor: 'transparent',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {prop.children} {suffix}
-        </div>
-      ),
-    },
-  }
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max)
 }
 
 const RetentionItems = (props: IProps) => {
@@ -67,22 +50,34 @@ const RetentionItems = (props: IProps) => {
               name="retention.retentionMonths"
               render={() => (
                 <>
-                  <div className="w-1/2 mr-[25px]">
-                    <Slider
-                      overrides={sliderOverride('år')}
+                  <div className="w-1/2 mr-6">
+                    <TextField
+                      label="År"
+                      size="small"
+                      type="number"
+                      value={retentionYears}
                       min={0}
                       max={100}
-                      value={[retentionYears]}
-                      onChange={({ value }) => setRetention(value[0] * 12 + retentionMonths)}
+                      onChange={(e) => {
+                        const raw = Number(e.target.value)
+                        const years = Number.isNaN(raw) ? 0 : clamp(raw, 0, 100)
+                        setRetention(years * 12 + retentionMonths)
+                      }}
                     />
                   </div>
-                  <div className="w-1/2 ml-[25px]">
-                    <Slider
-                      overrides={sliderOverride('måneder')}
+                  <div className="w-1/2 ml-6">
+                    <TextField
+                      label="Måneder"
+                      size="small"
+                      type="number"
+                      value={retentionMonths}
                       min={0}
                       max={11}
-                      value={[retentionMonths]}
-                      onChange={({ value }) => setRetention(value[0] + retentionYears * 12)}
+                      onChange={(e) => {
+                        const raw = Number(e.target.value)
+                        const months = Number.isNaN(raw) ? 0 : clamp(raw, 0, 11)
+                        setRetention(months + retentionYears * 12)
+                      }}
                     />
                   </div>
                 </>
