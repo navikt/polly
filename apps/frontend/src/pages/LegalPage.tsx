@@ -1,4 +1,4 @@
-import { OnChangeParams, Select, Value } from 'baseui/select'
+import { Select } from '@navikt/ds-react'
 import { HeadingLarge, HeadingMedium, HeadingSmall } from 'baseui/typography'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
@@ -6,10 +6,8 @@ import { useLocation, useNavigate } from 'react-router'
 import { getProcessesFor } from '../api/GetAllApi'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { IPageResponse, IProcess } from '../constants'
-import { CodelistService, EListName } from '../service/Codelist'
+import { CodelistService, EListName, ICode } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
-
-const value = (value: Value) => (value.length ? (value[0].id as string) : undefined)
 
 export const LegalPage = () => {
   const [processes, setProcesses] = useState<IProcess[]>([])
@@ -29,45 +27,60 @@ export const LegalPage = () => {
     )
   }, [gdprArticle, nationalLaw])
 
+  const gdprOptions = codelistUtils.getCodes(EListName.GDPR_ARTICLE)
+  const lawOptions = codelistUtils.getCodes(EListName.NATIONAL_LAW)
+
   return (
     <div>
       <HeadingLarge>Søk behandlingsgrunnlag</HeadingLarge>
       <div className="flex">
-        <div className="w-[40%]">
+        <div className="w-[40%] mt-3">
           <HeadingSmall>Velg GDPR artikkel</HeadingSmall>
           <Select
-            maxDropdownHeight="400px"
-            value={gdprArticle ? [{ id: gdprArticle }] : []}
-            options={codelistUtils.getParsedOptions(EListName.GDPR_ARTICLE)}
-            onChange={(event: OnChangeParams) =>
+            label="GDPR artikkel"
+            value={gdprArticle ?? ''}
+            onChange={(event) =>
               navigate(
                 location.pathname +
                   '?' +
                   queryString.stringify(
-                    { gdprArticle: value(event.value), nationalLaw },
+                    { gdprArticle: event.target.value, nationalLaw },
                     { skipNull: true }
                   )
               )
             }
-          />
+          >
+            <option value="">Velg</option>
+            {gdprOptions.map((option: ICode) => (
+              <option key={option.code} value={option.code}>
+                {option.shortName || option.code}
+              </option>
+            ))}
+          </Select>
         </div>
-        <div className="w-[40%] ml-2.5">
+        <div className="w-[40%] mt-3 ml-2.5">
           <HeadingSmall>og/eller nasjonal lov</HeadingSmall>
           <Select
-            maxDropdownHeight="400px"
-            value={nationalLaw ? [{ id: nationalLaw }] : []}
-            options={codelistUtils.getParsedOptions(EListName.NATIONAL_LAW)}
-            onChange={(event: OnChangeParams) =>
+            label="Nasjonal lov"
+            value={nationalLaw ?? ''}
+            onChange={(event) =>
               navigate(
                 location.pathname +
                   '?' +
                   queryString.stringify(
-                    { gdprArticle, nationalLaw: value(event.value) },
+                    { gdprArticle, nationalLaw: event.target.value },
                     { skipNull: true }
                   )
               )
             }
-          />
+          >
+            <option value="">Velg</option>
+            {lawOptions.map((option: ICode) => (
+              <option key={option.code} value={option.code}>
+                {option.shortName || option.code}
+              </option>
+            ))}
+          </Select>
         </div>
       </div>
       {processes && <ProcessTable processes={processes} />}
@@ -76,7 +89,7 @@ export const LegalPage = () => {
 }
 
 const ProcessTable = (props: { processes: IProcess[] }) => (
-  <div className="flex flex-col">
+  <div className="flex flex-col mt-3">
     <HeadingMedium>Behandlinger ({props.processes.length})</HeadingMedium>
     <SimpleProcessTable
       title={'Behandlinger' + ' (' + props.processes.length + ')'}
