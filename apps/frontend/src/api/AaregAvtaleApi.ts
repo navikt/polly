@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { Option } from 'baseui/select'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { IAaregAvtale, IPageResponse } from '../constants'
+import { IAaregAvtale, IPageResponse, TOption } from '../constants'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
@@ -18,13 +17,13 @@ export const searchAaregAvtale = async (searchParam: string) => {
 }
 
 export const mapAaregAvtaleToOption = (aaregAvtale: IAaregAvtale) => ({
-  id: aaregAvtale.avtalenummer,
+  value: aaregAvtale.avtalenummer,
   label: aaregAvtale.avtalenummer + ' - ' + aaregAvtale.virksomhet,
 })
 
 export const useAaregAvtaleSearch = () => {
   const [aaregAvtaleSearch, setAaregAvtaleSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = useState<Option[]>([])
+  const [searchResult, setInfoTypeSearchResult] = useState<TOption[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -32,7 +31,7 @@ export const useAaregAvtaleSearch = () => {
       if (aaregAvtaleSearch && aaregAvtaleSearch.length > 2) {
         setLoading(true)
         const res = await searchAaregAvtale(aaregAvtaleSearch)
-        setInfoTypeSearchResult(res.content)
+        setInfoTypeSearchResult(res.content.map(mapAaregAvtaleToOption))
         setLoading(false)
       }
     }
@@ -40,7 +39,7 @@ export const useAaregAvtaleSearch = () => {
   }, [aaregAvtaleSearch])
 
   return [searchResult, setAaregAvtaleSearch, loading] as [
-    Option[],
+    TOption[],
     Dispatch<SetStateAction<string>>,
     boolean,
   ]
