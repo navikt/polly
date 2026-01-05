@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router'
 import { getProcessesFor } from '../api/GetAllApi'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { IPageResponse, IProcess } from '../constants'
-import { CodelistService, EListName } from '../service/Codelist'
+import { CodelistService, EListName, ICode } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
 
 export const LegalPage = () => {
