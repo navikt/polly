@@ -1,4 +1,4 @@
-import { Spinner } from 'baseui/icon'
+import { Loader } from '@navikt/ds-react'
 import { ParagraphLarge } from 'baseui/typography'
 import { JSX, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router'
@@ -186,7 +186,7 @@ const Redirect = ({ to }: { to: (id: string) => Promise<string> }) => {
   }, [id])
 
   if (!url) {
-    return <Spinner />
+    return <Loader size="3xlarge" title="Venter..." />
   }
 
   return <Navigate to={url} replace />
