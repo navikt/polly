@@ -1,5 +1,4 @@
-import { Loader } from '@navikt/ds-react'
-import { ParagraphLarge } from 'baseui/typography'
+import { BodyLong } from '@navikt/ds-react'
 import { JSX, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router'
 import { getDisclosure, getPolicy, getProcess } from './api/GetAllApi'
@@ -140,16 +139,14 @@ const AppRoutes = (): JSX.Element => (
       <Route path="/alert/events/" element={<AlertEventPage />} caseSensitive={true} />
 
       <Route path="/" element={<MainPage />} caseSensitive={true} />
-      <Route element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   </Root>
 )
 
 const NotFound = () => (
   <div className="flex justify-center content-center just mt-48">
-    <ParagraphLarge>
-      Oida 404! Fant ikke den siden der nei - {useLocation().pathname}
-    </ParagraphLarge>
+    <BodyLong>Oida 404! Fant ikke den siden der nei - {useLocation().pathname}</BodyLong>
     <img src={notFound} alt="404 Finner ikke den siden" style={{ maxWidth: '65%' }} />
   </div>
 )
@@ -186,7 +183,7 @@ const Redirect = ({ to }: { to: (id: string) => Promise<string> }) => {
   }, [id])
 
   if (!url) {
-    return <Loader size="3xlarge" title="Venter..." />
+    return <NotFound />
   }
 
   return <Navigate to={url} replace />
