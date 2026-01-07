@@ -1,14 +1,7 @@
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CaretDownIcon } from '@navikt/aksel-icons'
-import { Button, Dropdown, Label, Link, Popover } from '@navikt/ds-react'
-import {
-  ALIGN,
-  HeaderNavigation,
-  StyledNavigationItem as NavigationItem,
-  StyledNavigationList as NavigationList,
-} from 'baseui/header-navigation'
-import { StyledLink } from 'baseui/link'
+import { Button, Dropdown, InternalHeader, Label, Link, Popover, Spacer } from '@navikt/ds-react'
 import { useRef, useState } from 'react'
 import { useLocation } from 'react-router'
 import { user } from '../service/User'
@@ -41,7 +34,7 @@ const LoggedInHeader = () => {
             <Label>Navn: {user.getName()}</Label>
             <Label>Grupper: {user.getGroupsHumanReadable().join(', ')}</Label>
             <div className="flex w-full p-1">
-              <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</StyledLink>
+              <Link href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</Link>
             </div>
           </div>
         </Popover.Content>
@@ -51,18 +44,9 @@ const LoggedInHeader = () => {
 }
 
 const LoginButton = () => (
-  <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
-    <Button
-      style={{
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
-      }}
-    >
-      Logg inn
-    </Button>
-  </StyledLink>
+  <InternalHeader.Button as="a" href={`/login?redirect_uri=${useCurrentUrl()}`}>
+    Logg inn
+  </InternalHeader.Button>
 )
 
 const AdminOptions = () => {
@@ -76,14 +60,9 @@ const AdminOptions = () => {
 
   return (
     <Dropdown>
-      <Button
-        as={Dropdown.Toggle}
-        variant="tertiary"
-        icon={<CaretDownIcon title="a11y-title" fontSize="1.5rem" aria-hidden />}
-        iconPosition="right"
-      >
-        Admin
-      </Button>
+      <InternalHeader.Button as={Dropdown.Toggle}>
+        Admin <CaretDownIcon title="a11y-title" fontSize="1.5rem" aria-hidden />
+      </InternalHeader.Button>
 
       <Dropdown.Menu>
         <Dropdown.Menu.List>
@@ -99,38 +78,13 @@ const AdminOptions = () => {
 }
 
 const Header = () => (
-  <div className="px-7">
-    <HeaderNavigation
-      overrides={{ Root: { style: { paddingBottom: 0, borderBottomStyle: 'none' } } }}
-    >
-      <NavigationList $align={ALIGN.left}>
-        <NavigationItem $style={{ paddingLeft: 0 }}>
-          <MainSearch />
-        </NavigationItem>
-      </NavigationList>
-
-      <div className="ml-auto">
-        <NavigationList $align={ALIGN.right}>
-          {(user.isAdmin() || user.isSuper()) && (
-            <NavigationItem $style={{ paddingLeft: 0 }}>
-              <AdminOptions />
-            </NavigationItem>
-          )}
-
-          {!user.isLoggedIn() && (
-            <NavigationItem $style={{ paddingLeft: 0 }}>
-              <LoginButton />
-            </NavigationItem>
-          )}
-          {user.isLoggedIn() && (
-            <NavigationItem $style={{ paddingLeft: 0 }}>
-              <LoggedInHeader />
-            </NavigationItem>
-          )}
-        </NavigationList>
-      </div>
-    </HeaderNavigation>
-  </div>
+  <InternalHeader className="polly-white-internalheader">
+    <MainSearch />
+    <Spacer />
+    {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
+    {!user.isLoggedIn() && <LoginButton />}
+    {user.isLoggedIn() && <LoggedInHeader />}
+  </InternalHeader>
 )
 
 export default Header
