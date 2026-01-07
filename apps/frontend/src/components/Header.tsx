@@ -1,21 +1,17 @@
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Link, Popover } from '@navikt/ds-react'
-import { BlockProps } from 'baseui/block'
+import { CaretDownIcon } from '@navikt/aksel-icons'
+import { Button, Dropdown, Label, Link, Popover } from '@navikt/ds-react'
 import {
   ALIGN,
   HeaderNavigation,
   StyledNavigationItem as NavigationItem,
   StyledNavigationList as NavigationList,
 } from 'baseui/header-navigation'
-import { TriangleDown } from 'baseui/icon'
 import { StyledLink } from 'baseui/link'
-import { LabelMedium } from 'baseui/typography'
 import { useRef, useState } from 'react'
 import { useLocation } from 'react-router'
 import { user } from '../service/User'
-import { theme } from '../util'
-import { paddingAll } from './common/Style'
 import MainSearch from './search/MainSearch'
 
 function useCurrentUrl() {
@@ -24,12 +20,6 @@ function useCurrentUrl() {
 }
 
 const LoggedInHeader = () => {
-  const blockStyle: BlockProps = {
-    display: 'flex',
-    width: '100%',
-    ...paddingAll(theme.sizing.scale100),
-  }
-
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [openState, setOpenState] = useState(false)
 
@@ -48,10 +38,8 @@ const LoggedInHeader = () => {
       <Popover open={openState} onClose={() => setOpenState(false)} anchorEl={buttonRef.current}>
         <Popover.Content>
           <div className="p-2">
-            <LabelMedium {...blockStyle}>Navn: {user.getName()}</LabelMedium>
-            <LabelMedium {...blockStyle}>
-              Grupper: {user.getGroupsHumanReadable().join(', ')}
-            </LabelMedium>
+            <Label>Navn: {user.getName()}</Label>
+            <Label>Grupper: {user.getGroupsHumanReadable().join(', ')}</Label>
             <div className="flex w-full p-1">
               <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</StyledLink>
             </div>
@@ -88,9 +76,15 @@ const AdminOptions = () => {
 
   return (
     <Dropdown>
-      <Button as={Dropdown.Toggle} variant="tertiary">
-        Admin <TriangleDown size={24} />
+      <Button
+        as={Dropdown.Toggle}
+        variant="tertiary"
+        icon={<CaretDownIcon title="a11y-title" fontSize="1.5rem" aria-hidden />}
+        iconPosition="right"
+      >
+        Admin
       </Button>
+
       <Dropdown.Menu>
         <Dropdown.Menu.List>
           {pages.map((page) => (
