@@ -1,11 +1,11 @@
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Button, Dropdown, Heading, Label } from '@navikt/ds-react'
-import { Pagination } from 'baseui/pagination'
 import { useEffect, useState } from 'react'
 import { IAaregAvtale } from '../../constants'
 import { theme } from '../../util'
 import DataText from '../common/DataText'
+import Pagination from '../common/Pagination'
 import AAregHjemmelDataText from './AAregHjemmelDataText'
 
 type TAaregAvtaleTableProps = {
