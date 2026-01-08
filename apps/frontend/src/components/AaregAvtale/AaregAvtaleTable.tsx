@@ -1,9 +1,8 @@
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown } from '@navikt/ds-react'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { Button, Dropdown, Heading, Label } from '@navikt/ds-react'
+import { Accordion, Panel } from 'baseui/accordion'
 import { Pagination } from 'baseui/pagination'
-import { HeadingLarge, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { IAaregAvtale } from '../../constants'
 import { theme } from '../../util'
@@ -14,15 +13,13 @@ type TAaregAvtaleTableProps = {
   aaregAvtaler: IAaregAvtale[]
 }
 
-const marginTop = '2rem'
-
 interface ICustomPanelLabelProps {
   text: any
 }
 
 const CustomPanelLabel = ({ text }: ICustomPanelLabelProps) => (
   <div className="w-full mb-4 border-b border-solid border-[#AFAFAF]">
-    <LabelLarge marginTop={marginTop}>{text}</LabelLarge>
+    <Label className="mt-2">{text}</Label>
   </div>
 )
 
@@ -63,23 +60,25 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
 
   return (
     <>
-      <HeadingLarge>Utleveringsavtaler i Aa-registeret</HeadingLarge>
-      <StatelessAccordion
+      <Heading size="large" level="2">
+        Utleveringsavtaler i Aa-registeret
+      </Heading>
+      <Accordion
         onChange={({ expanded }) => {
           setSelectedAaregAvtale(expanded[0] as string)
         }}
-        expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
+        initialState={{ expanded: selectedAaregAvtale ? [selectedAaregAvtale] : [] }}
       >
         {sortedAaregAvtale &&
-          sortedAaregAvtale.map((aaregisterAvtale, index) => {
+          sortedAaregAvtale.map((aaregisterAvtale) => {
             const expanded: boolean = selectedAaregAvtale === aaregisterAvtale.avtalenummer
 
             return (
               <Panel
-                key={aaregisterAvtale.avtalenummer + '_' + index}
+                key={aaregisterAvtale.avtalenummer}
                 title={
                   <div className="w-full">
-                    <LabelLarge color={theme.colors.primary}>
+                    <Label color={theme.colors.primary}>
                       {expanded ? (
                         <FontAwesomeIcon icon={faChevronDown} />
                       ) : (
@@ -90,7 +89,7 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
                         {aaregisterAvtale.virksomhet} - (Avtalenummer-
                         {aaregisterAvtale.avtalenummer.replace('AVT-', '')})
                       </span>
-                    </LabelLarge>
+                    </Label>
                   </div>
                 }
                 overrides={{
@@ -170,7 +169,7 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
               </Panel>
             )
           })}
-      </StatelessAccordion>
+      </Accordion>
 
       <div className="flex justify-between mt-1">
         <Dropdown>
