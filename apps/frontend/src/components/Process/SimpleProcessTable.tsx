@@ -1,14 +1,11 @@
-import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
-import { StyledLink } from 'baseui/link'
 import { useEffect, useMemo, useState } from 'react'
-import {BodyLong, SortState, Table} from '@navikt/ds-react'
+import {BodyLong, Button, Link, SortState, Table} from '@navikt/ds-react'
 import { getResourceById } from '../../api/TeamApi'
 import { IProcessShort, IProcessShortWithEmail} from '../../constants'
 import handleExcelExport from '../../util/excelExport'
-import Button from '../common/Button/CustomButton'
-import RouteLink from '../common/RouteLink'
 import { processStatusText } from './Accordion/ProcessData'
 import {handleSort} from "../../util/handleTableSort";
+import {FileExcelIcon} from "@navikt/aksel-icons";
 
 interface IProps {
   processes: IProcessShort[]
@@ -78,11 +75,9 @@ export const SimpleProcessTable = (props: IProps) => {
     <div>
       <div className="flex justify-end">
         <Button
-          kind="tertiary"
+          variant="tertiary"
           size="xsmall"
-          icon={faFileExcel}
-          tooltip="Eksportér"
-          marginRight
+          icon={<FileExcelIcon/>}
           onClick={() => handleExcelExport(processesWithEmail, title)}
         >
           Eksportér
@@ -114,42 +109,41 @@ export const SimpleProcessTable = (props: IProps) => {
           ) : (
             sortedData.map((process: IProcessShortWithEmail) => (
               <Table.Row key={process.id}>
-                <Table.DataCell>
-                  <RouteLink href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
+                <Table.DataCell textSize='small'>
+                  <Link href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
                     {process.purposes.map((purpose) => purpose.shortName).join(', ') +
                       ': ' +
                       process.name}
-                  </RouteLink>
+                  </Link>
                 </Table.DataCell>
-
-                <Table.DataCell>
+                <Table.DataCell textSize='small'>
                   {process.affiliation.nomDepartmentId === null ? (
                     ''
                   ) : (
-                    <RouteLink href={`/process/department/${process.affiliation.nomDepartmentId}`}>
+                    <Link href={`/process/department/${process.affiliation.nomDepartmentId}`}>
                       {process.affiliation.nomDepartmentName}
-                    </RouteLink>
+                    </Link>
                   )}
                 </Table.DataCell>
 
                 {showCommonExternalProcessResponsible && (
-                  <Table.DataCell>
+                  <Table.DataCell textSize='small'>
                     {process.commonExternalProcessResponsible === null ? (
                       ''
                     ) : (
-                      <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible?.code}`}>
+                      <Link href={`/thirdparty/${process.commonExternalProcessResponsible?.code}`}>
                         {process.commonExternalProcessResponsible?.shortName}
-                      </RouteLink>
+                      </Link>
                     )}
                   </Table.DataCell>
                 )}
 
-                <Table.DataCell>{processStatusText(process.status)}</Table.DataCell>
+                <Table.DataCell textSize='small'>{processStatusText(process.status)}</Table.DataCell>
 
                 <Table.DataCell>
-                  <StyledLink href={'mailto: ' + process.lastModifiedEmail}>
+                  <Link href={'mailto: ' + process.lastModifiedEmail}>
                     {process.lastModifiedEmail}
-                  </StyledLink>
+                  </Link>
                 </Table.DataCell>
               </Table.Row>
             ))
