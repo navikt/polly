@@ -102,7 +102,6 @@ export const SimpleProcessTable = (props: IProps) => {
             <Table.ColumnHeader sortKey="lastModifiedEmail" sortable>Sist endret av</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
-
         <Table.Body>
           {sortedData.length === 0 ? (
             <BodyLong>Ingen behandlinger</BodyLong>
@@ -125,7 +124,6 @@ export const SimpleProcessTable = (props: IProps) => {
                     </Link>
                   )}
                 </Table.DataCell>
-
                 {showCommonExternalProcessResponsible && (
                   <Table.DataCell textSize='small'>
                     {process.commonExternalProcessResponsible === null ? (
@@ -137,9 +135,7 @@ export const SimpleProcessTable = (props: IProps) => {
                     )}
                   </Table.DataCell>
                 )}
-
                 <Table.DataCell textSize='small'>{processStatusText(process.status)}</Table.DataCell>
-
                 <Table.DataCell>
                   <Link href={'mailto: ' + process.lastModifiedEmail}>
                     {process.lastModifiedEmail}
