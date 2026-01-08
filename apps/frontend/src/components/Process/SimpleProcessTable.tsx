@@ -1,19 +1,14 @@
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
 import { StyledLink } from 'baseui/link'
-import { useEffect, useState } from 'react'
-import { StyleObject } from 'styletron-standard'
-import { getResourceById } from '../../api/GetAllApi'
-import { IProcessShort, IProcessShortWithEmail } from '../../constants'
+import { useEffect, useMemo, useState } from 'react'
+import {BodyLong, SortState, Table} from '@navikt/ds-react'
+import { getResourceById } from '../../api/TeamApi'
+import { IProcessShort, IProcessShortWithEmail} from '../../constants'
 import handleExcelExport from '../../util/excelExport'
-import { useTable } from '../../util/hooks'
 import Button from '../common/Button/CustomButton'
 import RouteLink from '../common/RouteLink'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
 import { processStatusText } from './Accordion/ProcessData'
-
-const cellStyle: StyleObject = {
-  wordBreak: 'break-word',
-}
+import {handleSort} from "../../util/handleTableSort";
 
 interface IProps {
   processes: IProcessShort[]
@@ -24,6 +19,7 @@ interface IProps {
 export const SimpleProcessTable = (props: IProps) => {
   const { processes, showCommonExternalProcessResponsible, title } = props
   const [processesWithEmail, setProcessesWithEmail] = useState<IProcessShortWithEmail[]>(processes)
+  const [sort, setSort] = useState<SortState>()
 
   useEffect(() => {
     ;(async () => {
@@ -48,32 +44,35 @@ export const SimpleProcessTable = (props: IProps) => {
     })()
   }, [processes])
 
-  const [table, sortColumn] = useTable<IProcessShortWithEmail, keyof IProcessShortWithEmail>(
-    processesWithEmail,
-    {
-      useDefaultStringCompare: true,
-      initialSortColumn: 'name',
-      sorting: {
-        name: (a, b) =>
-          ((a.purposes[0].shortName || '') + ':' + (a.name || '')).localeCompare(
-            (b.purposes[0].shortName || '') + ': ' + b.name || ''
-          ),
-        affiliation: (a, b) =>
-          (a.affiliation.nomDepartmentName || ' ').localeCompare(
-            b.affiliation.nomDepartmentName || ' '
-          ),
-        status: (a, b) => (a.status || '').localeCompare(b.status || ''),
-        commonExternalProcessResponsible: (a, b) =>
-          (a.commonExternalProcessResponsible?.shortName || ' ').localeCompare(
-            b.commonExternalProcessResponsible?.shortName || ' '
-          ),
-        changeStamp: (a, b) =>
-          (a.changeStamp.lastModifiedBy || '').localeCompare(b.changeStamp.lastModifiedBy || ''),
-        lastModifiedEmail: (a, b) =>
-          (a.lastModifiedEmail || '').localeCompare(b.lastModifiedEmail || ''),
-      },
+  let sortedData: IProcessShortWithEmail[] = useMemo(() => processesWithEmail, [processesWithEmail])
+
+  const comparator = (a: IProcessShortWithEmail, b: IProcessShortWithEmail, orderBy: string): number => {
+    switch (orderBy) {
+      case 'name':
+        return (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || '')
+      case 'affiliation':
+        return (a.affiliation.nomDepartmentName || '').localeCompare(
+          b.affiliation.nomDepartmentName || ''
+        )
+      case 'commonExternalProcessResponsible' :
+        return (a.commonExternalProcessResponsible?.shortName || '').localeCompare(b.commonExternalProcessResponsible?.shortName || '')
+      case 'status':
+        return (a.status || '').localeCompare(b.status || '')
+      case 'lastModifiedEmail':
+        return (a.lastModifiedEmail || '').localeCompare(b.lastModifiedEmail || '')
+      default:
+        return 0
     }
-  )
+  }
+
+  sortedData = sortedData.sort((a: IProcessShortWithEmail, b: IProcessShortWithEmail) => {
+    if (sort) {
+      return sort.direction === 'ascending'
+        ? comparator(b, a, sort.orderBy)
+        : comparator(a, b, sort.orderBy)
+    }
+    return 1
+  })
 
   return (
     <div>
@@ -89,83 +88,73 @@ export const SimpleProcessTable = (props: IProps) => {
           Eksportér
         </Button>
       </div>
+
       <Table
-        emptyText="Ingen behandlinger"
-        headers={
-          <>
-            <HeadCell
-              title="Behandling"
-              column="name"
-              tableState={[table, sortColumn]}
-              $style={cellStyle}
-            />
-            <HeadCell
-              title="Avdeling"
-              column="affiliation"
-              tableState={[table, sortColumn]}
-              $style={cellStyle}
-            />
-            {showCommonExternalProcessResponsible && (
-              <HeadCell
-                title="Felles behandlingsansvarlig"
-                column="commonExternalProcessResponsible"
-                tableState={[table, sortColumn]}
-                $style={cellStyle}
-              />
-            )}
-            <HeadCell
-              title="Status"
-              column="status"
-              tableState={[table, sortColumn]}
-              $style={cellStyle}
-            />
-            <HeadCell
-              title="Sist endret av"
-              column="lastModifiedEmail"
-              tableState={[table, sortColumn]}
-              $style={cellStyle}
-            />
-          </>
-        }
+        size="small"
+        sort={sort}
+        onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}
       >
-        {table.data.map((process: IProcessShortWithEmail) => (
-          <Row key={process.id}>
-            <Cell $style={cellStyle}>
-              {/* todo multipurpose url */}
-              <RouteLink href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
-                {process.purposes.map((purpose) => purpose.shortName).join(', ') +
-                  ': ' +
-                  process.name}
-              </RouteLink>
-            </Cell>
-            <Cell $style={cellStyle}>
-              {process.affiliation.nomDepartmentId === null ? (
-                ''
-              ) : (
-                <RouteLink href={`/process/department/${process.affiliation.nomDepartmentId}`}>
-                  {process.affiliation.nomDepartmentName}
-                </RouteLink>
-              )}
-            </Cell>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader sortKey="name" sortable>Behandling</Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="affiliation"  sortable>Avdeling</Table.ColumnHeader>
             {showCommonExternalProcessResponsible && (
-              <Cell $style={cellStyle}>
-                {process.commonExternalProcessResponsible === null ? (
-                  ''
-                ) : (
-                  <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible?.code}`}>
-                    {process.commonExternalProcessResponsible?.shortName}
-                  </RouteLink>
-                )}
-              </Cell>
+              <Table.ColumnHeader sortKey="commonExternalProcessResponsible" sortable>
+                Felles behandlingsansvarlig
+              </Table.ColumnHeader>
             )}
-            <Cell $style={cellStyle}>{processStatusText(process.status)}</Cell>
-            <Cell $style={cellStyle}>
-              <StyledLink href={'mailto: ' + process.lastModifiedEmail}>
-                {process.lastModifiedEmail}
-              </StyledLink>
-            </Cell>
-          </Row>
-        ))}
+            <Table.ColumnHeader sortKey="status" sortable>Status</Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="lastModifiedEmail" sortable>Sist endret av</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          {sortedData.length === 0 ? (
+            <BodyLong>Ingen behandlinger</BodyLong>
+          ) : (
+            sortedData.map((process: IProcessShortWithEmail) => (
+              <Table.Row key={process.id}>
+                <Table.DataCell>
+                  <RouteLink href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
+                    {process.purposes.map((purpose) => purpose.shortName).join(', ') +
+                      ': ' +
+                      process.name}
+                  </RouteLink>
+                </Table.DataCell>
+
+                <Table.DataCell>
+                  {process.affiliation.nomDepartmentId === null ? (
+                    ''
+                  ) : (
+                    <RouteLink href={`/process/department/${process.affiliation.nomDepartmentId}`}>
+                      {process.affiliation.nomDepartmentName}
+                    </RouteLink>
+                  )}
+                </Table.DataCell>
+
+                {showCommonExternalProcessResponsible && (
+                  <Table.DataCell>
+                    {process.commonExternalProcessResponsible === null ? (
+                      ''
+                    ) : (
+                      <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible?.code}`}>
+                        {process.commonExternalProcessResponsible?.shortName}
+                      </RouteLink>
+                    )}
+                  </Table.DataCell>
+                )}
+
+                <Table.DataCell>{processStatusText(process.status)}</Table.DataCell>
+
+                <Table.DataCell>
+                  <StyledLink href={'mailto: ' + process.lastModifiedEmail}>
+                    {process.lastModifiedEmail}
+                  </StyledLink>
+                </Table.DataCell>
+              </Table.Row>
+            ))
+          )}
+        </Table.Body>
       </Table>
     </div>
   )
