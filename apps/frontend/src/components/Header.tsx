@@ -79,7 +79,7 @@ const AdminOptions = () => {
 
 const Header = () => (
   <InternalHeader className="polly-white-internalheader">
-    <div className="ml-[28px]">
+    <div className="ml-[28px] mt-[12px]">
       <MainSearch />
     </div>
     <Spacer />
