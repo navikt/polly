@@ -1,20 +1,16 @@
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown } from '@navikt/ds-react'
-import { Panel, StatelessAccordion } from 'baseui/accordion'
-import { Pagination } from 'baseui/pagination'
-import { HeadingLarge, LabelLarge } from 'baseui/typography'
+import { Accordion, Button, Dropdown, Heading, Label } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { IAaregAvtale } from '../../constants'
 import { theme } from '../../util'
 import DataText from '../common/DataText'
+import Pagination from '../common/Pagination'
 import AAregHjemmelDataText from './AAregHjemmelDataText'
 
 type TAaregAvtaleTableProps = {
   aaregAvtaler: IAaregAvtale[]
 }
-
-const marginTop = '2rem'
 
 interface ICustomPanelLabelProps {
   text: any
@@ -22,7 +18,7 @@ interface ICustomPanelLabelProps {
 
 const CustomPanelLabel = ({ text }: ICustomPanelLabelProps) => (
   <div className="w-full mb-4 border-b border-solid border-[#AFAFAF]">
-    <LabelLarge marginTop={marginTop}>{text}</LabelLarge>
+    <Label className="mt-2">{text}</Label>
   </div>
 )
 
@@ -49,7 +45,6 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
   const [pageLimit, setPageLimit] = useState(10)
   const [page, setPage] = useState(1)
   const [sortedAaregAvtale, setSortedAaregAvtale] = useState<IAaregAvtale[]>([])
-  const [selectedAaregAvtale, setSelectedAaregAvtale] = useState<string>()
 
   useEffect(() => {
     setSortedAaregAvtale(sortAaregAvtaleList(aaregAvtaler).slice(0, 10))
@@ -63,53 +58,23 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
 
   return (
     <>
-      <HeadingLarge>Utleveringsavtaler i Aa-registeret</HeadingLarge>
-      <StatelessAccordion
-        onChange={({ expanded }) => {
-          setSelectedAaregAvtale(expanded[0] as string)
-        }}
-        expanded={selectedAaregAvtale ? [selectedAaregAvtale] : []}
-      >
+      <Heading size="large" level="2">
+        Utleveringsavtaler i Aa-registeret
+      </Heading>
+      <Accordion>
         {sortedAaregAvtale &&
-          sortedAaregAvtale.map((aaregisterAvtale, index) => {
-            const expanded: boolean = selectedAaregAvtale === aaregisterAvtale.avtalenummer
-
-            return (
-              <Panel
-                key={aaregisterAvtale.avtalenummer + '_' + index}
-                title={
-                  <div className="w-full">
-                    <LabelLarge color={theme.colors.primary}>
-                      {expanded ? (
-                        <FontAwesomeIcon icon={faChevronDown} />
-                      ) : (
-                        <FontAwesomeIcon icon={faChevronRight} />
-                      )}
-                      <span> </span>
-                      <span>
-                        {aaregisterAvtale.virksomhet} - (Avtalenummer-
-                        {aaregisterAvtale.avtalenummer.replace('AVT-', '')})
-                      </span>
-                    </LabelLarge>
-                  </div>
-                }
-                overrides={{
-                  ToggleIcon: {
-                    component: () => null,
-                  },
-                  Content: {
-                    style: {
-                      backgroundColor: theme.colors.white,
-                      // Outline width
-                      paddingTop: '4px',
-                      paddingBottom: '4px',
-                      paddingLeft: '4px',
-                      paddingRight: '4px',
-                    },
-                  },
-                }}
-              >
-                <div className="outline-4 outline-[#99c2e8] outline">
+          sortedAaregAvtale.map((aaregisterAvtale) => (
+            <Accordion.Item key={aaregisterAvtale.avtalenummer}>
+              <Accordion.Header>
+                <div className="w-full">
+                  <Label color={theme.colors.primary}>
+                    {aaregisterAvtale.virksomhet} - (Avtalenummer-
+                    {aaregisterAvtale.avtalenummer.replace('AVT-', '')})
+                  </Label>
+                </div>
+              </Accordion.Header>
+              <Accordion.Content>
+                <div className="outline outline-[#99c2e8]">
                   <div className="p-1">
                     <CustomPanelLabel text="Konsument" />
                     <DataText label="Navn" text={aaregisterAvtale.virksomhet || 'Ikke angitt'} />
@@ -167,10 +132,10 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
                     />
                   </div>
                 </div>
-              </Panel>
-            )
-          })}
-      </StatelessAccordion>
+              </Accordion.Content>
+            </Accordion.Item>
+          ))}
+      </Accordion>
 
       <div className="flex justify-between mt-1">
         <Dropdown>
