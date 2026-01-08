@@ -79,7 +79,9 @@ const AdminOptions = () => {
 
 const Header = () => (
   <InternalHeader className="polly-white-internalheader">
-    <MainSearch />
+    <div className="ml-[28px]">
+      <MainSearch />
+    </div>
     <Spacer />
     {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
     {!user.isLoggedIn() && <LoginButton />}
