@@ -1,7 +1,6 @@
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Heading, Label } from '@navikt/ds-react'
-import { Accordion, Panel } from 'baseui/accordion'
+import { Accordion, Button, Dropdown, Heading, Label } from '@navikt/ds-react'
 import { Pagination } from 'baseui/pagination'
 import { useEffect, useState } from 'react'
 import { IAaregAvtale } from '../../constants'
@@ -46,7 +45,6 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
   const [pageLimit, setPageLimit] = useState(10)
   const [page, setPage] = useState(1)
   const [sortedAaregAvtale, setSortedAaregAvtale] = useState<IAaregAvtale[]>([])
-  const [selectedAaregAvtale, setSelectedAaregAvtale] = useState<string>()
 
   useEffect(() => {
     setSortedAaregAvtale(sortAaregAvtaleList(aaregAvtaler).slice(0, 10))
@@ -63,52 +61,20 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
       <Heading size="large" level="2">
         Utleveringsavtaler i Aa-registeret
       </Heading>
-      <Accordion
-        onChange={({ expanded }) => {
-          setSelectedAaregAvtale(expanded[0] as string)
-        }}
-        initialState={{ expanded: selectedAaregAvtale ? [selectedAaregAvtale] : [] }}
-      >
+      <Accordion>
         {sortedAaregAvtale &&
-          sortedAaregAvtale.map((aaregisterAvtale) => {
-            const expanded: boolean = selectedAaregAvtale === aaregisterAvtale.avtalenummer
-
-            return (
-              <Panel
-                key={aaregisterAvtale.avtalenummer}
-                title={
-                  <div className="w-full">
-                    <Label color={theme.colors.primary}>
-                      {expanded ? (
-                        <FontAwesomeIcon icon={faChevronDown} />
-                      ) : (
-                        <FontAwesomeIcon icon={faChevronRight} />
-                      )}
-                      <span> </span>
-                      <span>
-                        {aaregisterAvtale.virksomhet} - (Avtalenummer-
-                        {aaregisterAvtale.avtalenummer.replace('AVT-', '')})
-                      </span>
-                    </Label>
-                  </div>
-                }
-                overrides={{
-                  ToggleIcon: {
-                    component: () => null,
-                  },
-                  Content: {
-                    style: {
-                      backgroundColor: theme.colors.white,
-                      // Outline width
-                      paddingTop: '4px',
-                      paddingBottom: '4px',
-                      paddingLeft: '4px',
-                      paddingRight: '4px',
-                    },
-                  },
-                }}
-              >
-                <div className="outline-4 outline-[#99c2e8] outline">
+          sortedAaregAvtale.map((aaregisterAvtale) => (
+            <Accordion.Item key={aaregisterAvtale.avtalenummer}>
+              <Accordion.Header>
+                <div className="w-full">
+                  <Label color={theme.colors.primary}>
+                    {aaregisterAvtale.virksomhet} - (Avtalenummer-
+                    {aaregisterAvtale.avtalenummer.replace('AVT-', '')})
+                  </Label>
+                </div>
+              </Accordion.Header>
+              <Accordion.Content>
+                <div className="outline outline-[#99c2e8]">
                   <div className="p-1">
                     <CustomPanelLabel text="Konsument" />
                     <DataText label="Navn" text={aaregisterAvtale.virksomhet || 'Ikke angitt'} />
@@ -166,9 +132,9 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
                     />
                   </div>
                 </div>
-              </Panel>
-            )
-          })}
+              </Accordion.Content>
+            </Accordion.Item>
+          ))}
       </Accordion>
 
       <div className="flex justify-between mt-1">
