@@ -72,6 +72,51 @@ export const selectOverrides = {
       ':focus': { borderColor: 'var(--a-deepblue-600)' },
       ':hover': { borderColor: 'var(--a-border-action)' },
     }) as CSSObjectWithLabel,
+  menu: (base: CSSObjectWithLabel) =>
+    ({
+      ...base,
+      backgroundColor: '#ffffff',
+      border: '1px solid #e6e6e6',
+      boxShadow: 'var(--a-shadow-medium)',
+      marginTop: '0.25rem',
+      zIndex: 1000,
+    }) as CSSObjectWithLabel,
+  menuList: (base: CSSObjectWithLabel) =>
+    ({
+      ...base,
+      padding: 0,
+    }) as CSSObjectWithLabel,
+  option: (base: CSSObjectWithLabel, state: any) =>
+    ({
+      ...base,
+      color: '#1a1a1a',
+      backgroundColor: state.isFocused ? '#f5f5f5' : state.isSelected ? '#ededed' : '#ffffff',
+      ':active': {
+        backgroundColor: '#ededed',
+      },
+    }) as CSSObjectWithLabel,
+  input: (base: CSSObjectWithLabel) =>
+    ({
+      ...base,
+      color: '#1a1a1a',
+    }) as CSSObjectWithLabel,
+  placeholder: (base: CSSObjectWithLabel) =>
+    ({
+      ...base,
+      color: '#6b7280',
+    }) as CSSObjectWithLabel,
+  singleValue: (base: CSSObjectWithLabel) =>
+    ({
+      ...base,
+      color: '#1a1a1a',
+    }) as CSSObjectWithLabel,
+  dropdownIndicator: (base: CSSObjectWithLabel) =>
+    ({
+      ...base,
+      color: '#1a1a1a',
+      ':hover': { color: '#1a1a1a' },
+    }) as CSSObjectWithLabel,
+  indicatorSeparator: () => ({ display: 'none' }) as CSSObjectWithLabel,
 }
 
 export default CustomSearchSelect
