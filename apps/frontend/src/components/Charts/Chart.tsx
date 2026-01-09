@@ -1,12 +1,9 @@
 import { faChartBar, faChartPie, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Tooltip } from '@navikt/ds-react'
-import { Card } from 'baseui/card'
-import { LabelLarge } from 'baseui/typography'
+import { Button, Label, Tooltip } from '@navikt/ds-react'
 import * as _ from 'lodash'
 import { Fragment, useReducer, useState } from 'react'
 import { theme } from '../../util'
-import { hideBorder, marginAll } from '../common/Style'
 
 const cursor = { cursor: 'pointer' }
 
@@ -108,7 +105,7 @@ export const Chart = (props: IChartProps) => {
     <>
       {headerTitle && (
         <div className={`ml-[${(size - 1) * 2 + 'px'}]`}>
-          <LabelLarge marginLeft={theme.sizing.scale700}>{headerTitle}</LabelLarge>
+          <Label style={{ marginLeft: theme.sizing.scale700 }}>{headerTitle}</Label>
         </div>
       )}
       <div>
@@ -148,21 +145,7 @@ const Visualization = (props: TVisualizationProps) => {
           <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
         </Tooltip>
       </Button>
-      <Card
-        overrides={{
-          Root: {
-            style: hideBorder,
-          },
-          Action: {},
-          Contents: {
-            style: { ...marginAll(theme.sizing.scale400) },
-          },
-          Body: { style: { marginBottom: 0 } },
-        }}
-        hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-          return !!placeHolder
-        }}
-      >
+      <div className="bg-white p-4 rounded">
         <div onMouseLeave={() => setHover(-1)}>
           <div
             className={`flex items-center ${leftLegend ? 'flex-row-reverse' : 'flex-row'} max-w-fit flex-wrap`}
@@ -178,7 +161,7 @@ const Visualization = (props: TVisualizationProps) => {
               </div>
             )}
             <div className={`mx-1.5 ${noChartData ? 'mt-2.5' : ''}`}>
-              <LabelLarge marginBottom={theme.sizing.scale300}>{chartTitle}</LabelLarge>
+              <Label style={{ marginBottom: theme.sizing.scale300 }}>{chartTitle}</Label>
               {!noChartData &&
                 data.map((data: IChartDataExpanded, index) => (
                   <div
@@ -212,7 +195,7 @@ const Visualization = (props: TVisualizationProps) => {
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   )
 }

@@ -1,4 +1,3 @@
-import { Card } from 'baseui/card'
 import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
 import { NavigateFunction, useNavigate } from 'react-router'
 import {
@@ -13,7 +12,6 @@ import { ESection } from '../../pages/ProcessPage'
 import { clickOnPieChartSlice } from '../../util/dashboard'
 import { chartColor } from '../../util/theme'
 import RouteLink from '../common/RouteLink'
-import { cardShadow } from '../common/Style'
 import { Chart } from './Chart'
 import TriChart from './TriChart'
 
@@ -214,12 +212,7 @@ const Charts = (props: TChartsProps) => {
       )}
 
       <div className="mt-10 w-full">
-        <Card
-          overrides={cardShadow}
-          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-            return !!placeHolder
-          }}
-        >
+        <div className="bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           <div>
             <ParagraphMedium>
               Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
@@ -232,7 +225,7 @@ const Charts = (props: TChartsProps) => {
               <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
             </ParagraphMedium>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   )
