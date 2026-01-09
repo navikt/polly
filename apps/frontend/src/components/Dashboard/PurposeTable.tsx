@@ -1,4 +1,3 @@
-import { HeadingLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import {
@@ -9,7 +8,7 @@ import {
 import { EProcessField, EProcessState, EProcessStatusFilter, IProcessShort } from '../../constants'
 import { useQueryParam } from '../../util/hooks'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
-import { Spinner } from '../common/Spinner'
+import {Heading, Loader} from "@navikt/ds-react";
 
 type TPathProps = {
   filterName: EProcessField
@@ -96,8 +95,8 @@ const PurposeTable = () => {
 
   return (
     <>
-      <HeadingLarge>{title}</HeadingLarge>
-      {loading && <Spinner size="80px" />}
+      <Heading size='large'>{title}</Heading>
+      {loading && <Loader size='large' className="flex justify-self-center" />}
       {!loading && (
         <SimpleProcessTable
           processes={filtered}
