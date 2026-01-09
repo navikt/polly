@@ -1,4 +1,4 @@
-import { BodyLong, BodyShort } from '@navikt/ds-react'
+import { BodyLong, BodyShort, InfoCard } from '@navikt/ds-react'
 import { useState } from 'react'
 import { theme } from '../../util'
 import { primitives } from '../../util/theme'
@@ -17,7 +17,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
   return (
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <RouteLink href={to} hideUnderline={true}>
-        <div
+        <InfoCard
           style={{
             width: '320px',
             height: '150px',
@@ -25,7 +25,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
             boxShadow: hover
               ? '0px 4px 2px -1px rgba(0,0,0,0.7)'
               : '0px 0px 6px 3px rgba(0,0,0,0.08)',
-            backgroundColor: 'white',
+            border: `2px solid ${hover ? primitives.primary300 : 'transparent'}`,
             borderRadius: 4,
           }}
         >
@@ -50,7 +50,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
               <BodyShort>{subtitle}</BodyShort>
             </div>
           </div>
-        </div>
+        </InfoCard>
       </RouteLink>
     </div>
   )
