@@ -1,6 +1,6 @@
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { LabelLarge } from 'baseui/typography'
+import { Label } from '@navikt/ds-react'
 import { theme } from '../../../util'
 
 interface IProps {
@@ -13,7 +13,7 @@ const PanelTitle = (props: IProps) => {
 
   return (
     <div>
-      <LabelLarge color={theme.colors.primary}>
+      <Label style={{ color: theme.colors.primary }}>
         {expanded ? (
           <FontAwesomeIcon icon={faChevronDown} />
         ) : (
@@ -21,7 +21,7 @@ const PanelTitle = (props: IProps) => {
         )}
         <span> </span>
         <span>{title}</span>
-      </LabelLarge>
+      </Label>
     </div>
   )
 }

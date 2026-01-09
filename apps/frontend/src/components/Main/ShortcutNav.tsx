@@ -1,46 +1,8 @@
-import { Card, CardOverrides } from 'baseui/card'
-import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
+import { BodyLong, BodyShort } from '@navikt/ds-react'
 import { useState } from 'react'
 import { theme } from '../../util'
 import { primitives } from '../../util/theme'
 import RouteLink from '../common/RouteLink'
-import { borderColor, marginAll } from '../common/Style'
-
-const cardOverrides = (hover: boolean) => {
-  return {
-    Root: {
-      style: () => {
-        const base = {
-          width: '320px',
-          height: '150px',
-          margin: theme.sizing.scale200,
-        }
-        return hover
-          ? {
-              ...base,
-              ...borderColor(primitives.primary500),
-              boxShadow: '0px 4px 2px -1px rgba(0,0,0,0.7);',
-            }
-          : base
-      },
-    },
-    Body: {
-      style: () => {
-        return {
-          marginBottom: 0,
-        }
-      },
-    },
-    Contents: {
-      style: () => {
-        return {
-          ...marginAll(theme.sizing.scale600),
-        }
-      },
-    },
-    Action: {},
-  } as CardOverrides
-}
 
 type TShortcutCardProps = {
   title: string
@@ -55,34 +17,39 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
   return (
     <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <RouteLink href={to} hideUnderline={true}>
-        <Card
-          overrides={cardOverrides(hover)}
-          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-            return !!placeHolder
+        <div
+          style={{
+            width: '320px',
+            height: '150px',
+            margin: theme.sizing.scale200,
+            boxShadow: hover
+              ? '0px 4px 2px -1px rgba(0,0,0,0.7)'
+              : '0px 0px 6px 3px rgba(0,0,0,0.08)',
+            border: hover ? `2px solid ${primitives.primary300}` : '1px solid #F3F3F3',
+            borderRadius: 10,
           }}
         >
-          <div>
-            <div className="flex justify-center">
-              <ParagraphLarge
-                marginTop={theme.sizing.scale300}
-                marginBottom={theme.sizing.scale200}
-                $style={{
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <div>
+              <BodyLong
+                style={{
                   wordBreak: 'break-word',
-                  color: hover ? primitives.primary300 : undefined,
+                  color: hover ? primitives.primary300 : 'black',
                   textDecoration: 'underline',
-                  fontSize: '130%',
+
                   fontWeight: 'bolder',
+                  marginTop: theme.sizing.scale300,
+                  marginBottom: theme.sizing.scale200,
                 }}
               >
                 {title}
-              </ParagraphLarge>
+              </BodyLong>
             </div>
-
-            <div className="flex justify-center w-full">
-              <ParagraphMedium>{subtitle}</ParagraphMedium>
+            <div className="w-full">
+              <BodyShort style={{ color: 'black' }}>{subtitle}</BodyShort>
             </div>
           </div>
-        </Card>
+        </div>
       </RouteLink>
     </div>
   )

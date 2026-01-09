@@ -1,6 +1,6 @@
-import { Tooltip } from '@navikt/ds-react'
+import { Label, Tooltip } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
-import { LabelLarge, ParagraphXSmall } from 'baseui/typography'
+import { ParagraphXSmall } from 'baseui/typography'
 import { canViewAlerts } from '../../pages/AlertEventPage'
 import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
@@ -13,15 +13,12 @@ const Brand = () => (
   <div className="p-4">
     <StyledLink className="no-underline flex flex-col items-center" href="/">
       <img alt="logo" src={BKLogo} />
-      <LabelLarge
-        $style={{ fontSize: '115%' }}
-        color="white"
-        marginTop="1rem"
-        marginLeft="5px"
-        marginBottom="2rem"
+      <Label
+        className="text-white"
+        style={{ fontSize: '115%', marginTop: '1rem', marginLeft: '5px', marginBottom: '2rem' }}
       >
         Behandlingskatalog
-      </LabelLarge>
+      </Label>
     </StyledLink>
   </div>
 )
