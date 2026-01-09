@@ -29,8 +29,8 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
             borderRadius: 10,
           }}
         >
-          <div>
-            <div className="flex justify-center">
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <div>
               <BodyLong
                 style={{
                   wordBreak: 'break-word',
@@ -45,8 +45,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
                 {title}
               </BodyLong>
             </div>
-
-            <div className="flex justify-center w-full">
+            <div className="w-full">
               <BodyShort style={{ color: 'black' }}>{subtitle}</BodyShort>
             </div>
           </div>
