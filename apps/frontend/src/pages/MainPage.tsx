@@ -35,7 +35,7 @@ export const MainPage = () => {
       {!isLoading && dashboardData && (
         <>
           <div className="w-full flex flex-col">
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-10">
               <Heading size="xlarge" level="1">
                 Hva vil du gjøre?
               </Heading>
@@ -43,7 +43,7 @@ export const MainPage = () => {
             <ShortcutNav />
           </div>
 
-          <div className="w-full flex justify-center mt-12 mb-6">
+          <div className="w-full flex justify-center mt-12 mb-10">
             <Heading size="xlarge" level="1">
               Hva har endret seg i det siste?
             </Heading>
