@@ -1,4 +1,4 @@
-import { HeadingXXLarge } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getDashboard } from '../api/GetAllApi'
 import { getSettings } from '../api/SettingsApi'
@@ -36,25 +36,29 @@ export const MainPage = () => {
         <>
           <div className="w-full flex flex-col">
             <div className="flex justify-center">
-              <HeadingXXLarge>Hva vil du gjøre?</HeadingXXLarge>
+              <Heading size="xlarge" level="1">
+                Hva vil du gjøre?
+              </Heading>
             </div>
             <ShortcutNav />
           </div>
 
           <div className="w-full flex justify-center mt-12 mb-6">
-            <HeadingXXLarge>Hva har endret seg i det siste?</HeadingXXLarge>
+            <Heading size="xlarge" level="1">
+              Hva har endret seg i det siste?
+            </Heading>
           </div>
 
           <div className="w-full flex justify-between mb-6 flex-wrap">
             {user.isLoggedIn() && (
               <div className="flex w-[48%] mb-6" style={{ minHeight: '550px' }}>
-                <div className="bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
+                <div className="bg-white p-4 rounded shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
                   <RecentEditsByUser />
                 </div>
               </div>
             )}
             <div className="flex w-[48%] mb-6" style={{ minHeight: '550px' }}>
-              <div className="bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
+              <div className="bg-white p-4 rounded shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
                 <LastEvents />
               </div>
             </div>
@@ -63,7 +67,7 @@ export const MainPage = () => {
               className={`${user.isLoggedIn() ? 'w-full mt-12 mb-0.5' : 'w-[48%] mt-0.5 mb-6'}`}
               style={{ minHeight: '550px' }}
             >
-              <div className="bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
+              <div className="bg-white p-4 rounded shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
                 <Markdown source={settings?.frontpageMessage} escapeHtml={false} />
               </div>
             </div>

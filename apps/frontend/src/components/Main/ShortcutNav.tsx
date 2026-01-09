@@ -1,4 +1,4 @@
-import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
+import { BodyLong, BodyShort } from '@navikt/ds-react'
 import { useState } from 'react'
 import { theme } from '../../util'
 import { primitives } from '../../util/theme'
@@ -22,30 +22,32 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
             width: '320px',
             height: '150px',
             margin: theme.sizing.scale200,
-            boxShadow: hover ? '0px 4px 2px -1px rgba(0,0,0,0.7)' : undefined,
+            boxShadow: hover
+              ? '0px 4px 2px -1px rgba(0,0,0,0.7)'
+              : '0px 0px 6px 3px rgba(0,0,0,0.08)',
             backgroundColor: 'white',
             borderRadius: 4,
           }}
         >
           <div>
             <div className="flex justify-center">
-              <ParagraphLarge
-                marginTop={theme.sizing.scale300}
-                marginBottom={theme.sizing.scale200}
-                $style={{
+              <BodyLong
+                style={{
                   wordBreak: 'break-word',
                   color: hover ? primitives.primary300 : undefined,
                   textDecoration: 'underline',
-                  fontSize: '130%',
+
                   fontWeight: 'bolder',
+                  marginTop: theme.sizing.scale300,
+                  marginBottom: theme.sizing.scale200,
                 }}
               >
                 {title}
-              </ParagraphLarge>
+              </BodyLong>
             </div>
 
             <div className="flex justify-center w-full">
-              <ParagraphMedium>{subtitle}</ParagraphMedium>
+              <BodyShort>{subtitle}</BodyShort>
             </div>
           </div>
         </div>
