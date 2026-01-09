@@ -1,4 +1,4 @@
-import { HeadingXLarge } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { IInformationType, informationTypeSort } from '../../constants'
 import { CodelistService, EListName } from '../../service/Codelist'
@@ -46,9 +46,9 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
       {isLoading && <Spinner size={theme.sizing.scale1200} />}
       {!isLoading && (
         <div className="mb-12">
-          <HeadingXLarge>
+          <Heading size="xlarge" level="2">
             {title} ({informationTypeList.length})
-          </HeadingXLarge>
+          </Heading>
 
           <Table
             emptyText="Ingen opplysningstyper"
