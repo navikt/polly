@@ -1,5 +1,4 @@
 import { useStyletron } from 'baseui'
-import { KIND } from 'baseui/button'
 import { StyledLink } from 'baseui/link'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
@@ -108,7 +107,7 @@ export const ObjectLink = (props: TObjectLinkProps) => {
   return withHistory ? (
     <div className="flex justify-between w-full items-center">
       {link}
-      <AuditButton id={id} kind={KIND.tertiary} />
+      <AuditButton id={id} kind="tertiary" />
     </div>
   ) : (
     link

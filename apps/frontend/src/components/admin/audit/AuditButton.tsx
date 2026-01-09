@@ -1,6 +1,5 @@
 import { faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { KIND } from 'baseui/button'
 import { user } from '../../../service/User'
 import Button from '../../common/Button/CustomButton'
 import RouteLink from '../../common/RouteLink'
@@ -8,7 +7,15 @@ import RouteLink from '../../common/RouteLink'
 interface IProps {
   id: string
   auditId?: string
-  kind?: (typeof KIND)[keyof typeof KIND]
+  kind?:
+    | 'primary'
+    | 'primary-neutral'
+    | 'secondary'
+    | 'secondary-neutral'
+    | 'tertiary'
+    | 'tertiary-neutral'
+    | 'danger'
+    | 'outline'
   marginLeft?: boolean
   marginRight?: boolean
   children?: any
