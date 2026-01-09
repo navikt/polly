@@ -1,7 +1,6 @@
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Tag } from '@navikt/ds-react'
-import { LabelLarge } from 'baseui/typography'
+import { Label, Tag } from '@navikt/ds-react'
 import { Ref, createRef } from 'react'
 import { IProcessShort } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
@@ -25,7 +24,7 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
 
   return (
     <div ref={forwardRef}>
-      <LabelLarge color={theme.colors.primary}>
+      <Label className="text-[var(--a-text-default)]" style={{ color: theme.colors.primary }}>
         {!noChevron && expanded && <FontAwesomeIcon icon={faChevronDown} />}
         {!noChevron && !expanded && <FontAwesomeIcon icon={faChevronRight} />}
         <span> </span>
@@ -38,7 +37,7 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
           :{' '}
         </span>
         <span>{process.name}</span>
-      </LabelLarge>
+      </Label>
     </div>
   )
 }

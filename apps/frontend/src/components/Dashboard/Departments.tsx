@@ -1,6 +1,5 @@
-import { Button, Tooltip } from '@navikt/ds-react'
-import { Card } from 'baseui/card'
-import { LabelLarge, ParagraphMedium } from 'baseui/typography'
+import { Button, Label, Tooltip } from '@navikt/ds-react'
+import { ParagraphMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { getAllNomAvdelinger, getAvdelingByNomId } from '../../api/NomApi'
 import {
@@ -12,7 +11,6 @@ import {
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
 import { theme } from '../../util'
 import RouteLink from '../common/RouteLink'
-import { cardShadow } from '../common/Style'
 
 interface ITextWithNumberProps {
   label: string
@@ -61,12 +59,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
   return (
     <Tooltip content={nomDepartmentName}>
       <Button type="button" variant="tertiary-neutral">
-        <Card
-          overrides={cardShadow}
-          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-            return !!placeHolder
-          }}
-        >
+        <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           <div className="flex flex-col items-center justify-around w-52 h-28">
             <RouteLink
               href={genProcessPath(
@@ -76,9 +69,9 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               )}
               style={{ textDecoration: 'none' }}
             >
-              <LabelLarge color={theme.colors.accent300} $style={{ textAlign: 'center' }}>
+              <Label style={{ color: theme.colors.accent300, textAlign: 'center' }}>
                 {nomDepartmentName !== '' ? nomDepartmentName : 'Fant ikke'}
-              </LabelLarge>
+              </Label>
             </RouteLink>
 
             <RouteLink
@@ -115,7 +108,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               <TextWithNumber label="Revidering" number={department.processesNeedsRevision} />
             </RouteLink>
           </div>
-        </Card>
+        </div>
       </Button>
     </Tooltip>
   )

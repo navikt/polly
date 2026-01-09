@@ -1,5 +1,4 @@
-import { Card } from 'baseui/card'
-import { HeadingXXLarge } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getDashboard } from '../api/GetAllApi'
 import { getSettings } from '../api/SettingsApi'
@@ -7,7 +6,6 @@ import ShortcutNav from '../components/Main/ShortcutNav'
 import { LastEvents } from '../components/admin/audit/LastEvents'
 import { RecentEditsByUser } from '../components/admin/audit/RecentEditsByUser'
 import { Markdown } from '../components/common/Markdown'
-import { cardShadow } from '../components/common/Style'
 import { EProcessStatusFilter, IDashboardData, ISettings } from '../constants'
 import { user } from '../service/User'
 
@@ -32,66 +30,46 @@ export const MainPage = () => {
     getDashboard(EProcessStatusFilter.All).then(setDashboardData)
   }, [])
 
-  const cardOverrides = {
-    Action: {},
-    Root: {
-      style: {
-        ...cardShadow.Root.style,
-        width: '100%',
-      },
-    },
-  }
-
   return (
     <div className="flex flex-wrap" role="main">
       {!isLoading && dashboardData && (
         <>
           <div className="w-full flex flex-col">
-            <div className="flex justify-center">
-              <HeadingXXLarge>Hva vil du gjøre?</HeadingXXLarge>
+            <div className="flex justify-center mb-10">
+              <Heading size="xlarge" level="1">
+                Hva vil du gjøre?
+              </Heading>
             </div>
             <ShortcutNav />
           </div>
 
-          <div className="w-full flex justify-center mt-12 mb-6">
-            <HeadingXXLarge>Hva har endret seg i det siste?</HeadingXXLarge>
+          <div className="w-full flex justify-center mt-12 mb-10">
+            <Heading size="xlarge" level="1">
+              Hva har endret seg i det siste?
+            </Heading>
           </div>
 
           <div className="w-full flex justify-between mb-6 flex-wrap">
             {user.isLoggedIn() && (
-              <div className="flex w-[48%] mb-6 min-h-[550px]">
-                <Card
-                  overrides={cardOverrides}
-                  hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-                    return !!placeHolder
-                  }}
-                >
+              <div className="flex w-[48%] mb-6" style={{ minHeight: '550px' }}>
+                <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
                   <RecentEditsByUser />
-                </Card>
+                </div>
               </div>
             )}
-            <div className="flex w-[48%] mb-6 min-h-[550px]">
-              <Card
-                overrides={cardOverrides}
-                hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-                  return !!placeHolder
-                }}
-              >
+            <div className="flex w-[48%] mb-6" style={{ minHeight: '550px' }}>
+              <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
                 <LastEvents />
-              </Card>
+              </div>
             </div>
 
             <div
-              className={`min-h-[550px] ${user.isLoggedIn() ? 'w-full mt-12 mb-[2px]' : 'w-[48%] mt-[2px] mb-6'}`}
+              className={`${user.isLoggedIn() ? 'w-full mt-12 mb-0.5' : 'w-[48%] mt-0.5 mb-6'}`}
+              style={{ minHeight: '550px' }}
             >
-              <Card
-                overrides={cardShadow}
-                hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-                  return !!placeHolder
-                }}
-              >
+              <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
                 <Markdown source={settings?.frontpageMessage} escapeHtml={false} />
-              </Card>
+              </div>
             </div>
           </div>
         </>

@@ -1,7 +1,8 @@
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Label } from '@navikt/ds-react'
+import { Heading } from '@navikt/ds-react'
 import { StyledLink } from 'baseui/link'
-import { HeadingXXLarge, LabelLarge } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api/GetAllApi'
 import { getAvdelingByNomId } from '../../api/NomApi'
@@ -112,12 +113,14 @@ export const PageHeader = (props: IPageHeaderProps) => {
       {!isLoading && (
         <>
           <div className="mb-12 flex items-center">
-            <HeadingXXLarge>{getTitle()}</HeadingXXLarge>
+            <Heading size="xlarge" level="1">
+              {getTitle()}
+            </Heading>
             {externalLink()}
           </div>
 
           <div className="mb-10">
-            <LabelLarge marginBottom={theme.sizing.scale600}>{metadataTitle()}</LabelLarge>
+            <Label style={{ marginBottom: theme.sizing.scale600 }}>{metadataTitle()}</Label>
             <Markdown source={getDescription()} />
           </div>
         </>
