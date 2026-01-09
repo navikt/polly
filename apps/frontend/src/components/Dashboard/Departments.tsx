@@ -59,7 +59,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
   return (
     <Tooltip content={nomDepartmentName}>
       <Button type="button" variant="tertiary-neutral">
-        <div className="bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
+        <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           <div className="flex flex-col items-center justify-around w-52 h-28">
             <RouteLink
               href={genProcessPath(

@@ -68,7 +68,7 @@ const Charts = (props: TChartsProps) => {
 
   const all = chartData as IAllDashCount
   const chartCardStyle =
-    'mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]'
+    'mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]'
 
   return (
     <div className="flex flex-wrap w-full justify-between">
@@ -212,7 +212,7 @@ const Charts = (props: TChartsProps) => {
       )}
 
       <div className="mt-10 w-full">
-        <div className="bg-white p-4 shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
+        <div className="bg-red p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           <div>
             <ParagraphMedium>
               Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
