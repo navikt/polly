@@ -1,7 +1,7 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Select } from '@navikt/ds-react'
+import { Heading, Select } from '@navikt/ds-react'
 import { Spinner } from 'baseui/spinner'
-import { HeadingXLarge, LabelMedium } from 'baseui/typography'
+import { LabelMedium } from 'baseui/typography'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import {
@@ -405,9 +405,9 @@ const ProcessList = ({
         </div>
         <div className="mr-auto">
           {!hideTitle && (
-            <HeadingXLarge>
+            <Heading size="xlarge" level="2">
               {titleOverride || 'Behandlinger'} ({processList.length})
-            </HeadingXLarge>
+            </Heading>
           )}
         </div>
       </div>

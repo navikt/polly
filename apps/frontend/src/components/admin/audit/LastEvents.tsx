@@ -1,11 +1,8 @@
-import { Select } from '@navikt/ds-react'
-import { StatefulTabs, Tab } from 'baseui/tabs'
-import { HeadingXLarge, LabelMedium } from 'baseui/typography'
+import { Heading, Label, Select, Tabs } from '@navikt/ds-react'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { getEvents } from '../../../api/AuditApi'
 import { EAuditAction, EObjectType, IPageResponse, TEvent } from '../../../constants'
-import { theme } from '../../../util'
 import { tekster } from '../../../util/codeToFineText'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { ObjectLink } from '../../common/RouteLink'
@@ -31,9 +28,11 @@ export const LastEvents = () => {
         hideUnderline
       >
         <div className="w-full flex justify-between">
-          <div className="pr-2 overflow-hidden whitespace-nowrap text-ellipsis">
-            <AuditActionIcon action={event.action} />
-            {event.name}
+          <div className="pr-2 min-w-0 flex items-center gap-1">
+            <span className="shrink-0 align-middle">
+              <AuditActionIcon action={event.action} />
+            </span>
+            <span className="overflow-hidden whitespace-nowrap text-ellipsis">{event.name}</span>
           </div>
           <div className="min-w-32 text-right">
             <CustomizedStatefulTooltip
@@ -49,9 +48,11 @@ export const LastEvents = () => {
   return (
     <div>
       <div className="flex justify-between items-center w-full">
-        <HeadingXLarge>Siste hendelser</HeadingXLarge>
+        <Heading size="xlarge" level="2">
+          Siste hendelser
+        </Heading>
         <div className="flex justify-between items-center">
-          <LabelMedium marginRight={theme.sizing.scale300}>Hendelsestype</LabelMedium>
+          <Label className="mr-2">Hendelsestype</Label>
           <Select
             size="small"
             label="Hendelsestype"
@@ -67,18 +68,33 @@ export const LastEvents = () => {
         </div>
       </div>
       <div>
-        <StatefulTabs onChange={(args) => setTable(args.activeKey as EObjectType)}>
+        <Tabs value={table} onChange={(val) => setTable(val as EObjectType)}>
+          <Tabs.List>
+            {[
+              EObjectType.PROCESS,
+              EObjectType.INFORMATION_TYPE,
+              EObjectType.DISCLOSURE,
+              EObjectType.DOCUMENT,
+            ].map((tableName) => (
+              <Tabs.Tab
+                key={tableName}
+                value={tableName}
+                label={(tekster as any)[tableName] || tableName}
+              />
+            ))}
+          </Tabs.List>
+
           {[
             EObjectType.PROCESS,
             EObjectType.INFORMATION_TYPE,
             EObjectType.DISCLOSURE,
             EObjectType.DOCUMENT,
           ].map((tableName) => (
-            <Tab key={tableName} title={(tekster as any)[tableName] || tableName}>
+            <Tabs.Panel key={tableName} value={tableName}>
               {content}
-            </Tab>
+            </Tabs.Panel>
           ))}
-        </StatefulTabs>
+        </Tabs>
       </div>
     </div>
   )

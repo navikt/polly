@@ -1,7 +1,6 @@
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Detail, Select } from '@navikt/ds-react'
-import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input'
 import { KIND as NKIND, Notification } from 'baseui/notification'
 import { LabelMedium } from 'baseui/typography'
@@ -89,12 +88,7 @@ const CardLegalBasis = ({
       validationSchema={legalBasisSchema()}
       initialValues={initialValues}
       render={(form: FormikProps<ILegalBasisFormValues>) => (
-        <Card
-          overrides={{ Action: {} }}
-          hasThumbnail={(placeHolder: { readonly thumbnail?: string | undefined }) => {
-            return !!placeHolder
-          }}
-        >
+        <div className="bg-white p-4 rounded shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           {renderCardHeader(
             sensitivityLevel === ESensitivityLevel.ART9
               ? 'Behandlingsgrunnlag for særlige kategorier'
@@ -197,7 +191,7 @@ const CardLegalBasis = ({
               </div>
             </>
           )}
-        </Card>
+        </div>
       )}
     />
   )

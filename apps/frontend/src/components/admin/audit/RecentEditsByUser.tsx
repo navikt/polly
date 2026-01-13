@@ -1,4 +1,4 @@
-import { HeadingXLarge } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { getRecentEditedProcesses } from '../../../api/GetAllApi'
@@ -18,7 +18,9 @@ export const RecentEditsByUser = () => {
 
   return (
     <div className="items-center w-full">
-      <HeadingXLarge>Mine siste endringer</HeadingXLarge>
+      <Heading size="xlarge" level="2" className="mb-6">
+        Mine siste endringer
+      </Heading>
       {recentEdits
         .slice(0, 10)
         .sort((a, b) => moment(b.time).valueOf() - moment(a.time).valueOf())

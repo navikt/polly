@@ -60,7 +60,7 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
       {isLoading && <Loader size="large" className="flex justify-self-center" />}
       {!isLoading && (
         <div className="mb-12">
-          <Heading size="large">
+          <Heading size="xlarge" level="2">
             {title} ({informationTypeList.length})
           </Heading>
 

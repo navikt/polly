@@ -1,7 +1,6 @@
-import { BodyShort, Spacer, Tabs } from '@navikt/ds-react'
+import { BodyShort, Heading, Spacer, Tabs } from '@navikt/ds-react'
 import { Button, KIND } from 'baseui/button'
 import { Plus } from 'baseui/icon'
-import { HeadingXLarge } from 'baseui/typography'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
@@ -145,9 +144,9 @@ export const ProcessDisclosureTabs = (props: IProps) => {
       <Tabs.Panel value="utleveringer">
         <div className="my-2">
           <div className="flex">
-            <HeadingXLarge>
+            <Heading size="xlarge" level="2">
               Utleveringer ({disclosureData ? disclosureData.length : 0})
-            </HeadingXLarge>
+            </Heading>
             <Spacer />
             {isEditable && (
               <div className="flex justify-end">
