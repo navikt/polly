@@ -48,7 +48,7 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
 
   useEffect(() => {
     if (!getInfoTypes) return
-      ;(async () => {
+    ;(async () => {
       setIsLoading(true)
       setInformationTypeList(await getInfoTypes())
       setIsLoading(false)
@@ -60,7 +60,7 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
       {isLoading && <Loader size="large" className="flex justify-self-center" />}
       {!isLoading && (
         <div className="mb-12">
-          <Heading size="xlarge" level="2">
+          <Heading className="mt-3" size="xlarge" level="2">
             {title} ({informationTypeList.length})
           </Heading>
 
