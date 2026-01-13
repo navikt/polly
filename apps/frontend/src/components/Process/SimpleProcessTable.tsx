@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {BodyLong, Button, Link, SortState, Table} from '@navikt/ds-react'
 import { getResourceById } from '../../api/TeamApi'
 import { IProcessShort, IProcessShortWithEmail} from '../../constants'
@@ -41,7 +41,7 @@ export const SimpleProcessTable = (props: IProps) => {
     })()
   }, [processes])
 
-  let sortedData: IProcessShortWithEmail[] = useMemo(() => processesWithEmail, [processesWithEmail])
+  let sortedData: IProcessShortWithEmail[] = processesWithEmail
 
   const comparator = (a: IProcessShortWithEmail, b: IProcessShortWithEmail, orderBy: string): number => {
     switch (orderBy) {
@@ -136,7 +136,7 @@ export const SimpleProcessTable = (props: IProps) => {
                   </Table.DataCell>
                 )}
                 <Table.DataCell textSize='small'>{processStatusText(process.status)}</Table.DataCell>
-                <Table.DataCell>
+                <Table.DataCell textSize='small'>
                   <Link href={'mailto: ' + process.lastModifiedEmail}>
                     {process.lastModifiedEmail}
                   </Link>
