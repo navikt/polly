@@ -1,5 +1,4 @@
-import { Select } from '@navikt/ds-react'
-import { HeadingLarge, HeadingMedium, HeadingSmall } from 'baseui/typography'
+import {BodyLong, Heading, Select} from '@navikt/ds-react'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
@@ -32,10 +31,10 @@ export const LegalPage = () => {
 
   return (
     <div>
-      <HeadingLarge>Søk behandlingsgrunnlag</HeadingLarge>
-      <div className="flex">
+      <Heading size='large'>Søk behandlingsgrunnlag</Heading>
+      <BodyLong size='large'>Velg GDPR artikkel og/eller nasjonal lov</BodyLong>
+      <div className="flex mt-3">
         <div className="w-[40%] mt-3">
-          <HeadingSmall>Velg GDPR artikkel</HeadingSmall>
           <Select
             label="GDPR artikkel"
             value={gdprArticle ?? ''}
@@ -59,7 +58,6 @@ export const LegalPage = () => {
           </Select>
         </div>
         <div className="w-[40%] mt-3 ml-2.5">
-          <HeadingSmall>og/eller nasjonal lov</HeadingSmall>
           <Select
             label="Nasjonal lov"
             value={nationalLaw ?? ''}
@@ -90,7 +88,7 @@ export const LegalPage = () => {
 
 const ProcessTable = (props: { processes: IProcess[] }) => (
   <div className="flex flex-col mt-3">
-    <HeadingMedium>Behandlinger ({props.processes.length})</HeadingMedium>
+    <Heading size='medium'> Behandlinger ({props.processes.length})</Heading>
     <SimpleProcessTable
       title={'Behandlinger' + ' (' + props.processes.length + ')'}
       processes={props.processes}
