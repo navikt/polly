@@ -58,21 +58,6 @@ const Purposes = (props: IPurposesProps) => {
   )
 }
 
-interface IDisclosuresProps {
-  disclosures: IDisclosure[]
-  codelistUtils: ICodelistProps
-}
-
-const Disclosures = ({ disclosures, codelistUtils }: IDisclosuresProps) => (
-  <TableDisclosure
-    list={disclosures}
-    showRecipient
-    editable={false}
-    onCloseModal={() => console.debug('skal fjerrens også!')}
-    codelistUtils={codelistUtils}
-  />
-)
-
 export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) => {
   const { informationtype, policies, disclosures, documents } = props
   const [activeTab, setActiveTab] = useState('purposes')
@@ -123,9 +108,7 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
               {!disclosures && (
                 <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />
               )}
-              {disclosures && (
-                <Disclosures disclosures={disclosures} codelistUtils={codelistUtils} />
-              )}
+              {disclosures && <TableDisclosure list={disclosures} codelistUtils={codelistUtils} />}
             </Tab>
             <Tab key="document" title="Dokumenter" overrides={tabOverride}>
               {!documents && (
