@@ -53,11 +53,14 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
       emptyText="Ingen behandlinger"
       headers={
         <>
-          <HeadCell
-            title="Overordnet behandlingsaktivitet"
-            column="purposes"
-            tableState={[table, sortColumn]}
-          />
+          {showPurpose && (
+            <HeadCell
+              title="Overordnet behandlingsaktivitet"
+              column="purposes"
+              tableState={[table, sortColumn]}
+            />
+          )}
+
           <HeadCell title="Behandling" column="process" tableState={[table, sortColumn]} />
           <HeadCell
             title="Personkategori"
