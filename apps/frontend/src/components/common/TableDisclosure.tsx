@@ -1,15 +1,10 @@
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-import { Fragment, useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
+import { BodyLong, InlineMessage, Link, SortState, Table } from '@navikt/ds-react'
+import { useEffect, useState } from 'react'
 import { getAlertForDisclosure } from '../../api/AlertApi'
-import { IDisclosure, IDisclosureAlert, disclosureSort } from '../../constants'
-import { canViewAlerts } from '../../pages/AlertEventPage'
+import { IDisclosure, IDisclosureAlert } from '../../constants'
 import { ICodelistProps } from '../../service/Codelist'
-import { useTable } from '../../util/hooks'
-import Button from './Button/CustomButton'
+import { handleSort } from '../../util/handleTableSort'
 import { ListLegalBasesInTable } from './LegalBasis'
-import RouteLink from './RouteLink'
-import { Cell, HeadCell, Row, Table } from './Table'
 
 type TTableDisclosureProps = {
   list: Array<IDisclosure>
@@ -17,12 +12,39 @@ type TTableDisclosureProps = {
 }
 
 type TAlerts = { [k: string]: IDisclosureAlert }
+
 const TableDisclosure = ({ list, codelistUtils }: TTableDisclosureProps) => {
   const [alerts, setAlerts] = useState<TAlerts>({})
+  const [sort, setSort] = useState<SortState>()
 
-  const [table, sortColumn] = useTable<IDisclosure, keyof IDisclosure>(list, {
-    sorting: disclosureSort,
-    initialSortColumn: 'name',
+  let sortedData: IDisclosure[] = list
+
+  const comparator = (a: IDisclosure, b: IDisclosure, orderBy: string): number => {
+    switch (orderBy) {
+      case 'recipient':
+        return a.recipient.shortName.localeCompare(b.recipient.shortName)
+      case 'name':
+        return a.name.localeCompare(b.name)
+      case 'document':
+        return (a.document?.name || '').localeCompare(b.document?.name || '')
+      case 'recipientPurpose':
+        return a.recipientPurpose.localeCompare(b.recipientPurpose)
+      case 'description':
+        return (a.description || '').localeCompare(b.description || '')
+      case 'legalBases':
+        return (a.legalBases[0].description || '').localeCompare(b.legalBases[0].description || '')
+      default:
+        return 0
+    }
+  }
+
+  sortedData = sortedData.sort((a: IDisclosure, b: IDisclosure) => {
+    if (sort) {
+      return sort.direction === 'ascending'
+        ? comparator(b, a, sort.orderBy)
+        : comparator(a, b, sort.orderBy)
+    }
+    return 1
   })
 
   useEffect(() => {
@@ -38,94 +60,66 @@ const TableDisclosure = ({ list, codelistUtils }: TTableDisclosureProps) => {
   }, [list])
 
   return (
-    <Fragment>
-      <Table
-        emptyText="Ingen utlevering"
-        headers={
-          <>
-            <HeadCell title="Mottaker" column="recipient" tableState={[table, sortColumn]} />
-            <HeadCell title="Navn på utlevering" column="name" tableState={[table, sortColumn]} />
-            <HeadCell title="Dokument" column="document" tableState={[table, sortColumn]} />
-            <HeadCell
-              title="Formål med utlevering"
-              column="recipientPurpose"
-              tableState={[table, sortColumn]}
-            />
-            <HeadCell
-              title="Ytterligere beskrivelse"
-              column="description"
-              tableState={[table, sortColumn]}
-            />
-            <HeadCell
-              title="Behandlingsgrunnlag"
-              column="legalBases"
-              tableState={[table, sortColumn]}
-            />
-            <HeadCell small />
-          </>
-        }
-      >
-        {table.data.map((row: IDisclosure, index: number) => (
-          <DisclosureRow
-            codelistUtils={codelistUtils}
-            key={index}
-            disclosure={row}
-            alert={alerts[row.id]}
-          />
-        ))}
-      </Table>
-    </Fragment>
-  )
-}
-
-interface IDisclosureRowProps {
-  disclosure: IDisclosure
-  alert: IDisclosureAlert
-  codelistUtils: ICodelistProps
-}
-
-const DisclosureRow = (props: IDisclosureRowProps) => {
-  const { disclosure, alert, codelistUtils } = props
-  const navigate: NavigateFunction = useNavigate()
-  const hasAlert: boolean = alert?.missingArt6
-
-  return (
-    <Row>
-      <Cell>
-        <RouteLink href={`/thirdparty/${disclosure.recipient.code}`}>
-          {disclosure.recipient.shortName}
-        </RouteLink>
-      </Cell>
-      <Cell>{disclosure.name}</Cell>
-      <Cell>
-        {
-          <RouteLink href={`/document/${disclosure.documentId}`}>
-            {disclosure.document?.name}
-          </RouteLink>
-        }
-      </Cell>
-      <Cell>{disclosure.recipientPurpose}</Cell>
-      <Cell>{disclosure.description}</Cell>
-      <Cell>
-        {disclosure.legalBases && (
-          <ListLegalBasesInTable legalBases={disclosure.legalBases} codelistUtils={codelistUtils} />
+    <Table size="small" sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader sortKey="recipient" className="w-1/6" sortable>
+            Mottaker
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortKey="name" className="w-1/6" sortable>
+            Navn på utlevering
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortKey="document" className="w-1/6" sortable>
+            Dokument
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortKey="recipientPurpose" className="w-1/6" sortable>
+            Formål med utlevering
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortKey="description" className="w-1/6" sortable>
+            Ytterligere beskrivelse
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortKey="legalBases" className="w-1/6" sortable>
+            Behandlingsgrunnlag
+          </Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {sortedData.length === 0 ? (
+          <BodyLong>Ingen utleveringer</BodyLong>
+        ) : (
+          sortedData.map((row: IDisclosure, index: number) => (
+            <Table.Row key={index}>
+              <Table.DataCell textSize="small">
+                <Link href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</Link>
+              </Table.DataCell>
+              <Table.DataCell textSize="small">{row.name}</Table.DataCell>
+              <Table.DataCell textSize="small">
+                <Link href={`/document/${row.documentId}`}>{row.document?.name}</Link>
+              </Table.DataCell>
+              <Table.DataCell textSize="small">{row.recipientPurpose}</Table.DataCell>
+              <Table.DataCell textSize="small" className="break-all">
+                {row.description}
+              </Table.DataCell>
+              <Table.DataCell textSize="small">
+                {row.legalBases && (
+                  <ListLegalBasesInTable
+                    legalBases={row.legalBases}
+                    codelistUtils={codelistUtils}
+                  />
+                )}
+                {alerts[row.id] && alerts[row.id].missingArt6 && (
+                  <InlineMessage size="small" status="warning">
+                    <Link href={`/alert/events/disclosure/${row.id}`}>
+                      Behandlingsgrunnlag for artikkel 6 mangler
+                    </Link>
+                  </InlineMessage>
+                )}
+              </Table.DataCell>
+            </Table.Row>
+          ))
         )}
-      </Cell>
-      <Cell small>
-        {hasAlert && canViewAlerts() && (
-          <Button
-            type="button"
-            kind="tertiary"
-            size="xsmall"
-            icon={faExclamationCircle}
-            tooltip={
-              hasAlert ? `Varsler: Behandlingsgrunnlag for artikkel 6 mangler` : `Varsler: Nei`
-            }
-            onClick={() => navigate(`/alert/events/disclosure/${disclosure.id}`)}
-          />
-        )}
-      </Cell>
-    </Row>
+      </Table.Body>
+    </Table>
   )
 }
 
