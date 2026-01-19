@@ -2,8 +2,6 @@ import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Chips, Dropdown, Heading, Label, Select, Table } from '@navikt/ds-react'
 import { Pagination } from 'baseui/pagination'
-import { SORT_DIRECTION } from 'baseui/table'
-import { LabelMedium } from 'baseui/typography'
 import moment from 'moment'
 import { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
@@ -21,8 +19,6 @@ import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
 import { tekster } from '../util/codeToFineText'
 
-type TSortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
-
 type TState = {
   events: IPageResponse<IAlertEvent>
   page: number
@@ -32,7 +28,6 @@ type TState = {
   processId?: string
   informationTypeId?: string
   disclosureId?: string
-  sort: { column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 }
 
 type TAlertObjectType = 'informationtype' | 'process' | 'disclosure'
@@ -44,7 +39,6 @@ type TAction =
   | { type: 'EVENT_TYPE'; value?: EAlertEventType }
   | { type: 'EVENT_LEVEL'; value?: EAlertEventLevel }
   | { type: 'OBJECT_FILTER'; objectType?: TAlertObjectType; id?: string }
-  | { type: 'SORT'; column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 
 const clampPage = (state: TState, page: number, limit: number): number => {
   if (page < 1 || page > state.events.pages) {
@@ -77,8 +71,6 @@ const reducer = (state: TState, action: TAction): TState => {
       return { ...state, page: 1, type: action.value }
     case 'EVENT_LEVEL':
       return { ...state, page: 1, level: action.value }
-    case 'SORT':
-      return { ...state, sort: { column: action.column, dir: action.dir } }
   }
 }
 
@@ -102,7 +94,6 @@ export const AlertEventPage = () => {
     processId: objectType === 'process' ? id : undefined,
     informationTypeId: objectType === 'informationtype' ? id : undefined,
     disclosureId: objectType === 'disclosure' ? id : undefined,
-    sort: { column: 'TIME', dir: SORT_DIRECTION.DESC },
   })
   const setPage = (p: number) => dispatch({ type: 'PAGE', value: p })
   const setLimit = (l: number) => dispatch({ type: 'LIMIT', value: l })
@@ -150,7 +141,7 @@ export const AlertEventPage = () => {
         <Heading size="large">Varsler</Heading>
         {(state.informationTypeId || state.processId || state.disclosureId) && (
           <div className="flex items-center">
-            <LabelMedium>Filter: </LabelMedium>
+            <Label className="mr-3">Filter:</Label>
             <Button
               variant="secondary"
               size="xsmall"
