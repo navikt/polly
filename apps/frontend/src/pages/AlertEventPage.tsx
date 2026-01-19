@@ -1,6 +1,6 @@
 import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Heading, Select, Table } from '@navikt/ds-react'
+import { Button, Chips, Dropdown, Heading, Label, Select, Table } from '@navikt/ds-react'
 import { Pagination } from 'baseui/pagination'
 import { SORT_DIRECTION } from 'baseui/table'
 import { LabelMedium } from 'baseui/typography'
@@ -19,7 +19,6 @@ import {
 } from '../constants'
 import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
-import { theme } from '../util'
 import { tekster } from '../util/codeToFineText'
 
 type TSortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
@@ -134,16 +133,15 @@ export const AlertEventPage = () => {
     dispatch({ type: 'OBJECT_FILTER', objectType, id })
   }, [objectType, id])
 
-  const levelButton = (text: string, newLevel?: EAlertEventLevel) => (
-    <Button
-      className="mr-2.5"
-      type="button"
-      variant={state.level === newLevel ? 'primary' : 'secondary'}
-      size="xsmall"
+  const filterToggle = (text: string, newLevel?: EAlertEventLevel) => (
+    <Chips.Toggle
+      checkmark={false}
+      key={text}
+      selected={state.level === newLevel}
       onClick={() => setLevel(newLevel)}
     >
       {text}
-    </Button>
+    </Chips.Toggle>
   )
 
   return (
@@ -187,11 +185,13 @@ export const AlertEventPage = () => {
         </Select>
 
         <div className="w-full flex justify-end items-center">
-          <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
-          {levelButton('Alle')}
-          {levelButton('Info', EAlertEventLevel.INFO)}
-          {levelButton('Advarsel', EAlertEventLevel.WARNING)}
-          {levelButton('Feil', EAlertEventLevel.ERROR)}
+          <Label className="mr-3">Nivå:</Label>
+          <Chips>
+            {filterToggle('Alle')}
+            {filterToggle('Info', EAlertEventLevel.INFO)}
+            {filterToggle('Advarsel', EAlertEventLevel.WARNING)}
+            {filterToggle('Feil', EAlertEventLevel.ERROR)}
+          </Chips>
         </div>
       </div>
       <Table size="small">
