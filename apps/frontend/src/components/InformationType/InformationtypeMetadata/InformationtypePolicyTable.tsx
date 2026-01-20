@@ -1,3 +1,4 @@
+import { Link, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAlertForInformationType } from '../../../api/AlertApi'
 import {
@@ -6,14 +7,11 @@ import {
   IPolicy,
   IPolicyAlert,
   IProcessAlert,
-  getPolicySort,
 } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
-import { useTable } from '../../../util/hooks'
+import { handleSort } from '../../../util/handleTableSort'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
-import RouteLink from '../../common/RouteLink'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 type TTableInformationtypeProps = {
   policies: Array<IPolicy>
@@ -25,12 +23,32 @@ type TAlerts = { [id: string]: IPolicyAlert }
 
 const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
   const { policies, showPurpose, codelistUtils } = props
-
-  const [table, sortColumn] = useTable<IPolicy, keyof IPolicy>(policies, {
-    sorting: getPolicySort(codelistUtils),
-    initialSortColumn: showPurpose ? 'purposes' : 'process',
-  })
+  const [sort, setSort] = useState<SortState>()
   const [alerts, setAlerts] = useState<TAlerts>()
+
+  let sortedData: IPolicy[] = policies
+
+  const comparator = (a: IPolicy, b: IPolicy, orderBy: string): number => {
+    switch (orderBy) {
+      case 'purposes':
+        return a.purposes[0].shortName.localeCompare(b.purposes[0].shortName)
+      case 'process':
+        return a.process.name.localeCompare(b.process.name)
+      case 'subjectCategories':
+        return a.subjectCategories[0].shortName.localeCompare(b.subjectCategories[0].shortName)
+      default:
+        return 0
+    }
+  }
+
+  sortedData = sortedData.sort((a: IPolicy, b: IPolicy) => {
+    if (sort) {
+      return sort.direction === 'ascending'
+        ? comparator(b, a, sort.orderBy)
+        : comparator(a, b, sort.orderBy)
+    }
+    return 1
+  })
 
   useEffect(() => {
     ;(async () => {
@@ -49,92 +67,94 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
   }, [policies])
 
   return (
-    <Table
-      emptyText="Ingen behandlinger"
-      headers={
-        <>
-          <HeadCell
-            title="Overordnet behandlingsaktivitet"
-            column="purposes"
-            tableState={[table, sortColumn]}
-          />
-          <HeadCell title="Behandling" column="process" tableState={[table, sortColumn]} />
-          <HeadCell
-            title="Personkategori"
-            column="subjectCategories"
-            tableState={[table, sortColumn]}
-          />
-          <HeadCell
-            title="Behandlingsgrunnlag"
-            column="legalBases"
-            tableState={[table, sortColumn]}
-          />
-          <HeadCell title="Lagringsbehov" />
-        </>
-      }
-    >
-      {table.data.map((row: IPolicy, index: number) => (
-        <Row key={index}>
+    <Table size="small" sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
+      <Table.Header>
+        <Table.Row>
           {showPurpose && (
-            <Cell>
-              <div className="flex flex-col">
-                {row.purposes.map((purpose: ICode, index: number) => (
-                  <div key={index}>
-                    <RouteLink href={`/process/purpose/${purpose.code}`}>
-                      {codelistUtils.getShortnameForCode(purpose)}
-                    </RouteLink>
-                  </div>
-                ))}
-              </div>
-            </Cell>
+            <Table.ColumnHeader textSize="small" sortKey="purposes" className="w-/5" sortable>
+              Overordnet behandlingsaktivitet
+            </Table.ColumnHeader>
           )}
+          <Table.ColumnHeader textSize="small" sortKey="process" className="w-2/5" sortable>
+            Behandling
+          </Table.ColumnHeader>
+          <Table.ColumnHeader
+            textSize="small"
+            sortKey="subjectCategories"
+            className="w-1/5"
+            sortable
+          >
+            Personkategori
+          </Table.ColumnHeader>
+          <Table.ColumnHeader textSize="small" className="w-1/5">
+            Behandlingsgrunnlag
+          </Table.ColumnHeader>
+          <Table.ColumnHeader textSize="small">Lagringsbehov</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {sortedData.map((row: IPolicy, index: number) => (
+          <Table.Row key={index}>
+            {showPurpose && (
+              <Table.DataCell textSize="small">
+                <div className="flex flex-col">
+                  {row.purposes.map((purpose: ICode, index: number) => (
+                    <div key={index}>
+                      <Link href={`/process/purpose/${purpose.code}`}>
+                        {codelistUtils.getShortnameForCode(purpose)}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </Table.DataCell>
+            )}
 
-          <Cell>
-            {/* todo mulitpurpose url */}
-            <RouteLink href={`/process/purpose/${row.purposes[0].code}/${row.process.id}`}>
-              {row.process && row.process.name}
-            </RouteLink>
-          </Cell>
+            <Table.DataCell textSize="small">
+              <Link href={`/process/purpose/${row.purposes[0].code}/${row.process.id}`}>
+                {row.process && row.process.name}
+              </Link>
+            </Table.DataCell>
 
-          <Cell>
-            {row.subjectCategories
-              .map((subjectCategory: ICode) =>
-                codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
-              )
-              .join(', ')}
-          </Cell>
+            <Table.DataCell textSize="small">
+              {row.subjectCategories
+                .map((subjectCategory: ICode) =>
+                  codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
+                )
+                .join(', ')}
+            </Table.DataCell>
 
-          <Cell>
-            <div>
-              {row.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES &&
-                row.legalBases &&
-                row.legalBases.length > 0 && (
-                  <ListLegalBasesInTable
-                    legalBases={row.legalBases}
-                    codelistUtils={codelistUtils}
-                  />
-                )}
+            <Table.DataCell textSize="small">
+              <div>
+                {row.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES &&
+                  row.legalBases &&
+                  row.legalBases.length > 0 && (
+                    <ListLegalBasesInTable
+                      legalBases={row.legalBases}
+                      codelistUtils={codelistUtils}
+                    />
+                  )}
 
-              {!(
-                row.legalBasesUse === ELegalBasesUse.EXCESS_INFO ||
-                row.legalBasesUse === ELegalBasesUse.UNRESOLVED
-              ) &&
-                row.process.legalBases && (
-                  <ListLegalBasesInTable
-                    legalBases={row.process.legalBases}
-                    codelistUtils={codelistUtils}
-                  />
-                )}
+                {!(
+                  row.legalBasesUse === ELegalBasesUse.EXCESS_INFO ||
+                  row.legalBasesUse === ELegalBasesUse.UNRESOLVED
+                ) &&
+                  row.process.legalBases && (
+                    <ListLegalBasesInTable
+                      legalBases={row.process.legalBases}
+                      codelistUtils={codelistUtils}
+                    />
+                  )}
 
-              <LegalBasesNotClarified alert={alerts && alerts[row.id]} />
-            </div>
-          </Cell>
+                <LegalBasesNotClarified alert={alerts && alerts[row.id]} />
+              </div>
+            </Table.DataCell>
 
-          <Cell>
-            <RetentionView retention={row.process.retention} />
-          </Cell>
-        </Row>
-      ))}
+            <Table.DataCell textSize="small">
+              <RetentionView retention={row.process.retention} />
+            </Table.DataCell>
+          </Table.Row>
+        ))}
+      </Table.Body>
     </Table>
   )
 }
