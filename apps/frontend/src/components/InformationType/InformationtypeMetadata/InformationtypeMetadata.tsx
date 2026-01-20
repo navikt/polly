@@ -1,5 +1,5 @@
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-import { Tab } from 'baseui/tabs'
+import { Loader, Tabs } from '@navikt/ds-react'
 import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
 import { useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
@@ -7,13 +7,9 @@ import { IDisclosure, IDocument, IInformationType, IPolicy } from '../../../cons
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { CodelistService, ICodelistProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
-import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { useQueryParam } from '../../../util/hooks'
 import Button from '../../common/Button/CustomButton'
-import { CustomizedTabs } from '../../common/CustomizedTabs'
-import { Spinner } from '../../common/Spinner'
-import { tabOverride } from '../../common/Style'
 import TableDisclosure from '../../common/TableDisclosure'
 import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
 import AccordionInformationType from './AccordionInformationType'
@@ -58,24 +54,8 @@ const Purposes = (props: IPurposesProps) => {
   )
 }
 
-interface IDisclosuresProps {
-  disclosures: IDisclosure[]
-  codelistUtils: ICodelistProps
-}
-
-const Disclosures = ({ disclosures, codelistUtils }: IDisclosuresProps) => (
-  <TableDisclosure
-    list={disclosures}
-    showRecipient
-    editable={false}
-    onCloseModal={() => console.debug('skal fjerrens også!')}
-    codelistUtils={codelistUtils}
-  />
-)
-
 export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) => {
   const { informationtype, policies, disclosures, documents } = props
-  const [activeTab, setActiveTab] = useState('purposes')
   const navigate: NavigateFunction = useNavigate()
   const [codelistUtils] = CodelistService()
 
@@ -109,31 +89,25 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
             </ParagraphSmall>
           </div>
 
-          <CustomizedTabs
-            activeKey={activeTab}
-            onChange={(args) => setActiveTab(args.activeKey as string)}
-          >
-            <Tab key="purposes" title="Brukes til behandlingsaktivitet" overrides={tabOverride}>
-              {!policies && (
-                <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />
-              )}
+          <Tabs defaultValue="purposes">
+            <Tabs.List>
+              <Tabs.Tab value="purposes" label="Brukes til behandlingsaktivitet" />
+              <Tabs.Tab value="disclose" label="Utleveringer til ekstern part" />
+              <Tabs.Tab value="document" label="Dokumenter" />
+            </Tabs.List>
+            <Tabs.Panel value="purposes">
+              {!policies && <Loader />}
               {policies && <Purposes policies={policies} codelistUtils={codelistUtils} />}
-            </Tab>
-            <Tab key="disclose" title="Utleveringer til ekstern part" overrides={tabOverride}>
-              {!disclosures && (
-                <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />
-              )}
-              {disclosures && (
-                <Disclosures disclosures={disclosures} codelistUtils={codelistUtils} />
-              )}
-            </Tab>
-            <Tab key="document" title="Dokumenter" overrides={tabOverride}>
-              {!documents && (
-                <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200} />
-              )}
+            </Tabs.Panel>
+            <Tabs.Panel value="disclose">
+              {!disclosures && <Loader size="large" className="flex justify-self-center" />}
+              {disclosures && <TableDisclosure list={disclosures} codelistUtils={codelistUtils} />}
+            </Tabs.Panel>
+            <Tabs.Panel value="document">
+              {!documents && <Loader size="large" className="flex justify-self-center" />}
               {documents && <DocumentTable documents={documents} />}
-            </Tab>
-          </CustomizedTabs>
+            </Tabs.Panel>
+          </Tabs>
         </>
       )}
     </>
