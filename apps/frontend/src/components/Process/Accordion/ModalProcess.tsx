@@ -1,5 +1,4 @@
-import { Accordion, Alert, Modal, Select, Textarea } from '@navikt/ds-react'
-import { Button, KIND } from 'baseui/button'
+import { Accordion, Alert, Button, Modal, Select, Textarea } from '@navikt/ds-react'
 import { FlexGridItem } from 'baseui/flex-grid'
 import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
 import {
@@ -112,24 +111,24 @@ const ModalProcess = ({
 
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width="960px">
-      <div className="w-[960px] px-8">
-        <Formik
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            submit(values)
-          }}
-          validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
-          render={(formikBag: FormikProps<IProcessFormValues>) => {
-            if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
-              console.debug(formikBag.errors)
-              writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
-              if (formikBag.errors.legalBasesOpen) {
-                expand('legalBasis')
+      <Modal.Body>
+        <div className="w-[960px] px-8">
+          <Formik
+            initialValues={initialValues}
+            onSubmit={(values) => {
+              submit(values)
+            }}
+            validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
+            render={(formikBag: FormikProps<IProcessFormValues>) => {
+              if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
+                console.debug(formikBag.errors)
+                writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
+                if (formikBag.errors.legalBasesOpen) {
+                  expand('legalBasis')
+                }
               }
-            }
-            return (
-              <Form onKeyDown={disableEnter}>
-                <Modal.Body>
+              return (
+                <Form id="modal-process-form" onKeyDown={disableEnter}>
                   <CustomizedModalBlock first>
                     <ModalLabel
                       label="Navn"
@@ -592,24 +591,24 @@ const ModalProcess = ({
                       />
                     </div>
                   </CustomizedModalBlock>
-                </Modal.Body>
+                </Form>
+              )
+            }}
+          />
+        </div>
+      </Modal.Body>
 
-                <Modal.Footer style={{ borderTop: 0 }}>
-                  <div className="flex justify-end">
-                    <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                    <Button type="button" kind={KIND.tertiary} onClick={onClose}>
-                      Avbryt
-                    </Button>
-                    <Button type="button" onClick={() => formikBag.submitForm()}>
-                      Lagre
-                    </Button>
-                  </div>
-                </Modal.Footer>
-              </Form>
-            )
-          }}
-        />
-      </div>
+      <Modal.Footer style={{ borderTop: 0 }}>
+        <div className="flex justify-end">
+          <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+          <Button type="button" variant="tertiary" onClick={onClose}>
+            Avbryt
+          </Button>
+          <Button type="submit" form="modal-process-form">
+            Lagre
+          </Button>
+        </div>
+      </Modal.Footer>
     </Modal>
   )
 }

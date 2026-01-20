@@ -41,17 +41,17 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
       header={{ heading: 'Behandlinger hvor NAV er databehandler' }}
       width="960px"
     >
-      <div>
-        <Formik
-          onSubmit={(values) => {
-            submit(values)
-          }}
-          initialValues={initialValues}
-          validationSchema={dpProcessSchema()}
-        >
-          {(formikBag) => (
-            <Form onKeyDown={disableEnter}>
-              <Modal.Body>
+      <Formik
+        onSubmit={(values) => {
+          submit(values)
+        }}
+        initialValues={initialValues}
+        validationSchema={dpProcessSchema()}
+      >
+        {(formikBag) => (
+          <>
+            <Modal.Body>
+              <Form id="modal-dp-process-form" onKeyDown={disableEnter}>
                 <CustomizedModalBlock first>
                   <ModalLabel
                     label="Navn"
@@ -171,24 +171,27 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     </Accordion.Content>
                   </Accordion.Item>
                 </Accordion>
-              </Modal.Body>
-              <Modal.Footer
-                style={{
-                  borderTop: 0,
-                }}
-              >
-                <div className="flex justify-end">
-                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" variant="tertiary" onClick={() => onClose()}>
-                    Avbryt
-                  </Button>
-                  <Button type="submit">Lagre</Button>
-                </div>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
-      </div>
+              </Form>
+            </Modal.Body>
+
+            <Modal.Footer
+              style={{
+                borderTop: 0,
+              }}
+            >
+              <div className="flex justify-end">
+                <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                <Button type="button" variant="tertiary" onClick={() => onClose()}>
+                  Avbryt
+                </Button>
+                <Button type="submit" form="modal-dp-process-form">
+                  Lagre
+                </Button>
+              </div>
+            </Modal.Footer>
+          </>
+        )}
+      </Formik>
     </Modal>
   )
 }
