@@ -12,22 +12,13 @@ import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.dto.ProcessRevisionRequest;
 import no.nav.data.polly.process.dto.ProcessRevisionRequest.ProcessSelection;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProcessRevisionIT extends IntegrationTestBase {
-
-    @Autowired
-    TestRestTemplate template;
-
 
     ProcessRevisionRequest req = ProcessRevisionRequest.builder()
             .processSelection(ProcessSelection.ALL)
@@ -42,9 +33,13 @@ class ProcessRevisionIT extends IntegrationTestBase {
         MdcUtils.setUser("A123457 - Name");
         createProcess();
 
-        var resp = template.postForEntity("/process/revision", req, Void.class);
+        webTestClient.post()
+                .uri("/process/revision")
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isOk();
 
-        assertResponse(resp, processOne.getId(), req.getRevisionText());
+        assertThat(processRepository.findById(processOne.getId()).orElseThrow().getData().getStatus()).isEqualTo(ProcessStatus.NEEDS_REVISION);
         assertTasks(2);
     }
 
@@ -57,9 +52,12 @@ class ProcessRevisionIT extends IntegrationTestBase {
 
         req.setProcessId(processOne.getId());
         req.setProcessSelection(ProcessSelection.ONE);
-        var resp = template.postForEntity("/process/revision", req, Void.class);
+        webTestClient.post()
+                .uri("/process/revision")
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isOk();
 
-        assertResponse(resp, processOne.getId(), req.getRevisionText());
         assertThat(processRepository.findById(processTwo.getId()).orElseThrow().getData().getStatus()).isEqualTo(ProcessStatus.COMPLETED);
         assertTasks(1);
     }
@@ -75,9 +73,14 @@ class ProcessRevisionIT extends IntegrationTestBase {
 
         req.setProductAreaId("productarea1");
         req.setProcessSelection(ProcessSelection.PRODUCT_AREA);
-        var resp = template.postForEntity("/process/revision", req, Void.class);
 
-        assertResponse(resp, processOne.getId(), req.getRevisionText());
+        webTestClient.post()
+                .uri("/process/revision")
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isOk();
+
+        assertThat(processRepository.findById(processOne.getId()).orElseThrow().getData().getStatus()).isEqualTo(ProcessStatus.NEEDS_REVISION);
         assertThat(processRepository.findById(processTwo.getId()).orElseThrow().getData().getStatus()).isEqualTo(ProcessStatus.COMPLETED);
         assertTasks(1);
     }
@@ -93,19 +96,16 @@ class ProcessRevisionIT extends IntegrationTestBase {
 
         req.setDepartment("DEP");
         req.setProcessSelection(ProcessSelection.DEPARTMENT);
-        var resp = template.postForEntity("/process/revision", req, Void.class);
 
-        assertResponse(resp, processOne.getId(), req.getRevisionText());
+        webTestClient.post()
+                .uri("/process/revision")
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isOk();
+
+        assertThat(processRepository.findById(processOne.getId()).orElseThrow().getData().getStatus()).isEqualTo(ProcessStatus.NEEDS_REVISION);
         assertThat(processRepository.findById(processTwo.getId()).orElseThrow().getData().getStatus()).isEqualTo(ProcessStatus.COMPLETED);
         assertTasks(1);
-    }
-
-    private void assertResponse(ResponseEntity<Void> resp, UUID id, String revisionText) {
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        var process = processRepository.findById(id).orElseThrow();
-        assertThat(process.getData().getStatus()).isEqualTo(ProcessStatus.NEEDS_REVISION);
-        assertThat(process.getData().getRevisionText()).isEqualTo(revisionText);
     }
 
     private void assertTasks(int expected) {

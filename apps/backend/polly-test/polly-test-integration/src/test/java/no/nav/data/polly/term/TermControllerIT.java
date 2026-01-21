@@ -6,43 +6,53 @@ import no.nav.data.polly.term.TermController.TermPage;
 import no.nav.data.polly.term.dto.TermCountResponse;
 import no.nav.data.polly.term.dto.TermResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TermControllerIT extends IntegrationTestBase {
 
-    @Autowired
-    private TestRestTemplate template;
-
     @Test
     void searchTerm() {
-        var response = template.getForEntity("/term/search/term", TermPage.class);
+        TermPage body = webTestClient.get()
+                .uri("/term/search/term")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(TermPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getContent().get(0).getName()).isEqualTo("term old");
-        assertThat(response.getBody().getContent().get(1).getName()).isEqualTo("new term");
+        assertThat(body).isNotNull();
+        assertThat(body.getContent().get(0).getName()).isEqualTo("term old");
+        assertThat(body.getContent().get(1).getName()).isEqualTo("new term");
     }
 
     @Test
     void getTerm() {
-        var response = template.getForEntity("/term/{id}", TermResponse.class, "term");
+        TermResponse body = webTestClient.get()
+                .uri("/term/{id}", "term")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(TermResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
+        assertThat(body).isNotNull();
     }
 
     @Test
     void countTermByInfoType() {
         InformationType informationType = createAndSaveInformationType();
-        var response = template.getForEntity("/term/count/informationtype", TermCountResponse.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getTerms()).hasSize(1);
-        assertThat(response.getBody().getTerms().get(informationType.getTermId())).isEqualTo(1L);
+        TermCountResponse body = webTestClient.get()
+                .uri("/term/count/informationtype")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(TermCountResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.getTerms()).hasSize(1);
+        assertThat(body.getTerms().get(informationType.getTermId())).isEqualTo(1L);
     }
 }

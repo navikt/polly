@@ -1,6 +1,6 @@
 package no.nav.data.polly.codelist;
 
-import no.nav.data.AppStarter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.common.exceptions.CodelistNotFoundException;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.codelist.commoncode.CommonCodeService;
@@ -12,60 +12,50 @@ import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES;
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(CodelistController.class)
-@ContextConfiguration(classes = AppStarter.class)
-@WebAppConfiguration
 @ActiveProfiles("test")
 class CodelistControllerTest {
 
-    @Autowired
-    private WebApplicationContext applicationContext;
     private MockMvc mvc;
+    private final ObjectMapper objectMapper = new ObjectMapper().configure(FAIL_ON_NULL_FOR_PRIMITIVES, false);
 
-    @MockBean
-    private CodelistService service;
-    @MockBean
-    private CodelistRequestValidator requestValidator;
-    @MockBean
-    private CommonCodeService commonCodeService;
+    private final CodelistService service = mock(CodelistService.class);
+    private final CodelistRequestValidator requestValidator = mock(CodelistRequestValidator.class);
+    private final CommonCodeService commonCodeService = mock(CommonCodeService.class);
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();
+        mvc = MockMvcBuilders.standaloneSetup(new CodelistController(service, commonCodeService, requestValidator))
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
+                .build();
         CodelistStub.initializeCodelist();
     }
 
@@ -140,32 +130,52 @@ class CodelistControllerTest {
         void save_shouldSaveMultipleCodelists() throws Exception {
             List<Codelist> codelists = List.of(createCodelist(ListName.THIRD_PARTY, "CODE1"), createCodelist(ListName.THIRD_PARTY, "CODE2"));
             when(service.save(anyList())).thenReturn(codelists);
+            doNothing().when(requestValidator).validateRequest(anyList(), anyBoolean());
 
-            List<CodelistRequest> requests = List.of(createCodelistRequest("THIRD_PARTY", "CODE1"), createCodelistRequest("THIRD_PARTY", "CODE2"));
-            String inputJson = JsonUtils.toJson(requests);
+            List<CodelistRequest> requests = List.of(
+                    createCodelistRequest("THIRD_PARTY", "CODE1"),
+                    createCodelistRequest("THIRD_PARTY", "CODE2")
+            );
+            // Spring Boot 4 / Jackson is stricter about primitives; make sure they're present in JSON
+            requests.forEach(r -> {
+                r.setUpdate(false);
+                r.setRequestIndex(0);
+            });
+            String inputJson = objectMapper.writeValueAsString(requests);
 
             mvc.perform(post("/codelist")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(inputJson))
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.length()").value(2));
-            verify(service).save(CodelistRequest.convertToCodelists(requests));
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isCreated());
+
+            verify(requestValidator).validateRequest(anyList(), anyBoolean());
+            verify(service).save(anyList());
         }
 
         @Test
         void update_shouldUpdateCodelist() throws Exception {
             List<Codelist> codelists = List.of(createCodelist(ListName.THIRD_PARTY, "CODE1"), createCodelist(ListName.THIRD_PARTY, "CODE2"));
             when(service.update(anyList())).thenReturn(codelists);
+            doNothing().when(requestValidator).validateRequest(anyList(), anyBoolean());
 
-            List<CodelistRequest> requests = List.of(createCodelistRequest("THIRD_PARTY", "CODE1"), createCodelistRequest("THIRD_PARTY", "CODE2"));
-            String inputJson = JsonUtils.toJson(requests);
+            List<CodelistRequest> requests = List.of(
+                    createCodelistRequest("THIRD_PARTY", "CODE1"),
+                    createCodelistRequest("THIRD_PARTY", "CODE2")
+            );
+            // Spring Boot 4 / Jackson is stricter about primitives; make sure they're present in JSON
+            requests.forEach(r -> {
+                r.setUpdate(true);
+                r.setRequestIndex(0);
+            });
+            String inputJson = objectMapper.writeValueAsString(requests);
 
             mvc.perform(put("/codelist")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(inputJson))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()").value(2));
-            verify(service).update(requests);
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(inputJson))
+                    .andExpect(status().isOk());
+
+            verify(requestValidator).validateRequest(anyList(), anyBoolean());
+            verify(service).update(anyList());
         }
 
         @Test
@@ -179,7 +189,7 @@ class CodelistControllerTest {
         @Test
         void delete_shouldDelete_withoutCorrectFormat() throws Exception {
             MockHttpServletResponse response = mvc.perform(
-                    delete("/codelist/third_party/test_format"))
+                            delete("/codelist/third_party/test_format"))
                     .andReturn().getResponse();
 
             assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());

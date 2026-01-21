@@ -1,24 +1,29 @@
 package no.nav.data.common.utils;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
- * See {@link StreamUtils#difference(List, List, Comparator)}
+ * See {@link StreamUtils#difference(java.util.Collection, java.util.Collection, java.util.Comparator)}
  */
 @Data
-@AllArgsConstructor
 public class CollectionDifference<T> {
 
-    private List<T> before;
-    private List<T> after;
+    private final List<T> before;
+    private final List<T> after;
 
-    private List<T> removed;
-    private List<T> shared;
-    private List<T> added;
+    private final List<T> removed;
+    private final List<T> shared;
+    private final List<T> added;
+
+    public CollectionDifference(List<T> before, List<T> after, List<T> removed, List<T> shared, List<T> added) {
+        this.before = before;
+        this.after = after;
+        this.removed = removed;
+        this.shared = shared;
+        this.added = added;
+    }
 
     public String changeString() {
         return "removed=" + removed + ", added=" + added;

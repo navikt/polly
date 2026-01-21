@@ -7,17 +7,10 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.settings.dto.Settings;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SettingsControllerIT extends IntegrationTestBase {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Test
     void getSettings() {
@@ -35,11 +28,18 @@ public class SettingsControllerIT extends IntegrationTestBase {
     void updateSettings() {
         Document doc = documentRepository.save(createDocument("BRUKER", null));
         Settings settings = Settings.builder().defaultProcessDocument(doc.getId().toString()).build();
-        ResponseEntity<Settings> resp = restTemplate.postForEntity("/settings", settings, Settings.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody()).isEqualTo(settings);
+        Settings body = webTestClient.post()
+                .uri("/settings")
+                .bodyValue(settings)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Settings.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body).isEqualTo(settings);
         assertGetSettings(settings);
     }
 
@@ -47,17 +47,28 @@ public class SettingsControllerIT extends IntegrationTestBase {
     void validateDefaultProcessDocumentExists() {
         Settings settings = Settings.builder().defaultProcessDocument("d7fc29f4-c006-49ce-9f38-75c82c4bcc98").build();
 
-        var resp = restTemplate.postForEntity("/settings", settings, String.class);
+        String body = webTestClient.post()
+                .uri("/settings")
+                .bodyValue(settings)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("Can't find document d7fc29f4-c006-49ce-9f38-75c82c4bcc98");
+        assertThat(body).contains("Can't find document d7fc29f4-c006-49ce-9f38-75c82c4bcc98");
     }
 
     private void assertGetSettings(Settings settings) {
-        ResponseEntity<Settings> resp = restTemplate.getForEntity("/settings", Settings.class);
+        Settings body = webTestClient.get()
+                .uri("/settings")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Settings.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody()).isEqualTo(settings);
+        assertThat(body).isNotNull();
+        assertThat(body).isEqualTo(settings);
     }
 }

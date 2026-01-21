@@ -24,9 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,8 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlertIT extends IntegrationTestBase {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
     @Autowired
     private AlertService alertService;
     @Autowired
@@ -261,25 +256,26 @@ public class AlertIT extends IntegrationTestBase {
                 saveInfoTypes(alertEvent1.getInformationTypeId(), alertEvent4.getInformationTypeId(), alertEvent5.getInformationTypeId());
                 alertRepository.save(alert);
 
-                ResponseEntity<EventPage> eventsResponse = restTemplate
-                        .getForEntity("/alert/events"
-                                        + "?processId={processId}"
-                                        + "&informationTypeId={informationTypeId}"
-                                        + "&type={type}"
-                                        + "&level={level}"
-                                        + "&pageSize={pageSize}"
-                                        + "&page={page}"
-                                        + "&sort={sort}"
-                                        + "&dir=DESC",
-                                EventPage.class,
-                                alertEvent1.getProcessId(), alertEvent1.getInformationTypeId(),
-                                AlertEventType.MISSING_ARTICLE_6, AlertEventType.MISSING_ARTICLE_6.getLevel(),
-                                2, 0, sort);
+                EventPage body = webTestClient.get()
+                        .uri(uriBuilder -> uriBuilder.path("/alert/events")
+                                .queryParam("processId", alertEvent1.getProcessId())
+                                .queryParam("informationTypeId", alertEvent1.getInformationTypeId())
+                                .queryParam("type", AlertEventType.MISSING_ARTICLE_6)
+                                .queryParam("level", AlertEventType.MISSING_ARTICLE_6.getLevel())
+                                .queryParam("pageSize", 2)
+                                .queryParam("page", 0)
+                                .queryParam("sort", sort)
+                                .queryParam("dir", "DESC")
+                                .build())
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(EventPage.class)
+                        .returnResult()
+                        .getResponseBody();
 
-                assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-                assertThat(eventsResponse.getBody()).isNotNull();
-                assertThat(eventsResponse.getBody().getContent()).hasSize(2);
-                assertThat(eventsResponse.getBody().getTotalElements()).isEqualTo(4L);
+                assertThat(body).isNotNull();
+                assertThat(body.getContent()).hasSize(2);
+                assertThat(body.getTotalElements()).isEqualTo(4L);
             }
 
             private void saveProcesses(UUID... ids) {
@@ -299,11 +295,16 @@ public class AlertIT extends IntegrationTestBase {
 
             @Test
             void getEventsWithoutParams() {
-                ResponseEntity<EventPage> eventsResponse = restTemplate.getForEntity("/alert/events", EventPage.class);
+                EventPage body = webTestClient.get()
+                        .uri("/alert/events")
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(EventPage.class)
+                        .returnResult()
+                        .getResponseBody();
 
-                assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-                assertThat(eventsResponse.getBody()).isNotNull();
-                assertThat(eventsResponse.getBody().getContent()).hasSize(5);
+                assertThat(body).isNotNull();
+                assertThat(body.getContent()).hasSize(5);
             }
         }
     }

@@ -4,18 +4,11 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.dashboard.dto.DashResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static no.nav.data.common.utils.StreamUtils.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DashboardIT extends IntegrationTestBase {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @BeforeEach
     void setUp() {
@@ -27,10 +20,14 @@ class DashboardIT extends IntegrationTestBase {
 
     @Test
     void getDash() {
-        ResponseEntity<DashResponse> resp = restTemplate.getForEntity("/dash", DashResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DashResponse response = webTestClient.get()
+                .uri("/dash")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DashResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        DashResponse response = resp.getBody();
         assertThat(response).isNotNull();
         assertThat(get(response.getDepartments(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
         assertThat(response.getAll().getProcessesInProgress()).isEqualTo(2L);
@@ -38,10 +35,14 @@ class DashboardIT extends IntegrationTestBase {
 
     @Test
     void getDashForProcessInProgress() {
-        ResponseEntity<DashResponse> resp = restTemplate.getForEntity("/dash?filter=IN_PROGRESS", DashResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DashResponse response = webTestClient.get()
+                .uri("/dash?filter=IN_PROGRESS")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DashResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        DashResponse response = resp.getBody();
         assertThat(response).isNotNull();
         assertThat(get(response.getDepartments(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
         assertThat(response.getAll().getProcessesInProgress()).isEqualTo(2L);

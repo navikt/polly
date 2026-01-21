@@ -12,33 +12,28 @@ import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpEntity.EMPTY;
-import static org.springframework.http.HttpMethod.DELETE;
 
 class DocumentControllerIT extends IntegrationTestBase {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Test
     void createAndGetDocument() {
         var disc = createDocumentArbeidsgiverWithInformationType();
-        var resp = restTemplate.getForEntity("/document/{id}", DocumentResponse.class, disc.getId());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertResponse(resp);
+        DocumentResponse got = webTestClient.get()
+                .uri("/document/{id}", disc.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DocumentResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertResponse(got);
     }
 
     private DocumentResponse createDocumentArbeidsgiverWithInformationType() {
@@ -46,20 +41,26 @@ class DocumentControllerIT extends IntegrationTestBase {
 
         var req = buildDocument();
         req.setInformationTypes(List.of(createInfoTypeUseRequest(infoType.getId().toString())));
-        var resp = restTemplate.postForEntity("/document", req, DocumentResponse.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertResponse(resp);
-        return resp.getBody();
+        DocumentResponse created = webTestClient.post()
+                .uri("/document")
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(DocumentResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertResponse(created);
+        return created;
     }
 
     private DocumentInfoTypeUseRequest createInfoTypeUseRequest(String informationTypeId) {
         return DocumentInfoTypeUseRequest.builder().informationTypeId(informationTypeId).subjectCategories(List.of("BRUKER")).build();
     }
 
-    private void assertResponse(ResponseEntity<DocumentResponse> resp) {
+    private void assertResponse(DocumentResponse documentResponse) {
         InformationType infoType = createAndSaveInformationType();
-        var documentResponse = resp.getBody();
         assertThat(documentResponse).isNotNull();
 
         InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
@@ -77,38 +78,52 @@ class DocumentControllerIT extends IntegrationTestBase {
 
     @Test
     void getAllDocument() {
-        restTemplate.postForEntity("/document", buildDocument(), DocumentResponse.class);
-        restTemplate.postForEntity("/document", buildDocument(), DocumentResponse.class);
-        ResponseEntity<DocumentPage> resp = restTemplate.getForEntity("/document", DocumentPage.class);
+        webTestClient.post().uri("/document").bodyValue(buildDocument()).exchange().expectStatus().isCreated();
+        webTestClient.post().uri("/document").bodyValue(buildDocument()).exchange().expectStatus().isCreated();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DocumentPage documentPage = resp.getBody();
-        assertThat(documentPage).isNotNull();
+        DocumentPage page = webTestClient.get()
+                .uri("/document")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DocumentPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(documentPage.getContent()).hasSize(2);
+        assertThat(page).isNotNull();
+        assertThat(page.getContent()).hasSize(2);
     }
 
     @Test
     void getDocumentByInfoTypeId() {
-        restTemplate.postForEntity("/document", buildDocument(), DocumentResponse.class);
+        webTestClient.post().uri("/document").bodyValue(buildDocument()).exchange().expectStatus().isCreated();
         var doc = createDocumentArbeidsgiverWithInformationType();
-        ResponseEntity<DocumentPage> resp = restTemplate
-                .getForEntity("/document?informationTypeId={infoTypeId}", DocumentPage.class, doc.getInformationTypes().get(0).getInformationTypeId());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DocumentPage documentPage = resp.getBody();
-        assertThat(documentPage).isNotNull();
+        DocumentPage page = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/document")
+                        .queryParam("informationTypeId", doc.getInformationTypes().get(0).getInformationTypeId())
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DocumentPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(documentPage.getContent()).hasSize(1);
+        assertThat(page).isNotNull();
+        assertThat(page.getContent()).hasSize(1);
     }
 
     @Test
     void createDocumentValidationError() {
+        String body = webTestClient.post()
+                .uri("/document")
+                .bodyValue(DocumentRequest.builder().description("newdocument").build())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        var resp = restTemplate.postForEntity("/document", DocumentRequest.builder().description("newdocument").build(), String.class);
-
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
+        assertThat(body).contains("fieldIsNullOrMissing -- name was null or missing");
     }
 
     @Test
@@ -119,44 +134,68 @@ class DocumentControllerIT extends IntegrationTestBase {
         DocumentRequest create = buildDocument();
         create.setInformationTypes(List.of(createInfoTypeUseRequest(infoTypeOne.getId().toString()), createInfoTypeUseRequest(infoTypeTwo.getId().toString())));
 
-        ResponseEntity<DocumentResponse> resp = restTemplate.postForEntity("/document", create, DocumentResponse.class);
+        DocumentResponse created = webTestClient.post()
+                .uri("/document")
+                .bodyValue(create)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(DocumentResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getInformationTypes()).hasSize(2);
-        assertThat(convert(resp.getBody().getInformationTypes(), DocumentInfoTypeUseResponse::getInformationTypeId)).contains(infoTypeOne.getId(), infoTypeTwo.getId());
+        assertThat(created).isNotNull();
+        assertThat(created.getInformationTypes()).hasSize(2);
+        assertThat(convert(created.getInformationTypes(), DocumentInfoTypeUseResponse::getInformationTypeId)).contains(infoTypeOne.getId(), infoTypeTwo.getId());
 
-        String id = resp.getBody().getId().toString();
+        String id = created.getId().toString();
         var infoTypeUpdate = createAndSaveInformationType(UUID.randomUUID(), "name3");
         DocumentRequest update = buildDocument();
         update.setId(id);
         update.setInformationTypes(List.of(createInfoTypeUseRequest(infoTypeOne.getId().toString()), createInfoTypeUseRequest(infoTypeUpdate.getId().toString())));
 
-        resp = restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(update), DocumentResponse.class, id);
+        DocumentResponse updated = webTestClient.put()
+                .uri("/document/{id}", id)
+                .bodyValue(update)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DocumentResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getInformationTypes()).hasSize(2);
-        assertThat(convert(resp.getBody().getInformationTypes(), DocumentInfoTypeUseResponse::getInformationTypeId)).contains(infoTypeOne.getId(), infoTypeUpdate.getId());
+        assertThat(updated).isNotNull();
+        assertThat(updated.getInformationTypes()).hasSize(2);
+        assertThat(convert(updated.getInformationTypes(), DocumentInfoTypeUseResponse::getInformationTypeId)).contains(infoTypeOne.getId(), infoTypeUpdate.getId());
 
     }
 
     @Test
     void updateDocumentValidationError() {
-        ResponseEntity<DocumentResponse> resp = restTemplate.postForEntity("/document", buildDocument(), DocumentResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resp.getBody()).isNotNull();
+        DocumentResponse created = webTestClient.post()
+                .uri("/document")
+                .bodyValue(buildDocument())
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(DocumentResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(created).isNotNull();
 
-        String id = resp.getBody().getId().toString();
+        String id = created.getId().toString();
         DocumentRequest request2 = buildDocument();
         request2.setId(id);
         request2.setName(null);
 
-        var response = restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
+        String body = webTestClient.put()
+                .uri("/document/{id}", id)
+                .bodyValue(request2)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
+        assertThat(body).isNotNull();
+        assertThat(body).contains("fieldIsNullOrMissing -- name was null or missing");
     }
 
     @Test
@@ -169,21 +208,34 @@ class DocumentControllerIT extends IntegrationTestBase {
         policy.getData().getDocumentIds().add(doc.getId());
         policyRepository.save(policy);
 
-        var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
+        String body = webTestClient.delete()
+                .uri("/document/{id}", doc.getId())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("used by 1 policie(s)");
+        assertThat(body).contains("used by 1 policie(s)");
         policyRepository.delete(policy);
 
         disclosure.getData().setDocumentId(doc.getId());
         disclosureRepository.save(disclosure);
-        resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
+        body = webTestClient.delete()
+                .uri("/document/{id}", doc.getId())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("used by 1 disclosure(s)");
+        assertThat(body).contains("used by 1 disclosure(s)");
         disclosureRepository.delete(disclosure);
 
-        assertThat(restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId()).getStatusCode()).isEqualTo(HttpStatus.OK);
+        webTestClient.delete()
+                .uri("/document/{id}", doc.getId())
+                .exchange()
+                .expectStatus().isOk();
     }
 
     private DocumentRequest buildDocument() {

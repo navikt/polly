@@ -10,15 +10,11 @@ import no.nav.data.polly.process.domain.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EventControllerIT extends IntegrationTestBase {
 
-    @Autowired
-    private TestRestTemplate template;
     @Autowired
     private AuditVersionRepository auditVersionRepository;
 
@@ -31,11 +27,19 @@ public class EventControllerIT extends IntegrationTestBase {
     void getAllChanges() {
         createAndSaveInformationType();
 
-        var resp = template.getForEntity("/event?table={table}&action={action}", EventPage.class, AuditVersion.tableName(InformationType.class), Action.CREATE);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        EventPage body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/event")
+                        .queryParam("table", AuditVersion.tableName(InformationType.class))
+                        .queryParam("action", Action.CREATE)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1);
+        assertThat(body).isNotNull();
+        assertThat(body.getNumberOfElements()).isEqualTo(1);
     }
 
     @Test
@@ -44,12 +48,19 @@ public class EventControllerIT extends IntegrationTestBase {
         var process = createAndSaveProcess(PURPOSE_CODE1);
         processRepository.delete(createAndSaveProcess(PURPOSE_CODE1 + 2));
 
-        var resp = template.getForEntity("/event?table={table}&action={action}",
-                EventPage.class, AuditVersion.tableName(Process.class), Action.CREATE);
+        EventPage body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/event")
+                        .queryParam("table", AuditVersion.tableName(Process.class))
+                        .queryParam("action", Action.CREATE)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1);
-        assertThat(resp.getBody().getContent().get(0).getTableId()).isEqualTo(process.getId().toString());
+        assertThat(body).isNotNull();
+        assertThat(body.getNumberOfElements()).isEqualTo(1);
+        assertThat(body.getContent().get(0).getTableId()).isEqualTo(process.getId().toString());
     }
 }

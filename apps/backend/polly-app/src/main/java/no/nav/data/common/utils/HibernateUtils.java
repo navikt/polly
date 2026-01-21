@@ -45,8 +45,8 @@ public final class HibernateUtils {
         // We are here probably only if we no longer have the session that was used to get input
         SessionFactory sFac = SpringUtils.getSessionFactory();
         sFac.inSession((Session session) -> {
-            session.update(input);
-            Hibernate.initialize(input);
+            T managed = session.merge(input);
+            Hibernate.initialize(managed);
         });
         return input;
     }

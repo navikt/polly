@@ -1,6 +1,5 @@
 package no.nav.data.polly.policy.rest;
 
-import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
@@ -13,12 +12,6 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -37,9 +30,6 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     private static final String POLICY_REST_ENDPOINT = "/policy";
 
-    @Autowired
-    protected TestRestTemplate restTemplate;
-    
     @BeforeEach
     void setUp() {
         processRepository.save(Process.builder().id(PROCESS_ID_1)
@@ -53,23 +43,37 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void createPolicy() {
         List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(createEntity.getBody(), notNullValue());
+
+        PolicyPage created = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(created, notNullValue());
         assertThat(policyRepository.count(), is(1L));
-        assertPolicy(createEntity.getBody().getContent().get(0), PROCESS_NAME_1, INFORMATION_TYPE_NAME);
+        assertPolicy(created.getContent().get(0), PROCESS_NAME_1, INFORMATION_TYPE_NAME);
     }
 
     @Test
     void createPolicyThrowNullableValidationException() {
         List<PolicyRequest> requestList = List.of(PolicyRequest.builder().build());
 
-        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
+        String body = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(resp.getBody(), containsString("purposes was null or missing"));
-        assertThat(resp.getBody(), containsString("informationTypeId was null or missing"));
-        assertThat(resp.getBody(), containsString("processId was null or missing"));
+        assertThat(body, containsString("purposes was null or missing"));
+        assertThat(body, containsString("informationTypeId was null or missing"));
+        assertThat(body, containsString("processId was null or missing"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -78,11 +82,16 @@ class PolicyControllerIT extends IntegrationTestBase {
         InformationType informationType = createAndSaveInformationType();
         List<PolicyRequest> requestList = Arrays.asList(createPolicyRequest(informationType), createPolicyRequest(informationType));
 
-        var resp = restTemplate.exchange(
-                    POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
+        String body = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(resp.getBody(),
+        assertThat(body,
                 containsString(
                         "[InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 Process: 60db8589-f383-4405-82f1-148b0333899b SubjectCategory: BRUKER] is not unique because it is already used in this request (see request nr: 1 and 2)"));
     }
@@ -90,13 +99,23 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void createPolicyThrowDuplicateOnProcessValidationException() {
         InformationType informationType = createAndSaveInformationType();
-        ResponseEntity<String> createEntity = restTemplate
-                .exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(createPolicyRequest(informationType))), String.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
-        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(createPolicyRequest(informationType))), String.class);
+        webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(List.of(createPolicyRequest(informationType)))
+                .exchange()
+                .expectStatus().isCreated();
 
-        assertThat(resp.getBody(), containsString(
+        String body = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(List.of(createPolicyRequest(informationType)))
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body, containsString(
                 "[InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 Process: 60db8589-f383-4405-82f1-148b0333899b SubjectCategory: BRUKER] is not unique because it is already used in this process (see request nr: 1)"));
     }
 
@@ -107,78 +126,120 @@ class PolicyControllerIT extends IntegrationTestBase {
                 .processId("17942455-4e86-4315-a7b2-872accd9c856")
                 .informationTypeId("b7a86238-c6ca-4e5e-9233-9089d162400c").build());
 
-        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
+        String body = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(resp.getBody(), containsString("purposes[0]: NOTFOUND code not found in codelist PURPOSE"));
-        assertThat(resp.getBody(), containsString("An InformationType with id b7a86238-c6ca-4e5e-9233-9089d162400c does not exist"));
-        assertThat(resp.getBody(), containsString("A Process with id 17942455-4e86-4315-a7b2-872accd9c856 does not exist"));
-        assertThat(resp.getBody(), containsString("subjectCategories[0]: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
+        assertThat(body, containsString("purposes[0]: NOTFOUND code not found in codelist PURPOSE"));
+        assertThat(body, containsString("An InformationType with id b7a86238-c6ca-4e5e-9233-9089d162400c does not exist"));
+        assertThat(body, containsString("A Process with id 17942455-4e86-4315-a7b2-872accd9c856 does not exist"));
+        assertThat(body, containsString("subjectCategories[0]: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
         assertThat(policyRepository.count(), is(0L));
     }
 
     @Test
     void getOnePolicy() {
         List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(createEntity.getBody(), notNullValue());
+        PolicyPage created = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        ResponseEntity<PolicyResponse> getEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "/" + createEntity.getBody().getContent().get(0).getId(),
-                PolicyResponse.class);
-        assertThat(getEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(getEntity.getBody(), notNullValue());
-        assertPolicy(getEntity.getBody(), PROCESS_NAME_1, INFORMATION_TYPE_NAME);
+        assertThat(created, notNullValue());
+
+        PolicyResponse fetched = webTestClient.get()
+                .uri(POLICY_REST_ENDPOINT + "/" + created.getContent().get(0).getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(fetched, notNullValue());
+        assertPolicy(fetched, PROCESS_NAME_1, INFORMATION_TYPE_NAME);
         assertThat(policyRepository.count(), is(1L));
     }
 
     @Test
     void getNotExistingPolicy() {
 
-        var resp = restTemplate.getForEntity(POLICY_REST_ENDPOINT + "/1-1-1-1-1",
-                    PolicyResponse.class);
-
-        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        webTestClient.get()
+                .uri(POLICY_REST_ENDPOINT + "/1-1-1-1-1")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
     void updateOnePolicy() {
         List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(createEntity.getBody(), notNullValue());
+        PolicyPage created = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(created, notNullValue());
 
         PolicyRequest request = requestList.get(0);
-        request.setId(createEntity.getBody().getContent().get(0).getId().toString());
+        request.setId(created.getContent().get(0).getId().toString());
         request.setProcessId(PROCESS_ID_2.toString());
         var newInfoType = createAndSaveInformationType(UUID.randomUUID(), "newname");
         request.setInformationTypeId(newInfoType.getId().toString());
 
-        ResponseEntity<PolicyResponse> updateEntity = restTemplate
-                .exchange(POLICY_REST_ENDPOINT + "/" + createEntity.getBody().getContent().get(0).getId(), HttpMethod.PUT, new HttpEntity<>(request), PolicyResponse.class);
-        assertThat(updateEntity.getStatusCode(), is(HttpStatus.OK));
+        PolicyResponse updated = webTestClient.put()
+                .uri(POLICY_REST_ENDPOINT + "/" + created.getContent().get(0).getId())
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyResponse.class)
+                .returnResult()
+                .getResponseBody();
+
         assertThat(policyRepository.count(), is(1L));
-        assertThat(updateEntity.getBody(), notNullValue());
-        assertPolicy(updateEntity.getBody(), PROCESS_NAME_1 + " 2nd", newInfoType.getData().getName());
+        assertThat(updated, notNullValue());
+        assertPolicy(updated, PROCESS_NAME_1 + " 2nd", newInfoType.getData().getName());
         assertThat(policyRepository.findByInformationTypeId(newInfoType.getId()), hasSize(1));
     }
 
     @Test
     void updateOnePolicyThrowValidationExeption() {
         PolicyRequest request = createPolicyRequest(createAndSaveInformationType());
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(request)), PolicyPage.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(createEntity.getBody(), notNullValue());
+        PolicyPage created = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(List.of(request))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        request.setId(createEntity.getBody().getContent().get(0).getId().toString());
+        assertThat(created, notNullValue());
+
+        request.setId(created.getContent().get(0).getId().toString());
         request.setInformationTypeId(null);
 
-        var resp = restTemplate.exchange(
-                    POLICY_REST_ENDPOINT + "/" + request.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
+        String body = webTestClient.put()
+                .uri(POLICY_REST_ENDPOINT + "/" + request.getId())
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(resp.getBody(), containsString("informationTypeId was null or missing"));
+        assertThat(body, containsString("informationTypeId was null or missing"));
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -186,22 +247,36 @@ class PolicyControllerIT extends IntegrationTestBase {
     void updateTwoPolices() {
         List<PolicyRequest> requestList = Arrays
                 .asList(createPolicyRequest(createAndSaveInformationType()), createPolicyRequest(createAndSaveInformationType(UUID.randomUUID(), "Postadresse")));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(createEntity.getBody(), notNullValue());
-        assertThat(createEntity.getBody().getTotalElements(), is(2L));
+        PolicyPage created = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(created, notNullValue());
+        assertThat(created.getTotalElements(), is(2L));
         assertThat(policyRepository.count(), is(2L));
 
         requestList.forEach(request -> request.setProcessId(PROCESS_ID_2.toString()));
-        requestList.get(0).setId(createEntity.getBody().getContent().get(0).getId().toString());
-        requestList.get(1).setId(createEntity.getBody().getContent().get(1).getId().toString());
+        requestList.get(0).setId(created.getContent().get(0).getId().toString());
+        requestList.get(1).setId(created.getContent().get(1).getId().toString());
 
-        ResponseEntity<PolicyPage> updateEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(updateEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(updateEntity.getBody(), notNullValue());
-        assertThat(updateEntity.getBody().getTotalElements(), is(2L));
-        assertPolicy(updateEntity.getBody().getContent().get(0), PROCESS_NAME_1 + " 2nd", INFORMATION_TYPE_NAME);
-        assertThat(updateEntity.getBody().getContent().get(1).getProcess().getName(), is(PROCESS_NAME_1 + " 2nd"));
+        PolicyPage updated = webTestClient.put()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(updated, notNullValue());
+        assertThat(updated.getTotalElements(), is(2L));
+        assertPolicy(updated.getContent().get(0), PROCESS_NAME_1 + " 2nd", INFORMATION_TYPE_NAME);
+        assertThat(updated.getContent().get(1).getProcess().getName(), is(PROCESS_NAME_1 + " 2nd"));
         assertThat(policyRepository.count(), is(2L));
     }
 
@@ -213,26 +288,39 @@ class PolicyControllerIT extends IntegrationTestBase {
                 createPolicyRequest(createAndSaveInformationType(postadressId, "Postadresse")),
                 createPolicyRequest(createAndSaveInformationType(UUID.randomUUID(), "Arbeidsforhold"))
         );
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(createEntity.getBody(), notNullValue());
-        assertThat(createEntity.getBody().getTotalElements(), is(3L));
+        PolicyPage created = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(created, notNullValue());
+        assertThat(created.getTotalElements(), is(3L));
 
         requestList.get(0).setProcessId(null);
         requestList.get(1).setProcessId(null);
         requestList.get(2).setProcessId(PROCESS_ID_2.toString());
-        requestList.get(0).setId(createEntity.getBody().getContent().get(0).getId().toString());
-        requestList.get(1).setId(createEntity.getBody().getContent().get(1).getId().toString());
-        requestList.get(2).setId(createEntity.getBody().getContent().get(2).getId().toString());
+        requestList.get(0).setId(created.getContent().get(0).getId().toString());
+        requestList.get(1).setId(created.getContent().get(1).getId().toString());
+        requestList.get(2).setId(created.getContent().get(2).getId().toString());
 
 
-        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
+        String body = webTestClient.put()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(resp.getBody(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
-        assertThat(resp.getBody(), containsString(postadressId + "/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
+        assertThat(body, containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
+        assertThat(body, containsString(postadressId + "/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
         // No error reported regarding Arbeidsforhold/TEST1
-        assertFalse(resp.getBody().contains("Arbeidsforhold/TEST1"));
+        assertFalse(body.contains("Arbeidsforhold/TEST1"));
         assertThat(policyRepository.count(), is(3L));
     }
 
@@ -241,46 +329,62 @@ class PolicyControllerIT extends IntegrationTestBase {
         PolicyRequest request = createPolicyRequest(createAndSaveInformationType());
         request.setId("1-1-1-1-1");
 
-        var resp = restTemplate.exchange(POLICY_REST_ENDPOINT + "/1-1-1-1-1", HttpMethod.PUT, new HttpEntity<>(request), Policy.class);
-
-        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        webTestClient.put()
+                .uri(POLICY_REST_ENDPOINT + "/1-1-1-1-1")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
     void deletePolicy() {
         List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(createEntity.getBody(), notNullValue());
-        PolicyResponse policy = createEntity.getBody().getContent().get(0);
+        PolicyPage created = webTestClient.post()
+                .uri(POLICY_REST_ENDPOINT)
+                .bodyValue(requestList)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        ResponseEntity<String> deleteEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "/" +policy.getId(), HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
-        assertThat(deleteEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(created, notNullValue());
+        PolicyResponse policy = created.getContent().get(0);
+
+        webTestClient.method(org.springframework.http.HttpMethod.DELETE)
+                .uri(POLICY_REST_ENDPOINT + "/" + policy.getId())
+                .header("dummy", "dummy")
+                .exchange()
+                .expectStatus().isOk();
+
         assertThat(policyRepository.count(), is(0L));
     }
 
     @Test
     void deleteNotExistingPolicy() {
 
-        var resp = restTemplate.exchange(
-                    POLICY_REST_ENDPOINT + "/1-1-1-1-1", HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
-        assertThat(resp.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        webTestClient.delete()
+                .uri(POLICY_REST_ENDPOINT + "/1-1-1-1-1")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
     void get20FirstPolicies() {
         createAndSavePolicy(100);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT,
-                PolicyPage.class);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), notNullValue());
-        assertThat(responseEntity.getBody().getNumberOfElements(), is(20L));
-        assertThat(responseEntity.getBody().getTotalElements(), is(100L));
-        assertThat(responseEntity.getBody().getPageSize(), is(20L));
+        PolicyPage body = webTestClient.get()
+                .uri(POLICY_REST_ENDPOINT)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body, notNullValue());
+        assertThat(body.getNumberOfElements(), is(20L));
+        assertThat(body.getTotalElements(), is(100L));
+        assertThat(body.getPageSize(), is(20L));
         assertThat(policyRepository.count(), is(100L));
     }
 
@@ -288,14 +392,18 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getManyPolicies() {
         createAndSavePolicy(25);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "?pageNumber=0&pageSize=25",
-                PolicyPage.class);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), notNullValue());
-        assertThat(responseEntity.getBody().getNumberOfElements(), is(25L));
-        assertThat(responseEntity.getBody().getTotalElements(), is(25L));
-        assertThat(responseEntity.getBody().getPageSize(), is(25L));
+        PolicyPage body = webTestClient.get()
+                .uri(POLICY_REST_ENDPOINT + "?pageNumber=0&pageSize=25")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body, notNullValue());
+        assertThat(body.getNumberOfElements(), is(25L));
+        assertThat(body.getTotalElements(), is(25L));
+        assertThat(body.getPageSize(), is(25L));
         assertThat(policyRepository.count(), is(25L));
     }
 
@@ -303,23 +411,31 @@ class PolicyControllerIT extends IntegrationTestBase {
     void countPolicies() {
         createAndSavePolicy(100);
 
-        ResponseEntity<Long> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "/count",
-                Long.class);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), is(100L));
+        Long body = webTestClient.get()
+                .uri(POLICY_REST_ENDPOINT + "/count")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Long.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body, is(100L));
     }
 
     @Test
     void getPoliciesPageBeyondMax() {
         createAndSavePolicy(100);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "?pageNumber=1&pageSize=100",
-                PolicyPage.class);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), notNullValue());
-        assertThat(responseEntity.getBody().getNumberOfElements(), is(0L));
+        PolicyPage body = webTestClient.get()
+                .uri(POLICY_REST_ENDPOINT + "?pageNumber=1&pageSize=100")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body, notNullValue());
+        assertThat(body.getNumberOfElements(), is(0L));
         assertThat(policyRepository.count(), is(100L));
     }
 
@@ -327,14 +443,18 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getPolicyForProcess() {
         List<Policy> policies = createAndSavePolicy(5);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "?processId={id}",
-                PolicyPage.class,
-                policies.get(0).getProcess().getId());
+        PolicyPage body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(POLICY_REST_ENDPOINT)
+                        .queryParam("processId", policies.get(0).getProcess().getId())
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), notNullValue());
-        assertThat(responseEntity.getBody().getTotalElements(), is(5L));
+        assertThat(body, notNullValue());
+        assertThat(body.getTotalElements(), is(5L));
         assertThat(policyRepository.count(), is(5L));
     }
 
@@ -342,12 +462,18 @@ class PolicyControllerIT extends IntegrationTestBase {
     void getPolicyForInformationType1() {
         createAndSavePolicy(5);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "?informationTypeId={id}",
-                PolicyPage.class, INFORMATION_TYPE_ID_1);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), notNullValue());
-        assertThat(responseEntity.getBody().getTotalElements(), is(5L));
+        PolicyPage body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(POLICY_REST_ENDPOINT)
+                        .queryParam("informationTypeId", INFORMATION_TYPE_ID_1)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body, notNullValue());
+        assertThat(body.getTotalElements(), is(5L));
         assertThat(policyRepository.count(), is(5L));
     }
 
@@ -355,24 +481,34 @@ class PolicyControllerIT extends IntegrationTestBase {
     void countPolicyForInformationType1() {
         createAndSavePolicy(5);
 
-        ResponseEntity<Long> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "/count?informationTypeId={id}",
-                Long.class,
-                INFORMATION_TYPE_ID_1);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), is(5L));
+        Long body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(POLICY_REST_ENDPOINT + "/count")
+                        .queryParam("informationTypeId", INFORMATION_TYPE_ID_1)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Long.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body, is(5L));
     }
 
     @Test
     void getPoliciesForInformationType() {
         createAndSavePolicy(5);
 
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.getForEntity(
-                POLICY_REST_ENDPOINT + "?informationTypeId={id}",
-                PolicyPage.class, INFORMATION_TYPE_ID_1);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), notNullValue());
-        assertThat(responseEntity.getBody().getTotalElements(), is(5L));
+        PolicyPage body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(POLICY_REST_ENDPOINT)
+                        .queryParam("informationTypeId", INFORMATION_TYPE_ID_1)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body.getTotalElements(), is(5L));
         assertThat(policyRepository.count(), is(5L));
     }
 

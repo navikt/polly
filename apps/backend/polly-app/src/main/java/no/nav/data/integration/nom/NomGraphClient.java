@@ -15,7 +15,6 @@ import no.nav.data.integration.nom.domain.OrgEnhetsType;
 import no.nav.data.integration.nom.domain.Organisering;
 import no.nav.data.integration.nom.dto.OrgEnhetGraphqlResponse;
 import no.nav.data.integration.nom.dto.SearchOrgEnhetGraphqlResponse;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -40,7 +39,6 @@ import static no.nav.data.common.web.TraceHeaderRequestInterceptor.correlationIn
 public class NomGraphClient {
 
     private RestTemplate restTemplate;
-    private final RestTemplateBuilder restTemplateBuilder;
     private final SecurityProperties securityProperties;
     private final TokenProvider tokenProvider;
     private final NomGraphQlProperties nomGraphQlProperties;
@@ -235,10 +233,10 @@ public class NomGraphClient {
 
     private RestOperations template() {
         if (restTemplate == null) {
-            restTemplate = restTemplateBuilder
-                    .additionalInterceptors(correlationInterceptor(), tokenInterceptor())
-                    .messageConverters(new MappingJackson2HttpMessageConverter())
-                    .build();
+            var rt = new RestTemplate();
+            rt.setMessageConverters(List.of(new MappingJackson2HttpMessageConverter()));
+            rt.setInterceptors(List.of(correlationInterceptor(), tokenInterceptor()));
+            restTemplate = rt;
         }
         return restTemplate;
     }

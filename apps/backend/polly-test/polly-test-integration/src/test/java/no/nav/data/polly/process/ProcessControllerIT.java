@@ -29,11 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 
 import java.util.List;
@@ -45,18 +40,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ProcessControllerIT extends IntegrationTestBase {
 
     @Autowired
-    private TestRestTemplate restTemplate;
-    @Autowired
     private ProcessService processService;
 
     @Test
     void getProcess() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        ResponseEntity<ProcessResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessResponse.class, policy.getProcess().getId());
+        ProcessResponse processResponse = webTestClient.get()
+                .uri("/process/{id}", policy.getProcess().getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessResponse processResponse = resp.getBody();
         assertThat(processResponse).isNotNull();
 
         // Unimportant date assertion
@@ -85,10 +82,14 @@ class ProcessControllerIT extends IntegrationTestBase {
     void getProcessByNumber() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        ResponseEntity<ProcessResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessResponse.class, policy.getProcess().getData().getNumber());
+        ProcessResponse processResponse = webTestClient.get()
+                .uri("/process/{id}", policy.getProcess().getData().getNumber())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessResponse processResponse = resp.getBody();
         assertThat(processResponse).isNotNull();
         assertThat(processResponse.getId()).isEqualTo(policy.getProcess().getId());
     }
@@ -98,14 +99,15 @@ class ProcessControllerIT extends IntegrationTestBase {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
         Policy policy2 = createAndSavePolicy(PURPOSE_CODE2, createAndSaveInformationType());
 
-        ResponseEntity<ProcessPage> resp = restTemplate
-                .postForEntity("/process/shortbyid",
-                        List.of(policy.getProcess().getId(), policy2.getProcess().getId()),
-                        ProcessPage.class
-                );
+        ProcessPage respBody = webTestClient.post()
+                .uri("/process/shortbyid")
+                .bodyValue(List.of(policy.getProcess().getId(), policy2.getProcess().getId()))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessPage respBody = resp.getBody();
         assertThat(respBody).isNotNull();
         assertThat(respBody.getContent()).hasSize(2);
     }
@@ -127,26 +129,37 @@ class ProcessControllerIT extends IntegrationTestBase {
         processService.deleteById(deleted2.getId());
 
         MockFilter.setUser(userInfo);
-        ResponseEntity<LastEditedPage> resp = restTemplate.getForEntity("/process/myedits", LastEditedPage.class);
+        LastEditedPage page = webTestClient.get()
+                .uri("/process/myedits")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LastEditedPage.class)
+                .returnResult()
+                .getResponseBody();
         MockFilter.clearUser();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(20L);
-        assertThat(resp.getBody().getContent().get(0).getTime()).isNotNull();
+        assertThat(page).isNotNull();
+        assertThat(page.getNumberOfElements()).isEqualTo(20L);
+        assertThat(page.getContent().get(0).getTime()).isNotNull();
         for (int i = 0; i < 20; i++) {
-            assertThat(resp.getBody().getContent().get(i).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2 + (39 - i));
+            assertThat(page.getContent().get(i).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2 + (39 - i));
         }
     }
 
     @Test
     void searchProcess() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process/search/{name}", ProcessPage.class, policy.getProcess().getData().getName().toLowerCase());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+        ProcessPage page = webTestClient.get()
+                .uri("/process/search/{name}", policy.getProcess().getData().getName().toLowerCase())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(page).isNotNull();
+        assertThat(page.getNumberOfElements()).isEqualTo(1L);
     }
 
     @Nested
@@ -162,14 +175,13 @@ class ProcessControllerIT extends IntegrationTestBase {
             p.getProcess().getData().setUsesAllInformationTypes(true);
             processService.save(p.getProcess());
 
-            ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.YES);
+            ProcessShortPage page = get(field, ProcessState.YES);
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(resp.getBody()).isNotNull();
+            assertThat(page).isNotNull();
             if (trueAlerts(field)) {
-                assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+                assertThat(page.getNumberOfElements()).isEqualTo(1L);
             } else {
-                assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
+                assertThat(page.getNumberOfElements()).isEqualTo(0L);
             }
         }
 
@@ -188,27 +200,33 @@ class ProcessControllerIT extends IntegrationTestBase {
             p.getProcess().getData().setUsesAllInformationTypes(false);
             processService.save(p.getProcess());
 
-            ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.NO);
+            ProcessShortPage page = get(field, ProcessState.NO);
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(resp.getBody()).isNotNull();
-            assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
+            assertThat(page).isNotNull();
+            assertThat(page.getNumberOfElements()).isEqualTo(0L);
         }
 
         @ParameterizedTest
         @EnumSource(ProcessField.class)
         void processByStateUnknown(ProcessField field) {
             createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-            ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.UNKNOWN);
+            ProcessShortPage page = get(field, ProcessState.UNKNOWN);
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(resp.getBody()).isNotNull();
-            assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
+            assertThat(page).isNotNull();
+            assertThat(page.getNumberOfElements()).isEqualTo(0L);
         }
 
-        private ResponseEntity<ProcessShortPage> get(ProcessField field, ProcessState yes) {
-            return restTemplate
-                    .getForEntity("/process/state?processField={field}&processState={state}", ProcessShortPage.class, field, yes);
+        private ProcessShortPage get(ProcessField field, ProcessState yes) {
+            return webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process/state")
+                            .queryParam("processField", field)
+                            .queryParam("processState", yes)
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessShortPage.class)
+                    .returnResult()
+                    .getResponseBody();
         }
 
     }
@@ -221,10 +239,14 @@ class ProcessControllerIT extends IntegrationTestBase {
             Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
             Policy policy2 = createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
 
-            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process", ProcessPage.class);
+            ProcessPage processPage = webTestClient.get()
+                    .uri("/process")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-            ProcessPage processPage = resp.getBody();
             assertThat(processPage).isNotNull();
 
             assertThat(processPage.getContent()).hasSize(2);
@@ -246,7 +268,13 @@ class ProcessControllerIT extends IntegrationTestBase {
         void getForProductTeam() {
             createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productTeam={productTeam}", ProcessPage.class, "teamid1");
+            ProcessPage resp = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process").queryParam("productTeam", "teamid1").build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
 
             assertSize(resp, 1);
         }
@@ -255,7 +283,13 @@ class ProcessControllerIT extends IntegrationTestBase {
         void getForProductArea() {
             createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productArea={productArea}", ProcessPage.class, "productarea1");
+            ProcessPage resp = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process").queryParam("productArea", "productarea1").build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
 
             assertSize(resp, 1);
         }
@@ -264,8 +298,13 @@ class ProcessControllerIT extends IntegrationTestBase {
         void getByDocumentId() {
             Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?documentId={documentId}", ProcessPage.class,
-                    policy.getData().getDocumentIds().get(0));
+            ProcessPage resp = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process").queryParam("documentId", policy.getData().getDocumentIds().get(0)).build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
 
             assertSize(resp, 1);
         }
@@ -274,8 +313,13 @@ class ProcessControllerIT extends IntegrationTestBase {
         void getByProcessorId() {
             Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?processorId={processorId}", ProcessPage.class,
-                    policy.getProcess().getData().getDataProcessing().getProcessors().get(0));
+            ProcessPage resp = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process").queryParam("processorId", policy.getProcess().getData().getDataProcessing().getProcessors().get(0)).build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
 
             assertSize(resp, 1);
         }
@@ -284,93 +328,185 @@ class ProcessControllerIT extends IntegrationTestBase {
         void getByGdprAndLaw() {
             createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}&nationalLaw={law}", ProcessPage.class, "ART61A", "FTRL"), 1);
-            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}", ProcessPage.class, "ART61A"), 1);
-            assertSize(restTemplate.getForEntity("/process?nationalLaw={law}", ProcessPage.class, "FTRL"), 1);
-            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}&nationalLaw={law}", ProcessPage.class, "ART61A", "FTRL2"), 0);
-            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}&nationalLaw={law}", ProcessPage.class, "ART61B", "FTRL"), 0);
+            assertSize(getByGdprLaw("ART61A", "FTRL"), 1);
+            assertSize(getByGdpr("ART61A"), 1);
+            assertSize(getByLaw("FTRL"), 1);
+            assertSize(getByGdprLaw("ART61A", "FTRL2"), 0);
+            assertSize(getByGdprLaw("ART61B", "FTRL"), 0);
         }
 
-        private void assertSize(ResponseEntity<ProcessPage> resp, int expected) {
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-            ProcessPage processPage = resp.getBody();
-            assertThat(processPage).isNotNull();
+        private ProcessPage getByGdprLaw(String gdpr, String law) {
+            return webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process")
+                            .queryParam("gdprArticle", gdpr)
+                            .queryParam("nationalLaw", law)
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
+        }
 
+        private ProcessPage getByGdpr(String gdpr) {
+            return webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process")
+                            .queryParam("gdprArticle", gdpr)
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
+        }
+
+        private ProcessPage getByLaw(String law) {
+            return webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/process")
+                            .queryParam("nationalLaw", law)
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(ProcessPage.class)
+                    .returnResult()
+                    .getResponseBody();
+        }
+
+        private void assertSize(ProcessPage processPage, int expected) {
+            assertThat(processPage).isNotNull();
             assertThat(processPage.getContent()).hasSize(expected);
         }
     }
 
     @Test
     void createProcess() {
-        ResponseEntity<ProcessResponse> resp = restTemplate
-                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP").build(), ProcessResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getName()).isEqualTo("newprocess");
-        assertThat(resp.getBody().getNumber()).isGreaterThan(100);
+        ProcessResponse body = webTestClient.post()
+                .uri("/process")
+                .bodyValue(ProcessRequest.builder().name("newprocess").purpose("AAP").build())
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ProcessResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.getName()).isEqualTo("newprocess");
+        assertThat(body.getNumber()).isGreaterThan(100);
     }
 
     @Test
     void createProcessValidationError() {
-        var resp = restTemplate
-                    .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP")
-                            .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build()))
-                            .build(), String.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
+        String body = webTestClient.post()
+                .uri("/process")
+                .bodyValue(ProcessRequest.builder().name("newprocess").purpose("AAP")
+                        .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build()))
+                        .build())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
     }
 
     @Test
     void createProcessDuplicate() {
         var request = ProcessRequest.builder().name("newprocess").purpose("AAP").build();
-        ResponseEntity<ProcessResponse> resp = restTemplate.postForEntity("/process", request, ProcessResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        var response = restTemplate.postForEntity("/process", request, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("nameAndPurposeExists");
+        webTestClient.post()
+                .uri("/process")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isCreated();
+
+        String body = webTestClient.post()
+                .uri("/process")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).contains("nameAndPurposeExists");
     }
 
     @Test
     void updateProcess() {
-        ResponseEntity<ProcessResponse> resp = restTemplate
-                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP").build(), ProcessResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resp.getBody()).isNotNull();
+        ProcessResponse created = webTestClient.post()
+                .uri("/process")
+                .bodyValue(ProcessRequest.builder().name("newprocess").purpose("AAP").build())
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ProcessResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        String id = resp.getBody().getId().toString();
+        assertThat(created).isNotNull();
+
+        String id = created.getId().toString();
         ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purpose("AAP")
                 .affiliation(AffiliationRequest.builder().department("dep").build())
                 .build();
-        resp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), ProcessResponse.class, id);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getAffiliation().getDepartment().getCode()).isEqualTo("DEP");
+
+        ProcessResponse updated = webTestClient.put()
+                .uri("/process/{id}", id)
+                .bodyValue(update)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(updated).isNotNull();
+        assertThat(updated.getAffiliation().getDepartment().getCode()).isEqualTo("DEP");
     }
 
     @Test
     void updateProcessChangePurpose() {
-        ResponseEntity<ProcessResponse> resp = restTemplate
-                .postForEntity("/process", ProcessRequest.builder().name("newprocess").purpose("AAP").build(), ProcessResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resp.getBody()).isNotNull();
-        ResponseEntity<PolicyPage> polResp = restTemplate
-                .postForEntity("/policy", List.of(PolicyRequest.builder().processId(resp.getBody().getId().toString()).purpose("AAP")
+        ProcessResponse createdProcess = webTestClient.post()
+                .uri("/process")
+                .bodyValue(ProcessRequest.builder().name("newprocess").purpose("AAP").build())
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ProcessResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(createdProcess).isNotNull();
+
+        PolicyPage polResp = webTestClient.post()
+                .uri("/policy")
+                .bodyValue(List.of(PolicyRequest.builder().processId(createdProcess.getId().toString()).purpose("AAP")
                         .informationTypeId(createAndSaveInformationType().getId().toString())
                         .subjectCategory("BRUKER")
-                        .build()), PolicyPage.class);
-        assertThat(polResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(polResp.getBody()).isNotNull();
-        assertThat(polResp.getBody().getNumberOfElements()).isEqualTo(1);
+                        .build()))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(PolicyPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        String id = resp.getBody().getId().toString();
+        assertThat(polResp).isNotNull();
+        assertThat(polResp.getNumberOfElements()).isEqualTo(1);
+
+        String id = createdProcess.getId().toString();
         ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purpose("KONTROLL")
                 .affiliation(AffiliationRequest.builder().department("dep").build())
                 .build();
-        var errorResp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), String.class, id);
-        assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(errorResp.getBody()).isNotNull();
-        assertThat(policyRepository.findById(polResp.getBody().getContent().get(0).getId()).orElseThrow().getData().getPurposes()).isEqualTo(List.of("KONTROLL"));
+
+        String respBody = webTestClient.put()
+                .uri("/process/{id}", id)
+                .bodyValue(update)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(respBody).isNotNull();
+        assertThat(policyRepository.findById(polResp.getContent().get(0).getId()).orElseThrow().getData().getPurposes()).isEqualTo(List.of("KONTROLL"));
     }
 
     @Test
@@ -378,10 +514,15 @@ class ProcessControllerIT extends IntegrationTestBase {
         createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
         createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
 
-        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?purpose", ProcessCountResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull()
+        ProcessCountResponse body = webTestClient.get()
+                .uri("/process/count?purpose")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessCountResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull()
                 .isEqualTo(new ProcessCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L, PURPOSE_CODE2, 0L)));
     }
 
@@ -389,10 +530,15 @@ class ProcessControllerIT extends IntegrationTestBase {
     void countDepartment() {
         createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?department", ProcessCountResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull()
+        ProcessCountResponse body = webTestClient.get()
+                .uri("/process/count?department")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessCountResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull()
                 .isEqualTo(new ProcessCountResponse(Map.of("AOT", 0L, "DEP", 1L)));
     }
 
@@ -400,10 +546,15 @@ class ProcessControllerIT extends IntegrationTestBase {
     void countSubDepartment() {
         createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?subDepartment", ProcessCountResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull()
+        ProcessCountResponse body = webTestClient.get()
+                .uri("/process/count?subDepartment")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessCountResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull()
                 .isEqualTo(new ProcessCountResponse(Map.of("PEN", 0L, "SUBDEP", 1L)));
     }
 
@@ -411,10 +562,15 @@ class ProcessControllerIT extends IntegrationTestBase {
     void countTeam() {
         createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?team", ProcessCountResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull()
+        ProcessCountResponse body = webTestClient.get()
+                .uri("/process/count?team")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ProcessCountResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull()
                 .isEqualTo(new ProcessCountResponse(Map.of("teamid1", 1L)));
     }
 

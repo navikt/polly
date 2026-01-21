@@ -55,6 +55,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
@@ -64,6 +65,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -117,6 +119,11 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected AuditVersionRepository auditRepository;
 
+    @LocalServerPort
+    protected int port;
+
+    protected WebTestClient webTestClient;
+
     static {
         postgreSQLContainer.start();
     }
@@ -126,6 +133,10 @@ public abstract class IntegrationTestBase {
 
     @BeforeEach
     public void setUpAbstract() {
+        this.webTestClient = WebTestClient.bindToServer()
+                .baseUrl("http://localhost:" + port)
+                .build();
+
         CodelistStub.initializeCodelist();
         mockTerms();
         delete();
@@ -393,7 +404,7 @@ public abstract class IntegrationTestBase {
         return createLegalBasis().convertToResponse();
     }
 
-    protected ProcessResponseBuilder processResponseBuilder(UUID processId) {
+    protected ProcessResponse.ProcessResponseBuilder processResponseBuilder(UUID processId) {
         return ProcessResponse.builder()
                 .id(processId)
                 .name("Auto_" + PURPOSE_CODE1)

@@ -20,12 +20,6 @@ import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,33 +30,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DisclosureControllerIT extends IntegrationTestBase {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
     private Document document;
 
     @Test
     void createAndGetDisclosure() {
         var disc = createDisclosureArbeidsgiverWithInformationType();
-        var resp = restTemplate.getForEntity("/disclosure/{id}", DisclosureResponse.class, disc.getId());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertResponse(resp);
+        DisclosureResponse got = webTestClient.get()
+                .uri("/disclosure/{id}", disc.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DisclosureResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertResponse(got);
     }
 
     private DisclosureResponse createDisclosureArbeidsgiverWithInformationType() {
         document = createAndSaveDocument();
         var req = buildDisclosure("ARBEIDSGIVER");
         req.setDocumentId(document.getId().toString());
-        var resp = restTemplate.postForEntity("/disclosure", req, DisclosureResponse.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertResponse(resp);
-        return resp.getBody();
+        DisclosureResponse created = webTestClient.post()
+                .uri("/disclosure")
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(DisclosureResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertResponse(created);
+        return created;
     }
 
-    private void assertResponse(ResponseEntity<DisclosureResponse> resp) {
+    private void assertResponse(DisclosureResponse disclosureResponse) {
         InformationType infoType = createAndSaveInformationType();
-        var disclosureResponse = resp.getBody();
         assertThat(disclosureResponse).isNotNull();
         assertThat(disclosureResponse.getChangeStamp()).isNotNull();
         disclosureResponse.setChangeStamp(null);
@@ -70,7 +74,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
                 CodelistStaticService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
 
-       CodelistResponse department = CodelistStaticService.getCodelistResponse(ListName.DEPARTMENT, "DEP");
+        CodelistResponse department = CodelistStaticService.getCodelistResponse(ListName.DEPARTMENT, "DEP");
 
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
@@ -108,11 +112,19 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     @Test
     void getAllDisclosure() {
-        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure", DisclosurePage.class);
+        webTestClient.post().uri("/disclosure").bodyValue(buildDisclosure()).exchange().expectStatus().isCreated();
+        webTestClient.post().uri("/disclosure").bodyValue(buildDisclosure()).exchange().expectStatus().isCreated();
 
-        assertDisclosures(resp, 2);
+        DisclosurePage page = webTestClient.get()
+                .uri("/disclosure")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DisclosurePage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(page).isNotNull();
+        assertThat(page.getContent()).hasSize(2);
     }
 
     @Test
@@ -120,24 +132,47 @@ class DisclosureControllerIT extends IntegrationTestBase {
         var process = createAndSaveProcess(PURPOSE_CODE1);
         DisclosureRequest request = buildDisclosure();
         request.setProcessIds(List.of(process.getId().toString()));
-        var d1 = restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
-        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        var resp = restTemplate.getForEntity("/disclosure/summary", DisclosureSummaryPage.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getContent()).hasSize(2);
-        var d1Res = get(resp.getBody().getContent(), d -> d.getId().equals(d1.getBody().getId()));
+        DisclosureResponse d1 = webTestClient.post()
+                .uri("/disclosure")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(DisclosureResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        webTestClient.post().uri("/disclosure").bodyValue(buildDisclosure()).exchange().expectStatus().isCreated();
+
+        DisclosureSummaryPage page = webTestClient.get()
+                .uri("/disclosure/summary")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DisclosureSummaryPage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(page).isNotNull();
+        assertThat(page.getContent()).hasSize(2);
+        var d1Res = get(page.getContent(), d -> d.getId().equals(d1.getId()));
         assertThat(d1Res.getProcesses()).hasSize(1);
         assertThat(d1Res.getProcesses().get(0).getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE1);
     }
 
     @Test
     void searchDisclosure() {
-        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure/search/{string}", DisclosurePage.class, "disc name");
+        webTestClient.post().uri("/disclosure").bodyValue(buildDisclosure()).exchange().expectStatus().isCreated();
 
-        assertDisclosures(resp, 1);
+        DisclosurePage page = webTestClient.get()
+                .uri("/disclosure/search/{string}", "disc name")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DisclosurePage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(page).isNotNull();
+        assertThat(page.getContent()).hasSize(1);
     }
 
     @Nested
@@ -145,12 +180,22 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
         @Test
         void getDisclosureByInfoTypeIdViaDocument() {
-            restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+            webTestClient.post().uri("/disclosure").bodyValue(buildDisclosure()).exchange().expectStatus().isCreated();
             createDisclosureArbeidsgiverWithInformationType();
             UUID informationTypeId = document.getData().getInformationTypes().get(0).getInformationTypeId();
-            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, informationTypeId);
 
-            assertDisclosures(resp, 1);
+            DisclosurePage page = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/disclosure")
+                            .queryParam("informationTypeId", informationTypeId)
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(DisclosurePage.class)
+                    .returnResult()
+                    .getResponseBody();
+
+            assertThat(page).isNotNull();
+            assertThat(page.getContent()).hasSize(1);
         }
 
         @Test
@@ -158,28 +203,57 @@ class DisclosureControllerIT extends IntegrationTestBase {
             InformationType infoType = createAndSaveInformationType();
             DisclosureRequest request = buildDisclosure();
             request.setInformationTypeIds(List.of(infoType.getId().toString()));
-            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
+            webTestClient.post().uri("/disclosure").bodyValue(request).exchange().expectStatus().isCreated();
 
-            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, infoType.getId());
+            DisclosurePage page = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/disclosure")
+                            .queryParam("informationTypeId", infoType.getId())
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(DisclosurePage.class)
+                    .returnResult()
+                    .getResponseBody();
 
-            assertDisclosures(resp, 1);
+            assertThat(page).isNotNull();
+            assertThat(page.getContent()).hasSize(1);
         }
 
         @Test
         void getDisclosureByRecipient() {
-            restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+            webTestClient.post().uri("/disclosure").bodyValue(buildDisclosure()).exchange().expectStatus().isCreated();
             var disc = createDisclosureArbeidsgiverWithInformationType();
-            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?recipient={recipient}", DisclosurePage.class, disc.getRecipient().getCode());
 
-            assertDisclosures(resp, 1);
+            DisclosurePage page = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/disclosure")
+                            .queryParam("recipient", disc.getRecipient().getCode())
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(DisclosurePage.class)
+                    .returnResult()
+                    .getResponseBody();
+
+            assertThat(page).isNotNull();
+            assertThat(page.getContent()).hasSize(1);
         }
 
         @Test
         void getDisclosureByDocumentId() {
             createDisclosureArbeidsgiverWithInformationType();
-            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?documentId={docId}", DisclosurePage.class, document.getId());
 
-            assertDisclosures(resp, 1);
+            DisclosurePage page = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/disclosure")
+                            .queryParam("documentId", document.getId())
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(DisclosurePage.class)
+                    .returnResult()
+                    .getResponseBody();
+
+            assertThat(page).isNotNull();
+            assertThat(page.getContent()).hasSize(1);
         }
 
         @Test
@@ -187,34 +261,59 @@ class DisclosureControllerIT extends IntegrationTestBase {
             var process = createAndSaveProcess(PURPOSE_CODE1);
             DisclosureRequest request = buildDisclosure();
             request.setProcessIds(List.of(process.getId().toString()));
-            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
-            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?processId={processId}", DisclosurePage.class, process.getId());
+            webTestClient.post().uri("/disclosure").bodyValue(request).exchange().expectStatus().isCreated();
 
-            assertDisclosures(resp, 1);
+            DisclosurePage page = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/disclosure")
+                            .queryParam("processId", process.getId())
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(DisclosurePage.class)
+                    .returnResult()
+                    .getResponseBody();
+
+            assertThat(page).isNotNull();
+            assertThat(page.getContent()).hasSize(1);
         }
 
         @Test
         void getDisclosureByNoLegalBases() {
             DisclosureRequest request = buildDisclosure();
-            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
+            webTestClient.post().uri("/disclosure").bodyValue(request).exchange().expectStatus().isCreated();
             request.setLegalBases(List.of());
-            restTemplate.postForEntity("/disclosure", request, DisclosureResponse.class);
-            ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?emptyLegalBases=true", DisclosurePage.class);
+            webTestClient.post().uri("/disclosure").bodyValue(request).exchange().expectStatus().isCreated();
 
-            assertDisclosures(resp, 1);
+            DisclosurePage page = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/disclosure")
+                            .queryParam("emptyLegalBases", true)
+                            .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(DisclosurePage.class)
+                    .returnResult()
+                    .getResponseBody();
+
+            assertThat(page).isNotNull();
+            assertThat(page.getContent()).hasSize(1);
         }
     }
 
     @Test
     void createDisclosureValidationError() {
 
-        var resp = restTemplate
-                .postForEntity("/disclosure", DisclosureRequest.builder().description("newdisclosure").recipient("SKATT").recipientPurpose("AAP")
+        String body = webTestClient.post()
+                .uri("/disclosure")
+                .bodyValue(DisclosureRequest.builder().description("newdisclosure").recipient("SKATT").recipientPurpose("AAP")
                         .legalBasis(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build())
-                        .build(), String.class);
+                        .build())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
+        assertThat(body).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
     }
 
     @Test
@@ -223,48 +322,65 @@ class DisclosureControllerIT extends IntegrationTestBase {
         DisclosureRequest create = buildDisclosure();
         create.setDocumentId(doc.getId().toString());
 
-        ResponseEntity<DisclosureResponse> resp = restTemplate.postForEntity("/disclosure", create, DisclosureResponse.class);
+        DisclosureResponse created = webTestClient.post()
+                .uri("/disclosure")
+                .bodyValue(create)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(DisclosureResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getDocumentId()).isEqualTo(doc.getId());
+        assertThat(created).isNotNull();
+        assertThat(created.getDocumentId()).isEqualTo(doc.getId());
 
-        String id = resp.getBody().getId().toString();
+        String id = created.getId().toString();
         var docUpdate = createAndSaveDocument();
         DisclosureRequest update = buildDisclosure();
         update.setId(id);
         update.setDocumentId(docUpdate.getId().toString());
 
-        resp = restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(update), DisclosureResponse.class, id);
+        DisclosureResponse updated = webTestClient.put()
+                .uri("/disclosure/{id}", id)
+                .bodyValue(update)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(DisclosureResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getDocumentId()).isEqualTo(docUpdate.getId());
+        assertThat(updated).isNotNull();
+        assertThat(updated.getDocumentId()).isEqualTo(docUpdate.getId());
     }
 
     @Test
     void updateDisclosureValidationError() {
-        ResponseEntity<DisclosureResponse> resp = restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(resp.getBody()).isNotNull();
+        DisclosureResponse created = webTestClient.post()
+                .uri("/disclosure")
+                .bodyValue(buildDisclosure())
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(DisclosureResponse.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(created).isNotNull();
 
-        String id = resp.getBody().getId().toString();
+        String id = created.getId().toString();
         DisclosureRequest request2 = buildDisclosure();
         request2.setId(id);
         request2.setRecipient("error");
 
-        var response = restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).contains("fieldIsInvalidCodelist -- recipient: ERROR code not found in codelist THIRD_PARTY");
-    }
+        String body = webTestClient.put()
+                .uri("/disclosure/{id}", id)
+                .bodyValue(request2)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-    private void assertDisclosures(ResponseEntity<DisclosurePage> resp, int i) {
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DisclosurePage disclosurePage = resp.getBody();
-        assertThat(disclosurePage).isNotNull();
-
-        assertThat(disclosurePage.getContent()).hasSize(i);
+        assertThat(body).isNotNull();
+        assertThat(body).contains("fieldIsInvalidCodelist -- recipient: ERROR code not found in codelist THIRD_PARTY");
     }
 
     private DisclosureRequest buildDisclosure() {
@@ -306,3 +422,4 @@ class DisclosureControllerIT extends IntegrationTestBase {
         return documentRepository.save(document);
     }
 }
+

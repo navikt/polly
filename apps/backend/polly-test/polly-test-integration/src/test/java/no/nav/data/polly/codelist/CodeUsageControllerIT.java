@@ -15,11 +15,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,9 +23,6 @@ import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodeUsageControllerIT extends IntegrationTestBase {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Autowired
     private CodelistService codelistService;
@@ -53,11 +45,16 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         @CsvSource({"PURPOSE, 2", "DEPARTMENT,2", "SUB_DEPARTMENT,1", "GDPR_ARTICLE,2", "NATIONAL_LAW,1", "SUBJECT_CATEGORY,1", "SENSITIVITY,1", "SYSTEM,2", "CATEGORY,2",
                 "THIRD_PARTY,2", "TRANSFER_GROUNDS_OUTSIDE_EU,1"})
         void shouldFindCodeUsage(String list, int expectedCodesInUse) {
-            ResponseEntity<CodelistUsageResponse> response = restTemplate
-                    .exchange(String.format("/codelist/usage/find/%s", list), HttpMethod.GET, HttpEntity.EMPTY, CodelistUsageResponse.class);
+            CodelistUsageResponse body = webTestClient.get()
+                    .uri("/codelist/usage/find/{list}", list)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(CodelistUsageResponse.class)
+                    .returnResult()
+                    .getResponseBody();
 
             assertThat(
-                    Objects.requireNonNull(response.getBody()).getCodesInUse().stream().filter(CodeUsageResponse::isInUse).count()
+                    Objects.requireNonNull(body).getCodesInUse().stream().filter(CodeUsageResponse::isInUse).count()
             ).isEqualTo(expectedCodesInUse);
         }
     }
@@ -127,16 +124,22 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         @CsvSource({"PURPOSE,NOT_FOUND", "NATIONAL_LAW,NOT_FOUND", "SUBJECT_CATEGORY,NOT_FOUND", "SENSITIVITY,NOT_FOUND",
                 "TRANSFER_GROUNDS_OUTSIDE_EU,NOT_FOUND"})
         void shouldNotFindCodeUsage(String list, String code) {
-            var responseEntity = getForListAndCode(list, code).getStatusCode();
-            assertThat(HttpStatus.NOT_FOUND).isEqualTo(responseEntity);
+            webTestClient.get()
+                    .uri("/codelist/usage/find/{list}/{code}", list, code)
+                    .exchange()
+                    .expectStatus().isNotFound();
         }
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE,BARNETRYGD,0,1,1,0", "DEPARTMENT,YTA,0,0,2,0", "SUB_DEPARTMENT,NAY,0,0,2,0", "GDPR_ARTICLE,ART92A,0,0,1,0", "NATIONAL_LAW,FTRL,0,2,2,0",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0,0", "SENSITIVITY,POL,2,0,0,0", "SYSTEM,AA_REG,1,0,1,0", "SYSTEM,TPS,1,0,1,0", "CATEGORY,ARBEIDSFORHOLD,1,0,0,0",
-                "THIRD_PARTY,SKATTEETATEN,1,0,1,0", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,1"})
+        @CsvSource({"PURPOSE,BARNETRYGD,0,1,1,0,0,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0,0,0",
+                "DEPARTMENT,YTA,0,0,2,1,0,0,0", "SUB_DEPARTMENT,NAY,0,0,2,2,0,0,0",
+                "SENSITIVITY,POL,2,0,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0,0",
+                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1,0", "SYSTEM,TPS,1,0,1,1,0,0,0",
+                "NATIONAL_LAW,FTRL,0,2,2,0,1,0,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0,0,0",
+                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,0,0,0,0,1"
+        })
         void shouldFindCodeUsage(String list, String code, int expectedCountInformationTypes, int expectedCountPolicy, int expectedCountProcess, int expectedCountProcessors) {
-            ResponseEntity<CodeUsageResponse> response = getForListAndCode(list, code);
+            CodeUsageResponse response = getForListAndCode(list, code);
 
             assertThat(expectedCountInformationTypes).isEqualTo(countInformationTypes(response));
             assertThat(expectedCountPolicy).isEqualTo(countPolicies(response));
@@ -144,8 +147,13 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
             assertThat(expectedCountProcessors).isEqualTo(countProcessors(response));
         }
 
-        private ResponseEntity<CodeUsageResponse> getForListAndCode(String list, String code) {
-            return restTemplate.getForEntity("/codelist/usage/find/{list}/{code}", CodeUsageResponse.class, list, code);
+        private CodeUsageResponse getForListAndCode(String list, String code) {
+            return webTestClient.get()
+                    .uri("/codelist/usage/find/{list}/{code}", list, code)
+                    .exchange()
+                    .expectBody(CodeUsageResponse.class)
+                    .returnResult()
+                    .getResponseBody();
         }
     }
 
@@ -182,11 +190,16 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
 
         private CodeUsageResponse replaceCode(String list, String code, String newCode) {
-            ResponseEntity<CodeUsageResponse> response = restTemplate
-                    .postForEntity("/codelist/usage/replace", new ReplaceCodelistRequest(list, code, newCode, ""), CodeUsageResponse.class);
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isNotNull();
-            return response.getBody();
+            CodeUsageResponse body = webTestClient.post()
+                    .uri("/codelist/usage/replace")
+                    .bodyValue(new ReplaceCodelistRequest(list, code, newCode, ""))
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(CodeUsageResponse.class)
+                    .returnResult()
+                    .getResponseBody();
+            assertThat(body).isNotNull();
+            return body;
         }
     }
 
@@ -268,32 +281,33 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         codelistService.save(requests);
     }
 
-    private int countInformationTypes(ResponseEntity<CodeUsageResponse> response) {
-        return Objects.requireNonNull(response.getBody()).getInformationTypes().size();
+    private int countInformationTypes(CodeUsageResponse response) {
+        return Objects.requireNonNull(response).getInformationTypes().size();
     }
 
-    private int countPolicies(ResponseEntity<CodeUsageResponse> response) {
-        return Objects.requireNonNull(response.getBody()).getPolicies().size();
+    private int countPolicies(CodeUsageResponse response) {
+        return Objects.requireNonNull(response).getPolicies().size();
     }
 
-    private int countProcesses(ResponseEntity<CodeUsageResponse> response) {
-        return Objects.requireNonNull(response.getBody()).getProcesses().size();
+    private int countProcesses(CodeUsageResponse response) {
+        return Objects.requireNonNull(response).getProcesses().size();
     }
 
-    private int countDpProcesses(ResponseEntity<CodeUsageResponse> response) {
-        return Objects.requireNonNull(response.getBody()).getDpProcesses().size();
+    private int countDpProcesses(CodeUsageResponse response) {
+        return Objects.requireNonNull(response).getDpProcesses().size();
     }
 
-    private int countDisclosures(ResponseEntity<CodeUsageResponse> response) {
-        return Objects.requireNonNull(response.getBody()).getDisclosures().size();
+    private int countDisclosures(CodeUsageResponse response) {
+        return Objects.requireNonNull(response).getDisclosures().size();
     }
 
-    private int countDocuments(ResponseEntity<CodeUsageResponse> response) {
-        return Objects.requireNonNull(response.getBody()).getDocuments().size();
+    private int countDocuments(CodeUsageResponse response) {
+        return Objects.requireNonNull(response).getDocuments().size();
     }
 
-    private int countProcessors(ResponseEntity<CodeUsageResponse> response) {
-        return Objects.requireNonNull(response.getBody()).getProcessors().size();
+    private int countProcessors(CodeUsageResponse response) {
+        return Objects.requireNonNull(response).getProcessors().size();
     }
 
 }
+

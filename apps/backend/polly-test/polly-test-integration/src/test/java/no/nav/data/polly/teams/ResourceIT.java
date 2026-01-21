@@ -5,40 +5,49 @@ import no.nav.data.polly.teams.TeamController.ResourcePage;
 import no.nav.data.polly.teams.dto.Resource;
 import no.nav.data.polly.teams.dto.ResourceType;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResourceIT extends IntegrationTestBase {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     @Test
     void getTeam() {
-        ResponseEntity<Resource> resource = restTemplate.getForEntity("/team/resource/{ident}", Resource.class, "A123456");
-        assertThat(resource.getBody()).isNotNull();
-        assertThat(resource.getBody().getNavIdent()).isEqualTo("A123456");
-        assertThat(resource.getBody().getGivenName()).isEqualTo("Given");
-        assertThat(resource.getBody().getFamilyName()).isEqualTo("Family");
-        assertThat(resource.getBody().getResourceType()).isEqualTo(ResourceType.EXTERNAL);
+        Resource body = webTestClient.get()
+                .uri("/team/resource/{ident}", "A123456")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Resource.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.getNavIdent()).isEqualTo("A123456");
+        assertThat(body.getGivenName()).isEqualTo("Given");
+        assertThat(body.getFamilyName()).isEqualTo("Family");
+        assertThat(body.getResourceType()).isEqualTo(ResourceType.EXTERNAL);
     }
 
     @Test
     void getTeamNotFound() {
-        ResponseEntity<Resource> responseEntity = restTemplate.getForEntity("/team/resource/{ident}", Resource.class, "A999999");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        webTestClient.get()
+                .uri("/team/resource/{ident}", "A999999")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
     void searchTeams() {
-        ResponseEntity<ResourcePage> teams = restTemplate.getForEntity("/team/resource/search/{name}", ResourcePage.class, "fam");
-        assertThat(teams.getBody()).isNotNull();
-        assertThat(teams.getBody().getContent()).hasSize(2);
-        assertThat(teams.getBody().getContent().get(0).getNavIdent()).isEqualTo("A123456");
-        assertThat(teams.getBody().getContent().get(1).getNavIdent()).isEqualTo("A123457");
+        ResourcePage body = webTestClient.get()
+                .uri("/team/resource/search/{name}", "fam")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ResourcePage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.getContent()).hasSize(2);
+        assertThat(body.getContent().get(0).getNavIdent()).isEqualTo("A123456");
+        assertThat(body.getContent().get(1).getNavIdent()).isEqualTo("A123457");
     }
 }

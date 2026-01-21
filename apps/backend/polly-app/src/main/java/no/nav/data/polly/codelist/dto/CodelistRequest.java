@@ -29,7 +29,10 @@ public class CodelistRequest implements RequestElement {
     private String shortName;
     private String description;
 
+    // Internal metadata; do not require clients to send these
+    @JsonIgnore
     private boolean update;
+    @JsonIgnore
     private int requestIndex;
 
     public Codelist convertToCodelist() {

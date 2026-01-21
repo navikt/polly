@@ -8,12 +8,6 @@ import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,62 +16,80 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpEntity.EMPTY;
-import static org.springframework.http.HttpMethod.DELETE;
 
 class InformationTypeControllerIT extends IntegrationTestBase {
-
-    @Autowired
-    protected TestRestTemplate restTemplate;
 
     @Test
     void findForId() {
         var informationType = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "new-name"));
-        ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.getForEntity("/informationtype/{id}", InformationTypeResponse.class, informationType.getId());
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getName()).isEqualTo(informationType.getData().getName());
+        InformationTypeResponse body = webTestClient.get()
+                .uri("/informationtype/{id}", informationType.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(InformationTypeResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.getName()).isEqualTo(informationType.getData().getName());
     }
 
     @Test
     void searchInformationTypeByName() {
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "TypeData"));
-        ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/search?name={search}", InformationTypePage.class, "typedata");
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getNumberOfElements()).isEqualTo(2L);
-        assertThat(responseEntity.getBody().getContent().get(0).getName()).isEqualTo("TypeData");
-        assertThat(responseEntity.getBody().getContent().get(1).getName()).isEqualTo("InformationTypeData");
+        InformationTypePage body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/informationtype/search").queryParam("name", "typedata").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(InformationTypePage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.getNumberOfElements()).isEqualTo(2L);
+        assertThat(body.getContent().get(0).getName()).isEqualTo("TypeData");
+        assertThat(body.getContent().get(1).getName()).isEqualTo("InformationTypeData");
     }
 
     @Test
     void searchInformationTypeByNameWithForwardSlash() {
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationType/Data"));
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "Type/Data"));
-        ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/search?name={search}", InformationTypePage.class, "type/data");
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getNumberOfElements()).isEqualTo(2L);
-        assertThat(responseEntity.getBody().getContent().get(0).getName()).isEqualTo("Type/Data");
-        assertThat(responseEntity.getBody().getContent().get(1).getName()).isEqualTo("InformationType/Data");
+        InformationTypePage body = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/informationtype/search").queryParam("name", "type/data").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(InformationTypePage.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.getNumberOfElements()).isEqualTo(2L);
+        assertThat(body.getContent().get(0).getName()).isEqualTo("Type/Data");
+        assertThat(body.getContent().get(1).getName()).isEqualTo("InformationType/Data");
     }
 
     @Test
     void getAllShort() {
         var it = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
 
-        var responseEntity = restTemplate.getForEntity("/informationtype/short", InformationTypeShortPage.class);
+        InformationTypeShortPage body = webTestClient.get()
+                .uri("/informationtype/short")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(InformationTypeShortPage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getNumberOfElements()).isEqualTo(1L);
-        assertThat(responseEntity.getBody().getContent().get(0).getId()).isEqualTo(it.getId());
-        assertThat(responseEntity.getBody().getContent().get(0).getName()).isEqualTo(it.getData().getName());
-        assertThat(responseEntity.getBody().getContent().get(0).getSensitivity().getCode()).isEqualTo(it.getData().getSensitivity());
+        assertThat(body).isNotNull();
+        assertThat(body.getNumberOfElements()).isEqualTo(1L);
+        assertThat(body.getContent().get(0).getId()).isEqualTo(it.getId());
+        assertThat(body.getContent().get(0).getName()).isEqualTo(it.getData().getName());
+        assertThat(body.getContent().get(0).getSensitivity().getCode()).isEqualTo(it.getData().getSensitivity());
     }
 
     @Nested
@@ -87,63 +99,72 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         void get() {
             createInformationTypeTestData(30);
 
-            ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype", InformationTypePage.class);
+            InformationTypePage body = webTestClient.get()
+                    .uri("/informationtype")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(InformationTypePage.class)
+                    .returnResult()
+                    .getResponseBody();
 
-            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);
-            assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getContent().size()).isEqualTo(20);
-            assertThat(responseEntity.getBody().getPageNumber()).isEqualTo(0);
-            assertThat(responseEntity.getBody().getPageSize()).isEqualTo(20);
-            assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(30L);
+            assertThat(body).isNotNull();
+            assertThat(body.getContent().size()).isEqualTo(20);
+            assertThat(body.getPageNumber()).isEqualTo(0);
+            assertThat(body.getPageSize()).isEqualTo(20);
+            assertThat(body.getTotalElements()).isEqualTo(30L);
         }
 
         @Test
         void findBySource() {
             createInformationTypeTestData(1);
-            assertGetOne("/informationtype?source={source}", "SKATT");
+            assertGetOne("/informationtype", "source", "SKATT");
         }
 
         @Test
         void getForTerm() {
             createInformationTypeTestData(1);
-            assertGetOne("/informationtype?term={term}", "term");
+            assertGetOne("/informationtype", "term", "term");
         }
 
         @Test
         void getForOrgMaster() {
             createInformationTypeTestData(1);
-            assertGetOne("/informationtype?orgMaster={orgMaster}", "TPS");
+            assertGetOne("/informationtype", "orgMaster", "TPS");
         }
 
         @Test
         void getForProductTeam() {
             createInformationTypeTestData(1);
-            assertGetOne("/informationtype?productTeam={productTeam}", "teamid1");
+            assertGetOne("/informationtype", "productTeam", "teamid1");
         }
 
         @Test
         void getForProductArea() {
             createInformationTypeTestData(1);
-            assertGetOne("/informationtype?productArea={productArea}", "productarea1");
+            assertGetOne("/informationtype", "productArea", "productarea1");
         }
 
         @Test
         void getForProductAreaNoResults() {
-            assertGet("/informationtype?productArea={productArea}", "productarea1", 0);
+            assertGet("/informationtype", "productArea", "productarea1", 0);
         }
 
-        private void assertGetOne(String url, String arg) {
-            assertGet(url, arg, 1);
+        private void assertGetOne(String path, String key, String arg) {
+            assertGet(path, key, arg, 1);
         }
 
-        private void assertGet(String url, String arg, int num) {
-            ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity(url, InformationTypePage.class, arg);
+        private void assertGet(String path, String key, String arg, int num) {
+            InformationTypePage body = webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path(path).queryParam(key, arg).build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(InformationTypePage.class)
+                    .returnResult()
+                    .getResponseBody();
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-            InformationTypePage page = resp.getBody();
-            assertThat(page).isNotNull();
-            assertThat(page.getContent()).hasSize(num);
+            assertThat(body).isNotNull();
+            assertThat(body.getContent()).hasSize(num);
         }
     }
 
@@ -151,10 +172,15 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void countAllInformationTypes() {
         createInformationTypeTestData(35);
 
-        ResponseEntity<Long> responseEntity = restTemplate.getForEntity("/informationtype/count", Long.class);
+        Long body = webTestClient.get()
+                .uri("/informationtype/count")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Long.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(35L);
+        assertThat(body).isEqualTo(35L);
     }
 
     @Test
@@ -162,12 +188,17 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         InformationTypeRequest req1 = createRequest("createName1");
         InformationTypeRequest req2 = createRequest("createName2");
 
-        ResponseEntity<InformationTypePage> responseEntity = restTemplate
-                .exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(List.of(req1, req2)), InformationTypePage.class);
+        InformationTypePage body = webTestClient.post()
+                .uri("/informationtype")
+                .bodyValue(List.of(req1, req2))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(InformationTypePage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(2);
+        assertThat(body).isNotNull();
+        assertThat(body.getTotalElements()).isEqualTo(2);
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("createName1")).isPresent();
         assertThat(informationTypeRepository.findByName("createName2")).isPresent();
@@ -177,10 +208,16 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void createInvalidInformationType() {
         List<InformationTypeRequest> requests = List.of(createRequest("createName"), createRequest("createName"));
 
-        var resp = restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+        String body = webTestClient.post()
+                .uri("/informationtype")
+                .bodyValue(requests)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("DuplicatedIdentifyingFields");
+        assertThat(body).contains("DuplicatedIdentifyingFields");
         assertThat(informationTypeRepository.count()).isZero();
     }
 
@@ -195,12 +232,17 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         requests.forEach(request -> request.setDescription("UPDATED DESCRIPTION"));
 
-        ResponseEntity<InformationTypePage> responseEntity = restTemplate.exchange(
-                "/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), InformationTypePage.class);
+        InformationTypePage body = webTestClient.put()
+                .uri("/informationtype")
+                .bodyValue(requests)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(InformationTypePage.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(3);
+        assertThat(body).isNotNull();
+        assertThat(body.getTotalElements()).isEqualTo(3);
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
                 .get()
@@ -224,11 +266,17 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         InformationTypeRequest request = createRequest("InformationType_nr2", id.toString());
         request.setDescription("UPDATED DESCRIPTION");
 
-        ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
-                "/informationtype/" + id, HttpMethod.PUT, new HttpEntity<>(request), InformationTypeResponse.class);
+        InformationTypeResponse body = webTestClient.put()
+                .uri("/informationtype/{id}", id)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(InformationTypeResponse.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().getDescription()).isEqualTo("UPDATED DESCRIPTION");
+        assertThat(body).isNotNull();
+        assertThat(body.getDescription()).isEqualTo("UPDATED DESCRIPTION");
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
                 .get()
@@ -254,9 +302,11 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         UUID id = informationTypeRepository.findByName("InformationType_nr2").get().getId();
 
-        ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange("/informationtype/" + id, DELETE, EMPTY, InformationTypeResponse.class);
+        webTestClient.delete()
+                .uri("/informationtype/{id}", id)
+                .exchange()
+                .expectStatus().isOk();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")).isPresent();
         assertThat(informationTypeRepository.findByName("InformationType_nr2")).isEmpty();
@@ -269,22 +319,36 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         var policy = createAndSavePolicy(PURPOSE_CODE1, informationType);
 
-        var resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
+        String body = webTestClient.delete()
+                .uri("/informationtype/{id}", informationType.getId())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("used by 1 policie(s)");
+        assertThat(body).contains("used by 1 policie(s)");
 
         policyRepository.delete(policy);
 
         var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
 
-        resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("used by 1 document(s)");
+        body = webTestClient.delete()
+                .uri("/informationtype/{id}", informationType.getId())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(body).contains("used by 1 document(s)");
 
         documentRepository.delete(doc);
 
-        assertThat(restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId()).getStatusCode()).isEqualTo(HttpStatus.OK);
+        webTestClient.delete()
+                .uri("/informationtype/{id}", informationType.getId())
+                .exchange()
+                .expectStatus().isOk();
     }
 
     private List<InformationType> createInformationTypeTestData(int nrOfRows) {
