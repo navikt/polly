@@ -1,6 +1,5 @@
 package no.nav.data.polly.document.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,7 +18,8 @@ import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -39,8 +39,8 @@ public class Document extends Auditable {
     @Valid
     @NotNull
     @Builder.Default
-    @Type(value = JsonBinaryType.class)
-    @Column(name = "DATA", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "DATA", nullable = false, columnDefinition = "jsonb")
     private DocumentData data = new DocumentData();
 
     // TODO: Snu avhengigheten innover

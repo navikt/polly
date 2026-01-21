@@ -1,7 +1,6 @@
 package no.nav.data.common.storage.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,7 +17,8 @@ import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.common.security.azure.support.MailLog;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.alert.domain.AlertEvent;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.util.Assert;
 
 import java.util.UUID;
@@ -43,8 +43,8 @@ public class GenericStorage extends Auditable {
     @Column(name = "TYPE", nullable = false)
     private StorageType type;
 
-    @Type(value = JsonBinaryType.class)
-    @Column(name = "DATA", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "DATA", nullable = false, columnDefinition = "jsonb")
     private JsonNode data;
 
     public void setDataObject(GenericStorageData data) {

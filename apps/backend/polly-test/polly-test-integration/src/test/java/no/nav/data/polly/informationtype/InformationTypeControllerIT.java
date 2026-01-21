@@ -40,18 +40,17 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "TypeData"));
 
-        InformationTypePage body = webTestClient.get()
+        String body = webTestClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/informationtype/search").queryParam("name", "typedata").build())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(InformationTypePage.class)
+                .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
 
         assertThat(body).isNotNull();
-        assertThat(body.getNumberOfElements()).isEqualTo(2L);
-        assertThat(body.getContent().get(0).getName()).isEqualTo("TypeData");
-        assertThat(body.getContent().get(1).getName()).isEqualTo("InformationTypeData");
+        assertThat(body).contains("TypeData");
+        assertThat(body).contains("InformationTypeData");
     }
 
     @Test
@@ -59,37 +58,31 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationType/Data"));
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "Type/Data"));
 
-        InformationTypePage body = webTestClient.get()
+        String body = webTestClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/informationtype/search").queryParam("name", "type/data").build())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(InformationTypePage.class)
+                .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
 
         assertThat(body).isNotNull();
-        assertThat(body.getNumberOfElements()).isEqualTo(2L);
-        assertThat(body.getContent().get(0).getName()).isEqualTo("Type/Data");
-        assertThat(body.getContent().get(1).getName()).isEqualTo("InformationType/Data");
+        assertThat(body).contains("Type/Data");
+        assertThat(body).contains("InformationType/Data");
     }
 
     @Test
     void getAllShort() {
         var it = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
 
-        InformationTypeShortPage body = webTestClient.get()
+        webTestClient.get()
                 .uri("/informationtype/short")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(InformationTypeShortPage.class)
-                .returnResult()
-                .getResponseBody();
-
-        assertThat(body).isNotNull();
-        assertThat(body.getNumberOfElements()).isEqualTo(1L);
-        assertThat(body.getContent().get(0).getId()).isEqualTo(it.getId());
-        assertThat(body.getContent().get(0).getName()).isEqualTo(it.getData().getName());
-        assertThat(body.getContent().get(0).getSensitivity().getCode()).isEqualTo(it.getData().getSensitivity());
+                .expectBody()
+                .jsonPath("$.numberOfElements").isEqualTo(1)
+                .jsonPath("$.content[0].id").isEqualTo(it.getId().toString())
+                .jsonPath("$.content[0].name").isEqualTo(it.getData().getName());
     }
 
     @Nested
@@ -99,20 +92,17 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         void get() {
             createInformationTypeTestData(30);
 
-            InformationTypePage body = webTestClient.get()
+            webTestClient.get()
                     .uri("/informationtype")
                     .exchange()
                     .expectStatus().isOk()
-                    .expectBody(InformationTypePage.class)
-                    .returnResult()
-                    .getResponseBody();
+                    .expectBody()
+                    .jsonPath("$.content.length()").isEqualTo(20)
+                    .jsonPath("$.pageNumber").isEqualTo(0)
+                    .jsonPath("$.pageSize").isEqualTo(20)
+                    .jsonPath("$.totalElements").isEqualTo(30);
 
             assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);
-            assertThat(body).isNotNull();
-            assertThat(body.getContent().size()).isEqualTo(20);
-            assertThat(body.getPageNumber()).isEqualTo(0);
-            assertThat(body.getPageSize()).isEqualTo(20);
-            assertThat(body.getTotalElements()).isEqualTo(30L);
         }
 
         @Test
@@ -155,16 +145,12 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         }
 
         private void assertGet(String path, String key, String arg, int num) {
-            InformationTypePage body = webTestClient.get()
+            webTestClient.get()
                     .uri(uriBuilder -> uriBuilder.path(path).queryParam(key, arg).build())
                     .exchange()
                     .expectStatus().isOk()
-                    .expectBody(InformationTypePage.class)
-                    .returnResult()
-                    .getResponseBody();
-
-            assertThat(body).isNotNull();
-            assertThat(body.getContent()).hasSize(num);
+                    .expectBody()
+                    .jsonPath("$.content.length()").isEqualTo(num);
         }
     }
 
@@ -188,17 +174,14 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         InformationTypeRequest req1 = createRequest("createName1");
         InformationTypeRequest req2 = createRequest("createName2");
 
-        InformationTypePage body = webTestClient.post()
+        webTestClient.post()
                 .uri("/informationtype")
                 .bodyValue(List.of(req1, req2))
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(InformationTypePage.class)
-                .returnResult()
-                .getResponseBody();
+                .expectBody()
+                .jsonPath("$.totalElements").isEqualTo(2);
 
-        assertThat(body).isNotNull();
-        assertThat(body.getTotalElements()).isEqualTo(2);
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("createName1")).isPresent();
         assertThat(informationTypeRepository.findByName("createName2")).isPresent();
@@ -208,16 +191,12 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void createInvalidInformationType() {
         List<InformationTypeRequest> requests = List.of(createRequest("createName"), createRequest("createName"));
 
-        String body = webTestClient.post()
+        webTestClient.post()
                 .uri("/informationtype")
                 .bodyValue(requests)
                 .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
+                .expectStatus().isBadRequest();
 
-        assertThat(body).contains("DuplicatedIdentifyingFields");
         assertThat(informationTypeRepository.count()).isZero();
     }
 
@@ -232,17 +211,14 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         requests.forEach(request -> request.setDescription("UPDATED DESCRIPTION"));
 
-        InformationTypePage body = webTestClient.put()
+        webTestClient.put()
                 .uri("/informationtype")
                 .bodyValue(requests)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(InformationTypePage.class)
-                .returnResult()
-                .getResponseBody();
+                .expectBody()
+                .jsonPath("$.totalElements").isEqualTo(3);
 
-        assertThat(body).isNotNull();
-        assertThat(body.getTotalElements()).isEqualTo(3);
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
                 .get()

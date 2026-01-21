@@ -1,7 +1,6 @@
 package no.nav.data.common.auditing.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -20,7 +19,8 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,8 +62,8 @@ public class AuditVersion {
     @Column(name = "USER_ID", nullable = false, updatable = false)
     private String user;
 
-    @Type(value = JsonBinaryType.class)
-    @Column(name = "DATA", nullable = false, updatable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "DATA", nullable = false, updatable = false, columnDefinition = "jsonb")
     private String data;
 
     // TODO: Snu avhengigheten innover (ikke triviell). Flytt all forretningslogikk i domeneklassen ut til tjenestelaget.

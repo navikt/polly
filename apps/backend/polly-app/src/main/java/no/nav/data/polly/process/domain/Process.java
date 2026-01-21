@@ -1,6 +1,5 @@
 package no.nav.data.polly.process.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -31,7 +30,8 @@ import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 import no.nav.data.polly.process.dto.sub.AiUsageDescriptionRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
 import java.util.List;
@@ -61,8 +61,8 @@ public class Process extends Auditable {
     @Valid
     @Builder.Default
     @NotNull
-    @Type(value = JsonBinaryType.class)
-    @Column(name = "DATA", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "DATA", nullable = false, columnDefinition = "jsonb")
     private ProcessData data = new ProcessData();
 
     @Builder.Default

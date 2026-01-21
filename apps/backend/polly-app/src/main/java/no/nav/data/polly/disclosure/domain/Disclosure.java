@@ -1,6 +1,5 @@
 package no.nav.data.polly.disclosure.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,7 +23,8 @@ import no.nav.data.polly.disclosure.dto.DisclosureSummaryResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.domain.repo.ProcessVeryShort;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,8 +48,8 @@ public class Disclosure extends Auditable {
     @Valid
     @NotNull
     @Builder.Default
-    @Type(value = JsonBinaryType.class)
-    @Column(name = "DATA", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "DATA", nullable = false, columnDefinition = "jsonb")
     private DisclosureData data = new DisclosureData();
 
     // TODO: Snu avhengigheten innover

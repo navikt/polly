@@ -2,7 +2,6 @@ package no.nav.data.polly.term;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.term.TermController.TermPage;
 import no.nav.data.polly.term.dto.TermCountResponse;
 import no.nav.data.polly.term.dto.TermResponse;
 import org.junit.jupiter.api.Test;
@@ -13,17 +12,14 @@ class TermControllerIT extends IntegrationTestBase {
 
     @Test
     void searchTerm() {
-        TermPage body = webTestClient.get()
+        webTestClient.get()
                 .uri("/term/search/term")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(TermPage.class)
-                .returnResult()
-                .getResponseBody();
-
-        assertThat(body).isNotNull();
-        assertThat(body.getContent().get(0).getName()).isEqualTo("term old");
-        assertThat(body.getContent().get(1).getName()).isEqualTo("new term");
+                .expectBody()
+                .jsonPath("$.content.length()").isEqualTo(2)
+                .jsonPath("$.content[0].name").isEqualTo("term old")
+                .jsonPath("$.content[1].name").isEqualTo("new term");
     }
 
     @Test

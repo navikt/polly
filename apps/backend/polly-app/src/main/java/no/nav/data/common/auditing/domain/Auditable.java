@@ -7,7 +7,6 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
-import no.nav.data.common.auditing.AuditVersionListener;
 import no.nav.data.common.rest.ChangeStampResponse;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,7 +23,9 @@ import java.util.UUID;
 @MappedSuperclass
 @FieldNameConstants
 @JsonFilter("relationFilter")
-@EntityListeners({AuditingEntityListener.class, AuditVersionListener.class})
+@EntityListeners(AuditingEntityListener.class)
+// Custom AuditVersionListener is disabled during Hibernate 7 migration
+// @EntityListeners({AuditVersionListener.class})
 public abstract class Auditable {
 
     public abstract UUID getId();

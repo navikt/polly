@@ -29,16 +29,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 public class AuditVersionListener {
 
-    // Merk: Denne klassen er IKKE håndtert av Spring (siden den instansieres av JPA), men den avhenger av en Spring-managed bønne.
-    // Dette er løst med et hæck der Spring kaller en statisk metode i denne klassen for å tilby bønna.
-    // Men dette hacket virker ikke alltid for integrasjonstesting, så det er et hæck til i IntegrationTestBase for å få det til å gå.
-    
     private static volatile AuditVersionRepository repository;
 
     private static final ObjectWriter wr;
@@ -57,17 +54,39 @@ public class AuditVersionListener {
 
     @PrePersist
     public void prePersist(Object entity) {
+        applyAuditFields(entity, true);
         audit(entity, Action.CREATE);
     }
 
     @PreUpdate
     public void preUpdate(Object entity) {
+        applyAuditFields(entity, false);
         audit(entity, Action.UPDATE);
     }
 
     @PreRemove
     public void preRemove(Object entity) {
         audit(entity, Action.DELETE);
+    }
+
+    private void applyAuditFields(Object entity, boolean isCreate) {
+        if (!(entity instanceof Auditable auditable)) {
+            return;
+        }
+        String user = Optional.ofNullable(MdcUtils.getUser()).orElse("no-user-set");
+        LocalDateTime now = LocalDateTime.now();
+
+        if (isCreate) {
+            if (auditable.getCreatedBy() == null) {
+                auditable.setCreatedBy(user);
+            }
+            if (auditable.getCreatedDate() == null) {
+                auditable.setCreatedDate(now);
+            }
+        }
+
+        auditable.setLastModifiedBy(user);
+        auditable.setLastModifiedDate(now);
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

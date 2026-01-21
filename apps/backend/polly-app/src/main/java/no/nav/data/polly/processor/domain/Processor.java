@@ -1,6 +1,5 @@
 package no.nav.data.polly.processor.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,7 +14,8 @@ import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -37,8 +37,8 @@ public class Processor extends Auditable {
     @Valid
     @Builder.Default
     @NotNull
-    @Type(value = JsonBinaryType.class)
-    @Column(name = "DATA", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "DATA", nullable = false, columnDefinition = "jsonb")
     private ProcessorData data = new ProcessorData();
 
     // TODO: Snu avhengigheten innover

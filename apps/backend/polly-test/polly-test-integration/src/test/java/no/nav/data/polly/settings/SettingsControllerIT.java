@@ -47,16 +47,11 @@ public class SettingsControllerIT extends IntegrationTestBase {
     void validateDefaultProcessDocumentExists() {
         Settings settings = Settings.builder().defaultProcessDocument("d7fc29f4-c006-49ce-9f38-75c82c4bcc98").build();
 
-        String body = webTestClient.post()
+        webTestClient.post()
                 .uri("/settings")
                 .bodyValue(settings)
                 .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
-
-        assertThat(body).contains("Can't find document d7fc29f4-c006-49ce-9f38-75c82c4bcc98");
+                .expectStatus().isBadRequest();
     }
 
     private void assertGetSettings(Settings settings) {

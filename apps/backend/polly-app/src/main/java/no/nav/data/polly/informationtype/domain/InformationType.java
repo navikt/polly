@@ -1,6 +1,5 @@
 package no.nav.data.polly.informationtype.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,7 +22,8 @@ import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,8 +48,8 @@ public class InformationType extends Auditable {
     @Builder.Default
     @Valid
     @NotNull
-    @Type(JsonBinaryType.class)
-    @Column(name = "DATA")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "DATA", columnDefinition = "jsonb")
     private InformationTypeData data = new InformationTypeData();
 
     @Column(name = "TERM_ID")

@@ -61,11 +61,11 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -136,6 +136,8 @@ public abstract class IntegrationTestBase {
         this.webTestClient = WebTestClient.bindToServer()
                 .baseUrl("http://localhost:" + port)
                 .build();
+
+        // logDbSchemaDiagnostics();
 
         CodelistStub.initializeCodelist();
         mockTerms();
@@ -499,14 +501,8 @@ public abstract class IntegrationTestBase {
         }
     }
     
-    /*
-     * Dette er et lite vakkert men nødvendig hæck. Ellers er det ikke sikkert AuditVersionListener.setRepo blir kalt. JpaConfig har kode som kaller
-     * AuditVersionListener.setRepo. Men i test er det av ukjent grunn ikke alltid den koden er kjørt før testene kjøres (ca. 2 av 3 ganger), noe som resulterer
-     * i NPE. Hæcket må fjernes når det ikke trengs lenger, siden dette er oppførsel som skiller den fra prod (kan teoretisk medføre maskering av bugs).
-     * TODO: Fjern dette hæcket når det ikke trengs lenger.
-     */
     public static class AppListener implements ApplicationListener<ContextRefreshedEvent> {
-    @Override
+        @Override
         public void onApplicationEvent(ContextRefreshedEvent event) {
             ApplicationContext ctx = event.getApplicationContext();
             AuditVersionListener.setRepo(ctx.getBean(AuditVersionRepository.class));

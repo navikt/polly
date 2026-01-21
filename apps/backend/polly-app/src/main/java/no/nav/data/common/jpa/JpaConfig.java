@@ -10,12 +10,9 @@ import no.nav.data.common.utils.MdcUtils;
 import no.nav.data.polly.codelist.CodelistRepository;
 import no.nav.data.polly.codelist.domain.Codelist;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -24,6 +21,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.List;
 
 import static no.nav.data.common.utils.MdcUtils.wrapAsync;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @EnableJpaRepositories(basePackageClasses = AppStarter.class)
 @Configuration
@@ -35,31 +34,31 @@ public class JpaConfig {
         return new AuditorAwareImpl();
     }
 
-    @Bean
-    public ApplicationRunner initAudit(AuditVersionRepository repository) {
-        return args -> AuditVersionListener.setRepo(repository);
-    }
-
-    @Bean
-    @DependsOn("initAudit")
-    public ApplicationRunner auditMissingEntities(CodelistRepository codelistRepository, AuditVersionRepository auditVersionRepository, TransactionTemplate tt) {
-        Runnable updateMissing = () -> {
-            Logger log = LoggerFactory.getLogger("MissingAudits");
-            tt.execute(transactionStatus -> {
-                List<Codelist> codelists = codelistRepository.findAll();
-                codelists.stream().filter(it -> auditVersionRepository.findByTableIdOrderByTimeDesc(AuditVersionListener.getIdForObject(it)).isEmpty())
-                        .forEach(it -> {
-                            var prevUser = MdcUtils.getUser();
-                            MdcUtils.setUser(it.getLastModifiedBy());
-                            log.info("Saving audit for codelist {} {}", it.getList(), it.getCode());
-                            new AuditVersionListener().prePersist(it);
-                            MdcUtils.setUser(prevUser);
-                        });
-                return null;
-            });
-        };
-        return (args) -> wrapAsync(updateMissing, "system").run();
-    }
+    // Temporarily disabled during Spring Boot 4 / Hibernate 7 migration.
+    // It relied on AuditVersionListener wiring that is being refactored.
+    // @Bean
+    // public ApplicationRunner auditMissingEntities(CodelistRepository codelistRepository,
+    //                                              AuditVersionRepository auditVersionRepository,
+    //                                              TransactionTemplate tt,
+    //                                              AuditVersionListener auditVersionListener) {
+    //     Runnable updateMissing = () -> {
+    //         Logger log = LoggerFactory.getLogger("MissingAudits");
+    //         tt.execute(transactionStatus -> {
+    //             List<Codelist> codelists = codelistRepository.findAll();
+    //             codelists.stream()
+    //                     .filter(it -> auditVersionRepository.findByTableIdOrderByTimeDesc(AuditVersionListener.getIdForObject(it)).isEmpty())
+    //                     .forEach(it -> {
+    //                         var prevUser = MdcUtils.getUser();
+    //                         MdcUtils.setUser(it.getLastModifiedBy());
+    //                         log.info("Saving audit for codelist {} {}", it.getList(), it.getCode());
+    //                         auditVersionListener.prePersist(it);
+    //                         MdcUtils.setUser(prevUser);
+    //                     });
+    //             return null;
+    //         });
+    //     };
+    //     return (args) -> wrapAsync(updateMissing, "system").run();
+    // }
 
     @Bean
     public ApplicationRunner initHibernateMetrics(EntityManagerFactory emf) {
