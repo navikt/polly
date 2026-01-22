@@ -1,16 +1,13 @@
 import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Select } from '@navikt/ds-react'
+import { Button, Chips, Dropdown, Heading, Label, Select, Table } from '@navikt/ds-react'
 import { Pagination } from 'baseui/pagination'
-import { SORT_DIRECTION } from 'baseui/table'
-import { HeadingLarge, LabelMedium } from 'baseui/typography'
 import moment from 'moment'
 import { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
 import { getAlertEvents } from '../api/AlertApi'
 import { Sensitivity } from '../components/InformationType/Sensitivity'
 import { ObjectLink } from '../components/common/RouteLink'
-import { Cell, HeadCell, Row, Table } from '../components/common/Table'
 import {
   EAlertEventLevel,
   EAlertEventType,
@@ -20,10 +17,7 @@ import {
 } from '../constants'
 import { CodelistService } from '../service/Codelist'
 import { user } from '../service/User'
-import { theme } from '../util'
 import { tekster } from '../util/codeToFineText'
-
-type TSortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
 type TState = {
   events: IPageResponse<IAlertEvent>
@@ -34,7 +28,6 @@ type TState = {
   processId?: string
   informationTypeId?: string
   disclosureId?: string
-  sort: { column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 }
 
 type TAlertObjectType = 'informationtype' | 'process' | 'disclosure'
@@ -46,7 +39,6 @@ type TAction =
   | { type: 'EVENT_TYPE'; value?: EAlertEventType }
   | { type: 'EVENT_LEVEL'; value?: EAlertEventLevel }
   | { type: 'OBJECT_FILTER'; objectType?: TAlertObjectType; id?: string }
-  | { type: 'SORT'; column: TSortCol; dir: typeof SORT_DIRECTION.ASC | typeof SORT_DIRECTION.DESC }
 
 const clampPage = (state: TState, page: number, limit: number): number => {
   if (page < 1 || page > state.events.pages) {
@@ -79,8 +71,6 @@ const reducer = (state: TState, action: TAction): TState => {
       return { ...state, page: 1, type: action.value }
     case 'EVENT_LEVEL':
       return { ...state, page: 1, level: action.value }
-    case 'SORT':
-      return { ...state, sort: { column: action.column, dir: action.dir } }
   }
 }
 
@@ -104,7 +94,6 @@ export const AlertEventPage = () => {
     processId: objectType === 'process' ? id : undefined,
     informationTypeId: objectType === 'informationtype' ? id : undefined,
     disclosureId: objectType === 'disclosure' ? id : undefined,
-    sort: { column: 'TIME', dir: SORT_DIRECTION.DESC },
   })
   const setPage = (p: number) => dispatch({ type: 'PAGE', value: p })
   const setLimit = (l: number) => dispatch({ type: 'LIMIT', value: l })
@@ -135,25 +124,24 @@ export const AlertEventPage = () => {
     dispatch({ type: 'OBJECT_FILTER', objectType, id })
   }, [objectType, id])
 
-  const levelButton = (text: string, newLevel?: EAlertEventLevel) => (
-    <Button
-      className="mr-2.5"
-      type="button"
-      variant={state.level === newLevel ? 'primary' : 'secondary'}
-      size="xsmall"
+  const filterToggle = (text: string, newLevel?: EAlertEventLevel) => (
+    <Chips.Toggle
+      checkmark={false}
+      key={text}
+      selected={state.level === newLevel}
       onClick={() => setLevel(newLevel)}
     >
       {text}
-    </Button>
+    </Chips.Toggle>
   )
 
   return (
     <>
       <div className="flex w-full justify-between items-center">
-        <HeadingLarge>Varsler</HeadingLarge>
+        <Heading size="large">Varsler</Heading>
         {(state.informationTypeId || state.processId || state.disclosureId) && (
           <div className="flex items-center">
-            <LabelMedium>Filter: </LabelMedium>
+            <Label className="mr-3">Filter:</Label>
             <Button
               variant="secondary"
               size="xsmall"
@@ -169,93 +157,94 @@ export const AlertEventPage = () => {
         )}
       </div>
       <div className="w-full flex mb-1.5">
-        <div className="w-1/2 flex justify-start items-center">
-          <LabelMedium marginRight={theme.sizing.scale600}>Type: </LabelMedium>
-          <Select
-            label="Alert type"
-            hideLabel
-            onChange={(event) => {
-              if (event.target.value !== '') {
-                setType(event.target.value as EAlertEventType)
-              } else {
-                setType(undefined)
-              }
-            }}
-          >
-            <option value="">velg type</option>
-            {Object.values(EAlertEventType).map((t: EAlertEventType) => (
-              <option key={t} value={t}>
-                {tekster[t]}
-              </option>
-            ))}
-          </Select>
-        </div>
+        <Select
+          label="Type varsel"
+          onChange={(event) => {
+            if (event.target.value !== '') {
+              setType(event.target.value as EAlertEventType)
+            } else {
+              setType(undefined)
+            }
+          }}
+        >
+          <option value="">Velg type</option>
+          {Object.values(EAlertEventType).map((t: EAlertEventType) => (
+            <option key={t} value={t}>
+              {tekster[t]}
+            </option>
+          ))}
+        </Select>
 
-        <div className="w-1/2 flex justify-end items-center">
-          <LabelMedium marginRight={theme.sizing.scale600}>Nivå: </LabelMedium>
-          {levelButton('Alle')}
-          {levelButton('Info', EAlertEventLevel.INFO)}
-          {levelButton('Advarsel', EAlertEventLevel.WARNING)}
-          {levelButton('Feil', EAlertEventLevel.ERROR)}
+        <div className="w-full flex justify-end items-center">
+          <Label className="mr-3">Nivå:</Label>
+          <Chips>
+            {filterToggle('Alle')}
+            {filterToggle('Info', EAlertEventLevel.INFO)}
+            {filterToggle('Advarsel', EAlertEventLevel.WARNING)}
+            {filterToggle('Feil', EAlertEventLevel.ERROR)}
+          </Chips>
         </div>
       </div>
-      <Table
-        emptyText="Ingen varsler"
-        headers={
-          <>
-            <HeadCell title="Behandling" />
-            <HeadCell title="Opplysningstype" />
-            <HeadCell title="Utlevering" />
-            <HeadCell title="Nivå - Type" />
-            <HeadCell title="Tidspunkt" />
-            <HeadCell title="Bruker" />
-          </>
-        }
-      >
-        {state.events.content.map((event: IAlertEvent) => (
-          <Row key={event.id}>
-            <Cell>
-              {event.process ? (
-                <ObjectLink id={event.process.id} type={EObjectType.PROCESS}>
-                  {codelistUtils.getShortnameForCodes(event.process.purposes)}: {event.process.name}
-                </ObjectLink>
-              ) : (
-                ''
-              )}
-            </Cell>
+      <Table size="small">
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader>Behandling</Table.ColumnHeader>
+            <Table.ColumnHeader>Opplysningstype</Table.ColumnHeader>
+            <Table.ColumnHeader>Utlevering</Table.ColumnHeader>
+            <Table.ColumnHeader>Nivå - Type</Table.ColumnHeader>
+            <Table.ColumnHeader>Tidspunkt</Table.ColumnHeader>
+            <Table.ColumnHeader>Bruker</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {state.events.content.map((event: IAlertEvent, index: number) => (
+            <Table.Row key={index}>
+              <Table.DataCell textSize="small">
+                {event.process ? (
+                  <ObjectLink id={event.process.id} type={EObjectType.PROCESS}>
+                    {codelistUtils.getShortnameForCodes(event.process.purposes)}:{' '}
+                    {event.process.name}
+                  </ObjectLink>
+                ) : (
+                  ''
+                )}
+              </Table.DataCell>
 
-            <Cell>
-              {event.informationType ? (
-                <ObjectLink id={event.informationType.id} type={EObjectType.INFORMATION_TYPE}>
-                  <Sensitivity
-                    sensitivity={event.informationType.sensitivity}
-                    codelistUtils={codelistUtils}
-                  />
-                  &nbsp;
-                  {event.informationType.name}
-                </ObjectLink>
-              ) : (
-                ''
-              )}
-            </Cell>
+              <Table.DataCell textSize="small">
+                {event.informationType ? (
+                  <ObjectLink id={event.informationType.id} type={EObjectType.INFORMATION_TYPE}>
+                    <Sensitivity
+                      sensitivity={event.informationType.sensitivity}
+                      codelistUtils={codelistUtils}
+                    />
+                    &nbsp;
+                    {event.informationType.name}
+                  </ObjectLink>
+                ) : (
+                  ''
+                )}
+              </Table.DataCell>
 
-            <Cell>
-              {event.disclosure ? (
-                <ObjectLink id={event.disclosure.id} type={EObjectType.DISCLOSURE}>
-                  {event.disclosure.name}
-                </ObjectLink>
-              ) : (
-                ''
-              )}
-            </Cell>
+              <Table.DataCell textSize="small">
+                {event.disclosure ? (
+                  <ObjectLink id={event.disclosure.id} type={EObjectType.DISCLOSURE}>
+                    {event.disclosure.name}
+                  </ObjectLink>
+                ) : (
+                  ''
+                )}
+              </Table.DataCell>
 
-            <Cell>
-              {tekster[event.level]} - {tekster[event.type]}
-            </Cell>
-            <Cell>{moment(event.changeStamp.lastModifiedDate).format('lll')}</Cell>
-            <Cell>{event.changeStamp.lastModifiedBy}</Cell>
-          </Row>
-        ))}
+              <Table.DataCell textSize="small">
+                {tekster[event.level]} - {tekster[event.type]}
+              </Table.DataCell>
+              <Table.DataCell textSize="small">
+                {moment(event.changeStamp.lastModifiedDate).format('lll')}
+              </Table.DataCell>
+              <Table.DataCell textSize="small">{event.changeStamp.lastModifiedBy}</Table.DataCell>
+            </Table.Row>
+          ))}
+        </Table.Body>
       </Table>
       <div className="flex justify-between mt-4">
         <Dropdown>
