@@ -1,5 +1,5 @@
 import { Button, ErrorSummary, Modal, Radio, RadioGroup, TextField } from '@navikt/ds-react'
-import { Field, FieldProps, Form, Formik } from 'formik'
+import { Field, FieldProps, Formik } from 'formik'
 import { useRef, useState } from 'react'
 import { IProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
 import { FormError } from '../common/ModalSchema'
@@ -34,18 +34,18 @@ const ProcessorModal = (props: TModalProcessorProps) => {
         closeButton: false,
       }}
     >
-      <Formik
-        onSubmit={(values: IProcessorFormValues) => {
-          submit(values)
-        }}
-        initialValues={initialValues}
-        validationSchema={dataProcessorSchema()}
-        validateOnBlur={false}
-        validateOnChange={validateOnBlur}
-      >
-        {(formikBag) => (
-          <Form>
-            <Modal.Body>
+      <Modal.Body>
+        <Formik
+          onSubmit={(values: IProcessorFormValues) => {
+            submit(values)
+          }}
+          initialValues={initialValues}
+          validationSchema={dataProcessorSchema()}
+          validateOnBlur={false}
+          validateOnChange={validateOnBlur}
+        >
+          {(formikBag) => (
+            <form id="modal-processor-form" onSubmit={formikBag.handleSubmit}>
               <Field name="name">
                 {({ field }: FieldProps<string, IProcessorFormValues>) => (
                   <TextField
@@ -103,6 +103,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                   <FormError fieldName="countries" akselStyling />
                 </>
               )}
+
               {Object.values(formikBag.errors).some(Boolean) && (
                 <ErrorSummary
                   ref={errorSummaryRef}
@@ -117,21 +118,27 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                     ))}
                 </ErrorSummary>
               )}
-            </Modal.Body>
-            <Modal.Footer>
-              <div className="flex justify-end gap-4">
-                <div className="self-end">{errorMessage && <p>{errorMessage}</p>}</div>
-                <Button type="button" variant="secondary" onClick={onClose}>
-                  Avbryt
-                </Button>
-                <Button type="submit" variant="primary" onClick={() => setValidateOnBlur(true)}>
-                  Lagre
-                </Button>
-              </div>
-            </Modal.Footer>
-          </Form>
-        )}
-      </Formik>
+            </form>
+          )}
+        </Formik>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <div className="flex justify-end gap-4">
+          <div className="self-end">{errorMessage && <p>{errorMessage}</p>}</div>
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Avbryt
+          </Button>
+          <Button
+            type="submit"
+            form="modal-processor-form"
+            variant="primary"
+            onClick={() => setValidateOnBlur(true)}
+          >
+            Lagre
+          </Button>
+        </div>
+      </Modal.Footer>
     </Modal>
   )
 }
