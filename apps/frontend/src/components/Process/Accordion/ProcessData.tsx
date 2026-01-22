@@ -430,14 +430,15 @@ const ProcessData = (props: IProcessDataProps) => {
                 </RouteLink>
               </>
             ) : (
-              disclosures.map((value: IDisclosure) => (
-                <>
-                  <ObjectLink id={value.id} type={EObjectType.DISCLOSURE}>
-                    {value.recipient.shortName}: {value.name}
-                  </ObjectLink>
-                  &nbsp;
-                </>
-              ))
+              <ul className="list-disc pl-5">
+                {disclosures.map((value: IDisclosure) => (
+                  <li key={value.id}>
+                    <ObjectLink id={value.id} type={EObjectType.DISCLOSURE}>
+                      {value.recipient.shortName}: {value.name}
+                    </ObjectLink>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         </DataText>
