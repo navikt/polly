@@ -14,6 +14,7 @@ import no.nav.data.common.security.AppIdMapping;
 import no.nav.data.common.security.RoleSupport;
 import no.nav.data.common.utils.MdcExecutor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +22,7 @@ import java.net.MalformedURLException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
+@ConditionalOnProperty(name = "azure.activedirectory.enabled", havingValue = "true", matchIfMissing = true)
 public class AzureConfig {
 
     @Bean

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.TokenExpiredException;
 import no.nav.data.common.security.dto.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "azure.activedirectory.enabled", havingValue = "true", matchIfMissing = true)
 public class AzureTokenConsumer {
 
     private final RestTemplate restTemplate;

@@ -33,6 +33,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -52,6 +53,7 @@ import static no.nav.data.common.security.azure.AzureConstants.MICROSOFT_GRAPH_S
 
 @Slf4j
 @Service
+@ConditionalOnProperty(name = "azure.activedirectory.enabled", havingValue = "true", matchIfMissing = true)
 public class AzureTokenProvider implements TokenProvider {
 
     private final Cache<String, IAuthenticationResult> accessTokenCache;

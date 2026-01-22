@@ -49,6 +49,7 @@ import no.nav.data.polly.processor.dto.ProcessorRequest;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.test.TestConfig;
 import no.nav.data.polly.test.TestConfig.MockFilter;
+import no.nav.data.polly.teams.TeamcatMocks;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +79,7 @@ import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static no.nav.data.polly.codelist.CodelistStaticService.getCodelist;
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
 import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
@@ -487,17 +489,43 @@ public abstract class IntegrationTestBase {
         WireMock.stubFor(get("/termcatalog/term/term").willReturn(okJson(JsonUtils.toJson(List.of(termOne)))));
     }
 
+    private static void mockAzureOidc() {
+        // Nimbus' OIDCProviderMetadata resolver validates that the discovered issuer matches
+        // the expected issuer (derived from azure.activedirectory.wellKnown).
+        // In tests, wellKnown points to WireMock, so we must return an issuer that includes the WireMock port.
+        String baseUrl = "http://localhost:" + WiremockExtension.port() + "/azure";
+
+        stubFor(get("/azure/.well-known/openid-configuration")
+                .willReturn(okJson("""
+                        {
+                          \"issuer\": \"%s\",
+                          \"authorization_endpoint\": \"%s/authorize\",
+                          \"token_endpoint\": \"%s/token\",
+                          \"jwks_uri\": \"%s/jwks\",
+                          \"subject_types_supported\": [\"public\"],
+                          \"id_token_signing_alg_values_supported\": [\"RS256\"]
+                        }
+                        """.formatted(baseUrl, baseUrl, baseUrl, baseUrl))));
+    }
+
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            configurableApplicationContext.addApplicationListener(new AppListener()); 
+            configurableApplicationContext.addApplicationListener(new AppListener());
             TestPropertyValues.of(
+                    // Disable Azure/MSAL wiring for ITs (tests use TestConfig.MockFilter instead)
+                    "azure.activedirectory.enabled=false",
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgreSQLContainer.getPassword(),
                     "wiremock.server.port=" + WiremockExtension.port()
             ).applyTo(configurableApplicationContext.getEnvironment());
+
+            mockAzureOidc();
+             // Important: the Teamcat client uses caches that may warm up during context bootstrap.
+             // If the stubs aren't registered yet, it can cache an empty/failed response and break tests.
+             TeamcatMocks.mock();
         }
     }
     

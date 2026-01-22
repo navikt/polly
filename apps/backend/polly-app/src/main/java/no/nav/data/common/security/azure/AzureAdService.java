@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.mail.EmailProvider;
 import no.nav.data.common.mail.MailTask;
 import no.nav.data.common.storage.StorageService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import static no.nav.data.common.security.azure.support.MailMessage.compose;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "azure.activedirectory.enabled", havingValue = "true", matchIfMissing = true)
 public class AzureAdService implements EmailProvider {
 
     private final AzureTokenProvider azureTokenProvider;

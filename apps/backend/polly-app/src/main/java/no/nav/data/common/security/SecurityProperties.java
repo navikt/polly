@@ -22,7 +22,7 @@ public class SecurityProperties {
     private List<String> superGroups;
     private List<String> adminGroups;
     private List<String> redirectUris;
-    private String env;
+    private String env = Constants.DEV_ENV; // (kept as Constants.DEV_ENV; now matches dev-gcp)
 
     public boolean isValidRedirectUri(String uri) {
         return uri == null || safeStream(redirectUris).anyMatch(origin -> StringUtils.startsWithIgnoreCase(uri, origin));
@@ -33,11 +33,11 @@ public class SecurityProperties {
     }
 
     public boolean isDev() {
-        return env.equals(Constants.DEV_ENV);
+        return Constants.DEV_ENV.equals(env);
     }
 
     public boolean isProd() {
-        return env.equals(Constants.PROD_ENV);
+        return Constants.PROD_ENV.equals(env);
     }
 
 }

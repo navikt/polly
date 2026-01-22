@@ -7,14 +7,20 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import no.nav.data.common.mail.EmailProvider;
+import no.nav.data.common.mail.MailTask;
 import no.nav.data.common.security.AppIdMapping;
 import no.nav.data.common.security.azure.AADAuthenticationProperties;
 import no.nav.data.common.security.azure.AADStatelessAuthenticationFilter;
+import no.nav.data.common.security.azure.AzureTokenConsumer;
 import no.nav.data.common.security.azure.AzureUserInfo;
+import no.nav.data.common.security.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
@@ -60,5 +66,50 @@ public class TestConfig {
                 SecurityContextHolder.clearContext();
             }
         }
+    }
+
+    @Bean
+    @Primary
+    public EmailProvider emailProvider() {
+        // No-op provider for tests
+        return mailTask -> {
+        };
+    }
+
+    @Bean
+    @Primary
+    public TokenProvider tokenProvider() {
+        return new TokenProvider() {
+            @Override
+            public String createSession(String sessionId, String code, String fullRequestUrlWithoutQuery) {
+                return "test-session";
+            }
+
+            @Override
+            public void destroySession() {
+                // no-op
+            }
+
+            @Override
+            public String createAuthRequestRedirectUrl(String postLoginRedirectUri, String postLoginErrorUri, String redirectUri) {
+                return redirectUri;
+            }
+
+            @Override
+            public String getConsumerToken(String resource) {
+                return "Bearer test-token";
+            }
+        };
+    }
+
+    @Bean
+    @Primary
+    public AzureTokenConsumer azureTokenConsumer() {
+        return new AzureTokenConsumer(new RestTemplate()) {
+            @Override
+            public String getToken(String scope) {
+                return "dummy-token";
+            }
+        };
     }
 }

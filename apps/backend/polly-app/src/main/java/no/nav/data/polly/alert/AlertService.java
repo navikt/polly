@@ -3,8 +3,8 @@ package no.nav.data.polly.alert;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.mail.MailTask;
+import no.nav.data.common.mail.EmailProvider;
 import no.nav.data.common.security.SecurityUtils;
-import no.nav.data.common.security.azure.AzureAdService;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.alert.domain.AlertEvent;
@@ -51,20 +51,20 @@ public class AlertService {
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final DisclosureRepository disclosureRepository;
-    private final AzureAdService azureAdService;
+    private final EmailProvider emailProvider;
 
     public AlertService(AlertRepository alertRepository, ProcessRepository processRepository, PolicyRepository policyRepository,
-            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, AzureAdService azureAdService) {
+            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, EmailProvider emailProvider) {
         this.alertRepository = alertRepository;
         this.processRepository = processRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
-        this.azureAdService = azureAdService;
+        this.emailProvider = emailProvider;
     }
 
     public void testMail() {
-        azureAdService.sendMail(MailTask.builder()
+        emailProvider.sendMail(MailTask.builder()
                 .to(SecurityUtils.getCurrentUser().orElseThrow().getEmail())
                 .subject("test").body("testbody").build());
     }
