@@ -15,7 +15,7 @@
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "axios": "1.13.2",
     "baseui": "13.0.0",
-    "core-js": "3.47.0",
+    "core-js": "3.48.0",
     "flag-icon-css": "4.1.7",
     "formik": "2.4.9",
     "husky": "9.1.7",
