@@ -13,7 +13,7 @@
     "@navikt/ds-tailwind": "7.38.0",
     "@tailwindcss/postcss": "4.1.18",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
-    "axios": "1.13.3",
+    "axios": "1.13.4",
     "baseui": "13.0.0",
     "core-js": "3.48.0",
     "flag-icon-css": "4.1.7",
