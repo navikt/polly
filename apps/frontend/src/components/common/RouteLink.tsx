@@ -1,5 +1,6 @@
 import { useStyletron } from 'baseui'
 import { StyledLink } from 'baseui/link'
+import type { MouseEvent } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
 import { EListName } from '../../service/Codelist'
@@ -15,6 +16,9 @@ const RouteLink = (props: TRouteLinkProps & any) => {
   const { hideUnderline, plain, ...restprops } = props
   const navigate: NavigateFunction = useNavigate()
 
+  // Treat absolute URLs (https:, mailto:, //example.com, etc.) as external.
+  const isExternalHref = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(props.href)
+
   const [useCss] = useStyletron()
   const css = useCss({
     textDecoration: hideUnderline ? 'none' : undefined,
@@ -25,7 +29,8 @@ const RouteLink = (props: TRouteLinkProps & any) => {
     <StyledLink
       className={css}
       {...restprops}
-      onClick={(event: Event) => {
+      onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+        if (isExternalHref) return
         event.preventDefault()
         navigate(props.href)
       }}
