@@ -1,5 +1,8 @@
 package no.nav.data.polly.process.domain.sub;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +14,10 @@ import no.nav.data.polly.process.dto.sub.RetentionResponse;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Retention {
+public class Retention implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private Boolean retentionPlan;
     private Integer retentionMonths;
