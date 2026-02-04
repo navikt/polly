@@ -10,13 +10,18 @@ import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProcessorData {
+public class ProcessorData implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @NotNull
     private String name;

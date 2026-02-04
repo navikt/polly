@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +19,10 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PolicyData {
+public class PolicyData implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @NotNull
     @Singular
@@ -34,4 +40,13 @@ public class PolicyData {
     private List<LegalBasis> legalBases;
     @Singular
     private List<UUID> documentIds;
+
+    public List<UUID> getDocumentIds() {
+        if (documentIds == null) {
+            documentIds = new ArrayList<>();
+        } else if (!(documentIds instanceof ArrayList)) {
+            documentIds = new ArrayList<>(documentIds);
+        }
+        return documentIds;
+    }
 }
