@@ -12,8 +12,8 @@ const SideBar = () => (
     style={{ backgroundColor: '#1B232F' }}
     role="navigation"
   >
-    <div className="h-full !bg-black flex flex-col" style={{ backgroundColor: '#1B232F' }}>
-      <div className="flex-1 pl-3 pr-3 pt-6">
+    <div className="sticky top-0 h-screen flex flex-col">
+      <div className="flex-1 min-h-0 pl-3 pr-3 pt-6 overflow-y-auto">
         <NavItem
           to="/process"
           text="Behandlinger"
@@ -54,7 +54,8 @@ const SideBar = () => (
         {canViewAlerts() && <NavItem to="/alert/events" text="Varsler" />}
         <NavItem to="//navikt.github.io/naka/behandlingskatalog" text="Veileder" />
       </div>
-      <div className="max-w-62 mt-[25px]">
+
+      <div className="max-w-62 mt-auto pt-6 pb-22">
         <div className="flex justify-center">
           <div className="pb-4 w-[40%]">
             <img src={NavLogo} alt="NAV logo" width="100%" />
