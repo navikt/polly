@@ -20,6 +20,7 @@ const LoggedInHeader = () => {
     <>
       <Button
         variant="tertiary"
+        data-color="neutral"
         icon={<FontAwesomeIcon icon={faUser} />}
         ref={buttonRef}
         onClick={() => setOpenState(!openState)}
@@ -34,7 +35,9 @@ const LoggedInHeader = () => {
             <Label>Navn: {user.getName()}</Label>
             <Label>Grupper: {user.getGroupsHumanReadable().join(', ')}</Label>
             <div className="flex w-full p-1">
-              <Link href={`/logout?redirect_uri=${useCurrentUrl()}`}>Logg ut</Link>
+              <Link variant="neutral" href={`/logout?redirect_uri=${useCurrentUrl()}`}>
+                Logg ut
+              </Link>
             </div>
           </div>
         </Popover.Content>
@@ -67,7 +70,7 @@ const AdminOptions = () => {
       <Dropdown.Menu>
         <Dropdown.Menu.List>
           {pages.map((page) => (
-            <Dropdown.Menu.List.Item key={page.label} as={Link} href={page.href}>
+            <Dropdown.Menu.List.Item key={page.label} as={Link} variant="neutral" href={page.href}>
               {page.label}
             </Dropdown.Menu.List.Item>
           ))}
@@ -79,7 +82,9 @@ const AdminOptions = () => {
 
 const Header = () => (
   <InternalHeader className="polly-white-internalheader">
-    <div className="ml-[28px] mt-[12px]">
+    <InternalHeader.Title href="/">Behandlingskatalog</InternalHeader.Title>
+    <Spacer />
+    <div className="flex items-center py-2">
       <MainSearch />
     </div>
     <Spacer />

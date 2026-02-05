@@ -9,6 +9,7 @@ interface INavItemProps {
   text: string
   to: string
   tooltip?: string
+  noWrap?: boolean
 }
 
 const checkCurrentLocationIsTheSameAsSideBarItem = (
@@ -31,16 +32,26 @@ const NavItem = (props: INavItemProps) => (
               ? faChevronDown
               : faChevronRight
           }
-          color="white"
+          color="#E0E1E5"
           size="lg"
         />
       </div>
       {props.tooltip ? (
         <Tooltip content={props.tooltip}>
-          <ParagraphMedium color="white">{props.text}</ParagraphMedium>
+          <ParagraphMedium
+            color="#E0E1E5"
+            style={{ whiteSpace: props.noWrap ? 'nowrap' : undefined }}
+          >
+            {props.text}
+          </ParagraphMedium>
         </Tooltip>
       ) : (
-        <ParagraphMedium color="white">{props.text}</ParagraphMedium>
+        <ParagraphMedium
+          color="#E0E1E5"
+          style={{ whiteSpace: props.noWrap ? 'nowrap' : undefined }}
+        >
+          {props.text}
+        </ParagraphMedium>
       )}
     </div>
   </RouteLink>
