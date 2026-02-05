@@ -1,5 +1,4 @@
-import { Select, Spacer } from '@navikt/ds-react'
-import { BodyShort, Box, Heading, Pagination } from '@navikt/ds-react'
+import { BodyShort, Box, Heading, Pagination, Select, Spacer } from '@navikt/ds-react'
 import axios from 'axios'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
@@ -63,9 +62,9 @@ export const MailLogPage = () => {
             <Box
               className="px-2"
               borderWidth="2"
-              borderColor="border-subtle"
-              borderRadius="large"
-              background="surface-default"
+              borderColor="neutral-subtle"
+              borderRadius="8"
+              background="default"
             >
               <Markdown source={html} escapeHtml={false} />
             </Box>

@@ -1,39 +1,25 @@
-import { Label, Tooltip } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
+import { Tooltip } from '@navikt/ds-react'
 import { ParagraphXSmall } from 'baseui/typography'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import NavLogo from '../../resources/navlogo.svg'
-import { theme } from '../../util'
 import { datajegerSlackLink, helpLink } from '../../util/config'
 import NavItem from './NavItem'
 
-const Brand = () => (
-  <div className="p-4">
-    <StyledLink className="no-underline flex flex-col items-center" href="/">
-      <img alt="logo" src={BKLogo} />
-      <Label
-        className="text-white"
-        style={{ fontSize: '115%', marginTop: '1rem', marginLeft: '5px', marginBottom: '2rem' }}
-      >
-        Behandlingskatalog
-      </Label>
-    </StyledLink>
-  </div>
-)
-
 const SideBar = () => (
-  <div className="h-full w-60 bg-[#3e3832] flex flex-col" role="navigation">
-    <div className="h-full fixed flex flex-col">
-      <Brand />
-      <div className="top-[150px] flex-1 pl-4">
+  <div
+    className="h-full w-62 !bg-black flex flex-col"
+    style={{ backgroundColor: '#1B232F' }}
+    role="navigation"
+  >
+    <div className="sticky top-0 h-screen flex flex-col">
+      <div className="flex-1 min-h-0 pl-3 pr-3 pt-6 overflow-y-auto">
         <NavItem
           to="/process"
           text="Behandlinger"
           tooltip="En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon"
         />
-        <NavItem to="/dpprocess" text="NAV som databehandler" />
+        <NavItem to="/dpprocess" text="NAV som databehandler" noWrap />
         <NavItem
           to="/informationtype"
           text="Opplysningstyper"
@@ -68,7 +54,8 @@ const SideBar = () => (
         {canViewAlerts() && <NavItem to="/alert/events" text="Varsler" />}
         <NavItem to="//navikt.github.io/naka/behandlingskatalog" text="Veileder" />
       </div>
-      <div className="max-w-60 mt-[25px]">
+
+      <div className="max-w-62 mt-auto pt-6 pb-22">
         <div className="flex justify-center">
           <div className="pb-4 w-[40%]">
             <img src={NavLogo} alt="NAV logo" width="100%" />
@@ -78,14 +65,14 @@ const SideBar = () => (
         <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
           <div className="flex justify-center pb-2.5 items-center">
             <Tooltip content="På navets personvernsider finner du informasjon til hjelp for utfylling.">
-              <ParagraphXSmall color={theme.colors.white}>Hjelp</ParagraphXSmall>
+              <ParagraphXSmall color="#E0E1E5">Hjelp</ParagraphXSmall>
             </Tooltip>
           </div>
         </a>
         <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
           <div className="flex justify-center items-center">
             <img src={SlackLogo} width="60px" alt="slack logo" />
-            <ParagraphXSmall color={theme.colors.white}>#behandlingskatalogen</ParagraphXSmall>
+            <ParagraphXSmall color="#E0E1E5">#behandlingskatalogen</ParagraphXSmall>
           </div>
         </a>
       </div>

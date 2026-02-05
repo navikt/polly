@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @import '@navikt/ds-css' layer(components);
 
-@config '../tailwind.config.js';
+@config '../tailwind.config.cjs';
 
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
@@ -23,51 +23,24 @@
 
 /* App-specific overrides */
 @layer components {
-  /* Force InternalHeader to white background with dark text */
-  .polly-white-internalheader.navds-internalheader {
-    background: #ffffff;
-    border-bottom: none;
-  }
-
-  .polly-white-internalheader .navds-internalheader__title,
-  .polly-white-internalheader .navds-internalheader__user,
-  .polly-white-internalheader .navds-internalheader__button {
-    color: #1a1a1a !important;
-  }
-
+  /* Remove divider to the right of InternalHeader.Title */
   .polly-white-internalheader .navds-internalheader__title {
     border-right: none;
   }
 
-  .polly-white-internalheader .navds-internalheader__user {
-    border-left: none;
+  .polly-white-internalheader .aksel-internalheader__title {
+    border-right: none !important;
   }
 
-  /* Match hover/active between Admin (Dropdown.Toggle) and Login buttons */
-  .polly-white-internalheader .navds-internalheader__button:hover,
-  .polly-white-internalheader .navds-internalheader__user-button:hover {
-    background-color: #f5f5f5;
+  /* Sidebar brand (avoid default link/label blue) */
+  .polly-sidebar-brand,
+  .polly-sidebar-brand:visited,
+  .polly-sidebar-brand:hover,
+  .polly-sidebar-brand:active {
+    color: var(--ax-text-neutral-contrast) !important;
   }
 
-  .polly-white-internalheader .navds-internalheader__button:active,
-  .polly-white-internalheader .navds-internalheader__user-button:active,
-  .polly-white-internalheader .navds-internalheader__button[aria-expanded='true'] {
-    background-color: #ededed;
-  }
-
-  /* Ensure Admin (Dropdown.Toggle) text/icon equals Login color */
-  .polly-white-internalheader .navds-internalheader__button,
-  .polly-white-internalheader .navds-internalheader__button:visited {
-    color: #1a1a1a !important;
-  }
-  .polly-white-internalheader .navds-internalheader__button svg {
-    color: inherit;
-    fill: currentColor;
-  }
-
-  /* Remove any left divider on InternalHeader buttons (e.g., Admin) */
-  .polly-white-internalheader .navds-internalheader__button,
-  .polly-white-internalheader .navds-internalheader__user-button {
-    border-left: none !important;
+  .polly-sidebar-brand__label {
+    color: var(--ax-text-neutral-contrast) !important;
   }
 }

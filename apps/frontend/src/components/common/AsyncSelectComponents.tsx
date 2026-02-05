@@ -64,7 +64,7 @@ export const selectOverrides = {
       height: '3rem',
       color: 'var(--a-gray-900)',
       border: '1px solid var(--a-gray-500)',
-      borderRadius: 'var(--a-border-radius-medium)',
+      borderRadius: 'var(--ax-radius-12)',
       ':focus-within': {
         boxShadow: 'var(--a-shadow-focus)',
         outline: 'none',
@@ -79,6 +79,8 @@ export const selectOverrides = {
       border: '1px solid #e6e6e6',
       boxShadow: 'var(--a-shadow-medium)',
       marginTop: '0.25rem',
+      borderRadius: 'var(--ax-radius-12)',
+      overflow: 'hidden',
       zIndex: 1000,
     }) as CSSObjectWithLabel,
   menuList: (base: CSSObjectWithLabel) =>

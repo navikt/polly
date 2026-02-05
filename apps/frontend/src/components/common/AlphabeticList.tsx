@@ -33,7 +33,7 @@ const AlphabeticList = (props: IAlphabeticListProps) => {
             <div className="w-full border-b-2 border-[#CBCBCB] border-solid" />
           </div>
 
-          <HGrid gap="4" columns={4}>
+          <HGrid gap="space-4" columns={4}>
             {items[letter].map((item: TOpt) => (
               <Box key={item.id}>
                 <RouteLink href={`${baseUrl}${item.id}`}>{item.label}</RouteLink>

@@ -90,7 +90,10 @@ const Option = (props: OptionProps<TSearchItem>) => (
       <Tag
         size="small"
         variant="info"
-        className={`${props.data.tagColor ? `bg-[${props.data.tagColor}]` : ''}`}
+        style={{
+          ...(props.data.tagColor ? { backgroundColor: props.data.tagColor } : {}),
+          color: 'var(--ax-text-neutral-contrast)',
+        }}
       >
         {props.data.typeName}
       </Tag>
@@ -385,7 +388,7 @@ export const MainSearch = () => {
           onClick={() => setFilter(!filter)}
           icon={faFilter}
           size="xsmall"
-          kind={filter ? 'primary' : 'tertiary'}
+          kind={filter ? 'primary-neutral' : 'tertiary-neutral'}
           marginLeft
         >
           <img aria-label="Filter" />
