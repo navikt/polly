@@ -1,6 +1,5 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Spinner } from 'baseui/spinner'
-import { HeadingMedium } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { Fragment, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
@@ -28,6 +27,7 @@ import { DotTag, DotTags } from '../common/DotTag'
 import { ActiveIndicator } from '../common/Durations'
 import { boolToText } from '../common/Radio'
 import RouteLink from '../common/RouteLink'
+import { Spinner } from '../common/Spinner'
 import { TeamList } from '../common/Team'
 import { DpProcessDeleteModal } from './DpProcessDeleteModal'
 import DpProcessModal from './DpProcessModal'
@@ -119,7 +119,9 @@ const DpProcessView = () => {
       {!isLoading && (
         <>
           <div className="flex justify-between items-center">
-            <HeadingMedium>{dpProcess?.name}</HeadingMedium>
+            <Heading level="1" size="medium" className="m-0">
+              {dpProcess?.name}
+            </Heading>
             {user.canWrite() /*!env.disableDpProcess &&*/ && (
               <div>
                 <Button

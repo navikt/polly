@@ -1,7 +1,6 @@
 import { faExternalLinkAlt, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { StyledLink } from 'baseui/link'
+import { Link } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getTerm, mapTermToOption } from '../../../api/GetAllApi'
 import { IInformationType, ITerm } from '../../../constants'
@@ -43,8 +42,8 @@ const DescriptionData = (props: IDescriptionDataProps) => {
   }, [termId])
 
   return (
-    <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
-      <FlexGridItem>
+    <div className="flex flex-col" style={{ gap: theme.sizing.scale800 }}>
+      <div>
         <div className="flex" />
         <TextWithLabel
           label="Begrepsdefinisjon"
@@ -52,23 +51,23 @@ const DescriptionData = (props: IDescriptionDataProps) => {
           error={termError ? 'Kunne ikke finne begrepsdefinisjon' : undefined}
         />
         {termId && (
-          <StyledLink target="_blank" rel="noopener noreferrer" href={termUrl(termId)}>
+          <Link target="_blank" rel="noopener noreferrer" href={termUrl(termId)}>
             <FontAwesomeIcon icon={faExternalLinkAlt} />
-          </StyledLink>
+          </Link>
         )}
-      </FlexGridItem>
-      <FlexGridItem>
+      </div>
+      <div>
         <TextWithLabel
           label="Søkeord"
           text={<DotTags items={keywords} codelistUtils={codelistUtils} />}
         />
-      </FlexGridItem>
-      <FlexGridItem>
+      </div>
+      <div>
         <TextWithLabel label="Nyttig å vite om opplysningstypen">
           <Markdown source={description} />
         </TextWithLabel>
-      </FlexGridItem>
-    </FlexGrid>
+      </div>
+    </div>
   )
 }
 
@@ -86,8 +85,8 @@ const PropertyData = (props: IPropertDataProps) => {
   const { orgMaster, sources, categories, productTeams, sensitivity, codelistUtils } = props
 
   return (
-    <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
-      <FlexGridItem>
+    <div className="flex flex-col" style={{ gap: theme.sizing.scale800 }}>
+      <div>
         <TextWithLabel label="Master i NAV">
           <DotTags
             list={EListName.SYSTEM}
@@ -97,8 +96,8 @@ const PropertyData = (props: IPropertDataProps) => {
             codelistUtils={codelistUtils}
           />
         </TextWithLabel>
-      </FlexGridItem>
-      <FlexGridItem>
+      </div>
+      <div>
         <TextWithLabel label="Kilder">
           <DotTags
             list={EListName.THIRD_PARTY}
@@ -108,14 +107,14 @@ const PropertyData = (props: IPropertDataProps) => {
             codelistUtils={codelistUtils}
           />
         </TextWithLabel>
-      </FlexGridItem>
-      <FlexGridItem>
+      </div>
+      <div>
         <TextWithLabel
           label="Team"
           text={productTeams.length ? <TeamList teamIds={productTeams} /> : 'Ikke angitt'}
         />
-      </FlexGridItem>
-      <FlexGridItem>
+      </div>
+      <div>
         <TextWithLabel label="Kategorier">
           <DotTags
             list={EListName.CATEGORY}
@@ -125,16 +124,16 @@ const PropertyData = (props: IPropertDataProps) => {
             codelistUtils={codelistUtils}
           />
         </TextWithLabel>
-      </FlexGridItem>
-      <FlexGridItem>
+      </div>
+      <div>
         <TextWithLabel
           label="Type personopplysning"
           text={sensitivity ? sensitivity.shortName : ''}
           icon={faUserShield}
           iconColor={sensitivityColor(sensitivity.code)}
         />
-      </FlexGridItem>
-    </FlexGrid>
+      </div>
+    </div>
   )
 }
 
@@ -156,7 +155,7 @@ const Metadata = (props: IMetaDataProps) => {
           codelistUtils={codelistUtils}
         />
       </div>
-      <div className="w-[60%] pl-24 border-solid border-l-[1px] border-[#AFAFAF]">
+      <div className="w-[60%] pl-24 border-solid border-l border-[#AFAFAF]">
         <PropertyData
           orgMaster={informationtype.orgMaster}
           sources={informationtype.sources || []}

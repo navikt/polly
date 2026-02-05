@@ -1,15 +1,11 @@
-import { KIND, Notification } from 'baseui/notification'
-import { ParagraphMedium } from 'baseui/typography'
+import { Alert, BodyLong } from '@navikt/ds-react'
 
 const ErrorNotAllowed = () => (
-  <Notification
-    kind={KIND.warning}
-    overrides={{
-      Body: { style: { marginTop: '2rem', width: 'auto' } },
-    }}
-  >
-    <ParagraphMedium>Du har ikke tilgang til denne siden.</ParagraphMedium>
-  </Notification>
+  <div className="mt-8">
+    <Alert variant="warning">
+      <BodyLong>Du har ikke tilgang til denne siden.</BodyLong>
+    </Alert>
+  </div>
 )
 
 export default ErrorNotAllowed

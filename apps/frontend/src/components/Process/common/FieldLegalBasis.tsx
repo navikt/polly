@@ -1,5 +1,5 @@
+import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
-import { Plus } from 'baseui/icon'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import {
@@ -81,7 +81,7 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
                       }}
                       icon={
                         <div className="flex justify-center">
-                          <Plus size={22} />
+                          <PlusIcon aria-hidden />
                         </div>
                       }
                     >
@@ -118,7 +118,7 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
                     }}
                     icon={
                       <div className="flex justify-center">
-                        <Plus size={22} />
+                        <PlusIcon aria-hidden />
                       </div>
                     }
                   >

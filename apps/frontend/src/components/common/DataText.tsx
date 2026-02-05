@@ -1,4 +1,4 @@
-import { LabelMedium, ParagraphMedium } from 'baseui/typography'
+import { BodyLong, Label } from '@navikt/ds-react'
 import { ReactNode } from 'react'
 
 type TDataTextProps = {
@@ -17,20 +17,18 @@ const DataText = (props: TDataTextProps) => {
     <>
       {!hideComponent && (
         <div className="flex content-start mb-4 w-full">
-          <div className="w-[40%] pr-2.5 max-w-[300px]">
-            <LabelMedium>{label}</LabelMedium>
+          <div className="w-[40%] max-w-75 pr-2.5">
+            <Label>{label}</Label>
           </div>
           <div className="w-[60%]">
             {texts &&
               texts.map((text: string, index: number) => (
-                <ParagraphMedium
-                  marginTop="0"
-                  marginBottom="0"
+                <BodyLong
                   key={index}
-                  $style={{ wordBreak: 'break-word' }}
+                  style={{ wordBreak: 'break-word', marginTop: 0, marginBottom: 0 }}
                 >
                   {text}
-                </ParagraphMedium>
+                </BodyLong>
               ))}
             {children && <div className="text-base ">{children}</div>}
           </div>

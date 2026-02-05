@@ -1,5 +1,4 @@
-import { Tooltip } from '@navikt/ds-react'
-import { ParagraphXSmall } from 'baseui/typography'
+import { BodyShort, Tooltip } from '@navikt/ds-react'
 import { canViewAlerts } from '../../pages/AlertEventPage'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import NavLogo from '../../resources/navlogo.svg'
@@ -8,7 +7,7 @@ import NavItem from './NavItem'
 
 const SideBar = () => (
   <div
-    className="h-full w-62 !bg-black flex flex-col"
+    className="h-full w-62 bg-black! flex flex-col"
     style={{ backgroundColor: '#1B232F' }}
     role="navigation"
   >
@@ -65,14 +64,18 @@ const SideBar = () => (
         <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
           <div className="flex justify-center pb-2.5 items-center">
             <Tooltip content="På navets personvernsider finner du informasjon til hjelp for utfylling.">
-              <ParagraphXSmall color="#E0E1E5">Hjelp</ParagraphXSmall>
+              <BodyShort size="small" style={{ color: '#E0E1E5' }}>
+                Hjelp
+              </BodyShort>
             </Tooltip>
           </div>
         </a>
         <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
           <div className="flex justify-center items-center">
             <img src={SlackLogo} width="60px" alt="slack logo" />
-            <ParagraphXSmall color="#E0E1E5">#behandlingskatalogen</ParagraphXSmall>
+            <BodyShort size="small" style={{ color: '#E0E1E5' }}>
+              #behandlingskatalogen
+            </BodyShort>
           </div>
         </a>
       </div>

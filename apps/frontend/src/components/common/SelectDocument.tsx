@@ -1,4 +1,4 @@
-import { Tag, VARIANT } from 'baseui/tag'
+import { Chips } from '@navikt/ds-react'
 import { FormikProps } from 'formik'
 import { searchDocuments } from '../../api/GetAllApi'
 import { IDocument } from '../../constants'
@@ -39,19 +39,11 @@ const SelectDocument = (props: TSelectDocumentProps) => {
       />
 
       {form.values.document && (
-        <Tag
-          variant={VARIANT.outlined}
-          onActionClick={() => form.setFieldValue('document', null)}
-          overrides={{
-            Text: {
-              style: {
-                maxWidth: '550px',
-              },
-            },
-          }}
-        >
-          {form.values.document.name}
-        </Tag>
+        <div style={{ maxWidth: '550px' }}>
+          <Chips.Removable onClick={() => form.setFieldValue('document', null)}>
+            {form.values.document.name}
+          </Chips.Removable>
+        </div>
       )}
     </div>
   )

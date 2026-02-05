@@ -1,6 +1,6 @@
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { HeadingMedium } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
@@ -88,7 +88,9 @@ const InformationtypePage = () => {
   return (
     <>
       <div className="flex justify-between">
-        <HeadingMedium marginTop="0">Opplysningstyper</HeadingMedium>
+        <Heading level="1" size="medium" className="m-0">
+          Opplysningstyper
+        </Heading>
         <div>
           {user.canWrite() && (
             <Button kind="outline" onClick={() => navigate('/informationtype/create')}>

@@ -1,7 +1,4 @@
-import { Modal, Select } from '@navikt/ds-react'
-import { Button, KIND } from 'baseui/button'
-import { Radio, RadioGroup } from 'baseui/radio'
-import { Tag, VARIANT } from 'baseui/tag'
+import { Button, Modal, Radio, RadioGroup, Select } from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -11,36 +8,17 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getInformationTypesShort } from '../../../api/GetAllApi'
 import { ELegalBasesUse, IInformationTypeShort, IPolicyFormValues } from '../../../constants'
 import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error, ModalLabel } from '../../common/ModalSchema'
+import { renderTagList } from '../../common/TagList'
 import { policySchema } from '../../common/schemaValidation'
 import FieldLegalBasis from '../common/FieldLegalBasis'
 import { TDocs } from './TablePolicy'
-
-const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => (
-  <Fragment>
-    {list && list.length > 0
-      ? list.map((item: string, index: number) => (
-          <Fragment key={index}>
-            {item ? (
-              <Tag
-                key={item}
-                variant={VARIANT.outlined}
-                onActionClick={() => arrayHelpers.remove(index)}
-              >
-                {item}
-              </Tag>
-            ) : null}
-          </Fragment>
-        ))
-      : null}
-  </Fragment>
-)
 
 const FieldInformationType = () => {
   const [infoTypes, setInfoTypes] = useState<IInformationTypeShort[]>([])
@@ -97,10 +75,10 @@ const FieldLegalBasesUse = (props: { legalBasesUse: ELegalBasesUse }) => {
         <div className="w-full">
           <RadioGroup
             value={value}
-            align="vertical"
+            legend=""
+            hideLegend
             error={!!form.errors.legalBasesUse && !!form.submitCount}
-            onChange={(event) => {
-              const selected: string = (event.target as HTMLInputElement).value
+            onChange={(selected) => {
               form.setFieldValue('legalBasesUse', selected)
               setValue(selected as ELegalBasesUse)
             }}
@@ -162,7 +140,7 @@ const ModalPolicy = ({
             <Form onKeyDown={disableEnter}>
               <div className="mb-8">
                 {addBatch && (
-                  <Button type="button" kind="secondary" size="compact" onClick={addBatch}>
+                  <Button type="button" variant="secondary" size="small" onClick={addBatch}>
                     Legg til flere fra et system
                   </Button>
                 )}
@@ -248,7 +226,7 @@ const ModalPolicy = ({
               <Modal.Footer>
                 <div className="flex justify-end">
                   <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" kind={KIND.tertiary} onClick={onClose}>
+                  <Button type="button" variant="tertiary" onClick={onClose}>
                     Avbryt
                   </Button>
                   <Button type="submit">Lagre</Button>

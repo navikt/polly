@@ -1,8 +1,5 @@
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { useStyletron } from 'baseui'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { Spinner } from 'baseui/spinner'
-import { ParagraphMedium } from 'baseui/typography'
+import { BodyShort, Modal } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import {
@@ -15,6 +12,7 @@ import { IInformationType } from '../../constants'
 import { AuditButton } from '../admin/audit/AuditButton'
 import Button from '../common/Button/CustomButton'
 import RouteLink from '../common/RouteLink'
+import { Spinner } from '../common/Spinner'
 
 interface IDeleteModalProps {
   id: string
@@ -54,35 +52,32 @@ export const DeleteModal = (props: IDeleteModalProps) => {
   const canDelete: boolean | undefined = infoType && !policies && !documents
 
   return (
-    <Modal onClose={closeModal} isOpen={showDeleteModal} animate size="default">
-      <ModalHeader>Bekreft sletting</ModalHeader>
-      <ModalBody>
+    <Modal header={{ heading: 'Bekreft sletting' }} onClose={closeModal} open={showDeleteModal}>
+      <Modal.Body>
         {!infoType && <Spinner />}
         {canDelete && (
-          <ParagraphMedium>Bekreft sletting av opplysningstypen {infoType?.name}</ParagraphMedium>
+          <BodyShort spacing>Bekreft sletting av opplysningstypen {infoType?.name}</BodyShort>
         )}
         {infoType && !canDelete && (
-          <ParagraphMedium>
+          <BodyShort spacing>
             {`Kan ikke slette opplysningstypen ${infoType.name} da den er knyttet til:`}
             {!!policies && <ul>{policies} Behandling(er)</ul>}
             {!!documents && <ul>{documents} Dokument(er)</ul>}
-          </ParagraphMedium>
+          </BodyShort>
         )}
-      </ModalBody>
+      </Modal.Body>
 
-      <ModalFooter>
-        <div className="flex justify-end">
-          <div className="self-end">{errorProcessModal && <p>{errorProcessModal}</p>}</div>
-          <div className="inline ml-2.5" />
-          <Button kind="secondary" onClick={closeModal}>
-            Avbryt
-          </Button>
-          <div className="inline ml-2.5" />
-          <Button onClick={submitDeleteProcess} disabled={!canDelete}>
-            Slett
-          </Button>
+      <Modal.Footer>
+        <div className="self-end">
+          {errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}
         </div>
-      </ModalFooter>
+        <Button kind="secondary" onClick={closeModal}>
+          Avbryt
+        </Button>
+        <Button onClick={submitDeleteProcess} disabled={!canDelete}>
+          Slett
+        </Button>
+      </Modal.Footer>
     </Modal>
   )
 }
@@ -93,8 +88,6 @@ interface IInformationTypeBannerButtonsProps {
 
 export const InformationTypeBannerButtons = (props: IInformationTypeBannerButtonsProps) => {
   const { id } = props
-  const [useCss] = useStyletron()
-  const link: string = useCss({ textDecoration: 'none' })
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   return (
@@ -102,7 +95,7 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
       <div className="self-center flex">
         <AuditButton id={id} />
 
-        <RouteLink href={`/informationtype/${id}/edit`} className={link}>
+        <RouteLink href={`/informationtype/${id}/edit`} className="no-underline">
           <Button size="xsmall" kind="outline" icon={faEdit} marginRight>
             Redigér
           </Button>

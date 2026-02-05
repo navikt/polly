@@ -1,10 +1,6 @@
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Modal } from '@navikt/ds-react'
-import { useStyletron } from 'baseui'
-import { ListItem } from 'baseui/list'
-import { Tooltip } from 'baseui/tooltip'
-import { ParagraphSmall } from 'baseui/typography'
+import { BodyShort, Button, List, Modal, Tooltip } from '@navikt/ds-react'
 import {
   ArrayHelpers,
   Field,
@@ -49,13 +45,12 @@ interface IListInformationTypesProps {
 
 const ListInformationTypes = (props: IListInformationTypesProps) => {
   const { informationTypes, formik, arrayHelpers } = props
-  const [css] = useStyletron()
   const [codelistUtils] = CodelistService()
 
   return (
-    <ul className={css({ paddingLeft: 0, width: '100%' })}>
+    <List as="ul" className="w-full">
       {informationTypes.map((informationType: IDocumentInfoTypeUse, index: number) => (
-        <ListItem key={informationType.informationTypeId} sublist>
+        <List.Item key={informationType.informationTypeId}>
           <div className="flex w-full justify-between">
             <div className="flex justify-between w-[90%] items-center">
               <div>
@@ -92,9 +87,9 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
               </Button>
             </Tooltip>
           </div>
-        </ListItem>
+        </List.Item>
       ))}
-    </ul>
+    </List>
   )
 }
 
@@ -223,7 +218,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
 
                     {!!formik.values.document && (
                       <>
-                        <ParagraphSmall>{formik.values.document.description}</ParagraphSmall>
+                        <BodyShort>{formik.values.document.description}</BodyShort>
                         <div className="flex w-full mt-4">
                           <ModalLabel label="Opplysningstyper" />
                           <FieldArray

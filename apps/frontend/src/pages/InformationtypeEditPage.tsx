@@ -1,5 +1,4 @@
-import { Spinner } from 'baseui/spinner'
-import { HeadingMedium } from 'baseui/typography'
+import { Heading, Loader } from '@navikt/ds-react'
 import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api/GetAllApi'
@@ -56,10 +55,10 @@ const InformationtypeEditPage = () => {
 
   return (
     <Fragment>
-      {isLoading && <Spinner $size={30} />}{' '}
+      {isLoading && <Loader size="medium" />}{' '}
       {!isLoading && (
         <Fragment>
-          <HeadingMedium>Redigér</HeadingMedium>
+          <Heading size="large">Redigér</Heading>
 
           {!error && informationtype ? (
             <Fragment>

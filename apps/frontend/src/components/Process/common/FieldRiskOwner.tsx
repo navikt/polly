@@ -1,6 +1,6 @@
-import { Select, Value } from 'baseui/select'
+import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getResourceById, useTeamResourceSearch } from '../../../api/GetAllApi'
 import { IProcessFormValues } from '../../../constants'
 
@@ -10,16 +10,25 @@ interface IProps {
 
 const FieldRiskOwner = (props: IProps) => {
   const { riskOwner } = props
-  const [value, setValue] = useState<Value>()
+  const [selected, setSelected] = useState<{ label: string; value: string }[]>()
   const [teamResourceSearchResult, setTeamResourceSearch, teamResourceSearchLoading] =
     useTeamResourceSearch()
+
+  const comboboxOptions = useMemo(
+    () =>
+      (teamResourceSearchResult || []).map((option: any) => ({
+        label: option.label,
+        value: option.id,
+      })),
+    [teamResourceSearchResult]
+  )
 
   useEffect(() => {
     ;(async () => {
       if (riskOwner) {
-        setValue([{ id: riskOwner, label: (await getResourceById(riskOwner)).fullName }])
+        setSelected([{ value: riskOwner, label: (await getResourceById(riskOwner)).fullName }])
       } else {
-        setValue([])
+        setSelected([])
       }
     })()
   }, [riskOwner])
@@ -29,17 +38,29 @@ const FieldRiskOwner = (props: IProps) => {
       name="dpia.riskOwner"
       render={({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
-          <Select
-            options={teamResourceSearchResult}
-            onChange={({ value }) => {
-              setValue(value)
-              form.setFieldValue('dpia.riskOwner', value && value.length > 0 ? value[0].id : '')
-            }}
-            onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setTeamResourceSearch(event.currentTarget.value)
-            }
-            value={value}
+          <UNSAFE_Combobox
+            label="Risikoeier"
+            hideLabel
+            options={comboboxOptions}
+            filteredOptions={comboboxOptions}
             isLoading={teamResourceSearchLoading}
+            selectedOptions={selected || []}
+            onChange={(value) => {
+              setTeamResourceSearch(value)
+            }}
+            onToggleSelected={(optionValue, isSelected) => {
+              if (!isSelected) {
+                setSelected([])
+                form.setFieldValue('dpia.riskOwner', '')
+                return
+              }
+
+              const option = comboboxOptions.find((o) => o.value === optionValue)
+              if (option) {
+                setSelected([option])
+                form.setFieldValue('dpia.riskOwner', option.value)
+              }
+            }}
           />
         </div>
       )}

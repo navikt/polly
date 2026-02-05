@@ -1,4 +1,4 @@
-import { HeadingMedium } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { getDashboard } from '../api/GetAllApi'
@@ -25,7 +25,7 @@ export const DashboardPage = () => {
   return (
     <div className="mb-12 flex flex-wrap">
       <div className="flex justify-between w-full">
-        <HeadingMedium marginTop="0">Dashboard</HeadingMedium>
+        <Heading size="large">Dashboard</Heading>
         <FilterDashboardStatus setFilter={setDashboardStatus} />
       </div>
 

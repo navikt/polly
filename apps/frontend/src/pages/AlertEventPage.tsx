@@ -1,7 +1,15 @@
 import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Chips, Dropdown, Heading, Label, Select, Table } from '@navikt/ds-react'
-import { Pagination } from 'baseui/pagination'
+import {
+  Button,
+  Chips,
+  Dropdown,
+  Heading,
+  Label,
+  Pagination,
+  Select,
+  Table,
+} from '@navikt/ds-react'
 import moment from 'moment'
 import { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
@@ -267,10 +275,11 @@ export const AlertEventPage = () => {
           </Dropdown.Menu>
         </Dropdown>
         <Pagination
-          currentPage={state.page}
-          numPages={state.events.pages}
-          onPageChange={(page) => setPage(page.nextPage)}
-          labels={{ nextButton: 'Neste', preposition: 'av', prevButton: 'Forrige' }}
+          page={state.page}
+          onPageChange={setPage}
+          count={state.events.pages || 1}
+          prevNextTexts
+          size="small"
         />
       </div>
     </>

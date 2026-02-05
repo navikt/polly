@@ -1,4 +1,4 @@
-import { HeadingMedium } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { Fragment, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import shortid from 'shortid'
@@ -53,7 +53,7 @@ const DocumentEditPage = () => {
     <Fragment>
       {!isLoading && document && (
         <Fragment>
-          <HeadingMedium>Redigér dokument</HeadingMedium>
+          <Heading size="large">Redigér dokument</Heading>
           <DocumentForm
             initialValues={convertToDocumentFormValues(document)}
             handleSubmit={handleEditDocument}

@@ -1,5 +1,4 @@
-import { BodyLong, Heading, List } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
+import { BodyLong, Heading, Link, List } from '@navikt/ds-react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
@@ -14,9 +13,9 @@ export const Markdown = ({ escapeHtml = true, source }: IMarkdownProps) => {
     a: (linkProps: any) => {
       const { children, href } = linkProps
       return (
-        <StyledLink href={href} target={'_blank'}>
+        <Link href={href} target={'_blank'}>
           {children}
-        </StyledLink>
+        </Link>
       )
     },
     p: (parProps: any) => {
@@ -54,9 +53,9 @@ export const Markdown = ({ escapeHtml = true, source }: IMarkdownProps) => {
     href: (linkProps: any) => {
       const { children, href } = linkProps
       return (
-        <StyledLink href={href} target={'_blank'}>
+        <Link href={href} target={'_blank'}>
           {children}
-        </StyledLink>
+        </Link>
       )
     },
     li: (liProps: any) => {

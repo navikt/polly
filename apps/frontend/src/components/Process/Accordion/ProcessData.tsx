@@ -1,5 +1,4 @@
-import { BodyLong, Tooltip } from '@navikt/ds-react'
-import { ProgressBar } from 'baseui/progress-bar'
+import { BodyLong, ProgressBar, Tooltip } from '@navikt/ds-react'
 import { isNil, sum, uniqBy } from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
 import { getResourceById } from '../../../api/GetAllApi'
@@ -16,7 +15,6 @@ import {
   IProcessor,
 } from '../../../constants'
 import { CodelistService, EListName, ICodelistProps } from '../../../service/Codelist'
-import { theme } from '../../../util'
 import { env } from '../../../util/env'
 import {
   checkForAaregDispatcher,
@@ -478,16 +476,12 @@ const Completeness = (props: ICompletenessProps) => {
     Object.keys(completeness).map((k) => ((completeness as any)[k] ? 1 : 0))
   )
   const completables: number = Object.keys(completeness).length
-  const color = () => {
-    const perc = completed / completables
-    if (perc < 0.3) return theme.colors.negative400
-    if (perc === 1) return theme.colors.positive400
-    return theme.colors.warning400
-  }
 
-  const barOverrides = {
-    BarProgress: { style: { backgroundColor: color() } },
-    Bar: { style: { marginLeft: 0, marginRight: 0 } },
+  const colorRole = () => {
+    const perc = completed / completables
+    if (perc < 0.3) return 'danger'
+    if (perc === 1) return 'success'
+    return 'warning'
   }
 
   const getContent = () => {
@@ -510,7 +504,13 @@ const Completeness = (props: ICompletenessProps) => {
     <DataText label="Kompletthet" text={''}>
       <Tooltip content={getContent()}>
         <div className="flex h-6 items-center cursor-help">
-          <ProgressBar value={completed} successValue={completables} overrides={barOverrides} />
+          <ProgressBar
+            aria-label="Kompletthet"
+            value={completed}
+            valueMax={completables}
+            data-color={colorRole()}
+            size="small"
+          />
         </div>
       </Tooltip>
     </DataText>

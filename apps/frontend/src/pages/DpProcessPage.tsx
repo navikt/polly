@@ -1,7 +1,6 @@
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Spinner } from 'baseui/spinner'
-import { HeadingMedium } from 'baseui/typography'
+import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
@@ -48,7 +47,7 @@ const DpProcessPage = () => {
   return (
     <>
       <div className="flex justify-between">
-        <HeadingMedium marginTop="0">Behandlinger hvor NAV er databehandler</HeadingMedium>
+        <Heading size="large">Behandlinger hvor NAV er databehandler</Heading>
         <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
             <Button kind="outline" onClick={() => setShowModal(true)}>
@@ -67,7 +66,7 @@ const DpProcessPage = () => {
           errorOnCreate={errorDpProcessModal}
         />
       )}
-      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses} /> : <Spinner $size={30} />}
+      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses} /> : <Loader size="medium" />}
     </>
   )
 }

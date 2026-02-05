@@ -14,7 +14,6 @@
     "@tailwindcss/postcss": "4.1.18",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "axios": "1.13.4",
-    "baseui": "13.0.0",
     "core-js": "3.48.0",
     "flag-icon-css": "4.1.7",
     "formik": "2.4.9",
@@ -40,8 +39,6 @@
     "rehype-raw": "7.0.0",
     "remark-gfm": "4.0.1",
     "shortid": "2.2.17",
-    "styletron-engine-atomic": "1.6.2",
-    "styletron-react": "6.1.1",
     "typescript": "5.9.3",
     "xlsx": "0.18.5",
     "yup": "1.7.1"
@@ -79,7 +76,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!(axios|react-day-picker|query-string|decode-uri-component|split-on-first|filter-obj)/)"
+      "/node_modules/(?!(axios|react-day-picker|query-string|decode-uri-component|split-on-first|filter-obj|date-fns)/)"
     ],
     "moduleNameMapper": {
       "(\\.\\.?\\/.+)\\.js$": "$1"
@@ -110,9 +107,6 @@
     "@types/react-helmet": "6.1.11",
     "@types/react-router": "5.1.20",
     "@types/shortid": "2.2.0",
-    "@types/styletron-engine-atomic": "1.1.4",
-    "@types/styletron-react": "5.0.8",
-    "@types/styletron-standard": "2.0.6",
     "@types/yup": "0.32.0",
     "@typescript-eslint/eslint-plugin": "8.54.0",
     "@typescript-eslint/parser": "8.54.0",

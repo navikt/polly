@@ -1,10 +1,6 @@
 import { faCircleExclamation, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
-import { ARTWORK_SIZES, ListItem } from 'baseui/list'
-import { Tooltip } from 'baseui/tooltip'
-import { ParagraphMedium } from 'baseui/typography'
+import { BodyLong, Button, Link, Tooltip } from '@navikt/ds-react'
 import { Fragment, JSX } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
 import { EListName, ESensitivityLevel, ICodelistProps } from '../../service/Codelist'
@@ -75,27 +71,27 @@ const legalBasisLinkProcessor = (codelistUtils: ICodelistProps, law: string, tex
       // tripe '§§§' is hidden, used as a trick in combination with rule 1 above
       regex: /§(§§)?(§)?\s*(\d+(-\d+)?)/g,
       fn: (key: string, result: string[]) => (
-        <StyledLink
+        <Link
           key={key}
           href={`${lovdataBase(codelistUtils, law)}/§${result[3]}`}
           target="_blank"
           rel="noopener noreferrer"
         >
           {!result[1] && !result[2] && '§'} {result[2] && '§§'} {result[3]}
-        </StyledLink>
+        </Link>
       ),
     },
     {
       regex: /kap(ittel)?\s*(\d+)/gi,
       fn: (key: string, result: string[]) => (
-        <StyledLink
+        <Link
           key={key}
           href={`${lovdataBase(codelistUtils, law)}/KAPITTEL_${result[2]}`}
           target="_blank"
           rel="noopener noreferrer"
         >
           Kapittel {result[2]}
-        </StyledLink>
+        </Link>
       ),
     },
   ])(text)
@@ -193,59 +189,47 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
           isLegalBasisFilteredBySensitivity(legalBase, codelistUtils, sensitivityLevel)
         )
         .map((legalBasis: ILegalBasisFormValues, index: number) => (
-          <ListItem
-            artworkSize={ARTWORK_SIZES.SMALL}
-            overrides={{
-              Content: {
-                style: {
-                  height: 'auto',
-                },
-              },
-              EndEnhancerContainer: {},
-              Root: {},
-              ArtworkContainer: {},
-            }}
-            endEnhancer={() => (
-              <div className="w-full">
-                <Button
-                  type="button"
-                  variant="tertiary"
-                  size="small"
-                  onClick={() => {
-                    onEdit(
-                      legalBases?.findIndex(
-                        (legalBase: ILegalBasisFormValues) => legalBase.key === legalBasis.key
-                      )
-                    )
-                  }}
-                >
-                  <FontAwesomeIcon icon={faEdit} />
-                </Button>
-                <Button
-                  type="button"
-                  variant="tertiary"
-                  size="small"
-                  onClick={() => {
-                    onRemove(
-                      legalBases?.findIndex(
-                        (legalBase: ILegalBasisFormValues) => legalBase.key === legalBasis.key
-                      )
-                    )
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </Button>
-              </div>
-            )}
-            sublist
+          <div
             key={index}
+            className="flex items-start justify-between gap-2"
+            style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}
           >
-            <ParagraphMedium
-              $style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}
-            >
+            <BodyLong size="small">
               <LegalBasisView legalBasisForm={legalBasis} codelistUtils={codelistUtils} />
-            </ParagraphMedium>
-          </ListItem>
+            </BodyLong>
+            <div className="flex shrink-0">
+              <Button
+                type="button"
+                variant="tertiary"
+                size="small"
+                aria-label="Rediger behandlingsgrunnlag"
+                onClick={() => {
+                  onEdit(
+                    legalBases?.findIndex(
+                      (legalBase: ILegalBasisFormValues) => legalBase.key === legalBasis.key
+                    )
+                  )
+                }}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </Button>
+              <Button
+                type="button"
+                variant="tertiary"
+                size="small"
+                aria-label="Slett behandlingsgrunnlag"
+                onClick={() => {
+                  onRemove(
+                    legalBases?.findIndex(
+                      (legalBase: ILegalBasisFormValues) => legalBase.key === legalBasis.key
+                    )
+                  )
+                }}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </Button>
+            </div>
+          </div>
         ))}
     </Fragment>
   )

@@ -1,5 +1,4 @@
-import { Radio, RadioGroup } from 'baseui/radio'
-import { ChangeEvent } from 'react'
+import { Radio, RadioGroup } from '@navikt/ds-react'
 
 const YES = 'YES',
   NO = 'NO',
@@ -26,24 +25,22 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
   return (
     <RadioGroup
       value={boolToRadio(value)}
-      align="horizontal"
-      overrides={{
-        RadioGroupRoot: {
-          style: { width: '100%', justifyContent: justifyContent ? justifyContent : 'stretch' },
-        },
+      className="w-full"
+      legend=""
+      hideLegend
+      onChange={(newValue) => {
+        setValue(radioToBool(newValue))
       }}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        setValue(radioToBool((event.target as HTMLInputElement).value))
-      }}
+      style={{ justifyContent: justifyContent ? justifyContent : 'stretch' }}
     >
-      <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={YES}>
+      <Radio className="mr-8" value={YES}>
         Ja {firstButtonLabel}
       </Radio>
-      <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={NO}>
+      <Radio className="mr-8" value={NO}>
         Nei {secondButtonLabel}
       </Radio>
       {!omitUndefined && (
-        <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={UNCLARIFIED}>
+        <Radio className="mr-8" value={UNCLARIFIED}>
           Uavklart
         </Radio>
       )}

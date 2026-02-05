@@ -1,7 +1,6 @@
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Tooltip } from '@navikt/ds-react'
-import { ParagraphMedium } from 'baseui/typography'
+import { BodyShort, Tooltip } from '@navikt/ds-react'
 import { useLocation } from 'react-router'
 import RouteLink from '../common/RouteLink'
 
@@ -24,7 +23,7 @@ const checkCurrentLocationIsTheSameAsSideBarItem = (
 
 const NavItem = (props: INavItemProps) => (
   <RouteLink href={props.to} style={{ textDecoration: 'none' }}>
-    <div className="flex items-center h-[35px]">
+    <div className="flex items-center h-8.75">
       <div className="mr-2.5">
         <FontAwesomeIcon
           icon={
@@ -38,20 +37,20 @@ const NavItem = (props: INavItemProps) => (
       </div>
       {props.tooltip ? (
         <Tooltip content={props.tooltip}>
-          <ParagraphMedium
-            color="#E0E1E5"
-            style={{ whiteSpace: props.noWrap ? 'nowrap' : undefined }}
+          <BodyShort
+            size="small"
+            style={{ color: '#E0E1E5', whiteSpace: props.noWrap ? 'nowrap' : undefined }}
           >
             {props.text}
-          </ParagraphMedium>
+          </BodyShort>
         </Tooltip>
       ) : (
-        <ParagraphMedium
-          color="#E0E1E5"
-          style={{ whiteSpace: props.noWrap ? 'nowrap' : undefined }}
+        <BodyShort
+          size="small"
+          style={{ color: '#E0E1E5', whiteSpace: props.noWrap ? 'nowrap' : undefined }}
         >
           {props.text}
-        </ParagraphMedium>
+        </BodyShort>
       )}
     </div>
   </RouteLink>

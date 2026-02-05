@@ -1,5 +1,4 @@
-import { Select } from '@navikt/ds-react'
-import { LabelMedium } from 'baseui/typography'
+import { Label, Select } from '@navikt/ds-react'
 import { useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { EProcessStatusFilter } from '../../constants'
@@ -37,9 +36,9 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
         </Select>
       </div>
       <div className="self-center">
-        <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
+        <Label style={{ color: theme.colors.primary, marginRight: '1rem' }}>
           Filtrer diagrammene på status
-        </LabelMedium>
+        </Label>
       </div>
     </div>
   )

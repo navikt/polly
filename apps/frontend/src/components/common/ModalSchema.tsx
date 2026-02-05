@@ -1,8 +1,6 @@
 import { Detail, Label } from '@navikt/ds-react'
-import { KIND as NKIND, Notification } from 'baseui/notification'
 import { ErrorMessage } from 'formik'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
-import { paddingZero } from './Style'
 
 interface IErrorProps {
   fieldName: string
@@ -18,12 +16,7 @@ export const Error = (props: IErrorProps) => {
         <div className="flex w-full mt-1">
           {!fullWidth && <ModalLabel />}
           <div className="w-full">
-            <Notification
-              overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }}
-              kind={NKIND.negative}
-            >
-              {msg}
-            </Notification>
+            <p className="navds-error-message navds-label">{msg}</p>
           </div>
         </div>
       )}

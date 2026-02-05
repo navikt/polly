@@ -1,7 +1,5 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Heading, Select } from '@navikt/ds-react'
-import { Spinner } from 'baseui/spinner'
-import { LabelMedium } from 'baseui/typography'
+import { Heading, Label, Select } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import {
@@ -39,6 +37,7 @@ import { user } from '../../service/User'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
+import { Spinner } from '../common/Spinner'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ExportProcessModal from './Export/ExportProcessModal'
@@ -399,9 +398,7 @@ const ProcessList = ({
           </Select>
         </div>
         <div>
-          <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
-            Filter
-          </LabelMedium>
+          <Label style={{ color: theme.colors.primary, marginRight: '1rem' }}>Filter</Label>
         </div>
         <div className="mr-auto">
           {!hideTitle && (
@@ -412,7 +409,7 @@ const ProcessList = ({
         </div>
       </div>
 
-      {isLoadingProcessList && <Spinner $size={theme.sizing.scale2400} />}
+      {isLoadingProcessList && <Spinner size={theme.sizing.scale2400} />}
 
       {!isLoadingProcessList && (
         <AccordionProcess

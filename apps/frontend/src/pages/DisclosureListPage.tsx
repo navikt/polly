@@ -1,7 +1,5 @@
-import { Button as BButton, Button, KIND } from 'baseui/button'
-import { ButtonGroup } from 'baseui/button-group'
-import { Plus } from 'baseui/icon'
-import { HeadingLarge, LabelMedium } from 'baseui/typography'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Button, Heading, Label, ToggleGroup } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
@@ -130,42 +128,33 @@ export const DisclosureListPage = () => {
   return (
     <>
       <div className="flex justify-between items-center">
-        <HeadingLarge>Utleveringer</HeadingLarge>
+        <Heading level="1" size="large">
+          Utleveringer
+        </Heading>
         <div>
-          <LabelMedium marginBottom={theme.sizing.scale600}>Filter behandlingsgrunnlag</LabelMedium>
-          <ButtonGroup
-            selected={!filter ? 0 : filter === EFilterType.legalbases ? 1 : 2}
-            mode="radio"
-            shape="pill"
-          >
-            <BButton
-              onClick={() =>
-                navigate(handleFilterChange('/disclosure?'), {
-                  replace: true,
-                })
-              }
-            >
-              Alle
-            </BButton>
-            <BButton
-              onClick={() =>
-                navigate(handleFilterChange('/disclosure?filter=legalbases'), {
-                  replace: true,
-                })
-              }
-            >
-              Utfylt
-            </BButton>
-            <BButton
-              onClick={() =>
+          <Label style={{ marginBottom: theme.sizing.scale600, display: 'block' }}>
+            Filter behandlingsgrunnlag
+          </Label>
+          <ToggleGroup
+            size="small"
+            value={!filter ? 'all' : filter}
+            onChange={(value) => {
+              if (!value) return
+              if (value === 'all') {
+                navigate(handleFilterChange('/disclosure?'), { replace: true })
+              } else if (value === EFilterType.legalbases) {
+                navigate(handleFilterChange('/disclosure?filter=legalbases'), { replace: true })
+              } else {
                 navigate(handleFilterChange('/disclosure?filter=emptylegalbases'), {
                   replace: true,
                 })
               }
-            >
-              Ufullstendig
-            </BButton>
-          </ButtonGroup>
+            }}
+          >
+            <ToggleGroup.Item value="all">Alle</ToggleGroup.Item>
+            <ToggleGroup.Item value={EFilterType.legalbases}>Utfylt</ToggleGroup.Item>
+            <ToggleGroup.Item value={EFilterType.emptylegalbases}>Ufullstendig</ToggleGroup.Item>
+          </ToggleGroup>
         </div>
       </div>
       <div className="flex w-full mb-3">
@@ -177,7 +166,11 @@ export const DisclosureListPage = () => {
             />
           </div>
           <div className="ml-8px flex">
-            <Button size="compact" onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}>
+            <Button
+              size="small"
+              variant="secondary"
+              onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}
+            >
               {' '}
               {showAaregAvtaleTable ? 'Skjul Aa-reg avtaler' : 'Vis Aa-reg avtaler'}
             </Button>
@@ -186,14 +179,10 @@ export const DisclosureListPage = () => {
         <div className="flex flex-1 justify-end">
           {user.canWrite() && (
             <Button
-              size="compact"
-              kind={KIND.tertiary}
+              size="small"
+              variant="tertiary"
+              icon={<PlusCircleIcon aria-hidden />}
               onClick={() => setShowCreateModal(true)}
-              startEnhancer={() => (
-                <div className="flex justify-center">
-                  <Plus size={22} />
-                </div>
-              )}
             >
               Opprett ny utlevering
             </Button>

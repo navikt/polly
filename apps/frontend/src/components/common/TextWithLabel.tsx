@@ -1,8 +1,7 @@
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Tooltip } from '@navikt/ds-react'
-import { LabelMedium } from 'baseui/typography'
+import { Button, Label, Tooltip } from '@navikt/ds-react'
 import { ReactNode } from 'react'
 import { theme } from '../../util'
 
@@ -26,9 +25,9 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
 
   return (
     <>
-      <LabelMedium marginBottom={theme.sizing.scale100}>
+      <Label style={{ marginBottom: theme.sizing.scale100, display: 'block' }}>
         {icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}
-      </LabelMedium>
+      </Label>
       {!error && value}
       {error && (
         <Tooltip content={error}>

@@ -1,5 +1,4 @@
-import { Tabs } from '@navikt/ds-react'
-import { HeadingSmall } from 'baseui/typography'
+import { Heading, Tabs } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { getDashboard, getInformationTypesBy } from '../api/GetAllApi'
@@ -54,7 +53,9 @@ export const ProductAreaPage = () => {
             {!isLoading && chartData && (
               <Tabs.Panel value="dashboard">
                 <div className="mb-60">
-                  <HeadingSmall>Oversikt</HeadingSmall>
+                  <Heading size="small" level="2">
+                    Oversikt
+                  </Heading>
                   <Charts
                     chartData={chartData}
                     processStatus={EProcessStatusFilter.All}

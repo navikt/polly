@@ -1,4 +1,3 @@
-import { colors } from 'baseui/tokens'
 import { theme } from '../../util'
 
 export const marginZero = {
@@ -43,37 +42,6 @@ export const borderColor = (color: string) => ({
   borderRightColor: color,
   borderBottomColor: color,
 })
-
-export const tabOverride = {
-  Tab: {
-    style: {
-      fontSize: '1em',
-      backgroundColor: colors.blue50,
-      ':hover': { backgroundColor: colors.blue100 },
-      borderRadius: '25px 25px 0 0',
-      paddingRight: '20px',
-      paddingLeft: '20px',
-      paddingBottom: '10px',
-    },
-  },
-}
-
-export const hideBorder = {
-  borderLeftColor: 'transparent',
-  borderTopColor: 'transparent',
-  borderRightColor: 'transparent',
-  borderBottomColor: 'transparent',
-}
-
-export const cardShadow = {
-  Action: {},
-  Root: {
-    style: {
-      ...hideBorder,
-      boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08);',
-    },
-  },
-}
 
 export const chartCardProps = {
   marginTop: theme.sizing.scale600,

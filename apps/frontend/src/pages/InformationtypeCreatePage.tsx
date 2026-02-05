@@ -1,4 +1,4 @@
-import { HeadingMedium } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { Fragment, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { createInformationType, mapInfoTypeToFormVals } from '../api/GetAllApi'
@@ -33,7 +33,7 @@ const InformationtypeCreatePage = () => {
       {!hasAccess() && <ErrorNotAllowed />}
       {hasAccess() && (
         <>
-          <HeadingMedium>Opprett opplysningstype</HeadingMedium>
+          <Heading size="large">Opprett opplysningstype</Heading>
           {codelistUtils && (
             <>
               <InformationtypeForm

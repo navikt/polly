@@ -1,6 +1,13 @@
-import { Accordion, Alert, Button, Modal, Select, Textarea } from '@navikt/ds-react'
-import { FlexGridItem } from 'baseui/flex-grid'
-import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
+import {
+  Accordion,
+  Alert,
+  Button,
+  Modal,
+  Radio,
+  RadioGroup,
+  Select,
+  Textarea,
+} from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -10,7 +17,7 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { ChangeEvent, Key, useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
@@ -464,7 +471,7 @@ const ModalProcess = ({
                               />
                             </div>
                             <Error fieldName="dataProcessing.processors" />
-                            <FlexGridItem></FlexGridItem>
+                            <div />
                           </>
                         )}
                       </Accordion.Content>
@@ -574,10 +581,10 @@ const ModalProcess = ({
                         render={({ form }: FieldProps<IProcessFormValues>) => (
                           <RadioGroup
                             value={formikBag.values.status}
-                            align={ALIGN.horizontal}
-                            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                              form.setFieldValue('status', (event.target as HTMLInputElement).value)
-                            }
+                            legend=""
+                            hideLegend
+                            className="flex flex-wrap gap-4"
+                            onChange={(value) => form.setFieldValue('status', value)}
                           >
                             <Radio value={EProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
                             <Radio value={EProcessStatus.IN_PROGRESS}>Under arbeid</Radio>

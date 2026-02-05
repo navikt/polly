@@ -1,4 +1,4 @@
-import { ParagraphLarge, ParagraphMedium } from 'baseui/typography'
+import { BodyLong } from '@navikt/ds-react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import {
   EProcessField,
@@ -80,12 +80,12 @@ const Charts = (props: TChartsProps) => {
           processField={EProcessField.DPIA}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
-        <ParagraphMedium>
+        <BodyLong size="small">
           Ref. til PVK ikke angitt:{' '}
           <RouteLink href={link(EProcessField.DPIA_REFERENCE_MISSING, EProcessState.YES)}>
             {chartData.dpiaReferenceMissing}
           </RouteLink>
-        </ParagraphMedium>
+        </BodyLong>
       </div>
 
       <div className={chartCardStyle}>
@@ -157,12 +157,12 @@ const Charts = (props: TChartsProps) => {
           processField={EProcessField.RETENTION}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
-        <ParagraphLarge>
+        <BodyLong>
           Behandlinger med ufullstendig lagringstid:{' '}
           <RouteLink href={link(EProcessField.RETENTION_DATA)}>
             {chartData.retentionDataIncomplete}
           </RouteLink>
-        </ParagraphLarge>
+        </BodyLong>
       </div>
 
       <div className={chartCardStyle}>
@@ -205,25 +205,25 @@ const Charts = (props: TChartsProps) => {
             ]}
             size={chartSize}
           />
-          <ParagraphMedium>
+          <BodyLong size="small">
             Utleveringer: <RouteLink href={'/disclosure'}>{all.disclosures}</RouteLink>
-          </ParagraphMedium>
+          </BodyLong>
         </div>
       )}
 
       <div className="mt-10 w-full">
         <div className="bg-red p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           <div>
-            <ParagraphMedium>
+            <BodyLong size="small">
               Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
               <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
                 {chartData.commonExternalProcessResponsible}
               </RouteLink>
-            </ParagraphMedium>
-            <ParagraphMedium>
+            </BodyLong>
+            <BodyLong size="small">
               Behandlinger hvor NAV er databehandler:{' '}
               <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
-            </ParagraphMedium>
+            </BodyLong>
           </div>
         </div>
       </div>

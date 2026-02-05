@@ -1,9 +1,7 @@
 import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-import { Notification } from 'baseui/notification'
-import { Tab } from 'baseui/tabs'
-import { HeadingMedium, LabelMedium, ParagraphMedium } from 'baseui/typography'
-import { Key, useEffect, useState } from 'react'
+import { Alert, BodyLong, Heading, Label, Tabs } from '@navikt/ds-react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import {
   deleteDocument,
@@ -15,8 +13,6 @@ import {
 import { AuditButton } from '../components/admin/audit/AuditButton'
 import AlphabeticList from '../components/common/AlphabeticList'
 import Button from '../components/common/Button/CustomButton'
-import { CustomizedTabs } from '../components/common/CustomizedTabs'
-import { tabOverride } from '../components/common/Style'
 import DocumentMetadata from '../components/document/DocumentMetadata'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
@@ -25,8 +21,8 @@ import { user } from '../service/User'
 
 const renderTextWithLabel = (label: string, text: string) => (
   <div className="mt-10">
-    <LabelMedium font="font400">{label}</LabelMedium>
-    <ParagraphMedium>{text}</ParagraphMedium>
+    <Label>{label}</Label>
+    <BodyLong>{text}</BodyLong>
   </div>
 )
 
@@ -39,7 +35,7 @@ const DocumentPage = () => {
   const [isDeleteModalVisible, setDeleteModalVisibility] = useState(false)
   const [documentUsages, setDocumentUsages] = useState<IProcess[]>()
   const [errorMessage, setErrorMessage] = useState<string>()
-  const [activeKey, setActiveKey] = useState<string | number | bigint>('containsInformationType')
+  const [activeKey, setActiveKey] = useState<string>('containsInformationType')
   const [documents, setDocuments] = useState<IDocument[]>([])
 
   useEffect(() => setDocumentId(params.id), [params.id])
@@ -83,7 +79,7 @@ const DocumentPage = () => {
     <>
       <>
         <div className="w-full">
-          <HeadingMedium>Dokumenter</HeadingMedium>
+          <Heading size="large">Dokumenter</Heading>
         </div>
         <div className="flex flex-row-reverse mt-2.5">
           {user.canWrite() && (
@@ -133,7 +129,7 @@ const DocumentPage = () => {
           />
         )}
         {currentDocument && (
-          <div className="p-[5px] mt-[5px]">
+          <div className="mt-1.25 p-1.25">
             {renderTextWithLabel('Navn', currentDocument.name)}
             {renderTextWithLabel('Beskrivelse', currentDocument.description)}
             {renderTextWithLabel(
@@ -146,38 +142,27 @@ const DocumentPage = () => {
         )}
 
         {currentDocument && (
-          <CustomizedTabs
-            onChange={({ activeKey }) => {
-              setActiveKey(activeKey)
-            }}
-            activeKey={activeKey as Key}
-          >
-            <Tab
-              key={'containsInformationType'}
-              title="Inneholder opplysningstyper"
-              overrides={tabOverride}
-            >
-              <div>
-                <DocumentMetadata document={currentDocument} />
-              </div>
-            </Tab>
-            <>
+          <Tabs value={activeKey} onChange={(val) => setActiveKey(val as string)}>
+            <Tabs.List>
+              <Tabs.Tab value="containsInformationType" label="Inneholder opplysningstyper" />
               {documentUsages && documentUsages.length > 0 && (
-                <Tab
-                  key={'containsProcesses'}
-                  title="Brukes i behandlinger"
-                  overrides={tabOverride}
-                >
-                  <div>
-                    <DocumentProcessesTable documentUsages={documentUsages} />
-                  </div>
-                </Tab>
+                <Tabs.Tab value="containsProcesses" label="Brukes i behandlinger" />
               )}
-            </>
-          </CustomizedTabs>
+            </Tabs.List>
+
+            <Tabs.Panel value="containsInformationType">
+              <DocumentMetadata document={currentDocument} />
+            </Tabs.Panel>
+
+            {documentUsages && documentUsages.length > 0 && (
+              <Tabs.Panel value="containsProcesses">
+                <DocumentProcessesTable documentUsages={documentUsages} />
+              </Tabs.Panel>
+            )}
+          </Tabs>
         )}
 
-        {errorMessage && <Notification kind="negative">{errorMessage}</Notification>}
+        {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
       </>
 
       <DeleteDocumentModal

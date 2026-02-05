@@ -1,5 +1,5 @@
-import { OnChangeParams, Select, TYPE } from 'baseui/select'
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { UNSAFE_Combobox } from '@navikt/ds-react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IPageResponse, IProcess } from '../../constants'
 import { CodelistService, EListName, ICode } from '../../service/Codelist'
@@ -17,6 +17,24 @@ const SearchProcess = (props: TSearchProcessProps) => {
   const [processList, setProcessList] = useState<IProcess[]>([])
   const [search, setSearch] = useDebouncedState<string>('', 400)
   const [isLoading, setLoading] = useState<boolean>(false)
+
+  const comboboxOptions = useMemo(
+    () =>
+      processList.map((process) => ({
+        label: (process as any).namePurpose ?? process.name,
+        value: process.id,
+      })),
+    [processList]
+  )
+
+  const selectedLabel = useMemo(() => {
+    if (!selectedProcess) return ''
+    return (
+      (selectedProcess.purposes !== undefined ? selectedProcess.purposes[0].shortName : '') +
+      ': ' +
+      selectedProcess.name
+    )
+  }, [selectedProcess])
 
   useEffect(() => {
     ;(async () => {
@@ -62,36 +80,39 @@ const SearchProcess = (props: TSearchProcessProps) => {
 
   return (
     <div className="w-full">
-      <Select
-        options={processList}
+      <UNSAFE_Combobox
+        label="Søk etter behandlinger"
+        hideLabel
+        options={comboboxOptions}
+        filteredOptions={comboboxOptions}
         isLoading={isLoading}
-        clearable
-        searchable={true}
-        noResultsMsg="Ingen"
-        type={TYPE.search}
-        maxDropdownHeight="400px"
-        placeholder="Søk etter behandlinger"
-        onInputChange={(event: ChangeEvent<HTMLInputElement>) =>
-          setSearch(event.currentTarget.value)
-        }
-        labelKey="namePurpose"
-        value={
+        value={search}
+        onChange={(value) => {
+          setSearch(value)
+          if (selectedProcess && value !== selectedLabel) {
+            setSelectedProcess(undefined)
+          }
+        }}
+        selectedOptions={
           selectedProcess
             ? [
                 {
-                  id: selectedProcess?.id,
-                  namePurpose:
-                    (selectedProcess?.purposes !== undefined
-                      ? selectedProcess?.purposes[0].shortName
-                      : '') +
-                    ': ' +
-                    selectedProcess?.name,
+                  label: selectedLabel,
+                  value: selectedProcess.id,
                 },
               ]
             : []
         }
-        onChange={(params: OnChangeParams) => {
-          setSelectedProcess(params.value[0] as IProcess)
+        onToggleSelected={(optionValue, isSelected) => {
+          if (!isSelected) {
+            setSelectedProcess(undefined)
+            return
+          }
+
+          const selected = processList.find((p) => p.id === optionValue)
+          if (selected) {
+            setSelectedProcess(selected)
+          }
         }}
       />
     </div>

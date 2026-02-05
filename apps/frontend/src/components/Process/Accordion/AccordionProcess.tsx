@@ -1,10 +1,7 @@
 import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Accordion } from '@navikt/ds-react'
-import { Plus } from 'baseui/icon'
-import { Modal, ModalBody, SIZE } from 'baseui/modal'
-import { Spinner } from 'baseui/spinner'
-import { LabelMedium } from 'baseui/typography'
+import { PlusIcon } from '@navikt/aksel-icons'
+import { Accordion, BodyShort, Modal } from '@navikt/ds-react'
 import { useEffect, useRef, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
@@ -30,6 +27,7 @@ import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
+import { Spinner } from '../../common/Spinner'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { AddDocumentModal } from './AddDocumentModal'
@@ -106,7 +104,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       onClick={() => setShowCreatePolicyModal(true)}
       startEnhancer={
         <div className="flex justify-center mr-1">
-          <Plus size={22} />
+          <PlusIcon aria-hidden />
         </div>
       }
     >
@@ -138,7 +136,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       onClick={() => setShowAddDocumentModal(true)}
       startEnhancer={
         <div className="flex justify-center mr-1">
-          <Plus size={22} />
+          <PlusIcon aria-hidden />
         </div>
       }
     >
@@ -213,7 +211,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   <Accordion.Content>
                     {expanded && isLoading && (
                       <div className="p-2.5">
-                        <Spinner $size={theme.sizing.scale1200} />
+                        <Spinner size={theme.sizing.scale1200} />
                       </div>
                     )}
 
@@ -293,7 +291,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               )
             })}
       </Accordion>
-      {!processList.length && <LabelMedium margin="1rem">Ingen behandlinger</LabelMedium>}
+      {!processList.length && <BodyShort className="m-4">Ingen behandlinger</BodyShort>}
 
       {!!currentProcess && (
         <>
@@ -405,16 +403,15 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           />
 
           <Modal
-            isOpen={showRevisionModal}
-            size={SIZE.auto}
-            // role='dialog'
+            open={showRevisionModal}
             onClose={closeRevision}
+            header={{ heading: 'Ny revidering' }}
           >
-            <ModalBody>
-              <div className="w-[600px]">
+            <Modal.Body>
+              <div className="w-150">
                 <RequestRevisionForm processId={currentProcess.id} close={closeRevision} />
               </div>
-            </ModalBody>
+            </Modal.Body>
           </Modal>
         </>
       )}

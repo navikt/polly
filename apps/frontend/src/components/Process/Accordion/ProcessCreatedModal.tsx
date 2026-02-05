@@ -1,5 +1,4 @@
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { ParagraphMedium } from 'baseui/typography'
+import { BodyShort, Modal } from '@navikt/ds-react'
 import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router'
 import Button from '../../common/Button/CustomButton'
 
@@ -15,12 +14,15 @@ export const ProcessCreatedModal = (props: IProps) => {
   const closeModal = () => history(location.pathname)
 
   return (
-    <Modal isOpen={location.search.indexOf('create') >= 0} closeable={false}>
-      <ModalHeader>Behandling opprettet</ModalHeader>
-      <ModalBody>
-        <ParagraphMedium>Vil du legge til opplysningstyper?</ParagraphMedium>
-      </ModalBody>
-      <ModalFooter>
+    <Modal
+      header={{ heading: 'Behandling opprettet', closeButton: false }}
+      open={location.search.indexOf('create') >= 0}
+      onClose={closeModal}
+    >
+      <Modal.Body>
+        <BodyShort spacing>Vil du legge til opplysningstyper?</BodyShort>
+      </Modal.Body>
+      <Modal.Footer>
         <div className="flex justify-end">
           <Button size="xsmall" kind="tertiary" marginRight onClick={closeModal}>
             Nei
@@ -47,7 +49,7 @@ export const ProcessCreatedModal = (props: IProps) => {
             Legg til standardopplysningstyper
           </Button>
         </div>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   )
 }

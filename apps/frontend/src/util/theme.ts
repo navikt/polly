@@ -1,22 +1,12 @@
-import { createTheme, lightThemePrimitives } from 'baseui'
-import { Theme, ThemePrimitives } from 'baseui/theme'
-import { colors } from 'baseui/tokens'
-import { TRecursivePartial } from '../constants'
-
-export const primitives: ThemePrimitives & { primary150: string } = {
-  ...lightThemePrimitives,
-  primaryA: '#3e3832',
-  primary: '#19548a',
-  primary50: '#F2F8FD',
-  primary100: '#eaf4fc',
-  primary150: '#C1DBF2',
-  primary200: '#99c2e8',
-  primary300: '#396FA1',
-  primary400: '#19548a',
-  primary500: colors.blue500,
-  primary600: colors.blue600,
-  primary700: colors.blue700,
-}
+export const primitives = {
+  primary: 'var(--a-surface-action)',
+  primary50: 'var(--a-surface-subtle)',
+  primary100: 'var(--a-surface-subtle)',
+  primary150: 'var(--a-surface-subtle)',
+  primary200: 'var(--a-border-action)',
+  primary300: 'var(--a-surface-action)',
+  primary400: 'var(--a-surface-action)',
+} as const
 
 export const chartColor = {
   generalBlue: '#409FDD',
@@ -44,69 +34,41 @@ export const searchResultColor = {
   gdprBackground: '#99C2E8',
 }
 
-// Official type is wrong
-interface IBorders {
-  radius400: string
-  buttonBorderRadius: string
-  inputBorderRadius: string
-  popoverBorderRadius: string
-  surfaceBorderRadius: string
-}
-
-interface IColors {
-  inputEnhancerFill?: string
-}
-
-type TThemeOverride = TRecursivePartial<Theme> & { borders: Partial<IBorders>; colors: IColors }
-
-const overrides: TThemeOverride = {
+export const theme = {
   colors: {
-    linkVisited: primitives.primary400,
-    inputFill: primitives.primary50,
-    inputFillActive: primitives.primary150,
-    inputEnhancerFill: primitives.primary100,
+    primary: primitives.primary,
+    primary50: primitives.primary50,
+    primary100: primitives.primary100,
+    primary150: primitives.primary150,
+    primary200: primitives.primary200,
+    primary300: primitives.primary300,
+    primary400: primitives.primary400,
 
-    tabBarFill: colors.white,
-  },
-  borders: {
-    buttonBorderRadius: '4px',
-    inputBorderRadius: '8px',
-  },
-  typography: {
-    // Increase weight 500->600 on bold texts
-    font150: { fontWeight: 600 },
-    font250: { fontWeight: 600 },
-    font350: { fontWeight: 600 },
-    font450: { fontWeight: 600 },
-    font550: { fontWeight: 600 },
-    font650: { fontWeight: 600 },
-    font750: { fontWeight: 600 },
-    font850: { fontWeight: 600 },
-    font950: { fontWeight: 600 },
-    font1050: { fontWeight: 600 },
-    font1150: { fontWeight: 600 },
-    font1250: { fontWeight: 600 },
-    font1350: { fontWeight: 600 },
-    font1450: { fontWeight: 600 },
-  },
-}
+    accent100: 'var(--a-surface-info-subtle)',
+    accent300: 'var(--a-surface-info)',
 
-const breakpoints: any = {
-  small: 980,
-  medium: 1240,
-  large: 1449,
-  extra_large: 1450,
-}
+    positive300: 'var(--a-surface-success)',
+    positive400: 'var(--a-text-success)',
 
-const ResponsiveTheme = Object.keys(breakpoints).reduce(
-  (acc: any, key: any) => {
-    acc.mediaQuery[key] = `@media screen and (min-width: ${breakpoints[key]}px)`
-    return acc
+    warning300: 'var(--a-surface-warning)',
+    warning400: 'var(--a-text-warning)',
+
+    negative400: 'var(--a-surface-danger)',
+    negative500: 'var(--a-text-danger)',
+
+    mono100: 'var(--a-surface-subtle)',
+    mono600: 'var(--a-border-subtle)',
+    mono1000: 'var(--a-text-default)',
   },
-  {
-    breakpoints,
-    mediaQuery: {},
-  }
-)
-
-export const theme = createTheme(primitives, { ...overrides, ...ResponsiveTheme })
+  sizing: {
+    scale100: '0.25rem',
+    scale200: '0.5rem',
+    scale300: '0.75rem',
+    scale500: '1rem',
+    scale600: '1.25rem',
+    scale700: '1.5rem',
+    scale800: '2rem',
+    scale1200: '3rem',
+    scale2400: '6rem',
+  },
+} as const

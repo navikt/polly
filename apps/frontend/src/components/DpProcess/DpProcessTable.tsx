@@ -1,5 +1,4 @@
-import { Tag } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
+import { Link, Tag } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../api/GetAllApi'
 import { IDpProcess, IDpProcessWithEmail, dpProcessSort } from '../../constants'
@@ -93,9 +92,9 @@ const DpProcessTable = (props: TDpProcessTableProps) => {
                 </RouteLink>
               </Cell>
               <Cell>
-                <StyledLink href={'mailto: ' + process.lastModifiedEmail}>
+                <Link href={'mailto: ' + process.lastModifiedEmail}>
                   {process.lastModifiedEmail}
-                </StyledLink>
+                </Link>
               </Cell>
             </Row>
           )
