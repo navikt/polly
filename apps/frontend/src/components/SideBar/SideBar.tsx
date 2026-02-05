@@ -13,7 +13,7 @@ const SideBar = () => (
     role="navigation"
   >
     <div className="h-full !bg-black flex flex-col" style={{ backgroundColor: '#1B232F' }}>
-      <div className="top-[150px] flex-1 pl-3 pr-3">
+      <div className="flex-1 pl-3 pr-3 pt-6">
         <NavItem
           to="/process"
           text="Behandlinger"
