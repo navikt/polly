@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { getRecentEditedProcesses } from '../../../api/GetAllApi'
 import { EObjectType, IRecentEdits } from '../../../constants'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import { ObjectLink } from '../../common/RouteLink'
+import RouteLink, { urlForObject } from '../../common/RouteLink'
 
 export const RecentEditsByUser = () => {
   const [recentEdits, setRecentEdits] = useState<IRecentEdits[]>([])
@@ -17,7 +17,7 @@ export const RecentEditsByUser = () => {
   }, [])
 
   return (
-    <div className="items-center w-full">
+    <div className="items-center w-full min-w-0">
       <Heading size="xlarge" level="2" className="mb-6">
         Mine siste endringer
       </Heading>
@@ -25,24 +25,24 @@ export const RecentEditsByUser = () => {
         .slice(0, 10)
         .sort((a, b) => moment(b.time).valueOf() - moment(a.time).valueOf())
         .map((ps: IRecentEdits) => (
-          <ObjectLink
-            id={ps.process.id}
-            type={EObjectType.PROCESS}
+          <RouteLink
+            href={urlForObject(EObjectType.PROCESS, ps.process.id)}
             hideUnderline
             key={ps.process.id}
+            className="block w-full min-w-0"
           >
-            <div className="w-full flex justify-between mb-1.5">
-              <div className="overflow-hidden whitespace-nowrap text-ellipsis">
+            <div className="w-full flex flex-col sm:flex-row sm:justify-between mb-1.5 min-w-0 gap-1 sm:gap-2">
+              <div className="min-w-0 overflow-hidden whitespace-nowrap text-ellipsis">
                 {ps.process.name}
               </div>
-              <div className="min-w-32 text-right">
+              <div className="sm:min-w-32 sm:text-right">
                 <CustomizedStatefulTooltip
                   content={moment(ps.time).format('lll')}
                   text={moment(ps.time).fromNow()}
                 />
               </div>
             </div>
-          </ObjectLink>
+          </RouteLink>
         ))}
     </div>
   )
