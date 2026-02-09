@@ -225,6 +225,7 @@ const ModalProcess = ({
                         fieldName="usesAllInformationTypes"
                         omitUndefined
                         firstButtonLabel="(Brukes unntaksvis)"
+                        direction="horizontal"
                       />
                     </div>
                   </CustomizedModalBlock>
