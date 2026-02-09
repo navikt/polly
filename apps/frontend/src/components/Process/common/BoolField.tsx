@@ -9,10 +9,20 @@ interface IBoolFieldProps {
   firstButtonLabel?: string
   secondButtonLabel?: string
   justifyContent?: string
+  direction?: 'horizontal' | 'vertical'
+  className?: string
 }
 
 const BoolField = (props: IBoolFieldProps) => {
-  const { fieldName, value, omitUndefined, firstButtonLabel, justifyContent } = props
+  const {
+    fieldName,
+    value,
+    omitUndefined,
+    firstButtonLabel,
+    justifyContent,
+    direction,
+    className,
+  } = props
 
   return (
     <Field
@@ -24,6 +34,8 @@ const BoolField = (props: IBoolFieldProps) => {
           omitUndefined={omitUndefined}
           firstButtonLabel={firstButtonLabel}
           justifyContent={justifyContent}
+          direction={direction}
+          className={className}
         />
       )}
     />

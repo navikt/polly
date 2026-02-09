@@ -16,16 +16,31 @@ type TRadioBoolProps = {
   firstButtonLabel?: string
   secondButtonLabel?: string
   justifyContent?: string
+  direction?: 'horizontal' | 'vertical'
+  className?: string
 }
 
 export const RadioBoolButton = (props: TRadioBoolProps) => {
-  const { value, justifyContent, setValue, firstButtonLabel, secondButtonLabel, omitUndefined } =
-    props
+  const {
+    value,
+    justifyContent,
+    setValue,
+    firstButtonLabel,
+    secondButtonLabel,
+    omitUndefined,
+    direction,
+    className,
+  } = props
+
+  const horizontalClasses =
+    direction === 'horizontal'
+      ? '[&_.aksel-radio-buttons]:flex [&_.aksel-radio-buttons]:flex-row [&_.aksel-radio-buttons]:items-center'
+      : ''
 
   return (
     <RadioGroup
       value={boolToRadio(value)}
-      className="w-full"
+      className={`w-full ${horizontalClasses} ${className ?? ''}`.trim()}
       legend=""
       hideLegend
       onChange={(newValue) => {

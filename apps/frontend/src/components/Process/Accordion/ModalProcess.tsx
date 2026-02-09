@@ -179,6 +179,7 @@ const ModalProcess = ({
                         value={formikBag.values.dpia?.processImplemented}
                         fieldName="dpia.processImplemented"
                         omitUndefined
+                        direction="horizontal"
                       />
                     </div>
                   </CustomizedModalBlock>
