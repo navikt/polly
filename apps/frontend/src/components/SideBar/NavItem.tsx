@@ -22,7 +22,7 @@ const checkCurrentLocationIsTheSameAsSideBarItem = (
 }
 
 const NavItem = (props: INavItemProps) => (
-  <RouteLink href={props.to} style={{ textDecoration: 'none' }}>
+  <RouteLink href={props.to} style={{ textDecoration: 'none' }} className="block w-full">
     <div className="flex items-center h-8.75">
       <div className="mr-2.5">
         <FontAwesomeIcon
@@ -31,7 +31,7 @@ const NavItem = (props: INavItemProps) => (
               ? faChevronDown
               : faChevronRight
           }
-          color="#E0E1E5"
+          className="!text-[#dcdde2]"
           size="lg"
         />
       </div>

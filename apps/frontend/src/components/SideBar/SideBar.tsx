@@ -50,7 +50,11 @@ const SideBar = () => (
           text="Dashboard"
           tooltip="Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen"
         />
-        {canViewAlerts() && <NavItem to="/alert/events" text="Varsler" />}
+        {canViewAlerts() && (
+          <div>
+            <NavItem to="/alert/events" text="Varsler" />
+          </div>
+        )}
         <NavItem to="//navikt.github.io/naka/behandlingskatalog" text="Veileder" />
       </div>
 
