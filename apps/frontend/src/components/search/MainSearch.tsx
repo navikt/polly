@@ -56,6 +56,22 @@ const mainSearchSelectOverrides = {
       ...(selectOverrides as any).singleValue(base),
       color: 'var(--ax-text-neutral)',
     }) as CSSObjectWithLabel,
+  menu: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).menu(base),
+      backgroundColor: '#ffffff',
+      zIndex: 2000,
+    }) as CSSObjectWithLabel,
+  menuList: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).menuList(base),
+      backgroundColor: '#ffffff',
+    }) as CSSObjectWithLabel,
+  option: (base: CSSObjectWithLabel, state: any) =>
+    ({
+      ...(selectOverrides as any).option(base, state),
+      backgroundColor: state.isFocused ? '#f5f5f5' : state.isSelected ? '#ededed' : '#ffffff',
+    }) as CSSObjectWithLabel,
 }
 
 type TSearchItem = {
