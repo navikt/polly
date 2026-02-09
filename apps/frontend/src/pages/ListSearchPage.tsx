@@ -51,7 +51,7 @@ export const ThirdPartyListPage = () => (
   />
 )
 export const SystemListPage = () => (
-  <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" />
+  <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" columns={1} />
 )
 export const PurposeList = () => (
   <CodelistPage listName={EListName.PURPOSE} baseUrl="/process/purpose/" />
