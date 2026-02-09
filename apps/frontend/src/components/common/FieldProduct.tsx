@@ -42,7 +42,7 @@ const FieldProduct = (props: TFieldProductsProps) => {
                   ))}
               </Select>
             </div>
-            <div>
+            <div className="mt-2 flex flex-wrap gap-2">
               {renderTagList(
                 formikBag.values.affiliation.products.map((product: string) =>
                   codelistUtils.getShortname(EListName.SYSTEM, product)

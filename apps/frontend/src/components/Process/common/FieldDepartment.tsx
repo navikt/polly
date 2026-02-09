@@ -109,15 +109,13 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                     ))}
                   </Select>
                 </div>
-                <div>
-                  <div>
-                    {renderTagList(
-                      FieldArrayRenderProps.form.values.affiliation.seksjoner.map(
-                        (seksjon: INomSeksjon) => seksjon.nomSeksjonName
-                      ),
-                      FieldArrayRenderProps
-                    )}
-                  </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {renderTagList(
+                    FieldArrayRenderProps.form.values.affiliation.seksjoner.map(
+                      (seksjon: INomSeksjon) => seksjon.nomSeksjonName
+                    ),
+                    FieldArrayRenderProps
+                  )}
                 </div>
               </div>
             )}

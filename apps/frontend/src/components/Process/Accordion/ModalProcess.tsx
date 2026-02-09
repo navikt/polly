@@ -556,7 +556,7 @@ const ModalProcess = ({
                                         </option>
                                       ))}
                                   </Select>
-                                  <div>
+                                  <div className="mt-2 flex flex-wrap gap-2">
                                     {renderTagList(
                                       formikBag.values.disclosures.map(
                                         (disclosure: IDisclosure) =>
