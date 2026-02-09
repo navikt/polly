@@ -34,13 +34,24 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
 
   const horizontalClasses =
     direction === 'horizontal'
-      ? '[&_.aksel-radio-buttons]:flex [&_.aksel-radio-buttons]:flex-row [&_.aksel-radio-buttons]:items-center'
+      ? '[&_.aksel-radio-buttons]:flex [&_.aksel-radio-buttons]:w-full [&_.aksel-radio-buttons]:flex-row [&_.aksel-radio-buttons]:items-center'
+      : ''
+
+  const horizontalAlignClass =
+    direction === 'horizontal' && justifyContent
+      ? justifyContent === 'flex-end'
+        ? '[&_.aksel-radio-buttons]:justify-end'
+        : justifyContent === 'center'
+          ? '[&_.aksel-radio-buttons]:justify-center'
+          : justifyContent === 'flex-start'
+            ? '[&_.aksel-radio-buttons]:justify-start'
+            : ''
       : ''
 
   return (
     <RadioGroup
       value={boolToRadio(value)}
-      className={`w-full ${horizontalClasses} ${className ?? ''}`.trim()}
+      className={`w-full ${horizontalClasses} ${horizontalAlignClass} ${className ?? ''}`.trim()}
       legend=""
       hideLegend
       onChange={(newValue) => {
@@ -48,14 +59,14 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
       }}
       style={{ justifyContent: justifyContent ? justifyContent : 'stretch' }}
     >
-      <Radio className="mr-8" value={YES}>
+      <Radio className="mr-8 last:mr-0" value={YES}>
         Ja {firstButtonLabel}
       </Radio>
-      <Radio className="mr-8" value={NO}>
+      <Radio className="mr-8 last:mr-0" value={NO}>
         Nei {secondButtonLabel}
       </Radio>
       {!omitUndefined && (
-        <Radio className="mr-8" value={UNCLARIFIED}>
+        <Radio className="mr-8 last:mr-0" value={UNCLARIFIED}>
           Uavklart
         </Radio>
       )}
