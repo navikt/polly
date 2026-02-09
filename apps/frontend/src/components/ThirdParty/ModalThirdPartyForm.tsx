@@ -149,136 +149,160 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
             <Modal.Body>
               <div className="w-240 px-8">
                 <Form id="modal-third-party-form">
-                  <div className="flex w-full mt-4">
-                    <ModalLabel label="Mottaker" />
-                    <FieldRecipient
-                      value={formikBag.values.recipient}
-                      disabled={disableRecipientField}
-                    />
+                  <div className="w-full mt-4">
+                    <ModalLabel label="Mottaker" fullwidth />
+                    <div className="mt-2">
+                      <FieldRecipient
+                        value={formikBag.values.recipient}
+                        disabled={disableRecipientField}
+                      />
+                    </div>
                   </div>
 
-                  <div className="flex w-full mt-4">
+                  <div className="w-full mt-4">
                     <ModalLabel
                       label="Navn på utlevering"
                       tooltip="Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap."
+                      fullwidth
                     />
-                    <FieldInput fieldName="name" fieldValue={formikBag.values.name} />
+                    <div className="mt-2">
+                      <FieldInput fieldName="name" fieldValue={formikBag.values.name} />
+                    </div>
                   </div>
-                  <Error fieldName="name" />
+                  <Error fieldName="name" fullWidth />
 
-                  <div className="flex w-full mt-4">
+                  <div className="w-full mt-4">
                     <ModalLabel
                       label="Formål med utlevering"
                       tooltip="Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak."
+                      fullwidth
                     />
-                    <FieldTextarea
-                      fieldName="recipientPurpose"
-                      fieldValue={formikBag.values.recipientPurpose}
-                    />
+                    <div className="mt-2">
+                      <FieldTextarea
+                        fieldName="recipientPurpose"
+                        fieldValue={formikBag.values.recipientPurpose}
+                      />
+                    </div>
                   </div>
-                  <Error fieldName="recipientPurpose" />
+                  <Error fieldName="recipientPurpose" fullWidth />
 
-                  <div className="flex w-full mt-4">
+                  <div className="w-full mt-4">
                     <ModalLabel
                       label="Ytterligere beskrivelse"
                       tooltip="Relevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel hva slags type informasjon som utleveres, regelmessighet eller lignende."
+                      fullwidth
                     />
-                    <FieldTextarea
-                      fieldName="description"
-                      fieldValue={formikBag.values.description}
-                    />
+                    <div className="mt-2">
+                      <FieldTextarea
+                        fieldName="description"
+                        fieldValue={formikBag.values.description}
+                      />
+                    </div>
                   </div>
-                  <Error fieldName="description" />
+                  <Error fieldName="description" fullWidth />
 
-                  <div className="flex w-full mt-4">
-                    <ModalLabel label="Relaterte behandlinger" />
-                    <div className="w-full">
+                  <div className="w-full mt-4">
+                    <ModalLabel label="Relaterte behandlinger" fullwidth />
+                    <div className="mt-2 w-full">
                       <SelectProcess formikBag={formikBag} />
                     </div>
                   </div>
 
-                  <div className="flex w-full mt-4">
-                    <ModalLabel label="Opplysningstyper" />
-                    <div className="w-full">
+                  <div className="w-full mt-4">
+                    <ModalLabel label="Opplysningstyper" fullwidth />
+                    <div className="mt-2 w-full">
                       <SelectInformationTypes formikBag={formikBag} />
                     </div>
                   </div>
 
-                  <div className="flex w-full mt-4">
+                  <div className="w-full mt-4">
                     <ModalLabel
                       label="Dokument"
                       tooltip="En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper."
+                      fullwidth
                     />
-                    <Field
-                      name="document"
-                      render={({ form }: FieldProps<IDisclosureFormValues>) => (
-                        <SelectDocument
-                          form={form}
-                          handleChange={(document: IDocument | undefined) => {
-                            formikBag.setFieldValue('document', document)
-                          }}
-                        />
-                      )}
-                    />
+                    <div className="mt-2">
+                      <Field
+                        name="document"
+                        render={({ form }: FieldProps<IDisclosureFormValues>) => (
+                          <SelectDocument
+                            form={form}
+                            handleChange={(document: IDocument | undefined) => {
+                              formikBag.setFieldValue('document', document)
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
                   </div>
-                  <Error fieldName="document" />
+                  <Error fieldName="document" fullWidth />
 
-                  <div className="flex w-full mt-4">
-                    <ModalLabel label="Saksnummer i adminstrativt arkiv" />
-                    <FieldInput
-                      fieldName="administrationArchiveCaseNumber"
-                      fieldValue={formikBag.values.administrationArchiveCaseNumber}
-                    />
+                  <div className="w-full mt-4">
+                    <ModalLabel label="Saksnummer i adminstrativt arkiv" fullwidth />
+                    <div className="mt-2">
+                      <FieldInput
+                        fieldName="administrationArchiveCaseNumber"
+                        fieldValue={formikBag.values.administrationArchiveCaseNumber}
+                      />
+                    </div>
                   </div>
-                  <Error fieldName="administrationArchiveCaseNumber" />
+                  <Error fieldName="administrationArchiveCaseNumber" fullWidth />
 
-                  <div className="flex w-full mt-4">
-                    <ModalLabel label="Utleveres personopplysningene til utlandet?" />
-                    <BoolField fieldName="abroad.abroad" value={formikBag.values.abroad.abroad} />
+                  <div className="w-full mt-4">
+                    <ModalLabel label="Utleveres personopplysningene til utlandet?" fullwidth />
+                    <div className="mt-2">
+                      <BoolField
+                        fieldName="abroad.abroad"
+                        value={formikBag.values.abroad.abroad}
+                        direction="horizontal"
+                        justifyContent="flex-start"
+                      />
+                    </div>
                   </div>
 
                   {formikBag.values.abroad.abroad && (
                     <>
-                      <div className="flex w-full mt-4">
-                        <ModalLabel label="Land" />
-                        <FieldArray
-                          name="abroad.countries"
-                          render={(arrayHelpers: FieldArrayRenderProps) => (
-                            <div className="w-full">
-                              <div>
-                                <Select
-                                  className="w-full"
-                                  label=""
-                                  hideLabel
-                                  aria-label="Velg land"
-                                  onChange={(event) => {
-                                    if (event.target.value) {
-                                      arrayHelpers.form.setFieldValue('abroad.countries', [
-                                        ...formikBag.values.abroad.countries,
-                                        event.target.value,
-                                      ])
-                                    }
-                                  }}
-                                >
-                                  <option value="">Velg land</option>
-                                  {codelistUtils
-                                    .getCountryCodesOutsideEu()
-                                    .map((code: ICountryCode) => ({
-                                      id: code.code,
-                                      label: code.description,
-                                    }))
-                                    .filter(
-                                      (code) => !formikBag.values.abroad.countries.includes(code.id)
-                                    )
-                                    .map((country) => (
-                                      <option key={country.id} value={country.id}>
-                                        {country.label}
-                                      </option>
-                                    ))}
-                                </Select>
-                              </div>
-                              <div>
+                      <div className="w-full mt-4">
+                        <ModalLabel label="Land" fullwidth />
+                        <div className="mt-2">
+                          <FieldArray
+                            name="abroad.countries"
+                            render={(arrayHelpers: FieldArrayRenderProps) => (
+                              <div className="w-full">
                                 <div>
+                                  <Select
+                                    className="w-full"
+                                    label=""
+                                    hideLabel
+                                    aria-label="Velg land"
+                                    onChange={(event) => {
+                                      if (event.target.value) {
+                                        arrayHelpers.form.setFieldValue('abroad.countries', [
+                                          ...formikBag.values.abroad.countries,
+                                          event.target.value,
+                                        ])
+                                      }
+                                    }}
+                                  >
+                                    <option value="">Velg land</option>
+                                    {codelistUtils
+                                      .getCountryCodesOutsideEu()
+                                      .map((code: ICountryCode) => ({
+                                        id: code.code,
+                                        label: code.description,
+                                      }))
+                                      .filter(
+                                        (code) =>
+                                          !formikBag.values.abroad.countries.includes(code.id)
+                                      )
+                                      .map((country) => (
+                                        <option key={country.id} value={country.id}>
+                                          {country.label}
+                                        </option>
+                                      ))}
+                                  </Select>
+                                </div>
+                                <div className="mt-2">
                                   {renderTagList(
                                     formikBag.values.abroad.countries.map((country) =>
                                       codelistUtils.countryName(country)
@@ -287,57 +311,64 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                                   )}
                                 </div>
                               </div>
-                            </div>
-                          )}
-                        />
+                            )}
+                          />
+                        </div>
                       </div>
 
-                      <div className="flex w-full mt-4">
-                        <ModalLabel label="Oppgi referanse til trygdeavtale" />
-                        <FieldInput
-                          fieldName="abroad.refToAgreement"
-                          fieldValue={formikBag.values.abroad.refToAgreement}
-                        />
+                      <div className="w-full mt-4">
+                        <ModalLabel label="Oppgi referanse til trygdeavtale" fullwidth />
+                        <div className="mt-2">
+                          <FieldInput
+                            fieldName="abroad.refToAgreement"
+                            fieldValue={formikBag.values.abroad.refToAgreement}
+                          />
+                        </div>
                       </div>
 
-                      <div className="flex w-full mt-4">
-                        <ModalLabel label="Trygdeområde" />
-                        <FieldInput
-                          fieldName="abroad.businessArea"
-                          fieldValue={formikBag.values.abroad.businessArea}
-                        />
+                      <div className="w-full mt-4">
+                        <ModalLabel label="Trygdeområde" fullwidth />
+                        <div className="mt-2">
+                          <FieldInput
+                            fieldName="abroad.businessArea"
+                            fieldValue={formikBag.values.abroad.businessArea}
+                          />
+                        </div>
                       </div>
                     </>
                   )}
 
-                  <div>
-                    <div className="flex w-full mt-4">
-                      <ModalLabel label="Hjemmel for unntak fra taushetsplikt er vurdert" />
+                  <div className="w-full mt-4">
+                    <ModalLabel label="Hjemmel for unntak fra taushetsplikt er vurdert" fullwidth />
+                    <div className="mt-2">
                       <BoolField
                         fieldName="assessedConfidentiality"
                         value={formikBag.values.assessedConfidentiality}
                         omitUndefined={true}
+                        direction="horizontal"
+                        justifyContent="flex-start"
                       />
                     </div>
-                    <Error fieldName="assessedConfidentiality" />
+                    <Error fieldName="assessedConfidentiality" fullWidth />
                   </div>
                   {formikBag.values.assessedConfidentiality !== undefined && (
                     <>
-                      <div>
-                        <div className="flex w-full mt-4">
-                          <ModalLabel
-                            label={
-                              formikBag.values.assessedConfidentiality
-                                ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
-                                : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'
-                            }
-                          />
+                      <div className="w-full mt-4">
+                        <ModalLabel
+                          label={
+                            formikBag.values.assessedConfidentiality
+                              ? 'Hjemmel for unntak fra taushetsplikt, og ev. referanse til vurderingen'
+                              : 'Begrunnelse for at hjemmel for unntak for taushetsplikt ikke er vurdert'
+                          }
+                          fullwidth
+                        />
+                        <div className="mt-2">
                           <FieldTextarea
                             fieldName="confidentialityDescription"
                             fieldValue={formikBag.values.confidentialityDescription}
                           />
                         </div>
-                        <Error fieldName="confidentialityDescription" />
+                        <Error fieldName="confidentialityDescription" fullWidth />
                       </div>
                     </>
                   )}
@@ -346,55 +377,63 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                     <Accordion.Item>
                       <Accordion.Header>Organisering</Accordion.Header>
                       <Accordion.Content>
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
-                            <ModalLabel
-                              label="Avdeling"
-                              tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
-                            />
+                        <div className="w-full">
+                          <ModalLabel
+                            label="Avdeling"
+                            tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
+                            fullwidth
+                          />
+
+                          <div className="mt-2">
+                            <Select
+                              className="w-full"
+                              label="Velg avdeling"
+                              hideLabel
+                              aria-label="Velg avdeling"
+                              onChange={async (event) => {
+                                const selectedValue = event.target.value
+
+                                if (!selectedValue) {
+                                  await formikBag.setFieldValue('nomDepartmentId', '')
+                                  await formikBag.setFieldValue('nomDepartmentName', '')
+                                  return
+                                }
+
+                                const selected = alleAvdelingOptions.find(
+                                  (avdeling) => String(avdeling.value) === selectedValue
+                                )
+
+                                await formikBag.setFieldValue('nomDepartmentId', selectedValue)
+                                await formikBag.setFieldValue(
+                                  'nomDepartmentName',
+                                  typeof selected?.label === 'string'
+                                    ? selected?.label
+                                    : String(selected?.label ?? '')
+                                )
+                              }}
+                              value={formikBag.values.nomDepartmentId ?? ''}
+                            >
+                              <option value="">Velg avdeling</option>
+                              {alleAvdelingOptions.map((department) => (
+                                <option key={department.value} value={department.value}>
+                                  {department.label}
+                                </option>
+                              ))}
+                            </Select>
                           </div>
-                        </div>
 
-                        <Select
-                          className="flex justify-between w-[48%]"
-                          label="Velg avdeling"
-                          hideLabel
-                          aria-label="Velg avdeling"
-                          onChange={async (event) => {
-                            await formikBag.setFieldValue('nomDepartmentName', event.target.value)
-                            await formikBag.setFieldValue(
-                              'nomDepartmentName',
-                              alleAvdelingOptions.filter(
-                                (avdeling) => avdeling.value === event.target.value
-                              )[0].label
-                            )
-                          }}
-                          value={formikBag.values.nomDepartmentName}
-                        >
-                          <option value="">Velg avdeling</option>
-                          {alleAvdelingOptions.map((department) => (
-                            <option key={department.value} value={department.value}>
-                              {department.label}
-                            </option>
-                          ))}
-                        </Select>
-
-                        <div className="flex w-full justify-between mt-2.5">
-                          <div className="w-[48%]">
+                          <div className="mt-4">
                             <ModalLabel
                               label="Team (Oppslag i Teamkatalogen)"
                               tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
-                              fullwidth={true}
+                              fullwidth
                             />
-                          </div>
-                        </div>
-
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
-                            <FieldProductTeam
-                              productTeams={formikBag.values.productTeams || []}
-                              fieldName="productTeams"
-                            />
+                            <div className="mt-2">
+                              <FieldProductTeam
+                                productTeams={formikBag.values.productTeams || []}
+                                fieldName="productTeams"
+                              />
+                            </div>
                           </div>
                         </div>
                       </Accordion.Content>
@@ -409,6 +448,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                             formikBag={formikBag}
                             openArt6OnEmpty
                             codelistUtils={codelistUtils}
+                            layout="vertical"
                           />
                         </div>
                         <Error fieldName="legalBasesOpen" fullWidth={true} />
