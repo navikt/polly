@@ -19,6 +19,7 @@ type TFieldLegalBasisProps = {
     | FormikProps<IDisclosureFormValues>
   openArt6OnEmpty?: boolean
   codelistUtils: ICodelistProps
+  layout?: 'horizontal' | 'vertical'
 }
 
 const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
@@ -67,7 +68,9 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
             />
           )}
           {!formikBag.values.legalBasesOpen && (
-            <div className="flex w-full">
+            <div
+              className={props.layout === 'vertical' ? 'flex w-full flex-col gap-4' : 'flex w-full'}
+            >
               <div className="w-full">
                 <Tooltip content="Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.">
                   <div>

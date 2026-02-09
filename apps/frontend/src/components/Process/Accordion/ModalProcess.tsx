@@ -316,6 +316,7 @@ const ModalProcess = ({
                             formikBag={formikBag}
                             openArt6OnEmpty
                             codelistUtils={codelistUtils}
+                            layout="vertical"
                           />
                         )}
                         <Error fieldName="legalBasesOpen" fullWidth={true} />
