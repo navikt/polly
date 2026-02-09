@@ -7,7 +7,7 @@ import NavItem from './NavItem'
 
 const SideBar = () => (
   <div
-    className="h-full w-62 bg-black! flex flex-col"
+    className="h-full w-60 bg-black! flex flex-col"
     style={{ backgroundColor: '#1B232F' }}
     role="navigation"
   >

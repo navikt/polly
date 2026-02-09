@@ -153,7 +153,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     if (params.processId && !isLoading) {
       setTimeout(() => {
         if (purposeRef.current) {
-          window.scrollTo({ top: purposeRef.current.offsetTop - 30 })
+          const headerEl = document.querySelector(
+            '.polly-white-internalheader'
+          ) as HTMLElement | null
+          const headerOffset = headerEl?.offsetHeight ?? 0
+          window.scrollTo({ top: purposeRef.current.offsetTop - headerOffset - 16 })
         }
       }, 200)
     }
@@ -216,7 +220,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                     )}
 
                     {expanded && !isLoading && currentProcess && (
-                      <div className="outline-4 outline-[#E2E2E2]">
+                      <div>
                         <div className="px-6 pt-6">
                           <ProcessButtonGroup
                             process={process}
@@ -236,37 +240,33 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               </span>
                             </div>
                           </div>
-                          <div className="flex pt-6 w-full justify-between">
-                            <div className="flex">
+                          <div className="flex flex-col sm:flex-row sm:justify-between pt-6 w-full gap-2">
+                            <div className="flex flex-wrap gap-2">
                               {canViewAlerts() && (
-                                <div className="mr-auto">
-                                  <Button
-                                    type="button"
-                                    kind="tertiary"
-                                    size="xsmall"
-                                    icon={faExclamationCircle}
-                                    onClick={() => history(`/alert/events/process/${process.id}`)}
-                                  >
-                                    Varsler
-                                  </Button>
-                                </div>
+                                <Button
+                                  type="button"
+                                  kind="tertiary"
+                                  size="xsmall"
+                                  icon={faExclamationCircle}
+                                  onClick={() => history(`/alert/events/process/${process.id}`)}
+                                >
+                                  Varsler
+                                </Button>
                               )}
                               {(user.isAdmin() || user.isSuper()) && (
-                                <div className="mr-auto">
-                                  <Button
-                                    type="button"
-                                    kind="tertiary"
-                                    size="xsmall"
-                                    icon={faGavel}
-                                    onClick={() => setShowRevisionModal(true)}
-                                  >
-                                    Ny revidering
-                                  </Button>
-                                </div>
+                                <Button
+                                  type="button"
+                                  kind="tertiary"
+                                  size="xsmall"
+                                  icon={faGavel}
+                                  onClick={() => setShowRevisionModal(true)}
+                                >
+                                  Ny revidering
+                                </Button>
                               )}
                             </div>
                             {hasAccess() && (
-                              <div className="flex justify-center">
+                              <div className="flex flex-wrap justify-start sm:justify-center gap-2">
                                 <div ref={InformationTypeRef} />
                                 {renderAddDocumentButton()}
                                 {renderCreatePolicyButton()}
