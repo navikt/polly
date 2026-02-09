@@ -95,6 +95,7 @@ const TablePolicy = ({
               title="Opplysningstype"
               column={'informationType'}
               tableState={[table, sortColumn]}
+              $style={{ width: '45%' }}
             />
             <HeadCell
               title="Personkategori"
@@ -114,26 +115,28 @@ const TablePolicy = ({
           <Fragment key={index}>
             <Row>
               <Cell>
-                <div className="flex w-full justify-between">
-                  <div>
+                <div className="w-full min-w-0">
+                  <div className="min-w-0">
                     <Sensitivity
                       sensitivity={row.informationType.sensitivity}
                       codelistUtils={codelistUtils}
                     />
                     &nbsp;
-                    <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
+                    <RouteLink
+                      href={`/informationtype/${row.informationType.id}`}
+                      className="block break-words whitespace-normal"
+                    >
                       {row.informationType.name}
                     </RouteLink>
-                  </div>
-                  <div>
-                    <Tooltip content="Dokument">
-                      <div className="opacity-80">
-                        {!!row.documentIds?.length &&
-                          '(' +
+                    {!!row.documentIds?.length && (
+                      <Tooltip content="Dokument">
+                        <span className="block opacity-80 break-words whitespace-normal mt-1">
+                          {'(' +
                             row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') +
                             ')'}
-                      </div>
-                    </Tooltip>
+                        </span>
+                      </Tooltip>
+                    )}
                   </div>
                 </div>
               </Cell>

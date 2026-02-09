@@ -52,10 +52,12 @@ export const Table = (props: TTableProps) => {
         style={{
           backgroundColor: props.backgroundColor || 'white',
           padding: theme.sizing.scale600,
-          overflow: 'hidden',
+          maxWidth: '100%',
+          overflowX: 'auto',
+          overflowY: 'hidden',
         }}
       >
-        <NavTable size="medium">
+        <NavTable size="medium" style={{ width: '100%', tableLayout: 'fixed' }}>
           <NavTable.Header>
             <NavTable.Row>{headers}</NavTable.Row>
           </NavTable.Header>
