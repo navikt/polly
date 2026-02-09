@@ -126,6 +126,7 @@ const DocumentPage = () => {
           <AlphabeticList
             items={documents.map((d) => ({ id: d.id, label: d.name }))}
             baseUrl={'/document/'}
+            columns={1}
           />
         )}
         {currentDocument && (
