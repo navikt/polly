@@ -1,3 +1,4 @@
+import 'json-diff-kit/dist/viewer.css'
 // Ensure Norwegian Bokmål locale is available for moment to remove warning messages locally
 import 'moment/locale/nb'
 import 'react-app-polyfill/ie11'
