@@ -37,11 +37,11 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
           onOpenChange={(open) => setOpenCategory(open ? categoryUsage.code : undefined)}
         >
           <Accordion.Header>
-            <div className="flex w-full">
-              <div className="min-w-[80%]">
+            <div className="flex w-full flex-col">
+              <div className="min-w-0">
                 {codelistUtils.getShortname(EListName.CATEGORY, categoryUsage.code)}
               </div>
-              <div className="ml-auto text-sm opacity-60">
+              <div className="mt-1 text-sm opacity-60">
                 Opplysningstyper: {categoryUsage.informationTypes.length}
               </div>
             </div>
