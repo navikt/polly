@@ -7,10 +7,11 @@ interface ICodeListPageProps {
   listName: EListName
   baseUrl: string
   title?: string
+  columns?: number
 }
 
 const CodelistPage = (props: ICodeListPageProps) => {
-  const { listName, baseUrl, title } = props
+  const { listName, baseUrl, title, columns } = props
   const [codelistUtils] = CodelistService()
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -34,6 +35,7 @@ const CodelistPage = (props: ICodeListPageProps) => {
         <AlphabeticList
           items={codes.map((code: ICode) => ({ id: code.code, label: code.shortName }))}
           baseUrl={baseUrl}
+          columns={columns}
         />
       )}
     </>
@@ -41,7 +43,12 @@ const CodelistPage = (props: ICodeListPageProps) => {
 }
 
 export const ThirdPartyListPage = () => (
-  <CodelistPage listName={EListName.THIRD_PARTY} baseUrl="/thirdparty/" title="Eksterne parter" />
+  <CodelistPage
+    listName={EListName.THIRD_PARTY}
+    baseUrl="/thirdparty/"
+    title="Eksterne parter"
+    columns={1}
+  />
 )
 export const SystemListPage = () => (
   <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" />
