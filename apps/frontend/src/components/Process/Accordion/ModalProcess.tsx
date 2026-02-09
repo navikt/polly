@@ -299,6 +299,7 @@ const ModalProcess = ({
                                 value={showResponsibleSelect}
                                 setValue={(value) => setShowResponsibleSelect(!!value)}
                                 omitUndefined
+                                direction="horizontal"
                               />
                             )}
                           </div>
