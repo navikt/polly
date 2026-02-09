@@ -119,7 +119,7 @@ const ModalProcess = ({
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width="960px">
       <Modal.Body>
-        <div className="w-[960px] px-8">
+        <div className="w-240 px-8">
           <Formik
             initialValues={initialValues}
             onSubmit={(values) => {
@@ -234,74 +234,68 @@ const ModalProcess = ({
                     <Accordion.Item>
                       <Accordion.Header>Organisering</Accordion.Header>
                       <Accordion.Content>
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
+                        <div className="flex w-full flex-col gap-4">
+                          <div className="w-full">
                             <ModalLabel
                               label="Avdeling"
                               tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
                             />
+                            <div className="mt-2">
+                              <FieldDepartment
+                                department={formikBag.values.affiliation.nomDepartmentId}
+                              />
+                            </div>
                           </div>
-                          <div className="w-[48%]">
+
+                          <div className="w-full">
                             <ModalLabel
                               label="Linja"
                               tooltip="Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres."
                             />
+                            <div className="mt-2">
+                              <FieldSubDepartments
+                                formikBag={formikBag}
+                                codelistUtils={codelistUtils}
+                              />
+                            </div>
                           </div>
-                        </div>
 
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
-                            <FieldDepartment
-                              department={formikBag.values.affiliation.nomDepartmentId}
-                            />
-                          </div>
-                          <div className="w-[48%]">
-                            <FieldSubDepartments
-                              formikBag={formikBag}
-                              codelistUtils={codelistUtils}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex w-full justify-between mt-2.5">
-                          <div className="w-[48%]">
+                          <div className="w-full">
                             <ModalLabel
                               label="Team (Oppslag i Teamkatalogen)"
                               tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
                               fullwidth={true}
                             />
+                            <div className="mt-2">
+                              <FieldProductTeam
+                                productTeams={formikBag.values.affiliation.productTeams}
+                                fieldName="affiliation.productTeams"
+                              />
+                            </div>
                           </div>
-                          <div className="w-[48%]">
+
+                          <div className="w-full">
                             <ModalLabel
                               fullwidth
                               label="Felles behandlingsansvarlig"
                               tooltip="Er NAV behandlingsansvarlig sammen med annen virksomhet?"
                             />
-                          </div>
-                        </div>
-
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
-                            <FieldProductTeam
-                              productTeams={formikBag.values.affiliation.productTeams}
-                              fieldName="affiliation.productTeams"
-                            />
-                          </div>
-                          <div className="w-[48%]">
-                            {showResponsibleSelect && (
-                              <FieldCommonExternalProcessResponsible
-                                thirdParty={formikBag.values.commonExternalProcessResponsible}
-                                hideSelect={() => setShowResponsibleSelect(false)}
-                              />
-                            )}
-                            {!showResponsibleSelect && (
-                              <RadioBoolButton
-                                value={showResponsibleSelect}
-                                setValue={(value) => setShowResponsibleSelect(!!value)}
-                                omitUndefined
-                                direction="horizontal"
-                              />
-                            )}
+                            <div className="mt-2">
+                              {showResponsibleSelect && (
+                                <FieldCommonExternalProcessResponsible
+                                  thirdParty={formikBag.values.commonExternalProcessResponsible}
+                                  hideSelect={() => setShowResponsibleSelect(false)}
+                                />
+                              )}
+                              {!showResponsibleSelect && (
+                                <RadioBoolButton
+                                  value={showResponsibleSelect}
+                                  setValue={(value) => setShowResponsibleSelect(!!value)}
+                                  omitUndefined
+                                  direction="horizontal"
+                                />
+                              )}
+                            </div>
                           </div>
                         </div>
                       </Accordion.Content>
@@ -501,7 +495,7 @@ const ModalProcess = ({
                           <FieldDispatcher formikBag={formikBag} codelistUtils={codelistUtils} />
                         </CustomizedModalBlock>
 
-                        <div className="w-full flex mb-[5px]">
+                        <div className="w-full flex mb-1.25">
                           <ModalLabel label="Mottaker" />
                           <Select
                             className="w-full"
