@@ -7,6 +7,7 @@ import {
   Form,
   Formik,
   FormikProps,
+  getIn,
 } from 'formik'
 import { KeyboardEvent, useEffect, useState } from 'react'
 import { getAvdelingOptions } from '../../api/NomApi'
@@ -74,10 +75,15 @@ const FieldTextarea = (props: IFieldTextareaProps) => {
       {({ field, form }: FieldProps<string, IDisclosureFormValues>) => (
         <Textarea
           {...field}
+          className="w-full"
           label=""
           hideLabel
           placeholder={placeholder}
           rows={4}
+          error={
+            !!getIn(form.errors, fieldName) &&
+            (!!getIn(form.touched, fieldName) || form.submitCount > 0)
+          }
           onKeyDown={(enter: KeyboardEvent<HTMLTextAreaElement>) => {
             if (enter.key === 'Enter') form.setFieldValue(fieldName, fieldValue + '\n')
           }}
