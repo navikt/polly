@@ -68,6 +68,7 @@ export const ProcessorListPage = () => {
                 return { id: value.id, label: value.name }
               })}
               baseUrl={'/processor/'}
+              columns={1}
             />
           </div>
           <ProcessorModal
