@@ -240,7 +240,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               </span>
                             </div>
                           </div>
-                          <div className="flex flex-col sm:flex-row sm:justify-between pt-6 w-full gap-2">
+                          <div className="flex flex-col sm:flex-row sm:justify-between mt-20 w-full gap-2">
                             <div className="flex flex-wrap gap-2">
                               {canViewAlerts() && (
                                 <Button
