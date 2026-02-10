@@ -41,7 +41,9 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
               <div className="min-w-0">
                 {codelistUtils.getShortname(EListName.CATEGORY, categoryUsage.code)}
               </div>
-              <div className="mt-1 ">Opplysningstyper: {categoryUsage.informationTypes.length}</div>
+              <div className="mt-1 text-sm opacity-80">
+                Opplysningstyper: {categoryUsage.informationTypes.length}
+              </div>
             </div>
           </Accordion.Header>
           <Accordion.Content>
@@ -72,7 +74,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
       )}
 
       <div>
-        <Heading level="2" size="medium" className="mt-5 mb-2">
+        <Heading level="2" size="small" className="mt-5 mb-2">
           Kategorier
         </Heading>
         <Accordion>{panelList()}</Accordion>
