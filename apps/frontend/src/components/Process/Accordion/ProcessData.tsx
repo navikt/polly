@@ -186,18 +186,16 @@ const ProcessData = (props: IProcessDataProps) => {
 
       <DataText label="Organisering" text={''}>
         {process.affiliation.nomDepartmentName && process.affiliation.nomDepartmentId && (
-          <div>
-            <span>Avdeling: </span>
-            <span>
-              <DotTags
-                items={[process.affiliation.nomDepartmentName]}
-                commaSeparator
-                codelistUtils={codelistUtils}
-                linkCodelist
-                list={EListName.DEPARTMENT}
-                customId={process.affiliation.nomDepartmentId}
-              />{' '}
-            </span>
+          <div className="flex flex-wrap items-center gap-1">
+            <span>Avdeling:</span>
+            <DotTags
+              items={[process.affiliation.nomDepartmentName]}
+              commaSeparator
+              codelistUtils={codelistUtils}
+              linkCodelist
+              list={EListName.DEPARTMENT}
+              customId={process.affiliation.nomDepartmentId}
+            />
           </div>
         )}
         {process.affiliation.seksjoner.length !== 0 && (
@@ -270,8 +268,8 @@ const ProcessData = (props: IProcessDataProps) => {
           </div>
         )}
 
-        <div className="flex">
-          <span>Team: </span>
+        <div className="flex flex-wrap items-center gap-1">
+          <span>Team:</span>
           {process.affiliation.productTeams?.length ? (
             <TeamList teamIds={process.affiliation.productTeams} />
           ) : (
