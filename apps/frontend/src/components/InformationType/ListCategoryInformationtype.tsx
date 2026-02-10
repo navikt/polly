@@ -74,7 +74,7 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
       )}
 
       <div>
-        <Heading level="2" size="medium" className="pl-5">
+        <Heading level="2" size="medium" className="mt-5 mb-2">
           Kategorier
         </Heading>
         <Accordion>{panelList()}</Accordion>
