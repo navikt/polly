@@ -426,17 +426,19 @@ export const MainSearch = () => {
             })()
           }}
         />
-        <Button
-          onClick={() => setFilter(!filter)}
-          icon={faFilter}
-          size="xsmall"
-          kind={filter ? 'primary-neutral' : 'tertiary-neutral'}
-          marginLeft
-        >
-          <img aria-label="Filter" />
-        </Button>
+        <div className="relative">
+          <Button
+            onClick={() => setFilter(!filter)}
+            icon={faFilter}
+            size="xsmall"
+            kind={filter ? 'primary-neutral' : 'tertiary-neutral'}
+            marginLeft
+          >
+            <img aria-label="Filter" />
+          </Button>
+          {filter && <SelectType type={type} setType={setType} />}
+        </div>
       </div>
-      {filter && <SelectType type={type} setType={setType} />}
     </div>
   )
 }
