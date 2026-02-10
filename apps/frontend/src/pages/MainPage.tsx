@@ -49,22 +49,22 @@ export const MainPage = () => {
             </Heading>
           </div>
 
-          <div className="w-full flex justify-between mb-6 flex-wrap">
+          <div className="w-full flex mb-6 flex-wrap gap-6">
             {user.isLoggedIn() && (
-              <div className="flex w-[48%] mb-6" style={{ minHeight: '550px' }}>
-                <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
+              <div className="flex w-full md:w-[48%] min-w-0" style={{ minHeight: '550px' }}>
+                <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full min-w-0">
                   <RecentEditsByUser />
                 </div>
               </div>
             )}
-            <div className="flex w-[48%] mb-6" style={{ minHeight: '550px' }}>
-              <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full">
+            <div className="flex w-full md:w-[48%] min-w-0" style={{ minHeight: '550px' }}>
+              <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full min-w-0">
                 <LastEvents />
               </div>
             </div>
 
             <div
-              className={`${user.isLoggedIn() ? 'w-full mt-12 mb-0.5' : 'w-[48%] mt-0.5 mb-6'}`}
+              className={`${user.isLoggedIn() ? 'w-full mt-12 mb-0.5' : 'w-full md:w-[48%] mt-0.5'}`}
               style={{ minHeight: '550px' }}
             >
               <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">

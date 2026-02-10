@@ -39,14 +39,13 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
   }
 
   return (
-    <div className="flex justify-end mb-3">
-      <AuditButton id={process.id} marginRight />
+    <div className="flex flex-wrap justify-end gap-2 mb-3">
+      <AuditButton id={process.id} />
       <Button
         onClick={() => setIsExportModalOpen(true)}
         kind="outline"
         size="xsmall"
         icon={faFileWord}
-        marginRight
       >
         Eksportér
       </Button>
@@ -66,7 +65,6 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                   kind="outline"
                   size="xsmall"
                   icon={faFileWord}
-                  marginRight
                   onClick={async () => {
                     await handleExport(`${env.pollyBaseUrl}/export/process?processId=${process.id}`)
                   }}
@@ -77,7 +75,6 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                   kind="outline"
                   size="xsmall"
                   icon={faFileWord}
-                  marginRight
                   disabled={process.status !== EProcessStatus.COMPLETED}
                   onClick={async () => {
                     await handleExport(
@@ -95,7 +92,7 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
 
       {hasAccess && (
         <>
-          <Button kind="outline" size="xsmall" icon={faEdit} onClick={editProcess} marginRight>
+          <Button kind="outline" size="xsmall" icon={faEdit} onClick={editProcess}>
             Redigér
           </Button>
 
@@ -108,7 +105,6 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                 InformationTypeRef.current.scrollIntoView()
               }
             }}
-            marginRight
           >
             Rediger opplysningstyper
           </Button>

@@ -1,6 +1,5 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { KIND } from 'baseui/button'
-import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
+import { Table } from '@navikt/ds-react'
 import { FieldArrayRenderProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
 import shortid from 'shortid'
@@ -36,68 +35,79 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
   }, [arrayHelpers])
 
   return (
-    <>
-      <StyledHead>
-        <StyledHeadCell style={{ maxWidth: '45%' }}>Opplysningstype</StyledHeadCell>
-        <StyledHeadCell style={{ maxWidth: '45%' }}>Personkategori</StyledHeadCell>
-        <StyledHeadCell style={{ maxWidth: '10%', justifyContent: 'center' }}>
-          <Button
-            type="button"
-            kind={KIND.secondary}
-            size="xsmall"
-            icon={faPlus}
-            onClick={() => arrayHelpers.push(newRow())}
-          >
-            Legg til ny
-          </Button>
-        </StyledHeadCell>
-      </StyledHead>
-
-      {tableContent.map((row: TDocumentInfoTypeUseWithId, index: number) => (
-        <Fragment key={row.id}>
-          <StyledRow>
-            <StyledCell style={{ maxWidth: '45%' }}>
-              <FieldInformationType
-                documentInformationType={row}
-                handleChange={(values: IDocumentInfoTypeUse) => arrayHelpers.replace(index, values)}
-              />
-            </StyledCell>
-            <StyledCell style={{ maxWidth: '45%' }}>
-              <FieldSubjectCategory
-                codelistUtils={codelistUtils}
-                documentInformationType={row}
-                handleChange={(values: IDocumentInformationTypes) =>
-                  arrayHelpers.replace(index, values)
-                }
-              />
-            </StyledCell>
-            <StyledCell style={{ maxWidth: '10%', justifyContent: 'center' }}>
-              {showDeleteRowButton && (
-                <Button
-                  kind={KIND.secondary}
-                  size="xsmall"
-                  icon={faTrash}
-                  onClick={() => {
-                    arrayHelpers.remove(index)
-                  }}
-                >
-                  Slett
-                </Button>
-              )}
-            </StyledCell>
-          </StyledRow>
-          <StyledRow>
-            <StyledCell style={{ maxWidth: '45%' }}>
-              <Error fieldName={`informationTypes[${index}].informationTypeId`} fullWidth={true} />
-            </StyledCell>
-            <StyledCell style={{ maxWidth: '45%' }}>
-              <Error fieldName={`informationTypes[${index}].subjectCategories`} fullWidth={true} />
-            </StyledCell>
-            <StyledCell style={{ maxWidth: '10%', justifyContent: 'center' }} />
-          </StyledRow>
-        </Fragment>
-      ))}
-    </>
+    <Table>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell style={{ maxWidth: '45%' }}>Opplysningstype</Table.HeaderCell>
+          <Table.HeaderCell style={{ maxWidth: '45%' }}>Personkategori</Table.HeaderCell>
+          <Table.HeaderCell style={{ maxWidth: '10%', textAlign: 'center' }}>
+            <Button
+              type="button"
+              kind="secondary"
+              size="xsmall"
+              icon={faPlus}
+              onClick={() => arrayHelpers.push(newRow())}
+            >
+              Legg til ny
+            </Button>
+          </Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {tableContent.map((row: TDocumentInfoTypeUseWithId, index: number) => (
+          <Fragment key={row.id}>
+            <Table.Row>
+              <Table.DataCell style={{ maxWidth: '45%' }}>
+                <FieldInformationType
+                  documentInformationType={row}
+                  handleChange={(values: IDocumentInfoTypeUse) =>
+                    arrayHelpers.replace(index, values)
+                  }
+                />
+              </Table.DataCell>
+              <Table.DataCell style={{ maxWidth: '45%' }}>
+                <FieldSubjectCategory
+                  codelistUtils={codelistUtils}
+                  documentInformationType={row}
+                  handleChange={(values: IDocumentInformationTypes) =>
+                    arrayHelpers.replace(index, values)
+                  }
+                />
+              </Table.DataCell>
+              <Table.DataCell style={{ maxWidth: '10%', textAlign: 'center' }}>
+                {showDeleteRowButton && (
+                  <Button
+                    kind="secondary"
+                    size="xsmall"
+                    icon={faTrash}
+                    onClick={() => {
+                      arrayHelpers.remove(index)
+                    }}
+                  >
+                    Slett
+                  </Button>
+                )}
+              </Table.DataCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.DataCell style={{ maxWidth: '45%' }}>
+                <Error
+                  fieldName={`informationTypes[${index}].informationTypeId`}
+                  fullWidth={true}
+                />
+              </Table.DataCell>
+              <Table.DataCell style={{ maxWidth: '45%' }}>
+                <Error
+                  fieldName={`informationTypes[${index}].subjectCategories`}
+                  fullWidth={true}
+                />
+              </Table.DataCell>
+              <Table.DataCell style={{ maxWidth: '10%' }} />
+            </Table.Row>
+          </Fragment>
+        ))}
+      </Table.Body>
+    </Table>
   )
 }
 

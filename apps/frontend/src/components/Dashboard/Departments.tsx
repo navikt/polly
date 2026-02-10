@@ -1,5 +1,4 @@
-import { Button, Label, Tooltip } from '@navikt/ds-react'
-import { ParagraphMedium } from 'baseui/typography'
+import { BodyShort, Button, Label, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAllNomAvdelinger, getAvdelingByNomId } from '../../api/NomApi'
 import {
@@ -22,7 +21,7 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
 
   return (
     <div className="flex w-fit mb-0 justify-center">
-      <ParagraphMedium margin="0">
+      <BodyShort className="m-0">
         {label}{' '}
         <b
           style={{
@@ -31,7 +30,7 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
         >
           {number}
         </b>
-      </ParagraphMedium>
+      </BodyShort>
     </div>
   )
 }

@@ -1,15 +1,19 @@
 import { Select } from '@navikt/ds-react'
-import { Option } from 'baseui/select'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import { IDpProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
+type TProcessorOption = {
+  id: string
+  label: string
+}
+
 type TFieldDpDataProcessorsProps = {
   formikBag: FormikProps<IDpProcessFormValues>
   subDataProcessors?: Map<string, string>
-  options: Option[]
+  options: TProcessorOption[]
 }
 
 const FieldDpDataProcessors = (props: TFieldDpDataProcessorsProps) => {

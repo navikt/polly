@@ -1,6 +1,5 @@
-import { BodyShort, Heading, Spacer, Tabs } from '@navikt/ds-react'
-import { Button, KIND } from 'baseui/button'
-import { Plus } from 'baseui/icon'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { BodyShort, Button, Heading, Spacer, Tabs } from '@navikt/ds-react'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
@@ -152,16 +151,12 @@ export const ProcessDisclosureTabs = (props: IProps) => {
               <div className="flex justify-end">
                 {user.canWrite() && (
                   <Button
-                    size="compact"
-                    kind={KIND.tertiary}
+                    size="small"
+                    variant="tertiary"
                     onClick={() => setShowCreateDisclosureModal(true)}
-                    startEnhancer={() => (
-                      <div className="flex justify-center">
-                        <Plus size={22} />
-                      </div>
-                    )}
                   >
-                    Opprett ny utlevering
+                    <PlusCircleIcon aria-hidden />
+                    &nbsp; Opprett ny utlevering
                   </Button>
                 )}
               </div>

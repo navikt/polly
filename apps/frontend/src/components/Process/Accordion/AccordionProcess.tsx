@@ -1,10 +1,7 @@
 import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Accordion } from '@navikt/ds-react'
-import { Plus } from 'baseui/icon'
-import { Modal, ModalBody, SIZE } from 'baseui/modal'
-import { Spinner } from 'baseui/spinner'
-import { LabelMedium } from 'baseui/typography'
+import { PlusIcon } from '@navikt/aksel-icons'
+import { Accordion, BodyShort, Modal } from '@navikt/ds-react'
 import { useEffect, useRef, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
@@ -30,6 +27,7 @@ import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
+import { Spinner } from '../../common/Spinner'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { AddDocumentModal } from './AddDocumentModal'
@@ -106,7 +104,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       onClick={() => setShowCreatePolicyModal(true)}
       startEnhancer={
         <div className="flex justify-center mr-1">
-          <Plus size={22} />
+          <PlusIcon aria-hidden />
         </div>
       }
     >
@@ -138,7 +136,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       onClick={() => setShowAddDocumentModal(true)}
       startEnhancer={
         <div className="flex justify-center mr-1">
-          <Plus size={22} />
+          <PlusIcon aria-hidden />
         </div>
       }
     >
@@ -155,7 +153,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     if (params.processId && !isLoading) {
       setTimeout(() => {
         if (purposeRef.current) {
-          window.scrollTo({ top: purposeRef.current.offsetTop - 30 })
+          const headerEl = document.querySelector(
+            '.polly-white-internalheader'
+          ) as HTMLElement | null
+          const headerOffset = headerEl?.offsetHeight ?? 0
+          window.scrollTo({ top: purposeRef.current.offsetTop - headerOffset - 16 })
         }
       }, 200)
     }
@@ -213,12 +215,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   <Accordion.Content>
                     {expanded && isLoading && (
                       <div className="p-2.5">
-                        <Spinner $size={theme.sizing.scale1200} />
+                        <Spinner size={theme.sizing.scale1200} />
                       </div>
                     )}
 
                     {expanded && !isLoading && currentProcess && (
-                      <div className="outline-4 outline-[#E2E2E2]">
+                      <div>
                         <div className="px-6 pt-6">
                           <ProcessButtonGroup
                             process={process}
@@ -238,37 +240,33 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               </span>
                             </div>
                           </div>
-                          <div className="flex pt-6 w-full justify-between">
-                            <div className="flex">
+                          <div className="flex flex-col sm:flex-row sm:justify-between pt-6 w-full gap-2">
+                            <div className="flex flex-wrap gap-2">
                               {canViewAlerts() && (
-                                <div className="mr-auto">
-                                  <Button
-                                    type="button"
-                                    kind="tertiary"
-                                    size="xsmall"
-                                    icon={faExclamationCircle}
-                                    onClick={() => history(`/alert/events/process/${process.id}`)}
-                                  >
-                                    Varsler
-                                  </Button>
-                                </div>
+                                <Button
+                                  type="button"
+                                  kind="tertiary"
+                                  size="xsmall"
+                                  icon={faExclamationCircle}
+                                  onClick={() => history(`/alert/events/process/${process.id}`)}
+                                >
+                                  Varsler
+                                </Button>
                               )}
                               {(user.isAdmin() || user.isSuper()) && (
-                                <div className="mr-auto">
-                                  <Button
-                                    type="button"
-                                    kind="tertiary"
-                                    size="xsmall"
-                                    icon={faGavel}
-                                    onClick={() => setShowRevisionModal(true)}
-                                  >
-                                    Ny revidering
-                                  </Button>
-                                </div>
+                                <Button
+                                  type="button"
+                                  kind="tertiary"
+                                  size="xsmall"
+                                  icon={faGavel}
+                                  onClick={() => setShowRevisionModal(true)}
+                                >
+                                  Ny revidering
+                                </Button>
                               )}
                             </div>
                             {hasAccess() && (
-                              <div className="flex justify-center">
+                              <div className="flex flex-wrap justify-start sm:justify-center gap-2">
                                 <div ref={InformationTypeRef} />
                                 {renderAddDocumentButton()}
                                 {renderCreatePolicyButton()}
@@ -293,7 +291,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               )
             })}
       </Accordion>
-      {!processList.length && <LabelMedium margin="1rem">Ingen behandlinger</LabelMedium>}
+      {!processList.length && <BodyShort className="m-4">Ingen behandlinger</BodyShort>}
 
       {!!currentProcess && (
         <>
@@ -405,16 +403,15 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           />
 
           <Modal
-            isOpen={showRevisionModal}
-            size={SIZE.auto}
-            // role='dialog'
+            open={showRevisionModal}
             onClose={closeRevision}
+            header={{ heading: 'Ny revidering' }}
           >
-            <ModalBody>
-              <div className="w-[600px]">
+            <Modal.Body>
+              <div className="w-150">
                 <RequestRevisionForm processId={currentProcess.id} close={closeRevision} />
               </div>
-            </ModalBody>
+            </Modal.Body>
           </Modal>
         </>
       )}

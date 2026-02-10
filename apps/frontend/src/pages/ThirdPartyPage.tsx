@@ -1,8 +1,5 @@
-import { Accordion } from '@navikt/ds-react'
-import { Button, KIND } from 'baseui/button'
-import { Plus } from 'baseui/icon'
-import { Spinner } from 'baseui/spinner'
-import { HeadingMedium, ParagraphMedium } from 'baseui/typography'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Accordion, BodyLong, Button, Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { getAllDpProcesses } from '../api/DpProcessApi'
@@ -16,6 +13,7 @@ import {
 import ProcessList from '../components/Process/ProcessList'
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
+import { Spinner } from '../components/common/Spinner'
 import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '../constants'
@@ -148,12 +146,12 @@ const ThirdPartyPage = () => {
         <>
           {params.thirdPartyCode && (
             <div className="mb-12">
-              <HeadingMedium>
+              <Heading level="1" size="medium" spacing>
                 {codelistUtils.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)}
-              </HeadingMedium>
-              <ParagraphMedium>
+              </Heading>
+              <BodyLong>
                 {codelistUtils.getDescription(EListName.THIRD_PARTY, params.thirdPartyCode)}
-              </ParagraphMedium>
+              </BodyLong>
             </div>
           )}
 
@@ -168,14 +166,10 @@ const ThirdPartyPage = () => {
                 <div className="flex justify-end">
                   {user.canWrite() && (
                     <Button
-                      size="compact"
-                      kind={KIND.tertiary}
+                      size="small"
+                      variant="tertiary"
+                      icon={<PlusCircleIcon aria-hidden />}
                       onClick={() => setShowCreateModal(true)}
-                      startEnhancer={() => (
-                        <div className="flex justify-center">
-                          <Plus size={22} />
-                        </div>
-                      )}
                     >
                       Opprett ny
                     </Button>

@@ -54,15 +54,13 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                   ))}
               </Select>
             </div>
-            <div>
-              <div>
-                {renderTagList(
-                  formikBag.values.affiliation.subDepartments.map((subDepartment: string) =>
-                    codelistUtils.getShortname(EListName.SUB_DEPARTMENT, subDepartment)
-                  ),
-                  arrayHelpers
-                )}
-              </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {renderTagList(
+                formikBag.values.affiliation.subDepartments.map((subDepartment: string) =>
+                  codelistUtils.getShortname(EListName.SUB_DEPARTMENT, subDepartment)
+                ),
+                arrayHelpers
+              )}
             </div>
           </div>
         )}
@@ -110,15 +108,13 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                     ))}
                   </Select>
                 </div>
-                <div>
-                  <div>
-                    {renderTagList(
-                      FieldArrayRenderProps.form.values.affiliation.fylker.map(
-                        (fylke: INomData) => fylke.nomName
-                      ),
-                      FieldArrayRenderProps
-                    )}
-                  </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {renderTagList(
+                    FieldArrayRenderProps.form.values.affiliation.fylker.map(
+                      (fylke: INomData) => fylke.nomName
+                    ),
+                    FieldArrayRenderProps
+                  )}
                 </div>
               </div>
             )}
@@ -158,15 +154,13 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                     }}
                   />
                 </div>
-                <div>
-                  <div>
-                    {renderTagList(
-                      fieldArrayRenderProps.form.values.affiliation.navKontorer.map(
-                        (navKontor: INomData) => navKontor.nomName
-                      ),
-                      fieldArrayRenderProps
-                    )}
-                  </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {renderTagList(
+                    fieldArrayRenderProps.form.values.affiliation.navKontorer.map(
+                      (navKontor: INomData) => navKontor.nomName
+                    ),
+                    fieldArrayRenderProps
+                  )}
                 </div>
               </div>
             )}

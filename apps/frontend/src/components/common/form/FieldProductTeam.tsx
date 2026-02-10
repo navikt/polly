@@ -44,10 +44,8 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
                 arrayHelpers.form.setFieldValue(fieldName, [...productTeams, value.id])
               }}
             />
-            <div>
-              <div>
-                {renderTagList(values.map((value) => value.label) as string[], arrayHelpers)}
-              </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {renderTagList(values.map((value) => value.label) as string[], arrayHelpers)}
             </div>
           </div>
         )}

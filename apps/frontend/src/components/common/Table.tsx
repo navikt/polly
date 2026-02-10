@@ -1,22 +1,10 @@
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { withStyle } from 'baseui'
-import {
-  SORT_DIRECTION,
-  SortableHeadCell,
-  StyledBody,
-  StyledCell,
-  StyledHead,
-  StyledHeadCell,
-  StyledRow,
-  StyledTable,
-} from 'baseui/table'
-import { LabelMedium } from 'baseui/typography'
-import { ReactElement, ReactNode, createContext, useContext } from 'react'
-import { StyleObject } from 'styletron-standard'
+import { BodyShort, Table as NavTable } from '@navikt/ds-react'
+import { Children, ReactElement, ReactNode, createContext } from 'react'
 import { theme } from '../../util'
 import { TTableState } from '../../util/hooks'
-import { paddingAll } from './Style'
+import { SORT_DIRECTION } from '../../util/hooks/table'
 
 type TTableProps = {
   backgroundColor?: string
@@ -30,7 +18,7 @@ type THeadProps<K extends keyof T, T> = {
   title?: string
   column?: K
   tableState?: TTableState<T, K>
-  $style?: StyleObject
+  $style?: React.CSSProperties
   small?: boolean
   sort?: [
     string,
@@ -44,83 +32,66 @@ type TRowProps = {
   selectedRow?: boolean
   infoRow?: boolean
   children?: any
-  $style?: StyleObject
-}
-
-const noBorder = {
-  borderLeftWidth: '0',
-  borderRightWidth: '0',
-  borderTopWidth: '0',
-  borderBottomWidth: '0',
-}
-const headerCellOverride = {
-  HeadCell: {
-    style: noBorder,
-  },
-}
-
-const StyledHeader = withStyle(StyledHead, {
-  backgroundColor: 'transparent',
-  boxShadow: 'none',
-  borderBottom: `2px solid ${theme.colors.mono600}`,
-  marginBottom: '.5rem',
-})
-
-const tableStyle = {
-  backgroundColor: 'white',
-  overflow: 'hidden !important',
-  ...noBorder,
-  borderTopLeftRadius: '0',
-  borderTopRightRadius: '0',
-  borderBottomLeftRadius: '0',
-  borderBottomRightRadius: '0',
-  ...paddingAll(theme.sizing.scale600),
+  $style?: React.CSSProperties
 }
 
 const TableContext = createContext<Partial<TTableProps>>({})
 
 export const Table = (props: TTableProps) => {
   const { headers, children, emptyText } = props
-  const StyleTable = withStyle(StyledTable, {
-    ...tableStyle,
-    backgroundColor: props.backgroundColor || tableStyle.backgroundColor,
-  })
+
+  const headerCount = Math.max(
+    1,
+    (headers as any)?.props?.children ? Children.count((headers as any).props.children) : 1
+  )
+  const hasChildren = Children.count(children) > 0
 
   return (
     <TableContext.Provider value={props}>
-      <StyleTable>
-        <StyledHeader>{headers}</StyledHeader>
-        <StyledBody>
-          {children}
-          {(!children || (Array.isArray(children) && !children.length)) && (
-            <LabelMedium margin="1rem">{emptyText}</LabelMedium>
-          )}
-        </StyledBody>
-      </StyleTable>
+      <div
+        style={{
+          backgroundColor: props.backgroundColor || 'white',
+          padding: theme.sizing.scale600,
+          maxWidth: '100%',
+          overflowX: 'auto',
+          overflowY: 'hidden',
+        }}
+      >
+        <NavTable size="medium" style={{ width: '100%', tableLayout: 'fixed' }}>
+          <NavTable.Header>
+            <NavTable.Row>{headers}</NavTable.Row>
+          </NavTable.Header>
+          <NavTable.Body>
+            {hasChildren ? (
+              children
+            ) : (
+              <NavTable.Row>
+                <NavTable.DataCell colSpan={headerCount}>
+                  <BodyShort>{emptyText}</BodyShort>
+                </NavTable.DataCell>
+              </NavTable.Row>
+            )}
+          </NavTable.Body>
+        </NavTable>
+      </div>
     </TableContext.Provider>
   )
 }
 export const Row = (props: TRowProps) => {
   const { inactiveRow, infoRow, selectedRow, $style, children } = props
-  const tableProps = useContext(TableContext)
-  const styleProps: StyleObject = {
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: theme.colors.mono600,
-    opacity: inactiveRow ? '.5' : undefined,
-    backgroundColor: infoRow ? theme.colors.primary50 : undefined,
-    borderLeftColor: theme.colors.primary200,
-    borderLeftWidth: infoRow || selectedRow ? theme.sizing.scale300 : '0',
-    borderLeftStyle: 'solid',
-    ':hover': {
-      backgroundColor:
-        tableProps.hoverColor || (infoRow ? theme.colors.mono100 : theme.colors.primary50),
-    },
-    ...$style,
-  }
-  const StyleRow = withStyle(StyledRow, styleProps)
 
-  return <StyleRow>{children}</StyleRow>
+  return (
+    <NavTable.Row
+      style={{
+        opacity: inactiveRow ? 0.5 : undefined,
+        backgroundColor: infoRow ? theme.colors.primary50 : undefined,
+        borderLeft: infoRow || selectedRow ? `4px solid ${theme.colors.primary200}` : undefined,
+        ...$style,
+      }}
+    >
+      {children}
+    </NavTable.Row>
+  )
 }
 
 interface ISortDirectionIconProps {
@@ -138,50 +109,40 @@ const SortDirectionIcon = (props: ISortDirectionIconProps) => {
   }
 }
 
-const PlainHeadCell = withStyle(StyledHeadCell, headerCellOverride.HeadCell.style)
-
 export const HeadCell = <T, K extends keyof T>(props: THeadProps<K, T>) => {
   const { title, tableState, column, small } = props
 
-  const widthStyle = small ? { maxWidth: '15%' } : {}
-  const styleOvveride = { ...widthStyle, ...props.$style }
+  const widthStyle = small ? { maxWidth: '15%' } : undefined
+  const styleOverride = { ...widthStyle, ...props.$style }
   if (!tableState || !column) {
-    return <PlainHeadCell $style={styleOvveride}>{title}</PlainHeadCell>
+    return <NavTable.ColumnHeader style={styleOverride}>{title}</NavTable.ColumnHeader>
   }
 
   const [table, sortColumn] = tableState
 
   return (
-    <SortableHeadCell
-      overrides={{
-        SortableLabel: {
-          component: () => (
-            <span>
-              <SortDirectionIcon direction={table.direction[column]} />
-              <div className="inline mr-1.5" />
-              {title}
-            </span>
-          ),
-        },
-        HeadCell: { style: { ...headerCellOverride.HeadCell.style, ...styleOvveride } },
-      }}
-      title={title || ''}
-      direction={table.direction[column]}
-      onSort={() => sortColumn(column)}
-      fillClickTarget
-    />
+    <NavTable.ColumnHeader style={styleOverride}>
+      <button
+        type="button"
+        className="flex items-center gap-2 text-left"
+        onClick={() => sortColumn(column)}
+      >
+        <SortDirectionIcon direction={table.direction[column]} />
+        <span>{title}</span>
+      </button>
+    </NavTable.ColumnHeader>
   )
 }
 
 interface ICellProps {
   small?: boolean
-  $style?: StyleObject
+  $style?: React.CSSProperties
   children?: ReactNode
 }
 
 export const Cell = (props: ICellProps) => {
   const { small, $style, children } = props
-  const widthStyle = small ? { maxWidth: '15%' } : {}
+  const widthStyle = small ? { maxWidth: '15%' } : undefined
 
-  return <StyledCell $style={{ ...$style, ...widthStyle }}>{children}</StyledCell>
+  return <NavTable.DataCell style={{ ...widthStyle, ...$style }}>{children}</NavTable.DataCell>
 }

@@ -32,6 +32,28 @@
     border-right: none !important;
   }
 
+  .polly-white-internalheader {
+    overflow: visible;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__control {
+    background-color: #ffffff !important;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__menu,
+  .polly-white-internalheader .polly-mainsearch__menu-list {
+    background-color: #ffffff !important;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__placeholder {
+    color: #dcdde2 !important;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__input-container {
+    color: var(--ax-text-neutral) !important;
+    caret-color: var(--ax-text-neutral) !important;
+  }
+
   /* Sidebar brand (avoid default link/label blue) */
   .polly-sidebar-brand,
   .polly-sidebar-brand:visited,

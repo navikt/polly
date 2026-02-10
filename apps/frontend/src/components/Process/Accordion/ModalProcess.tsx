@@ -1,6 +1,13 @@
-import { Accordion, Alert, Button, Modal, Select, Textarea } from '@navikt/ds-react'
-import { FlexGridItem } from 'baseui/flex-grid'
-import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
+import {
+  Accordion,
+  Alert,
+  Button,
+  Modal,
+  Radio,
+  RadioGroup,
+  Select,
+  Textarea,
+} from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -10,7 +17,7 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { ChangeEvent, Key, useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
@@ -112,7 +119,7 @@ const ModalProcess = ({
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width="960px">
       <Modal.Body>
-        <div className="w-[960px] px-8">
+        <div className="w-240 px-8">
           <Formik
             initialValues={initialValues}
             onSubmit={(values) => {
@@ -172,6 +179,7 @@ const ModalProcess = ({
                         value={formikBag.values.dpia?.processImplemented}
                         fieldName="dpia.processImplemented"
                         omitUndefined
+                        direction="horizontal"
                       />
                     </div>
                   </CustomizedModalBlock>
@@ -207,17 +215,21 @@ const ModalProcess = ({
                   </CustomizedModalBlock>
 
                   <CustomizedModalBlock>
-                    <ModalLabel
-                      label="Bruker alle opplysningstyper"
-                      tooltip="Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet."
-                    />
-                    <div>
-                      <BoolField
-                        value={formikBag.values.usesAllInformationTypes}
-                        fieldName="usesAllInformationTypes"
-                        omitUndefined
-                        firstButtonLabel="(Brukes unntaksvis)"
+                    <div className="w-full flex flex-col">
+                      <ModalLabel
+                        fullwidth
+                        label="Bruker alle opplysningstyper"
+                        tooltip="Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet."
                       />
+                      <div className="mt-2">
+                        <BoolField
+                          value={formikBag.values.usesAllInformationTypes}
+                          fieldName="usesAllInformationTypes"
+                          omitUndefined
+                          firstButtonLabel="(Brukes unntaksvis)"
+                          direction="horizontal"
+                        />
+                      </div>
                     </div>
                   </CustomizedModalBlock>
 
@@ -225,73 +237,68 @@ const ModalProcess = ({
                     <Accordion.Item>
                       <Accordion.Header>Organisering</Accordion.Header>
                       <Accordion.Content>
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
+                        <div className="flex w-full flex-col gap-4">
+                          <div className="w-full">
                             <ModalLabel
                               label="Avdeling"
                               tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
                             />
+                            <div className="mt-2">
+                              <FieldDepartment
+                                department={formikBag.values.affiliation.nomDepartmentId}
+                              />
+                            </div>
                           </div>
-                          <div className="w-[48%]">
+
+                          <div className="w-full">
                             <ModalLabel
                               label="Linja"
                               tooltip="Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres."
                             />
+                            <div className="mt-2">
+                              <FieldSubDepartments
+                                formikBag={formikBag}
+                                codelistUtils={codelistUtils}
+                              />
+                            </div>
                           </div>
-                        </div>
 
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
-                            <FieldDepartment
-                              department={formikBag.values.affiliation.nomDepartmentId}
-                            />
-                          </div>
-                          <div className="w-[48%]">
-                            <FieldSubDepartments
-                              formikBag={formikBag}
-                              codelistUtils={codelistUtils}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex w-full justify-between mt-2.5">
-                          <div className="w-[48%]">
+                          <div className="w-full">
                             <ModalLabel
                               label="Team (Oppslag i Teamkatalogen)"
                               tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
                               fullwidth={true}
                             />
+                            <div className="mt-2">
+                              <FieldProductTeam
+                                productTeams={formikBag.values.affiliation.productTeams}
+                                fieldName="affiliation.productTeams"
+                              />
+                            </div>
                           </div>
-                          <div className="w-[48%]">
+
+                          <div className="w-full">
                             <ModalLabel
                               fullwidth
                               label="Felles behandlingsansvarlig"
                               tooltip="Er NAV behandlingsansvarlig sammen med annen virksomhet?"
                             />
-                          </div>
-                        </div>
-
-                        <div className="flex w-full justify-between">
-                          <div className="w-[48%]">
-                            <FieldProductTeam
-                              productTeams={formikBag.values.affiliation.productTeams}
-                              fieldName="affiliation.productTeams"
-                            />
-                          </div>
-                          <div className="w-[48%]">
-                            {showResponsibleSelect && (
-                              <FieldCommonExternalProcessResponsible
-                                thirdParty={formikBag.values.commonExternalProcessResponsible}
-                                hideSelect={() => setShowResponsibleSelect(false)}
-                              />
-                            )}
-                            {!showResponsibleSelect && (
-                              <RadioBoolButton
-                                value={showResponsibleSelect}
-                                setValue={(value) => setShowResponsibleSelect(!!value)}
-                                omitUndefined
-                              />
-                            )}
+                            <div className="mt-2">
+                              {showResponsibleSelect && (
+                                <FieldCommonExternalProcessResponsible
+                                  thirdParty={formikBag.values.commonExternalProcessResponsible}
+                                  hideSelect={() => setShowResponsibleSelect(false)}
+                                />
+                              )}
+                              {!showResponsibleSelect && (
+                                <RadioBoolButton
+                                  value={showResponsibleSelect}
+                                  setValue={(value) => setShowResponsibleSelect(!!value)}
+                                  omitUndefined
+                                  direction="horizontal"
+                                />
+                              )}
+                            </div>
                           </div>
                         </div>
                       </Accordion.Content>
@@ -312,6 +319,7 @@ const ModalProcess = ({
                             formikBag={formikBag}
                             openArt6OnEmpty
                             codelistUtils={codelistUtils}
+                            layout="vertical"
                           />
                         )}
                         <Error fieldName="legalBasesOpen" fullWidth={true} />
@@ -322,29 +330,32 @@ const ModalProcess = ({
                         Automatisering og profilering
                       </Accordion.Header>
                       <Accordion.Content>
-                        {' '}
-                        <div className="flex w-full mt-4">
+                        <div className="w-full mt-4">
                           <ModalLabel
                             label="Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling?"
                             tooltip="Med helautomatisert behandling menes behandling som fører til en individuell avgjørelser eller vedtak uten menneskelig involvering"
                             fullwidth={true}
                           />
-                          <BoolField
-                            fieldName="automaticProcessing"
-                            value={formikBag.values.automaticProcessing}
-                            justifyContent={'flex-end'}
-                          />
+                          <div className="mt-2">
+                            <BoolField
+                              fieldName="automaticProcessing"
+                              value={formikBag.values.automaticProcessing}
+                              direction="horizontal"
+                            />
+                          </div>
                         </div>
-                        <div className="flex w-full mt-4">
+                        <div className="w-full mt-4">
                           <ModalLabel
                             label="Benyttes profilering"
                             tooltip="Med profilering menes det å utlede nye egenskaper, tilbøyeligheter eller behov hos en bruker etter sammenligning med andre brukere i liknende omstendigheter"
                           />
-                          <BoolField
-                            fieldName="profiling"
-                            value={formikBag.values.profiling}
-                            justifyContent={'flex-end'}
-                          />
+                          <div className="mt-2">
+                            <BoolField
+                              fieldName="profiling"
+                              value={formikBag.values.profiling}
+                              direction="horizontal"
+                            />
+                          </div>
                         </div>
                       </Accordion.Content>
                     </Accordion.Item>
@@ -366,73 +377,82 @@ const ModalProcess = ({
                         </div>
                       </Accordion.Header>
                       <Accordion.Content>
-                        {' '}
-                        <div className="flex w-full mt-4">
+                        <div className="w-full mt-4">
                           <ModalLabel
                             label="Benyttes det KI-systemer for å gjennomføre behandlingen?"
                             tooltip="Registrér om KI-systemer brukes for å realisere formålet med behandlingen."
                             fullwidth={true}
                           />
-                          <BoolField
-                            fieldName="aiUsageDescription.aiUsage"
-                            value={formikBag.values.aiUsageDescription.aiUsage}
-                            justifyContent={'flex-end'}
-                          />
+                          <div className="mt-2">
+                            <BoolField
+                              fieldName="aiUsageDescription.aiUsage"
+                              value={formikBag.values.aiUsageDescription.aiUsage}
+                              direction="horizontal"
+                            />
+                          </div>
                         </div>
                         {formikBag.values.aiUsageDescription.aiUsage && (
-                          <div className="flex w-full mt-4">
+                          <div className="w-full mt-4">
                             <ModalLabel label="Hvilken rolle har KI-systemet? Beskriv for alle KI-systemer som benyttes." />
-                            <Field name="aiUsageDescription.description">
-                              {({ field, form }: FieldProps<string, IProcessFormValues>) => (
-                                <Textarea
-                                  className="w-full"
-                                  label=""
-                                  hideLabel
-                                  {...field}
-                                  error={
-                                    !!form.errors.aiUsageDescription?.description &&
-                                    form.touched.aiUsageDescription?.description
-                                  }
-                                />
-                              )}
-                            </Field>
+                            <div className="mt-2">
+                              <Field name="aiUsageDescription.description">
+                                {({ field, form }: FieldProps<string, IProcessFormValues>) => (
+                                  <Textarea
+                                    className="w-full"
+                                    label=""
+                                    hideLabel
+                                    {...field}
+                                    error={
+                                      !!form.errors.aiUsageDescription?.description &&
+                                      form.touched.aiUsageDescription?.description
+                                    }
+                                  />
+                                )}
+                              </Field>
+                            </div>
                           </div>
                         )}
-                        <div className="flex w-full mt-4">
+                        <div className="w-full mt-4">
                           <ModalLabel
                             label="Gjenbrukes personopplysningene til å utvikle KI-systemer?"
                             tooltip="Registrer her dersom personopplysninger innhentet til dette formålet brukes også til utvikling av KI-algoritmer/ systemer. Dette gjelder påstartede prosjekter for å utvikle KI-systemer, som muligens vil bli satt i produksjon i fremtiden."
                           />
-                          <BoolField
-                            fieldName="aiUsageDescription.reusingPersonalInformation"
-                            value={formikBag.values.aiUsageDescription.reusingPersonalInformation}
-                            justifyContent={'flex-end'}
-                          />
+                          <div className="mt-2">
+                            <BoolField
+                              fieldName="aiUsageDescription.reusingPersonalInformation"
+                              value={formikBag.values.aiUsageDescription.reusingPersonalInformation}
+                              direction="horizontal"
+                            />
+                          </div>
                         </div>
                         {(formikBag.values.aiUsageDescription.aiUsage ||
                           formikBag.values.aiUsageDescription.reusingPersonalInformation) && (
-                          <div className="flex w-full mt-4">
+                          <div className="w-full mt-4">
                             <ModalLabel label="Velg datoer for bruk av KI-systemer" />
-                            <DateFieldsAiUsageDescriptionModal showDates={true} />
+                            <div className="mt-2">
+                              <DateFieldsAiUsageDescriptionModal showDates={true} />
+                            </div>
                           </div>
                         )}
                         {formikBag.values.aiUsageDescription.reusingPersonalInformation && (
-                          <div className="flex w-full mt-4">
+                          <div className="w-full mt-4">
                             <ModalLabel label="Registreringsnummer i modellregisteret. Ved flere systemer, oppgi alle registreringsnumre." />
-                            <Field name="aiUsageDescription.registryNumber">
-                              {({ field, form }: FieldProps<string, IProcessFormValues>) => (
-                                <Textarea
-                                  className="w-full"
-                                  label=""
-                                  hideLabel
-                                  {...field}
-                                  error={
-                                    !!form.errors.aiUsageDescription?.registryNumber &&
-                                    form.touched.aiUsageDescription?.registryNumber
-                                  }
-                                />
-                              )}
-                            </Field>
+                            <div className="mt-2">
+                              <Field name="aiUsageDescription.registryNumber">
+                                {({ field, form }: FieldProps<string, IProcessFormValues>) => (
+                                  <Textarea
+                                    className="w-full"
+                                    label=""
+                                    hideLabel
+                                    {...field}
+                                    error={
+                                      !!form.errors.aiUsageDescription?.registryNumber &&
+                                      form.touched.aiUsageDescription?.registryNumber
+                                    }
+                                  />
+                                )}
+                              </Field>
+                            </div>
                           </div>
                         )}
                       </Accordion.Content>
@@ -440,31 +460,36 @@ const ModalProcess = ({
                     <Accordion.Item>
                       <Accordion.Header className="z-0">Databehandler</Accordion.Header>
                       <Accordion.Content>
-                        {' '}
-                        <div className="flex w-full mt-0">
+                        <div className="w-full mt-0">
                           <ModalLabel
+                            fullwidth
                             label="Benyttes databehandler(e)"
                             tooltip="En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne."
                           />
-                          <BoolField
-                            fieldName="dataProcessing.dataProcessor"
-                            value={formikBag.values.dataProcessing.dataProcessor}
-                          />
+                          <div className="mt-2">
+                            <BoolField
+                              fieldName="dataProcessing.dataProcessor"
+                              value={formikBag.values.dataProcessing.dataProcessor}
+                              direction="horizontal"
+                            />
+                          </div>
                         </div>
                         {formikBag.values.dataProcessing.dataProcessor && (
                           <>
-                            <div className="flex w-full mt-4">
-                              <ModalLabel label="Databehandler" />
-                              <FieldDataProcessors
-                                formikBag={formikBag}
-                                dataProcessors={dataProcessors}
-                                options={processorList.map((processor: IProcessor) => {
-                                  return { id: processor.id, label: processor.name }
-                                })}
-                              />
+                            <div className="w-full mt-4">
+                              <ModalLabel fullwidth label="Databehandler" />
+                              <div className="mt-2">
+                                <FieldDataProcessors
+                                  formikBag={formikBag}
+                                  dataProcessors={dataProcessors}
+                                  options={processorList.map((processor: IProcessor) => {
+                                    return { id: processor.id, label: processor.name }
+                                  })}
+                                />
+                              </div>
                             </div>
                             <Error fieldName="dataProcessing.processors" />
-                            <FlexGridItem></FlexGridItem>
+                            <div />
                           </>
                         )}
                       </Accordion.Content>
@@ -480,45 +505,52 @@ const ModalProcess = ({
                         Personkonsekvensvurdering (PVK)
                       </Accordion.Header>
                       <Accordion.Content>
-                        <DpiaItems formikBag={formikBag} />
+                        <DpiaItems formikBag={formikBag} layout="vertical" />
                       </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
                       <Accordion.Header className="z-0">Utlevering</Accordion.Header>
                       <Accordion.Content>
-                        <CustomizedModalBlock first>
-                          <ModalLabel label="Avsender" />
-                          <FieldDispatcher formikBag={formikBag} codelistUtils={codelistUtils} />
-                        </CustomizedModalBlock>
+                        <div className="w-full">
+                          <div className="w-full mt-0">
+                            <ModalLabel fullwidth label="Avsender" />
+                            <div className="mt-2">
+                              <FieldDispatcher
+                                formikBag={formikBag}
+                                codelistUtils={codelistUtils}
+                              />
+                            </div>
+                          </div>
 
-                        <div className="w-full flex mb-[5px]">
-                          <ModalLabel label="Mottaker" />
-                          <Select
-                            className="w-full"
-                            label="Velg Mottaker"
-                            hideLabel
-                            value={thirdParty}
-                            onChange={(event) => setThirdParty(event.target.value)}
-                          >
-                            <option value="">Velg mottaker</option>
-                            {codelistUtils
-                              .getParsedOptions(EListName.THIRD_PARTY)
-                              .filter((thirdParty) => thirdParty.id != 'NAV')
-                              .map((mottaker) => (
-                                <option key={mottaker.id} value={mottaker.id}>
-                                  {mottaker.label}
-                                </option>
-                              ))}
-                          </Select>
-                        </div>
+                          <div className="w-full mt-4">
+                            <ModalLabel fullwidth label="Mottaker" />
+                            <div className="mt-2">
+                              <Select
+                                className="w-full"
+                                label="Velg Mottaker"
+                                hideLabel
+                                value={thirdParty}
+                                onChange={(event) => setThirdParty(event.target.value)}
+                              >
+                                <option value="">Velg mottaker</option>
+                                {codelistUtils
+                                  .getParsedOptions(EListName.THIRD_PARTY)
+                                  .filter((thirdParty) => thirdParty.id != 'NAV')
+                                  .map((mottaker) => (
+                                    <option key={mottaker.id} value={mottaker.id}>
+                                      {mottaker.label}
+                                    </option>
+                                  ))}
+                              </Select>
+                            </div>
+                          </div>
 
-                        <FieldArray
-                          name="disclosures"
-                          render={(arrayHelpers: FieldArrayRenderProps) => (
-                            <div className="w-full">
-                              <div className="w-full flex">
-                                <ModalLabel label="Utleveringer" />
-                                <div className="w-full">
+                          <FieldArray
+                            name="disclosures"
+                            render={(arrayHelpers: FieldArrayRenderProps) => (
+                              <div className="w-full mt-4">
+                                <ModalLabel fullwidth label="Utleveringer" />
+                                <div className="mt-2">
                                   <Select
                                     disabled={thirdParty === ''}
                                     label="Velg utleveringer"
@@ -548,7 +580,7 @@ const ModalProcess = ({
                                         </option>
                                       ))}
                                   </Select>
-                                  <div>
+                                  <div className="mt-2 flex flex-wrap gap-2">
                                     {renderTagList(
                                       formikBag.values.disclosures.map(
                                         (disclosure: IDisclosure) =>
@@ -559,36 +591,38 @@ const ModalProcess = ({
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
-                        />
+                            )}
+                          />
+                        </div>
                       </Accordion.Content>
                     </Accordion.Item>
                   </Accordion>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label="Status på utfylling" />
-                    <div className="flex w-full mt-4">
-                      <Field
-                        name="status"
-                        render={({ form }: FieldProps<IProcessFormValues>) => (
-                          <RadioGroup
-                            value={formikBag.values.status}
-                            align={ALIGN.horizontal}
-                            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                              form.setFieldValue('status', (event.target as HTMLInputElement).value)
-                            }
-                          >
-                            <Radio value={EProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
-                            <Radio value={EProcessStatus.IN_PROGRESS}>Under arbeid</Radio>
-                            {initialValues.status === EProcessStatus.NEEDS_REVISION && (
-                              <Radio value={EProcessStatus.NEEDS_REVISION}>
-                                Trenger revidering
-                              </Radio>
-                            )}
-                          </RadioGroup>
-                        )}
-                      />
+                    <div className="w-full flex flex-col">
+                      <ModalLabel fullwidth label="Status på utfylling" />
+                      <div className="mt-2">
+                        <Field
+                          name="status"
+                          render={({ form }: FieldProps<IProcessFormValues>) => (
+                            <RadioGroup
+                              value={formikBag.values.status}
+                              legend=""
+                              hideLegend
+                              className="[&_.aksel-radio-buttons]:flex [&_.aksel-radio-buttons]:flex-row [&_.aksel-radio-buttons]:flex-wrap [&_.aksel-radio-buttons]:gap-4"
+                              onChange={(value) => form.setFieldValue('status', value)}
+                            >
+                              <Radio value={EProcessStatus.COMPLETED}>Ferdig dokumentert</Radio>
+                              <Radio value={EProcessStatus.IN_PROGRESS}>Under arbeid</Radio>
+                              {initialValues.status === EProcessStatus.NEEDS_REVISION && (
+                                <Radio value={EProcessStatus.NEEDS_REVISION}>
+                                  Trenger revidering
+                                </Radio>
+                              )}
+                            </RadioGroup>
+                          )}
+                        />
+                      </div>
                     </div>
                   </CustomizedModalBlock>
                 </Form>

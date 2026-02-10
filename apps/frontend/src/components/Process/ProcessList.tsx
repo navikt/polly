@@ -1,7 +1,5 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Heading, Select } from '@navikt/ds-react'
-import { Spinner } from 'baseui/spinner'
-import { LabelMedium } from 'baseui/typography'
+import { Heading, Label, Select } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import {
@@ -39,6 +37,7 @@ import { user } from '../../service/User'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
+import { Spinner } from '../common/Spinner'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ExportProcessModal from './Export/ExportProcessModal'
@@ -365,54 +364,55 @@ const ProcessList = ({
 
   return (
     <>
-      <div className="flex flex-row-reverse items-center">
-        <div>
-          <ExportProcessModal
-            listName={listName}
-            code={code}
-            marginRight={true}
-            exportHref={exportHref}
-          />
-          {isEditable && hasAccess() && (
-            <Button
-              size="xsmall"
-              kind="tertiary"
-              icon={faPlus}
-              onClick={() => setShowCreateProcessModal(true)}
-            >
-              Opprett ny behandling
-            </Button>
-          )}
-        </div>
-        <div className="w-1/4">
-          <Select
-            label="Status filter"
-            hideLabel
-            onChange={(event: any) =>
-              navigate(genProcessPath(section, code, undefined, event.target.value))
-            }
-          >
-            <option value="">Alle behandlinger</option>
-            <option value={EProcessStatus.IN_PROGRESS}>Behandlinger under arbeid</option>
-            <option value={EProcessStatus.NEEDS_REVISION}>Trenger revidering</option>
-            <option value={EProcessStatus.COMPLETED}>Ferdig dokumenterte behandlinger</option>
-          </Select>
-        </div>
-        <div>
-          <LabelMedium color={theme.colors.primary} marginRight={'1rem'}>
-            Filter
-          </LabelMedium>
-        </div>
-        <div className="mr-auto">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="min-w-0 sm:mr-auto">
           {!hideTitle && (
             <Heading size="xlarge" level="2">
               {titleOverride || 'Behandlinger'} ({processList.length})
             </Heading>
           )}
         </div>
+
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <Label style={{ color: theme.colors.primary, marginRight: '1rem' }}>Filter</Label>
+
+          <div className="w-full sm:w-72 min-w-0">
+            <Select
+              label="Status filter"
+              hideLabel
+              onChange={(event: any) =>
+                navigate(genProcessPath(section, code, undefined, event.target.value))
+              }
+            >
+              <option value="">Alle behandlinger</option>
+              <option value={EProcessStatus.IN_PROGRESS}>Behandlinger under arbeid</option>
+              <option value={EProcessStatus.NEEDS_REVISION}>Trenger revidering</option>
+              <option value={EProcessStatus.COMPLETED}>Ferdig dokumenterte behandlinger</option>
+            </Select>
+          </div>
+
+          <div className="flex flex-wrap gap-2 justify-start sm:justify-end w-full sm:w-auto">
+            <ExportProcessModal
+              listName={listName}
+              code={code}
+              marginRight={true}
+              exportHref={exportHref}
+            />
+            {isEditable && hasAccess() && (
+              <Button
+                size="xsmall"
+                kind="tertiary"
+                icon={faPlus}
+                onClick={() => setShowCreateProcessModal(true)}
+              >
+                Opprett ny behandling
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
 
-      {isLoadingProcessList && <Spinner $size={theme.sizing.scale2400} />}
+      {isLoadingProcessList && <Spinner size={theme.sizing.scale2400} />}
 
       {!isLoadingProcessList && (
         <AccordionProcess

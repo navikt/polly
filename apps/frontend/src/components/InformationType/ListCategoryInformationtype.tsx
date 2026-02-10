@@ -1,15 +1,11 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useStyletron } from 'baseui'
-import { Accordion, Panel } from 'baseui/accordion'
-import { Heading, HeadingLevel } from 'baseui/heading'
-import { ListItem, ListItemLabel } from 'baseui/list'
-import { ParagraphLarge } from 'baseui/typography'
+import { Accordion, BodyLong, Heading } from '@navikt/ds-react'
+import { useState } from 'react'
 import { ICodeUsage, IUse } from '../../constants'
 import { CodelistService, EListName } from '../../service/Codelist'
 import { theme } from '../../util'
 import { useQueryParam } from '../../util/hooks'
-import { toggleOverride } from '../common/Accordion'
 import RouteLink from '../common/RouteLink'
 
 type TInformationTypeAccordionProps = {
@@ -17,9 +13,9 @@ type TInformationTypeAccordionProps = {
 }
 
 const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordionProps) => {
-  const [css] = useStyletron()
   const category = useQueryParam('category')
   const [codelistUtils] = CodelistService()
+  const [openCategory, setOpenCategory] = useState<string | undefined>(category || undefined)
 
   const categoryNotInUse =
     !!category &&
@@ -34,85 +30,54 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
           .getShortname(a.listName, a.code)
           .localeCompare(codelistUtils.getShortname(b.listName, b.code), 'nb')
       )
-      .map((categoryUsage: ICodeUsage) => {
-        return (
-          <Panel
-            title={
-              <div className="flex w-full">
-                <div className="min-w-[80%]">
-                  {codelistUtils.getShortname(EListName.CATEGORY, categoryUsage.code)}
-                </div>
-                <div className="mr-[50px] min-w-[20%] opacity-50 color-[#545454] text-sm">
-                  Opplysningstyper: {categoryUsage.informationTypes.length}
-                </div>
+      .map((categoryUsage: ICodeUsage) => (
+        <Accordion.Item
+          key={categoryUsage.code}
+          open={openCategory === categoryUsage.code}
+          onOpenChange={(open) => setOpenCategory(open ? categoryUsage.code : undefined)}
+        >
+          <Accordion.Header>
+            <div className="flex w-full flex-col">
+              <div className="min-w-0">
+                {codelistUtils.getShortname(EListName.CATEGORY, categoryUsage.code)}
               </div>
-            }
-            overrides={{
-              Content: {
-                style: {
-                  backgroundColor: 'transparent',
-                  paddingLeft: '0',
-                  paddingRight: '0',
-                },
-              },
-              ToggleIcon: toggleOverride,
-            }}
-            key={categoryUsage.code}
-          >
-            <ul
-              className={css({
-                paddingLeft: 0,
-                paddingRight: 0,
-              })}
-            >
+              <div className="mt-1 text-sm opacity-60">
+                Opplysningstyper: {categoryUsage.informationTypes.length}
+              </div>
+            </div>
+          </Accordion.Header>
+          <Accordion.Content>
+            <ul className="pl-0 pr-0">
               {categoryUsage.informationTypes
                 .sort((a, b) => a.name.localeCompare(b.name, 'nb'))
-                .map((informationType: IUse) => {
-                  return (
-                    <ListItem
-                      overrides={{
-                        Content: {
-                          style: {
-                            height: '40px',
-                          },
-                        },
-                        ArtworkContainer: {},
-                        EndEnhancerContainer: {},
-                        Root: {},
-                      }}
-                      key={informationType.id}
-                    >
-                      <ListItemLabel>
-                        <RouteLink href={`/informationtype/${informationType.id}`}>
-                          {informationType.name}
-                        </RouteLink>
-                      </ListItemLabel>
-                    </ListItem>
-                  )
-                })}
+                .map((informationType: IUse) => (
+                  <li key={informationType.id} className="h-10 flex items-center">
+                    <RouteLink href={`/informationtype/${informationType.id}`}>
+                      {informationType.name}
+                    </RouteLink>
+                  </li>
+                ))}
             </ul>
-          </Panel>
-        )
-      })
+          </Accordion.Content>
+        </Accordion.Item>
+      ))
   }
 
   return (
     <>
       {categoryNotInUse && category && (
-        <ParagraphLarge marginBottom={theme.sizing.scale1200}>
+        <BodyLong spacing>
           <FontAwesomeIcon icon={faExclamationTriangle} color={theme.colors.negative400} />
           <div className="mr-1.5 inline" />
           {`Kategori ${codelistUtils.getShortname(EListName.CATEGORY, category)} er ikke i bruk`}
-        </ParagraphLarge>
+        </BodyLong>
       )}
 
       <div>
-        <HeadingLevel>
-          <Heading styleLevel={5} paddingLeft="20px">
-            Kategorier
-          </Heading>
-        </HeadingLevel>
-        <Accordion initialState={{ expanded: category ? [category] : [] }}>{panelList()}</Accordion>
+        <Heading level="2" size="medium" className="pl-5">
+          Kategorier
+        </Heading>
+        <Accordion>{panelList()}</Accordion>
       </div>
     </>
   )

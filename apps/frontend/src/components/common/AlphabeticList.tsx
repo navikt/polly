@@ -6,10 +6,12 @@ type TOpt = { id: string; label: string }
 interface IAlphabeticListProps {
   items: TOpt[]
   baseUrl: string
+  columns?: number
 }
 
 const AlphabeticList = (props: IAlphabeticListProps) => {
   const { baseUrl } = props
+  const columns = props.columns ?? 4
   const items = props.items
     .sort((a: TOpt, b: TOpt) => a.label.localeCompare(b.label))
     .reduce(
@@ -33,7 +35,7 @@ const AlphabeticList = (props: IAlphabeticListProps) => {
             <div className="w-full border-b-2 border-[#CBCBCB] border-solid" />
           </div>
 
-          <HGrid gap="space-4" columns={4}>
+          <HGrid gap="space-4" columns={columns}>
             {items[letter].map((item: TOpt) => (
               <Box key={item.id}>
                 <RouteLink href={`${baseUrl}${item.id}`}>{item.label}</RouteLink>

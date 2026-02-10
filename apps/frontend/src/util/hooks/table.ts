@@ -1,5 +1,9 @@
-import { SORT_DIRECTION } from 'baseui/table'
 import { useEffect, useState } from 'react'
+
+export const SORT_DIRECTION = {
+  ASC: 'ASC' as const,
+  DESC: 'DESC' as const,
+}
 
 type TTableConfig<T, K extends keyof T> = {
   sorting?: TColumnCompares<T>

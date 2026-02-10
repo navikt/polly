@@ -1,6 +1,6 @@
-import { Select, Value } from 'baseui/select'
+import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
 import { CodelistService, EListName } from '../../../service/Codelist'
 
@@ -15,15 +15,24 @@ const FieldCommonExternalProcessResponsible = (
   const { thirdParty, hideSelect } = props
   const [codelistUtils] = CodelistService()
 
-  const [value, setValue] = useState<Value>(
+  const [selected, setSelected] = useState<{ label: string; value: string }[]>(
     thirdParty
       ? [
           {
-            id: thirdParty,
+            value: thirdParty,
             label: codelistUtils.getShortname(EListName.THIRD_PARTY, thirdParty),
           },
         ]
       : []
+  )
+
+  const comboboxOptions = useMemo(
+    () =>
+      codelistUtils.getParsedOptions(EListName.THIRD_PARTY).map((o: any) => ({
+        label: o.label,
+        value: o.id,
+      })),
+    [codelistUtils]
   )
 
   return (
@@ -31,18 +40,26 @@ const FieldCommonExternalProcessResponsible = (
       name="commonExternalProcessResponsible"
       render={({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
-          <Select
-            options={codelistUtils.getParsedOptions(EListName.THIRD_PARTY)}
-            onChange={({ value }) => {
-              if (!value.length) hideSelect()
-              setValue(value)
-              form.setFieldValue(
-                'commonExternalProcessResponsible',
-                value.length > 0 ? value[0].id : ''
-              )
+          <UNSAFE_Combobox
+            label="Felles behandlingsansvarlig"
+            hideLabel
+            options={comboboxOptions}
+            filteredOptions={comboboxOptions}
+            selectedOptions={selected}
+            onToggleSelected={(optionValue, isSelected) => {
+              if (!isSelected) {
+                hideSelect()
+                setSelected([])
+                form.setFieldValue('commonExternalProcessResponsible', '')
+                return
+              }
+
+              const option = comboboxOptions.find((o) => o.value === optionValue)
+              if (option) {
+                setSelected([option])
+                form.setFieldValue('commonExternalProcessResponsible', option.value)
+              }
             }}
-            value={value}
-            overrides={{ Placeholder: { style: { color: 'black' } } }}
           />
         </div>
       )}

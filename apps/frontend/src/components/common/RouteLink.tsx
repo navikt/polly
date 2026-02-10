@@ -1,5 +1,4 @@
-import { useStyletron } from 'baseui'
-import { StyledLink } from 'baseui/link'
+import { Link } from '@navikt/ds-react'
 import type { MouseEvent } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
@@ -19,17 +18,20 @@ const RouteLink = (props: TRouteLinkProps & any) => {
   // Treat absolute URLs (https:, mailto:, //example.com, etc.) as external.
   const isExternalHref = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(props.href)
 
-  const [useCss] = useStyletron()
-  const css = useCss({
-    textDecoration: hideUnderline ? 'none' : undefined,
-    color: plain ? 'inherit !important' : undefined,
-  })
+  const className = [
+    restprops.className,
+    hideUnderline ? 'no-underline' : undefined,
+    plain ? 'text-inherit' : undefined,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <StyledLink
-      className={css}
+    <Link
+      className={className}
       {...restprops}
       onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+        restprops.onClick?.(event)
         if (isExternalHref) return
         event.preventDefault()
         navigate(props.href)
@@ -98,13 +100,13 @@ export const urlForObject = (type: TNavigableItem, id: string, audit?: IAuditIte
 
 export const ObjectLink = (props: TObjectLinkProps) => {
   const { disable, children, type, id, audit, hideUnderline, withHistory } = props
-  const [useCss] = useStyletron()
-  const linkCss = useCss({ textDecoration: 'none' })
+
+  const linkClassName = hideUnderline ? 'no-underline' : undefined
 
   const link = disable ? (
     children
   ) : (
-    <RouteLink href={urlForObject(type, id, audit)} className={hideUnderline ? linkCss : undefined}>
+    <RouteLink href={urlForObject(type, id, audit)} className={linkClassName}>
       {children}
     </RouteLink>
   )

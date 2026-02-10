@@ -1,5 +1,4 @@
-import { Radio, RadioGroup } from 'baseui/radio'
-import { ChangeEvent } from 'react'
+import { Radio, RadioGroup } from '@navikt/ds-react'
 
 const YES = 'YES',
   NO = 'NO',
@@ -17,33 +16,57 @@ type TRadioBoolProps = {
   firstButtonLabel?: string
   secondButtonLabel?: string
   justifyContent?: string
+  direction?: 'horizontal' | 'vertical'
+  className?: string
 }
 
 export const RadioBoolButton = (props: TRadioBoolProps) => {
-  const { value, justifyContent, setValue, firstButtonLabel, secondButtonLabel, omitUndefined } =
-    props
+  const {
+    value,
+    justifyContent,
+    setValue,
+    firstButtonLabel,
+    secondButtonLabel,
+    omitUndefined,
+    direction,
+    className,
+  } = props
+
+  const horizontalClasses =
+    direction === 'horizontal'
+      ? '[&_.aksel-radio-buttons]:flex [&_.aksel-radio-buttons]:w-full [&_.aksel-radio-buttons]:flex-row [&_.aksel-radio-buttons]:items-center'
+      : ''
+
+  const horizontalAlignClass =
+    direction === 'horizontal' && justifyContent
+      ? justifyContent === 'flex-end'
+        ? '[&_.aksel-radio-buttons]:justify-end'
+        : justifyContent === 'center'
+          ? '[&_.aksel-radio-buttons]:justify-center'
+          : justifyContent === 'flex-start'
+            ? '[&_.aksel-radio-buttons]:justify-start'
+            : ''
+      : ''
 
   return (
     <RadioGroup
       value={boolToRadio(value)}
-      align="horizontal"
-      overrides={{
-        RadioGroupRoot: {
-          style: { width: '100%', justifyContent: justifyContent ? justifyContent : 'stretch' },
-        },
+      className={`w-full ${horizontalClasses} ${horizontalAlignClass} ${className ?? ''}`.trim()}
+      legend=""
+      hideLegend
+      onChange={(newValue) => {
+        setValue(radioToBool(newValue))
       }}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        setValue(radioToBool((event.target as HTMLInputElement).value))
-      }}
+      style={{ justifyContent: justifyContent ? justifyContent : 'stretch' }}
     >
-      <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={YES}>
+      <Radio className="mr-8 last:mr-0" value={YES}>
         Ja {firstButtonLabel}
       </Radio>
-      <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={NO}>
+      <Radio className="mr-8 last:mr-0" value={NO}>
         Nei {secondButtonLabel}
       </Radio>
       {!omitUndefined && (
-        <Radio overrides={{ Label: { style: { marginRight: '2rem' } } }} value={UNCLARIFIED}>
+        <Radio className="mr-8 last:mr-0" value={UNCLARIFIED}>
           Uavklart
         </Radio>
       )}

@@ -3,7 +3,7 @@ import { MagnifyingGlassIcon } from '@navikt/aksel-icons'
 import { Tag } from '@navikt/ds-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { DropdownIndicatorProps, OptionProps, components } from 'react-select'
+import { CSSObjectWithLabel, DropdownIndicatorProps, OptionProps, components } from 'react-select'
 import AsyncSelect from 'react-select/async'
 import { searchDpProcess } from '../../api/DpProcessApi'
 import {
@@ -31,6 +31,48 @@ import { noOptionMessage, selectOverrides } from '../common/AsyncSelectComponent
 import Button from '../common/Button/CustomButton'
 import { urlForObject } from '../common/RouteLink'
 import { SelectType } from './components/SelectType'
+
+const mainSearchSelectOverrides = {
+  ...selectOverrides,
+  control: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).control(base),
+      backgroundColor: 'var(--ax-bg-default)',
+      color: 'var(--ax-text-neutral)',
+    }) as CSSObjectWithLabel,
+  input: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).input(base),
+      color: 'var(--ax-text-neutral)',
+      caretColor: 'var(--ax-text-neutral)',
+    }) as CSSObjectWithLabel,
+  placeholder: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).placeholder(base),
+      color: '#dcdde2',
+    }) as CSSObjectWithLabel,
+  singleValue: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).singleValue(base),
+      color: 'var(--ax-text-neutral)',
+    }) as CSSObjectWithLabel,
+  menu: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).menu(base),
+      backgroundColor: '#ffffff',
+      zIndex: 2000,
+    }) as CSSObjectWithLabel,
+  menuList: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).menuList(base),
+      backgroundColor: '#ffffff',
+    }) as CSSObjectWithLabel,
+  option: (base: CSSObjectWithLabel, state: any) =>
+    ({
+      ...(selectOverrides as any).option(base, state),
+      backgroundColor: state.isFocused ? '#f5f5f5' : state.isSelected ? '#ededed' : '#ffffff',
+    }) as CSSObjectWithLabel,
+}
 
 type TSearchItem = {
   id: string
@@ -363,7 +405,7 @@ export const MainSearch = () => {
 
   return (
     <div>
-      <div className="flex items-center w-[730px]">
+      <div className="flex items-center w-182.5">
         <AsyncSelect
           className="w-full"
           aria-label="Søk"
@@ -374,7 +416,7 @@ export const MainSearch = () => {
           controlShouldRenderValue={false}
           loadingMessage={() => 'Søker...'}
           isClearable={false}
-          styles={selectOverrides}
+          styles={mainSearchSelectOverrides}
           onChange={(value: any) => {
             const item = value as TSearchItem
             ;(async () => {

@@ -1,4 +1,4 @@
-import { HeadingMedium } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import { useNavigate } from 'react-router'
 import { Fragment } from 'react/jsx-runtime'
 import { createInformationTypesDocument } from '../api/GetAllApi'
@@ -40,7 +40,7 @@ const DocumentCreatePage = () => {
 
   return (
     <Fragment>
-      <HeadingMedium>Opprett dokument</HeadingMedium>
+      <Heading size="large">Opprett dokument</Heading>
       <DocumentForm
         initialValues={initialCreateDocumentFormValues}
         handleSubmit={handleCreateDocument}

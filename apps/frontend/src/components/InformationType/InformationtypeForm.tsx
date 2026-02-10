@@ -1,9 +1,5 @@
 import { PlusIcon } from '@navikt/aksel-icons'
-import { TextField, Textarea } from '@navikt/ds-react'
-import { Button } from 'baseui/button'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { OnChangeParams, Option, Select, TYPE, Value } from 'baseui/select'
-import { LabelMedium } from 'baseui/typography'
+import { Button, Label, TextField, Textarea, UNSAFE_Combobox } from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -64,22 +60,34 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
 
   const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
-  const [sensitivityValue, setSensitivityValue] = useState<Option>(initialValueSensitivity())
-  const [termValue, setTermValue] = useState<Option>(
-    formInitialValues.term ? [{ id: formInitialValues.term, label: formInitialValues.term }] : []
-  )
-  const [masterValue, setMasterValue] = useState<Option>(initialValueMaster())
+  const [termInputValue, setTermInputValue] = useState('')
+  const [masterInputValue, setMasterInputValue] = useState('')
+  const [sensitivityInputValue, setSensitivityInputValue] = useState('')
   const [currentKeywordValue, setCurrentKeywordValue] = useState('')
 
   useEffect(() => {
     ;(async () => {
       try {
-        setTermValue(await initialValueTerm())
+        const initialTerm = await initialValueTerm()
+        const first = initialTerm.length ? initialTerm[0] : undefined
+        setTermInputValue(first?.label || '')
       } catch (error: any) {
         console.error('failed to get term', error)
       }
     })()
   }, [formInitialValues.term])
+
+  useEffect(() => {
+    const initialMaster = initialValueMaster()
+    const first = initialMaster.length ? initialMaster[0] : undefined
+    setMasterInputValue(first?.label || '')
+  }, [formInitialValues.orgMaster, codelistUtils])
+
+  useEffect(() => {
+    const initialSensitivity = initialValueSensitivity()
+    const first = initialSensitivity.length ? initialSensitivity[0] : undefined
+    setSensitivityInputValue(first?.label || '')
+  }, [formInitialValues.sensitivity, codelistUtils])
 
   const getParsedOptions = (listName: EListName, values: string[]) => {
     if (!codelistUtils) return []
@@ -141,17 +149,13 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
         onSubmit={onSubmit}
         render={(formikBag: FormikProps<IInformationtypeFormValues>) => (
           <Form onKeyDown={disableEnter}>
-            <FlexGrid
-              flexGridColumnCount={2}
-              flexGridColumnGap="scale1000"
-              flexGridRowGap="scale1000"
-            >
-              <FlexGridItem>
+            <div className="grid grid-cols-2 gap-10">
+              <div>
                 <Field name="name">
                   {({ form, field }: FieldProps) => (
                     <div>
                       <div className="mb-2 self-center">
-                        <LabelMedium>Navn</LabelMedium>
+                        <Label>Navn</Label>
                       </div>
                       <TextField
                         className="w-full"
@@ -164,80 +168,126 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   )}
                 </Field>
                 <Error fieldName="name" fullWidth />
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <Field
                   name="orgMaster"
                   render={({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div className="mb-4">
                       <div className="mb-2 self-center">
-                        <LabelMedium>Master i NAV</LabelMedium>
+                        <Label>Master i NAV</Label>
                       </div>
 
-                      <Select
-                        options={codelistUtils.getParsedOptions(EListName.SYSTEM)}
-                        value={masterValue as Value}
-                        onChange={(params: OnChangeParams) => {
-                          const master = params.value.length ? params.value[0] : undefined
-                          setMasterValue(master as Option)
-                          form.setFieldValue('orgMaster', master ? master.id : undefined)
+                      <UNSAFE_Combobox
+                        label=""
+                        hideLabel
+                        options={codelistUtils
+                          .getParsedOptions(EListName.SYSTEM)
+                          .map((o: IGetParsedOptionsProps) => ({ value: o.id, label: o.label }))}
+                        value={masterInputValue}
+                        onChange={(newValue) => {
+                          setMasterInputValue(newValue)
+                          const selected = codelistUtils
+                            .getParsedOptions(EListName.SYSTEM)
+                            .find((o: IGetParsedOptionsProps) => o.label === newValue)
+                          if (!selected) {
+                            form.setFieldValue('orgMaster', undefined)
+                          }
                         }}
-                        error={!!form.errors.orgMaster && !!form.submitCount}
+                        selectedOptions={
+                          formikBag.values.orgMaster ? [formikBag.values.orgMaster] : []
+                        }
+                        onToggleSelected={(optionValue, isSelected) => {
+                          if (!isSelected) {
+                            setMasterInputValue('')
+                            form.setFieldValue('orgMaster', undefined)
+                            return
+                          }
+                          const selected = codelistUtils
+                            .getParsedOptions(EListName.SYSTEM)
+                            .find((o: IGetParsedOptionsProps) => o.id === optionValue)
+                          setMasterInputValue(selected?.label || '')
+                          form.setFieldValue('orgMaster', optionValue)
+                        }}
                       />
                     </div>
                   )}
                 />
                 <Error fieldName="orgMaster" fullWidth />
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <Field
                   name="term"
                   render={({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div>
                       <div className="mb-2 self-center">
-                        <LabelMedium>Begrepsdefinisjon (oppslag i Begrepskatalogen)</LabelMedium>
+                        <Label>Begrepsdefinisjon (oppslag i Begrepskatalogen)</Label>
                       </div>
-                      <Select
-                        noResultsMsg="Ingen"
-                        maxDropdownHeight="350px"
-                        searchable={true}
-                        type={TYPE.search}
-                        options={termSearchResult}
-                        value={termValue as Value}
-                        onInputChange={(event) => setTermSearch(event.currentTarget.value)}
-                        onChange={(params: OnChangeParams) => {
-                          const term = params.value.length ? params.value[0] : undefined
-                          setTermValue(term ? [term as Option] : [])
-                          form.setFieldValue('term', term ? term.id : undefined)
-                        }}
-                        error={!!form.errors.term && !!form.submitCount}
+                      <UNSAFE_Combobox
+                        label=""
+                        hideLabel
+                        placeholder="Søk"
                         isLoading={termSearchLoading}
+                        options={termSearchResult.flatMap((o) => {
+                          if (!o.value) return []
+                          return [
+                            {
+                              value: String(o.value),
+                              label: String(o.label ?? ''),
+                            },
+                          ]
+                        })}
+                        value={termInputValue}
+                        onChange={(newValue) => {
+                          setTermInputValue(newValue)
+                          setTermSearch(newValue)
+                          if (formikBag.values.term && newValue !== termInputValue) {
+                            form.setFieldValue('term', undefined)
+                          }
+                        }}
+                        selectedOptions={formikBag.values.term ? [formikBag.values.term] : []}
+                        onToggleSelected={(optionValue, isSelected) => {
+                          if (!isSelected) {
+                            setTermInputValue('')
+                            form.setFieldValue('term', undefined)
+                            return
+                          }
+
+                          const selected = termSearchResult.find((o) => o.value === optionValue)
+                          setTermInputValue(String(selected?.label ?? ''))
+                          form.setFieldValue('term', optionValue)
+                        }}
                       />
                     </div>
                   )}
                 />
                 <Error fieldName="term" fullWidth />
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <FieldArray
                   name="sources"
                   render={(arrayHelpers: FieldArrayRenderProps) => (
                     <div>
                       <div className="mb-2 self-center">
-                        <LabelMedium>Kilder</LabelMedium>
+                        <Label>Kilder</Label>
                       </div>
-                      <Select
-                        options={getParsedOptions(EListName.THIRD_PARTY, formikBag.values.sources)}
-                        maxDropdownHeight="300px"
-                        onChange={({ option }) => {
-                          arrayHelpers.push(option ? option.id : null)
+                      <UNSAFE_Combobox
+                        label=""
+                        hideLabel
+                        options={getParsedOptions(
+                          EListName.THIRD_PARTY,
+                          formikBag.values.sources
+                        ).map((o: IGetParsedOptionsProps) => ({ value: o.id, label: o.label }))}
+                        value={''}
+                        onChange={() => undefined}
+                        selectedOptions={[]}
+                        onToggleSelected={(optionValue, isSelected) => {
+                          if (!isSelected) return
+                          arrayHelpers.push(optionValue)
                         }}
-                        error={
-                          !!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount
-                        }
                       />
                       {renderTagList(
                         codelistUtils.getShortnames(
@@ -250,14 +300,14 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   )}
                 />
                 <Error fieldName="sources" fullWidth />
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <FieldArray name="keywords">
                   {(arrayHelpers: FieldArrayRenderProps) => (
                     <div>
                       <div className="mb-2 self-center">
-                        <LabelMedium>Søkeord</LabelMedium>
+                        <Label>Søkeord</Label>
                       </div>
                       <div className="flex w-full">
                         <TextField
@@ -272,46 +322,55 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                           }}
                           ref={keywordsRef}
                         />
-                        <Button type="button" onClick={() => onAddKeyword(arrayHelpers)}>
-                          <PlusIcon aria-hidden />
-                        </Button>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          icon={<PlusIcon aria-hidden />}
+                          aria-label="Legg til søkeord"
+                          onClick={() => onAddKeyword(arrayHelpers)}
+                        />
                       </div>
                       {renderTagList(formikBag.values.keywords, arrayHelpers)}
                     </div>
                   )}
                 </FieldArray>
                 <Error fieldName="keywords" fullWidth />
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <div>
                   <div className="mb-2 self-center">
-                    <LabelMedium>Team</LabelMedium>
+                    <Label>Team</Label>
                   </div>
                   <FieldProductTeam
                     productTeams={formikBag.values.productTeams}
                     fieldName="productTeams"
                   />
                 </div>
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <FieldArray
                   name="categories"
                   render={(arrayHelpers: FieldArrayRenderProps) => (
                     <div>
                       <div className="mb-2 self-center">
-                        <LabelMedium>Kategorier</LabelMedium>
+                        <Label>Kategorier</Label>
                       </div>
-                      <Select
-                        options={getParsedOptions(EListName.CATEGORY, formikBag.values.categories)}
-                        maxDropdownHeight="300px"
-                        onChange={({ option }) => {
-                          arrayHelpers.push(option ? option.id : null)
+                      <UNSAFE_Combobox
+                        label=""
+                        hideLabel
+                        options={getParsedOptions(
+                          EListName.CATEGORY,
+                          formikBag.values.categories
+                        ).map((o: IGetParsedOptionsProps) => ({ value: o.id, label: o.label }))}
+                        value={''}
+                        onChange={() => undefined}
+                        selectedOptions={[]}
+                        onToggleSelected={(optionValue, isSelected) => {
+                          if (!isSelected) return
+                          arrayHelpers.push(optionValue)
                         }}
-                        error={
-                          !!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount
-                        }
                       />
                       {renderTagList(
                         codelistUtils.getShortnames(
@@ -324,14 +383,14 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   )}
                 />
                 <Error fieldName="categories" fullWidth />
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <Field name="description">
                   {({ field, form }: FieldProps) => (
                     <div>
                       <div className="mb-2 self-center">
-                        <LabelMedium>Nyttig å vite om opplysningstypen</LabelMedium>
+                        <Label>Nyttig å vite om opplysningstypen</Label>
                       </div>
                       <Textarea
                         label=""
@@ -346,76 +405,70 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                     </div>
                   )}
                 </Field>
-              </FlexGridItem>
+              </div>
 
-              <FlexGridItem>
+              <div>
                 <Field
                   name="sensitivity"
                   render={({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div>
                       <div className="mb-2 self-center">
-                        <LabelMedium>Type personopplysning</LabelMedium>
+                        <Label>Type personopplysning</Label>
                       </div>
 
-                      <Select
+                      <UNSAFE_Combobox
+                        label=""
+                        hideLabel
                         options={codelistUtils
                           .getParsedOptions(EListName.SENSITIVITY)
                           .filter(
                             (sensitivity: IGetParsedOptionsProps) =>
                               !sensitivity.label.includes('Ikke')
-                          )}
-                        value={sensitivityValue as Value}
-                        onChange={(params: OnChangeParams) => {
-                          const sensitivity = params.value.length ? params.value[0] : undefined
-                          setSensitivityValue(sensitivity as Option)
-                          form.setFieldValue(
-                            'sensitivity',
-                            sensitivity ? sensitivity.id : undefined
                           )
+                          .map((o: IGetParsedOptionsProps) => ({ value: o.id, label: o.label }))}
+                        value={sensitivityInputValue}
+                        onChange={(newValue) => {
+                          setSensitivityInputValue(newValue)
+                          const selected = codelistUtils
+                            .getParsedOptions(EListName.SENSITIVITY)
+                            .find((o: IGetParsedOptionsProps) => o.label === newValue)
+                          if (!selected) {
+                            form.setFieldValue('sensitivity', undefined)
+                          }
                         }}
-                        error={!!form.errors.sensitivity && !!form.submitCount}
+                        selectedOptions={
+                          formikBag.values.sensitivity ? [formikBag.values.sensitivity] : []
+                        }
+                        onToggleSelected={(optionValue, isSelected) => {
+                          if (!isSelected) {
+                            setSensitivityInputValue('')
+                            form.setFieldValue('sensitivity', undefined)
+                            return
+                          }
+                          const selected = codelistUtils
+                            .getParsedOptions(EListName.SENSITIVITY)
+                            .find((o: IGetParsedOptionsProps) => o.id === optionValue)
+                          setSensitivityInputValue(selected?.label || '')
+                          form.setFieldValue('sensitivity', optionValue)
+                        }}
                       />
                     </div>
                   )}
                 />
                 <Error fieldName="sensitivity" fullWidth />
-              </FlexGridItem>
-            </FlexGrid>
+              </div>
+            </div>
 
             <div className="flex mt-8 justify-end">
               <Button
                 type="button"
-                kind="secondary"
-                overrides={{
-                  BaseButton: {
-                    style: () => {
-                      return {
-                        alignContent: 'center',
-                        paddingRight: '4rem',
-                        paddingLeft: '4rem',
-                      }
-                    },
-                  },
-                }}
+                variant="secondary"
+                className="px-16"
                 onClick={() => window.history.back()}
               >
                 Avbryt
               </Button>
-              <Button
-                type="submit"
-                overrides={{
-                  BaseButton: {
-                    style: () => {
-                      return {
-                        alignContent: 'center',
-                        marginLeft: '1rem',
-                        paddingRight: '4rem',
-                        paddingLeft: '4rem',
-                      }
-                    },
-                  },
-                }}
-              >
+              <Button type="submit" className="ml-4 px-16">
                 Lagre
               </Button>
             </div>

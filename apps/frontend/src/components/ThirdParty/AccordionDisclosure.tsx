@@ -1,8 +1,5 @@
 import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Accordion, Modal } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
-import { Spinner } from 'baseui/spinner'
-import { ParagraphMedium, ParagraphSmall } from 'baseui/typography'
+import { Accordion, BodyLong, BodyShort, Link, Modal } from '@navikt/ds-react'
 import { Fragment, Key, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { getAlertForDisclosure } from '../../api/AlertApi'
@@ -24,6 +21,7 @@ import Button from '../common/Button/CustomButton'
 import DataText from '../common/DataText'
 import { DotTags } from '../common/DotTag'
 import { LegalBasisView } from '../common/LegalBasis'
+import { Spinner } from '../common/Spinner'
 import { TeamList } from '../common/Team'
 import ModalThirdParty from './ModalThirdPartyForm'
 import LinkListInformationType from './components/LinkListInformationType'
@@ -175,12 +173,12 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
                     {isLoading && (
                       <div className="p-2.5">
-                        <Spinner $size={theme.sizing.scale1200} />
+                        <Spinner size={theme.sizing.scale1200} />
                       </div>
                     )}
 
                     {!isLoading && (
-                      <div className="outline outline-4 outline-[#E2E2E2]">
+                      <div className="outline-solid outline-4 outline-[#E2E2E2]">
                         <div className="p-6">
                           <div className="w-full">
                             {showRecipient && (
@@ -217,13 +215,13 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
                             <DataText label="Dokument">
                               {selectedDisclosure?.documentId && (
-                                <StyledLink
+                                <Link
                                   href={`/document/${selectedDisclosure?.documentId}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
                                   {selectedDisclosure?.document?.name}
-                                </StyledLink>
+                                </Link>
                               )}
                               {!selectedDisclosure?.documentId && 'Ikke angitt'}
                             </DataText>
@@ -316,14 +314,14 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                           </div>
                         </div>
                         <div className="flex justify-end mb-4 mr-4">
-                          <ParagraphSmall>
+                          <BodyShort size="small">
                             {selectedDisclosure && (
                               <i>
                                 {`Sist endret av ${selectedDisclosure?.changeStamp?.lastModifiedBy} ,
                               ${lastModifiedDate(selectedDisclosure?.changeStamp?.lastModifiedDate)}`}
                               </i>
                             )}
-                          </ParagraphSmall>
+                          </BodyShort>
                         </div>
                       </div>
                     )}
@@ -362,9 +360,9 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
           header={{ heading: 'Bekreft sletting' }}
         >
           <Modal.Body>
-            <ParagraphMedium>
+            <BodyLong size="small">
               Bekreft sletting av utlevering {selectedDisclosure?.name}
-            </ParagraphMedium>
+            </BodyLong>
           </Modal.Body>
 
           <Modal.Footer>

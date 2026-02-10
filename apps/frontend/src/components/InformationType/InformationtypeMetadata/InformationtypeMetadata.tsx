@@ -1,6 +1,5 @@
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-import { Loader, Tabs } from '@navikt/ds-react'
-import { HeadingMedium, ParagraphSmall } from 'baseui/typography'
+import { BodyShort, Heading, Loader, Tabs } from '@navikt/ds-react'
 import { useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import { IDisclosure, IDocument, IInformationType, IPolicy } from '../../../constants'
@@ -64,7 +63,9 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
       {informationtype && (
         <>
           <div className="flex justify-between">
-            <HeadingMedium marginTop="0">{informationtype.name}</HeadingMedium>
+            <Heading level="1" size="medium" className="m-0">
+              {informationtype.name}
+            </Heading>
             {user.canWrite() && <InformationTypeBannerButtons id={informationtype.id} />}
           </div>
 
@@ -84,9 +85,9 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
                 </Button>
               </div>
             )}
-            <ParagraphSmall>
+            <BodyShort>
               <i>{`Sist endret av ${informationtype.changeStamp.lastModifiedBy}, ${lastModifiedDate(informationtype.changeStamp?.lastModifiedDate)}`}</i>
-            </ParagraphSmall>
+            </BodyShort>
           </div>
 
           <Tabs defaultValue="purposes">

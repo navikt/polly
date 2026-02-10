@@ -1,8 +1,6 @@
-import { Button as BButton, Button, KIND } from 'baseui/button'
-import { ButtonGroup } from 'baseui/button-group'
-import { Plus } from 'baseui/icon'
-import { HeadingLarge, LabelMedium } from 'baseui/typography'
-import { useEffect, useState } from 'react'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Button, Heading, Label, Loader, Search, ToggleGroup } from '@navikt/ds-react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import {
@@ -10,24 +8,15 @@ import {
   createDisclosure,
   getAll,
   getDisclosureSummaries,
-  getProcess,
 } from '../api/GetAllApi'
 import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import { ObjectLink } from '../components/common/RouteLink'
-import SearchProcess from '../components/common/SearchProcess'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import {
-  EObjectType,
-  IAaregAvtale,
-  IDisclosure,
-  IDisclosureFormValues,
-  IProcess,
-} from '../constants'
+import { EObjectType, IAaregAvtale, IDisclosure, IDisclosureFormValues } from '../constants'
 import { EListName } from '../service/Codelist'
 import { user } from '../service/User'
-import { theme } from '../util'
-import { checkForAaregDispatcher } from '../util/helper-functions'
+import { theme, useDebouncedState } from '../util'
 import { useQueryParam, useTable } from '../util/hooks'
 
 enum EFilterType {
@@ -40,20 +29,36 @@ export const DisclosureListPage = () => {
   const [newDisclosure, setNewDisclosure] = useState<IDisclosure>()
   const [error, setError] = useState<string>()
   const [disclosures, setDisclosures] = useState<IDisclosureSummary[]>([])
-  const [selectedProcess, setSelectedProcess] = useState<IProcess>()
-  const [table, sortColumn] = useTable<IDisclosureSummary, keyof IDisclosureSummary>(disclosures, {
-    sorting: {
-      name: (a, b) => a.name.localeCompare(b.name),
-      legalBases: (a, b) => a.legalBases - b.legalBases,
-      recipient: (a, b) => a.recipient.shortName.localeCompare(b.recipient.shortName),
-      processes: (a, b) => a.processes.length - b.processes.length,
-    },
-    initialSortColumn: 'name',
-  })
+  const [searchInput, setSearchInput] = useState('')
+  const [search, setSearch] = useDebouncedState('', 200)
+
+  const filteredDisclosures = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return disclosures
+
+    return disclosures.filter((d) => {
+      const nameMatch = d.name?.toLowerCase().includes(q)
+      const recipientMatch = d.recipient?.shortName?.toLowerCase().includes(q)
+      return !!nameMatch || !!recipientMatch
+    })
+  }, [disclosures, search])
+
+  const [table, sortColumn] = useTable<IDisclosureSummary, keyof IDisclosureSummary>(
+    filteredDisclosures,
+    {
+      sorting: {
+        name: (a, b) => a.name.localeCompare(b.name),
+        legalBases: (a, b) => a.legalBases - b.legalBases,
+        recipient: (a, b) => a.recipient.shortName.localeCompare(b.recipient.shortName),
+        processes: (a, b) => a.processes.length - b.processes.length,
+      },
+      initialSortColumn: 'name',
+    }
+  )
   const [aaregAvtaler, setAaregAvtaler] = useState<IAaregAvtale[]>([])
   const [showAaregAvtaleTable, setShowAaregAvtaleTable] = useState<boolean>(false)
+  const [isAaregAvtaleLoading, setAaregAvtaleLoading] = useState<boolean>(false)
   const filter = useQueryParam<EFilterType>('filter')
-  const processFilter = useQueryParam<string>('process')
   const navigate = useNavigate()
 
   const initialFormValues: IDisclosureFormValues = {
@@ -76,38 +81,37 @@ export const DisclosureListPage = () => {
 
   useEffect(() => {
     ;(async () => {
-      const all = selectedProcess
-        ? (await getAll(getDisclosureSummaries)()).filter((d) =>
-            d.processes.find((p) => p.id === selectedProcess.id)
-          )
-        : await getAll(getDisclosureSummaries)()
+      const all = await getAll(getDisclosureSummaries)()
       if (filter === EFilterType.emptylegalbases) setDisclosures(all.filter((d) => !d.legalBases))
       else if (filter === EFilterType.legalbases) setDisclosures(all.filter((d) => !!d.legalBases))
       else setDisclosures(all)
     })()
-  }, [filter, newDisclosure, selectedProcess])
+  }, [filter, newDisclosure])
 
   useEffect(() => {
+    let cancelled = false
+
     ;(async () => {
-      if (processFilter && processFilter.length >= 3) {
-        const process = await getProcess(processFilter)
-        if (process) {
-          setSelectedProcess(process)
-        }
-      } else {
-        setSelectedProcess(undefined)
+      if (!showAaregAvtaleTable) {
+        setAaregAvtaleLoading(false)
+        return
       }
-    })()
-  }, [processFilter])
 
-  useEffect(() => {
-    ;(async () => {
-      if ((selectedProcess && checkForAaregDispatcher(selectedProcess)) || showAaregAvtaleTable) {
+      try {
+        setAaregAvtaleLoading(true)
         const res = await searchAaregAvtale('avt')
-        setAaregAvtaler(res.content)
+        if (!cancelled) setAaregAvtaler(res.content)
+      } catch (e: any) {
+        if (!cancelled) setError(e?.message ?? 'Kunne ikke hente Aa-reg avtaler')
+      } finally {
+        if (!cancelled) setAaregAvtaleLoading(false)
       }
     })()
-  }, [selectedProcess, showAaregAvtaleTable])
+
+    return () => {
+      cancelled = true
+    }
+  }, [showAaregAvtaleTable])
 
   const handleCreateDisclosure = async (disclosure: IDisclosureFormValues) => {
     try {
@@ -119,81 +123,71 @@ export const DisclosureListPage = () => {
     }
   }
 
-  const handleFilterChange = (url: string) => {
-    if (selectedProcess) {
-      return url + '&process=' + processFilter
-    } else {
-      return url
-    }
-  }
-
   return (
     <>
       <div className="flex justify-between items-center">
-        <HeadingLarge>Utleveringer</HeadingLarge>
+        <Heading level="1" size="large">
+          Utleveringer
+        </Heading>
         <div>
-          <LabelMedium marginBottom={theme.sizing.scale600}>Filter behandlingsgrunnlag</LabelMedium>
-          <ButtonGroup
-            selected={!filter ? 0 : filter === EFilterType.legalbases ? 1 : 2}
-            mode="radio"
-            shape="pill"
+          <Label style={{ marginBottom: theme.sizing.scale200, display: 'block' }}>
+            Filter behandlingsgrunnlag
+          </Label>
+          <ToggleGroup
+            size="small"
+            value={!filter ? 'all' : filter}
+            onChange={(value) => {
+              if (!value) return
+              if (value === 'all') {
+                navigate('/disclosure?', { replace: true })
+              } else if (value === EFilterType.legalbases) {
+                navigate('/disclosure?filter=legalbases', { replace: true })
+              } else {
+                navigate('/disclosure?filter=emptylegalbases', { replace: true })
+              }
+            }}
           >
-            <BButton
-              onClick={() =>
-                navigate(handleFilterChange('/disclosure?'), {
-                  replace: true,
-                })
-              }
-            >
-              Alle
-            </BButton>
-            <BButton
-              onClick={() =>
-                navigate(handleFilterChange('/disclosure?filter=legalbases'), {
-                  replace: true,
-                })
-              }
-            >
-              Utfylt
-            </BButton>
-            <BButton
-              onClick={() =>
-                navigate(handleFilterChange('/disclosure?filter=emptylegalbases'), {
-                  replace: true,
-                })
-              }
-            >
-              Ufullstendig
-            </BButton>
-          </ButtonGroup>
+            <ToggleGroup.Item value="all">Alle</ToggleGroup.Item>
+            <ToggleGroup.Item value={EFilterType.legalbases}>Utfylt</ToggleGroup.Item>
+            <ToggleGroup.Item value={EFilterType.emptylegalbases}>Ufullstendig</ToggleGroup.Item>
+          </ToggleGroup>
         </div>
       </div>
       <div className="flex w-full mb-3">
-        <div className="flex flex-1">
-          <div className="flex flex-1">
-            <SearchProcess
-              selectedProcess={selectedProcess}
-              setSelectedProcess={setSelectedProcess}
-            />
-          </div>
-          <div className="ml-8px flex">
-            <Button size="compact" onClick={() => setShowAaregAvtaleTable(!showAaregAvtaleTable)}>
-              {' '}
-              {showAaregAvtaleTable ? 'Skjul Aa-reg avtaler' : 'Vis Aa-reg avtaler'}
-            </Button>
-          </div>
+        <div className="flex flex-1 items-center gap-2 flex-nowrap min-w-0">
+          <Search
+            className="flex-1 min-w-0"
+            label="Søk etter utleveringer"
+            hideLabel
+            size="small"
+            variant="simple"
+            placeholder="Søk på navn eller mottaker"
+            value={searchInput}
+            onChange={(value) => {
+              setSearchInput(value)
+              setSearch(value)
+            }}
+          />
+          <Button
+            className="shrink-0"
+            size="small"
+            variant="secondary"
+            loading={isAaregAvtaleLoading}
+            onClick={() => {
+              if (isAaregAvtaleLoading) return
+              setShowAaregAvtaleTable(!showAaregAvtaleTable)
+            }}
+          >
+            {showAaregAvtaleTable ? 'Skjul Aa-reg avtaler' : 'Vis Aa-reg avtaler'}
+          </Button>
         </div>
-        <div className="flex flex-1 justify-end">
+        <div className="flex flex-1 justify-end mt-2">
           {user.canWrite() && (
             <Button
-              size="compact"
-              kind={KIND.tertiary}
+              size="small"
+              variant="tertiary"
+              icon={<PlusCircleIcon aria-hidden />}
               onClick={() => setShowCreateModal(true)}
-              startEnhancer={() => (
-                <div className="flex justify-center">
-                  <Plus size={22} />
-                </div>
-              )}
             >
               Opprett ny utlevering
             </Button>
@@ -253,9 +247,13 @@ export const DisclosureListPage = () => {
           ))}
         </Table>
       )}
-      {((selectedProcess && checkForAaregDispatcher(selectedProcess)) || showAaregAvtaleTable) && (
+      {showAaregAvtaleTable && (
         <div className="mt-3">
-          <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
+          {isAaregAvtaleLoading ? (
+            <Loader size="large" className="flex justify-self-center" />
+          ) : (
+            <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
+          )}
         </div>
       )}
       <ModalThirdParty

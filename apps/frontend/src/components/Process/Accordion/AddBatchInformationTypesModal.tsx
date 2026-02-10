@@ -1,8 +1,6 @@
 import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Modal, Select } from '@navikt/ds-react'
-import { KIND } from 'baseui/button'
-import { LabelMedium, LabelSmall } from 'baseui/typography'
+import { BodyShort, Modal, Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
 import { getInformationTypesBy } from '../../../api/GetAllApi'
@@ -14,7 +12,6 @@ import {
   IProcess,
 } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
-import { theme } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import Button from '../../common/Button/CustomButton'
@@ -130,16 +127,16 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                 {!!addable.length && (
                                   <>
                                     <div className="flex flex-col">
-                                      <LabelMedium marginTop={theme.sizing.scale600}>
-                                        Opplysningstyper ja
-                                      </LabelMedium>
+                                      <BodyShort className="mt-4">Opplysningstyper</BodyShort>
                                       <div className="flex flex-col w-full mt-4">
                                         {addable.map((informationType: IInformationType) => (
                                           <div
                                             key={informationType.id}
                                             className="flex items-center my-1"
                                           >
-                                            <LabelMedium>{informationType.name}</LabelMedium>
+                                            <BodyShort className="mr-2">
+                                              {informationType.name}
+                                            </BodyShort>
                                             <Button
                                               size="xsmall"
                                               kind="tertiary"
@@ -159,14 +156,12 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                   </>
                                 )}
                                 {!addable.length && !infoTypes.length && (
-                                  <LabelMedium marginTop={theme.sizing.scale600}>
-                                    Ingen opplysningstyper
-                                  </LabelMedium>
+                                  <BodyShort className="mt-4">Ingen opplysningstyper</BodyShort>
                                 )}
                                 {!addable.length && !!infoTypes.length && (
-                                  <LabelMedium marginTop={theme.sizing.scale600}>
+                                  <BodyShort className="mt-4">
                                     Alle opplysningstyper lagt til
-                                  </LabelMedium>
+                                  </BodyShort>
                                 )}
 
                                 <div className="my-4 w-full border-solid border-b-[1px]" />
@@ -178,7 +173,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                 (informationTypeMap: IDocumentInfoTypeUse, index: number) => (
                                   <Fragment key={informationTypeMap.informationType.id}>
                                     <div className="flex justify-between items-center my-1">
-                                      <LabelMedium>
+                                      <BodyShort>
                                         <Sensitivity
                                           sensitivity={
                                             informationTypeMap.informationType.sensitivity
@@ -187,12 +182,10 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                         />
                                         &nbsp;
                                         {informationTypeMap.informationType.name}
-                                      </LabelMedium>
+                                      </BodyShort>
 
                                       <div className="w-[60%] flex item-center">
-                                        <LabelSmall marginRight={theme.sizing.scale100}>
-                                          Personkategori:{' '}
-                                        </LabelSmall>
+                                        <BodyShort className="mr-2">Personkategori:</BodyShort>
                                         <Select
                                           label="velg personkategori"
                                           hideLabel
@@ -256,7 +249,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
               <Modal.Footer>
                 <div className="flex justify-end">
                   <div className="self-end">{error && <p>{error}</p>}</div>
-                  <Button type="button" kind={KIND.tertiary} onClick={onCloseModal}>
+                  <Button type="button" kind="tertiary" onClick={onCloseModal}>
                     Avbryt
                   </Button>
                   <Button type="submit">Legg til</Button>

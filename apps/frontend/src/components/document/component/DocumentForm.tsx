@@ -1,7 +1,4 @@
-import { Label, Select, TextField, Textarea } from '@navikt/ds-react'
-import { StyledLink } from 'baseui/link'
-import { Notification } from 'baseui/notification'
-import { LabelMedium } from 'baseui/typography'
+import { Alert, Label, Link, Select, TextField, Textarea } from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -102,7 +99,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
                       description={
                         <div>
                           Mer informasjon finner du{' '}
-                          <StyledLink
+                          <Link
                             target="_blank"
                             rel="noopener noreferrer"
                             href={
@@ -110,7 +107,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
                             }
                           >
                             her (åpnes i ny fane)
-                          </StyledLink>
+                          </Link>
                         </div>
                       }
                     />
@@ -137,7 +134,9 @@ const DocumentForm = (props: TDocumentFormProps) => {
           </div>
 
           <div className="mt-12">
-            <LabelMedium marginBottom="2rem">Opplysningstyper i dokumentet</LabelMedium>
+            <Label style={{ marginBottom: '2rem', display: 'block' }}>
+              Opplysningstyper i dokumentet
+            </Label>
             <FieldArray
               name="informationTypes"
               render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -148,7 +147,9 @@ const DocumentForm = (props: TDocumentFormProps) => {
           <div className="flex justify-end mt-2.5">
             {errorMessage && (
               <div className="mr-6">
-                <Notification kind="negative">{errorMessage}</Notification>
+                <Alert variant="error" size="small">
+                  {errorMessage}
+                </Alert>
               </div>
             )}
 

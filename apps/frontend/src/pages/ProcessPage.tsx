@@ -1,4 +1,4 @@
-import { HeadingSmall } from 'baseui/typography'
+import { Heading } from '@navikt/ds-react'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { generatePath, useLocation, useParams } from 'react-router'
@@ -127,7 +127,9 @@ const ProcessPage = () => {
                 thirdTabTitle="Dashboard"
                 thirdTabContent={
                   <div className="mb-12">
-                    <HeadingSmall>Oversikt</HeadingSmall>
+                    <Heading size="small" level="2">
+                      Oversikt
+                    </Heading>
                     {chartData && (
                       <Charts
                         chartData={chartData}

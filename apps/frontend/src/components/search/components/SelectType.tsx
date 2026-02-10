@@ -1,5 +1,4 @@
-import { RadioGroup } from 'baseui/radio'
-import { ChangeEvent } from 'react'
+import { RadioGroup } from '@navikt/ds-react'
 import { TSearchType } from '../../../constants'
 import { SmallRadio } from './SmallRadio'
 
@@ -12,13 +11,13 @@ export const SelectType = (props: IProps) => {
   const { type, setType } = props
 
   return (
-    <div className="text-sm absolute mt-[-4px] bg-[#F6F6F6] w-[40vw] rounded-l-lg rounded-r-lg">
-      <div className="mx-[3px] mb-[3px]">
+    <div className="text-sm absolute -mt-1 bg-[#F6F6F6] w-[40vw] rounded-l-lg rounded-r-lg">
+      <div className="mx-0.75 mb-0.75">
         <RadioGroup
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            setType(event.target.value as TSearchType)
-          }
-          align="horizontal"
+          onChange={(value) => setType(value as TSearchType)}
+          className="flex flex-wrap"
+          legend=""
+          hideLegend
           value={type}
         >
           {SmallRadio('all', 'Alle')}

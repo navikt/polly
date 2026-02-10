@@ -1,5 +1,5 @@
-import { Select, Value } from 'baseui/select'
-import { useEffect, useState } from 'react'
+import { UNSAFE_Combobox } from '@navikt/ds-react'
+import { useEffect, useMemo, useState } from 'react'
 import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 
@@ -10,31 +10,51 @@ const FieldSubjectCategory = (props: {
 }) => {
   const { documentInformationType, handleChange, codelistUtils } = props
 
-  const [value, setValue] = useState<Value>(
-    documentInformationType.subjectCategories.map((subjectCategory: ICode) => {
-      return { id: subjectCategory?.code, label: subjectCategory?.shortName }
-    })
+  const [selected, setSelected] = useState<{ label: string; value: string }[]>(
+    documentInformationType.subjectCategories.map((subjectCategory: ICode) => ({
+      value: subjectCategory?.code,
+      label: subjectCategory?.shortName,
+    }))
+  )
+
+  const comboboxOptions = useMemo(
+    () =>
+      codelistUtils.getParsedOptions(EListName.SUBJECT_CATEGORY).map((o: any) => ({
+        label: o.label,
+        value: o.id,
+      })),
+    [codelistUtils]
   )
 
   useEffect(() => {
     handleChange({
       ...documentInformationType,
-      subjectCategories: [...value].map((category) => category.id as string),
+      subjectCategories: selected.map((category) => category.value),
     })
   }, [])
 
   return (
-    <Select
-      options={codelistUtils.getParsedOptions(EListName.SUBJECT_CATEGORY)}
-      onChange={({ value }) => {
-        setValue(value)
+    <UNSAFE_Combobox
+      label="Subjektkategori"
+      hideLabel
+      options={comboboxOptions}
+      filteredOptions={comboboxOptions}
+      isMultiSelect
+      selectedOptions={selected}
+      onToggleSelected={(optionValue, isSelected) => {
+        const option = comboboxOptions.find((o) => o.value === optionValue)
+        if (!option) return
+
+        const next = isSelected
+          ? [...selected, option]
+          : selected.filter((s) => s.value !== optionValue)
+
+        setSelected(next)
         handleChange({
           ...documentInformationType,
-          subjectCategories: [...value].map((category) => category.id as string),
+          subjectCategories: next.map((category) => category.value),
         })
       }}
-      value={value}
-      multi
     />
   )
 }

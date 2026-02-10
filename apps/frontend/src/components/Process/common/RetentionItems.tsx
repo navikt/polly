@@ -31,26 +31,30 @@ const RetentionItems = (props: IProps) => {
 
   return (
     <>
-      <div className="flex w-full mt-0">
-        <ModalLabel label="Omfattes av NAVs bevarings- og kassasjonsvedtak?" />
-        <BoolField
-          fieldName="retention.retentionPlan"
-          value={formikBag.values.retention.retentionPlan}
-        />
+      <div className="w-full mt-0">
+        <ModalLabel fullwidth label="Omfattes av NAVs bevarings- og kassasjonsvedtak?" />
+        <div className="mt-2">
+          <BoolField
+            fieldName="retention.retentionPlan"
+            value={formikBag.values.retention.retentionPlan}
+            direction="horizontal"
+          />
+        </div>
       </div>
 
       {
         <>
-          <div className="flex w-full mt-4">
+          <div className="w-full mt-4">
             <ModalLabel
+              fullwidth
               label="Lagringsbehov for NAV"
               tooltip="Det er hvor lenge NAV har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket."
             />
             <Field
               name="retention.retentionMonths"
               render={() => (
-                <>
-                  <div className="w-1/2 mr-6">
+                <div className="mt-2 flex gap-6">
+                  <div className="w-1/2">
                     <TextField
                       label="År"
                       size="small"
@@ -65,7 +69,7 @@ const RetentionItems = (props: IProps) => {
                       }}
                     />
                   </div>
-                  <div className="w-1/2 ml-6">
+                  <div className="w-1/2">
                     <TextField
                       label="Måneder"
                       size="small"
@@ -80,36 +84,39 @@ const RetentionItems = (props: IProps) => {
                       }}
                     />
                   </div>
-                </>
+                </div>
               )}
             />
           </div>
-          <Error fieldName="retention.retentionMonths" />
+          <Error fieldName="retention.retentionMonths" fullWidth={true} />
 
-          <div className="flex w-full mt-4">
+          <div className="w-full mt-4">
             <ModalLabel
+              fullwidth
               label="Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse"
               tooltip="Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l."
             />
-            <div className="w-full">
+            <div className="mt-2 w-full">
               <FieldInput
                 fieldName="retention.retentionStart"
                 fieldValue={formikBag.values.retention.retentionStart}
               />
             </div>
           </div>
-          <Error fieldName="retention.retentionStart" />
+          <Error fieldName="retention.retentionStart" fullWidth={true} />
         </>
       }
-      <div className="flex w-full mt-4">
-        <ModalLabel label="Ref. til relevant dokumentasjon" />
-        <FieldInput
-          fieldName="retention.retentionDescription"
-          fieldValue={formikBag.values.retention.retentionDescription}
-          placeHolder="(f.eks. lenke til Public 360, Confluence e.l.)"
-        />
+      <div className="w-full mt-4">
+        <ModalLabel fullwidth label="Ref. til relevant dokumentasjon" />
+        <div className="mt-2">
+          <FieldInput
+            fieldName="retention.retentionDescription"
+            fieldValue={formikBag.values.retention.retentionDescription}
+            placeHolder="(f.eks. lenke til Public 360, Confluence e.l.)"
+          />
+        </div>
       </div>
-      <Error fieldName="retention.retentionDescription" />
+      <Error fieldName="retention.retentionDescription" fullWidth={true} />
     </>
   )
 }

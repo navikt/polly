@@ -1,9 +1,4 @@
-import { faPen } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Detail, Select } from '@navikt/ds-react'
-import { StatefulInput } from 'baseui/input'
-import { KIND as NKIND, Notification } from 'baseui/notification'
-import { LabelMedium } from 'baseui/typography'
+import { Alert, Button, Detail, Label, Select, TextField } from '@navikt/ds-react'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
@@ -14,7 +9,6 @@ import {
   IGetParsedOptionsProps,
 } from '../../../service/Codelist'
 import { LegalBasisView } from '../../common/LegalBasis'
-import { paddingZero } from '../../common/Style'
 import { legalBasisSchema } from '../../common/schemaValidation'
 import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
 
@@ -22,12 +16,9 @@ const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
     {(msg: any) => (
       <div className="flex mt-4 w-full">
-        <Notification
-          overrides={{ Body: { style: { width: 'auto', ...paddingZero, marginTop: 0 } } }}
-          kind={NKIND.negative}
-        >
+        <Alert variant="error" size="small" className="w-full">
           {msg}
-        </Notification>
+        </Alert>
       </div>
     )}
   </ErrorMessage>
@@ -35,7 +26,7 @@ const Error = (props: { fieldName: string }) => (
 
 const renderCardHeader = (text: string, sensitivityLevel: ESensitivityLevel) => (
   <div>
-    <LabelMedium>{text}</LabelMedium>
+    <Label>{text}</Label>
     <Detail>
       {sensitivityLevel === ESensitivityLevel.ART6
         ? 'Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'
@@ -159,16 +150,13 @@ const CardLegalBasis = ({
             <Field
               name="description"
               render={({ field }: FieldProps<string, ILegalBasisFormValues>) => (
-                <StatefulInput
+                <TextField
                   {...field}
-                  initialState={{ value: initValue.description }}
+                  className="w-full"
+                  label="Beskrivelse"
+                  hideLabel
                   placeholder={customizeNationalLawPlaceholder(form.values.gdpr || '')}
                   error={!!form.errors.description && !!form.submitCount}
-                  startEnhancer={() => (
-                    <span>
-                      <FontAwesomeIcon icon={faPen} />
-                    </span>
-                  )}
                 />
               )}
             />

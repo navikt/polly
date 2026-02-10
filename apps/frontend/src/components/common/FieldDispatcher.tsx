@@ -45,7 +45,7 @@ const FieldDispatcher = (props: TFieldDispatcherProps) => {
                   ))}
               </Select>
             </div>
-            <div>
+            <div className="mt-2 flex flex-wrap gap-2">
               {renderTagList(
                 formikBag.values.affiliation.disclosureDispatchers.map((disclosureDispatcher) =>
                   codelistUtils.getShortname(EListName.SYSTEM, disclosureDispatcher)

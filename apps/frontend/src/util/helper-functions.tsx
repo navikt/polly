@@ -1,5 +1,4 @@
-import { StyledLink } from 'baseui/link'
-import { StatefulTooltip } from 'baseui/tooltip'
+import { Link, Tooltip } from '@navikt/ds-react'
 import { KeyboardEvent } from 'react'
 import { IProcess } from '../constants'
 import { ICode } from '../service/Codelist'
@@ -17,11 +16,11 @@ export const shortenLinksInText = (text: string) => {
     if (isLink(word)) {
       return (
         <span key={index}>
-          <StatefulTooltip content={word}>
-            <StyledLink href={word} target="_blank" rel="noopener noreferrer">
+          <Tooltip content={word}>
+            <Link href={word} target="_blank" rel="noopener noreferrer">
               se ekstern lenke
-            </StyledLink>
-          </StatefulTooltip>
+            </Link>
+          </Tooltip>
           &nbsp;
         </span>
       )

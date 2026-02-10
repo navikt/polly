@@ -148,6 +148,11 @@ const ComparisonView = (props: TComparisonViewProps) => {
               auditLog && auditLog.audits[index + 1] ? auditLog.audits[index + 1].data : {},
               audit.data
             )}
+            bgColour={{
+              add: '#a5d6a7',
+              remove: '#ef9a9a',
+              modify: '#ffe082',
+            }}
             highlightInlineDiff={true}
             lineNumbers={true}
             indent={4}

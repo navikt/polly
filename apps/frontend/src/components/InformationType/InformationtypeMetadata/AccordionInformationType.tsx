@@ -1,16 +1,13 @@
 import { faUsersCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Accordion, Panel } from 'baseui/accordion'
-import { ParagraphMedium } from 'baseui/typography'
+import { Accordion, BodyShort } from '@navikt/ds-react'
 import queryString from 'query-string'
-import { Key } from 'react'
+import { useState } from 'react'
 import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router'
 import { IPolicy } from '../../../constants'
 import { TPurposeMap } from '../../../pages/InformationtypePage'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { useQueryParam } from '../../../util/hooks'
-import { toggleOverride } from '../../common/Accordion'
-import { paddingZero } from '../../common/Style'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 
 const reducePolicyList = (list: IPolicy[]) => {
@@ -37,44 +34,42 @@ const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
   const selectedPurpose = useQueryParam('purpose')
   const navigate: NavigateFunction = useNavigate()
   const location: Location<any> = useLocation()
+  const [openPurpose, setOpenPurpose] = useState<string | undefined>(selectedPurpose || undefined)
 
-  if (!policies) return <ParagraphMedium>Fant ingen formål</ParagraphMedium>
-  if (!codelistUtils.isLoaded())
-    return <ParagraphMedium>Kunne ikke laste inn siden</ParagraphMedium>
+  if (!policies) return <BodyShort>Fant ingen formål</BodyShort>
+  if (!codelistUtils.isLoaded()) return <BodyShort>Kunne ikke laste inn siden</BodyShort>
 
   const purposeMap: TPurposeMap = reducePolicyList(policies)
   const getPolicylistForPurpose = (purpose: string): IPolicy[] =>
     !purposeMap[purpose] ? [] : purposeMap[purpose]
 
   return (
-    <Accordion
-      initialState={{ expanded: selectedPurpose ? [selectedPurpose] : [] }}
-      onChange={(key) => {
-        const pathname: string = location.pathname
-        const purpose: Key = key.expanded[0]
-        navigate(pathname + '?' + queryString.stringify({ purpose }, { skipNull: true }))
-      }}
-    >
+    <Accordion>
       {Object.keys(purposeMap).map((key: string) => (
-        <Panel
-          title={
+        <Accordion.Item
+          key={key}
+          open={openPurpose === key}
+          onOpenChange={(open) => {
+            const pathname: string = location.pathname
+            const purpose = open ? key : undefined
+            setOpenPurpose(purpose)
+            navigate(pathname + '?' + queryString.stringify({ purpose }, { skipNull: true }))
+          }}
+        >
+          <Accordion.Header>
             <span>
               <FontAwesomeIcon icon={faUsersCog} />{' '}
               {codelistUtils.getShortname(EListName.PURPOSE, key)}
             </span>
-          }
-          key={key}
-          overrides={{
-            ToggleIcon: toggleOverride,
-            Content: { style: paddingZero },
-          }}
-        >
-          <InformationtypePolicyTable
-            policies={getPolicylistForPurpose(key)}
-            showPurpose={false}
-            codelistUtils={codelistUtils}
-          />
-        </Panel>
+          </Accordion.Header>
+          <Accordion.Content className="p-0">
+            <InformationtypePolicyTable
+              policies={getPolicylistForPurpose(key)}
+              showPurpose={false}
+              codelistUtils={codelistUtils}
+            />
+          </Accordion.Content>
+        </Accordion.Item>
       ))}
     </Accordion>
   )

@@ -1,4 +1,4 @@
-import { Tag, VARIANT } from 'baseui/tag'
+import { Chips } from '@navikt/ds-react'
 import { FieldArrayRenderProps } from 'formik'
 import { Fragment } from 'react/jsx-runtime'
 
@@ -9,20 +9,9 @@ export function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProp
         ? list.map((item: string, index: number) => (
             <Fragment key={index}>
               {item ? (
-                <Tag
-                  key={item}
-                  variant={VARIANT.outlined}
-                  onActionClick={() => arrayHelpers.remove(index)}
-                  overrides={{
-                    Text: {
-                      style: {
-                        maxWidth: '550px',
-                      },
-                    },
-                  }}
-                >
+                <Chips.Removable key={item} onClick={() => arrayHelpers.remove(index)}>
                   {item}
-                </Tag>
+                </Chips.Removable>
               ) : null}
             </Fragment>
           ))

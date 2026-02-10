@@ -1,4 +1,4 @@
-import { StyledLink } from 'baseui/link'
+import { Link } from '@navikt/ds-react'
 import { Fragment } from 'react/jsx-runtime'
 import { slackRedirectUrl } from '../../util/config'
 
@@ -19,9 +19,9 @@ export const SlackLink = (props: IProps) => {
     <>
       {channels.map((channel: string, index: number) => (
         <Fragment key={index}>
-          <StyledLink href={slackRedirectUrl(channel)} target="_blank" rel="noopener noreferrer">
+          <Link href={slackRedirectUrl(channel)} target="_blank" rel="noopener noreferrer">
             #{channel}
-          </StyledLink>
+          </Link>
           {index < len - 1 && <span>, </span>}
         </Fragment>
       ))}
