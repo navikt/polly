@@ -30,7 +30,7 @@
         <docx4j.version>11.5.9</docx4j.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
 
-        <microsoft-graph.version>6.61.0</microsoft-graph.version>
+        <microsoft-graph.version>6.60.0</microsoft-graph.version>
         <msal4j.version>1.24.0</msal4j.version>
         <graphql.version>24.0</graphql.version>
 
