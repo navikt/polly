@@ -59,8 +59,8 @@ class ProcessJsonBinaryTypeIT extends IntegrationTestBase {
         assertThat(afterUpdate.getData().getAffiliation().getDepartment()).isEqualTo("DEP-B");
 
         // If dirty-checking failed, we'd typically not see an UPDATE reflected in DB.
-        // (We also expect LAST_MODIFIED_DATE to move forward, but DB value check is the main assertion.)
+        // The LAST_MODIFIED_DATE must move forward to confirm an UPDATE occurred.
         assertThat(afterUpdate.getLastModifiedDate()).isNotNull();
-        assertThat(afterUpdate.getLastModifiedDate()).isAfterOrEqualTo(lastModifiedBefore);
+        assertThat(afterUpdate.getLastModifiedDate()).isAfter(lastModifiedBefore);
     }
 }

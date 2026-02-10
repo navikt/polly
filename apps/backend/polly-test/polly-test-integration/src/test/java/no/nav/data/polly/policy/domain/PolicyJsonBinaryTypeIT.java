@@ -67,8 +67,8 @@ class PolicyJsonBinaryTypeIT extends IntegrationTestBase {
         assertThat(afterUpdate.getData().getLegalBases().get(0).getDescription()).isEqualTo("Updated description");
 
         // If dirty-checking failed, we'd typically not see an UPDATE reflected in DB.
-        // (We also expect LAST_MODIFIED_DATE to move forward, but DB value check is the main assertion.)
+        // The LAST_MODIFIED_DATE must move forward to confirm an UPDATE occurred.
         assertThat(afterUpdate.getLastModifiedDate()).isNotNull();
-        assertThat(afterUpdate.getLastModifiedDate()).isAfterOrEqualTo(lastModifiedBefore);
+        assertThat(afterUpdate.getLastModifiedDate()).isAfter(lastModifiedBefore);
     }
 }
