@@ -231,16 +231,17 @@ export const DisclosureListPage = () => {
                 </ObjectLink>
               </Cell>
               <Cell>
-                <div className="flex flex-col">
+                <ul className="flex flex-col pl-4 list-disc">
                   {data.processes.map((process) => (
-                    <div key={process.id} className="mr-2.5">
+                    <li key={process.id} className="mr-2.5">
                       <ObjectLink id={process.id} type={EObjectType.PROCESS}>
+                        B{process.number}{' '}
                         {process.purposes.map((purpose) => purpose.shortName).join(', ')}:{' '}
                         {process.name}
                       </ObjectLink>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </Cell>
               <Cell>{data.legalBases ? 'Ja' : 'Nei'}</Cell>
             </Row>
