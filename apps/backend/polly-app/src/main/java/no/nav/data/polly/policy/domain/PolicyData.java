@@ -44,4 +44,12 @@ public class PolicyData implements Serializable {
     public void setDocumentIds(List<UUID> documentIds) {
         this.documentIds = documentIds == null ? new ArrayList<>() : new ArrayList<>(documentIds);
     }
+
+    public static class PolicyDataBuilder {
+        public PolicyDataBuilder documentIds(List<UUID> documentIds) {
+            this.documentIds$value = documentIds == null ? new ArrayList<>() : new ArrayList<>(documentIds);
+            this.documentIds$set = true;
+            return this;
+        }
+    }
 }
