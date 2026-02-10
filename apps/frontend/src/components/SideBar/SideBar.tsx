@@ -18,7 +18,7 @@ const SideBar = () => (
           text="Behandlinger"
           tooltip="En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon"
         />
-        <NavItem to="/dpprocess" text="NAV som databehandler" noWrap />
+        <NavItem to="/dpprocess" text="Nav som databehandler" noWrap />
         <NavItem
           to="/informationtype"
           text="Opplysningstyper"
