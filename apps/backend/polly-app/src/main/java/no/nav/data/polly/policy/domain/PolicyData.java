@@ -38,15 +38,10 @@ public class PolicyData implements Serializable {
     @NotNull
     @Singular("legalBasis")
     private List<LegalBasis> legalBases;
-    @Singular
-    private List<UUID> documentIds;
+    @Builder.Default
+    private List<UUID> documentIds = new ArrayList<>();
 
-    public List<UUID> getDocumentIds() {
-        if (documentIds == null) {
-            documentIds = new ArrayList<>();
-        } else if (!(documentIds instanceof ArrayList)) {
-            documentIds = new ArrayList<>(documentIds);
-        }
-        return documentIds;
+    public void setDocumentIds(List<UUID> documentIds) {
+        this.documentIds = documentIds == null ? new ArrayList<>() : new ArrayList<>(documentIds);
     }
 }
