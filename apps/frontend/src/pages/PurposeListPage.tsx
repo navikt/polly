@@ -1,6 +1,6 @@
 import { faFileWord, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { BodyShort, Button, Heading, Modal } from '@navikt/ds-react'
+import { BodyShort, Button, Heading, LocalAlert, Modal } from '@navikt/ds-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import {
@@ -25,6 +25,7 @@ export const PurposeListPage = () => {
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const [exportDownloading, setExportDownloading] = useState<'internal' | 'external' | null>(null)
   const [exportError, setExportError] = useState<string | null>(null)
+  const [exportSuccess, setExportSuccess] = useState<string | null>(null)
   const [codelistUtils] = CodelistService()
 
   const downloadFile = async (url: string, fallbackFilename: string) => {
@@ -59,9 +60,15 @@ export const PurposeListPage = () => {
         : `${env.pollyBaseUrl}/export/process/allpurpose?documentAccess=EXTERNAL`
 
     setExportError(null)
+    setExportSuccess(null)
     setExportDownloading(type)
     try {
       await downloadFile(url, `export-${type}.docx`)
+      setExportSuccess(
+        type === 'internal'
+          ? 'Eksport for intern bruk lastet ned.'
+          : 'Eksport for ekstern bruk lastet ned.'
+      )
     } catch (e) {
       // Fallback to regular download navigation (works even if CORS prevents fetch)
       try {
@@ -112,7 +119,11 @@ export const PurposeListPage = () => {
               <Button
                 className="mr-4"
                 variant="secondary"
-                onClick={() => setIsExportModalOpen(true)}
+                onClick={() => {
+                  setExportError(null)
+                  setExportSuccess(null)
+                  setIsExportModalOpen(true)
+                }}
               >
                 <FontAwesomeIcon icon={faFileWord} />
                 &nbsp;Eksportér alle behandlinger
@@ -145,7 +156,11 @@ export const PurposeListPage = () => {
           header={{ heading: 'Velg eksport metode' }}
           open={isExportModalOpen}
           onClose={() => {
-            if (!exportDownloading) setIsExportModalOpen(false)
+            if (!exportDownloading) {
+              setIsExportModalOpen(false)
+              setExportError(null)
+              setExportSuccess(null)
+            }
           }}
         >
           <Modal.Body>
@@ -175,6 +190,14 @@ export const PurposeListPage = () => {
               </Button>
             </div>
 
+            {exportSuccess && (
+              <LocalAlert status="success" className="mt-3" role="status" aria-live="polite">
+                <LocalAlert.Header>
+                  <LocalAlert.Title>Eksport velykket</LocalAlert.Title>
+                </LocalAlert.Header>
+                <LocalAlert.Content>{exportSuccess}</LocalAlert.Content>
+              </LocalAlert>
+            )}
             {exportError && <BodyShort className="mt-3">{exportError}</BodyShort>}
           </Modal.Body>
         </Modal>
