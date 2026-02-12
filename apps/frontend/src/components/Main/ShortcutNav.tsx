@@ -25,7 +25,10 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
             boxShadow: hover
               ? '0px 4px 2px -1px rgba(0,0,0,0.7)'
               : '0px 0px 6px 3px rgba(0,0,0,0.08)',
-            border: hover ? `2px solid ${primitives.primary300}` : '1px solid #F3F3F3',
+            boxSizing: 'border-box',
+            border: '1px solid #F3F3F3',
+            outline: hover ? '2px solid black' : `2px solid ${primitives.primary300}`,
+            outlineOffset: 0,
             borderRadius: 10,
           }}
         >
