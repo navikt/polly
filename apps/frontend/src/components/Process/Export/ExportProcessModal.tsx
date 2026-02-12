@@ -1,6 +1,5 @@
 import { faFileWord } from '@fortawesome/free-solid-svg-icons'
-import { BodyLong, Loader, Modal } from '@navikt/ds-react'
-import axios from 'axios'
+import { BodyLong, Loader, LocalAlert, Modal } from '@navikt/ds-react'
 import { FunctionComponent, useState } from 'react'
 import { EListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
@@ -22,22 +21,55 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const [isExportLoading, setIsExportLoading] = useState<boolean>(false)
   const [exportError, setExportError] = useState<string>('')
+  const [exportSuccess, setExportSuccess] = useState<string>('')
 
-  const handleExport = async (exportUrl: string) => {
+  const downloadFile = async (url: string, fallbackFilename: string) => {
+    const response = await fetch(url, { credentials: 'include' })
+    if (!response.ok) {
+      throw new Error(`Nedlasting feilet (${response.status})`)
+    }
+
+    const contentDisposition = response.headers.get('content-disposition')
+    const filenameMatch = contentDisposition?.match(
+      /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/
+    )
+    const filename = decodeURIComponent(
+      filenameMatch?.[1] ?? filenameMatch?.[2] ?? fallbackFilename
+    )
+
+    const blob = await response.blob()
+    const blobUrl = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(blobUrl)
+  }
+
+  const handleExport = async (exportUrl: string, type: 'internal' | 'external') => {
     setIsExportLoading(true)
     setExportError('')
-    await axios
-      .get(exportUrl)
-      .then(() => {
-        window.location.href = exportUrl
-        setIsExportModalOpen(false)
-      })
-      .catch((error: any) => {
-        setExportError(error.response.data.message)
-      })
-      .finally(() => {
-        setIsExportLoading(false)
-      })
+    setExportSuccess('')
+    try {
+      await downloadFile(exportUrl, 'export.docx')
+      setExportSuccess(
+        type === 'internal'
+          ? 'Eksport for intern bruk lastet ned.'
+          : 'Eksport for ekstern bruk lastet ned.'
+      )
+    } catch (e) {
+      // Fallback to regular download navigation (works even if fetch is blocked)
+      try {
+        window.location.assign(exportUrl)
+      } catch {
+        const message = e instanceof Error ? e.message : 'Nedlasting feilet'
+        setExportError(message)
+      }
+    } finally {
+      setIsExportLoading(false)
+    }
   }
 
   const listNameToUrl = () =>
@@ -56,7 +88,11 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
   return (
     <>
       <Button
-        onClick={() => setIsExportModalOpen(true)}
+        onClick={() => {
+          setExportError('')
+          setExportSuccess('')
+          setIsExportModalOpen(true)
+        }}
         kind="outline"
         size="xsmall"
         icon={faFileWord}
@@ -67,7 +103,13 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
       {isExportModalOpen && (
         <Modal
           open={isExportModalOpen}
-          onClose={() => setIsExportModalOpen(false)}
+          onClose={() => {
+            if (!isExportLoading) {
+              setIsExportModalOpen(false)
+              setExportError('')
+              setExportSuccess('')
+            }
+          }}
           header={{ heading: 'Velg eksportmetode' }}
         >
           <Modal.Body>
@@ -84,7 +126,7 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                     const exportUrl = exportHref
                       ? exportHref
                       : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`
-                    await handleExport(exportUrl)
+                    await handleExport(exportUrl, 'internal')
                   }}
                 >
                   Eksport for intern bruk
@@ -98,12 +140,21 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                     const exportUrl = exportHref
                       ? exportHref
                       : `${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}&documentAccess=EXTERNAL`
-                    await handleExport(exportUrl)
+                    await handleExport(exportUrl, 'external')
                   }}
                 >
                   Eksport for ekstern bruk
                 </Button>
               </>
+            )}
+
+            {exportSuccess !== '' && (
+              <LocalAlert status="success" className="mt-3" role="status" aria-live="polite">
+                <LocalAlert.Header>
+                  <LocalAlert.Title>Eksport velykket</LocalAlert.Title>
+                </LocalAlert.Header>
+                <LocalAlert.Content>{exportSuccess}</LocalAlert.Content>
+              </LocalAlert>
             )}
           </Modal.Body>
         </Modal>
