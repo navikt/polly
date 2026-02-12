@@ -185,6 +185,7 @@ const DpProcessView = () => {
                 list={EListName.SYSTEM}
                 codes={dpProcess.affiliation.products}
                 linkCodelist
+                direction="column"
                 codelistUtils={codelistUtils}
               />
             )}

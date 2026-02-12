@@ -85,14 +85,20 @@ type TDotTagsParams = {
   markdown?: boolean
   list?: EListName
   noFlex?: boolean
+  direction?: 'row' | 'column'
   wrapText?: boolean
   codelistUtils: ICodelistProps
   customId?: string
 }
 
 export const DotTags = (props: TDotTagsParams) => {
-  const { commaSeparator, codes, noFlex, wrapText, codelistUtils } = props
+  const { commaSeparator, codes, noFlex, direction, wrapText, codelistUtils } = props
   const items = props.items || codes?.map((code) => code.code) || []
+
+  const isColumn = direction === 'column'
+  const containerClassName = isColumn
+    ? 'flex flex-col gap-1'
+    : `${noFlex ? 'block' : 'flex'} flex-wrap`
 
   return (
     <>
@@ -108,9 +114,12 @@ export const DotTags = (props: TDotTagsParams) => {
         </div>
       )}
       {!commaSeparator && items.length > 0 && (
-        <div className={`${noFlex ? 'Block' : 'flex'} flex-wrap`}>
+        <div className={containerClassName}>
           {items.map((item: string, index: number) => (
-            <div key={index} className={`${index < items.length ? 'mr-1.5' : '0px'}`}>
+            <div
+              key={index}
+              className={isColumn ? '' : `${index < items.length ? 'mr-1.5' : '0px'}`}
+            >
               <DotTag wrapText={wrapText}>
                 {' '}
                 <Content {...props} codelistUtils={codelistUtils} item={item} />{' '}
