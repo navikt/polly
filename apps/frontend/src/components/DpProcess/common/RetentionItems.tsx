@@ -30,16 +30,17 @@ const RetentionItems = (props: IRetentionItemsProps) => {
 
   return (
     <>
-      <div className="flex w-full mt-4">
+      <div className="w-full mt-4">
         <ModalLabel
           label="Lagringsbehov for NAV"
           tooltip="Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige."
+          fullwidth
         />
         <Field
           name="retention.retentionMonths"
           render={() => (
-            <>
-              <div className="w-1/2 mt-6 mr-6">
+            <div className="mt-2 flex w-full gap-6">
+              <div className="w-1/2">
                 <TextField
                   label="År"
                   size="small"
@@ -54,7 +55,7 @@ const RetentionItems = (props: IRetentionItemsProps) => {
                   }}
                 />
               </div>
-              <div className="w-1/2 mt-6">
+              <div className="w-1/2">
                 <TextField
                   label="Måneder"
                   size="small"
@@ -69,15 +70,18 @@ const RetentionItems = (props: IRetentionItemsProps) => {
                   }}
                 />
               </div>
-            </>
+            </div>
           )}
         />
       </div>
       <Error fieldName="retention.retentionMonths" />
 
-      <div className="flex w-full mt-4">
-        <ModalLabel label="Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse" />
-        <div className="w-full">
+      <div className="w-full mt-4">
+        <ModalLabel
+          label="Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse"
+          fullwidth
+        />
+        <div className="mt-2 w-full">
           <FieldInput
             fieldName="retention.retentionStart"
             fieldValue={formikBag.values.retention.retentionStart}
