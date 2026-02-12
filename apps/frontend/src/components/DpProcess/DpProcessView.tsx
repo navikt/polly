@@ -23,8 +23,8 @@ import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
 import Button from '../common/Button/CustomButton'
 import DataText from '../common/DataText'
-import { DotTags } from '../common/DotTag'
 import { ActiveIndicator } from '../common/Durations'
+import { Markdown } from '../common/Markdown'
 import { boolToText } from '../common/Radio'
 import RouteLink, { urlForObject } from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
@@ -180,14 +180,18 @@ const DpProcessView = () => {
           />
 
           <DataText label="System" text="">
-            {dpProcess && (
-              <DotTags
-                list={EListName.SYSTEM}
-                codes={dpProcess.affiliation.products}
-                linkCodelist
-                direction="column"
-                codelistUtils={codelistUtils}
-              />
+            {dpProcess?.affiliation.products?.length ? (
+              <ul className="list-disc list-inside">
+                {dpProcess.affiliation.products.map((system) => (
+                  <li key={system.code}>
+                    <RouteLink href={urlForObject(EListName.SYSTEM, system.code)}>
+                      {codelistUtils.getShortname(EListName.SYSTEM, system.code)}
+                    </RouteLink>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              'Ikke angitt'
             )}
           </DataText>
 
@@ -209,33 +213,31 @@ const DpProcessView = () => {
             )}
 
             {dpProcess && dpProcess.affiliation.seksjoner.length !== 0 && (
-              <div>
+              <div className="mt-2">
                 <span>Seksjon: </span>
-                <span>
-                  <div className="inline">
-                    {dpProcess.affiliation.seksjoner.map((seksjon: INomSeksjon, index) => (
-                      <Fragment key={seksjon.nomSeksjonId}>
-                        <>{seksjon.nomSeksjonName}</>
-                        <span>
-                          {index < dpProcess.affiliation.seksjoner.length - 1 ? ', ' : ''}
-                        </span>
-                      </Fragment>
-                    ))}
-                  </div>
-                </span>
+                <ul className="list-disc list-inside">
+                  {dpProcess.affiliation.seksjoner.map((seksjon: INomSeksjon) => (
+                    <li key={seksjon.nomSeksjonId}>{seksjon.nomSeksjonName}</li>
+                  ))}
+                </ul>
               </div>
             )}
 
             {!!dpProcess?.affiliation.subDepartments.length && (
-              <div>
-                <div className="flex">
+              <div className="mt-2">
+                <div>
                   <span>Underavdeling: </span>
-                  <DotTags
-                    list={EListName.SUB_DEPARTMENT}
-                    codes={dpProcess?.affiliation.subDepartments}
-                    linkCodelist
-                    codelistUtils={codelistUtils}
-                  />
+                  <ul className="list-disc list-inside">
+                    {dpProcess.affiliation.subDepartments.map((subDepartment) => (
+                      <li key={subDepartment.code}>
+                        <RouteLink
+                          href={urlForObject(EListName.SUB_DEPARTMENT, subDepartment.code)}
+                        >
+                          {codelistUtils.getShortname(EListName.SUB_DEPARTMENT, subDepartment.code)}
+                        </RouteLink>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
                 {dpProcess.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVFYLKE')
@@ -281,12 +283,12 @@ const DpProcessView = () => {
               </div>
             )}
 
-            <div className="flex gap-1 items-center">
+            <div className="mt-2">
               <span className="whitespace-nowrap">Team:</span>
               {dpProcess?.affiliation.productTeams?.length ? (
-                <TeamList teamIds={dpProcess?.affiliation.productTeams} />
+                <TeamList teamIds={dpProcess?.affiliation.productTeams} variant="list" />
               ) : (
-                'Ikke utfylt'
+                <div>Ikke utfylt</div>
               )}
             </div>
           </DataText>
@@ -301,12 +303,13 @@ const DpProcessView = () => {
                 {isDataProcessingAgreementsAvailable && (
                   <div>
                     <div className="whitespace-nowrap">Ref. til databehandleravtale</div>
-                    <DotTags
-                      items={dpProcess?.dataProcessingAgreements}
-                      markdown
-                      codelistUtils={codelistUtils}
-                      noFlex
-                    />
+                    <ul className="list-disc list-inside">
+                      {dpProcess?.dataProcessingAgreements?.map((ref, index) => (
+                        <li key={`${ref}-${index}`}>
+                          <Markdown source={ref} compact inline />
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>

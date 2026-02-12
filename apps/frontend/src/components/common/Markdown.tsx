@@ -6,9 +6,16 @@ import remarkGfm from 'remark-gfm'
 interface IMarkdownProps {
   source?: string
   escapeHtml?: boolean
+  compact?: boolean
+  inline?: boolean
 }
 
-export const Markdown = ({ escapeHtml = true, source }: IMarkdownProps) => {
+export const Markdown = ({
+  escapeHtml = true,
+  compact = false,
+  inline = false,
+  source,
+}: IMarkdownProps) => {
   const renderers = {
     a: (linkProps: any) => {
       const { children, href } = linkProps
@@ -20,7 +27,17 @@ export const Markdown = ({ escapeHtml = true, source }: IMarkdownProps) => {
     },
     p: (parProps: any) => {
       const { children } = parProps
-      return <BodyLong>{children}</BodyLong>
+      return (
+        <BodyLong
+          style={
+            compact || inline
+              ? { marginTop: 0, marginBottom: 0, display: inline ? 'inline' : undefined }
+              : undefined
+          }
+        >
+          {children}
+        </BodyLong>
+      )
     },
     h2: (headerProps: any) => {
       const { children } = headerProps
@@ -69,7 +86,10 @@ export const Markdown = ({ escapeHtml = true, source }: IMarkdownProps) => {
   }
   const htmlPlugins: any = escapeHtml ? [] : [rehypeRaw]
   return (
-    <div className="polly-markdown" style={{ color: 'var(--ax-text-neutral)' }}>
+    <div
+      className="polly-markdown"
+      style={{ color: 'var(--ax-text-neutral)', display: inline ? 'inline' : undefined }}
+    >
       <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]} rehypePlugins={htmlPlugins}>
         {source || ''}
       </ReactMarkdown>
