@@ -47,7 +47,9 @@ const FieldDpProcessDataProcessingAgreements = (
               <PlusIcon aria-hidden />
             </Button>
           </div>
-          {renderTagList(formikBag.values.dataProcessingAgreements, arrayHelpers)}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {renderTagList(formikBag.values.dataProcessingAgreements, arrayHelpers)}
+          </div>
         </div>
       )}
     </FieldArray>

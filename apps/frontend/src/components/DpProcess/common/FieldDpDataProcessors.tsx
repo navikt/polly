@@ -65,7 +65,7 @@ const FieldDpDataProcessors = (props: TFieldDpDataProcessorsProps) => {
                   ))}
               </Select>
             </div>
-            <div>
+            <div className="mt-2 flex flex-wrap gap-2">
               {formikBag.values.subDataProcessing.processors &&
                 renderTagList(
                   formikBag.values.subDataProcessing.processors.map((dataProcessing: string) => {
