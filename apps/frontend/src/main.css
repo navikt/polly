@@ -45,6 +45,11 @@
     background-color: #ffffff !important;
   }
 
+  .polly-white-internalheader .polly-mainsearch-filter-menu {
+    background-color: #ffffff !important;
+    opacity: 1 !important;
+  }
+
   .polly-white-internalheader .polly-mainsearch__placeholder {
     color: #dcdde2 !important;
   }

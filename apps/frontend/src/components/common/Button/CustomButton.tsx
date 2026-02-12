@@ -25,6 +25,7 @@ interface IButtonProps {
   disabled?: boolean
   marginRight?: boolean
   marginLeft?: boolean
+  ariaLabel?: string
 }
 
 interface ITooltipProps {
@@ -51,19 +52,24 @@ const Button = (props: IButtonProps) => {
           icon={props.startEnhancer}
           disabled={props.disabled}
           type={props.type}
+          aria-label={props.ariaLabel}
         >
           {props.icon && (
-            <FontAwesomeIcon
-              icon={props.icon}
-              style={{ marginRight: props.children ? '.5rem' : undefined }}
-            />
+            <span className="inline-flex items-center">
+              <FontAwesomeIcon
+                icon={props.icon}
+                style={{ marginRight: props.children ? '.5rem' : undefined }}
+              />
+            </span>
           )}
           {props.children}
           {props.iconEnd && (
-            <FontAwesomeIcon
-              icon={props.iconEnd}
-              style={{ marginLeft: props.children ? '.5rem' : undefined }}
-            />
+            <span className="inline-flex items-center">
+              <FontAwesomeIcon
+                icon={props.iconEnd}
+                style={{ marginLeft: props.children ? '.5rem' : undefined }}
+              />
+            </span>
           )}
         </NavButton>
       </Tooltip>

@@ -426,16 +426,14 @@ export const MainSearch = () => {
             })()
           }}
         />
-        <div className="relative">
+        <div className="relative ml-1 flex items-center">
           <Button
             onClick={() => setFilter(!filter)}
             icon={faFilter}
             size="xsmall"
             kind={filter ? 'primary-neutral' : 'tertiary-neutral'}
-            marginLeft
-          >
-            <img aria-label="Filter" />
-          </Button>
+            ariaLabel="Filter"
+          />
           {filter && <SelectType type={type} setType={setType} />}
         </div>
       </div>
