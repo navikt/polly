@@ -79,7 +79,10 @@ const DpProcessTable = (props: TDpProcessTableProps) => {
                 </RouteLink>
               </Cell>
               <Cell>
-                <Tag variant={isActive ? 'success' : 'warning'}>
+                <Tag
+                  variant={isActive ? 'success' : 'warning'}
+                  style={{ minWidth: '5.5rem', display: 'inline-flex', justifyContent: 'center' }}
+                >
                   {isActive ? 'Aktiv' : 'Utgått'}
                 </Tag>
               </Cell>
