@@ -10,7 +10,7 @@
     "@navikt/aksel-icons": "8.3.0",
     "@navikt/ds-css": "8.3.0",
     "@navikt/ds-react": "8.3.0",
-    "@navikt/ds-tailwind": "8.3.0",
+    "@navikt/ds-tailwind": "8.4.0",
     "@tailwindcss/postcss": "4.1.18",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "axios": "1.13.5",
