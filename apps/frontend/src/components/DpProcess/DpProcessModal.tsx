@@ -135,17 +135,22 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                   </div>
                 </div>
 
-                <CustomizedModalBlock>
+                <div className="w-full mt-4">
                   <ModalLabel
                     label="System"
                     tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
+                    fullwidth
                   />
-                  <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
-                </CustomizedModalBlock>
+                  <div className="mt-2">
+                    <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
+                  </div>
+                </div>
 
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Ref. til databehandleravtale" />
-                  <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
+                <div className="w-full mt-8">
+                  <ModalLabel label="Ref. til databehandleravtale" fullwidth />
+                  <div className="mt-2">
+                    <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
+                  </div>
                 </div>
                 <Error fieldName="dataProcessingAgreements" />
 
