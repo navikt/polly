@@ -1,5 +1,4 @@
-import { faClock } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ClockIcon } from '@navikt/aksel-icons'
 import { Tooltip } from '@navikt/ds-react'
 import moment, { Moment } from 'moment'
 import { theme } from '../../util'
@@ -46,16 +45,14 @@ interface IActiveIndicatorProps {
 export const ActiveIndicator = (props: IActiveIndicatorProps) => {
   const { start, end, alwaysShow, preText, showDates } = props
 
-  const isDarkMode =
-    (typeof window !== 'undefined' && window.localStorage.getItem('polly-theme-mode') === 'dark') ||
-    (typeof document !== 'undefined' &&
-      (document.documentElement.classList.contains('dark') ||
-        document.body.classList.contains('dark')))
-
   const startDate: Moment = start ? moment(start).locale('nb') : defaultStart
   const endDate: Moment = end ? moment(end).locale('nb') : defaultEnd
   const { hasStart, hasEnd, hasDates } = checkDate(startDate, endDate, alwaysShow)
   const active: boolean = startDate.isSameOrBefore(moment()) && endDate.isSameOrAfter(moment())
+
+  const clockIconClassName = active
+    ? 'text-[var(--a-text-success)] dark:text-[var(--a-text-default)]'
+    : 'text-[var(--ax-text-neutral-subtle)]'
 
   const startView: string = startDate.locale('nb').format(dateFormat)
   const endView: string = endDate.locale('nb').format(dateFormat)
@@ -100,31 +97,11 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
               <>
                 {startView} - {endView}
                 <span style={{ marginLeft: theme.sizing.scale200 }} aria-hidden>
-                  <FontAwesomeIcon
-                    icon={faClock}
-                    color={
-                      active
-                        ? isDarkMode
-                          ? 'var(--a-text-default)'
-                          : 'var(--a-text-success)'
-                        : 'var(--ax-text-neutral-subtle)'
-                    }
-                  />
+                  <ClockIcon aria-hidden className={clockIconClassName} />
                 </span>
               </>
             )}
-            {!showDates && (
-              <FontAwesomeIcon
-                icon={faClock}
-                color={
-                  active
-                    ? isDarkMode
-                      ? 'var(--a-text-default)'
-                      : 'var(--a-text-success)'
-                    : 'var(--ax-text-neutral-subtle)'
-                }
-              />
-            )}
+            {!showDates && <ClockIcon aria-hidden className={clockIconClassName} />}
           </button>
         </Tooltip>
       )}
