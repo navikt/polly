@@ -49,7 +49,7 @@ const mainSearchSelectOverrides = {
   placeholder: (base: CSSObjectWithLabel) =>
     ({
       ...(selectOverrides as any).placeholder(base),
-      color: 'var(--ax-text-subtle)',
+      color: 'var(--ax-neutral-1000)',
     }) as CSSObjectWithLabel,
   singleValue: (base: CSSObjectWithLabel) =>
     ({

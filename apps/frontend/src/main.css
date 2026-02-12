@@ -82,6 +82,10 @@
     color: var(--ax-text-subtle) !important;
   }
 
+  .dark .polly-white-internalheader .polly-mainsearch__placeholder {
+    color: var(--ax-neutral-1000) !important;
+  }
+
   .polly-white-internalheader .polly-mainsearch__input-container {
     color: var(--ax-text-neutral) !important;
     caret-color: var(--ax-text-neutral) !important;
