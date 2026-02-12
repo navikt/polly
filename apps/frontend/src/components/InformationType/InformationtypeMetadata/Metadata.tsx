@@ -58,9 +58,10 @@ const DescriptionData = (props: IDescriptionDataProps) => {
       <div>
         <TextWithLabel
           label="Søkeord"
+          compact
           text={
             keywords && keywords.length ? (
-              <ul className="mt-1 list-disc pl-5">
+              <ul className="mt-0 list-disc list-inside">
                 {keywords.map((keyword, index) => (
                   <li key={`${keyword}-${index}`}>
                     <BodyLong as="span">{keyword}</BodyLong>
@@ -122,7 +123,10 @@ const PropertyData = (props: IPropertDataProps) => {
       <div>
         <TextWithLabel
           label="Team"
-          text={productTeams.length ? <TeamList teamIds={productTeams} /> : 'Ikke angitt'}
+          compact
+          text={
+            productTeams.length ? <TeamList teamIds={productTeams} variant="list" /> : 'Ikke angitt'
+          }
         />
       </div>
       <div>

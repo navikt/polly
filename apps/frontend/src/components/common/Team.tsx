@@ -69,10 +69,23 @@ const TeamView = (props: ITeamViewProps) => {
 
 interface ITeamListProps {
   teamIds: string[]
+  variant?: 'dot' | 'list'
 }
 
 export const TeamList = (props: ITeamListProps) => {
-  const { teamIds } = props
+  const { teamIds, variant = 'dot' } = props
+
+  if (variant === 'list') {
+    return (
+      <ul className="mt-0 list-disc list-inside">
+        {teamIds.map((teamId: string, index: number) => (
+          <li key={`${teamId}-${index}`}>
+            <TeamView teamId={teamId} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
 
   return (
     <div className="flex">

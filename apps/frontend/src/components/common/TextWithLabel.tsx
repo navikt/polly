@@ -12,10 +12,11 @@ interface ITextWithLabelProps {
   iconColor?: string
   error?: string
   children?: ReactNode
+  compact?: boolean
 }
 
 const TextWithLabel = (props: ITextWithLabelProps) => {
-  const { text, error, icon, iconColor, label, children } = props
+  const { text, error, icon, iconColor, label, children, compact } = props
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500} />
   const value = text && (
     <div className="whitespace-pre-wrap block m-0 text-base">
@@ -25,7 +26,7 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
 
   return (
     <>
-      <Label style={{ marginBottom: theme.sizing.scale100, display: 'block' }}>
+      <Label style={{ marginBottom: compact ? 0 : theme.sizing.scale100, display: 'block' }}>
         {icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}
       </Label>
       {!error && value}
