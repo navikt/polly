@@ -1,7 +1,6 @@
 import { BodyLong, BodyShort } from '@navikt/ds-react'
 import { useState } from 'react'
 import { theme } from '../../util'
-import { primitives } from '../../util/theme'
 import RouteLink from '../common/RouteLink'
 
 type TShortcutCardProps = {
@@ -22,12 +21,15 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
             width: '320px',
             height: '150px',
             margin: theme.sizing.scale200,
+            backgroundColor: 'var(--ax-bg-raised)',
             boxShadow: hover
               ? '0px 4px 2px -1px rgba(0,0,0,0.7)'
               : '0px 0px 6px 3px rgba(0,0,0,0.08)',
             boxSizing: 'border-box',
-            border: '1px solid #F3F3F3',
-            outline: hover ? '2px solid black' : `2px solid ${primitives.primary300}`,
+            border: '1px solid var(--ax-border-subtleA)',
+            outline: hover
+              ? '2px solid var(--ax-border-focus)'
+              : '2px solid var(--ax-border-default)',
             outlineOffset: 0,
             borderRadius: 10,
           }}
@@ -37,7 +39,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
               <BodyLong
                 style={{
                   wordBreak: 'break-word',
-                  color: hover ? primitives.primary300 : 'black',
+                  color: 'var(--ax-text-default)',
                   textDecoration: 'underline',
 
                   fontWeight: 'bolder',
@@ -49,7 +51,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
               </BodyLong>
             </div>
             <div className="w-full">
-              <BodyShort style={{ color: 'black' }}>{subtitle}</BodyShort>
+              <BodyShort style={{ color: 'var(--ax-text-neutral)' }}>{subtitle}</BodyShort>
             </div>
           </div>
         </div>

@@ -87,6 +87,16 @@
     caret-color: var(--ax-text-neutral) !important;
   }
 
+  .dark
+    .polly-markdown
+    :where(p, span, div, li, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, strong, em) {
+    color: var(--ax-text-neutral) !important;
+  }
+
+  .dark .polly-markdown a {
+    color: var(--ax-text-accent) !important;
+  }
+
   /* Sidebar brand (avoid default link/label blue) */
   .polly-sidebar-brand,
   .polly-sidebar-brand:visited,

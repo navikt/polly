@@ -69,8 +69,10 @@ export const Markdown = ({ escapeHtml = true, source }: IMarkdownProps) => {
   }
   const htmlPlugins: any = escapeHtml ? [] : [rehypeRaw]
   return (
-    <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]} rehypePlugins={htmlPlugins}>
-      {source || ''}
-    </ReactMarkdown>
+    <div className="polly-markdown" style={{ color: 'var(--ax-text-neutral)' }}>
+      <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]} rehypePlugins={htmlPlugins}>
+        {source || ''}
+      </ReactMarkdown>
+    </div>
   )
 }
