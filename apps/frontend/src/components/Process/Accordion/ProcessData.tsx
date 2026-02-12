@@ -406,11 +406,15 @@ const ProcessData = (props: IProcessDataProps) => {
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
         <DataText label="Avsender" text={''}>
-          <DotTags
-            list={EListName.SYSTEM}
-            codes={process.affiliation.disclosureDispatchers}
-            codelistUtils={codelistUtils}
-          />
+          <ul className="mt-0 list-disc list-inside">
+            {process.affiliation.disclosureDispatchers.map((dispatcher, index) => (
+              <li key={`${dispatcher.code}-${index}`}>
+                <ObjectLink id={dispatcher.code} type={EListName.SYSTEM}>
+                  {codelistUtils.getShortname(EListName.SYSTEM, dispatcher.code)}
+                </ObjectLink>
+              </li>
+            ))}
+          </ul>
         </DataText>
       )}
 
