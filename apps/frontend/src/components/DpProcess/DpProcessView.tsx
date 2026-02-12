@@ -23,10 +23,10 @@ import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
 import Button from '../common/Button/CustomButton'
 import DataText from '../common/DataText'
-import { DotTag, DotTags } from '../common/DotTag'
+import { DotTags } from '../common/DotTag'
 import { ActiveIndicator } from '../common/Durations'
 import { boolToText } from '../common/Radio'
-import RouteLink from '../common/RouteLink'
+import RouteLink, { urlForObject } from '../common/RouteLink'
 import { Spinner } from '../common/Spinner'
 import { TeamList } from '../common/Team'
 import { DpProcessDeleteModal } from './DpProcessDeleteModal'
@@ -192,21 +192,19 @@ const DpProcessView = () => {
 
           <DataText label="Organisering" text="">
             {dpProcess?.affiliation.nomDepartmentId ? (
-              <div>
-                <span>Avdeling: </span>
-                <span>
-                  <DotTags
-                    items={[dpProcess?.affiliation.nomDepartmentName || '']}
-                    commaSeparator
-                    linkCodelist
-                    codelistUtils={codelistUtils}
-                    list={EListName.DEPARTMENT}
-                    customId={dpProcess.affiliation.nomDepartmentId}
-                  />{' '}
-                </span>
+              <div className="flex gap-1 items-center">
+                <span className="whitespace-nowrap">Avdeling: </span>
+                <RouteLink
+                  href={urlForObject(EListName.DEPARTMENT, dpProcess.affiliation.nomDepartmentId)}
+                >
+                  {dpProcess.affiliation.nomDepartmentName || dpProcess.affiliation.nomDepartmentId}
+                </RouteLink>
               </div>
             ) : (
-              <span>Avdeling: Ikke utfylt</span>
+              <div className="flex gap-1 items-center">
+                <span className="whitespace-nowrap">Avdeling: </span>
+                <span>Ikke utfylt</span>
+              </div>
             )}
 
             {dpProcess && dpProcess.affiliation.seksjoner.length !== 0 && (
@@ -282,8 +280,8 @@ const DpProcessView = () => {
               </div>
             )}
 
-            <div className="flex">
-              <span>Team: </span>
+            <div className="flex gap-1 items-center">
+              <span className="whitespace-nowrap">Team:</span>
               {dpProcess?.affiliation.productTeams?.length ? (
                 <TeamList teamIds={dpProcess?.affiliation.productTeams} />
               ) : (
@@ -300,12 +298,13 @@ const DpProcessView = () => {
             <div>
               <div>
                 {isDataProcessingAgreementsAvailable && (
-                  <div className="flex items-center">
-                    <div className="whitespace-nowrap mt-1 mr-0">Ref. til databehandleravtale</div>
+                  <div>
+                    <div className="whitespace-nowrap">Ref. til databehandleravtale</div>
                     <DotTags
                       items={dpProcess?.dataProcessingAgreements}
                       markdown
                       codelistUtils={codelistUtils}
+                      noFlex
                     />
                   </div>
                 )}
@@ -328,20 +327,15 @@ const DpProcessView = () => {
                     {processors && (
                       <div className="flex items-center">
                         <div className="whitespace-nowrap mt-4 mr-0" />
-                        <div className="flex flexWrap">
-                          {processors.map((processor: IProcessor, index) => (
-                            <div
-                              key={processor.id}
-                              className={index < processors.length ? 'mr-1.5' : ''}
-                            >
-                              <DotTag key={processor.id}>
-                                <RouteLink href={'/processor/' + processor.id}>
-                                  {processor.name}
-                                </RouteLink>
-                              </DotTag>
-                            </div>
+                        <ul className="list-disc list-inside">
+                          {processors.map((processor: IProcessor) => (
+                            <li key={processor.id}>
+                              <RouteLink href={'/processor/' + processor.id}>
+                                {processor.name}
+                              </RouteLink>
+                            </li>
                           ))}
-                        </div>
+                        </ul>
                       </div>
                     )}
                   </div>
