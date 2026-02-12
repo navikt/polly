@@ -22,6 +22,19 @@ const Main = () => {
     persistThemeMode(themeMode)
   }, [themeMode])
 
+  useEffect(() => {
+    document.documentElement.classList.remove('light', 'dark')
+    document.body.classList.remove('light', 'dark')
+
+    document.documentElement.classList.add(themeMode)
+    document.body.classList.add(themeMode)
+
+    return () => {
+      document.documentElement.classList.remove('light', 'dark')
+      document.body.classList.remove('light', 'dark')
+    }
+  }, [themeMode])
+
   return (
     <Fragment>
       <BrowserRouter window={window}>

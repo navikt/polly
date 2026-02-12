@@ -87,7 +87,7 @@ export const AuditView = (props: TAuditViewProps) => {
 
               return (
                 <div
-                  className={`mb-4 mt-2 ${audit.id === auditId ? 'bg-[#F6F6F6]' : ''}`}
+                  className={`mb-4 mt-2 ${audit.id === auditId ? 'bg-[var(--ax-bg-neutral-softA)]' : ''}`}
                   key={audit.id}
                   ref={refs[audit.id]}
                 >
@@ -149,9 +149,9 @@ const ComparisonView = (props: TComparisonViewProps) => {
               audit.data
             )}
             bgColour={{
-              add: '#a5d6a7',
-              remove: '#ef9a9a',
-              modify: '#ffe082',
+              add: 'var(--polly-diff-add-bg)',
+              remove: 'var(--polly-diff-remove-bg)',
+              modify: 'var(--polly-diff-modify-bg)',
             }}
             highlightInlineDiff={true}
             lineNumbers={true}

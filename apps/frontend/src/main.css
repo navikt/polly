@@ -42,6 +42,20 @@
     --a-text-danger: var(--ax-text-danger);
 
     --a-shadow-medium: var(--ax-shadow-dialog);
+
+    --polly-diff-add-bg: var(--ax-success-400A);
+    --polly-diff-remove-bg: var(--ax-danger-400A);
+    --polly-diff-modify-bg: var(--ax-bg-neutral-moderateA);
+  }
+
+  .light {
+    --polly-diff-remove-bg: var(--ax-danger-400A);
+  }
+
+  .dark {
+    --polly-diff-add-bg: var(--ax-bg-success-strong);
+    --polly-diff-remove-bg: var(--ax-bg-danger-strong);
+    --polly-diff-modify-bg: var(--ax-bg-neutral-moderateA);
   }
 
   .dark .bg-white {
@@ -112,4 +126,45 @@
   .polly-sidebar-brand__label {
     color: var(--ax-text-neutral-contrast) !important;
   }
+}
+
+/* json-diff-kit (admin audit diff viewer)
+   Needs to be unlayered to override `json-diff-kit/dist/viewer.css`. */
+.json-diff-viewer pre {
+  color: var(--ax-text-neutral);
+}
+
+.json-diff-viewer td.line-number {
+  color: var(--ax-text-neutral-subtle);
+  border-right-color: var(--ax-border-neutral-subtleA);
+}
+
+.json-diff-viewer tr.message-line,
+.json-diff-viewer tr.expand-line .has-lines-before,
+.json-diff-viewer tr.expand-line .has-lines-after {
+  border-color: var(--ax-border-neutral-subtleA);
+}
+
+.json-diff-viewer tr.expand-line button {
+  color: var(--ax-text-accent);
+}
+
+.json-diff-viewer tr .line-add {
+  background: var(--polly-diff-add-bg);
+}
+
+.json-diff-viewer tr .line-remove {
+  background: var(--polly-diff-remove-bg);
+}
+
+.json-diff-viewer tr .line-modify {
+  background: var(--polly-diff-modify-bg);
+}
+
+.json-diff-viewer pre .inline-diff-add {
+  background: var(--polly-diff-add-bg);
+}
+
+.json-diff-viewer pre .inline-diff-remove {
+  background: var(--polly-diff-remove-bg);
 }
