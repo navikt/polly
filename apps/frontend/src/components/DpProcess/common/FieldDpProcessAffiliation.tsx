@@ -16,47 +16,35 @@ const FieldDpProcessAffiliation = (props: TFieldDpProcessAffiliationProps) => {
 
   return (
     <>
-      <div className="flex w-full justify-between">
-        <div className="w-[48%]">
-          <ModalLabel
-            label="Avdeling"
-            tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
-          />
-        </div>
-        <div className="w-[48%]">
+      <div className="w-full">
+        <ModalLabel
+          label="Avdeling"
+          tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
+        />
+        <FieldDpProcessDepartment department={formikBag.values.affiliation.nomDepartmentId} />
+
+        <div className="mt-3">
           <ModalLabel
             label="Linja"
             tooltip="Dersom behandlingen utføres i linja, angi hvor i linja behandlingen utføres."
           />
-        </div>
-      </div>
-
-      <div className="flex w-full justify-between">
-        <div className="w-[48%]">
-          <FieldDpProcessDepartment department={formikBag.values.affiliation.nomDepartmentId} />
-        </div>
-        <div className="w-[48%]">
           <FieldSubDepartments formikBag={formikBag} codelistUtils={codelistUtils} />
         </div>
       </div>
 
-      <div className="flex w-full justify-between mt-2.5">
-        <div className="w-[48%]">
-          <ModalLabel
-            label="Team (Oppslag i Teamkatalogen)"
-            tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
-            fullwidth={true}
-          />
-        </div>
+      <div className="w-full mt-2.5">
+        <ModalLabel
+          label="Team (Oppslag i Teamkatalogen)"
+          tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
+          fullwidth={true}
+        />
       </div>
 
-      <div className="flex w-full justify-between">
-        <div className="w-[48%]">
-          <FieldProductTeam
-            productTeams={formikBag.values.affiliation.productTeams}
-            fieldName="affiliation.productTeams"
-          />
-        </div>
+      <div className="w-full">
+        <FieldProductTeam
+          productTeams={formikBag.values.affiliation.productTeams}
+          fieldName="affiliation.productTeams"
+        />
       </div>
     </>
   )

@@ -106,17 +106,33 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                   <FieldDpProcessDates showDates={true} showLabels={true} />
                 </CustomizedModalBlock>
 
-                <div className="flex w-full mt-4">
+                <div className="w-full mt-4">
                   <ModalLabel
                     label="Behandles det særlige kategorier av personopplysninger?"
                     tooltip="Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning."
+                    fullwidth
                   />
-                  <BoolField fieldName="art9" value={formikBag.values.art9} />
+                  <div className="mt-2">
+                    <BoolField
+                      fieldName="art9"
+                      value={formikBag.values.art9}
+                      direction="horizontal"
+                    />
+                  </div>
                 </div>
 
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Behandles det personopplysninger om straffedommer og lovovertredelser?" />
-                  <BoolField fieldName="art10" value={formikBag.values.art10} />
+                <div className="w-full mt-4">
+                  <ModalLabel
+                    label="Behandles det personopplysninger om straffedommer og lovovertredelser?"
+                    fullwidth
+                  />
+                  <div className="mt-2">
+                    <BoolField
+                      fieldName="art10"
+                      value={formikBag.values.art10}
+                      direction="horizontal"
+                    />
+                  </div>
                 </div>
 
                 <CustomizedModalBlock>
