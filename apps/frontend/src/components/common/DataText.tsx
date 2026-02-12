@@ -11,7 +11,15 @@ type TDataTextProps = {
 const DataText = (props: TDataTextProps) => {
   const { hideComponent, text, children, label } = props
   const texts: false | string[] | undefined =
-    typeof text === 'string' ? [text] : !!text || children ? text : ['Ikke utfylt']
+    typeof text === 'string'
+      ? text.length
+        ? [text]
+        : false
+      : Array.isArray(text)
+        ? text.filter((t) => t)
+        : !!text || children
+          ? text
+          : ['Ikke utfylt']
 
   return (
     <>

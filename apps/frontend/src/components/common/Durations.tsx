@@ -1,6 +1,6 @@
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Tooltip } from '@navikt/ds-react'
+import { Tooltip } from '@navikt/ds-react'
 import moment, { Moment } from 'moment'
 import { theme } from '../../util'
 import { env } from '../../util/env'
@@ -47,9 +47,10 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
   const { start, end, alwaysShow, preText, showDates } = props
 
   const isDarkMode =
-    typeof document !== 'undefined' &&
-    (document.documentElement.classList.contains('dark') ||
-      document.body.classList.contains('dark'))
+    (typeof window !== 'undefined' && window.localStorage.getItem('polly-theme-mode') === 'dark') ||
+    (typeof document !== 'undefined' &&
+      (document.documentElement.classList.contains('dark') ||
+        document.body.classList.contains('dark')))
 
   const startDate: Moment = start ? moment(start).locale('nb') : defaultStart
   const endDate: Moment = end ? moment(end).locale('nb') : defaultEnd
@@ -81,16 +82,17 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
     <>
       {hasDates && (
         <Tooltip content={getTooltipText()}>
-          <Button
+          <button
             type="button"
-            size="small"
-            variant="tertiary-neutral"
+            className="inline-flex items-center align-baseline"
             style={{
-              width: 'fit-content',
-              justifyContent: 'flex-start',
-              textAlign: 'left',
-              paddingInline: 0,
-              paddingBlock: 0,
+              background: 'transparent',
+              border: 0,
+              padding: 0,
+              margin: 0,
+              font: 'inherit',
+              color: 'inherit',
+              cursor: 'help',
             }}
           >
             {preText && preText + ': '}
@@ -123,7 +125,7 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
                 }
               />
             )}
-          </Button>
+          </button>
         </Tooltip>
       )}
     </>
