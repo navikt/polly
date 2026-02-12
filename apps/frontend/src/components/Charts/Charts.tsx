@@ -221,7 +221,7 @@ const Charts = (props: TChartsProps) => {
               </RouteLink>
             </BodyLong>
             <BodyLong size="small">
-              Behandlinger hvor NAV er databehandler:{' '}
+              Behandlinger hvor Nav er databehandler:{' '}
               <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
             </BodyLong>
           </div>

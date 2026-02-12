@@ -47,7 +47,7 @@ const DpProcessPage = () => {
   return (
     <>
       <div className="flex justify-between">
-        <Heading size="large">Behandlinger hvor NAV er databehandler</Heading>
+        <Heading size="large">Behandlinger hvor Nav er databehandler</Heading>
         <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
             <Button kind="outline" onClick={() => setShowModal(true)}>

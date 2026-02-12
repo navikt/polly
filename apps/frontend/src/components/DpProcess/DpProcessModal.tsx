@@ -38,7 +38,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
     <Modal
       open={isOpen}
       onClose={onClose}
-      header={{ heading: 'Behandlinger hvor NAV er databehandler' }}
+      header={{ heading: 'Behandlinger hvor Nav er databehandler' }}
       width="960px"
     >
       <Formik
