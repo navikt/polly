@@ -22,7 +22,7 @@ import {
   shortenLinksInText,
 } from '../../../util/helper-functions'
 import DataText from '../../common/DataText'
-import { DotTag, DotTags } from '../../common/DotTag'
+import { DotTags } from '../../common/DotTag'
 import { ActiveIndicator } from '../../common/Durations'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { boolToText } from '../../common/Radio'
@@ -176,26 +176,27 @@ const ProcessData = (props: IProcessDataProps) => {
         {process.usesAllInformationTypes
           ? 'Bruker potensielt alle personkategorier'
           : !!subjectCategoriesSummarised.length && (
-              <DotTags
-                list={EListName.SUBJECT_CATEGORY}
-                codes={subjectCategoriesSummarised}
-                codelistUtils={codelistUtils}
-              />
+              <ul className="mt-0 list-disc list-inside">
+                {subjectCategoriesSummarised.map((subjectCategory, index: number) => (
+                  <li key={`${subjectCategory.code}-${index}`}>
+                    {codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)}
+                  </li>
+                ))}
+              </ul>
             )}
       </DataText>
 
       <DataText label="Organisering" text={''}>
         {process.affiliation.nomDepartmentName && process.affiliation.nomDepartmentId && (
-          <div className="flex flex-wrap items-center gap-1">
+          <div className="mt-2">
             <span>Avdeling:</span>
-            <DotTags
-              items={[process.affiliation.nomDepartmentName]}
-              commaSeparator
-              codelistUtils={codelistUtils}
-              linkCodelist
-              list={EListName.DEPARTMENT}
-              customId={process.affiliation.nomDepartmentId}
-            />
+            <ul className="mt-0 list-disc list-inside">
+              <li>
+                <ObjectLink id={process.affiliation.nomDepartmentId} type={EListName.DEPARTMENT}>
+                  {process.affiliation.nomDepartmentName}
+                </ObjectLink>
+              </li>
+            </ul>
           </div>
         )}
         {process.affiliation.seksjoner.length !== 0 && (
@@ -268,16 +269,16 @@ const ProcessData = (props: IProcessDataProps) => {
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-1">
+        <div className="mt-2">
           <span>Team:</span>
           {process.affiliation.productTeams?.length ? (
-            <TeamList teamIds={process.affiliation.productTeams} />
+            <TeamList teamIds={process.affiliation.productTeams} variant="list" />
           ) : (
             'Ikke utfylt'
           )}
         </div>
 
-        <div>
+        <div className="mt-2">
           <span>Felles behandlingsansvarlig: </span>
           <span>
             {process.commonExternalProcessResponsible ? (
@@ -292,12 +293,19 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="System" text={''}>
-        <DotTags
-          list={EListName.SYSTEM}
-          codes={process.affiliation.products}
-          linkCodelist
-          codelistUtils={codelistUtils}
-        />
+        {process.affiliation.products?.length ? (
+          <ul className="mt-0 list-disc list-inside">
+            {process.affiliation.products.map((system, index: number) => (
+              <li key={`${system.code}-${index}`}>
+                <ObjectLink id={system.code} type={EListName.SYSTEM}>
+                  {codelistUtils.getShortname(EListName.SYSTEM, system.code)}
+                </ObjectLink>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          'Ikke utfylt'
+        )}
       </DataText>
 
       <DataText label="Automatisering og profilering" text={''}>
@@ -352,23 +360,13 @@ const ProcessData = (props: IProcessDataProps) => {
               <div>Databehandler benyttes</div>
               <div>
                 {processors && (
-                  <div className="flex items-center">
-                    <div className="whitespace-nowrap mt-4 mr-0"></div>
-                    <div className="flex flex-wrap">
-                      {processors.map((processor: IProcessor, index: number) => (
-                        <div
-                          key={processor.id}
-                          className={index < processors.length ? 'mr-1.5' : ''}
-                        >
-                          <DotTag key={processor.id}>
-                            <RouteLink href={'/processor/' + processor.id}>
-                              {processor.name}
-                            </RouteLink>
-                          </DotTag>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <ul className="mt-0 list-disc list-inside">
+                    {processors.map((processor: IProcessor, index: number) => (
+                      <li key={`${processor.id}-${index}`}>
+                        <RouteLink href={'/processor/' + processor.id}>{processor.name}</RouteLink>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             </div>
