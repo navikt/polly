@@ -46,6 +46,11 @@ interface IActiveIndicatorProps {
 export const ActiveIndicator = (props: IActiveIndicatorProps) => {
   const { start, end, alwaysShow, preText, showDates } = props
 
+  const isDarkMode =
+    typeof document !== 'undefined' &&
+    (document.documentElement.classList.contains('dark') ||
+      document.body.classList.contains('dark'))
+
   const startDate: Moment = start ? moment(start).locale('nb') : defaultStart
   const endDate: Moment = end ? moment(end).locale('nb') : defaultEnd
   const { hasStart, hasEnd, hasDates } = checkDate(startDate, endDate, alwaysShow)
@@ -95,7 +100,13 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
                 <span style={{ marginLeft: theme.sizing.scale200 }} aria-hidden>
                   <FontAwesomeIcon
                     icon={faClock}
-                    color={active ? 'var(--ax-text-success)' : 'var(--ax-text-neutral-subtle)'}
+                    color={
+                      active
+                        ? isDarkMode
+                          ? 'var(--a-text-default)'
+                          : 'var(--a-text-success)'
+                        : 'var(--ax-text-neutral-subtle)'
+                    }
                   />
                 </span>
               </>
@@ -103,7 +114,13 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
             {!showDates && (
               <FontAwesomeIcon
                 icon={faClock}
-                color={active ? 'var(--ax-text-success)' : 'var(--ax-text-neutral-subtle)'}
+                color={
+                  active
+                    ? isDarkMode
+                      ? 'var(--a-text-default)'
+                      : 'var(--a-text-success)'
+                    : 'var(--ax-text-neutral-subtle)'
+                }
               />
             )}
           </Button>
