@@ -8,7 +8,6 @@ import {
   IOrgEnhet,
 } from '../../constants'
 import { ESection, genProcessPath } from '../../pages/ProcessPage'
-import { theme } from '../../util'
 import RouteLink from '../common/RouteLink'
 
 interface ITextWithNumberProps {
@@ -68,7 +67,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               )}
               style={{ textDecoration: 'none' }}
             >
-              <Label style={{ color: theme.colors.accent300, textAlign: 'center' }}>
+              <Label style={{ color: 'var(--ax-text-accent)', textAlign: 'center' }}>
                 {nomDepartmentName !== '' ? nomDepartmentName : 'Fant ikke'}
               </Label>
             </RouteLink>

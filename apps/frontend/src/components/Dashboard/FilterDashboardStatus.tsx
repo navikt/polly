@@ -2,7 +2,6 @@ import { Label, Select } from '@navikt/ds-react'
 import { useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { EProcessStatusFilter } from '../../constants'
-import { theme } from '../../util'
 
 interface IFilterDashboardStatusProps {
   setFilter: React.Dispatch<React.SetStateAction<EProcessStatusFilter>>
@@ -36,9 +35,7 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
         </Select>
       </div>
       <div className="self-center">
-        <Label style={{ color: theme.colors.primary, marginRight: '1rem' }}>
-          Filtrer diagrammene på status
-        </Label>
+        <Label className="mr-4">Filtrer diagrammene på status</Label>
       </div>
     </div>
   )
