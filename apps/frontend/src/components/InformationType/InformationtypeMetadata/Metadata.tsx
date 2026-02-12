@@ -9,6 +9,7 @@ import { theme } from '../../../util'
 import { termUrl } from '../../../util/config'
 import { DotTags } from '../../common/DotTag'
 import { Markdown } from '../../common/Markdown'
+import RouteLink, { urlForObject } from '../../common/RouteLink'
 import { TeamList } from '../../common/Team'
 import TextWithLabel from '../../common/TextWithLabel'
 import { sensitivityColor } from '../Sensitivity'
@@ -111,13 +112,19 @@ const PropertyData = (props: IPropertDataProps) => {
       </div>
       <div>
         <TextWithLabel label="Kilder">
-          <DotTags
-            list={EListName.THIRD_PARTY}
-            codes={sources}
-            linkCodelist
-            commaSeparator
-            codelistUtils={codelistUtils}
-          />
+          {sources.length ? (
+            <ul className="mt-0 list-disc list-inside">
+              {sources.map((source, index) => (
+                <li key={`${source.code}-${index}`}>
+                  <RouteLink href={urlForObject(EListName.THIRD_PARTY, source.code)}>
+                    {codelistUtils.getShortname(EListName.THIRD_PARTY, source.code)}
+                  </RouteLink>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            'Ikke angitt'
+          )}
         </TextWithLabel>
       </div>
       <div>
