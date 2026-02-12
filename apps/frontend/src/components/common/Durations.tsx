@@ -76,17 +76,35 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
     <>
       {hasDates && (
         <Tooltip content={getTooltipText()}>
-          <Button type="button" size="small" variant="tertiary-neutral">
+          <Button
+            type="button"
+            size="small"
+            variant="tertiary-neutral"
+            style={{
+              width: 'fit-content',
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              paddingInline: 0,
+              paddingBlock: 0,
+            }}
+          >
             {preText && preText + ': '}
-            <FontAwesomeIcon
-              icon={faClock}
-              color={active ? theme.colors.positive300 : theme.colors.mono600}
-            />
             {showDates && (
               <>
-                {' '}
                 {startView} - {endView}
+                <span style={{ marginLeft: theme.sizing.scale200 }} aria-hidden>
+                  <FontAwesomeIcon
+                    icon={faClock}
+                    color={active ? 'var(--ax-text-success)' : 'var(--ax-text-neutral-subtle)'}
+                  />
+                </span>
               </>
+            )}
+            {!showDates && (
+              <FontAwesomeIcon
+                icon={faClock}
+                color={active ? 'var(--ax-text-success)' : 'var(--ax-text-neutral-subtle)'}
+              />
             )}
           </Button>
         </Tooltip>
