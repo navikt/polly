@@ -27,12 +27,12 @@ const AlphabeticList = (props: IAlphabeticListProps) => {
       {Object.keys(items).map((letter: string) => (
         <div className="mb-12" key={letter}>
           <div className="flex items-center mb-6">
-            <div className="w-8 h-8 bg-[#C1DBF2] rounded-[50%] flex items-center justify-center">
+            <div className="w-8 h-8 bg-(--ax-bg-moderate) rounded-[50%] flex items-center justify-center">
               <BodyShort size="large" weight="semibold">
                 {letter}
               </BodyShort>
             </div>
-            <div className="w-full border-b-2 border-[#CBCBCB] border-solid" />
+            <div className="w-full border-b-2 border-(--ax-border-default) border-solid" />
           </div>
 
           <HGrid gap="space-4" columns={columns}>
