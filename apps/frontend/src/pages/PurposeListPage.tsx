@@ -1,6 +1,6 @@
 import { faFileWord, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { BodyShort, Button, Heading, Link, Modal } from '@navikt/ds-react'
+import { BodyShort, Button, Heading, Modal } from '@navikt/ds-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import {
@@ -23,7 +23,57 @@ export const PurposeListPage = () => {
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
   const [errorProcessModal, setErrorProcessModal] = useState(null)
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
+  const [exportDownloading, setExportDownloading] = useState<'internal' | 'external' | null>(null)
+  const [exportError, setExportError] = useState<string | null>(null)
   const [codelistUtils] = CodelistService()
+
+  const downloadFile = async (url: string, fallbackFilename: string) => {
+    const response = await fetch(url, { credentials: 'include' })
+    if (!response.ok) {
+      throw new Error(`Nedlasting feilet (${response.status})`)
+    }
+
+    const contentDisposition = response.headers.get('content-disposition')
+    const filenameMatch = contentDisposition?.match(
+      /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/
+    )
+    const filename = decodeURIComponent(
+      filenameMatch?.[1] ?? filenameMatch?.[2] ?? fallbackFilename
+    )
+
+    const blob = await response.blob()
+    const blobUrl = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(blobUrl)
+  }
+
+  const handleExport = async (type: 'internal' | 'external') => {
+    const url =
+      type === 'internal'
+        ? `${env.pollyBaseUrl}/export/process/allpurpose`
+        : `${env.pollyBaseUrl}/export/process/allpurpose?documentAccess=EXTERNAL`
+
+    setExportError(null)
+    setExportDownloading(type)
+    try {
+      await downloadFile(url, `export-${type}.docx`)
+    } catch (e) {
+      // Fallback to regular download navigation (works even if CORS prevents fetch)
+      try {
+        window.location.assign(url)
+      } catch {
+        const message = e instanceof Error ? e.message : 'Nedlasting feilet'
+        setExportError(message)
+      }
+    } finally {
+      setExportDownloading(null)
+    }
+  }
 
   const handleCreateProcess = async (process: IProcessFormValues) => {
     if (!process) return
@@ -94,21 +144,38 @@ export const PurposeListPage = () => {
         <Modal
           header={{ heading: 'Velg eksport metode' }}
           open={isExportModalOpen}
-          onClose={() => setIsExportModalOpen(false)}
+          onClose={() => {
+            if (!exportDownloading) setIsExportModalOpen(false)
+          }}
         >
           <Modal.Body>
-            <Link className="mr-4" href={`${env.pollyBaseUrl}/export/process/allpurpose`}>
-              <Button size="small" variant="secondary">
-                <FontAwesomeIcon icon={faFileWord} />
-                &nbsp;Eksport for intern bruk
+            <div className="flex flex-wrap gap-3">
+              <Button
+                size="small"
+                variant="secondary"
+                icon={<FontAwesomeIcon icon={faFileWord} />}
+                loading={exportDownloading === 'internal'}
+                disabled={exportDownloading !== null}
+                onClick={() => handleExport('internal')}
+                type="button"
+              >
+                Eksport for intern bruk
               </Button>
-            </Link>
-            <Link href={`${env.pollyBaseUrl}/export/process/allpurpose?documentAccess=EXTERNAL`}>
-              <Button size="small" variant="secondary">
-                <FontAwesomeIcon icon={faFileWord} />
-                &nbsp;Eksport for ekstern bruk
+
+              <Button
+                size="small"
+                variant="secondary"
+                icon={<FontAwesomeIcon icon={faFileWord} />}
+                loading={exportDownloading === 'external'}
+                disabled={exportDownloading !== null}
+                onClick={() => handleExport('external')}
+                type="button"
+              >
+                Eksport for ekstern bruk
               </Button>
-            </Link>
+            </div>
+
+            {exportError && <BodyShort className="mt-3">{exportError}</BodyShort>}
           </Modal.Body>
         </Modal>
 
