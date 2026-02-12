@@ -78,9 +78,9 @@ export const selectOverrides = {
   menu: (base: CSSObjectWithLabel) =>
     ({
       ...base,
-      backgroundColor: '#ffffff',
-      border: '1px solid #e6e6e6',
-      boxShadow: 'var(--a-shadow-medium)',
+      backgroundColor: 'var(--ax-bg-raised)',
+      border: '1px solid var(--ax-border-subtleA)',
+      boxShadow: 'var(--ax-shadow-dialog)',
       marginTop: '0.25rem',
       borderRadius: 'var(--ax-radius-12)',
       overflow: 'hidden',
@@ -94,32 +94,36 @@ export const selectOverrides = {
   option: (base: CSSObjectWithLabel, state: any) =>
     ({
       ...base,
-      color: '#1a1a1a',
-      backgroundColor: state.isFocused ? '#f5f5f5' : state.isSelected ? '#ededed' : '#ffffff',
+      color: 'var(--ax-text-neutral)',
+      backgroundColor: state.isFocused
+        ? 'var(--ax-bg-moderate-hoverA)'
+        : state.isSelected
+          ? 'var(--ax-bg-moderate-pressedA)'
+          : 'var(--ax-bg-raised)',
       ':active': {
-        backgroundColor: '#ededed',
+        backgroundColor: 'var(--ax-bg-moderate-pressedA)',
       },
     }) as CSSObjectWithLabel,
   input: (base: CSSObjectWithLabel) =>
     ({
       ...base,
-      color: '#1a1a1a',
+      color: 'var(--ax-text-neutral)',
     }) as CSSObjectWithLabel,
   placeholder: (base: CSSObjectWithLabel) =>
     ({
       ...base,
-      color: '#6b7280',
+      color: 'var(--ax-text-subtle)',
     }) as CSSObjectWithLabel,
   singleValue: (base: CSSObjectWithLabel) =>
     ({
       ...base,
-      color: '#1a1a1a',
+      color: 'var(--ax-text-neutral)',
     }) as CSSObjectWithLabel,
   dropdownIndicator: (base: CSSObjectWithLabel) =>
     ({
       ...base,
-      color: '#1a1a1a',
-      ':hover': { color: '#1a1a1a' },
+      color: 'var(--ax-text-neutral)',
+      ':hover': { color: 'var(--ax-text-neutral)' },
     }) as CSSObjectWithLabel,
   indicatorSeparator: () => ({ display: 'none' }) as CSSObjectWithLabel,
 }

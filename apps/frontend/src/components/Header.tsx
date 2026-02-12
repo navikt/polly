@@ -1,10 +1,11 @@
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CaretDownIcon } from '@navikt/aksel-icons'
+import { CaretDownIcon, ThemeIcon } from '@navikt/aksel-icons'
 import { Button, Dropdown, InternalHeader, Label, Link, Popover, Spacer } from '@navikt/ds-react'
 import { useRef, useState } from 'react'
 import { useLocation } from 'react-router'
 import { user } from '../service/User'
+import { TThemeMode } from '../util/themeMode'
 import MainSearch from './search/MainSearch'
 
 function useCurrentUrl() {
@@ -80,7 +81,12 @@ const AdminOptions = () => {
   )
 }
 
-const Header = () => (
+interface IHeaderProps {
+  themeMode: TThemeMode
+  onThemeModeChange: (mode: TThemeMode) => void
+}
+
+const Header = ({ themeMode, onThemeModeChange }: IHeaderProps) => (
   <InternalHeader className="polly-white-internalheader">
     <InternalHeader.Title href="/">Behandlingskatalog</InternalHeader.Title>
     <Spacer />
@@ -88,6 +94,16 @@ const Header = () => (
       <MainSearch />
     </div>
     <Spacer />
+    <div className="flex items-center px-2">
+      <Button
+        variant="tertiary"
+        data-color="neutral"
+        icon={<ThemeIcon aria-hidden />}
+        aria-label={themeMode === 'dark' ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
+        aria-pressed={themeMode === 'dark'}
+        onClick={() => onThemeModeChange(themeMode === 'dark' ? 'light' : 'dark')}
+      />
+    </div>
     {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
     {!user.isLoggedIn() && <LoginButton />}
     {user.isLoggedIn() && <LoggedInHeader />}

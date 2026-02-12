@@ -1,3 +1,5 @@
+import { Theme } from '@navikt/ds-react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router'
 import { Fragment } from 'react/jsx-runtime'
 import AppRoutes from './AppRoutes'
@@ -6,6 +8,7 @@ import SideBar from './components/SideBar/SideBar'
 import { CodelistService } from './service/Codelist'
 import { user } from './service/User'
 import { useAwait } from './util'
+import { TThemeMode, getInitialThemeMode, persistThemeMode } from './util/themeMode'
 
 const Main = () => {
   // all pages need these
@@ -13,22 +16,30 @@ const Main = () => {
   const [codelistUtils] = CodelistService()
   useAwait(codelistUtils.fetchData())
 
+  const [themeMode, setThemeMode] = useState<TThemeMode>(() => getInitialThemeMode())
+
+  useEffect(() => {
+    persistThemeMode(themeMode)
+  }, [themeMode])
+
   return (
     <Fragment>
       <BrowserRouter window={window}>
-        <div className="flex min-h-screen w-full flex-col bg-white">
-          <Header />
+        <Theme theme={themeMode} asChild>
+          <div className="flex min-h-screen w-full flex-col">
+            <Header themeMode={themeMode} onThemeModeChange={setThemeMode} />
 
-          <div className="flex w-full flex-1">
-            <div className="min-w-60">
-              <SideBar />
-            </div>
+            <div className="flex w-full flex-1">
+              <div className="min-w-60">
+                <SideBar />
+              </div>
 
-            <div className="mb-48 w-full px-7 py-7">
-              <AppRoutes />
+              <div className="mb-48 w-full px-7 py-7">
+                <AppRoutes />
+              </div>
             </div>
           </div>
-        </div>
+        </Theme>
       </BrowserRouter>
     </Fragment>
   )

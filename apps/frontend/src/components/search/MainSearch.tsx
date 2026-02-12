@@ -49,7 +49,7 @@ const mainSearchSelectOverrides = {
   placeholder: (base: CSSObjectWithLabel) =>
     ({
       ...(selectOverrides as any).placeholder(base),
-      color: '#dcdde2',
+      color: 'var(--ax-text-subtle)',
     }) as CSSObjectWithLabel,
   singleValue: (base: CSSObjectWithLabel) =>
     ({
@@ -59,18 +59,22 @@ const mainSearchSelectOverrides = {
   menu: (base: CSSObjectWithLabel) =>
     ({
       ...(selectOverrides as any).menu(base),
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--ax-bg-raised)',
       zIndex: 2000,
     }) as CSSObjectWithLabel,
   menuList: (base: CSSObjectWithLabel) =>
     ({
       ...(selectOverrides as any).menuList(base),
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--ax-bg-raised)',
     }) as CSSObjectWithLabel,
   option: (base: CSSObjectWithLabel, state: any) =>
     ({
       ...(selectOverrides as any).option(base, state),
-      backgroundColor: state.isFocused ? '#f5f5f5' : state.isSelected ? '#ededed' : '#ffffff',
+      backgroundColor: state.isFocused
+        ? 'var(--ax-bg-moderate-hoverA)'
+        : state.isSelected
+          ? 'var(--ax-bg-moderate-pressedA)'
+          : 'var(--ax-bg-raised)',
     }) as CSSObjectWithLabel,
 }
 

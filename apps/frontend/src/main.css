@@ -19,6 +19,34 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+
+  .light,
+  .dark {
+    --a-surface-action: var(--ax-bg-strong);
+    --a-border-action: var(--ax-border-default);
+    --a-surface-subtle: var(--ax-bg-soft);
+    --a-border-subtle: var(--ax-border-subtle);
+
+    --a-text-default: var(--ax-text-neutral);
+
+    --a-surface-info-subtle: var(--ax-bg-info-soft);
+    --a-surface-info: var(--ax-bg-info-moderate);
+
+    --a-surface-success: var(--ax-bg-success-moderate);
+    --a-text-success: var(--ax-text-success);
+
+    --a-surface-warning: var(--ax-bg-warning-moderate);
+    --a-text-warning: var(--ax-text-warning);
+
+    --a-surface-danger: var(--ax-bg-danger-moderate);
+    --a-text-danger: var(--ax-text-danger);
+
+    --a-shadow-medium: var(--ax-shadow-dialog);
+  }
+
+  .dark .bg-white {
+    background-color: var(--ax-bg-raised) !important;
+  }
 }
 
 /* App-specific overrides */
@@ -37,21 +65,21 @@
   }
 
   .polly-white-internalheader .polly-mainsearch__control {
-    background-color: #ffffff !important;
+    background-color: var(--ax-bg-default) !important;
   }
 
   .polly-white-internalheader .polly-mainsearch__menu,
   .polly-white-internalheader .polly-mainsearch__menu-list {
-    background-color: #ffffff !important;
+    background-color: var(--ax-bg-default) !important;
   }
 
   .polly-white-internalheader .polly-mainsearch-filter-menu {
-    background-color: #ffffff !important;
+    background-color: var(--ax-bg-default) !important;
     opacity: 1 !important;
   }
 
   .polly-white-internalheader .polly-mainsearch__placeholder {
-    color: #dcdde2 !important;
+    color: var(--ax-text-subtle) !important;
   }
 
   .polly-white-internalheader .polly-mainsearch__input-container {
