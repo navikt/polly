@@ -138,13 +138,19 @@ const PropertyData = (props: IPropertDataProps) => {
       </div>
       <div>
         <TextWithLabel label="Kategorier">
-          <DotTags
-            list={EListName.CATEGORY}
-            codes={categories}
-            linkCodelist
-            commaSeparator
-            codelistUtils={codelistUtils}
-          />
+          {categories.length ? (
+            <ul className="mt-0 list-disc list-inside">
+              {categories.map((category, index) => (
+                <li key={`${category.code}-${index}`}>
+                  <RouteLink href={urlForObject(EListName.CATEGORY, category.code)}>
+                    {codelistUtils.getShortname(EListName.CATEGORY, category.code)}
+                  </RouteLink>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            'Ikke angitt'
+          )}
         </TextWithLabel>
       </div>
       <div>
