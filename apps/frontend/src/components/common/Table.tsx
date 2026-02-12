@@ -50,7 +50,8 @@ export const Table = (props: TTableProps) => {
     <TableContext.Provider value={props}>
       <div
         style={{
-          backgroundColor: props.backgroundColor || 'white',
+          backgroundColor: props.backgroundColor || 'var(--ax-bg-raised)',
+          color: 'var(--ax-text-neutral)',
           padding: theme.sizing.scale600,
           maxWidth: '100%',
           overflowX: 'auto',
