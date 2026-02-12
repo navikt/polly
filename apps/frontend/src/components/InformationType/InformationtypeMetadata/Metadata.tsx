@@ -1,6 +1,6 @@
 import { faExternalLinkAlt, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from '@navikt/ds-react'
+import { BodyLong, Link } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getTerm, mapTermToOption } from '../../../api/GetAllApi'
 import { IInformationType, ITerm } from '../../../constants'
@@ -17,11 +17,10 @@ interface IDescriptionDataProps {
   termId?: string
   description?: string
   keywords: string[]
-  codelistUtils: ICodelistProps
 }
 
 const DescriptionData = (props: IDescriptionDataProps) => {
-  const { termId, description, keywords, codelistUtils } = props
+  const { termId, description, keywords } = props
   const [term, setTerm] = useState(termId)
   const [termError, setTermError] = useState(false)
 
@@ -59,7 +58,19 @@ const DescriptionData = (props: IDescriptionDataProps) => {
       <div>
         <TextWithLabel
           label="Søkeord"
-          text={<DotTags items={keywords} codelistUtils={codelistUtils} />}
+          text={
+            keywords && keywords.length ? (
+              <ul className="mt-1 list-disc pl-5">
+                {keywords.map((keyword, index) => (
+                  <li key={`${keyword}-${index}`}>
+                    <BodyLong as="span">{keyword}</BodyLong>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              'Ikke angitt'
+            )
+          }
         />
       </div>
       <div>
@@ -152,7 +163,6 @@ const Metadata = (props: IMetaDataProps) => {
           termId={informationtype.term}
           description={informationtype.description}
           keywords={informationtype.keywords}
-          codelistUtils={codelistUtils}
         />
       </div>
       <div className="w-[60%] pl-24 border-solid border-l border-[#AFAFAF]">
