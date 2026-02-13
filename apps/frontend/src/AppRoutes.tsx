@@ -11,6 +11,7 @@ import { AuditPage } from './components/admin/audit/AuditPage'
 import { MailLogPage } from './components/admin/maillog/MailLogPage'
 import { RequestRevisionPage } from './components/admin/revision/RequestRevisionPage'
 import { SettingsPage } from './components/admin/settings/SettingsPage'
+import ErrorNotAllowed from './components/common/ErrorNotAllowed'
 import { AlertEventPage } from './pages/AlertEventPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DisclosureListPage } from './pages/DisclosureListPage'
@@ -32,9 +33,17 @@ import { SystemPage } from './pages/SystemPage'
 import { TeamPage } from './pages/TeamPage'
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
 import notFound from './resources/notfound.svg'
+import { user } from './service/User'
 
 export const processPath = '/process/:section/:code/:processId'
 export const processPathNoId = '/process/:section/:code/'
+
+const AdminGuard = ({ children }: { children: JSX.Element }): JSX.Element => {
+  if (!(user.isAdmin() || user.isSuper())) {
+    return <ErrorNotAllowed />
+  }
+  return children
+}
 
 const AppRoutes = (): JSX.Element => (
   <Root>
@@ -109,20 +118,80 @@ const AppRoutes = (): JSX.Element => (
         caseSensitive={true}
       />
 
-      <Route path="/admin/codelist/:listname" element={<CodelistPage />} caseSensitive={true} />
-      <Route path="/admin/codelist/" element={<CodelistPage />} caseSensitive={true} />
-
-      <Route path="/admin/audit/:id/:auditId" element={<AuditPage />} caseSensitive={true} />
-      <Route path="/admin/audit/:id/" element={<AuditPage />} caseSensitive={true} />
-      <Route path="/admin/audit/" element={<AuditPage />} caseSensitive={true} />
-
-      <Route path="/admin/settings" element={<SettingsPage />} caseSensitive={true} />
       <Route
-        path="/admin/request-revision"
-        element={<RequestRevisionPage />}
+        path="/admin/codelist/:listname"
+        element={
+          <AdminGuard>
+            <CodelistPage />
+          </AdminGuard>
+        }
         caseSensitive={true}
       />
-      <Route path="/admin/maillog" element={<MailLogPage />} caseSensitive={true} />
+      <Route
+        path="/admin/codelist/"
+        element={
+          <AdminGuard>
+            <CodelistPage />
+          </AdminGuard>
+        }
+        caseSensitive={true}
+      />
+
+      <Route
+        path="/admin/audit/:id/:auditId"
+        element={
+          <AdminGuard>
+            <AuditPage />
+          </AdminGuard>
+        }
+        caseSensitive={true}
+      />
+      <Route
+        path="/admin/audit/:id/"
+        element={
+          <AdminGuard>
+            <AuditPage />
+          </AdminGuard>
+        }
+        caseSensitive={true}
+      />
+      <Route
+        path="/admin/audit/"
+        element={
+          <AdminGuard>
+            <AuditPage />
+          </AdminGuard>
+        }
+        caseSensitive={true}
+      />
+
+      <Route
+        path="/admin/settings"
+        element={
+          <AdminGuard>
+            <SettingsPage />
+          </AdminGuard>
+        }
+        caseSensitive={true}
+      />
+      <Route
+        path="/admin/request-revision"
+        element={
+          <AdminGuard>
+            <RequestRevisionPage />
+          </AdminGuard>
+        }
+        caseSensitive={true}
+      />
+      <Route
+        path="/admin/maillog"
+        element={
+          <AdminGuard>
+            <MailLogPage />
+          </AdminGuard>
+        }
+        caseSensitive={true}
+      />
 
       <Route path="/document/create" element={<DocumentCreatePage />} caseSensitive={true} />
       <Route path="/document/:id" element={<DocumentPage />} caseSensitive={true} />

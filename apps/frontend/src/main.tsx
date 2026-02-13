@@ -8,6 +8,11 @@ import SideBar from './components/SideBar/SideBar'
 import { CodelistService } from './service/Codelist'
 import { user } from './service/User'
 import { useAwait } from './util'
+import {
+  TPermissionMode,
+  getInitialPermissionMode,
+  setPermissionMode,
+} from './util/permissionOverride'
 import { TThemeMode, getInitialThemeMode, persistThemeMode } from './util/themeMode'
 
 const Main = () => {
@@ -17,10 +22,18 @@ const Main = () => {
   useAwait(codelistUtils.fetchData())
 
   const [themeMode, setThemeMode] = useState<TThemeMode>(() => getInitialThemeMode())
+  const [permissionMode, setPermissionModeState] = useState<TPermissionMode>(() =>
+    getInitialPermissionMode()
+  )
 
   useEffect(() => {
     persistThemeMode(themeMode)
   }, [themeMode])
+
+  const handlePermissionModeChange = (value: TPermissionMode) => {
+    setPermissionMode(value)
+    setPermissionModeState(value)
+  }
 
   useEffect(() => {
     document.documentElement.classList.remove('light', 'dark')
@@ -40,7 +53,12 @@ const Main = () => {
       <BrowserRouter window={window}>
         <Theme theme={themeMode} asChild>
           <div className="flex min-h-screen w-full flex-col">
-            <Header themeMode={themeMode} onThemeModeChange={setThemeMode} />
+            <Header
+              themeMode={themeMode}
+              onThemeModeChange={setThemeMode}
+              permissionMode={permissionMode}
+              onPermissionModeChange={handlePermissionModeChange}
+            />
 
             <div className="flex w-full flex-1">
               <div className="min-w-60">
