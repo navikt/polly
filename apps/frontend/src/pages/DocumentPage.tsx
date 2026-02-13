@@ -19,9 +19,9 @@ import { IDocument, IProcess } from '../constants'
 import { user } from '../service/User'
 
 const renderTextWithLabel = (label: string, text: string) => (
-  <div className="mt-10">
+  <div className="mt-10 max-w-[100ch]">
     <Label>{label}</Label>
-    <BodyLong>{text}</BodyLong>
+    <BodyLong className="wrap-break-word">{text}</BodyLong>
   </div>
 )
 
