@@ -42,7 +42,14 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
   return (
     <>
       <Label style={{ marginBottom: compact ? 0 : theme.sizing.scale100, display: 'block' }}>
-        {labelIcon} {label}
+        {labelIcon ? (
+          <span className="inline-flex items-center gap-1">
+            {labelIcon}
+            <span>{label}</span>
+          </span>
+        ) : (
+          label
+        )}
       </Label>
       {!error && value}
       {error && (
