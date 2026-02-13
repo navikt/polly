@@ -338,6 +338,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
                           ref={keywordsRef}
                         />
                         <Button
+                          className="ml-2"
                           type="button"
                           variant="secondary"
                           icon={<PlusIcon aria-hidden />}
