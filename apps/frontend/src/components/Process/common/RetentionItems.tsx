@@ -32,7 +32,7 @@ const RetentionItems = (props: IProps) => {
   return (
     <>
       <div className="w-full mt-0">
-        <ModalLabel fullwidth label="Omfattes av NAVs bevarings- og kassasjonsvedtak?" />
+        <ModalLabel fullwidth label="Omfattes av Navs bevarings- og kassasjonsvedtak?" />
         <div className="mt-2">
           <BoolField
             fieldName="retention.retentionPlan"
@@ -47,8 +47,8 @@ const RetentionItems = (props: IProps) => {
           <div className="w-full mt-4">
             <ModalLabel
               fullwidth
-              label="Lagringsbehov for NAV"
-              tooltip="Det er hvor lenge NAV har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket."
+              label="Lagringsbehov for Nav"
+              tooltip="Det er hvor lenge Nav har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket."
             />
             <Field
               name="retention.retentionMonths"

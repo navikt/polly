@@ -173,7 +173,7 @@ const ModalProcess = ({
                   <Error fieldName="additionalDescription" />
 
                   <CustomizedModalBlock>
-                    <ModalLabel label="Er behandlingen innført i NAV?" />
+                    <ModalLabel label="Er behandlingen innført i Nav?" />
                     <div>
                       <BoolField
                         value={formikBag.values.dpia?.processImplemented}
@@ -281,7 +281,7 @@ const ModalProcess = ({
                             <ModalLabel
                               fullwidth
                               label="Felles behandlingsansvarlig"
-                              tooltip="Er NAV behandlingsansvarlig sammen med annen virksomhet?"
+                              tooltip="Er Nav behandlingsansvarlig sammen med annen virksomhet?"
                             />
                             <div className="mt-2">
                               {showResponsibleSelect && (
@@ -464,7 +464,7 @@ const ModalProcess = ({
                           <ModalLabel
                             fullwidth
                             label="Benyttes databehandler(e)"
-                            tooltip="En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne."
+                            tooltip="En databehandler er en virksomhet som behandler personopplysninger på vegne av Nav."
                           />
                           <div className="mt-2">
                             <BoolField

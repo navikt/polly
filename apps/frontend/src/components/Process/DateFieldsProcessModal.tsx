@@ -55,7 +55,7 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
                 {showLabels && (
                   <LabelWithTooltip
                     text="Fom dato"
-                    tooltip="Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
+                    tooltip="Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
                   />
                 )}
               </div>

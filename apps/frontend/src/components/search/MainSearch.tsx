@@ -335,7 +335,7 @@ export const MainSearch = () => {
                   return {
                     id: content.id,
                     sortKey: content.name,
-                    typeName: 'NAV som databehandler',
+                    typeName: 'Nav som databehandler',
                     tagColor: searchResultColor.dpProcessBackground,
                     label: content.name,
                     type: EObjectType.DP_PROCESS,

@@ -86,7 +86,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                 <CustomizedModalBlock>
                   <ModalLabel
                     label="Beskrivelse"
-                    tooltip="Beskriv behandlingen NAV gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger."
+                    tooltip="Beskriv behandlingen Nav gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger."
                   />
                   <FieldDescription />
                 </CustomizedModalBlock>

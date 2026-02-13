@@ -32,12 +32,12 @@ const SideBar = () => (
         <NavItem
           to="/disclosure"
           text="Utleveringer"
-          tooltip="En samling av utleveringer av persondata fra NAV til eksterne bedrifter eller etater"
+          tooltip="En samling av utleveringer av persondata fra Nav til eksterne bedrifter eller etater"
         />
         <NavItem
           to="/thirdparty"
           text="Eksterne parter"
-          tooltip="Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere"
+          tooltip="Parter utenfor Nav som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere"
         />
         <NavItem
           to="/system"
@@ -61,13 +61,13 @@ const SideBar = () => (
       <div className="max-w-62 mt-auto pt-6 pb-22">
         <div className="flex justify-center">
           <div className="pb-4 w-[40%]">
-            <img src={NavLogo} alt="NAV logo" width="100%" />
+            <img src={NavLogo} alt="Nav logo" width="100%" />
           </div>
         </div>
 
         <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
           <div className="flex justify-center pb-2.5 items-center">
-            <Tooltip content="På navets personvernsider finner du informasjon til hjelp for utfylling.">
+            <Tooltip content="På Navs personvernsider finner du informasjon til hjelp for utfylling.">
               <BodyShort size="small" style={{ color: '#E0E1E5' }}>
                 Hjelp
               </BodyShort>

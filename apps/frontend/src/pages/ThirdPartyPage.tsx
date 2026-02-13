@@ -216,7 +216,7 @@ const ThirdPartyPage = () => {
               open={expandedAccordion === 'process'}
               onOpenChange={(open: boolean) => handleOnOpenChange(open, 'process')}
             >
-              <Accordion.Header>{`Felles behandlingsansvarlig med NAV (${processListCount})`}</Accordion.Header>
+              <Accordion.Header>{`Felles behandlingsansvarlig med Nav (${processListCount})`}</Accordion.Header>
               <Accordion.Content>
                 {params.thirdPartyCode && (
                   <ProcessList

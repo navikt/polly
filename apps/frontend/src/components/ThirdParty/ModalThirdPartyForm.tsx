@@ -162,7 +162,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                   <div className="w-full mt-4">
                     <ModalLabel
                       label="Navn på utlevering"
-                      tooltip="Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra NAV til forsikringsselskap."
+                      tooltip="Et kort navn som beskriver hva utleveringen går ut på. Eksempel: Utlevering av syke- og uføreopplysninger fra Nav til forsikringsselskap."
                       fullwidth
                     />
                     <div className="mt-2">
@@ -174,7 +174,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                   <div className="w-full mt-4">
                     <ModalLabel
                       label="Formål med utlevering"
-                      tooltip="Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra NAV som er nødvendig for å behandle en forsikringssak."
+                      tooltip="Beskriv formålet med utleveringen til mottaker. Eksempel: Formålet er å bidra til at forsikringsselskap kan motta opplysninger fra Nav som er nødvendig for å behandle en forsikringssak."
                       fullwidth
                     />
                     <div className="mt-2">
