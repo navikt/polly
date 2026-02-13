@@ -122,7 +122,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
           <div className="mb-10">
             <Label style={{ marginBottom: theme.sizing.scale600 }}>{metadataTitle()}</Label>
-            <div style={{ maxWidth: '150ch' }}>
+            <div style={{ maxWidth: section === ESection.purpose ? '100ch' : '150ch' }}>
               <Markdown source={getDescription()} />
             </div>
           </div>
