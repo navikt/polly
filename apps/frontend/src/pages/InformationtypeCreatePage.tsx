@@ -1,5 +1,5 @@
 import { Heading } from '@navikt/ds-react'
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { createInformationType, mapInfoTypeToFormVals } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
@@ -10,6 +10,8 @@ import { user } from '../service/User'
 
 const InformationtypeCreatePage = () => {
   const [codelistUtils] = CodelistService()
+
+  const initialValues = useMemo(() => mapInfoTypeToFormVals({}), [])
 
   const [errorSubmit, setErrorSubmit] = useState(null)
   const navigate = useNavigate()
@@ -37,7 +39,7 @@ const InformationtypeCreatePage = () => {
           {codelistUtils && (
             <>
               <InformationtypeForm
-                formInitialValues={mapInfoTypeToFormVals({})}
+                formInitialValues={initialValues}
                 submit={handleSubmit}
                 isEdit={false}
               />

@@ -1,5 +1,5 @@
 import { Heading, Loader } from '@navikt/ds-react'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
@@ -53,6 +53,11 @@ const InformationtypeEditPage = () => {
     fetchData()
   }, [])
 
+  const initialValues = useMemo(
+    () => (informationtype ? mapInfoTypeToFormVals(informationtype) : mapInfoTypeToFormVals({})),
+    [informationtype]
+  )
+
   return (
     <Fragment>
       {isLoading && <Loader size="medium" />}{' '}
@@ -62,11 +67,7 @@ const InformationtypeEditPage = () => {
 
           {!error && informationtype ? (
             <Fragment>
-              <InformationtypeForm
-                formInitialValues={mapInfoTypeToFormVals(informationtype)}
-                isEdit
-                submit={handleSubmit}
-              />
+              <InformationtypeForm formInitialValues={initialValues} isEdit submit={handleSubmit} />
               {errorSubmit && <p>{errorSubmit}</p>}
             </Fragment>
           ) : (

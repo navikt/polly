@@ -156,7 +156,9 @@ const PropertyData = (props: IPropertDataProps) => {
         <TextWithLabel
           label="Type personopplysning"
           text={sensitivity ? sensitivity.shortName : ''}
-          icon={<ShieldIcon aria-hidden className="block" />}
+          icon={
+            <ShieldIcon aria-hidden className="block" color={sensitivityColor(sensitivity.code)} />
+          }
           iconColor={sensitivityColor(sensitivity.code)}
         />
       </div>

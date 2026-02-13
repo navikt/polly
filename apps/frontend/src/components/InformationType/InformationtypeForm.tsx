@@ -28,6 +28,7 @@ type TFormProps = {
 
 const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) => {
   const [codelistUtils] = CodelistService()
+  const codelistLoaded = codelistUtils.isLoaded()
 
   const initialValueSensitivity = () => {
     if (!formInitialValues.sensitivity || !codelistUtils.isLoaded()) return []
@@ -65,6 +66,8 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
   const [sensitivityInputValue, setSensitivityInputValue] = useState('')
   const [currentKeywordValue, setCurrentKeywordValue] = useState('')
 
+  const ignoreNextSensitivityOnChangeRef = useRef(false)
+
   useEffect(() => {
     ;(async () => {
       try {
@@ -81,13 +84,13 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
     const initialMaster = initialValueMaster()
     const first = initialMaster.length ? initialMaster[0] : undefined
     setMasterInputValue(first?.label || '')
-  }, [formInitialValues.orgMaster, codelistUtils])
+  }, [formInitialValues.orgMaster, codelistLoaded])
 
   useEffect(() => {
     const initialSensitivity = initialValueSensitivity()
     const first = initialSensitivity.length ? initialSensitivity[0] : undefined
     setSensitivityInputValue(first?.label || '')
-  }, [formInitialValues.sensitivity, codelistUtils])
+  }, [formInitialValues.sensitivity, codelistLoaded])
 
   const getParsedOptions = (listName: EListName, values: string[]) => {
     if (!codelistUtils) return []
@@ -147,7 +150,8 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
         initialValues={formInitialValues}
         enableReinitialize
         onSubmit={onSubmit}
-        render={(formikBag: FormikProps<IInformationtypeFormValues>) => (
+      >
+        {(formikBag: FormikProps<IInformationtypeFormValues>) => (
           <Form onKeyDown={disableEnter}>
             <div className={`grid gap-10 ${isEdit ? 'grid-cols-1' : 'grid-cols-2'}`}>
               <div>
@@ -171,9 +175,8 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
               </div>
 
               <div>
-                <Field
-                  name="orgMaster"
-                  render={({ form }: FieldProps<IInformationtypeFormValues>) => (
+                <Field name="orgMaster">
+                  {({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div className="mb-4">
                       <div className="mb-2 self-center">
                         <Label>Master i NAV</Label>
@@ -192,15 +195,24 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
                           <UNSAFE_Combobox
                             label=""
                             hideLabel
+                            shouldShowSelectedOptions={false}
                             options={parsedOptions.map((o: IGetParsedOptionsProps) => ({
                               value: o.id,
                               label: o.label,
                             }))}
                             value={masterInputValue}
                             onChange={(newValue) => {
+                              if (formikBag.values.orgMaster && newValue === '') {
+                                return
+                              }
+
                               setMasterInputValue(newValue)
 
-                              if (formikBag.values.orgMaster && newValue !== selectedLabel) {
+                              if (
+                                formikBag.values.orgMaster &&
+                                newValue !== '' &&
+                                newValue !== selectedLabel
+                              ) {
                                 form.setFieldValue('orgMaster', undefined)
                               }
                             }}
@@ -226,14 +238,13 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
                       })()}
                     </div>
                   )}
-                />
+                </Field>
                 <Error fieldName="orgMaster" fullWidth />
               </div>
 
               <div>
-                <Field
-                  name="term"
-                  render={({ form }: FieldProps<IInformationtypeFormValues>) => (
+                <Field name="term">
+                  {({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div>
                       <div className="mb-2 self-center">
                         <Label>Begrepsdefinisjon (oppslag i Begrepskatalogen)</Label>
@@ -243,6 +254,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
                         hideLabel
                         placeholder="Søk"
                         isLoading={termSearchLoading}
+                        shouldShowSelectedOptions={false}
                         options={termSearchResult.flatMap((o) => {
                           if (!o.value) return []
                           return [
@@ -254,9 +266,13 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
                         })}
                         value={termInputValue}
                         onChange={(newValue) => {
+                          if (formikBag.values.term && newValue === '') {
+                            return
+                          }
+
                           setTermInputValue(newValue)
                           setTermSearch(newValue)
-                          if (formikBag.values.term && newValue !== termInputValue) {
+                          if (formikBag.values.term && newValue !== '') {
                             form.setFieldValue('term', undefined)
                           }
                         }}
@@ -275,7 +291,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
                       />
                     </div>
                   )}
-                />
+                </Field>
                 <Error fieldName="term" fullWidth />
               </div>
 
@@ -428,53 +444,86 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
               </div>
 
               <div>
-                <Field
-                  name="sensitivity"
-                  render={({ form }: FieldProps<IInformationtypeFormValues>) => (
+                <Field name="sensitivity">
+                  {({ form }: FieldProps<IInformationtypeFormValues>) => (
                     <div>
                       <div className="mb-2 self-center">
                         <Label>Type personopplysning</Label>
                       </div>
 
-                      <UNSAFE_Combobox
-                        label=""
-                        hideLabel
-                        options={codelistUtils
+                      {(() => {
+                        const parsedOptions = codelistUtils
                           .getParsedOptions(EListName.SENSITIVITY)
                           .filter(
                             (sensitivity: IGetParsedOptionsProps) =>
                               !sensitivity.label.includes('Ikke')
                           )
-                          .map((o: IGetParsedOptionsProps) => ({ value: o.id, label: o.label }))}
-                        value={sensitivityInputValue}
-                        onChange={(newValue) => {
-                          setSensitivityInputValue(newValue)
-                          const selected = codelistUtils
-                            .getParsedOptions(EListName.SENSITIVITY)
-                            .find((o: IGetParsedOptionsProps) => o.label === newValue)
-                          if (!selected) {
-                            form.setFieldValue('sensitivity', undefined)
-                          }
-                        }}
-                        selectedOptions={
-                          formikBag.values.sensitivity ? [formikBag.values.sensitivity] : []
-                        }
-                        onToggleSelected={(optionValue, isSelected) => {
-                          if (!isSelected) {
-                            setSensitivityInputValue('')
-                            form.setFieldValue('sensitivity', undefined)
-                            return
-                          }
-                          const selected = codelistUtils
-                            .getParsedOptions(EListName.SENSITIVITY)
-                            .find((o: IGetParsedOptionsProps) => o.id === optionValue)
-                          setSensitivityInputValue(selected?.label || '')
-                          form.setFieldValue('sensitivity', optionValue)
-                        }}
-                      />
+
+                        const selected = formikBag.values.sensitivity
+                          ? parsedOptions.find(
+                              (o: IGetParsedOptionsProps) => o.id === formikBag.values.sensitivity
+                            )
+                          : undefined
+
+                        const selectedLabel = selected?.label || ''
+
+                        const comboboxOptions = parsedOptions.map((o: IGetParsedOptionsProps) => ({
+                          value: o.id,
+                          label: o.label,
+                        }))
+
+                        return (
+                          <UNSAFE_Combobox
+                            label=""
+                            hideLabel
+                            shouldShowSelectedOptions={false}
+                            options={comboboxOptions}
+                            filteredOptions={comboboxOptions}
+                            value={sensitivityInputValue}
+                            onChange={(newValue) => {
+                              if (ignoreNextSensitivityOnChangeRef.current) {
+                                ignoreNextSensitivityOnChangeRef.current = false
+                                return
+                              }
+
+                              if (formikBag.values.sensitivity && newValue === '') {
+                                return
+                              }
+
+                              setSensitivityInputValue(newValue)
+
+                              if (
+                                formikBag.values.sensitivity &&
+                                newValue !== '' &&
+                                newValue !== selectedLabel
+                              ) {
+                                form.setFieldValue('sensitivity', '')
+                              }
+                            }}
+                            selectedOptions={
+                              selected ? [{ value: selected.id, label: selected.label }] : []
+                            }
+                            onToggleSelected={(optionValue, isSelected) => {
+                              if (!isSelected) {
+                                setSensitivityInputValue('')
+                                form.setFieldValue('sensitivity', '')
+                                return
+                              }
+
+                              ignoreNextSensitivityOnChangeRef.current = true
+
+                              const picked = parsedOptions.find(
+                                (o: IGetParsedOptionsProps) => o.id === optionValue
+                              )
+                              setSensitivityInputValue(picked?.label || '')
+                              form.setFieldValue('sensitivity', optionValue)
+                            }}
+                          />
+                        )
+                      })()}
                     </div>
                   )}
-                />
+                </Field>
                 <Error fieldName="sensitivity" fullWidth />
               </div>
             </div>
@@ -494,7 +543,7 @@ const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) 
             </div>
           </Form>
         )}
-      />
+      </Formik>
     </Fragment>
   )
 }
