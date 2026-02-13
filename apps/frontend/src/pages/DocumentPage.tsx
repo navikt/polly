@@ -1,5 +1,6 @@
-import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Alert, BodyLong, Heading, Label, Tabs } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
@@ -113,7 +114,11 @@ const DocumentPage = () => {
               <Button
                 kind="outline"
                 size="xsmall"
-                icon={faPlusCircle}
+                startEnhancer={
+                  <span className="flex items-center leading-none">
+                    <PlusCircleIcon aria-hidden className="block" />
+                  </span>
+                }
                 onClick={() => navigate('/document/create')}
                 marginLeft
               >
