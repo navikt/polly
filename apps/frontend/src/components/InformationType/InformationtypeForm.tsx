@@ -26,7 +26,7 @@ type TFormProps = {
   isEdit: boolean
 }
 
-const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
+const InformationtypeForm = ({ formInitialValues, submit, isEdit }: TFormProps) => {
   const [codelistUtils] = CodelistService()
 
   const initialValueSensitivity = () => {
@@ -149,7 +149,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
         onSubmit={onSubmit}
         render={(formikBag: FormikProps<IInformationtypeFormValues>) => (
           <Form onKeyDown={disableEnter}>
-            <div className="grid grid-cols-2 gap-10">
+            <div className={`grid gap-10 ${isEdit ? 'grid-cols-1' : 'grid-cols-2'}`}>
               <div>
                 <Field name="name">
                   {({ form, field }: FieldProps) => (
@@ -179,38 +179,51 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         <Label>Master i NAV</Label>
                       </div>
 
-                      <UNSAFE_Combobox
-                        label=""
-                        hideLabel
-                        options={codelistUtils
-                          .getParsedOptions(EListName.SYSTEM)
-                          .map((o: IGetParsedOptionsProps) => ({ value: o.id, label: o.label }))}
-                        value={masterInputValue}
-                        onChange={(newValue) => {
-                          setMasterInputValue(newValue)
-                          const selected = codelistUtils
-                            .getParsedOptions(EListName.SYSTEM)
-                            .find((o: IGetParsedOptionsProps) => o.label === newValue)
-                          if (!selected) {
-                            form.setFieldValue('orgMaster', undefined)
-                          }
-                        }}
-                        selectedOptions={
-                          formikBag.values.orgMaster ? [formikBag.values.orgMaster] : []
-                        }
-                        onToggleSelected={(optionValue, isSelected) => {
-                          if (!isSelected) {
-                            setMasterInputValue('')
-                            form.setFieldValue('orgMaster', undefined)
-                            return
-                          }
-                          const selected = codelistUtils
-                            .getParsedOptions(EListName.SYSTEM)
-                            .find((o: IGetParsedOptionsProps) => o.id === optionValue)
-                          setMasterInputValue(selected?.label || '')
-                          form.setFieldValue('orgMaster', optionValue)
-                        }}
-                      />
+                      {(() => {
+                        const parsedOptions = codelistUtils.getParsedOptions(EListName.SYSTEM)
+                        const selected = formikBag.values.orgMaster
+                          ? parsedOptions.find(
+                              (o: IGetParsedOptionsProps) => o.id === formikBag.values.orgMaster
+                            )
+                          : undefined
+                        const selectedLabel = selected?.label || ''
+
+                        return (
+                          <UNSAFE_Combobox
+                            label=""
+                            hideLabel
+                            options={parsedOptions.map((o: IGetParsedOptionsProps) => ({
+                              value: o.id,
+                              label: o.label,
+                            }))}
+                            value={masterInputValue}
+                            onChange={(newValue) => {
+                              setMasterInputValue(newValue)
+
+                              if (formikBag.values.orgMaster && newValue !== selectedLabel) {
+                                form.setFieldValue('orgMaster', undefined)
+                              }
+                            }}
+                            selectedOptions={
+                              selected ? [{ value: selected.id, label: selected.label }] : []
+                            }
+                            onToggleSelected={(optionValue, isSelected) => {
+                              if (!isSelected) {
+                                setMasterInputValue('')
+                                form.setFieldValue('orgMaster', undefined)
+                                return
+                              }
+
+                              const picked = parsedOptions.find(
+                                (o: IGetParsedOptionsProps) => o.id === optionValue
+                              )
+
+                              setMasterInputValue(picked?.label || '')
+                              form.setFieldValue('orgMaster', optionValue)
+                            }}
+                          />
+                        )
+                      })()}
                     </div>
                   )}
                 />
@@ -289,13 +302,15 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                           arrayHelpers.push(optionValue)
                         }}
                       />
-                      {renderTagList(
-                        codelistUtils.getShortnames(
-                          EListName.THIRD_PARTY,
-                          formikBag.values.sources
-                        ),
-                        arrayHelpers
-                      )}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {renderTagList(
+                          codelistUtils.getShortnames(
+                            EListName.THIRD_PARTY,
+                            formikBag.values.sources
+                          ),
+                          arrayHelpers
+                        )}
+                      </div>
                     </div>
                   )}
                 />
@@ -330,7 +345,9 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                           onClick={() => onAddKeyword(arrayHelpers)}
                         />
                       </div>
-                      {renderTagList(formikBag.values.keywords, arrayHelpers)}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {renderTagList(formikBag.values.keywords, arrayHelpers)}
+                      </div>
                     </div>
                   )}
                 </FieldArray>
@@ -372,13 +389,15 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                           arrayHelpers.push(optionValue)
                         }}
                       />
-                      {renderTagList(
-                        codelistUtils.getShortnames(
-                          EListName.CATEGORY,
-                          formikBag.values.categories
-                        ),
-                        arrayHelpers
-                      )}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {renderTagList(
+                          codelistUtils.getShortnames(
+                            EListName.CATEGORY,
+                            formikBag.values.categories
+                          ),
+                          arrayHelpers
+                        )}
+                      </div>
                     </div>
                   )}
                 />
