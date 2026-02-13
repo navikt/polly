@@ -54,23 +54,11 @@ const Button = (props: IButtonProps) => {
           type={props.type}
           aria-label={props.ariaLabel}
         >
-          {props.icon && (
-            <span className="inline-flex items-center">
-              <FontAwesomeIcon
-                icon={props.icon}
-                style={{ marginRight: props.children ? '.5rem' : undefined }}
-              />
-            </span>
-          )}
-          {props.children}
-          {props.iconEnd && (
-            <span className="inline-flex items-center">
-              <FontAwesomeIcon
-                icon={props.iconEnd}
-                style={{ marginLeft: props.children ? '.5rem' : undefined }}
-              />
-            </span>
-          )}
+          <span className="inline-flex items-center gap-2">
+            {props.icon && <FontAwesomeIcon icon={props.icon} className="shrink-0" />}
+            {props.children}
+            {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} className="shrink-0" />}
+          </span>
         </NavButton>
       </Tooltip>
       <div className={`inline ${props.marginRight ? 'mr-2.5' : ''}`} />

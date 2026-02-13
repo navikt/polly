@@ -1,5 +1,4 @@
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
@@ -93,9 +92,16 @@ const InformationtypePage = () => {
         </Heading>
         <div>
           {user.canWrite() && (
-            <Button kind="outline" onClick={() => navigate('/informationtype/create')}>
-              <FontAwesomeIcon icon={faPlusCircle} />
-              &nbsp;Opprett ny opplysningstype
+            <Button
+              kind="outline"
+              startEnhancer={
+                <span className="flex items-center leading-none">
+                  <PlusCircleIcon aria-hidden className="block" />
+                </span>
+              }
+              onClick={() => navigate('/informationtype/create')}
+            >
+              Opprett ny opplysningstype
             </Button>
           )}
         </div>
