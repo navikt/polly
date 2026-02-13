@@ -1,5 +1,4 @@
-import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons'
 import {
   Button,
   Chips,
@@ -159,7 +158,9 @@ export const AlertEventPage = () => {
               {state.processId && 'Behandling'}
               {state.informationTypeId && 'Opplysningstype'}
               {state.disclosureId && 'Utlevering'}
-              <FontAwesomeIcon icon={faTimes} style={{ marginLeft: '.5rem' }} />
+              <span className="ml-2 inline-flex items-center leading-none">
+                <XMarkIcon aria-hidden className="block" />
+              </span>
             </Button>
           </div>
         )}
@@ -257,8 +258,10 @@ export const AlertEventPage = () => {
       <div className="flex justify-between mt-4">
         <Dropdown>
           <Button variant="tertiary" as={Dropdown.Toggle}>
-            {`${state.limit} Rader`}{' '}
-            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+            {`${state.limit} Rader`}
+            <span className="ml-2 inline-flex items-center leading-none">
+              <ChevronDownIcon aria-hidden className="block" />
+            </span>
           </Button>
           <Dropdown.Menu className="w-fit">
             <Dropdown.Menu.List>

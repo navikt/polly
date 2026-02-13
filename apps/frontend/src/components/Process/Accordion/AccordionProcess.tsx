@@ -1,6 +1,4 @@
-import { faExclamationCircle, faGavel, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PlusIcon } from '@navikt/aksel-icons'
+import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Modal } from '@navikt/ds-react'
 import { useEffect, useRef, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
@@ -119,8 +117,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       kind="tertiary"
       onClick={() => setShowDeleteAllPolicyModal(true)}
       startEnhancer={
-        <div className="flex justify-center mr-1">
-          <FontAwesomeIcon title="Slett" icon={faTrash} />
+        <div className="flex items-center justify-center mr-1 leading-none">
+          <TrashIcon aria-hidden className="block" />
         </div>
       }
     >
@@ -247,7 +245,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                   type="button"
                                   kind="tertiary"
                                   size="xsmall"
-                                  icon={faExclamationCircle}
+                                  icon={
+                                    <span className="flex items-center leading-none">
+                                      <ExclamationmarkIcon aria-hidden className="block" />
+                                    </span>
+                                  }
                                   onClick={() => history(`/alert/events/process/${process.id}`)}
                                 >
                                   Varsler
@@ -258,7 +260,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                   type="button"
                                   kind="tertiary"
                                   size="xsmall"
-                                  icon={faGavel}
+                                  icon={
+                                    <span className="flex items-center leading-none">
+                                      <GavelIcon aria-hidden className="block" />
+                                    </span>
+                                  }
                                   onClick={() => setShowRevisionModal(true)}
                                 >
                                   Ny revidering

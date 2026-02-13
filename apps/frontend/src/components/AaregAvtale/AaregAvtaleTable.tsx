@@ -1,5 +1,4 @@
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ChevronDownIcon } from '@navikt/aksel-icons'
 import { Accordion, Button, Dropdown, Heading, Label } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { IAaregAvtale } from '../../constants'
@@ -141,7 +140,9 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
         <Dropdown>
           <Button variant="tertiary" as={Dropdown.Toggle}>
             {`${pageLimit} Rader`}{' '}
-            <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '.5rem' }} />
+            <span className="ml-2 inline-flex items-center leading-none">
+              <ChevronDownIcon aria-hidden className="block" />
+            </span>
           </Button>
           <Dropdown.Menu className="w-fit">
             <Dropdown.Menu.List>

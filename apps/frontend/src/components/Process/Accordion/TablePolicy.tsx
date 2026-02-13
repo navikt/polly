@@ -1,5 +1,4 @@
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Button, Modal, Tooltip } from '@navikt/ds-react'
 import _ from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
@@ -124,13 +123,13 @@ const TablePolicy = ({
                     &nbsp;
                     <RouteLink
                       href={`/informationtype/${row.informationType.id}`}
-                      className="block break-words whitespace-normal"
+                      className="block wrap-break-word whitespace-normal"
                     >
                       {row.informationType.name}
                     </RouteLink>
                     {!!row.documentIds?.length && (
                       <Tooltip content="Dokument">
-                        <span className="block opacity-80 break-words whitespace-normal mt-1">
+                        <span className="block opacity-80 wrap-break-word whitespace-normal mt-1">
                           {'(' +
                             row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') +
                             ')'}
@@ -170,23 +169,25 @@ const TablePolicy = ({
                       <Tooltip content="Redigér">
                         <Button
                           variant="tertiary"
+                          aria-label="Redigér"
                           onClick={() => {
                             setCurrentPolicy(row)
                             setShowEditModal(true)
                           }}
                         >
-                          <FontAwesomeIcon title="Redigér" icon={faEdit} />
+                          <DocPencilIcon aria-hidden className="block" />
                         </Button>
                       </Tooltip>
                       <Tooltip content="Slett">
                         <Button
                           variant="tertiary"
+                          aria-label="Slett"
                           onClick={() => {
                             setCurrentPolicy(row)
                             setShowDeleteModal(true)
                           }}
                         >
-                          <FontAwesomeIcon title="Slett" icon={faTrash} />
+                          <TrashIcon aria-hidden className="block" />
                         </Button>
                       </Tooltip>
                     </>

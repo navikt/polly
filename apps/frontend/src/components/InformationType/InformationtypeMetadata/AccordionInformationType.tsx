@@ -1,5 +1,4 @@
-import { faUsersCog } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { PersonGroupIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort } from '@navikt/ds-react'
 import queryString from 'query-string'
 import { useState } from 'react'
@@ -58,7 +57,9 @@ const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
         >
           <Accordion.Header>
             <span>
-              <FontAwesomeIcon icon={faUsersCog} />{' '}
+              <span className="inline-flex items-center leading-none mr-1">
+                <PersonGroupIcon aria-hidden className="block" />
+              </span>
               {codelistUtils.getShortname(EListName.PURPOSE, key)}
             </span>
           </Accordion.Header>

@@ -1,4 +1,4 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { PlusIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Select } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
@@ -402,7 +402,11 @@ const ProcessList = ({
               <Button
                 size="xsmall"
                 kind="tertiary"
-                icon={faPlus}
+                icon={
+                  <span className="flex items-center leading-none">
+                    <PlusIcon aria-hidden className="block" />
+                  </span>
+                }
                 onClick={() => setShowCreateProcessModal(true)}
               >
                 Opprett ny behandling

@@ -1,4 +1,4 @@
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { ExclamationmarkIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader, Tabs } from '@navikt/ds-react'
 import { useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
@@ -78,7 +78,11 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
                   type="button"
                   kind="tertiary"
                   size="xsmall"
-                  icon={faExclamationCircle}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <ExclamationmarkIcon aria-hidden className="block" />
+                    </span>
+                  }
                   onClick={() => navigate(`/alert/events/informationtype/${informationtype.id}`)}
                 >
                   Varsler

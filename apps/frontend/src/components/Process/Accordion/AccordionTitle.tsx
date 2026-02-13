@@ -1,5 +1,4 @@
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 import { Label, Tag } from '@navikt/ds-react'
 import { Ref, createRef } from 'react'
 import { IProcessShort } from '../../../constants'
@@ -25,8 +24,8 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
   return (
     <div ref={forwardRef}>
       <Label className="text-(--a-text-default)" style={{ color: theme.colors.primary }}>
-        {!noChevron && expanded && <FontAwesomeIcon icon={faChevronDown} />}
-        {!noChevron && !expanded && <FontAwesomeIcon icon={faChevronRight} />}
+        {!noChevron && expanded && <ChevronDownIcon aria-hidden className="block" />}
+        {!noChevron && !expanded && <ChevronRightIcon aria-hidden className="block" />}
         <span> </span>
         <Tag variant={isActive ? 'success' : 'warning'}>
           {isActive ? (

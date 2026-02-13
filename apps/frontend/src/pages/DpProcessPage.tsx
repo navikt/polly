@@ -1,5 +1,4 @@
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -50,9 +49,16 @@ const DpProcessPage = () => {
         <Heading size="large">Behandlinger hvor Nav er databehandler</Heading>
         <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
-            <Button kind="outline" onClick={() => setShowModal(true)}>
-              <FontAwesomeIcon icon={faPlusCircle} />
-              &nbsp;Opprett ny behandling
+            <Button
+              kind="outline"
+              icon={
+                <span className="flex items-center leading-none">
+                  <PlusCircleIcon aria-hidden className="block" />
+                </span>
+              }
+              onClick={() => setShowModal(true)}
+            >
+              Opprett ny behandling
             </Button>
           )}
         </div>

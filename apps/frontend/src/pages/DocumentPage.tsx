@@ -1,6 +1,4 @@
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { DocPencilIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Alert, BodyLong, Heading, Label, Tabs } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
@@ -82,14 +80,18 @@ const DocumentPage = () => {
         <div className="w-full">
           <Heading size="large">Dokumenter</Heading>
         </div>
-        <div className="flex flex-row-reverse mt-2.5">
+        <div className="mt-2.5 flex justify-end">
           {user.canWrite() && (
-            <div>
+            <div className="flex items-center">
               {currentDocument && <AuditButton id={currentDocument.id} />}
 
               {currentDocument && (
                 <Button
-                  icon={faTrash}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <TrashIcon aria-hidden className="block" />
+                    </span>
+                  }
                   kind="outline"
                   size="xsmall"
                   onClick={() => setDeleteModalVisibility(true)}
@@ -101,7 +103,11 @@ const DocumentPage = () => {
 
               {currentDocument && (
                 <Button
-                  icon={faEdit}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <DocPencilIcon aria-hidden className="block" />
+                    </span>
+                  }
                   kind="outline"
                   size="xsmall"
                   onClick={() => navigate(`/document/${currentDocument.id}/edit`)}

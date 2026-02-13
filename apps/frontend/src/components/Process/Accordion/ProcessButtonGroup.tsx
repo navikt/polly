@@ -1,4 +1,4 @@
-import { faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { DocPencilIcon, FileWordIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyLong, Loader, Modal } from '@navikt/ds-react'
 import axios from 'axios'
 import { useState } from 'react'
@@ -45,7 +45,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
         onClick={() => setIsExportModalOpen(true)}
         kind="outline"
         size="xsmall"
-        icon={faFileWord}
+        icon={
+          <span className="flex items-center leading-none">
+            <FileWordIcon aria-hidden className="block" />
+          </span>
+        }
       >
         Eksportér
       </Button>
@@ -64,7 +68,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                 <Button
                   kind="outline"
                   size="xsmall"
-                  icon={faFileWord}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <FileWordIcon aria-hidden className="block" />
+                    </span>
+                  }
                   onClick={async () => {
                     await handleExport(`${env.pollyBaseUrl}/export/process?processId=${process.id}`)
                   }}
@@ -74,7 +82,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                 <Button
                   kind="outline"
                   size="xsmall"
-                  icon={faFileWord}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <FileWordIcon aria-hidden className="block" />
+                    </span>
+                  }
                   disabled={process.status !== EProcessStatus.COMPLETED}
                   onClick={async () => {
                     await handleExport(
@@ -92,14 +104,27 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
 
       {hasAccess && (
         <>
-          <Button kind="outline" size="xsmall" icon={faEdit} onClick={editProcess}>
+          <Button
+            kind="outline"
+            size="xsmall"
+            icon={
+              <span className="flex items-center leading-none">
+                <DocPencilIcon aria-hidden className="block" />
+              </span>
+            }
+            onClick={editProcess}
+          >
             Redigér
           </Button>
 
           <Button
             kind="outline"
             size="xsmall"
-            icon={faEdit}
+            icon={
+              <span className="flex items-center leading-none">
+                <DocPencilIcon aria-hidden className="block" />
+              </span>
+            }
             onClick={() => {
               if (InformationTypeRef && InformationTypeRef.current) {
                 InformationTypeRef.current.scrollIntoView()
@@ -109,7 +134,16 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
             Rediger opplysningstyper
           </Button>
 
-          <Button kind="outline" size="xsmall" icon={faTrash} onClick={deleteProcess}>
+          <Button
+            kind="outline"
+            size="xsmall"
+            icon={
+              <span className="flex items-center leading-none">
+                <TrashIcon aria-hidden className="block" />
+              </span>
+            }
+            onClick={deleteProcess}
+          >
             Slett
           </Button>
         </>

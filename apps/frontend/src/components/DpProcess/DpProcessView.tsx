@@ -1,4 +1,4 @@
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Heading } from '@navikt/ds-react'
 import { Fragment, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
@@ -127,7 +127,11 @@ const DpProcessView = () => {
                 <Button
                   size="xsmall"
                   kind="outline"
-                  icon={faEdit}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <DocPencilIcon aria-hidden className="block" />
+                    </span>
+                  }
                   marginRight
                   onClick={() => setShowModal(true)}
                 >
@@ -137,7 +141,11 @@ const DpProcessView = () => {
                   size="xsmall"
                   kind="outline"
                   onClick={() => setShowDeleteModal(true)}
-                  icon={faTrash}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <TrashIcon aria-hidden className="block" />
+                    </span>
+                  }
                 >
                   Slett
                 </Button>

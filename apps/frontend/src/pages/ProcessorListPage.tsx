@@ -1,5 +1,4 @@
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -55,9 +54,16 @@ export const ProcessorListPage = () => {
           <div className="flex w-full justify-end">
             <div className="mt-auto">
               {hasAccess() && (
-                <Button variant="secondary" onClick={() => setShowCreateProcessorModal(true)}>
-                  <FontAwesomeIcon icon={faPlusCircle} />
-                  &nbsp;Opprett ny databehandler
+                <Button
+                  variant="secondary"
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <PlusCircleIcon aria-hidden className="block" />
+                    </span>
+                  }
+                  onClick={() => setShowCreateProcessorModal(true)}
+                >
+                  Opprett ny databehandler
                 </Button>
               )}
             </div>

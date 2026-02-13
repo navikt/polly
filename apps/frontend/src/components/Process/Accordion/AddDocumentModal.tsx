@@ -1,5 +1,4 @@
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { MinusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, List, Modal, Tooltip } from '@navikt/ds-react'
 import {
   ArrayHelpers,
@@ -83,7 +82,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 }}
               >
                 {' '}
-                <FontAwesomeIcon icon={faMinusCircle} />{' '}
+                <MinusCircleIcon aria-hidden className="block" />{' '}
               </Button>
             </Tooltip>
           </div>
@@ -181,8 +180,8 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
 
             return (
               <Form onKeyDown={disableEnter}>
-                <Modal.Body className="min-h-[500px]">
-                  <div className="w-[750px] px-8">
+                <Modal.Body className="min-h-125">
+                  <div className="w-187.5 px-8">
                     <div className="flex w-full mt-4">
                       <ModalLabel label="Dokument" />
                       <Field

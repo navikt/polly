@@ -1,5 +1,4 @@
-import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Modal, Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
@@ -86,7 +85,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
           return (
             <Form onKeyDown={disableEnter}>
               <Modal.Body>
-                <div className="w-[750px] px-8">
+                <div className="w-187.5 px-8">
                   <div className=" flex w-full mt-4 flex-row">
                     <ModalLabel label="Master i Nav" />
                     <Select
@@ -108,7 +107,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                 </div>
 
                 {!searchLoading && (
-                  <div className="w-[750px] px-8 mt-1.5">
+                  <div className="w-187.5 px-8 mt-1.5">
                     <FieldArray
                       name="informationTypes"
                       render={(informationTypesProps: FieldArrayRenderProps) => {
@@ -140,15 +139,19 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                             <Button
                                               size="xsmall"
                                               kind="tertiary"
+                                              ariaLabel="Legg til"
+                                              icon={
+                                                <span className="flex items-center leading-none">
+                                                  <PlusCircleIcon aria-hidden className="block" />
+                                                </span>
+                                              }
                                               tooltip="Legg til"
                                               onClick={() =>
                                                 informationTypesProps.push(
                                                   mapToUse(informationType)
                                                 )
                                               }
-                                            >
-                                              <FontAwesomeIcon icon={faPlusCircle} />
-                                            </Button>
+                                            />
                                           </div>
                                         ))}
                                       </div>
@@ -164,7 +167,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                   </BodyShort>
                                 )}
 
-                                <div className="my-4 w-full border-solid border-b-[1px]" />
+                                <div className="my-4 w-full border-solid border-b" />
                               </>
                             )}
 
@@ -212,11 +215,15 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                           marginLeft
                                           size="xsmall"
                                           kind="tertiary"
+                                          ariaLabel="Fjern"
+                                          icon={
+                                            <span className="flex items-center leading-none">
+                                              <MinusCircleIcon aria-hidden className="block" />
+                                            </span>
+                                          }
                                           tooltip="Fjern"
                                           onClick={() => informationTypesProps.remove(index)}
-                                        >
-                                          <FontAwesomeIcon icon={faMinusCircle} />
-                                        </Button>
+                                        />
                                       </div>
                                     </div>
                                     <div>

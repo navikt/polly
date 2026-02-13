@@ -1,4 +1,4 @@
-import { faEdit, faExclamationCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, BodyShort, Link, Modal } from '@navikt/ds-react'
 import { Fragment, Key, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -132,7 +132,11 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                           <Button
                             kind={'outline'}
                             size="xsmall"
-                            icon={faExclamationCircle}
+                            icon={
+                              <span className="flex items-center leading-none">
+                                <ExclamationmarkIcon aria-hidden className="block" />
+                              </span>
+                            }
                             marginRight
                             tooltip={
                               hasAlert
@@ -151,7 +155,11 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                             <Button
                               kind={'outline'}
                               size="xsmall"
-                              icon={faEdit}
+                              icon={
+                                <span className="flex items-center leading-none">
+                                  <DocPencilIcon aria-hidden className="block" />
+                                </span>
+                              }
                               onClick={() => setShowEditModal(true)}
                               marginRight
                             >
@@ -161,7 +169,11 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                             <Button
                               kind={'outline'}
                               size="xsmall"
-                              icon={faTrash}
+                              icon={
+                                <span className="flex items-center leading-none">
+                                  <TrashIcon aria-hidden className="block" />
+                                </span>
+                              }
                               onClick={() => setShowDeleteModal(true)}
                             >
                               Slett

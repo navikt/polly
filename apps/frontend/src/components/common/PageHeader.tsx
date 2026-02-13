@@ -1,5 +1,4 @@
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ExternalLinkIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Link } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api/GetAllApi'
@@ -98,7 +97,11 @@ export const PageHeader = (props: IPageHeaderProps) => {
         <Link target="_blank" rel="noopener noreferrer" href={url}>
           <CustomizedStatefulTooltip
             content="Gå til side"
-            icon={<FontAwesomeIcon icon={faExternalLinkAlt} size="lg" />}
+            icon={
+              <span className="flex items-center leading-none">
+                <ExternalLinkIcon aria-hidden className="block" />
+              </span>
+            }
           />
         </Link>
       </>

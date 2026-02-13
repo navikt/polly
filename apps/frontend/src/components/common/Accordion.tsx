@@ -1,12 +1,11 @@
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 
 export const toggleOverride = {
   component: (iconProps: any) => {
     return iconProps.title !== 'Expand' ? (
-      <FontAwesomeIcon icon={faChevronDown} />
+      <ChevronDownIcon aria-hidden className="block" />
     ) : (
-      <FontAwesomeIcon icon={faChevronRight} />
+      <ChevronRightIcon aria-hidden className="block" />
     )
   },
 }

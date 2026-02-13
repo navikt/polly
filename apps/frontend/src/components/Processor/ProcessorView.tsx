@@ -1,5 +1,4 @@
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
@@ -125,19 +124,30 @@ const ProcessorView = () => {
         <div className="mt-auto">
           {hasAccess() && (
             <>
-              <Button kind="outline" onClick={() => setShowEditProcessorModal(true)}>
-                <FontAwesomeIcon icon={faEdit} />
-                &nbsp;Redigér
+              <Button
+                kind="outline"
+                icon={
+                  <span className="flex items-center leading-none">
+                    <DocPencilIcon aria-hidden className="block" />
+                  </span>
+                }
+                onClick={() => setShowEditProcessorModal(true)}
+              >
+                Redigér
               </Button>
               <Button
                 kind="outline"
+                icon={
+                  <span className="flex items-center leading-none">
+                    <TrashIcon aria-hidden className="block" />
+                  </span>
+                }
                 onClick={() => {
                   setShowDeleteProcessorModal(true)
                 }}
                 marginLeft={true}
               >
-                <FontAwesomeIcon icon={faTrash} />
-                &nbsp;Slett
+                Slett
               </Button>
             </>
           )}

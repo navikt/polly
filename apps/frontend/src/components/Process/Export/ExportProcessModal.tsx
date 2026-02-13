@@ -1,4 +1,4 @@
-import { faFileWord } from '@fortawesome/free-solid-svg-icons'
+import { FileWordIcon } from '@navikt/aksel-icons'
 import { BodyLong, Loader, LocalAlert, Modal } from '@navikt/ds-react'
 import { FunctionComponent, useState } from 'react'
 import { EListName } from '../../../service/Codelist'
@@ -95,7 +95,11 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
         }}
         kind="outline"
         size="xsmall"
-        icon={faFileWord}
+        icon={
+          <span className="flex items-center leading-none">
+            <FileWordIcon aria-hidden className="block" />
+          </span>
+        }
         marginRight={marginRight}
       >
         Eksportér
@@ -120,7 +124,11 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                 <Button
                   kind="outline"
                   size="xsmall"
-                  icon={faFileWord}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <FileWordIcon aria-hidden className="block" />
+                    </span>
+                  }
                   marginRight
                   onClick={async () => {
                     const exportUrl = exportHref
@@ -134,7 +142,11 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                 <Button
                   kind="outline"
                   size="xsmall"
-                  icon={faFileWord}
+                  icon={
+                    <span className="flex items-center leading-none">
+                      <FileWordIcon aria-hidden className="block" />
+                    </span>
+                  }
                   marginRight
                   onClick={async () => {
                     const exportUrl = exportHref

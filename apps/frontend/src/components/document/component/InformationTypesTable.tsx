@@ -1,4 +1,4 @@
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Table } from '@navikt/ds-react'
 import { FieldArrayRenderProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
@@ -45,7 +45,11 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
               type="button"
               kind="secondary"
               size="xsmall"
-              icon={faPlus}
+              icon={
+                <span className="flex items-center leading-none">
+                  <PlusIcon aria-hidden className="block" />
+                </span>
+              }
               onClick={() => arrayHelpers.push(newRow())}
             >
               Legg til ny
@@ -79,7 +83,11 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
                   <Button
                     kind="secondary"
                     size="xsmall"
-                    icon={faTrash}
+                    icon={
+                      <span className="flex items-center leading-none">
+                        <TrashIcon aria-hidden className="block" />
+                      </span>
+                    }
                     onClick={() => {
                       arrayHelpers.remove(index)
                     }}

@@ -1,5 +1,4 @@
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { QuestionmarkIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
 import { useState } from 'react'
 import { theme } from '../../util'
@@ -23,11 +22,10 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
     <Tooltip content={tooltip}>
       <Button type="button" variant="tertiary-neutral" size="small">
         {text}
-        <FontAwesomeIcon
-          style={{ marginLeft: '.5rem', alignSelf: 'center' }}
-          icon={faQuestionCircle}
-          color={theme.colors.primary300}
-          size="sm"
+        <QuestionmarkIcon
+          aria-hidden
+          className="block"
+          style={{ marginLeft: '.5rem', alignSelf: 'center', color: theme.colors.primary300 }}
         />
       </Button>
     </Tooltip>
