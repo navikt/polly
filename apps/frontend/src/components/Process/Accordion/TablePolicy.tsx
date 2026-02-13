@@ -123,13 +123,13 @@ const TablePolicy = ({
                     &nbsp;
                     <RouteLink
                       href={`/informationtype/${row.informationType.id}`}
-                      className="block break-words whitespace-normal"
+                      className="block wrap-break-word whitespace-normal"
                     >
                       {row.informationType.name}
                     </RouteLink>
                     {!!row.documentIds?.length && (
                       <Tooltip content="Dokument">
-                        <span className="block opacity-80 break-words whitespace-normal mt-1">
+                        <span className="block opacity-80 wrap-break-word whitespace-normal mt-1">
                           {'(' +
                             row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') +
                             ')'}

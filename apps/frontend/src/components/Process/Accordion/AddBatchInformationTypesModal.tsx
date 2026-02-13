@@ -85,7 +85,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
           return (
             <Form onKeyDown={disableEnter}>
               <Modal.Body>
-                <div className="w-[750px] px-8">
+                <div className="w-187.5 px-8">
                   <div className=" flex w-full mt-4 flex-row">
                     <ModalLabel label="Master i Nav" />
                     <Select
@@ -107,7 +107,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                 </div>
 
                 {!searchLoading && (
-                  <div className="w-[750px] px-8 mt-1.5">
+                  <div className="w-187.5 px-8 mt-1.5">
                     <FieldArray
                       name="informationTypes"
                       render={(informationTypesProps: FieldArrayRenderProps) => {
@@ -167,7 +167,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                   </BodyShort>
                                 )}
 
-                                <div className="my-4 w-full border-solid border-b-[1px]" />
+                                <div className="my-4 w-full border-solid border-b" />
                               </>
                             )}
 

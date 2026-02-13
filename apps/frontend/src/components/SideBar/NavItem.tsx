@@ -27,13 +27,13 @@ const NavItem = (props: INavItemProps) => (
         {checkCurrentLocationIsTheSameAsSideBarItem(useLocation().pathname, props.to) ? (
           <ChevronDownIcon
             aria-hidden
-            className="block !text-[#dcdde2]"
+            className="block text-[#dcdde2]!"
             style={{ fontSize: '1.5rem' }}
           />
         ) : (
           <ChevronRightIcon
             aria-hidden
-            className="block !text-[#dcdde2]"
+            className="block text-[#dcdde2]!"
             style={{ fontSize: '1.5rem' }}
           />
         )}

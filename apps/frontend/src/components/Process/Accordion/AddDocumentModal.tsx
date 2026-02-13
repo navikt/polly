@@ -180,8 +180,8 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
 
             return (
               <Form onKeyDown={disableEnter}>
-                <Modal.Body className="min-h-[500px]">
-                  <div className="w-[750px] px-8">
+                <Modal.Body className="min-h-125">
+                  <div className="w-187.5 px-8">
                     <div className="flex w-full mt-4">
                       <ModalLabel label="Dokument" />
                       <Field

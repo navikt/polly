@@ -20,7 +20,7 @@ export const DotTag = (props: IDotTagProps) => {
       {wrapText && (
         <div className="mx-1 flex items-center">
           <div className="flex whitespace-normal">
-            <div className="mr-1 mt-[-3px]">
+            <div className="mr-1 -mt-0.75">
               <CircleIcon
                 aria-hidden
                 className="block"
@@ -57,7 +57,7 @@ const Content = (props: IContentProps) => {
   const { item, list, linkCodelist, markdown, customId, codelistUtils } = props
 
   return (
-    <div className="break-words">
+    <div className="wrap-break-word">
       {list && (
         <>
           {linkCodelist && (
