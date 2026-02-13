@@ -1,8 +1,18 @@
 import { CaretDownIcon, PersonIcon, ThemeIcon } from '@navikt/aksel-icons'
-import { Button, Dropdown, InternalHeader, Label, Link, Popover, Spacer } from '@navikt/ds-react'
+import {
+  Button,
+  Dropdown,
+  InternalHeader,
+  Label,
+  Link,
+  Popover,
+  Spacer,
+  ToggleGroup,
+} from '@navikt/ds-react'
 import { useRef, useState } from 'react'
-import { useLocation } from 'react-router'
-import { user } from '../service/User'
+import { useLocation, useNavigate } from 'react-router'
+import { EGroup, user } from '../service/User'
+import { TPermissionMode } from '../util/permissionOverride'
 import { TThemeMode } from '../util/themeMode'
 import MainSearch from './search/MainSearch'
 
@@ -86,30 +96,70 @@ const AdminOptions = () => {
 interface IHeaderProps {
   themeMode: TThemeMode
   onThemeModeChange: (mode: TThemeMode) => void
+  permissionMode: TPermissionMode
+  onPermissionModeChange: (value: TPermissionMode) => void
 }
 
-const Header = ({ themeMode, onThemeModeChange }: IHeaderProps) => (
-  <InternalHeader className="polly-white-internalheader">
-    <InternalHeader.Title href="/">Behandlingskatalog</InternalHeader.Title>
-    <Spacer />
-    <div className="flex items-center py-2">
-      <MainSearch />
-    </div>
-    <Spacer />
-    <div className="flex items-center px-2">
-      <Button
-        variant="tertiary"
-        data-color="neutral"
-        icon={<ThemeIcon aria-hidden />}
-        aria-label={themeMode === 'dark' ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
-        aria-pressed={themeMode === 'dark'}
-        onClick={() => onThemeModeChange(themeMode === 'dark' ? 'light' : 'dark')}
-      />
-    </div>
-    {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
-    {!user.isLoggedIn() && <LoginButton />}
-    {user.isLoggedIn() && <LoggedInHeader />}
-  </InternalHeader>
-)
+const Header = ({
+  themeMode,
+  onThemeModeChange,
+  permissionMode,
+  onPermissionModeChange,
+}: IHeaderProps) => {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const canUsePermissionOverrides = user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER)
+
+  const setPermissionMode = (mode: TPermissionMode) => {
+    onPermissionModeChange(mode)
+    if (mode !== 'admin' && location.pathname.startsWith('/admin')) {
+      navigate('/')
+    }
+  }
+
+  return (
+    <InternalHeader className="polly-white-internalheader">
+      <InternalHeader.Title href="/">Behandlingskatalog</InternalHeader.Title>
+      <Spacer />
+      <div className="flex items-center py-2">
+        <MainSearch />
+      </div>
+      <Spacer />
+      <div className="flex items-center px-2">
+        <Button
+          variant="tertiary"
+          data-color="neutral"
+          icon={<ThemeIcon aria-hidden />}
+          aria-label={themeMode === 'dark' ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
+          aria-pressed={themeMode === 'dark'}
+          onClick={() => onThemeModeChange(themeMode === 'dark' ? 'light' : 'dark')}
+        />
+      </div>
+
+      {canUsePermissionOverrides && (
+        <div className="flex items-center px-2">
+          <ToggleGroup
+            size="small"
+            value={permissionMode}
+            onChange={(value) => {
+              if (value === 'admin' || value === 'write' || value === 'read') {
+                setPermissionMode(value)
+              }
+            }}
+          >
+            <ToggleGroup.Item value="admin">Admin</ToggleGroup.Item>
+            <ToggleGroup.Item value="write">Skriv</ToggleGroup.Item>
+            <ToggleGroup.Item value="read">Les</ToggleGroup.Item>
+          </ToggleGroup>
+        </div>
+      )}
+
+      {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
+      {!user.isLoggedIn() && <LoginButton />}
+      {user.isLoggedIn() && <LoggedInHeader />}
+    </InternalHeader>
+  )
+}
 
 export default Header
