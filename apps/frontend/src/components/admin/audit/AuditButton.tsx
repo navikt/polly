@@ -1,5 +1,4 @@
-import { faHistory } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ClockDashedIcon } from '@navikt/aksel-icons'
 import { user } from '../../../service/User'
 import Button from '../../common/Button/CustomButton'
 import RouteLink from '../../common/RouteLink'
@@ -38,9 +37,13 @@ export const AuditButton = (props: IProps) => {
                 marginRight={marginRight}
                 size="xsmall"
                 kind={kind || 'outline'}
-              >
-                <FontAwesomeIcon title="Versjonering" icon={faHistory} />
-              </Button>
+                ariaLabel="Versjonering"
+                startEnhancer={
+                  <span className="flex items-center leading-none">
+                    <ClockDashedIcon aria-hidden className="block" />
+                  </span>
+                }
+              ></Button>
             </>
           )}
         </RouteLink>

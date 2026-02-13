@@ -1,4 +1,4 @@
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Modal } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
@@ -96,7 +96,16 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
         <AuditButton id={id} />
 
         <RouteLink href={`/informationtype/${id}/edit`} className="no-underline">
-          <Button size="xsmall" kind="outline" icon={faEdit} marginRight>
+          <Button
+            size="xsmall"
+            kind="outline"
+            marginRight
+            startEnhancer={
+              <span className="flex items-center leading-none">
+                <DocPencilIcon aria-hidden className="block" />
+              </span>
+            }
+          >
             Redigér
           </Button>
         </RouteLink>
@@ -105,7 +114,11 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
           size="xsmall"
           kind="outline"
           onClick={() => setShowDeleteModal(true)}
-          icon={faTrash}
+          startEnhancer={
+            <span className="flex items-center leading-none">
+              <TrashIcon aria-hidden className="block" />
+            </span>
+          }
         >
           Slett
         </Button>
