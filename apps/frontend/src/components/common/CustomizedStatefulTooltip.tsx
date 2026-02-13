@@ -11,6 +11,7 @@ interface ICustomizedTooltipProps {
 
 const CustomizedStatefulTooltip = (props: ICustomizedTooltipProps) => {
   const { content, text, color, icon } = props
+  const hasExplicitIcon = icon !== undefined
   const IconComponent = icon ? (
     icon
   ) : (
@@ -23,7 +24,8 @@ const CustomizedStatefulTooltip = (props: ICustomizedTooltipProps) => {
         type="button"
         variant="tertiary-neutral"
         size="small"
-        icon={text ? undefined : IconComponent}
+        icon={hasExplicitIcon ? IconComponent : text ? undefined : IconComponent}
+        iconPosition={text && hasExplicitIcon ? 'left' : undefined}
       >
         {text}
       </Button>

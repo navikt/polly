@@ -165,7 +165,10 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
                   </div>
                 </Table.HeaderCell>
                 <Table.HeaderCell className="w-[17%]">
-                  <AuditActionIcon action={audit.action} /> {audit.table}
+                  <div className="flex items-center gap-2 leading-none">
+                    <AuditActionIcon action={audit.action} />
+                    <span className="leading-none">{audit.table}</span>
+                  </div>
                 </Table.HeaderCell>
                 <Table.DataCell>
                   <Tooltip content={audit.tableId} placement="top">
