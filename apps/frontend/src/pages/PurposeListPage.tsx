@@ -1,5 +1,4 @@
-import { faFileWord, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FileWordIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Heading, LocalAlert, Modal } from '@navikt/ds-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -119,21 +118,32 @@ export const PurposeListPage = () => {
               <Button
                 className="mr-4"
                 variant="secondary"
+                icon={
+                  <span className="flex items-center leading-none">
+                    <FileWordIcon aria-hidden className="block" />
+                  </span>
+                }
                 onClick={() => {
                   setExportError(null)
                   setExportSuccess(null)
                   setIsExportModalOpen(true)
                 }}
               >
-                <FontAwesomeIcon icon={faFileWord} />
-                &nbsp;Eksportér alle behandlinger
+                Eksportér alle behandlinger
               </Button>
             )}
 
             {hasAccess() && (
-              <Button variant="secondary" onClick={() => setShowCreateProcessModal(true)}>
-                <FontAwesomeIcon icon={faPlusCircle} />
-                &nbsp;Opprett ny behandling
+              <Button
+                variant="secondary"
+                icon={
+                  <span className="flex items-center leading-none">
+                    <PlusCircleIcon aria-hidden className="block" />
+                  </span>
+                }
+                onClick={() => setShowCreateProcessModal(true)}
+              >
+                Opprett ny behandling
               </Button>
             )}
           </div>
@@ -168,7 +178,11 @@ export const PurposeListPage = () => {
               <Button
                 size="small"
                 variant="secondary"
-                icon={<FontAwesomeIcon icon={faFileWord} />}
+                icon={
+                  <span className="flex items-center leading-none">
+                    <FileWordIcon aria-hidden className="block" />
+                  </span>
+                }
                 loading={exportDownloading === 'internal'}
                 disabled={exportDownloading !== null}
                 onClick={() => handleExport('internal')}
@@ -180,7 +194,11 @@ export const PurposeListPage = () => {
               <Button
                 size="small"
                 variant="secondary"
-                icon={<FontAwesomeIcon icon={faFileWord} />}
+                icon={
+                  <span className="flex items-center leading-none">
+                    <FileWordIcon aria-hidden className="block" />
+                  </span>
+                }
                 loading={exportDownloading === 'external'}
                 disabled={exportDownloading !== null}
                 onClick={() => handleExport('external')}

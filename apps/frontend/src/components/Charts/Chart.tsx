@@ -1,5 +1,4 @@
-import { faChartBar, faChartPie, faCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { BarChartIcon, CircleIcon, PieChartIcon } from '@navikt/aksel-icons'
 import { Button, Label, Tooltip } from '@navikt/ds-react'
 import * as _ from 'lodash'
 import { Fragment, useReducer, useState } from 'react'
@@ -142,7 +141,11 @@ const Visualization = (props: TVisualizationProps) => {
     <div className="relative">
       <Button variant="tertiary-neutral" size="xsmall" onClick={toggle}>
         <Tooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
-          <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar} />
+          {type === 'bar' ? (
+            <PieChartIcon aria-hidden className="block" />
+          ) : (
+            <BarChartIcon aria-hidden className="block" />
+          )}
         </Tooltip>
       </Button>
       <div className="bg-white p-4 rounded">
@@ -180,7 +183,7 @@ const Visualization = (props: TVisualizationProps) => {
                     <div
                       className={`${index === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}
                     >
-                      <FontAwesomeIcon icon={faCircle} color={data.color} />
+                      <CircleIcon aria-hidden className="block" style={{ color: data.color }} />
                       <div className="min-w-10 flex justify-end">{data.size}</div>
                       {!hidePercent && (
                         <div className="min-w-10 ml-1 flex justify-end">

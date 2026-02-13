@@ -1,5 +1,4 @@
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CircleIcon } from '@navikt/aksel-icons'
 import { BodyLong } from '@navikt/ds-react'
 import { Fragment, ReactNode } from 'react'
 import { TNavigableItem } from '../../constants'
@@ -22,10 +21,10 @@ export const DotTag = (props: IDotTagProps) => {
         <div className="mx-1 flex items-center">
           <div className="flex whitespace-normal">
             <div className="mr-1 mt-[-3px]">
-              <FontAwesomeIcon
-                icon={faCircle}
-                color={theme.colors.positive400}
-                style={{ fontSize: '.45rem' }}
+              <CircleIcon
+                aria-hidden
+                className="block"
+                style={{ color: theme.colors.positive400, fontSize: '.45rem' }}
               />
             </div>
             <div>{children}</div>
@@ -33,10 +32,10 @@ export const DotTag = (props: IDotTagProps) => {
         </div>
       )}
       <div className="mx-1 flex items-center">
-        <FontAwesomeIcon
-          icon={faCircle}
-          color={theme.colors.positive400}
-          style={{ fontSize: '.45rem' }}
+        <CircleIcon
+          aria-hidden
+          className="block"
+          style={{ color: theme.colors.positive400, fontSize: '.45rem' }}
         />
         <div className="inline mr-1" />
         <div>{props.children}</div>

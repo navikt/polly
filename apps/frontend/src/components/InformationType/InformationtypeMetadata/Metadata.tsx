@@ -1,5 +1,4 @@
-import { faExternalLinkAlt, faUserShield } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ExternalLinkIcon, ShieldIcon } from '@navikt/aksel-icons'
 import { BodyLong, Link } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getTerm, mapTermToOption } from '../../../api/GetAllApi'
@@ -52,7 +51,7 @@ const DescriptionData = (props: IDescriptionDataProps) => {
         />
         {termId && (
           <Link target="_blank" rel="noopener noreferrer" href={termUrl(termId)}>
-            <FontAwesomeIcon icon={faExternalLinkAlt} />
+            <ExternalLinkIcon aria-hidden className="block" />
           </Link>
         )}
       </div>
@@ -157,7 +156,7 @@ const PropertyData = (props: IPropertDataProps) => {
         <TextWithLabel
           label="Type personopplysning"
           text={sensitivity ? sensitivity.shortName : ''}
-          icon={faUserShield}
+          icon={<ShieldIcon aria-hidden className="block" />}
           iconColor={sensitivityColor(sensitivity.code)}
         />
       </div>

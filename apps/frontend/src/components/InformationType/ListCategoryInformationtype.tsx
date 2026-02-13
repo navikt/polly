@@ -1,5 +1,4 @@
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, Heading } from '@navikt/ds-react'
 import { useState } from 'react'
 import { ICodeUsage, IUse } from '../../constants'
@@ -67,7 +66,11 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
     <>
       {categoryNotInUse && category && (
         <BodyLong spacing>
-          <FontAwesomeIcon icon={faExclamationTriangle} color={theme.colors.negative400} />
+          <ExclamationmarkTriangleIcon
+            aria-hidden
+            className="block"
+            style={{ color: theme.colors.negative400 }}
+          />
           <div className="mr-1.5 inline" />
           {`Kategori ${codelistUtils.getShortname(EListName.CATEGORY, category)} er ikke i bruk`}
         </BodyLong>

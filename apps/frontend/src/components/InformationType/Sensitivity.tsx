@@ -1,5 +1,4 @@
-import { faUserShield } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ShieldIcon } from '@navikt/aksel-icons'
 import { EListName, ESensitivityLevel, ICode, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util/theme'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
@@ -18,7 +17,11 @@ export const Sensitivity = (props: { sensitivity: ICode; codelistUtils: ICodelis
     <CustomizedStatefulTooltip
       content={`${props.codelistUtils.getDescription(EListName.SENSITIVITY, props.sensitivity.code)}`}
       icon={
-        <FontAwesomeIcon icon={faUserShield} color={sensitivityColor(props.sensitivity.code)} />
+        <ShieldIcon
+          aria-hidden
+          className="block"
+          style={{ color: sensitivityColor(props.sensitivity.code) }}
+        />
       }
     />
   )

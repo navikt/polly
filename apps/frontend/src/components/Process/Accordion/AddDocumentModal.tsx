@@ -1,5 +1,4 @@
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { MinusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, List, Modal, Tooltip } from '@navikt/ds-react'
 import {
   ArrayHelpers,
@@ -83,7 +82,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 }}
               >
                 {' '}
-                <FontAwesomeIcon icon={faMinusCircle} />{' '}
+                <MinusCircleIcon aria-hidden className="block" />{' '}
               </Button>
             </Tooltip>
           </div>

@@ -1,5 +1,4 @@
-import { faCircleExclamation, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyLong, Button, Link, Tooltip } from '@navikt/ds-react'
 import { Fragment, JSX } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
@@ -106,7 +105,7 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
 
   const warningIcon = (
     <span>
-      <FontAwesomeIcon icon={faCircleExclamation} color="{color}" />
+      <ExclamationmarkIcon aria-hidden className="inline-block" />
       &nbsp;
     </span>
   )
@@ -211,7 +210,7 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
                   )
                 }}
               >
-                <FontAwesomeIcon icon={faEdit} />
+                <DocPencilIcon aria-hidden className="block" />
               </Button>
               <Button
                 type="button"
@@ -226,7 +225,7 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
                   )
                 }}
               >
-                <FontAwesomeIcon icon={faTrash} />
+                <TrashIcon aria-hidden className="block" />
               </Button>
             </div>
           </div>

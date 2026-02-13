@@ -1,5 +1,4 @@
-import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Modal, Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
@@ -140,15 +139,19 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                             <Button
                                               size="xsmall"
                                               kind="tertiary"
+                                              ariaLabel="Legg til"
+                                              icon={
+                                                <span className="flex items-center leading-none">
+                                                  <PlusCircleIcon aria-hidden className="block" />
+                                                </span>
+                                              }
                                               tooltip="Legg til"
                                               onClick={() =>
                                                 informationTypesProps.push(
                                                   mapToUse(informationType)
                                                 )
                                               }
-                                            >
-                                              <FontAwesomeIcon icon={faPlusCircle} />
-                                            </Button>
+                                            />
                                           </div>
                                         ))}
                                       </div>
@@ -212,11 +215,15 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                           marginLeft
                                           size="xsmall"
                                           kind="tertiary"
+                                          ariaLabel="Fjern"
+                                          icon={
+                                            <span className="flex items-center leading-none">
+                                              <MinusCircleIcon aria-hidden className="block" />
+                                            </span>
+                                          }
                                           tooltip="Fjern"
                                           onClick={() => informationTypesProps.remove(index)}
-                                        >
-                                          <FontAwesomeIcon icon={faMinusCircle} />
-                                        </Button>
+                                        />
                                       </div>
                                     </div>
                                     <div>

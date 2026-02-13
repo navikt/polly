@@ -1,6 +1,4 @@
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CaretDownIcon, ThemeIcon } from '@navikt/aksel-icons'
+import { CaretDownIcon, PersonIcon, ThemeIcon } from '@navikt/aksel-icons'
 import { Button, Dropdown, InternalHeader, Label, Link, Popover, Spacer } from '@navikt/ds-react'
 import { useRef, useState } from 'react'
 import { useLocation } from 'react-router'
@@ -22,7 +20,11 @@ const LoggedInHeader = () => {
       <Button
         variant="tertiary"
         data-color="neutral"
-        icon={<FontAwesomeIcon icon={faUser} />}
+        icon={
+          <span className="flex items-center leading-none">
+            <PersonIcon aria-hidden className="block" />
+          </span>
+        }
         ref={buttonRef}
         onClick={() => setOpenState(!openState)}
         aria-expanded={openState}

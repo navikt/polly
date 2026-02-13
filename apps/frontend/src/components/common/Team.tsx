@@ -1,5 +1,4 @@
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { XMarkOctagonIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getTeam } from '../../api/GetAllApi'
@@ -59,7 +58,13 @@ const TeamView = (props: ITeamViewProps) => {
       {error && (
         <Tooltip content="Kunne ikke finne team">
           <Button type="button" size="small" variant="tertiary-neutral">
-            <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500} /> {team.name}
+            <span
+              className="inline-flex items-center leading-none"
+              style={{ color: theme.colors.negative500 }}
+            >
+              <XMarkOctagonIcon aria-hidden className="block" />
+            </span>{' '}
+            {team.name}
           </Button>
         </Tooltip>
       )}

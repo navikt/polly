@@ -1,5 +1,3 @@
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button as NavButton, Tooltip as NavTooltip } from '@navikt/ds-react'
 import { ReactElement, ReactNode } from 'react'
 
@@ -15,8 +13,8 @@ interface IButtonProps {
     | 'outline'
   type?: 'submit' | 'reset' | 'button'
   size?: 'small' | 'medium' | 'xsmall'
-  icon?: IconDefinition
-  iconEnd?: IconDefinition
+  icon?: ReactNode
+  iconEnd?: ReactNode
   inline?: boolean
   tooltip?: string
   children?: ReactNode
@@ -49,16 +47,15 @@ const Button = (props: IButtonProps) => {
           variant={baseuiKind}
           size={props.size}
           onClick={() => props.onClick?.()}
-          icon={props.startEnhancer}
+          icon={props.icon ?? props.startEnhancer}
           disabled={props.disabled}
           type={props.type}
           aria-label={props.ariaLabel}
         >
-          {(props.icon || props.children || props.iconEnd) && (
+          {(props.children || props.iconEnd) && (
             <span className="inline-flex items-center gap-2">
-              {props.icon && <FontAwesomeIcon icon={props.icon} className="shrink-0" />}
               {props.children}
-              {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} className="shrink-0" />}
+              {props.iconEnd}
             </span>
           )}
         </NavButton>

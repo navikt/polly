@@ -1,5 +1,4 @@
-import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ArrowsUpDownIcon, SortDownIcon, SortUpIcon } from '@navikt/aksel-icons'
 import { BodyShort, Table as NavTable } from '@navikt/ds-react'
 import { Children, ReactElement, ReactNode, createContext } from 'react'
 import { theme } from '../../util'
@@ -102,11 +101,11 @@ interface ISortDirectionIconProps {
 const SortDirectionIcon = (props: ISortDirectionIconProps) => {
   switch (props?.direction) {
     case SORT_DIRECTION.ASC:
-      return <FontAwesomeIcon icon={faSortDown} />
+      return <SortDownIcon aria-hidden className="block" />
     case SORT_DIRECTION.DESC:
-      return <FontAwesomeIcon icon={faSortUp} />
+      return <SortUpIcon aria-hidden className="block" />
     default:
-      return <FontAwesomeIcon icon={faSort} />
+      return <ArrowsUpDownIcon aria-hidden className="block" />
   }
 }
 

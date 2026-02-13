@@ -1,5 +1,4 @@
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { MagnifyingGlassIcon } from '@navikt/aksel-icons'
+import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons'
 import { Tag } from '@navikt/ds-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -433,7 +432,11 @@ export const MainSearch = () => {
         <div className="relative ml-1 flex items-center">
           <Button
             onClick={() => setFilter(!filter)}
-            icon={faFilter}
+            icon={
+              <span className="flex items-center leading-none">
+                <FilterIcon aria-hidden className="block" />
+              </span>
+            }
             size="xsmall"
             kind={filter ? 'primary-neutral' : 'tertiary-neutral'}
             ariaLabel="Filter"

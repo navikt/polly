@@ -1,5 +1,4 @@
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ExclamationmarkIcon } from '@navikt/aksel-icons'
 import { Button, DatePicker, Tooltip, useDatepicker } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
@@ -24,11 +23,10 @@ const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
     <Tooltip content={tooltip}>
       <Button type="button" variant="tertiary-neutral">
         {text}
-        <FontAwesomeIcon
-          style={{ marginLeft: '.5rem', alignSelf: 'center' }}
-          icon={faExclamationCircle}
-          color={theme.colors.primary300}
-          size="sm"
+        <ExclamationmarkIcon
+          aria-hidden
+          className="block"
+          style={{ marginLeft: '.5rem', alignSelf: 'center', color: theme.colors.primary300 }}
         />
       </Button>
     </Tooltip>
