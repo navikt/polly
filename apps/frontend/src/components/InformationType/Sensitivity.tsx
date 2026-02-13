@@ -6,7 +6,8 @@ import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 export function sensitivityColor(code: string) {
   switch (code) {
     case ESensitivityLevel.ART9:
-      return theme.colors.negative500
+      // Icon-only warning decoration color (rawValue: #CA5000)
+      return 'var(--ax-text-warning-decoration)'
     default:
       return theme.colors.mono1000
   }
@@ -20,7 +21,7 @@ export const Sensitivity = (props: { sensitivity: ICode; codelistUtils: ICodelis
         <ShieldIcon
           aria-hidden
           className="block"
-          color={sensitivityColor(props.sensitivity.code)}
+          style={{ color: sensitivityColor(props.sensitivity.code) }}
         />
       }
     />
