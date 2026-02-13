@@ -5,13 +5,6 @@ server {
   proxy_set_header    X-Real-IP $remote_addr;
   proxy_redirect      off;
 
-  # Favicons are heavily cached by browsers; avoid stale env-specific icons.
-  location ~* ^/(favicon\.ico|favicon_.*\.ico)$ {
-    add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" always;
-    expires -1;
-    try_files $uri =404;
-  }
-
   location /isAlive {
     return 200 'OK';
   }
