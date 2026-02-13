@@ -118,11 +118,15 @@ const ProcessData = (props: IProcessDataProps) => {
     <div>
       <DataText label="Behandlingsnummer" text={'B' + process.number} />
 
-      <DataText label="Formål med behandlingen" text={process.description} />
+      <DataText label="Formål med behandlingen" text="">
+        <div className="max-w-[100ch]">
+          {shortenLinksInText(process.description?.length ? process.description : 'Ikke utfylt')}
+        </div>
+      </DataText>
 
       {process.additionalDescription && (
         <DataText label="Ytterligere beskrivelse" text="">
-          {shortenLinksInText(process.additionalDescription)}
+          <div className="max-w-[100ch]">{shortenLinksInText(process.additionalDescription)}</div>
         </DataText>
       )}
 
@@ -399,7 +403,7 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="Er det behov for PVK?" text={''}>
-        <div className="break-words">
+        <div className="wrap-break-word">
           <span>{showDpiaRequiredField(process.dpia)}</span>
         </div>
       </DataText>
