@@ -170,9 +170,17 @@ const DpProcessView = () => {
             </span>
           </DataText>
 
-          <DataText label="Beskrivelse" text={dpProcess?.description} />
+          <DataText label="Beskrivelse" text="">
+            <div className="max-w-[100ch] wrap-break-word">
+              {dpProcess?.description?.length ? dpProcess.description : 'Ikke utfylt'}
+            </div>
+          </DataText>
 
-          <DataText label="Formål" text={dpProcess?.purposeDescription} />
+          <DataText label="Formål" text="">
+            <div className="max-w-[100ch] wrap-break-word">
+              {dpProcess?.purposeDescription?.length ? dpProcess.purposeDescription : 'Ikke utfylt'}
+            </div>
+          </DataText>
 
           <DataText label="Gyldighetsperiode for behandlingen" text="">
             <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
