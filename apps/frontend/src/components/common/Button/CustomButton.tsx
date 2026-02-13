@@ -24,6 +24,7 @@ interface IButtonProps {
   marginRight?: boolean
   marginLeft?: boolean
   ariaLabel?: string
+  loading?: boolean
 }
 
 interface ITooltipProps {
@@ -49,6 +50,7 @@ const Button = (props: IButtonProps) => {
           onClick={() => props.onClick?.()}
           icon={props.icon ?? props.startEnhancer}
           disabled={props.disabled}
+          loading={props.loading}
           type={props.type}
           aria-label={props.ariaLabel}
         >

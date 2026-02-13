@@ -1,5 +1,5 @@
 import { FileWordIcon } from '@navikt/aksel-icons'
-import { BodyLong, Loader, LocalAlert, Modal } from '@navikt/ds-react'
+import { BodyLong, LocalAlert, Modal } from '@navikt/ds-react'
 import { FunctionComponent, useState } from 'react'
 import { EListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
@@ -19,7 +19,7 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
   exportHref,
 }) => {
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
-  const [isExportLoading, setIsExportLoading] = useState<boolean>(false)
+  const [exportDownloading, setExportDownloading] = useState<'internal' | 'external' | null>(null)
   const [exportError, setExportError] = useState<string>('')
   const [exportSuccess, setExportSuccess] = useState<string>('')
 
@@ -49,7 +49,7 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
   }
 
   const handleExport = async (exportUrl: string, type: 'internal' | 'external') => {
-    setIsExportLoading(true)
+    setExportDownloading(type)
     setExportError('')
     setExportSuccess('')
     try {
@@ -68,7 +68,7 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
         setExportError(message)
       }
     } finally {
-      setIsExportLoading(false)
+      setExportDownloading(null)
     }
   }
 
@@ -108,7 +108,7 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
         <Modal
           open={isExportModalOpen}
           onClose={() => {
-            if (!isExportLoading) {
+            if (!exportDownloading) {
               setIsExportModalOpen(false)
               setExportError('')
               setExportSuccess('')
@@ -118,9 +118,8 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
         >
           <Modal.Body>
             {exportError !== '' && <BodyLong>{exportError}</BodyLong>}
-            {isExportLoading && <Loader size="large" className="flex justify-self-center" />}
-            {!isExportLoading && exportError === '' && (
-              <>
+            {exportError === '' && (
+              <div className="flex flex-wrap gap-3">
                 <Button
                   kind="outline"
                   size="xsmall"
@@ -129,6 +128,8 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                       <FileWordIcon aria-hidden className="block" />
                     </span>
                   }
+                  loading={exportDownloading === 'internal'}
+                  disabled={exportDownloading !== null}
                   marginRight
                   onClick={async () => {
                     const exportUrl = exportHref
@@ -147,6 +148,8 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                       <FileWordIcon aria-hidden className="block" />
                     </span>
                   }
+                  loading={exportDownloading === 'external'}
+                  disabled={exportDownloading !== null}
                   marginRight
                   onClick={async () => {
                     const exportUrl = exportHref
@@ -157,7 +160,7 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                 >
                   Eksport for ekstern bruk
                 </Button>
-              </>
+              </div>
             )}
 
             {exportSuccess !== '' && (
