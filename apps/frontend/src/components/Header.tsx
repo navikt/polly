@@ -141,6 +141,7 @@ const Header = ({
         <div className="flex items-center px-2">
           <ToggleGroup
             size="small"
+            aria-label="Tilgangsmodus"
             value={permissionMode}
             onChange={(value) => {
               if (value === 'admin' || value === 'write' || value === 'read') {
@@ -155,7 +156,7 @@ const Header = ({
         </div>
       )}
 
-      {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
+      {canUsePermissionOverrides && <AdminOptions />}
       {!user.isLoggedIn() && <LoginButton />}
       {user.isLoggedIn() && <LoggedInHeader />}
     </InternalHeader>

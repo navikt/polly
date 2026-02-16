@@ -114,7 +114,7 @@ const UserService = (): IUserProps => {
     const hasSuper = hasGroup(EGroup.SUPER)
 
     if (mode === 'write') {
-      return hasWrite
+      return hasWrite || hasAdmin || hasSuper
     }
 
     // mode === 'admin'
