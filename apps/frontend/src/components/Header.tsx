@@ -156,7 +156,7 @@ const Header = ({
         </div>
       )}
 
-      {canUsePermissionOverrides && <AdminOptions />}
+      {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
       {!user.isLoggedIn() && <LoginButton />}
       {user.isLoggedIn() && <LoggedInHeader />}
     </InternalHeader>
