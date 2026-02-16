@@ -37,6 +37,7 @@ const mainSearchSelectOverrides = {
     ({
       ...(selectOverrides as any).control(base),
       backgroundColor: 'var(--ax-bg-default)',
+      border: '1px solid #D9DBE0',
       color: 'var(--ax-text-neutral)',
     }) as CSSObjectWithLabel,
   input: (base: CSSObjectWithLabel) =>
@@ -434,7 +435,7 @@ export const MainSearch = () => {
             onClick={() => setFilter(!filter)}
             icon={
               <span className="flex items-center leading-none">
-                <FilterIcon aria-hidden className="block" />
+                <FilterIcon aria-hidden className="block text-[#D9DBE0]" />
               </span>
             }
             size="xsmall"
