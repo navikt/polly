@@ -1,8 +1,8 @@
-import { BodyShort, Tooltip } from '@navikt/ds-react'
+import { BodyShort } from '@navikt/ds-react'
 import { canViewAlerts } from '../../pages/AlertEventPage'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import NavLogo from '../../resources/navlogo.svg'
-import { datajegerSlackLink, helpLink } from '../../util/config'
+import { datajegerSlackLink } from '../../util/config'
 import NavItem from './NavItem'
 
 const SideBar = () => (
@@ -65,15 +65,6 @@ const SideBar = () => (
           </div>
         </div>
 
-        <a href={helpLink} style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
-          <div className="flex justify-center pb-2.5 items-center">
-            <Tooltip content="På Navs personvernsider finner du informasjon til hjelp for utfylling.">
-              <BodyShort size="small" style={{ color: '#E0E1E5' }}>
-                Hjelp
-              </BodyShort>
-            </Tooltip>
-          </div>
-        </a>
         <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
           <div className="flex justify-center items-center">
             <img src={SlackLogo} width="60px" alt="slack logo" />
