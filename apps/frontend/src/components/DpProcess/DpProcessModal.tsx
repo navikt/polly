@@ -49,148 +49,150 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
         validationSchema={dpProcessSchema()}
       >
         {(formikBag) => (
-          <Form id="modal-dp-process-form" onKeyDown={disableEnter}>
+          <>
             <Modal.Body>
-              <CustomizedModalBlock first>
-                <ModalLabel
-                  label="Navn"
-                  tooltip="Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring."
-                />
-                <Field name="name">
-                  {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
-                    <TextField
-                      className="w-full"
-                      label="name"
-                      hideLabel
-                      {...field}
-                      error={!!form.errors.name && form.touched.name}
-                    />
-                  )}
-                </Field>
-              </CustomizedModalBlock>
-              <Error fieldName={'name'} />
-
-              <CustomizedModalBlock>
-                <ModalLabel
-                  label="Behandlingsansvarlig"
-                  tooltip="Oppgi navn på den behandlingsansvarlige virksomheten."
-                />
-                <div className="w-full">
-                  <FieldDpProcessExternalProcessResponsible
-                    thirdParty={formikBag.values.externalProcessResponsible}
+              <Form id="modal-dp-process-form" onKeyDown={disableEnter}>
+                <CustomizedModalBlock first>
+                  <ModalLabel
+                    label="Navn"
+                    tooltip="Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring."
                   />
-                </div>
-              </CustomizedModalBlock>
+                  <Field name="name">
+                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
+                      <TextField
+                        className="w-full"
+                        label="name"
+                        hideLabel
+                        {...field}
+                        error={!!form.errors.name && form.touched.name}
+                      />
+                    )}
+                  </Field>
+                </CustomizedModalBlock>
+                <Error fieldName={'name'} />
 
-              <CustomizedModalBlock>
-                <ModalLabel
-                  label="Beskrivelse"
-                  tooltip="Beskriv behandlingen Nav gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger."
-                />
-                <FieldDescription />
-              </CustomizedModalBlock>
-              <Error fieldName="description" />
-
-              <CustomizedModalBlock>
-                <ModalLabel
-                  label="Formål"
-                  tooltip="Beskriv formålet med å bruke personopplysninger i denne behandlingen."
-                />
-                <FieldPurposeDescription />
-              </CustomizedModalBlock>
-              <Error fieldName="purposeDescription" />
-
-              <CustomizedModalBlock>
-                <ModalLabel label="Gyldighetsperiode for behandlingen" />
-                <FieldDpProcessDates showDates={true} showLabels={true} />
-              </CustomizedModalBlock>
-
-              <div className="w-full mt-4">
-                <ModalLabel
-                  label="Behandles det særlige kategorier av personopplysninger?"
-                  tooltip="Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning."
-                  fullwidth
-                />
-                <div className="mt-2">
-                  <BoolField
-                    fieldName="art9"
-                    value={formikBag.values.art9}
-                    direction="horizontal"
+                <CustomizedModalBlock>
+                  <ModalLabel
+                    label="Behandlingsansvarlig"
+                    tooltip="Oppgi navn på den behandlingsansvarlige virksomheten."
                   />
-                </div>
-              </div>
+                  <div className="w-full">
+                    <FieldDpProcessExternalProcessResponsible
+                      thirdParty={formikBag.values.externalProcessResponsible}
+                    />
+                  </div>
+                </CustomizedModalBlock>
 
-              <div className="w-full mt-4">
-                <ModalLabel
-                  label="Behandles det personopplysninger om straffedommer og lovovertredelser?"
-                  fullwidth
-                />
-                <div className="mt-2">
-                  <BoolField
-                    fieldName="art10"
-                    value={formikBag.values.art10}
-                    direction="horizontal"
+                <CustomizedModalBlock>
+                  <ModalLabel
+                    label="Beskrivelse"
+                    tooltip="Beskriv behandlingen Nav gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger."
                   />
-                </div>
-              </div>
+                  <FieldDescription />
+                </CustomizedModalBlock>
+                <Error fieldName="description" />
 
-              <div className="w-full mt-4">
-                <ModalLabel
-                  label="System"
-                  tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
-                  fullwidth
-                />
-                <div className="mt-2">
-                  <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
-                </div>
-              </div>
+                <CustomizedModalBlock>
+                  <ModalLabel
+                    label="Formål"
+                    tooltip="Beskriv formålet med å bruke personopplysninger i denne behandlingen."
+                  />
+                  <FieldPurposeDescription />
+                </CustomizedModalBlock>
+                <Error fieldName="purposeDescription" />
 
-              <div className="w-full mt-8">
-                <ModalLabel label="Ref. til databehandleravtale" fullwidth />
-                <div className="mt-2">
-                  <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
-                </div>
-              </div>
-              <Error fieldName="dataProcessingAgreements" />
+                <CustomizedModalBlock>
+                  <ModalLabel label="Gyldighetsperiode for behandlingen" />
+                  <FieldDpProcessDates showDates={true} showLabels={true} />
+                </CustomizedModalBlock>
 
-              <Accordion className="mt-6">
-                <Accordion.Item
-                  open={expanded === 'organizing'}
-                  onOpenChange={(open: boolean) => onOpenChangeAction(open, 'organizing')}
-                >
-                  <Accordion.Header>Organisering</Accordion.Header>
-                  <Accordion.Content>
-                    <FieldDpProcessAffiliation
-                      formikBag={formikBag}
-                      codelistUtils={codelistUtils}
+                <div className="w-full mt-4">
+                  <ModalLabel
+                    label="Behandles det særlige kategorier av personopplysninger?"
+                    tooltip="Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning."
+                    fullwidth
+                  />
+                  <div className="mt-2">
+                    <BoolField
+                      fieldName="art9"
+                      value={formikBag.values.art9}
+                      direction="horizontal"
                     />
-                  </Accordion.Content>
-                </Accordion.Item>
+                  </div>
+                </div>
 
-                <Accordion.Item
-                  open={expanded === 'subDataProcessor'}
-                  onOpenChange={(open: boolean) => onOpenChangeAction(open, 'subDataProcessor')}
-                >
-                  <Accordion.Header className="z-0">Underdatabehandler</Accordion.Header>
-
-                  <Accordion.Content>
-                    <FieldDpProcessSubDataProcessor
-                      formikBag={formikBag}
-                      initialValues={initialValues}
+                <div className="w-full mt-4">
+                  <ModalLabel
+                    label="Behandles det personopplysninger om straffedommer og lovovertredelser?"
+                    fullwidth
+                  />
+                  <div className="mt-2">
+                    <BoolField
+                      fieldName="art10"
+                      value={formikBag.values.art10}
+                      direction="horizontal"
                     />
-                  </Accordion.Content>
-                </Accordion.Item>
+                  </div>
+                </div>
 
-                <Accordion.Item
-                  open={expanded === 'retention'}
-                  onOpenChange={(open: boolean) => onOpenChangeAction(open, 'retention')}
-                >
-                  <Accordion.Header className="z-0">Lagringsbehov</Accordion.Header>
-                  <Accordion.Content>
-                    <RetentionItems formikBag={formikBag} />
-                  </Accordion.Content>
-                </Accordion.Item>
-              </Accordion>
+                <div className="w-full mt-4">
+                  <ModalLabel
+                    label="System"
+                    tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
+                    fullwidth
+                  />
+                  <div className="mt-2">
+                    <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
+                  </div>
+                </div>
+
+                <div className="w-full mt-8">
+                  <ModalLabel label="Ref. til databehandleravtale" fullwidth />
+                  <div className="mt-2">
+                    <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
+                  </div>
+                </div>
+                <Error fieldName="dataProcessingAgreements" />
+
+                <Accordion className="mt-6">
+                  <Accordion.Item
+                    open={expanded === 'organizing'}
+                    onOpenChange={(open: boolean) => onOpenChangeAction(open, 'organizing')}
+                  >
+                    <Accordion.Header>Organisering</Accordion.Header>
+                    <Accordion.Content>
+                      <FieldDpProcessAffiliation
+                        formikBag={formikBag}
+                        codelistUtils={codelistUtils}
+                      />
+                    </Accordion.Content>
+                  </Accordion.Item>
+
+                  <Accordion.Item
+                    open={expanded === 'subDataProcessor'}
+                    onOpenChange={(open: boolean) => onOpenChangeAction(open, 'subDataProcessor')}
+                  >
+                    <Accordion.Header className="z-0">Underdatabehandler</Accordion.Header>
+
+                    <Accordion.Content>
+                      <FieldDpProcessSubDataProcessor
+                        formikBag={formikBag}
+                        initialValues={initialValues}
+                      />
+                    </Accordion.Content>
+                  </Accordion.Item>
+
+                  <Accordion.Item
+                    open={expanded === 'retention'}
+                    onOpenChange={(open: boolean) => onOpenChangeAction(open, 'retention')}
+                  >
+                    <Accordion.Header className="z-0">Lagringsbehov</Accordion.Header>
+                    <Accordion.Content>
+                      <RetentionItems formikBag={formikBag} />
+                    </Accordion.Content>
+                  </Accordion.Item>
+                </Accordion>
+              </Form>
             </Modal.Body>
 
             <Modal.Footer
@@ -203,10 +205,12 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                 <Button type="button" variant="tertiary" onClick={() => onClose()}>
                   Avbryt
                 </Button>
-                <Button type="submit">Lagre</Button>
+                <Button type="submit" form="modal-dp-process-form">
+                  Lagre
+                </Button>
               </div>
             </Modal.Footer>
-          </Form>
+          </>
         )}
       </Formik>
     </Modal>

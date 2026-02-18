@@ -118,25 +118,24 @@ const ModalProcess = ({
 
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width="960px">
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          submit(values)
-        }}
-        validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
-        render={(formikBag: FormikProps<IProcessFormValues>) => {
-          if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
-            console.debug(formikBag.errors)
-            writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
-            if (formikBag.errors.legalBasesOpen) {
-              expand('legalBasis')
-            }
-          }
-
-          return (
-            <Form id="modal-process-form" onKeyDown={disableEnter}>
-              <Modal.Body>
-                <div className="w-240 px-8">
+      <Modal.Body>
+        <div className="w-240 px-8">
+          <Formik
+            initialValues={initialValues}
+            onSubmit={(values) => {
+              submit(values)
+            }}
+            validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
+            render={(formikBag: FormikProps<IProcessFormValues>) => {
+              if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
+                console.debug(formikBag.errors)
+                writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
+                if (formikBag.errors.legalBasesOpen) {
+                  expand('legalBasis')
+                }
+              }
+              return (
+                <Form id="modal-process-form" onKeyDown={disableEnter}>
                   <CustomizedModalBlock first>
                     <ModalLabel
                       label="Navn"
@@ -626,22 +625,24 @@ const ModalProcess = ({
                       </div>
                     </div>
                   </CustomizedModalBlock>
-                </div>
-              </Modal.Body>
+                </Form>
+              )
+            }}
+          />
+        </div>
+      </Modal.Body>
 
-              <Modal.Footer style={{ borderTop: 0 }}>
-                <div className="flex justify-end">
-                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" variant="tertiary" onClick={onClose}>
-                    Avbryt
-                  </Button>
-                  <Button type="submit">Lagre</Button>
-                </div>
-              </Modal.Footer>
-            </Form>
-          )
-        }}
-      />
+      <Modal.Footer style={{ borderTop: 0 }}>
+        <div className="flex justify-end">
+          <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+          <Button type="button" variant="tertiary" onClick={onClose}>
+            Avbryt
+          </Button>
+          <Button type="submit" form="modal-process-form">
+            Lagre
+          </Button>
+        </div>
+      </Modal.Footer>
     </Modal>
   )
 }
