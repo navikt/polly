@@ -86,7 +86,7 @@ const SelectProcess = (props: TSelectProcessProps) => {
             />
           </div>
 
-          <div>
+          <div className="mt-2">
             {renderTagList(
               formikBag.values.processes.map(
                 (process: IProcessShort) =>

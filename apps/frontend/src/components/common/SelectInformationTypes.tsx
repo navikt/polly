@@ -57,7 +57,7 @@ const SelectInformationTypes = (props: TSelectInformationTypesProps) => {
           </div>
 
           {formikBag.values.informationTypes && (
-            <div>
+            <div className="mt-2">
               {renderTagList(
                 formikBag.values.informationTypes.map(
                   (informationType: IInformationTypeShort) => informationType.name
