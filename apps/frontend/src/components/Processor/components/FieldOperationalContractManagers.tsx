@@ -12,21 +12,29 @@ type TFieldOperationalContractManagersProps = {
 
 const FieldOperationalContractManagers = (props: TFieldOperationalContractManagersProps) => {
   const { formikBag } = props
-  const [operationalContractManagers, setOperationalContractManagers] = useState<string[]>()
-  const resources = new Map<string, string>()
+  const [operationalContractManagers, setOperationalContractManagers] = useState<string[]>([])
+
+  const currentIds = formikBag.values.operationalContractManagers || []
 
   useEffect(() => {
     ;(async () => {
-      if (
-        formikBag.values.operationalContractManagers &&
-        formikBag.values.operationalContractManagers?.length > 0
-      ) {
-        const result = await getResourcesByIds(formikBag.values.operationalContractManagers)
-        result.forEach((resource) => resources.set(resource.navIdent, resource.fullName))
-        setOperationalContractManagers(resources.values().toArray())
+      if (currentIds.length === 0) {
+        setOperationalContractManagers([])
+        return
+      }
+
+      try {
+        const result = await getResourcesByIds(currentIds)
+        const names = result
+          .map((resource) => resource?.fullName)
+          .filter((name): name is string => Boolean(name))
+
+        setOperationalContractManagers(names.length > 0 ? names : currentIds)
+      } catch {
+        setOperationalContractManagers(currentIds)
       }
     })()
-  }, [formikBag.values.operationalContractManagers])
+  }, [currentIds.join('|')])
 
   return (
     <FieldArray name="operationalContractManagers">
@@ -36,21 +44,35 @@ const FieldOperationalContractManagers = (props: TFieldOperationalContractManage
           <CustomSearchSelect
             ariaLabel="Fagansvarlig"
             placeholder=""
+            inputId="operationalContractManagers"
+            instanceId="operationalContractManagers"
             onChange={(event: any) => {
-              if (event) {
-                arrayHelpers.form.setFieldValue('operationalContractManagers', [
-                  ...formikBag.values.operationalContractManagers,
-                  event.id,
-                ])
+              if (!event) {
+                return
               }
+
+              const nextId = event.value
+              if (!nextId) {
+                return
+              }
+
+              if (currentIds.includes(nextId)) {
+                return
+              }
+
+              if (event.label) {
+                setOperationalContractManagers([...operationalContractManagers, event.label])
+              }
+
+              arrayHelpers.form.setFieldValue('operationalContractManagers', [
+                ...currentIds,
+                nextId,
+              ])
             }}
             loadOptions={useTeamResourceSearchOptions}
           />
 
-          <RenderTagList
-            list={operationalContractManagers as string[]}
-            onRemove={arrayHelpers.remove}
-          />
+          <RenderTagList list={operationalContractManagers} onRemove={arrayHelpers.remove} />
         </div>
       )}
     </FieldArray>

@@ -12,6 +12,8 @@ import AsyncSelect from 'react-select/async'
 interface ICustomSearchSelectProps {
   ariaLabel: string
   placeholder: string
+  inputId?: string
+  instanceId?: string
   onChange: (newValue: OnChangeValue<any, any>, actionMeta: ActionMeta<any>) => void
   loadOptions?: (
     inputValue: string,
@@ -20,11 +22,13 @@ interface ICustomSearchSelectProps {
 }
 
 export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
-  const { ariaLabel, placeholder, onChange, loadOptions } = props
+  const { ariaLabel, placeholder, inputId, instanceId, onChange, loadOptions } = props
   return (
     <AsyncSelect
       className="w-full"
       aria-label={ariaLabel}
+      inputId={inputId}
+      instanceId={instanceId}
       placeholder={placeholder}
       components={{ DropdownIndicator }}
       noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}

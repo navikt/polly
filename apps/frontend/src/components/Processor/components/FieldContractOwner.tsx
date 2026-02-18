@@ -17,11 +17,25 @@ type TFieldContractOwnerProps = {
 const FieldContractOwner = (props: TFieldContractOwnerProps) => {
   const { formikBag } = props
   const [displayName, setDisplayName] = useState<ITeamResource>()
+  const [selected, setSelected] = useState<{ value: string; label: string } | null>(null)
 
   useEffect(() => {
     ;(async () => {
       if (formikBag.values.contractOwner) {
-        setDisplayName(await getResourceById(formikBag.values.contractOwner))
+        try {
+          const resource = await getResourceById(formikBag.values.contractOwner)
+          setDisplayName(resource)
+          setSelected({ value: resource.navIdent, label: resource.fullName })
+        } catch {
+          setDisplayName(undefined)
+          setSelected({
+            value: formikBag.values.contractOwner,
+            label: formikBag.values.contractOwner,
+          })
+        }
+      } else {
+        setDisplayName(undefined)
+        setSelected(null)
       }
     })()
   }, [formikBag.values.contractOwner])
@@ -37,6 +51,8 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
           <AsyncSelect
             className="w-full"
             aria-label="Avtaleeier"
+            inputId="contractOwner"
+            instanceId="contractOwner"
             placeholder=""
             components={{ DropdownIndicator }}
             noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
@@ -44,17 +60,22 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
             loadingMessage={() => 'Søker...'}
             isClearable={!!form.values.contractOwner}
             loadOptions={useTeamResourceSearchOptions}
-            onChange={(event: any) => {
-              if (event) {
-                form.setFieldValue('contractOwner', event.id).finally()
+            onChange={(option: any) => {
+              if (option) {
+                form.setFieldValue('contractOwner', option.value).finally()
+                setSelected(option)
+                return
               }
-              if (event === null) {
-                form.setFieldValue('contractOwner', '').finally()
-                setDisplayName(undefined)
-              }
+
+              form.setFieldValue('contractOwner', '').finally()
+              setDisplayName(undefined)
+              setSelected(null)
             }}
             styles={selectOverrides}
-            value={{ id: displayName?.navIdent, label: displayName?.fullName }}
+            value={
+              selected ||
+              (displayName ? { value: displayName.navIdent, label: displayName.fullName } : null)
+            }
           />
         )}
       </Field>
