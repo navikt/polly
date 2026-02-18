@@ -1,5 +1,5 @@
 import { Select } from '@navikt/ds-react'
-import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { FieldArray, FieldArrayRenderProps, FormikProps, getIn } from 'formik'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
 import { EListName, ICodelistProps } from '../../../service/Codelist'
@@ -15,18 +15,29 @@ const FieldPurpose = (props: {
       : ''
   )
 
+  const purposesError =
+    (getIn(formikBag.errors, 'purposes[0]') as string | undefined) ||
+    (getIn(formikBag.errors, 'purposes') as string | undefined)
+  const purposesTouched =
+    !!getIn(formikBag.touched, 'purposes[0]') || !!getIn(formikBag.touched, 'purposes')
+  const showError = !!purposesError && (purposesTouched || formikBag.submitCount > 0)
+
   return (
     <FieldArray
       name="purposes"
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className="w-full">
           <Select
+            id="purposes"
             label="Velg overordnet behandlingsaktivitet"
             hideLabel
             value={selectedValue}
+            error={showError ? purposesError : undefined}
             onChange={(event) => {
               setSelectedValue(event.target.value)
               arrayHelpers.form.setFieldValue('purposes', [event.target.value])
+              arrayHelpers.form.setFieldTouched('purposes', true, false)
+              arrayHelpers.form.setFieldTouched('purposes[0]', true, false)
             }}
           >
             <option value="">Velg overordnet behandlingsaktivitet</option>

@@ -373,10 +373,10 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
             purposeList.map((p) => p.code),
             requiredMessage
           )
-          .required()
+          .required(requiredMessage)
       )
       .min(1, requiredMessage)
-      .required(),
+      .required(requiredMessage),
     description: yup.string(),
     additionalDescription: yup.string(),
     affiliation: yup.object({

@@ -6,6 +6,7 @@ const FieldDescription = () => (
   <Field name="description">
     {({ field, form }: FieldProps<string, IProcessFormValues>) => (
       <Textarea
+        id="description"
         className="w-full"
         label=""
         hideLabel

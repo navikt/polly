@@ -2,6 +2,7 @@ import {
   Accordion,
   Alert,
   Button,
+  ErrorSummary,
   Modal,
   Radio,
   RadioGroup,
@@ -49,6 +50,41 @@ import FieldName from '../common/FieldName'
 import FieldPurpose from '../common/FieldPurpose'
 import FieldRiskOwner from '../common/FieldRiskOwner'
 import RetentionItems from '../common/RetentionItems'
+
+const flattenFormikErrors = (
+  errors: unknown,
+  pathPrefix = ''
+): Array<{ path: string; message: string }> => {
+  if (!errors) return []
+
+  if (typeof errors === 'string') {
+    return [{ path: pathPrefix || 'form', message: errors }]
+  }
+
+  if (Array.isArray(errors)) {
+    return errors.flatMap((value, index) =>
+      flattenFormikErrors(value, pathPrefix ? `${pathPrefix}[${index}]` : String(index))
+    )
+  }
+
+  if (typeof errors === 'object') {
+    return Object.entries(errors as Record<string, unknown>).flatMap(([key, value]) =>
+      flattenFormikErrors(value, pathPrefix ? `${pathPrefix}.${key}` : key)
+    )
+  }
+
+  return []
+}
+
+const pathToAnchorId = (path: string): string => {
+  if (!path) return 'form'
+
+  if (path.startsWith('purposes')) return 'purposes'
+
+  const root = path.replace(/\[\d+\]/g, '')
+  const anchor = root.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
+  return anchor || 'form'
+}
 
 type TModalProcessProps = {
   codelistUtils: ICodelistProps
@@ -152,7 +188,6 @@ const ModalProcess = ({
                     />
                     <FieldPurpose formikBag={formikBag} codelistUtils={codelistUtils} />
                   </CustomizedModalBlock>
-                  <Error fieldName="purposes" />
 
                   <CustomizedModalBlock>
                     <ModalLabel
@@ -625,6 +660,34 @@ const ModalProcess = ({
                       </div>
                     </div>
                   </CustomizedModalBlock>
+
+                  {formikBag.submitCount > 0 && Object.keys(formikBag.errors).length > 0 && (
+                    <div className="mt-6">
+                      <ErrorSummary heading="Du må rette disse feilene før du kan fortsette">
+                        {Array.from(
+                          new Map(
+                            flattenFormikErrors(formikBag.errors).map((e) => [
+                              pathToAnchorId(e.path),
+                              e,
+                            ])
+                          ).values()
+                        ).map((e) => (
+                          <ErrorSummary.Item
+                            href={`#${pathToAnchorId(e.path)}`}
+                            key={e.path}
+                            onClick={(event) => {
+                              event.preventDefault()
+                              const el = document.getElementById(pathToAnchorId(e.path))
+                              el?.scrollIntoView({ block: 'center' })
+                              ;(el as HTMLElement | null)?.focus?.()
+                            }}
+                          >
+                            {e.message}
+                          </ErrorSummary.Item>
+                        ))}
+                      </ErrorSummary>
+                    </div>
+                  )}
                 </Form>
               )
             }}

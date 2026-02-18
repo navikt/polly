@@ -6,6 +6,7 @@ const FieldName = () => (
   <Field name="name">
     {({ field, form }: FieldProps<string, IProcessFormValues>) => (
       <TextField
+        id="name"
         className="w-full"
         {...field}
         label=""
