@@ -39,7 +39,8 @@ const max = 150
 const maxError = () => `Maks ${max} tegn`
 const requiredMessage = 'Feltet er påkrevd'
 const incorrectDateMessage = 'Feil dato format, eksempel: 2018-08-22'
-const legalBasesOpenMessage = 'Lukk behandlingsgrunnlag redigering før lagring'
+const legalBasesOpenMessage =
+  'Du har en pågående redigering av behandlingsgrunnlag. Klikk «Legg til»/«Oppdater» eller lukk redigeringen før du lagrer.'
 
 const transferGroundsOutsideEUMissing = (values: IProcessorFormValues) => {
   return !!values.outsideEU && !values.transferGroundsOutsideEU

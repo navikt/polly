@@ -5,10 +5,11 @@ import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 interface IErrorProps {
   fieldName: string
   fullWidth?: boolean
+  messageClassName?: string
 }
 
 export const Error = (props: IErrorProps) => {
-  const { fieldName, fullWidth } = props
+  const { fieldName, fullWidth, messageClassName } = props
 
   return (
     <ErrorMessage name={fieldName}>
@@ -16,7 +17,7 @@ export const Error = (props: IErrorProps) => {
         <div className="flex w-full mt-1">
           {!fullWidth && <ModalLabel />}
           <div className="w-full">
-            <p className="navds-error-message navds-label">{msg}</p>
+            <p className={`navds-error-message navds-label ${messageClassName ?? ''}`}>{msg}</p>
           </div>
         </div>
       )}

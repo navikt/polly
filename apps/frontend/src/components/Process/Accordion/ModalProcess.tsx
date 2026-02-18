@@ -18,7 +18,7 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { Key, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
@@ -86,6 +86,32 @@ const pathToAnchorId = (path: string): string => {
   return anchor || 'form'
 }
 
+const FormikSubmitEffects = (props: {
+  formikBag: FormikProps<IProcessFormValues>
+  setLegalBasesOpen: (open: boolean) => void
+}) => {
+  const { formikBag, setLegalBasesOpen } = props
+  const lastHandledSubmitCount = useRef<number>(0)
+
+  useEffect(() => {
+    if (formikBag.submitCount <= lastHandledSubmitCount.current) return
+
+    if (!formikBag.isValid) {
+      console.debug(formikBag.errors)
+      writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
+
+      if (formikBag.errors.legalBasesOpen) {
+        setLegalBasesOpen(true)
+        formikBag.setFieldTouched('legalBasesOpen', true, false)
+      }
+    }
+
+    lastHandledSubmitCount.current = formikBag.submitCount
+  }, [formikBag, formikBag.submitCount, formikBag.errors, formikBag.isValid, setLegalBasesOpen])
+
+  return null
+}
+
 type TModalProcessProps = {
   codelistUtils: ICodelistProps
   title: string
@@ -106,7 +132,6 @@ const ModalProcess = ({
   initialValues,
   title,
 }: TModalProcessProps) => {
-  const [expanded, setExpanded] = useState<Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(
     !!initialValues.commonExternalProcessResponsible
   )
@@ -116,12 +141,6 @@ const ModalProcess = ({
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const [processorList, setProcessorList] = useState<IProcessor[]>([])
   const [legalBasesOpen, setLegalBasesOpen] = useState<boolean>(false)
-
-  const expand: (panelKey: string) => void = (panelKey: string) => {
-    if (expanded.indexOf(panelKey) < 0) {
-      setExpanded([panelKey])
-    }
-  }
 
   useEffect(() => {
     ;(async () => {
@@ -163,15 +182,13 @@ const ModalProcess = ({
             }}
             validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
             render={(formikBag: FormikProps<IProcessFormValues>) => {
-              if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
-                console.debug(formikBag.errors)
-                writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
-                if (formikBag.errors.legalBasesOpen) {
-                  expand('legalBasis')
-                }
-              }
               return (
                 <Form id="modal-process-form" onKeyDown={disableEnter}>
+                  <FormikSubmitEffects
+                    formikBag={formikBag}
+                    setLegalBasesOpen={setLegalBasesOpen}
+                  />
+
                   <CustomizedModalBlock first>
                     <ModalLabel
                       label="Navn"
@@ -345,7 +362,7 @@ const ModalProcess = ({
                         formikBag.setFieldValue('legalBasesOpen', open)
                       }}
                     >
-                      <Accordion.Header className="z-0">
+                      <Accordion.Header id="legalBasesOpen" className="z-0">
                         Behandlingsgrunnlag for hele behandlingen
                       </Accordion.Header>
                       <Accordion.Content>
@@ -357,7 +374,11 @@ const ModalProcess = ({
                             layout="vertical"
                           />
                         )}
-                        <Error fieldName="legalBasesOpen" fullWidth={true} />
+                        <Error
+                          fieldName="legalBasesOpen"
+                          fullWidth={true}
+                          messageClassName="!text-(--a-text-danger)"
+                        />
                       </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
