@@ -12,26 +12,31 @@ type TFieldOperationalContractManagersProps = {
 
 const FieldOperationalContractManagers = (props: TFieldOperationalContractManagersProps) => {
   const { formikBag } = props
-  const [operationalContractManagers, setOperationalContractManagers] = useState<string[]>([])
+  const [resourceNamesById, setResourceNamesById] = useState<Record<string, string>>({})
 
   const currentIds = formikBag.values.operationalContractManagers || []
+
+  const displayList = currentIds.map((id) => resourceNamesById[id] || id)
 
   useEffect(() => {
     ;(async () => {
       if (currentIds.length === 0) {
-        setOperationalContractManagers([])
         return
       }
 
       try {
         const result = await getResourcesByIds(currentIds)
-        const names = result
-          .map((resource) => resource?.fullName)
-          .filter((name): name is string => Boolean(name))
-
-        setOperationalContractManagers(names.length > 0 ? names : currentIds)
+        setResourceNamesById((prev) => {
+          const next = { ...prev }
+          result.forEach((resource) => {
+            if (resource?.navIdent && resource?.fullName) {
+              next[resource.navIdent] = resource.fullName
+            }
+          })
+          return next
+        })
       } catch {
-        setOperationalContractManagers(currentIds)
+        // Ignore; we'll show ids until names can be resolved
       }
     })()
   }, [currentIds.join('|')])
@@ -61,18 +66,15 @@ const FieldOperationalContractManagers = (props: TFieldOperationalContractManage
               }
 
               if (event.label) {
-                setOperationalContractManagers([...operationalContractManagers, event.label])
+                setResourceNamesById((prev) => ({ ...prev, [nextId]: event.label }))
               }
 
-              arrayHelpers.form.setFieldValue('operationalContractManagers', [
-                ...currentIds,
-                nextId,
-              ])
+              arrayHelpers.push(nextId)
             }}
             loadOptions={useTeamResourceSearchOptions}
           />
 
-          <RenderTagList list={operationalContractManagers} onRemove={arrayHelpers.remove} />
+          <RenderTagList list={displayList} onRemove={arrayHelpers.remove} />
         </div>
       )}
     </FieldArray>
