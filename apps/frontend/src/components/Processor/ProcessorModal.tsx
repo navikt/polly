@@ -44,80 +44,78 @@ const ProcessorModal = (props: TModalProcessorProps) => {
         validateOnChange={validateOnBlur}
       >
         {(formikBag) => (
-          <>
+          <Form id="modal-processor-form">
             <Modal.Body>
-              <Form id="modal-processor-form">
-                <Field name="name">
-                  {({ field }: FieldProps<string, IProcessorFormValues>) => (
-                    <TextField
-                      id="name"
-                      className="w-full"
-                      label="Navn på databehandler"
-                      {...field}
-                    />
+              <Field name="name">
+                {({ field }: FieldProps<string, IProcessorFormValues>) => (
+                  <TextField
+                    id="name"
+                    className="w-full"
+                    label="Navn på databehandler"
+                    {...field}
+                  />
+                )}
+              </Field>
+              <FormError fieldName="name" akselStyling />
+
+              <Field name="contract">
+                {({ field }: FieldProps<string, IProcessorFormValues>) => (
+                  <TextField
+                    className="w-full mt-4"
+                    label="Referanse til databehandleravtalen, gjerne lenke(URL) i Public 360 e.l."
+                    {...field}
+                  />
+                )}
+              </Field>
+
+              <FieldContractOwner formikBag={formikBag} />
+              <FieldOperationalContractManagers formikBag={formikBag} />
+              <FieldNote />
+
+              <RadioGroup
+                value={formikBag.values.outsideEU}
+                className=" w-full mt-4"
+                legend="Overføres data til utlandet"
+                description="Behandler databehandler personopplysninger utenfor EU/EØS?"
+                onChange={(value) => formikBag.setFieldValue('outsideEU', value)}
+              >
+                <Radio value={true}>Ja</Radio>
+                <Radio value={false}>Nei</Radio>
+                <Radio value={undefined}>Uavklart</Radio>
+              </RadioGroup>
+
+              {formikBag.values.outsideEU && (
+                <>
+                  <FieldTransferGroundsOutsideEU />
+                  <FormError fieldName="transferGroundsOutsideEU" akselStyling />
+
+                  {formikBag.values.transferGroundsOutsideEU ===
+                    TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
+                    <>
+                      <FieldTransferGroundsOutsideEUOther />
+                      <FormError fieldName="transferGroundsOutsideEUOther" akselStyling />
+                    </>
                   )}
-                </Field>
-                <FormError fieldName="name" akselStyling />
 
-                <Field name="contract">
-                  {({ field }: FieldProps<string, IProcessorFormValues>) => (
-                    <TextField
-                      className="w-full mt-4"
-                      label="Referanse til databehandleravtalen, gjerne lenke(URL) i Public 360 e.l."
-                      {...field}
-                    />
-                  )}
-                </Field>
+                  <FieldCountries formikBag={formikBag} />
+                  <FormError fieldName="countries" akselStyling />
+                </>
+              )}
 
-                <FieldContractOwner formikBag={formikBag} />
-                <FieldOperationalContractManagers formikBag={formikBag} />
-                <FieldNote />
-
-                <RadioGroup
-                  value={formikBag.values.outsideEU}
-                  className=" w-full mt-4"
-                  legend="Overføres data til utlandet"
-                  description="Behandler databehandler personopplysninger utenfor EU/EØS?"
-                  onChange={(value) => formikBag.setFieldValue('outsideEU', value)}
+              {Object.values(formikBag.errors).some(Boolean) && (
+                <ErrorSummary
+                  ref={errorSummaryRef}
+                  heading="Du må rette disse feilene før du kan fortsette"
                 >
-                  <Radio value={true}>Ja</Radio>
-                  <Radio value={false}>Nei</Radio>
-                  <Radio value={undefined}>Uavklart</Radio>
-                </RadioGroup>
-
-                {formikBag.values.outsideEU && (
-                  <>
-                    <FieldTransferGroundsOutsideEU />
-                    <FormError fieldName="transferGroundsOutsideEU" akselStyling />
-
-                    {formikBag.values.transferGroundsOutsideEU ===
-                      TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
-                      <>
-                        <FieldTransferGroundsOutsideEUOther />
-                        <FormError fieldName="transferGroundsOutsideEUOther" akselStyling />
-                      </>
-                    )}
-
-                    <FieldCountries formikBag={formikBag} />
-                    <FormError fieldName="countries" akselStyling />
-                  </>
-                )}
-
-                {Object.values(formikBag.errors).some(Boolean) && (
-                  <ErrorSummary
-                    ref={errorSummaryRef}
-                    heading="Du må rette disse feilene før du kan fortsette"
-                  >
-                    {Object.entries(formikBag.errors)
-                      .filter(([, error]) => error)
-                      .map(([key, error]) => (
-                        <ErrorSummary.Item href={`#${key}`} key={key}>
-                          {error as string}
-                        </ErrorSummary.Item>
-                      ))}
-                  </ErrorSummary>
-                )}
-              </Form>
+                  {Object.entries(formikBag.errors)
+                    .filter(([, error]) => error)
+                    .map(([key, error]) => (
+                      <ErrorSummary.Item href={`#${key}`} key={key}>
+                        {error as string}
+                      </ErrorSummary.Item>
+                    ))}
+                </ErrorSummary>
+              )}
             </Modal.Body>
 
             <Modal.Footer>
@@ -126,17 +124,12 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                 <Button type="button" variant="secondary" onClick={onClose}>
                   Avbryt
                 </Button>
-                <Button
-                  type="submit"
-                  form="modal-processor-form"
-                  variant="primary"
-                  onClick={() => setValidateOnBlur(true)}
-                >
+                <Button type="submit" variant="primary" onClick={() => setValidateOnBlur(true)}>
                   Lagre
                 </Button>
               </div>
             </Modal.Footer>
-          </>
+          </Form>
         )}
       </Formik>
     </Modal>
