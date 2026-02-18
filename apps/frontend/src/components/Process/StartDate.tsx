@@ -1,6 +1,7 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { IProcessFormValues } from '../../constants'
+import LabelWithToolTip from '../common/LabelWithTooltip'
 import { Error } from '../common/ModalSchema'
 
 export const StartDate = () => {
@@ -56,7 +57,13 @@ export const StartDate = () => {
                 <DatePicker.Input
                   className="mb-2"
                   value={form.values['start']}
-                  label="Velg fra og med dato"
+                  label={
+                    <LabelWithToolTip
+                      label="Velg fra og med dato"
+                      tooltip="Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
+                      noMarginBottom
+                    />
+                  }
                   error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
                 />
               </DatePicker>

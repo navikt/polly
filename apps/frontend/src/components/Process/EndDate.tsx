@@ -1,6 +1,7 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { IProcessFormValues } from '../../constants'
+import LabelWithToolTip from '../common/LabelWithTooltip'
 import { Error } from '../common/ModalSchema'
 
 export const EndDate = () => {
@@ -68,7 +69,13 @@ export const EndDate = () => {
                 <DatePicker.Input
                   className="mb-2"
                   value={form.values['end']}
-                  label="Velg til og med dato"
+                  label={
+                    <LabelWithToolTip
+                      label="Velg til og med dato"
+                      tooltip="Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato."
+                      noMarginBottom
+                    />
+                  }
                   error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
                 />
               </DatePicker>
