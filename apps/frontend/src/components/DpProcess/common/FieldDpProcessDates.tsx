@@ -1,9 +1,8 @@
-import { ExclamationmarkIcon } from '@navikt/aksel-icons'
-import { Button, DatePicker, Tooltip, useDatepicker } from '@navikt/ds-react'
+import { Button, DatePicker, useDatepicker } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
-import { theme } from '../../../util'
+import LabelWithToolTip from '../../common/LabelWithTooltip'
 import { Error } from '../../common/ModalSchema'
 
 interface IDateModalProps {
@@ -11,34 +10,10 @@ interface IDateModalProps {
   showLabels?: boolean
 }
 
-interface ILabelWithTooltipProps {
-  text: string
-  tooltip: string
-}
-
-const LabelWithTooltip = (props: ILabelWithTooltipProps) => {
-  const { text, tooltip } = props
-
-  return (
-    <Tooltip content={tooltip}>
-      <Button type="button" variant="tertiary-neutral">
-        {text}
-        <ExclamationmarkIcon
-          aria-hidden
-          className="block"
-          style={{ marginLeft: '.5rem', alignSelf: 'center', color: theme.colors.primary300 }}
-        />
-      </Button>
-    </Tooltip>
-  )
-}
-
 export const FieldDpProcessDates = (props: IDateModalProps) => {
-  const { showLabels } = props
   const [showDates, setShowDates] = useState<boolean>(props.showDates)
-  const { datepickerProps: startDatepickerProps, inputProps: startInputProps } = useDatepicker({})
-
-  const { datepickerProps: endDatepickerProps, inputProps: endInputProps } = useDatepicker({})
+  const { datepickerProps: startDatepickerProps } = useDatepicker({})
+  const { datepickerProps: endDatepickerProps } = useDatepicker({})
 
   const formatYMD = (d: Date) => {
     const y = d.getFullYear()
@@ -52,12 +27,6 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
     const [y, m, d] = s.split('-').map(Number)
     if (!y || !m || !d) return undefined
     return new Date(y, m - 1, d)
-  }
-
-  const minDate = (a?: Date, b?: Date) => {
-    if (!a) return b
-    if (!b) return a
-    return a.getTime() <= b.getTime() ? a : b
   }
 
   const today = new Date()
@@ -76,25 +45,7 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
         <>
           <div className="w-full">
             <div className="flex w-full">
-              <div className="w-[50%] mr-4">
-                {showLabels && (
-                  <LabelWithTooltip
-                    text="Fom dato"
-                    tooltip="Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
-                  />
-                )}
-              </div>
-              <div className="w-[50%]">
-                {showLabels && (
-                  <LabelWithTooltip
-                    text="Tom dato"
-                    tooltip="Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
-                  />
-                )}
-              </div>
-            </div>
-            <div className="flex w-full">
-              <div className="w-[50%] mr-4">
+              <div className="w-1/2 mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="start">
                     {({ form }: FieldProps<string, IDpProcessFormValues>) => {
@@ -102,14 +53,12 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                       const endDate = parseLocalYMD(endVal)
                       const startMax = endDate ? new Date(endDate) : undefined
                       if (startMax) startMax.setDate(startMax.getDate() - 1)
-                      const finalToDate = minDate(startMax, globalToDate)
 
                       return (
                         <DatePicker
                           {...startDatepickerProps}
                           dropdownCaption
-                          fromDate={undefined}
-                          toDate={finalToDate}
+                          toDate={startMax}
                           onSelect={(date: any) => {
                             const dateSingle: Date = Array.isArray(date) ? date[0] : date
                             if (dateSingle) {
@@ -130,9 +79,14 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                         >
                           <DatePicker.Input
                             className="mb-2"
-                            {...startInputProps}
                             value={form.values['start']}
-                            label="Velg fra og med dato"
+                            label={
+                              <LabelWithToolTip
+                                label="Velg fra og med dato"
+                                tooltip="Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
+                                noMarginBottom
+                              />
+                            }
                             error={
                               !!form.errors.start && (form.touched.start || !!form.submitCount)
                             }
@@ -144,7 +98,8 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                 </div>
                 <Error fieldName="start" />
               </div>
-              <div className="w-[50%]">
+
+              <div className="w-1/2 mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="end">
                     {({ form }: FieldProps<string, IDpProcessFormValues>) => {
@@ -152,14 +107,18 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                       const startDate = parseLocalYMD(startVal)
                       const endMin = startDate ? new Date(startDate) : undefined
                       if (endMin) endMin.setDate(endMin.getDate() + 1)
-                      const finalFromDate = endMin
+
+                      let finalToDate = globalToDate
+                      if (endMin && finalToDate.getTime() < endMin.getTime()) {
+                        finalToDate = endMin
+                      }
 
                       return (
                         <DatePicker
                           {...endDatepickerProps}
                           dropdownCaption
-                          fromDate={finalFromDate}
-                          toDate={globalToDate}
+                          fromDate={endMin}
+                          toDate={finalToDate}
                           onSelect={(date: any) => {
                             const dateSingle: Date = Array.isArray(date) ? date[0] : date
                             if (dateSingle) {
@@ -180,9 +139,14 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                         >
                           <DatePicker.Input
                             className="mb-2"
-                            {...endInputProps}
                             value={form.values['end']}
-                            label="Velg til og med dato"
+                            label={
+                              <LabelWithToolTip
+                                label="Velg til og med dato"
+                                tooltip="Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato."
+                                noMarginBottom
+                              />
+                            }
                             error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
                           />
                         </DatePicker>
@@ -190,7 +154,7 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                     }}
                   </Field>
                 </div>
-                <Error fieldName={'end'} />
+                <Error fieldName="end" />
               </div>
             </div>
           </div>
