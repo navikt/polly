@@ -35,6 +35,7 @@ const ThirdPartyPage = () => {
   const [disclosureList, setDisclosureList] = useState<IDisclosure[]>([])
   const [informationTypeList, setInformationTypeList] = useState<IInformationType[]>()
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [createModalKey, setCreateModalKey] = useState(0)
   const [dpProcesses, setDpProcesses] = useState<IDpProcess[]>([])
   const [error, setError] = useState<string>()
   const [processListCount, setProcessListCount] = useState<number>(0)
@@ -169,7 +170,11 @@ const ThirdPartyPage = () => {
                       size="small"
                       variant="tertiary"
                       icon={<PlusCircleIcon aria-hidden />}
-                      onClick={() => setShowCreateModal(true)}
+                      onClick={() => {
+                        setError(undefined)
+                        setCreateModalKey((k) => k + 1)
+                        setShowCreateModal(true)
+                      }}
                     >
                       Opprett ny
                     </Button>
@@ -233,6 +238,7 @@ const ThirdPartyPage = () => {
           </Accordion>
 
           <ModalThirdParty
+            key={createModalKey}
             title="Opprett utlevering til ekstern part"
             isOpen={showCreateModal}
             initialValues={initialFormValues}
