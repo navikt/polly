@@ -76,6 +76,7 @@ const ProcessList = ({
   const [processList, setProcessList] = useState<IProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = useState<IProcess | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
+  const [createProcessModalKey, setCreateProcessModalKey] = useState(0)
   const [errorProcessModal, setErrorProcessModal] = useState<string>('')
   const [errorPolicyModal, setErrorPolicyModal] = useState(null)
   const [errorDocumentModal, setErrorDocumentModal] = useState(null)
@@ -407,7 +408,11 @@ const ProcessList = ({
                     <PlusIcon aria-hidden className="block" />
                   </span>
                 }
-                onClick={() => setShowCreateProcessModal(true)}
+                onClick={() => {
+                  setErrorProcessModal('')
+                  setCreateProcessModalKey((k) => k + 1)
+                  setShowCreateProcessModal(true)
+                }}
               >
                 Opprett ny behandling
               </Button>
@@ -440,6 +445,7 @@ const ProcessList = ({
       )}
       {!codelistLoading && (
         <ModalProcess
+          key={createProcessModalKey}
           codelistUtils={codelistUtils}
           title="Opprett ny behandling"
           onClose={() => {

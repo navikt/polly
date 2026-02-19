@@ -11,6 +11,7 @@ import { user } from '../service/User'
 
 const DpProcessPage = () => {
   const [showModal, setShowModal] = useState(false)
+  const [createDpProcessModalKey, setCreateDpProcessModalKey] = useState(0)
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [dpProcesses, setDpProcesses] = useState<IDpProcess[]>([])
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -56,7 +57,11 @@ const DpProcessPage = () => {
                   <PlusCircleIcon aria-hidden className="block" />
                 </span>
               }
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setErrorDpProcessModal('')
+                setCreateDpProcessModalKey((k) => k + 1)
+                setShowModal(true)
+              }}
             >
               Opprett ny behandling
             </Button>
@@ -65,8 +70,12 @@ const DpProcessPage = () => {
       </div>
       {showModal && (
         <DpProcessModal
+          key={createDpProcessModalKey}
           isOpen={showModal}
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setErrorDpProcessModal('')
+            setShowModal(false)
+          }}
           initialValues={dpProcessToFormValues({})}
           submit={handleCreateDpProcess}
           errorOnCreate={errorDpProcessModal}
