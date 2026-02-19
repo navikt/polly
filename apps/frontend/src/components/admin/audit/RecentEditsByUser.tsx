@@ -18,7 +18,7 @@ export const RecentEditsByUser = () => {
 
   return (
     <div className="items-center w-full min-w-0">
-      <Heading size="xlarge" level="2" className="mb-6">
+      <Heading size="medium" level="2" className="mb-6">
         Mine siste endringer
       </Heading>
       {recentEdits

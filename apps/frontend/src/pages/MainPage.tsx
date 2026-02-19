@@ -44,7 +44,7 @@ export const MainPage = () => {
           </div>
 
           <div className="w-full flex justify-center mt-12 mb-10">
-            <Heading size="xlarge" level="1">
+            <Heading size="large" level="2">
               Hva har endret seg i det siste?
             </Heading>
           </div>

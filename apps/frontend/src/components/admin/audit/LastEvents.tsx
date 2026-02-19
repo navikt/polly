@@ -57,7 +57,7 @@ export const LastEvents = () => {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full gap-2">
-        <Heading size="xlarge" level="2">
+        <Heading size="medium" level="2">
           Siste hendelser
         </Heading>
         <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
