@@ -1,6 +1,6 @@
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Heading } from '@navikt/ds-react'
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   deleteDpProcess,
@@ -259,20 +259,13 @@ const DpProcessView = () => {
                 {dpProcess.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVFYLKE')
                   .length !== 0 &&
                   dpProcess.affiliation.fylker.length !== 0 && (
-                    <div className="flex gap-1">
+                    <div className="mt-2">
                       <span>Fylke: </span>
-                      <span>
-                        <div className="inline">
-                          {dpProcess.affiliation.fylker.map((fylke: INomData, index) => (
-                            <Fragment key={fylke.nomId}>
-                              <>{fylke.nomName}</>
-                              <span>
-                                {index < dpProcess.affiliation.fylker.length - 1 ? ', ' : ''}
-                              </span>
-                            </Fragment>
-                          ))}
-                        </div>
-                      </span>
+                      <ul className="list-disc list-inside">
+                        {dpProcess.affiliation.fylker.map((fylke: INomData) => (
+                          <li key={fylke.nomId}>{fylke.nomName}</li>
+                        ))}
+                      </ul>
                     </div>
                   )}
 
@@ -280,20 +273,13 @@ const DpProcessView = () => {
                   (subdep) => subdep.code === 'NAVKONTORSTAT'
                 ).length !== 0 &&
                   dpProcess.affiliation.navKontorer.length !== 0 && (
-                    <div className="flex gap-1">
+                    <div className="mt-2">
                       <span>Nav-kontor: </span>
-                      <span>
-                        <div className="inline">
-                          {dpProcess.affiliation.navKontorer.map((kontor: INomData, index) => (
-                            <Fragment key={kontor.nomId}>
-                              <>{kontor.nomName}</>
-                              <span>
-                                {index < dpProcess.affiliation.navKontorer.length - 1 ? ', ' : ''}
-                              </span>
-                            </Fragment>
-                          ))}
-                        </div>
-                      </span>
+                      <ul className="list-disc list-inside">
+                        {dpProcess.affiliation.navKontorer.map((kontor: INomData) => (
+                          <li key={kontor.nomId}>{kontor.nomName}</li>
+                        ))}
+                      </ul>
                     </div>
                   )}
               </div>
