@@ -38,8 +38,11 @@ const showDpiaRequiredField = (dpia?: IDpia) => {
     if (dpia.refToDpia) {
       return (
         <>
-          {'Ja. Referanse: '}
-          {shortenLinksInText(dpia.refToDpia)}
+          <div>Ja</div>
+          <div className="mt-1">
+            {'Referanse: '}
+            {shortenLinksInText(dpia.refToDpia)}
+          </div>
         </>
       )
     } else {
@@ -401,9 +404,7 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="Er det behov for PVK?" text={''}>
-        <div className="wrap-break-word">
-          <span>{showDpiaRequiredField(process.dpia)}</span>
-        </div>
+        <div className="wrap-break-word">{showDpiaRequiredField(process.dpia)}</div>
       </DataText>
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
