@@ -657,14 +657,16 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                   </div>
                 )}
 
-                <div className="flex justify-end">
+                <div className="flex items-end justify-between gap-4">
                   <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" variant="tertiary" onClick={() => onClose()}>
-                    Avbryt
-                  </Button>
-                  <Button type="submit" form="modal-third-party-form">
-                    Lagre
-                  </Button>
+                  <div className="flex justify-end gap-2">
+                    <Button type="button" variant="tertiary" onClick={() => onClose()}>
+                      Avbryt
+                    </Button>
+                    <Button type="submit" form="modal-third-party-form">
+                      Lagre
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Modal.Footer>
