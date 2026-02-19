@@ -327,7 +327,7 @@ const ProcessData = (props: IProcessDataProps) => {
           <span>{boolToText(process.aiUsageDescription.aiUsage)}</span>
         </div>
         {process.aiUsageDescription.aiUsage && (
-          <div>
+          <div className="mt-4">
             <BodyLong>Hvilken rolle har KI-systemet? </BodyLong>
             <BodyLong>{process.aiUsageDescription.description}</BodyLong>
           </div>
@@ -344,7 +344,7 @@ const ProcessData = (props: IProcessDataProps) => {
           </div>
         )}
         {process.aiUsageDescription.reusingPersonalInformation && (
-          <div>
+          <div className="mt-4">
             <BodyLong>Registreringsnummer i modellregister: </BodyLong>
             <BodyLong>{process.aiUsageDescription.registryNumber}</BodyLong>
           </div>
