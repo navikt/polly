@@ -15,6 +15,7 @@ interface ICustomSearchSelectProps {
   placeholder: string
   inputId?: string
   instanceId?: string
+  hasError?: boolean
   onChange: (newValue: OnChangeValue<any, any>, actionMeta: ActionMeta<any>) => void
   loadOptions?: (
     inputValue: string,
@@ -23,7 +24,7 @@ interface ICustomSearchSelectProps {
 }
 
 export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
-  const { ariaLabel, placeholder, inputId, instanceId, onChange, loadOptions } = props
+  const { ariaLabel, placeholder, inputId, instanceId, hasError, onChange, loadOptions } = props
 
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [dialogPortalTarget, setDialogPortalTarget] = useState<HTMLElement | null>(null)
@@ -57,7 +58,7 @@ export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
         onChange={onChange}
         menuPortalTarget={menuPortalTarget}
         menuPosition={menuPortalTarget ? 'fixed' : 'absolute'}
-        styles={selectOverrides}
+        styles={hasError ? selectOverridesError : selectOverrides}
       />
     </div>
   )
@@ -156,6 +157,25 @@ export const selectOverrides = {
       ':hover': { color: 'var(--ax-text-neutral)' },
     }) as CSSObjectWithLabel,
   indicatorSeparator: () => ({ display: 'none' }) as CSSObjectWithLabel,
+}
+
+export const selectOverridesError = {
+  ...selectOverrides,
+  control: (base: CSSObjectWithLabel) => {
+    const ctrl = (selectOverrides as any).control(base) as CSSObjectWithLabel
+
+    return {
+      ...ctrl,
+      border: '1px solid var(--ax-border-danger)',
+      borderColor: 'var(--ax-border-danger)',
+      ':focus-within': {
+        ...(ctrl as any)[':focus-within'],
+        borderColor: 'var(--ax-border-danger)',
+      },
+      ':focus': { borderColor: 'var(--ax-border-danger)' },
+      ':hover': { borderColor: 'var(--ax-border-danger)' },
+    } as CSSObjectWithLabel
+  },
 }
 
 export default CustomSearchSelect

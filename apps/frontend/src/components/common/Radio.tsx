@@ -18,6 +18,8 @@ type TRadioBoolProps = {
   justifyContent?: string
   direction?: 'horizontal' | 'vertical'
   className?: string
+  id?: string
+  error?: string
 }
 
 export const RadioBoolButton = (props: TRadioBoolProps) => {
@@ -30,6 +32,8 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
     omitUndefined,
     direction,
     className,
+    id,
+    error,
   } = props
 
   const horizontalClasses =
@@ -50,10 +54,12 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
 
   return (
     <RadioGroup
+      id={id}
       value={boolToRadio(value)}
       className={`w-full ${horizontalClasses} ${horizontalAlignClass} ${className ?? ''}`.trim()}
       legend=""
       hideLegend
+      error={error}
       onChange={(newValue) => {
         setValue(radioToBool(newValue))
       }}

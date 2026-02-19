@@ -1,6 +1,7 @@
 import {
   Accordion,
   Button,
+  ErrorMessage,
   ErrorSummary,
   Modal,
   Select,
@@ -35,6 +36,8 @@ type TFormikError = unknown
 
 const pathToAnchorId = (path: string): string => path.replace(/[^a-zA-Z0-9_-]/g, '-')
 
+const ANCHOR_ID_PREFIX = 'thirdparty-'
+
 const errorSummaryFieldOrder: string[] = [
   'recipient',
   'name',
@@ -55,6 +58,26 @@ const errorSummaryFieldOrder: string[] = [
   'legalBasesOpen',
 ]
 
+const errorSummaryFieldLabels: Record<string, string> = {
+  recipient: 'Mottaker',
+  name: 'Navn på utlevering',
+  recipientPurpose: 'Formål med utlevering',
+  description: 'Ytterligere beskrivelse',
+  processes: 'Relaterte behandlinger',
+  informationTypes: 'Opplysningstyper',
+  document: 'Dokument',
+  administrationArchiveCaseNumber: 'Saksnummer i adminstrativt arkiv',
+  'abroad.abroad': 'Utleveres personopplysningene til utlandet?',
+  'abroad.countries': 'Land',
+  'abroad.refToAgreement': 'Oppgi referanse til trygdeavtale',
+  'abroad.businessArea': 'Trygdeområde',
+  assessedConfidentiality: 'Hjemmel for unntak fra taushetsplikt er vurdert',
+  confidentialityDescription: 'Begrunnelse / hjemmel for unntak fra taushetsplikt',
+  nomDepartmentId: 'Avdeling',
+  productTeams: 'Team (Oppslag i Teamkatalogen)',
+  legalBasesOpen: 'Behandlingsgrunnlag',
+}
+
 const errorSummaryOrderIndex = (path: string): number => {
   const normalizedPath = path.replace(/\[\d+\]/g, '')
   const index = errorSummaryFieldOrder.indexOf(normalizedPath)
@@ -65,10 +88,10 @@ const buildErrorSummaryItems = (
   errors: TFormikError
 ): Array<{ anchorId: string; message: string }> => {
   const sorted = flattenFormikErrors(errors)
-    .filter((e) => e.message)
+    .filter((e) => e.message && e.path)
     .map((e) => ({
       path: e.path,
-      anchorId: pathToAnchorId(e.path),
+      anchorId: fieldId(e.path),
       message: e.message,
     }))
     .sort((a, b) => {
@@ -85,7 +108,11 @@ const buildErrorSummaryItems = (
       seen.add(e.anchorId)
       return true
     })
-    .map(({ anchorId, message }) => ({ anchorId, message }))
+    .map(({ anchorId, message, path }) => {
+      const normalizedPath = path.replace(/\[\d+\]/g, '')
+      const label = errorSummaryFieldLabels[normalizedPath]
+      return { anchorId, message: label ? `${label}: ${message}` : message }
+    })
 }
 
 const flattenFormikErrors = (
@@ -122,7 +149,7 @@ const focusById = (anchorId: string) => {
   }
 }
 
-const fieldId = (fieldName: string) => pathToAnchorId(fieldName)
+const fieldId = (fieldName: string) => `${ANCHOR_ID_PREFIX}${pathToAnchorId(fieldName)}`
 
 interface IFieldRecipientProps {
   value?: string
@@ -174,24 +201,27 @@ const FieldTextarea = (props: IFieldTextareaProps) => {
 
   return (
     <Field name={fieldName}>
-      {({ field, form }: FieldProps<string, IDisclosureFormValues>) => (
-        <Textarea
-          {...field}
-          className="w-full"
-          id={fieldId(fieldName)}
-          label=""
-          hideLabel
-          placeholder={placeholder}
-          rows={4}
-          error={
-            !!getIn(form.errors, fieldName) &&
-            (!!getIn(form.touched, fieldName) || form.submitCount > 0)
-          }
-          onKeyDown={(enter: KeyboardEvent<HTMLTextAreaElement>) => {
-            if (enter.key === 'Enter') form.setFieldValue(fieldName, fieldValue + '\n')
-          }}
-        />
-      )}
+      {({ field, form }: FieldProps<string, IDisclosureFormValues>) => {
+        const fieldError = getIn(form.errors, fieldName)
+        const message = typeof fieldError === 'string' ? fieldError : undefined
+        const showError = !!message && (!!getIn(form.touched, fieldName) || form.submitCount > 0)
+
+        return (
+          <Textarea
+            {...field}
+            className="w-full"
+            id={fieldId(fieldName)}
+            label=""
+            hideLabel
+            placeholder={placeholder}
+            rows={4}
+            error={showError ? message : undefined}
+            onKeyDown={(enter: KeyboardEvent<HTMLTextAreaElement>) => {
+              if (enter.key === 'Enter') form.setFieldValue(fieldName, fieldValue + '\n')
+            }}
+          />
+        )
+      }}
     </Field>
   )
 }
@@ -206,9 +236,22 @@ const FieldInput = (props: IFieldInputProps) => {
 
   return (
     <Field name={fieldName}>
-      {({ field }: FieldProps<string, IDisclosureFormValues>) => (
-        <TextField className="w-full" id={fieldId(fieldName)} {...field} label="" hideLabel />
-      )}
+      {({ field, form }: FieldProps<string, IDisclosureFormValues>) => {
+        const fieldError = getIn(form.errors, fieldName)
+        const message = typeof fieldError === 'string' ? fieldError : undefined
+        const showError = !!message && (!!getIn(form.touched, fieldName) || form.submitCount > 0)
+
+        return (
+          <TextField
+            className="w-full"
+            id={fieldId(fieldName)}
+            {...field}
+            label=""
+            hideLabel
+            error={showError ? message : undefined}
+          />
+        )
+      }}
     </Field>
   )
 }
@@ -272,7 +315,6 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                       <FieldInput fieldName="name" fieldValue={formikBag.values.name} />
                     </div>
                   </div>
-                  <Error fieldName="name" fullWidth />
 
                   <div className="w-full mt-4">
                     <ModalLabel
@@ -287,7 +329,6 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                       />
                     </div>
                   </div>
-                  <Error fieldName="recipientPurpose" fullWidth />
 
                   <div className="w-full mt-4">
                     <ModalLabel
@@ -306,9 +347,33 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
 
                   <div className="w-full mt-4">
                     <ModalLabel label="Relaterte behandlinger" fullwidth />
-                    <div className="mt-2 w-full" id={fieldId('processes')}>
-                      <SelectProcess formikBag={formikBag} />
+                    <div className="mt-2 w-full">
+                      <SelectProcess
+                        formikBag={formikBag}
+                        inputId={fieldId('processes')}
+                        hasError={
+                          !!getIn(formikBag.errors, 'processes') && formikBag.submitCount > 0
+                        }
+                      />
                     </div>
+
+                    {(() => {
+                      const fieldError = getIn(formikBag.errors, 'processes')
+                      const message =
+                        typeof fieldError === 'string'
+                          ? fieldError
+                          : flattenFormikErrors(fieldError, 'processes').find((e) => e.message)
+                              ?.message
+                      const showError = !!message && formikBag.submitCount > 0
+
+                      if (!showError) return null
+
+                      return (
+                        <div className="navds-form-field__error pt-2" aria-live="polite">
+                          <ErrorMessage>{message}</ErrorMessage>
+                        </div>
+                      )
+                    })()}
                   </div>
 
                   <div className="w-full mt-4">
@@ -446,6 +511,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                     <ModalLabel label="Hjemmel for unntak fra taushetsplikt er vurdert" fullwidth />
                     <div className="mt-2">
                       <BoolField
+                        id={fieldId('assessedConfidentiality')}
                         fieldName="assessedConfidentiality"
                         value={formikBag.values.assessedConfidentiality}
                         omitUndefined={true}
@@ -453,7 +519,6 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                         justifyContent="flex-start"
                       />
                     </div>
-                    <Error fieldName="assessedConfidentiality" fullWidth />
                   </div>
                   {formikBag.values.assessedConfidentiality !== undefined && (
                     <>
@@ -491,6 +556,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                           <div className="mt-2">
                             <Select
                               className="w-full"
+                              id={fieldId('nomDepartmentId')}
                               label="Velg avdeling"
                               hideLabel
                               aria-label="Velg avdeling"
@@ -532,7 +598,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                               tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
                               fullwidth
                             />
-                            <div className="mt-2">
+                            <div className="mt-2" id={fieldId('productTeams')}>
                               <FieldProductTeam
                                 productTeams={formikBag.values.productTeams || []}
                                 fieldName="productTeams"
@@ -542,9 +608,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                         </div>
                       </Accordion.Content>
                     </Accordion.Item>
-                    <Accordion.Item
-                      onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
-                    >
+                    <Accordion.Item>
                       <Accordion.Header id={fieldId('legalBasesOpen')}>
                         Behandlingsgrunnlag
                       </Accordion.Header>
@@ -552,7 +616,6 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                         <div className="mt-4">
                           <FieldLegalBasis
                             formikBag={formikBag}
-                            openArt6OnEmpty
                             codelistUtils={codelistUtils}
                             layout="vertical"
                           />

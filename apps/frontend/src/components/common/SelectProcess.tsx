@@ -7,10 +7,12 @@ import { renderTagList } from './TagList'
 
 type TSelectProcessProps = {
   formikBag: FormikProps<IDisclosureFormValues>
+  inputId?: string
+  hasError?: boolean
 }
 
 const SelectProcess = (props: TSelectProcessProps) => {
-  const { formikBag } = props
+  const { formikBag, inputId, hasError } = props
   const [codelistUtils] = CodelistService()
 
   const useSearchProcessOptions = async (searchParam: string): Promise<IProcess[]> => {
@@ -74,6 +76,9 @@ const SelectProcess = (props: TSelectProcessProps) => {
             <CustomSearchSelect
               ariaLabel="Søk etter behandlinger"
               placeholder=""
+              inputId={inputId}
+              instanceId={inputId}
+              hasError={hasError}
               loadOptions={useSearchProcessOptions}
               onChange={(value: any) => {
                 if (value) {
