@@ -173,16 +173,17 @@ const ModalProcess = ({
 
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width="960px">
-      <Modal.Body>
-        <div className="w-240 px-8">
-          <Formik
-            initialValues={initialValues}
-            onSubmit={(values) => {
-              submit(values)
-            }}
-            validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
-            render={(formikBag: FormikProps<IProcessFormValues>) => {
-              return (
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values) => {
+          submit(values)
+        }}
+        validationSchema={processSchema(codelistUtils.getCodes(EListName.PURPOSE))}
+      >
+        {(formikBag: FormikProps<IProcessFormValues>) => (
+          <>
+            <Modal.Body>
+              <div className="w-240 px-8">
                 <Form id="modal-process-form" onKeyDown={disableEnter}>
                   <FormikSubmitEffects
                     formikBag={formikBag}
@@ -681,52 +682,58 @@ const ModalProcess = ({
                       </div>
                     </div>
                   </CustomizedModalBlock>
-
-                  {formikBag.submitCount > 0 && Object.keys(formikBag.errors).length > 0 && (
-                    <div className="mt-6">
-                      <ErrorSummary heading="Du må rette disse feilene før du kan fortsette">
-                        {Array.from(
-                          new Map(
-                            flattenFormikErrors(formikBag.errors).map((e) => [
-                              pathToAnchorId(e.path),
-                              e,
-                            ])
-                          ).values()
-                        ).map((e) => (
-                          <ErrorSummary.Item
-                            href={`#${pathToAnchorId(e.path)}`}
-                            key={e.path}
-                            onClick={(event) => {
-                              event.preventDefault()
-                              const el = document.getElementById(pathToAnchorId(e.path))
-                              el?.scrollIntoView({ block: 'center' })
-                              ;(el as HTMLElement | null)?.focus?.()
-                            }}
-                          >
-                            {e.message}
-                          </ErrorSummary.Item>
-                        ))}
-                      </ErrorSummary>
-                    </div>
-                  )}
                 </Form>
-              )
-            }}
-          />
-        </div>
-      </Modal.Body>
+              </div>
+            </Modal.Body>
 
-      <Modal.Footer style={{ borderTop: 0 }}>
-        <div className="flex justify-end">
-          <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-          <Button type="button" variant="tertiary" onClick={onClose}>
-            Avbryt
-          </Button>
-          <Button type="submit" form="modal-process-form">
-            Lagre
-          </Button>
-        </div>
-      </Modal.Footer>
+            <Modal.Footer style={{ borderTop: 0 }}>
+              <div className="w-full flex flex-col gap-4">
+                {formikBag.submitCount > 0 && Object.keys(formikBag.errors).length > 0 && (
+                  <div className="max-h-48 overflow-auto">
+                    <ErrorSummary
+                      className="polly-error-summary-flush"
+                      heading="Du må rette disse feilene før du kan fortsette"
+                      size="small"
+                    >
+                      {Array.from(
+                        new Map(
+                          flattenFormikErrors(formikBag.errors).map((e) => [
+                            pathToAnchorId(e.path),
+                            e,
+                          ])
+                        ).values()
+                      ).map((e) => (
+                        <ErrorSummary.Item
+                          href={`#${pathToAnchorId(e.path)}`}
+                          key={e.path}
+                          onClick={(event) => {
+                            event.preventDefault()
+                            const el = document.getElementById(pathToAnchorId(e.path))
+                            el?.scrollIntoView({ block: 'center' })
+                            ;(el as HTMLElement | null)?.focus?.()
+                          }}
+                        >
+                          {e.message}
+                        </ErrorSummary.Item>
+                      ))}
+                    </ErrorSummary>
+                  </div>
+                )}
+
+                <div className="flex justify-end">
+                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                  <Button type="button" variant="tertiary" onClick={onClose}>
+                    Avbryt
+                  </Button>
+                  <Button type="submit" form="modal-process-form">
+                    Lagre
+                  </Button>
+                </div>
+              </div>
+            </Modal.Footer>
+          </>
+        )}
+      </Formik>
     </Modal>
   )
 }
