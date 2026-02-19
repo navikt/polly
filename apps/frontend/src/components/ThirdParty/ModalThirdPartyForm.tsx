@@ -1,4 +1,12 @@
-import { Accordion, Button, Modal, Select, TextField, Textarea } from '@navikt/ds-react'
+import {
+  Accordion,
+  Button,
+  ErrorSummary,
+  Modal,
+  Select,
+  TextField,
+  Textarea,
+} from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -23,6 +31,46 @@ import { renderTagList } from '../common/TagList'
 import FieldProductTeam from '../common/form/FieldProductTeam'
 import { disclosureSchema } from '../common/schemaValidation'
 
+type TFormikError = unknown
+
+const pathToAnchorId = (path: string): string => path.replace(/[^a-zA-Z0-9_-]/g, '-')
+
+const flattenFormikErrors = (
+  errors: TFormikError,
+  basePath = ''
+): Array<{ path: string; message: string }> => {
+  if (!errors) return []
+
+  if (typeof errors === 'string') {
+    return basePath ? [{ path: basePath, message: errors }] : [{ path: '', message: errors }]
+  }
+
+  if (Array.isArray(errors)) {
+    return errors.flatMap((value, index) => flattenFormikErrors(value, `${basePath}[${index}]`))
+  }
+
+  if (typeof errors === 'object') {
+    return Object.entries(errors as Record<string, unknown>).flatMap(([key, value]) =>
+      flattenFormikErrors(value, basePath ? `${basePath}.${key}` : key)
+    )
+  }
+
+  return []
+}
+
+const focusById = (anchorId: string) => {
+  const el = document.getElementById(anchorId)
+  if (!el) return
+
+  el.scrollIntoView({ block: 'center' })
+
+  if ('focus' in el && typeof (el as any).focus === 'function') {
+    ;(el as any).focus()
+  }
+}
+
+const fieldId = (fieldName: string) => pathToAnchorId(fieldName)
+
 interface IFieldRecipientProps {
   value?: string
   disabled: boolean | undefined
@@ -39,6 +87,7 @@ const FieldRecipient = (props: IFieldRecipientProps) => {
       render={({ form }: FieldProps<IDisclosureFormValues>) => (
         <Select
           className="w-full"
+          id={fieldId('recipient')}
           label=""
           hideLabel
           aria-label="Velg mottaker"
@@ -76,6 +125,7 @@ const FieldTextarea = (props: IFieldTextareaProps) => {
         <Textarea
           {...field}
           className="w-full"
+          id={fieldId(fieldName)}
           label=""
           hideLabel
           placeholder={placeholder}
@@ -104,7 +154,7 @@ const FieldInput = (props: IFieldInputProps) => {
   return (
     <Field name={fieldName}>
       {({ field }: FieldProps<string, IDisclosureFormValues>) => (
-        <TextField className="w-full" {...field} label="" hideLabel />
+        <TextField className="w-full" id={fieldId(fieldName)} {...field} label="" hideLabel />
       )}
     </Field>
   )
@@ -203,14 +253,14 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
 
                   <div className="w-full mt-4">
                     <ModalLabel label="Relaterte behandlinger" fullwidth />
-                    <div className="mt-2 w-full">
+                    <div className="mt-2 w-full" id={fieldId('processes')}>
                       <SelectProcess formikBag={formikBag} />
                     </div>
                   </div>
 
                   <div className="w-full mt-4">
                     <ModalLabel label="Opplysningstyper" fullwidth />
-                    <div className="mt-2 w-full">
+                    <div className="mt-2 w-full" id={fieldId('informationTypes')}>
                       <SelectInformationTypes formikBag={formikBag} />
                     </div>
                   </div>
@@ -221,7 +271,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                       tooltip="En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempel på dokumenter som inneholder flere opplysningstyper."
                       fullwidth
                     />
-                    <div className="mt-2">
+                    <div className="mt-2" id={fieldId('document')}>
                       <Field
                         name="document"
                         render={({ form }: FieldProps<IDisclosureFormValues>) => (
@@ -250,7 +300,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
 
                   <div className="w-full mt-4">
                     <ModalLabel label="Utleveres personopplysningene til utlandet?" fullwidth />
-                    <div className="mt-2">
+                    <div className="mt-2" id={fieldId('abroad.abroad')}>
                       <BoolField
                         fieldName="abroad.abroad"
                         value={formikBag.values.abroad.abroad}
@@ -272,6 +322,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                                 <div>
                                   <Select
                                     className="w-full"
+                                    id={fieldId('abroad.countries')}
                                     label=""
                                     hideLabel
                                     aria-label="Velg land"
@@ -441,7 +492,9 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                     <Accordion.Item
                       onOpenChange={(open) => formikBag.setFieldValue('legalBasesOpen', open)}
                     >
-                      <Accordion.Header>Behandlingsgrunnlag</Accordion.Header>
+                      <Accordion.Header id={fieldId('legalBasesOpen')}>
+                        Behandlingsgrunnlag
+                      </Accordion.Header>
                       <Accordion.Content>
                         <div className="mt-4">
                           <FieldLegalBasis
@@ -451,7 +504,11 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                             layout="vertical"
                           />
                         </div>
-                        <Error fieldName="legalBasesOpen" fullWidth={true} />
+                        <Error
+                          fieldName="legalBasesOpen"
+                          fullWidth={true}
+                          messageClassName="!text-(--a-text-danger)"
+                        />
                       </Accordion.Content>
                     </Accordion.Item>
                   </Accordion>
@@ -460,14 +517,44 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
             </Modal.Body>
 
             <Modal.Footer>
-              <div className="flex justify-end">
-                <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                <Button type="button" variant="tertiary" onClick={() => onClose()}>
-                  Avbryt
-                </Button>
-                <Button type="submit" form="modal-third-party-form">
-                  Lagre
-                </Button>
+              <div className="w-full flex flex-col gap-4">
+                {formikBag.submitCount > 0 && Object.keys(formikBag.errors ?? {}).length > 0 && (
+                  <div className="max-h-48 overflow-auto">
+                    <ErrorSummary heading="Du må rette disse feilene før du kan lagre" size="small">
+                      {Array.from(
+                        new Map(
+                          flattenFormikErrors(formikBag.errors)
+                            .filter((e) => e.message)
+                            .map((e) => {
+                              const anchorId = pathToAnchorId(e.path)
+                              return [anchorId, { anchorId, message: e.message }]
+                            })
+                        ).values()
+                      ).map((e) => (
+                        <ErrorSummary.Item
+                          key={e.anchorId}
+                          href={`#${e.anchorId}`}
+                          onClick={(evt) => {
+                            evt.preventDefault()
+                            focusById(e.anchorId)
+                          }}
+                        >
+                          {e.message}
+                        </ErrorSummary.Item>
+                      ))}
+                    </ErrorSummary>
+                  </div>
+                )}
+
+                <div className="flex justify-end">
+                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                  <Button type="button" variant="tertiary" onClick={() => onClose()}>
+                    Avbryt
+                  </Button>
+                  <Button type="submit" form="modal-third-party-form">
+                    Lagre
+                  </Button>
+                </div>
               </div>
             </Modal.Footer>
           </>
