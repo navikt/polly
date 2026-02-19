@@ -191,46 +191,44 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       <DataText label="Organisering" text={''}>
-        {process.affiliation.nomDepartmentName && process.affiliation.nomDepartmentId && (
+        {process.affiliation.nomDepartmentId ? (
+          <div className="flex gap-1 items-center">
+            <span className="whitespace-nowrap">Avdeling: </span>
+            <ObjectLink id={process.affiliation.nomDepartmentId} type={EListName.DEPARTMENT}>
+              {process.affiliation.nomDepartmentName || process.affiliation.nomDepartmentId}
+            </ObjectLink>
+          </div>
+        ) : (
+          <div className="flex gap-1 items-center">
+            <span className="whitespace-nowrap">Avdeling: </span>
+            <span>Ikke utfylt</span>
+          </div>
+        )}
+
+        {!!process.affiliation.seksjoner.length && (
           <div className="mt-2">
-            <span>Avdeling:</span>
-            <ul className="mt-0 list-disc list-inside">
-              <li>
-                <ObjectLink id={process.affiliation.nomDepartmentId} type={EListName.DEPARTMENT}>
-                  {process.affiliation.nomDepartmentName}
-                </ObjectLink>
-              </li>
+            <span>Seksjon: </span>
+            <ul className="list-disc list-inside">
+              {process.affiliation.seksjoner.map((seksjon: INomSeksjon) => (
+                <li key={seksjon.nomSeksjonId}>{seksjon.nomSeksjonName}</li>
+              ))}
             </ul>
           </div>
         )}
-        {process.affiliation.seksjoner.length !== 0 && (
-          <div>
-            <span>Seksjon: </span>
-            <span>
-              <div className="inline">
-                {process.affiliation.seksjoner.map((seksjon: INomSeksjon, index) => (
-                  <Fragment key={seksjon.nomSeksjonId}>
-                    <>{seksjon.nomSeksjonName}</>
-                    <span>{index < process.affiliation.seksjoner.length - 1 ? ', ' : ''}</span>
-                  </Fragment>
-                ))}
-              </div>
-            </span>
-          </div>
-        )}
-        {!process.affiliation.nomDepartmentName && !process.affiliation.nomDepartmentId && (
-          <span>Avdeling: Ikke utfylt</span>
-        )}
+
         {!!process.affiliation.subDepartments.length && (
-          <div>
-            <div className="flex">
-              <span>Linja: </span>
-              <DotTags
-                list={EListName.SUB_DEPARTMENT}
-                codes={process.affiliation.subDepartments}
-                linkCodelist
-                codelistUtils={codelistUtils}
-              />
+          <div className="mt-2">
+            <div>
+              <span>Underavdeling: </span>
+              <ul className="list-disc list-inside">
+                {process.affiliation.subDepartments.map((subDepartment) => (
+                  <li key={subDepartment.code}>
+                    <ObjectLink id={subDepartment.code} type={EListName.SUB_DEPARTMENT}>
+                      {codelistUtils.getShortname(EListName.SUB_DEPARTMENT, subDepartment.code)}
+                    </ObjectLink>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {process.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVFYLKE')

@@ -1,8 +1,15 @@
 import { Select } from '@navikt/ds-react'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps } from 'formik'
+import {
+  Field,
+  FieldArray,
+  FieldArrayRenderProps,
+  FieldProps,
+  getIn,
+  useFormikContext,
+} from 'formik'
 import { useEffect, useState } from 'react'
 import { getAvdelingOptions, getSeksjonOptions } from '../../../api/NomApi'
-import { INomSeksjon, TOption } from '../../../constants'
+import { INomSeksjon, IProcessFormValues, TOption } from '../../../constants'
 import { ModalLabel } from '../../common/ModalSchema'
 import { renderTagList } from '../../common/TagList'
 
@@ -12,9 +19,28 @@ interface IFieldDepartmentProps {
 
 const FieldDepartment = (props: IFieldDepartmentProps) => {
   const { department } = props
+  const { errors, touched, submitCount, values, setFieldValue } =
+    useFormikContext<IProcessFormValues>()
   const [alleAvdelingOptions, setAlleAvdelingOptions] = useState<TOption[]>([])
   const [value, setValue] = useState<string>(department ? department : '')
   const [seksjonForAvdeling, setSeksjonForAvdeling] = useState<TOption[]>([])
+
+  const departmentHasError = !!getIn(errors, 'affiliation.nomDepartmentId')
+  const departmentTouched = !!getIn(touched, 'affiliation.nomDepartmentId')
+  const showDepartmentError = departmentHasError && (departmentTouched || submitCount > 0)
+
+  const seksjonerHasError = !!getIn(errors, 'affiliation.seksjoner')
+  const seksjonerTouched = !!getIn(touched, 'affiliation.seksjoner')
+  const showSeksjonerError = seksjonerHasError && (seksjonerTouched || submitCount > 0)
+
+  useEffect(() => {
+    const current = values.affiliation?.seksjoner ?? []
+    const cleaned = current.filter((s) => !!s?.nomSeksjonId && !!s?.nomSeksjonName)
+
+    if (cleaned.length !== current.length) {
+      setFieldValue('affiliation.seksjoner', cleaned, false)
+    }
+  }, [setFieldValue, values.affiliation?.seksjoner])
 
   useEffect(() => {
     ;(async () => {
@@ -36,8 +62,10 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
         {(fieldProps: FieldProps) => (
           <div className="w-full">
             <Select
+              id="affiliation-nomDepartmentId"
               label="Velg avdeling"
               hideLabel
+              error={showDepartmentError}
               value={value}
               onChange={async (event) => {
                 setValue(event.target.value)
@@ -79,8 +107,10 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
               <div className="w-full">
                 <div className="w-full">
                   <Select
+                    id="affiliation-seksjoner-nomSeksjonId"
                     label="Velg seksjon"
                     hideLabel
+                    error={showSeksjonerError}
                     onChange={async (event) => {
                       if (event.target.value) {
                         const seksjon = seksjonForAvdeling.filter(

@@ -89,8 +89,9 @@ const pathToAnchorId = (path: string): string => {
 const FormikSubmitEffects = (props: {
   formikBag: FormikProps<IProcessFormValues>
   setLegalBasesOpen: (open: boolean) => void
+  setOrganizingOpen: (open: boolean) => void
 }) => {
-  const { formikBag, setLegalBasesOpen } = props
+  const { formikBag, setLegalBasesOpen, setOrganizingOpen } = props
   const lastHandledSubmitCount = useRef<number>(0)
 
   useEffect(() => {
@@ -99,6 +100,10 @@ const FormikSubmitEffects = (props: {
     if (!formikBag.isValid) {
       console.debug(formikBag.errors)
       writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
+
+      if (formikBag.errors.affiliation) {
+        setOrganizingOpen(true)
+      }
 
       if (formikBag.errors.legalBasesOpen) {
         setLegalBasesOpen(true)
@@ -141,6 +146,7 @@ const ModalProcess = ({
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const [processorList, setProcessorList] = useState<IProcessor[]>([])
   const [legalBasesOpen, setLegalBasesOpen] = useState<boolean>(false)
+  const [organizingOpen, setOrganizingOpen] = useState<boolean>(false)
 
   useEffect(() => {
     ;(async () => {
@@ -188,6 +194,7 @@ const ModalProcess = ({
                   <FormikSubmitEffects
                     formikBag={formikBag}
                     setLegalBasesOpen={setLegalBasesOpen}
+                    setOrganizingOpen={setOrganizingOpen}
                   />
 
                   <CustomizedModalBlock first>
@@ -287,7 +294,7 @@ const ModalProcess = ({
                   </CustomizedModalBlock>
 
                   <Accordion>
-                    <Accordion.Item>
+                    <Accordion.Item open={organizingOpen} onOpenChange={setOrganizingOpen}>
                       <Accordion.Header>Organisering</Accordion.Header>
                       <Accordion.Content>
                         <div className="flex w-full flex-col gap-4">
