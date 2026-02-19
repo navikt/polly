@@ -17,7 +17,7 @@ export const Error = (props: IErrorProps) => {
         <div className="flex w-full mt-1">
           {!fullWidth && <ModalLabel />}
           <div className="w-full">
-            <p className={`navds-error-message navds-label ${messageClassName ?? ''}`}>{msg}</p>
+            <p className={`navds-error-message ${messageClassName ?? ''}`}>{msg}</p>
           </div>
         </div>
       )}
@@ -74,7 +74,7 @@ export const FormError = ({ fieldName, akselStyling }: IPropsError) => (
       >
         <ErrorMessage name={fieldName}>
           {(msg: string) => (
-            <p className="navds-error-message navds-label flex gap-2">
+            <p className="navds-error-message flex gap-2">
               <span>•</span>
               {msg}
             </p>

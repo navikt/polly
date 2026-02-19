@@ -204,7 +204,6 @@ const ModalProcess = ({
                     />
                     <FieldName />
                   </CustomizedModalBlock>
-                  <Error fieldName="name" />
 
                   <CustomizedModalBlock>
                     <ModalLabel

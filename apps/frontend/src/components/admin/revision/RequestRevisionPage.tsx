@@ -170,7 +170,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   </div>
                 </div>
                 {formikBag.errors.processId && (
-                  <p className="navds-error-message navds-label flex gap-2">
+                  <p className="navds-error-message flex gap-2">
                     <span>•</span>
                     Feltet er påkrevd
                   </p>
