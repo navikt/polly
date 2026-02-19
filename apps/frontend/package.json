@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "dependencies": {
-    "@navikt/aksel-icons": "8.5.0",
+    "@navikt/aksel-icons": "8.5.2",
     "@navikt/ds-css": "8.5.0",
     "@navikt/ds-react": "8.5.0",
     "@navikt/ds-tailwind": "8.5.0",
