@@ -1,6 +1,6 @@
-import { Accordion, Button, Modal, TextField } from '@navikt/ds-react'
-import { Field, FieldProps, Form, Formik } from 'formik'
-import { useState } from 'react'
+import { Accordion, Button, ErrorSummary, Modal, TextField } from '@navikt/ds-react'
+import { Field, FieldProps, Form, Formik, FormikProps } from 'formik'
+import { useEffect, useRef, useState } from 'react'
 import { IDpProcessFormValues } from '../../constants'
 import { CodelistService } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
@@ -17,6 +17,119 @@ import FieldDpProcessExternalProcessResponsible from './common/FieldDpProcessExt
 import FieldDpProcessSubDataProcessor from './common/FieldDpProcessSubDataProcessor'
 import FieldPurposeDescription from './common/FieldPurposeDescription'
 import RetentionItems from './common/RetentionItems'
+
+type TFormikError = unknown
+
+const pathToAnchorId = (path: string): string => {
+  if (!path) return 'form'
+
+  if (path.startsWith('affiliation')) return 'organizing'
+  if (path.startsWith('subDataProcessing')) return 'subDataProcessor'
+  if (path.startsWith('retention')) return 'retention'
+
+  const root = path.replace(/\[\d+\]/g, '')
+  const anchor = root.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
+  return anchor || 'form'
+}
+
+const ANCHOR_ID_PREFIX = 'dp-process-'
+const fieldId = (fieldName: string) => `${ANCHOR_ID_PREFIX}${pathToAnchorId(fieldName)}`
+
+const flattenFormikErrors = (
+  errors: TFormikError,
+  basePath = ''
+): Array<{ path: string; message: string }> => {
+  if (!errors) return []
+
+  if (typeof errors === 'string') {
+    return basePath ? [{ path: basePath, message: errors }] : [{ path: '', message: errors }]
+  }
+
+  if (Array.isArray(errors)) {
+    return errors.flatMap((value, index) => flattenFormikErrors(value, `${basePath}[${index}]`))
+  }
+
+  if (typeof errors === 'object') {
+    return Object.entries(errors as Record<string, unknown>).flatMap(([key, value]) =>
+      flattenFormikErrors(value, basePath ? `${basePath}.${key}` : key)
+    )
+  }
+
+  return []
+}
+
+const errorSummaryFieldLabels: Record<string, string> = {
+  name: 'Navn',
+  externalProcessResponsible: 'Behandlingsansvarlig',
+  description: 'Beskrivelse',
+  purposeDescription: 'Formål',
+  start: 'Startdato',
+  end: 'Sluttdato',
+  art9: 'Særlige kategorier av personopplysninger',
+  art10: 'Straffedommer og lovovertredelser',
+  'affiliation.products': 'System',
+  dataProcessingAgreements: 'Ref. til databehandleravtale',
+  affiliation: 'Organisering',
+  subDataProcessing: 'Underdatabehandler',
+  retention: 'Lagringsbehov',
+}
+
+const errorSummaryLabelForPath = (path: string): string | undefined => {
+  const normalizedPath = path.replace(/\[\d+\]/g, '')
+  return (
+    errorSummaryFieldLabels[normalizedPath] ?? errorSummaryFieldLabels[normalizedPath.split('.')[0]]
+  )
+}
+
+const buildErrorSummaryItems = (
+  errors: TFormikError
+): Array<{ anchorId: string; message: string; anchorKey: string }> => {
+  const seen = new Set<string>()
+  return flattenFormikErrors(errors)
+    .filter((e) => e.message && e.path)
+    .map((e) => {
+      const anchorKey = pathToAnchorId(e.path)
+      const anchorId = fieldId(anchorKey)
+      const label = errorSummaryLabelForPath(e.path)
+      return { anchorKey, anchorId, message: label ? `${label}: ${e.message}` : e.message }
+    })
+    .filter((e) => {
+      if (seen.has(e.anchorId)) return false
+      seen.add(e.anchorId)
+      return true
+    })
+}
+
+const focusById = (anchorId: string) => {
+  const el = document.getElementById(anchorId)
+  if (!el) return
+
+  el.scrollIntoView({ block: 'center' })
+
+  if ('focus' in el && typeof (el as any).focus === 'function') {
+    ;(el as any).focus()
+  }
+}
+
+const FormikSubmitEffects = (props: {
+  formikBag: FormikProps<IDpProcessFormValues>
+  setExpanded: (key: string) => void
+}) => {
+  const { formikBag, setExpanded } = props
+  const lastHandledSubmitCount = useRef<number>(0)
+
+  useEffect(() => {
+    if (formikBag.submitCount <= lastHandledSubmitCount.current) return
+
+    if (formikBag.errors.affiliation) setExpanded('organizing')
+    if (formikBag.errors.subDataProcessing) setExpanded('subDataProcessor')
+    if (formikBag.errors.retention) setExpanded('retention')
+
+    lastHandledSubmitCount.current = formikBag.submitCount
+  }, [formikBag.submitCount, formikBag.errors, setExpanded])
+
+  return null
+}
 
 type TModalDpProcessProps = {
   initialValues: IDpProcessFormValues
@@ -48,10 +161,11 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
         initialValues={initialValues}
         validationSchema={dpProcessSchema()}
       >
-        {(formikBag) => (
+        {(formikBag: FormikProps<IDpProcessFormValues>) => (
           <>
             <Modal.Body>
               <Form id="modal-dp-process-form" onKeyDown={disableEnter}>
+                <FormikSubmitEffects formikBag={formikBag} setExpanded={setExpanded} />
                 <CustomizedModalBlock first>
                   <ModalLabel
                     label="Navn"
@@ -61,6 +175,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
                       <TextField
                         className="w-full"
+                        id={fieldId('name')}
                         label="name"
                         hideLabel
                         {...field}
@@ -76,7 +191,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     label="Behandlingsansvarlig"
                     tooltip="Oppgi navn på den behandlingsansvarlige virksomheten."
                   />
-                  <div className="w-full">
+                  <div className="w-full" id={fieldId('externalProcessResponsible')} tabIndex={-1}>
                     <FieldDpProcessExternalProcessResponsible
                       thirdParty={formikBag.values.externalProcessResponsible}
                     />
@@ -88,7 +203,9 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     label="Beskrivelse"
                     tooltip="Beskriv behandlingen Nav gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger."
                   />
-                  <FieldDescription />
+                  <div className="w-full" id={fieldId('description')} tabIndex={-1}>
+                    <FieldDescription />
+                  </div>
                 </CustomizedModalBlock>
                 <Error fieldName="description" />
 
@@ -97,7 +214,9 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     label="Formål"
                     tooltip="Beskriv formålet med å bruke personopplysninger i denne behandlingen."
                   />
-                  <FieldPurposeDescription />
+                  <div className="w-full" id={fieldId('purposeDescription')} tabIndex={-1}>
+                    <FieldPurposeDescription />
+                  </div>
                 </CustomizedModalBlock>
                 <Error fieldName="purposeDescription" />
 
@@ -141,14 +260,14 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
                     fullwidth
                   />
-                  <div className="mt-2">
+                  <div className="mt-2" id={fieldId('affiliation.products')} tabIndex={-1}>
                     <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
                   </div>
                 </div>
 
                 <div className="w-full mt-8">
                   <ModalLabel label="Ref. til databehandleravtale" fullwidth />
-                  <div className="mt-2">
+                  <div className="mt-2" id={fieldId('dataProcessingAgreements')} tabIndex={-1}>
                     <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
                   </div>
                 </div>
@@ -159,7 +278,9 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     open={expanded === 'organizing'}
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'organizing')}
                   >
-                    <Accordion.Header>Organisering</Accordion.Header>
+                    <Accordion.Header id={fieldId('organizing')} tabIndex={-1}>
+                      Organisering
+                    </Accordion.Header>
                     <Accordion.Content>
                       <FieldDpProcessAffiliation
                         formikBag={formikBag}
@@ -172,7 +293,13 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     open={expanded === 'subDataProcessor'}
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'subDataProcessor')}
                   >
-                    <Accordion.Header className="z-0">Underdatabehandler</Accordion.Header>
+                    <Accordion.Header
+                      className="z-0"
+                      id={fieldId('subDataProcessor')}
+                      tabIndex={-1}
+                    >
+                      Underdatabehandler
+                    </Accordion.Header>
 
                     <Accordion.Content>
                       <FieldDpProcessSubDataProcessor
@@ -186,7 +313,9 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     open={expanded === 'retention'}
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'retention')}
                   >
-                    <Accordion.Header className="z-0">Lagringsbehov</Accordion.Header>
+                    <Accordion.Header className="z-0" id={fieldId('retention')} tabIndex={-1}>
+                      Lagringsbehov
+                    </Accordion.Header>
                     <Accordion.Content>
                       <RetentionItems formikBag={formikBag} />
                     </Accordion.Content>
@@ -200,14 +329,44 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                 borderTop: 0,
               }}
             >
-              <div className="flex justify-end">
-                <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                <Button type="button" variant="tertiary" onClick={() => onClose()}>
-                  Avbryt
-                </Button>
-                <Button type="submit" form="modal-dp-process-form">
-                  Lagre
-                </Button>
+              <div className="w-full flex flex-col gap-4">
+                {formikBag.submitCount > 0 && Object.keys(formikBag.errors ?? {}).length > 0 && (
+                  <div className="max-h-48 overflow-auto">
+                    <ErrorSummary
+                      className="polly-error-summary-flush"
+                      heading="Du må rette disse feilene før du kan lagre"
+                      size="small"
+                    >
+                      {buildErrorSummaryItems(formikBag.errors).map((e) => (
+                        <ErrorSummary.Item
+                          key={e.anchorId}
+                          href={`#${e.anchorId}`}
+                          onClick={(evt) => {
+                            evt.preventDefault()
+
+                            if (e.anchorKey === 'organizing') setExpanded('organizing')
+                            if (e.anchorKey === 'subDataProcessor') setExpanded('subDataProcessor')
+                            if (e.anchorKey === 'retention') setExpanded('retention')
+
+                            focusById(e.anchorId)
+                          }}
+                        >
+                          {e.message}
+                        </ErrorSummary.Item>
+                      ))}
+                    </ErrorSummary>
+                  </div>
+                )}
+
+                <div className="flex justify-end">
+                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                  <Button type="button" variant="tertiary" onClick={() => onClose()}>
+                    Avbryt
+                  </Button>
+                  <Button type="submit" form="modal-dp-process-form">
+                    Lagre
+                  </Button>
+                </div>
               </div>
             </Modal.Footer>
           </>
