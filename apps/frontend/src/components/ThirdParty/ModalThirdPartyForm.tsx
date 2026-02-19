@@ -35,6 +35,59 @@ type TFormikError = unknown
 
 const pathToAnchorId = (path: string): string => path.replace(/[^a-zA-Z0-9_-]/g, '-')
 
+const errorSummaryFieldOrder: string[] = [
+  'recipient',
+  'name',
+  'recipientPurpose',
+  'description',
+  'processes',
+  'informationTypes',
+  'document',
+  'administrationArchiveCaseNumber',
+  'abroad.abroad',
+  'abroad.countries',
+  'abroad.refToAgreement',
+  'abroad.businessArea',
+  'assessedConfidentiality',
+  'confidentialityDescription',
+  'nomDepartmentId',
+  'productTeams',
+  'legalBasesOpen',
+]
+
+const errorSummaryOrderIndex = (path: string): number => {
+  const normalizedPath = path.replace(/\[\d+\]/g, '')
+  const index = errorSummaryFieldOrder.indexOf(normalizedPath)
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index
+}
+
+const buildErrorSummaryItems = (
+  errors: TFormikError
+): Array<{ anchorId: string; message: string }> => {
+  const sorted = flattenFormikErrors(errors)
+    .filter((e) => e.message)
+    .map((e) => ({
+      path: e.path,
+      anchorId: pathToAnchorId(e.path),
+      message: e.message,
+    }))
+    .sort((a, b) => {
+      const aIndex = errorSummaryOrderIndex(a.path)
+      const bIndex = errorSummaryOrderIndex(b.path)
+      if (aIndex !== bIndex) return aIndex - bIndex
+      return a.anchorId.localeCompare(b.anchorId)
+    })
+
+  const seen = new Set<string>()
+  return sorted
+    .filter((e) => {
+      if (seen.has(e.anchorId)) return false
+      seen.add(e.anchorId)
+      return true
+    })
+    .map(({ anchorId, message }) => ({ anchorId, message }))
+}
+
 const flattenFormikErrors = (
   errors: TFormikError,
   basePath = ''
@@ -521,16 +574,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                 {formikBag.submitCount > 0 && Object.keys(formikBag.errors ?? {}).length > 0 && (
                   <div className="max-h-48 overflow-auto">
                     <ErrorSummary heading="Du må rette disse feilene før du kan lagre" size="small">
-                      {Array.from(
-                        new Map(
-                          flattenFormikErrors(formikBag.errors)
-                            .filter((e) => e.message)
-                            .map((e) => {
-                              const anchorId = pathToAnchorId(e.path)
-                              return [anchorId, { anchorId, message: e.message }]
-                            })
-                        ).values()
-                      ).map((e) => (
+                      {buildErrorSummaryItems(formikBag.errors).map((e) => (
                         <ErrorSummary.Item
                           key={e.anchorId}
                           href={`#${e.anchorId}`}
