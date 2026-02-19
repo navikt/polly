@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios'
 import { getUserInfo } from '../api/UserApi'
 import { IUserInfo } from '../constants'
 import { tekster } from '../util/codeToFineText'
+import { getPermissionMode } from '../util/permissionOverride'
 
 export enum EGroup {
   READ = 'READ',
@@ -32,6 +33,8 @@ const UserService = (): IUserProps => {
   let loaded: boolean = false
   let userInfo: IUserInfo = { loggedIn: false, groups: [] }
   let error: string
+
+  const getMode = () => getPermissionMode()
 
   const fetchData = async (): Promise<void> => {
     return await getUserInfo()
@@ -100,15 +103,30 @@ const UserService = (): IUserProps => {
   }
 
   const canWrite = (): boolean => {
-    return hasGroup(EGroup.WRITE) || hasGroup(EGroup.ADMIN)
+    const mode = getMode()
+
+    if (mode === 'read') {
+      return false
+    }
+
+    const hasWrite = hasGroup(EGroup.WRITE)
+    const hasAdmin = hasGroup(EGroup.ADMIN)
+    const hasSuper = hasGroup(EGroup.SUPER)
+
+    if (mode === 'write') {
+      return hasWrite || hasAdmin || hasSuper
+    }
+
+    // mode === 'admin'
+    return hasWrite || hasAdmin || hasSuper
   }
 
   const isSuper = (): boolean => {
-    return hasGroup(EGroup.SUPER)
+    return getMode() === 'admin' && hasGroup(EGroup.SUPER)
   }
 
   const isAdmin = (): boolean => {
-    return hasGroup(EGroup.ADMIN)
+    return getMode() === 'admin' && hasGroup(EGroup.ADMIN)
   }
 
   const wait = async (): Promise<void> => {
