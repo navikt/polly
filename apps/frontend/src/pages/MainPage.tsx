@@ -50,23 +50,33 @@ export const MainPage = () => {
           </div>
 
           <div className="w-full flex mb-6 flex-wrap gap-6">
-            {user.isLoggedIn() && (
-              <div className="flex w-full md:w-[48%] min-w-0" style={{ minHeight: '550px' }}>
-                <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full min-w-0">
+            <div className="flex w-full md:w-[48%] min-w-0" style={{ minHeight: '550px' }}>
+              <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full min-w-0">
+                {user.isLoggedIn() ? (
                   <RecentEditsByUser />
-                </div>
+                ) : (
+                  <div className="h-full flex flex-col">
+                    <Heading size="medium" level="2" className="mb-6">
+                      Mine siste endringer
+                    </Heading>
+                    <div className="flex-1 flex items-center justify-center text-center px-4">
+                      <p>
+                        Du er logget ut og kan ikke se dine siste endringer.
+                        <br />
+                        Logg inn på nytt for å se dine siste endringer.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
             <div className="flex w-full md:w-[48%] min-w-0" style={{ minHeight: '550px' }}>
               <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] w-full min-w-0">
                 <LastEvents />
               </div>
             </div>
 
-            <div
-              className={`${user.isLoggedIn() ? 'w-full mt-12 mb-0.5' : 'w-full md:w-[48%] mt-0.5'}`}
-              style={{ minHeight: '550px' }}
-            >
+            <div className="w-full mt-12 mb-0.5" style={{ minHeight: '550px' }}>
               <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
                 <Markdown source={settings?.frontpageMessage} escapeHtml={false} />
               </div>
