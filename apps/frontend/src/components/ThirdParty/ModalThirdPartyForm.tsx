@@ -573,7 +573,11 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
               <div className="w-full flex flex-col gap-4">
                 {formikBag.submitCount > 0 && Object.keys(formikBag.errors ?? {}).length > 0 && (
                   <div className="max-h-48 overflow-auto">
-                    <ErrorSummary heading="Du må rette disse feilene før du kan lagre" size="small">
+                    <ErrorSummary
+                      className="polly-error-summary-flush"
+                      heading="Du må rette disse feilene før du kan lagre"
+                      size="small"
+                    >
                       {buildErrorSummaryItems(formikBag.errors).map((e) => (
                         <ErrorSummary.Item
                           key={e.anchorId}

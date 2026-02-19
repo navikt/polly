@@ -168,3 +168,23 @@
 .json-diff-viewer pre .inline-diff-remove {
   background: var(--polly-diff-remove-bg);
 }
+
+@layer components {
+  .polly-error-summary-flush .aksel-error-summary__list,
+  .polly-error-summary-flush .navds-error-summary__list {
+    display: block;
+    padding-left: 0;
+    list-style-position: inside;
+    gap: 0;
+  }
+
+  .polly-error-summary-flush .aksel-error-summary__list > li,
+  .polly-error-summary-flush .navds-error-summary__list > li {
+    margin: 0;
+  }
+
+  .polly-error-summary-flush .aksel-error-summary__list > li + li,
+  .polly-error-summary-flush .navds-error-summary__list > li + li {
+    margin-top: var(--ax-space-8);
+  }
+}
