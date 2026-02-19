@@ -6,7 +6,7 @@
   "dependencies": {
     "@navikt/aksel-icons": "8.5.0",
     "@navikt/ds-css": "8.5.0",
-    "@navikt/ds-react": "8.5.0",
+    "@navikt/ds-react": "8.5.2",
     "@navikt/ds-tailwind": "8.5.0",
     "@tailwindcss/postcss": "4.1.18",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
