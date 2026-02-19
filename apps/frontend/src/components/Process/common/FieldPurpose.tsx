@@ -15,9 +15,11 @@ const FieldPurpose = (props: {
       : ''
   )
 
+  const purposesErrorValue = getIn(formikBag.errors, 'purposes')
   const purposesError =
-    (getIn(formikBag.errors, 'purposes[0]') as string | undefined) ||
-    (getIn(formikBag.errors, 'purposes') as string | undefined)
+    typeof purposesErrorValue === 'string'
+      ? purposesErrorValue
+      : (getIn(formikBag.errors, 'purposes[0]') as string | undefined)
   const purposesTouched =
     !!getIn(formikBag.touched, 'purposes[0]') || !!getIn(formikBag.touched, 'purposes')
   const showError = !!purposesError && (purposesTouched || formikBag.submitCount > 0)
@@ -26,8 +28,9 @@ const FieldPurpose = (props: {
     <FieldArray
       name="purposes"
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="w-full">
+        <div className="flex-1 min-w-0">
           <Select
+            className="w-full"
             id="purposes"
             label="Velg overordnet behandlingsaktivitet"
             hideLabel
