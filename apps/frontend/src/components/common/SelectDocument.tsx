@@ -39,7 +39,7 @@ const SelectDocument = (props: TSelectDocumentProps) => {
       />
 
       {form.values.document && (
-        <div style={{ maxWidth: '550px' }}>
+        <div className="mt-2 flex flex-wrap gap-2" style={{ maxWidth: '550px' }}>
           <Chips.Removable onClick={() => form.setFieldValue('document', null)}>
             {form.values.document.name}
           </Chips.Removable>

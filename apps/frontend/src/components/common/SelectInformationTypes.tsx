@@ -57,7 +57,7 @@ const SelectInformationTypes = (props: TSelectInformationTypesProps) => {
           </div>
 
           {formikBag.values.informationTypes && (
-            <div className="mt-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               {renderTagList(
                 formikBag.values.informationTypes.map(
                   (informationType: IInformationTypeShort) => informationType.name

@@ -471,7 +471,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                                       ))}
                                   </Select>
                                 </div>
-                                <div className="mt-2">
+                                <div className="mt-2 flex flex-wrap gap-2">
                                   {renderTagList(
                                     formikBag.values.abroad.countries.map((country) =>
                                       codelistUtils.countryName(country)

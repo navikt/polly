@@ -13,8 +13,29 @@ describe('Disclosure', () => {
     },
     legalBases: [],
     legalBasesOpen: false,
-    processes: [],
-    processIds: [],
+    processes: [
+      {
+        id: 'process-1',
+        name: 'Process',
+        number: 1,
+        purposes: [],
+        affiliation: {
+          seksjoner: [],
+          fylker: [],
+          navKontorer: [],
+          subDepartments: [],
+          productTeams: [],
+          products: [],
+          disclosureDispatchers: [],
+        },
+        end: '2099-01-01',
+        changeStamp: {
+          lastModifiedBy: 'test',
+          lastModifiedDate: '2099-01-01',
+        },
+      },
+    ],
+    processIds: ['process-1'],
     assessedConfidentiality: false,
     confidentialityDescription: 'test',
   })
