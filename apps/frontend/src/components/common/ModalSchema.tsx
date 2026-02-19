@@ -1,5 +1,5 @@
-import { Detail, Label } from '@navikt/ds-react'
-import { ErrorMessage } from 'formik'
+import { Detail, ErrorMessage as DsErrorMessage, Label } from '@navikt/ds-react'
+import { ErrorMessage as FormikErrorMessage } from 'formik'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 
 interface IErrorProps {
@@ -12,16 +12,20 @@ export const Error = (props: IErrorProps) => {
   const { fieldName, fullWidth, messageClassName } = props
 
   return (
-    <ErrorMessage name={fieldName}>
+    <FormikErrorMessage name={fieldName}>
       {(msg: any) => (
         <div className="flex w-full mt-1">
           {!fullWidth && <ModalLabel />}
           <div className="w-full">
-            <p className={`navds-error-message ${messageClassName ?? ''}`}>{msg}</p>
+            <div className="navds-form-field__error pt-2" aria-live="polite">
+              <span className={messageClassName ?? ''}>
+                <DsErrorMessage>{msg}</DsErrorMessage>
+              </span>
+            </div>
           </div>
         </div>
       )}
-    </ErrorMessage>
+    </FormikErrorMessage>
   )
 }
 
@@ -63,7 +67,9 @@ interface IPropsError {
 
 export const FormError = ({ fieldName, akselStyling }: IPropsError) => (
   <>
-    {!akselStyling && <ErrorMessage name={fieldName}>{(msg: string) => msg}</ErrorMessage>}
+    {!akselStyling && (
+      <FormikErrorMessage name={fieldName}>{(msg: string) => msg}</FormikErrorMessage>
+    )}
 
     {akselStyling && (
       <div
@@ -72,14 +78,14 @@ export const FormError = ({ fieldName, akselStyling }: IPropsError) => (
         aria-relevant="additions removals"
         aria-live="polite"
       >
-        <ErrorMessage name={fieldName}>
+        <FormikErrorMessage name={fieldName}>
           {(msg: string) => (
             <p className="navds-error-message flex gap-2">
               <span>•</span>
               {msg}
             </p>
           )}
-        </ErrorMessage>
+        </FormikErrorMessage>
       </div>
     )}
   </>

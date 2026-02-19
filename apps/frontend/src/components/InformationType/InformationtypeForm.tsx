@@ -1,5 +1,5 @@
 import { PlusIcon } from '@navikt/aksel-icons'
-import { Button, Label, TextField, Textarea, UNSAFE_Combobox } from '@navikt/ds-react'
+import { Button, ErrorSummary, Label, TextField, Textarea, UNSAFE_Combobox } from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -24,6 +24,126 @@ type TFormProps = {
   formInitialValues: IInformationtypeFormValues
   submit: (infoType: IInformationtypeFormValues) => Promise<void>
   isEdit: boolean
+}
+
+type TFormikError = unknown
+
+const ANCHOR_ID_PREFIX = 'informationtype-'
+
+const pathToAnchorKey = (path: string): string => {
+  if (!path) return 'form'
+  const root = path.replace(/\[\d+\]/g, '')
+  return root.split('.')[0] || 'form'
+}
+
+const fieldId = (fieldName: string) => `${ANCHOR_ID_PREFIX}${pathToAnchorKey(fieldName)}`
+
+const flattenFormikErrors = (
+  errors: TFormikError,
+  basePath = ''
+): Array<{ path: string; message: string }> => {
+  if (!errors) return []
+
+  if (typeof errors === 'string') {
+    return basePath ? [{ path: basePath, message: errors }] : [{ path: '', message: errors }]
+  }
+
+  if (Array.isArray(errors)) {
+    return errors.flatMap((value, index) => flattenFormikErrors(value, `${basePath}[${index}]`))
+  }
+
+  if (typeof errors === 'object') {
+    return Object.entries(errors as Record<string, unknown>).flatMap(([key, value]) =>
+      flattenFormikErrors(value, basePath ? `${basePath}.${key}` : key)
+    )
+  }
+
+  return []
+}
+
+const errorSummaryFieldLabels: Record<string, string> = {
+  name: 'Navn',
+  orgMaster: 'Master i NAV',
+  term: 'Begrepsdefinisjon',
+  sources: 'Kilder',
+  keywords: 'Søkeord',
+  productTeams: 'Team',
+  categories: 'Kategorier',
+  description: 'Nyttig å vite om opplysningstypen',
+  sensitivity: 'Type personopplysning',
+}
+
+const errorSummaryOrder: string[] = [
+  'name',
+  'orgMaster',
+  'term',
+  'sources',
+  'keywords',
+  'productTeams',
+  'categories',
+  'description',
+  'sensitivity',
+]
+
+const errorSummaryOrderIndex = (anchorKey: string): number => {
+  const idx = errorSummaryOrder.indexOf(anchorKey)
+  return idx === -1 ? Number.MAX_SAFE_INTEGER : idx
+}
+
+const buildErrorSummaryItems = (
+  errors: TFormikError
+): Array<{ anchorId: string; message: string }> => {
+  const seen = new Set<string>()
+
+  return flattenFormikErrors(errors)
+    .filter((e) => e.message && e.path)
+    .sort((a, b) => {
+      const aKey = pathToAnchorKey(a.path)
+      const bKey = pathToAnchorKey(b.path)
+
+      const orderDiff = errorSummaryOrderIndex(aKey) - errorSummaryOrderIndex(bKey)
+      if (orderDiff !== 0) return orderDiff
+
+      return a.path.localeCompare(b.path, 'nb')
+    })
+    .map((e) => {
+      const anchorKey = pathToAnchorKey(e.path)
+      const anchorId = fieldId(anchorKey)
+      const label = errorSummaryFieldLabels[anchorKey]
+      return { anchorId, message: label ? `${label}: ${e.message}` : e.message }
+    })
+    .filter((e) => {
+      if (seen.has(e.anchorId)) return false
+      seen.add(e.anchorId)
+      return true
+    })
+}
+
+const focusById = (anchorId: string) => {
+  const el = document.getElementById(anchorId)
+  if (!el) return
+
+  const isFocusableElement = (node: Element): node is HTMLElement => {
+    return 'focus' in node && typeof (node as any).focus === 'function'
+  }
+
+  let target: HTMLElement = el as HTMLElement
+
+  if (!(isFocusableElement(el) && el.matches('input, textarea, select, button'))) {
+    const candidate = el.querySelector(
+      'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled]), button:not([disabled])'
+    )
+
+    if (candidate && isFocusableElement(candidate)) {
+      target = candidate
+    }
+  }
+
+  target.scrollIntoView({ block: 'center' })
+
+  if (isFocusableElement(target)) {
+    target.focus()
+  }
 }
 
 const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
@@ -155,7 +275,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
           <Form onKeyDown={disableEnter}>
             <div className="w-full max-w-[100ch]">
               <div className="grid gap-6 grid-cols-1">
-                <div>
+                <div id={fieldId('name')} tabIndex={-1}>
                   <Field name="name">
                     {({ form, field }: FieldProps) => (
                       <div>
@@ -167,15 +287,18 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                           label=""
                           hideLabel
                           {...field}
-                          error={!!form.errors.name && !!form.submitCount}
+                          error={
+                            form.submitCount > 0 && typeof form.errors.name === 'string'
+                              ? form.errors.name
+                              : undefined
+                          }
                         />
                       </div>
                     )}
                   </Field>
-                  <Error fieldName="name" fullWidth />
                 </div>
 
-                <div>
+                <div id={fieldId('orgMaster')} tabIndex={-1}>
                   <Field name="orgMaster">
                     {({ form }: FieldProps<IInformationtypeFormValues>) => (
                       <div className="mb-4">
@@ -243,7 +366,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   <Error fieldName="orgMaster" fullWidth />
                 </div>
 
-                <div>
+                <div id={fieldId('term')} tabIndex={-1}>
                   <Field name="term">
                     {({ form }: FieldProps<IInformationtypeFormValues>) => (
                       <div>
@@ -296,7 +419,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   <Error fieldName="term" fullWidth />
                 </div>
 
-                <div>
+                <div id={fieldId('sources')} tabIndex={-1}>
                   <FieldArray
                     name="sources"
                     render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -334,7 +457,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   <Error fieldName="sources" fullWidth />
                 </div>
 
-                <div>
+                <div id={fieldId('keywords')} tabIndex={-1}>
                   <FieldArray name="keywords">
                     {(arrayHelpers: FieldArrayRenderProps) => (
                       <div>
@@ -372,7 +495,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   <Error fieldName="keywords" fullWidth />
                 </div>
 
-                <div>
+                <div id={fieldId('productTeams')} tabIndex={-1}>
                   <div>
                     <div className="mb-2 self-center">
                       <Label>Team</Label>
@@ -384,7 +507,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   </div>
                 </div>
 
-                <div>
+                <div id={fieldId('categories')} tabIndex={-1}>
                   <FieldArray
                     name="categories"
                     render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -392,21 +515,39 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         <div className="mb-2 self-center">
                           <Label>Kategorier</Label>
                         </div>
-                        <UNSAFE_Combobox
-                          label=""
-                          hideLabel
-                          options={getParsedOptions(
-                            EListName.CATEGORY,
-                            formikBag.values.categories
-                          ).map((o: IGetParsedOptionsProps) => ({ value: o.id, label: o.label }))}
-                          value={''}
-                          onChange={() => undefined}
-                          selectedOptions={[]}
-                          onToggleSelected={(optionValue, isSelected) => {
-                            if (!isSelected) return
-                            arrayHelpers.push(optionValue)
-                          }}
-                        />
+                        {(() => {
+                          const fieldError = formikBag.errors.categories
+                          const message =
+                            formikBag.submitCount > 0
+                              ? typeof fieldError === 'string'
+                                ? fieldError
+                                : flattenFormikErrors(fieldError, 'categories').find(
+                                    (e) => e.message
+                                  )?.message
+                              : undefined
+
+                          return (
+                            <UNSAFE_Combobox
+                              label=""
+                              hideLabel
+                              error={message}
+                              options={getParsedOptions(
+                                EListName.CATEGORY,
+                                formikBag.values.categories
+                              ).map((o: IGetParsedOptionsProps) => ({
+                                value: o.id,
+                                label: o.label,
+                              }))}
+                              value={''}
+                              onChange={() => undefined}
+                              selectedOptions={[]}
+                              onToggleSelected={(optionValue, isSelected) => {
+                                if (!isSelected) return
+                                arrayHelpers.push(optionValue)
+                              }}
+                            />
+                          )
+                        })()}
                         <div className="mt-2 flex flex-wrap gap-2">
                           {renderTagList(
                             codelistUtils.getShortnames(
@@ -419,10 +560,9 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       </div>
                     )}
                   />
-                  <Error fieldName="categories" fullWidth />
                 </div>
 
-                <div>
+                <div id={fieldId('description')} tabIndex={-1}>
                   <Field name="description">
                     {({ field, form }: FieldProps) => (
                       <div>
@@ -444,7 +584,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                   </Field>
                 </div>
 
-                <div>
+                <div id={fieldId('sensitivity')} tabIndex={-1}>
                   <Field name="sensitivity">
                     {({ form }: FieldProps<IInformationtypeFormValues>) => (
                       <div>
@@ -479,6 +619,12 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                             <UNSAFE_Combobox
                               label=""
                               hideLabel
+                              error={
+                                formikBag.submitCount > 0 &&
+                                typeof form.errors.sensitivity === 'string'
+                                  ? form.errors.sensitivity
+                                  : undefined
+                              }
                               shouldShowSelectedOptions={false}
                               options={comboboxOptions}
                               filteredOptions={comboboxOptions}
@@ -527,9 +673,31 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       </div>
                     )}
                   </Field>
-                  <Error fieldName="sensitivity" fullWidth />
                 </div>
               </div>
+
+              {formikBag.submitCount > 0 && Object.keys(formikBag.errors ?? {}).length > 0 && (
+                <div className="mt-8">
+                  <ErrorSummary
+                    className="polly-error-summary-flush"
+                    heading="Du må rette disse feilene før du kan lagre"
+                    size="small"
+                  >
+                    {buildErrorSummaryItems(formikBag.errors).map((e) => (
+                      <ErrorSummary.Item
+                        key={e.anchorId}
+                        href={`#${e.anchorId}`}
+                        onClick={(evt) => {
+                          evt.preventDefault()
+                          focusById(e.anchorId)
+                        }}
+                      >
+                        {e.message}
+                      </ErrorSummary.Item>
+                    ))}
+                  </ErrorSummary>
+                </div>
+              )}
 
               <div className="flex mt-8 justify-end">
                 <Button
