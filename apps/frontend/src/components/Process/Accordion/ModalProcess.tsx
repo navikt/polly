@@ -86,6 +86,25 @@ const pathToAnchorId = (path: string): string => {
   return anchor || 'form'
 }
 
+const normalizeErrorPath = (path: string): string => path.replace(/\[\d+\]/g, '')
+
+const errorSummaryFieldLabels: Record<string, string> = {
+  name: 'Navn',
+  purposes: 'Overordnet behandlingsaktivitet',
+  description: 'Formål med behandlingen',
+  additionalDescription: 'Ytterligere beskrivelse',
+  'dpia.processImplemented': 'Er behandlingen innført i Nav?',
+  legalBasesOpen: 'Behandlingsgrunnlag',
+  affiliation: 'Organisering',
+}
+
+const errorSummaryLabelForPath = (path: string): string | undefined => {
+  const normalizedPath = normalizeErrorPath(path)
+  return (
+    errorSummaryFieldLabels[normalizedPath] ?? errorSummaryFieldLabels[normalizedPath.split('.')[0]]
+  )
+}
+
 const FormikSubmitEffects = (props: {
   formikBag: FormikProps<IProcessFormValues>
   setLegalBasesOpen: (open: boolean) => void
@@ -719,7 +738,10 @@ const ModalProcess = ({
                             ;(el as HTMLElement | null)?.focus?.()
                           }}
                         >
-                          {e.message}
+                          {(() => {
+                            const label = errorSummaryLabelForPath(e.path)
+                            return label ? `${label}: ${e.message}` : e.message
+                          })()}
                         </ErrorSummary.Item>
                       ))}
                     </ErrorSummary>
