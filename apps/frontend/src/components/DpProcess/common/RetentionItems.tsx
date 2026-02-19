@@ -19,6 +19,7 @@ const RetentionItems = (props: IRetentionItemsProps) => {
   const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
   const retentionYears: number = Math.floor(retention / 12)
   const retentionMonths: number = retention - retentionYears * 12
+  const isEmptyRetention = retention === 0
 
   useEffect(() => {
     ;(() =>
@@ -45,9 +46,10 @@ const RetentionItems = (props: IRetentionItemsProps) => {
                   label="År"
                   size="small"
                   type="number"
-                  value={retentionYears}
+                  value={isEmptyRetention ? '' : retentionYears}
                   min={0}
                   max={100}
+                  onFocus={(e) => e.target.select()}
                   onChange={(e) => {
                     const raw = Number(e.target.value)
                     const years = Number.isNaN(raw) ? 0 : clamp(raw, 0, 100)
@@ -60,9 +62,10 @@ const RetentionItems = (props: IRetentionItemsProps) => {
                   label="Måneder"
                   size="small"
                   type="number"
-                  value={retentionMonths}
+                  value={isEmptyRetention ? '' : retentionMonths}
                   min={0}
                   max={11}
+                  onFocus={(e) => e.target.select()}
                   onChange={(e) => {
                     const raw = Number(e.target.value)
                     const months = Number.isNaN(raw) ? 0 : clamp(raw, 0, 11)
