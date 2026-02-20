@@ -65,7 +65,17 @@ const LoginButton = () => (
   </InternalHeader.Button>
 )
 
-const AdminOptions = () => {
+interface IAdminOptionsProps {
+  showPermissionOverrides: boolean
+  permissionMode: TPermissionMode
+  onPermissionModeChange: (mode: TPermissionMode) => void
+}
+
+const AdminOptions = ({
+  showPermissionOverrides,
+  permissionMode,
+  onPermissionModeChange,
+}: IAdminOptionsProps) => {
   const pages = [
     { label: 'Administrering av kodeverk', href: '/admin/codelist' },
     { label: 'Versjonering', href: '/admin/audit' },
@@ -88,6 +98,25 @@ const AdminOptions = () => {
             </Dropdown.Menu.List.Item>
           ))}
         </Dropdown.Menu.List>
+
+        {showPermissionOverrides && (
+          <div className="p-2 pt-3">
+            <ToggleGroup
+              size="small"
+              aria-label="Tilgangsmodus"
+              value={permissionMode}
+              onChange={(value) => {
+                if (value === 'admin' || value === 'write' || value === 'read') {
+                  onPermissionModeChange(value)
+                }
+              }}
+            >
+              <ToggleGroup.Item value="admin">Admin</ToggleGroup.Item>
+              <ToggleGroup.Item value="write">Skriv</ToggleGroup.Item>
+              <ToggleGroup.Item value="read">Les</ToggleGroup.Item>
+            </ToggleGroup>
+          </div>
+        )}
       </Dropdown.Menu>
     </Dropdown>
   )
@@ -138,25 +167,12 @@ const Header = ({
       </div>
 
       {canUsePermissionOverrides && (
-        <div className="flex items-center px-2">
-          <ToggleGroup
-            size="small"
-            aria-label="Tilgangsmodus"
-            value={permissionMode}
-            onChange={(value) => {
-              if (value === 'admin' || value === 'write' || value === 'read') {
-                setPermissionMode(value)
-              }
-            }}
-          >
-            <ToggleGroup.Item value="admin">Admin</ToggleGroup.Item>
-            <ToggleGroup.Item value="write">Skriv</ToggleGroup.Item>
-            <ToggleGroup.Item value="read">Les</ToggleGroup.Item>
-          </ToggleGroup>
-        </div>
+        <AdminOptions
+          showPermissionOverrides={canUsePermissionOverrides}
+          permissionMode={permissionMode}
+          onPermissionModeChange={setPermissionMode}
+        />
       )}
-
-      {(user.isAdmin() || user.isSuper()) && <AdminOptions />}
       {!user.isLoggedIn() && <LoginButton />}
       {user.isLoggedIn() && <LoggedInHeader />}
     </InternalHeader>
