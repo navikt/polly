@@ -76,7 +76,7 @@ export const MainPage = () => {
               </div>
             </div>
 
-            <div className="w-full mt-12 mb-0.5" style={{ minHeight: '550px' }}>
+            <div className="w-full mt-2 mb-0.5" style={{ minHeight: '550px' }}>
               <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
                 <Markdown source={settings?.frontpageMessage} escapeHtml={false} />
               </div>
