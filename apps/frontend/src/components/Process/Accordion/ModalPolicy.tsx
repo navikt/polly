@@ -89,10 +89,10 @@ const FieldLegalBasesUse = (props: { legalBasesUse: ELegalBasesUse }) => {
             <Radio value={ELegalBasesUse.UNRESOLVED}>Uavklart</Radio>
             <Radio value={ELegalBasesUse.DEDICATED_LEGAL_BASES}>Har eget Behandlingsgrunnlag</Radio>
             <Radio value={ELegalBasesUse.EXCESS_INFO}>
-              <CustomizedStatefulTooltip
-                content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen."
-                text="Overskuddsinformasjon"
-              />
+              <span className="flex items-center gap-2">
+                <span>Overskuddsinformasjon</span>
+                <CustomizedStatefulTooltip content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen." />
+              </span>
             </Radio>
           </RadioGroup>
         </div>
@@ -138,23 +138,29 @@ const ModalPolicy = ({
         {(formikBag: FormikProps<IPolicyFormValues>) => {
           return (
             <Form onKeyDown={disableEnter}>
-              <div className="mb-8">
-                {addBatch && (
-                  <Button type="button" variant="secondary" size="small" onClick={addBatch}>
-                    Legg til flere fra et system
-                  </Button>
-                )}
-              </div>
-
               <Modal.Body>
+                {addBatch && (
+                  <div className="w-full mt-4">
+                    <Button type="button" variant="secondary" size="small" onClick={addBatch}>
+                      Legg til flere fra et system
+                    </Button>
+                  </div>
+                )}
+
                 <div className="flex w-full mt-4">
-                  <ModalLabel label="Opplysningstype" />
+                  <ModalLabel label="Opplysningstype" fullwidth />
+                </div>
+
+                <div className="w-full mt-2">
                   <FieldInformationType />
                 </div>
-                <Error fieldName="informationType" />
+                <Error fieldName="informationType" fullWidth />
 
                 <div className="flex w-full mt-4">
-                  <ModalLabel label="Personkategori" />
+                  <ModalLabel label="Personkategori" fullwidth />
+                </div>
+
+                <div className="w-full mt-2">
                   <FieldArray
                     name="subjectCategories"
                     render={(arrayHelpers: FieldArrayRenderProps) => (
@@ -181,18 +187,20 @@ const ModalPolicy = ({
                               </option>
                             ))}
                         </Select>
-                        {renderTagList(
-                          codelistUtils.getShortnames(
-                            EListName.SUBJECT_CATEGORY,
-                            formikBag.values.subjectCategories
-                          ),
-                          arrayHelpers
-                        )}
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {renderTagList(
+                            codelistUtils.getShortnames(
+                              EListName.SUBJECT_CATEGORY,
+                              formikBag.values.subjectCategories
+                            ),
+                            arrayHelpers
+                          )}
+                        </div>
                       </div>
                     )}
                   />
                 </div>
-                <Error fieldName="subjectCategories" />
+                <Error fieldName="subjectCategories" fullWidth />
 
                 {!!formikBag.values.documentIds?.length && docs && (
                   <div className="flex w-full mt-4">
@@ -212,10 +220,13 @@ const ModalPolicy = ({
                 )}
 
                 <div className="flex w-full mt-4">
-                  <ModalLabel label="Behandlingsgrunnlag" />
+                  <ModalLabel label="Behandlingsgrunnlag" fullwidth />
+                </div>
+
+                <div className="w-full mt-2">
                   <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
                 </div>
-                <Error fieldName="legalBasesUse" />
+                <Error fieldName="legalBasesUse" fullWidth />
 
                 {formikBag.values.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES && (
                   <FieldLegalBasis formikBag={formikBag} codelistUtils={codelistUtils} />
