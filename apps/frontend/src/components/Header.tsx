@@ -158,12 +158,15 @@ const Header = ({
       <div className="flex items-center px-2">
         <Button
           variant="tertiary"
+          size="small"
           data-color="neutral"
           icon={<ThemeIcon aria-hidden />}
           aria-label={themeMode === 'dark' ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
           aria-pressed={themeMode === 'dark'}
           onClick={() => onThemeModeChange(themeMode === 'dark' ? 'light' : 'dark')}
-        />
+        >
+          {themeMode === 'dark' ? 'Lyst tema' : 'Mørkt tema'}
+        </Button>
       </div>
 
       {canUsePermissionOverrides && (
