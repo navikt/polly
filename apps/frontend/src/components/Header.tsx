@@ -1,4 +1,4 @@
-import { CaretDownIcon, PersonIcon, ThemeIcon } from '@navikt/aksel-icons'
+import { CaretDownIcon, PersonIcon } from '@navikt/aksel-icons'
 import {
   Button,
   Dropdown,
@@ -156,17 +156,19 @@ const Header = ({
       </div>
       <Spacer />
       <div className="flex items-center px-2">
-        <Button
-          variant="tertiary"
+        <ToggleGroup
           size="small"
-          data-color="neutral"
-          icon={<ThemeIcon aria-hidden />}
-          aria-label={themeMode === 'dark' ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
-          aria-pressed={themeMode === 'dark'}
-          onClick={() => onThemeModeChange(themeMode === 'dark' ? 'light' : 'dark')}
+          aria-label="Tema"
+          value={themeMode}
+          onChange={(value) => {
+            if (value === 'dark' || value === 'light') {
+              onThemeModeChange(value)
+            }
+          }}
         >
-          {themeMode === 'dark' ? 'Lyst tema' : 'Mørkt tema'}
-        </Button>
+          <ToggleGroup.Item value="light">Lyst tema</ToggleGroup.Item>
+          <ToggleGroup.Item value="dark">Mørkt tema</ToggleGroup.Item>
+        </ToggleGroup>
       </div>
 
       {canUsePermissionOverrides && (
