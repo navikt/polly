@@ -106,7 +106,7 @@
     "@types/shortid": "2.2.0",
     "@types/yup": "0.32.0",
     "@typescript-eslint/eslint-plugin": "8.56.0",
-    "@typescript-eslint/parser": "8.56.0",
+    "@typescript-eslint/parser": "8.56.1",
     "autoprefixer": "10.4.24",
     "encoding": "0.1.13",
     "http-proxy-middleware": "3.0.5",
