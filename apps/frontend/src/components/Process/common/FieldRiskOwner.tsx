@@ -34,9 +34,8 @@ const FieldRiskOwner = (props: IProps) => {
   }, [riskOwner])
 
   return (
-    <Field
-      name="dpia.riskOwner"
-      render={({ form }: FieldProps<IProcessFormValues>) => (
+    <Field name="dpia.riskOwner">
+      {({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
           <UNSAFE_Combobox
             label="Risikoeier"
@@ -64,7 +63,7 @@ const FieldRiskOwner = (props: IProps) => {
           />
         </div>
       )}
-    />
+    </Field>
   )
 }
 export default FieldRiskOwner

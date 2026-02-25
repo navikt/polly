@@ -26,9 +26,8 @@ const BoolField = (props: IBoolFieldProps) => {
   } = props
 
   return (
-    <Field
-      name={fieldName}
-      render={({ form }: FieldProps<any>) => {
+    <Field name={fieldName}>
+      {({ form }: FieldProps<any>) => {
         const fieldError = getIn(form.errors, fieldName) as string | undefined
         const showError = !!fieldError && (!!getIn(form.touched, fieldName) || form.submitCount > 0)
 
@@ -49,7 +48,7 @@ const BoolField = (props: IBoolFieldProps) => {
           />
         )
       }}
-    />
+    </Field>
   )
 }
 

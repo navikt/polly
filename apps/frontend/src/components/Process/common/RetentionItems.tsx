@@ -50,9 +50,8 @@ const RetentionItems = (props: IProps) => {
               label="Lagringsbehov for Nav"
               tooltip="Det er hvor lenge Nav har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket."
             />
-            <Field
-              name="retention.retentionMonths"
-              render={() => (
+            <Field name="retention.retentionMonths">
+              {() => (
                 <div className="mt-2 flex gap-6">
                   <div className="w-1/2">
                     <TextField
@@ -86,7 +85,7 @@ const RetentionItems = (props: IProps) => {
                   </div>
                 </div>
               )}
-            />
+            </Field>
           </div>
           <Error fieldName="retention.retentionMonths" fullWidth={true} />
 

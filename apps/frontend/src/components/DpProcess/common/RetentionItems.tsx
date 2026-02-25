@@ -37,9 +37,8 @@ const RetentionItems = (props: IRetentionItemsProps) => {
           tooltip="Oppgi lagringstiden NAV er forpliktet til å overholde. Denne skal fremgå av databehandleravtalen med den behandlingsansvarlige."
           fullwidth
         />
-        <Field
-          name="retention.retentionMonths"
-          render={() => (
+        <Field name="retention.retentionMonths">
+          {() => (
             <div className="mt-2 flex w-full gap-6">
               <div className="w-1/2">
                 <TextField
@@ -75,7 +74,7 @@ const RetentionItems = (props: IRetentionItemsProps) => {
               </div>
             </div>
           )}
-        />
+        </Field>
       </div>
       <Error fieldName="retention.retentionMonths" />
 

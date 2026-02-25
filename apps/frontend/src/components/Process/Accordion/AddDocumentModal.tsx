@@ -187,9 +187,8 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                   <div className="w-187.5 px-8">
                     <div className="flex w-full mt-4">
                       <ModalLabel label="Dokument" />
-                      <Field
-                        name="document"
-                        render={({ form }: FieldProps<IAddDocumentToProcessFormValues>) => (
+                      <Field name="document">
+                        {({ form }: FieldProps<IAddDocumentToProcessFormValues>) => (
                           <>
                             <CustomSearchSelect
                               ariaLabel="Søk dokumenter"
@@ -214,7 +213,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                             )}
                           </>
                         )}
-                      />
+                      </Field>
                     </div>
                     <Error fieldName="document" />
 

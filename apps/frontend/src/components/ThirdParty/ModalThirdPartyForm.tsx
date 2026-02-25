@@ -162,9 +162,8 @@ const FieldRecipient = (props: IFieldRecipientProps) => {
   const [codelistUtils] = CodelistService()
 
   return (
-    <Field
-      name="recipient"
-      render={({ form }: FieldProps<IDisclosureFormValues>) => (
+    <Field name="recipient">
+      {({ form }: FieldProps<IDisclosureFormValues>) => (
         <Select
           className="w-full"
           id={fieldId('recipient')}
@@ -186,7 +185,7 @@ const FieldRecipient = (props: IFieldRecipientProps) => {
           ))}
         </Select>
       )}
-    />
+    </Field>
   )
 }
 
@@ -390,9 +389,8 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                       fullwidth
                     />
                     <div className="mt-2" id={fieldId('document')}>
-                      <Field
-                        name="document"
-                        render={({ form }: FieldProps<IDisclosureFormValues>) => (
+                      <Field name="document">
+                        {({ form }: FieldProps<IDisclosureFormValues>) => (
                           <SelectDocument
                             form={form}
                             handleChange={(document: IDocument | undefined) => {
@@ -400,7 +398,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                             }}
                           />
                         )}
-                      />
+                      </Field>
                     </div>
                   </div>
                   <Error fieldName="document" fullWidth />

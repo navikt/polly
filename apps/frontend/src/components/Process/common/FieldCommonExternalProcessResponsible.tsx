@@ -36,9 +36,8 @@ const FieldCommonExternalProcessResponsible = (
   )
 
   return (
-    <Field
-      name="commonExternalProcessResponsible"
-      render={({ form }: FieldProps<IProcessFormValues>) => (
+    <Field name="commonExternalProcessResponsible">
+      {({ form }: FieldProps<IProcessFormValues>) => (
         <div className="w-full">
           <UNSAFE_Combobox
             label="Felles behandlingsansvarlig"
@@ -63,7 +62,7 @@ const FieldCommonExternalProcessResponsible = (
           />
         </div>
       )}
-    />
+    </Field>
   )
 }
 

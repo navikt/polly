@@ -684,9 +684,8 @@ const ModalProcess = ({
                     <div className="w-full flex flex-col">
                       <ModalLabel fullwidth label="Status på utfylling" />
                       <div className="mt-2">
-                        <Field
-                          name="status"
-                          render={({ form }: FieldProps<IProcessFormValues>) => (
+                        <Field name="status">
+                          {({ form }: FieldProps<IProcessFormValues>) => (
                             <RadioGroup
                               value={formikBag.values.status}
                               legend=""
@@ -703,7 +702,7 @@ const ModalProcess = ({
                               )}
                             </RadioGroup>
                           )}
-                        />
+                        </Field>
                       </div>
                     </div>
                   </CustomizedModalBlock>

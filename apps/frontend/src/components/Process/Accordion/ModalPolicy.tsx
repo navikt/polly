@@ -31,9 +31,8 @@ const FieldInformationType = () => {
   }, [])
 
   return (
-    <Field
-      name="informationType"
-      render={({ form }: FieldProps<IPolicyFormValues>) => (
+    <Field name="informationType">
+      {({ form }: FieldProps<IPolicyFormValues>) => (
         <>
           <Select
             label="Opplysningstyper"
@@ -61,7 +60,7 @@ const FieldInformationType = () => {
           </Select>
         </>
       )}
-    />
+    </Field>
   )
 }
 
@@ -69,9 +68,8 @@ const FieldLegalBasesUse = (props: { legalBasesUse: ELegalBasesUse }) => {
   const [value, setValue] = useState(props.legalBasesUse)
 
   return (
-    <Field
-      name="legalBasesUse"
-      render={({ form }: FieldProps<IPolicyFormValues>) => (
+    <Field name="legalBasesUse">
+      {({ form }: FieldProps<IPolicyFormValues>) => (
         <div className="w-full">
           <RadioGroup
             value={value}
@@ -97,7 +95,7 @@ const FieldLegalBasesUse = (props: { legalBasesUse: ELegalBasesUse }) => {
           </RadioGroup>
         </div>
       )}
-    />
+    </Field>
   )
 }
 

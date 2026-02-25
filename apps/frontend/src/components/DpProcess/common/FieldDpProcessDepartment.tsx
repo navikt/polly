@@ -32,9 +32,8 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
 
   return (
     <div>
-      <Field
-        name="affiliation.nomDepartmentId"
-        render={({ form }: FieldProps<IDpProcessFormValues>) => (
+      <Field name="affiliation.nomDepartmentId">
+        {({ form }: FieldProps<IDpProcessFormValues>) => (
           <div className="w-full">
             <Select
               label=""
@@ -64,7 +63,7 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
             </Select>
           </div>
         )}
-      />
+      </Field>
 
       {value !== '' && value !== undefined && (
         <div className="mt-3">

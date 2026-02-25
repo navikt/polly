@@ -89,9 +89,8 @@ const CardLegalBasis = ({
               : ESensitivityLevel.ART6
           )}
           <div className="flex mt-4 w-full">
-            <Field
-              name="gdpr"
-              render={() => (
+            <Field name="gdpr">
+              {() => (
                 <Select
                   className="w-full"
                   label={
@@ -112,16 +111,15 @@ const CardLegalBasis = ({
                   ))}
                 </Select>
               )}
-            />
+            </Field>
           </div>
           <Error fieldName="gdpr" />
 
           <div
             className={`mt-4 w-full ${codelistUtils.requiresNationalLaw(form.values.gdpr) ? 'flex' : 'hidden'}`}
           >
-            <Field
-              name="nationalLaw"
-              render={() => (
+            <Field name="nationalLaw">
+              {() => (
                 <Select
                   className="w-full"
                   label="Velg lov eller forskrift"
@@ -141,15 +139,14 @@ const CardLegalBasis = ({
                   ))}
                 </Select>
               )}
-            />
+            </Field>
           </div>
           <Error fieldName="nationalLaw" />
           <div
             className={`mt-4 w-full ${codelistUtils.requiresDescription(form.values.gdpr) ? 'flex' : 'hidden'}`}
           >
-            <Field
-              name="description"
-              render={({ field }: FieldProps<string, ILegalBasisFormValues>) => (
+            <Field name="description">
+              {({ field }: FieldProps<string, ILegalBasisFormValues>) => (
                 <TextField
                   {...field}
                   className="w-full"
@@ -159,7 +156,7 @@ const CardLegalBasis = ({
                   error={!!form.errors.description && !!form.submitCount}
                 />
               )}
-            />
+            </Field>
           </div>
           <Error fieldName="description" />
           <div className="flex mt-4 w-full justify-end">

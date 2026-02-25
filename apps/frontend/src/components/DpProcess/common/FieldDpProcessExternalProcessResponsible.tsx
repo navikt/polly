@@ -16,9 +16,8 @@ const FieldDpProcessExternalProcessResponsible = (
   const [value, setValue] = useState<string>(thirdParty ? thirdParty : '')
 
   return (
-    <Field
-      name="externalProcessResponsible"
-      render={({ form }: FieldProps<IDpProcessFormValues>) => (
+    <Field name="externalProcessResponsible">
+      {({ form }: FieldProps<IDpProcessFormValues>) => (
         <div className="w-full">
           <Select
             label=""
@@ -38,7 +37,7 @@ const FieldDpProcessExternalProcessResponsible = (
           </Select>
         </div>
       )}
-    />
+    </Field>
   )
 }
 

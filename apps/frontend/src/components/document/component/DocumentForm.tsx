@@ -89,9 +89,8 @@ const DocumentForm = (props: TDocumentFormProps) => {
           </div>
 
           <div className="w-[50%] mb-8">
-            <Field
-              name="dataAccessClass"
-              render={({ form }: FieldProps<IDocumentFormValues>) => (
+            <Field name="dataAccessClass">
+              {({ form }: FieldProps<IDocumentFormValues>) => (
                 <div>
                   <div className="my-4">
                     <ModalLabel
@@ -129,7 +128,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
                   </Select>
                 </div>
               )}
-            />
+            </Field>
             <Error fieldName="dataAccessClass" fullWidth={true} />
           </div>
 
