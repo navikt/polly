@@ -18,10 +18,18 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // With allowCredentials=true, the response cannot use Access-Control-Allow-Origin: *.
+                // Use allowedOriginPatterns so local/dev environments can still work while remaining spec-compliant.
                 registry.addMapping("/oauth2/callback")
-                        .allowedOrigins("*");
+                        .allowedOriginPatterns("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+
                 registry.addMapping("/**")
                         .allowedOrigins(securityProperties.getRedirectUris().toArray(new String[]{}))
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
                         .allowCredentials(true);
 
             }

@@ -9,6 +9,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -44,9 +47,16 @@ public class EmailServiceImpl implements EmailService {
     }
     
     @Transactional // Viktig med en transaksjon per mail, slik at ikke allerede sendte mails blir rullet tilbake til repo ved feil 
-    private void sendMailAndDeleteTask(GenericStorage task) {
-        storageRepository.delete(task);
-        sendMail(task.getDataObject(MailTask.class));
+    void sendMailAndDeleteTask(GenericStorage task) {
+        MailTask mailTask = task.getDataObject(MailTask.class);
+        try {
+            sendMail(mailTask);
+            storageRepository.delete(task);
+        } catch (RuntimeException e) {
+            // Keep task so scheduler can retry later.
+            log.error("Failed to send scheduled mail (will retry). to={} subject='{}' taskId={}", mailTask.getTo(), mailTask.getSubject(), task.getId(), e);
+            throw e;
+        }
     }
 
 }
