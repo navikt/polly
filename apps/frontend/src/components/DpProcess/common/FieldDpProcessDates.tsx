@@ -48,7 +48,7 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
               <div className="w-1/2 mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="start">
-                    {({ form }: FieldProps<string, IDpProcessFormValues>) => {
+                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => {
                       const endVal = form.values['end']
                       const endDate = parseLocalYMD(endVal)
                       const startMax = endDate ? new Date(endDate) : undefined
@@ -79,7 +79,13 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                         >
                           <DatePicker.Input
                             className="mb-2"
-                            value={form.values['start']}
+                            name={field.name}
+                            value={field.value ?? ''}
+                            onChange={(e) => {
+                              const next = e.currentTarget.value
+                              form.setFieldValue(field.name, next === '' ? undefined : next)
+                            }}
+                            onBlur={field.onBlur}
                             label={
                               <LabelWithToolTip
                                 label="Velg fra og med dato"
@@ -102,7 +108,7 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
               <div className="w-1/2 mr-4">
                 <div className="flex w-full mt-4">
                   <Field name="end">
-                    {({ form }: FieldProps<string, IDpProcessFormValues>) => {
+                    {({ field, form }: FieldProps<string, IDpProcessFormValues>) => {
                       const startVal = form.values['start']
                       const startDate = parseLocalYMD(startVal)
                       const endMin = startDate ? new Date(startDate) : undefined
@@ -117,7 +123,6 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                         <DatePicker
                           {...endDatepickerProps}
                           dropdownCaption
-                          fromDate={endMin}
                           toDate={finalToDate}
                           onSelect={(date: any) => {
                             const dateSingle: Date = Array.isArray(date) ? date[0] : date
@@ -139,7 +144,13 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                         >
                           <DatePicker.Input
                             className="mb-2"
-                            value={form.values['end']}
+                            name={field.name}
+                            value={field.value ?? ''}
+                            onChange={(e) => {
+                              const next = e.currentTarget.value
+                              form.setFieldValue(field.name, next === '' ? undefined : next)
+                            }}
+                            onBlur={field.onBlur}
                             label={
                               <LabelWithToolTip
                                 label="Velg til og med dato"

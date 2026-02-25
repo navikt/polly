@@ -10,7 +10,7 @@ export const EndDate = () => {
     <div className="w-1/2 mr-4">
       <div className="flex w-full mt-4">
         <Field name="aiUsageDescription.endDate">
-          {({ form }: FieldProps<string, IProcessFormValues>) => (
+          {({ field, form }: FieldProps<string, IProcessFormValues>) => (
             <DatePicker
               {...datepickerProps}
               onSelect={(date: any) => {
@@ -27,7 +27,13 @@ export const EndDate = () => {
             >
               <DatePicker.Input
                 className="mb-2"
-                value={form.values.aiUsageDescription.endDate}
+                name={field.name}
+                value={field.value ?? ''}
+                onChange={(e) => {
+                  const next = e.target.value
+                  form.setFieldValue(field.name, next === '' ? undefined : next)
+                }}
+                onBlur={field.onBlur}
                 label="Til og med dato"
                 error={
                   !!form.errors.aiUsageDescription?.endDate &&

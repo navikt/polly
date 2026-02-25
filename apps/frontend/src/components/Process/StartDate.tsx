@@ -25,7 +25,7 @@ export const StartDate = () => {
     <div className="w-1/2 mr-4">
       <div className="flex w-full mt-4">
         <Field name="start">
-          {({ form }: FieldProps<string, IProcessFormValues>) => {
+          {({ field, form }: FieldProps<string, IProcessFormValues>) => {
             const endVal = form.values['end']
             const endDate = parseLocalYMD(endVal)
             const startMax = endDate ? new Date(endDate) : undefined
@@ -56,7 +56,13 @@ export const StartDate = () => {
               >
                 <DatePicker.Input
                   className="mb-2"
-                  value={form.values['start']}
+                  name={field.name}
+                  value={field.value ?? ''}
+                  onChange={(e) => {
+                    const next = e.target.value
+                    form.setFieldValue(field.name, next === '' ? undefined : next)
+                  }}
+                  onBlur={field.onBlur}
                   label={
                     <LabelWithToolTip
                       label="Velg fra og med dato"
