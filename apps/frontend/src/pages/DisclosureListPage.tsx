@@ -214,6 +214,7 @@ export const DisclosureListPage = () => {
                 title="Behandlingsgrunnlag"
                 column="legalBases"
                 tableState={[table, sortColumn]}
+                $style={{ textAlign: 'center' }}
               />
             </>
           }
@@ -243,7 +244,7 @@ export const DisclosureListPage = () => {
                   ))}
                 </ul>
               </Cell>
-              <Cell>{data.legalBases ? 'Ja' : 'Nei'}</Cell>
+              <Cell $style={{ textAlign: 'center' }}>{data.legalBases ? 'Ja' : 'Nei'}</Cell>
             </Row>
           ))}
         </Table>

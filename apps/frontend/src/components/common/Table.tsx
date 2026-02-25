@@ -120,13 +120,17 @@ export const HeadCell = <T, K extends keyof T>(props: THeadProps<K, T>) => {
 
   const [table, sortColumn] = tableState
 
+  const textAlign = styleOverride?.textAlign
+  const buttonClassName =
+    textAlign === 'center'
+      ? 'flex w-full items-center justify-center gap-2 text-center'
+      : textAlign === 'right'
+        ? 'flex w-full items-center justify-end gap-2 text-right'
+        : 'flex items-center gap-2 text-left'
+
   return (
     <NavTable.ColumnHeader style={styleOverride}>
-      <button
-        type="button"
-        className="flex items-center gap-2 text-left"
-        onClick={() => sortColumn(column)}
-      >
+      <button type="button" className={buttonClassName} onClick={() => sortColumn(column)}>
         <SortDirectionIcon direction={table.direction[column]} />
         <span>{title}</span>
       </button>
