@@ -30,7 +30,11 @@ const CodelistPage = (props: ICodeListPageProps) => {
   return (
     <>
       {title && <Heading size="large">{title}</Heading>}
-      {isLoading && <Loader size="large" />}
+      {isLoading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!!codes.length && (
         <AlphabeticList
           items={codes.map((code: ICode) => ({ id: code.code, label: code.shortName }))}

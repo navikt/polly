@@ -1,5 +1,5 @@
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
-import { Heading } from '@navikt/ds-react'
+import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
@@ -27,7 +27,6 @@ import { ActiveIndicator } from '../common/Durations'
 import { Markdown } from '../common/Markdown'
 import { boolToText } from '../common/Radio'
 import RouteLink, { urlForObject } from '../common/RouteLink'
-import { Spinner } from '../common/Spinner'
 import { TeamList } from '../common/Team'
 import { DpProcessDeleteModal } from './DpProcessDeleteModal'
 import DpProcessModal from './DpProcessModal'
@@ -115,7 +114,11 @@ const DpProcessView = () => {
 
   return (
     <>
-      {isLoading && <Spinner />}
+      {isLoading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!isLoading && (
         <>
           <div className="flex justify-between items-center">

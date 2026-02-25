@@ -1,5 +1,5 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyLong, Button, Heading } from '@navikt/ds-react'
+import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { getAllDpProcesses } from '../api/DpProcessApi'
@@ -13,7 +13,6 @@ import {
 import ProcessList from '../components/Process/ProcessList'
 import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import { Spinner } from '../components/common/Spinner'
 import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '../constants'
@@ -141,7 +140,11 @@ const ThirdPartyPage = () => {
 
   return (
     <>
-      {isLoading && <Spinner />}
+      {isLoading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
 
       {!isLoading && codelistUtils && (
         <>

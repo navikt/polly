@@ -115,7 +115,11 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
         Send anmodning om revidering
       </Heading>
 
-      {loading && <Loader size="xlarge" />}
+      {loading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {error && <Alert variant={'error'}>{error}</Alert>}
 
       <Formik

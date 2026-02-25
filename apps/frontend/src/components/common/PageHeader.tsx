@@ -1,5 +1,5 @@
 import { ExternalLinkIcon } from '@navikt/aksel-icons'
-import { Heading, Label, Link } from '@navikt/ds-react'
+import { Heading, Label, Link, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getProductArea, getTeam } from '../../api/GetAllApi'
 import { getAvdelingByNomId } from '../../api/NomApi'
@@ -10,7 +10,6 @@ import { theme } from '../../util'
 import { productAreaLink, teamLink } from '../../util/config'
 import CustomizedStatefulTooltip from './CustomizedStatefulTooltip'
 import { Markdown } from './Markdown'
-import { Spinner } from './Spinner'
 
 interface IPageHeaderProps {
   section: ESection
@@ -110,7 +109,11 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
   return (
     <>
-      {isLoading && <Spinner size={theme.sizing.scale2400} />}
+      {isLoading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!isLoading && (
         <>
           <div className="mb-12 flex items-center">

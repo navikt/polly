@@ -1,5 +1,5 @@
 import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyLong, BodyShort, Link, Modal } from '@navikt/ds-react'
+import { Accordion, BodyLong, BodyShort, Link, Loader, Modal } from '@navikt/ds-react'
 import { Fragment, Key, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { getAlertForDisclosure } from '../../api/AlertApi'
@@ -14,14 +14,12 @@ import {
 import { canViewAlerts } from '../../pages/AlertEventPage'
 import { CodelistService, EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
-import { theme } from '../../util'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
 import Button from '../common/Button/CustomButton'
 import DataText from '../common/DataText'
 import { DotTags } from '../common/DotTag'
 import { LegalBasisView } from '../common/LegalBasis'
-import { Spinner } from '../common/Spinner'
 import { TeamList } from '../common/Team'
 import ModalThirdParty from './ModalThirdPartyForm'
 import LinkListInformationType from './components/LinkListInformationType'
@@ -185,7 +183,9 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
                     {isLoading && (
                       <div className="p-2.5">
-                        <Spinner size={theme.sizing.scale1200} />
+                        <div className="flex w-full justify-center">
+                          <Loader size="3xlarge" />
+                        </div>
                       </div>
                     )}
 

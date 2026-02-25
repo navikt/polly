@@ -49,7 +49,11 @@ export const AuditView = (props: TAuditViewProps) => {
 
   return (
     <Box>
-      {loading && <Loader size="large" />}
+      {loading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!loading && auditLog && !logFound && <Label>Fant ingen versjonering</Label>}
 
       {logFound && (

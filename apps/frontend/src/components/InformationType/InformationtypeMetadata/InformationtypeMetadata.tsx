@@ -101,15 +101,27 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
               <Tabs.Tab value="document" label="Dokumenter" />
             </Tabs.List>
             <Tabs.Panel value="purposes">
-              {!policies && <Loader />}
+              {!policies && (
+                <div className="flex w-full justify-center">
+                  <Loader size="3xlarge" />
+                </div>
+              )}
               {policies && <Purposes policies={policies} codelistUtils={codelistUtils} />}
             </Tabs.Panel>
             <Tabs.Panel value="disclose">
-              {!disclosures && <Loader size="large" className="flex justify-self-center" />}
+              {!disclosures && (
+                <div className="flex w-full justify-center">
+                  <Loader size="3xlarge" />
+                </div>
+              )}
               {disclosures && <TableDisclosure list={disclosures} codelistUtils={codelistUtils} />}
             </Tabs.Panel>
             <Tabs.Panel value="document">
-              {!documents && <Loader size="large" className="flex justify-self-center" />}
+              {!documents && (
+                <div className="flex w-full justify-center">
+                  <Loader size="3xlarge" />
+                </div>
+              )}
               {documents && <DocumentTable documents={documents} />}
             </Tabs.Panel>
           </Tabs>

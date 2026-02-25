@@ -1,5 +1,5 @@
 import { MinusCircleIcon } from '@navikt/aksel-icons'
-import { BodyShort, Button, List, Modal, Tooltip } from '@navikt/ds-react'
+import { BodyShort, Button, List, Loader, Modal, Tooltip } from '@navikt/ds-react'
 import {
   ArrayHelpers,
   Field,
@@ -24,7 +24,6 @@ import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import CustomSearchSelect from '../../common/AsyncSelectComponents'
 import { Error, ModalLabel } from '../../common/ModalSchema'
-import { Spinner } from '../../common/Spinner'
 import { addDocumentToProcessSchema } from '../../common/schemaValidation'
 
 type TAddDocumentProps = {
@@ -152,7 +151,11 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
       width="750px"
       header={{ heading: 'Legg til opplysningstyper fra dokument' }}
     >
-      {loading && <Spinner />}
+      {loading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!loading && (
         <Formik
           onSubmit={submit}

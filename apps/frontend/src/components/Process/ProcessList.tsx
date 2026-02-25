@@ -1,5 +1,5 @@
 import { PlusIcon } from '@navikt/aksel-icons'
-import { Heading, Label, Select } from '@navikt/ds-react'
+import { Heading, Label, Loader, Select } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import {
@@ -37,7 +37,6 @@ import { user } from '../../service/User'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
-import { Spinner } from '../common/Spinner'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ExportProcessModal from './Export/ExportProcessModal'
@@ -421,7 +420,11 @@ const ProcessList = ({
         </div>
       </div>
 
-      {isLoadingProcessList && <Spinner size={theme.sizing.scale2400} />}
+      {isLoadingProcessList && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
 
       {!isLoadingProcessList && (
         <AccordionProcess

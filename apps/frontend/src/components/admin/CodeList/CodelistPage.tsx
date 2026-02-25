@@ -56,8 +56,8 @@ const CodeListPage = () => {
   return (
     <>
       {!(user.isAdmin() || lists) && (
-        <div role="main">
-          <Loader size="2xlarge" />
+        <div role="main" className="flex w-full justify-center">
+          <Loader size="3xlarge" />
         </div>
       )}
       {user.isAdmin() && lists && (
@@ -65,7 +65,11 @@ const CodeListPage = () => {
           <Heading size="large" level="1">
             Administrering av kodeverk
           </Heading>
-          {loading && <Loader />}{' '}
+          {loading && (
+            <div className="flex w-full justify-center">
+              <Loader size="3xlarge" />
+            </div>
+          )}
           {!loading && (
             <div className="flex justify-between w-full">
               <Select

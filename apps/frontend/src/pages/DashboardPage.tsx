@@ -1,13 +1,11 @@
-import { Heading } from '@navikt/ds-react'
+import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { getDashboard } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
 import Departments from '../components/Dashboard/Departments'
 import { FilterDashboardStatus } from '../components/Dashboard/FilterDashboardStatus'
-import { Spinner } from '../components/common/Spinner'
 import { EProcessStatusFilter, IDashboardData } from '../constants'
-import { theme } from '../util'
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<IDashboardData>()
@@ -31,7 +29,11 @@ export const DashboardPage = () => {
 
       {dashboardData && <Departments data={dashboardData} />}
       {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />}
-      {!dashboardData && <Spinner size={theme.sizing.scale600} />}
+      {!dashboardData && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
     </div>
   )
 }

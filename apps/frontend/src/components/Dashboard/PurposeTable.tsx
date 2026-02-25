@@ -1,3 +1,4 @@
+import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import {
@@ -8,7 +9,6 @@ import {
 import { EProcessField, EProcessState, EProcessStatusFilter, IProcessShort } from '../../constants'
 import { useQueryParam } from '../../util/hooks'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
-import {Heading, Loader} from "@navikt/ds-react";
 
 type TPathProps = {
   filterName: EProcessField
@@ -95,8 +95,12 @@ const PurposeTable = () => {
 
   return (
     <>
-      <Heading size='large'>{title}</Heading>
-      {loading && <Loader size='large' className="flex justify-self-center" />}
+      <Heading size="large">{title}</Heading>
+      {loading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!loading && (
         <SimpleProcessTable
           processes={filtered}

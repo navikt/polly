@@ -57,7 +57,11 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
 
   return (
     <>
-      {isLoading && <Loader size="large" className="flex justify-self-center" />}
+      {isLoading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!isLoading && (
         <div className="mb-12">
           <Heading className="mt-3" size="xlarge" level="2">

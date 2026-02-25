@@ -1,5 +1,5 @@
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
-import { BodyShort, Modal } from '@navikt/ds-react'
+import { BodyShort, Loader, Modal } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router'
 import {
@@ -12,7 +12,6 @@ import { IInformationType } from '../../constants'
 import { AuditButton } from '../admin/audit/AuditButton'
 import Button from '../common/Button/CustomButton'
 import RouteLink from '../common/RouteLink'
-import { Spinner } from '../common/Spinner'
 
 interface IDeleteModalProps {
   id: string
@@ -54,7 +53,11 @@ export const DeleteModal = (props: IDeleteModalProps) => {
   return (
     <Modal header={{ heading: 'Bekreft sletting' }} onClose={closeModal} open={showDeleteModal}>
       <Modal.Body>
-        {!infoType && <Spinner />}
+        {!infoType && (
+          <div className="flex w-full justify-center">
+            <Loader size="3xlarge" />
+          </div>
+        )}
         {canDelete && (
           <BodyShort spacing>Bekreft sletting av opplysningstypen {infoType?.name}</BodyShort>
         )}

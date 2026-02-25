@@ -244,7 +244,11 @@ export const Usage = (props: IUsageProps) => {
       )}
 
       {usage && <UsageTable usage={usage} />}
-      {!usage && <Loader />}
+      {!usage && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
     </div>
   )
 }

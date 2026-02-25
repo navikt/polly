@@ -47,7 +47,11 @@ export const ProcessorListPage = () => {
 
   return (
     <>
-      {isLoading && <Loader size="large" />}
+      {isLoading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!isLoading && (
         <>
           <Heading size="large">Databehandlere</Heading>

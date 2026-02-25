@@ -35,7 +35,11 @@ export const SettingsPage = () => {
   return (
     <div>
       <Heading size="large">Innstillinger</Heading>
-      {loading && <Loader size="large" />}
+      {loading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!loading && (error || !settings) && error}
       {!loading && !(error || !settings) && (
         <div>

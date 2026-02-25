@@ -1,5 +1,5 @@
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyShort, Modal } from '@navikt/ds-react'
+import { Accordion, BodyShort, Loader, Modal } from '@navikt/ds-react'
 import { useEffect, useRef, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
@@ -21,11 +21,9 @@ import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { TPathParams } from '../../../pages/ProcessPage'
 import { ICode, ICodelistProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
-import { theme } from '../../../util'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
-import { Spinner } from '../../common/Spinner'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { AddDocumentModal } from './AddDocumentModal'
@@ -213,7 +211,9 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   <Accordion.Content>
                     {expanded && isLoading && (
                       <div className="p-2.5">
-                        <Spinner size={theme.sizing.scale1200} />
+                        <div className="flex w-full justify-center">
+                          <Loader size="3xlarge" />
+                        </div>
                       </div>
                     )}
 

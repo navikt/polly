@@ -251,7 +251,9 @@ export const DisclosureListPage = () => {
       {showAaregAvtaleTable && (
         <div className="mt-3">
           {isAaregAvtaleLoading ? (
-            <Loader size="large" className="flex justify-self-center" />
+            <div className="flex w-full justify-center">
+              <Loader size="3xlarge" />
+            </div>
           ) : (
             <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
           )}

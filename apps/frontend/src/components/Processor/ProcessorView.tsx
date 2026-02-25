@@ -153,7 +153,11 @@ const ProcessorView = () => {
           )}
         </div>
       </div>
-      {isLoading && <Loader size="xlarge" />}
+      {isLoading && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {!isLoading && currentProcessor && (
         <>
           <div>

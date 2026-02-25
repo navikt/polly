@@ -1,5 +1,5 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Heading } from '@navikt/ds-react'
+import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
@@ -12,7 +12,6 @@ import {
 import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button/CustomButton'
-import { Spinner } from '../components/common/Spinner'
 import {
   ICategoryUsage,
   ICodeUsage,
@@ -23,7 +22,6 @@ import {
 } from '../constants'
 import { EListName } from '../service/Codelist'
 import { user } from '../service/User'
-import { theme } from '../util'
 
 export type TPurposeMap = { [purpose: string]: IPolicy[] }
 
@@ -69,7 +67,11 @@ const InformationtypePage = () => {
   if (informationTypeId) {
     return (
       <>
-        {!informationtype && <Spinner size={theme.sizing.scale1200} />}
+        {!informationtype && (
+          <div className="flex w-full justify-center">
+            <Loader size="3xlarge" />
+          </div>
+        )}
         {!error && informationtype && (
           <InformationtypeMetadata
             informationtype={informationtype}
@@ -106,7 +108,11 @@ const InformationtypePage = () => {
           )}
         </div>
       </div>
-      {!categoryUsages && <Spinner size={theme.sizing.scale1200} />}
+      {!categoryUsages && (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
       {categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages} />}
     </>
   )

@@ -81,7 +81,13 @@ const DpProcessPage = () => {
           errorOnCreate={errorDpProcessModal}
         />
       )}
-      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses} /> : <Loader size="medium" />}
+      {!isLoading ? (
+        <DpProcessTable dpProcesses={dpProcesses} />
+      ) : (
+        <div className="flex w-full justify-center">
+          <Loader size="3xlarge" />
+        </div>
+      )}
     </>
   )
 }

@@ -62,7 +62,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
         >
           <Modal.Body>
             {exportError !== '' && <BodyLong>{exportError}</BodyLong>}
-            {isExportLoading && <Loader size="large" className="flex justify-self-center" />}
+            {isExportLoading && (
+              <div className="flex w-full justify-center">
+                <Loader size="3xlarge" />
+              </div>
+            )}
             {!isExportLoading && exportError === '' && (
               <>
                 <Button
