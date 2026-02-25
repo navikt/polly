@@ -4,15 +4,43 @@ import { IPageResponse, IProductArea, ITeam, ITeamResource, TOption } from '../c
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
+const defaultTeam = (teamId: string): ITeam => ({
+  id: teamId,
+  name: teamId,
+  description: '',
+  productAreaId: undefined,
+  slackChannel: undefined,
+  tags: [],
+  members: [],
+})
+
+const teamPromiseCache = new Map<string, Promise<ITeam>>()
+
 export const getAllTeams = async () => {
   const data = (await axios.get<IPageResponse<ITeam>>(`${env.pollyBaseUrl}/team`)).data
   return data
 }
 
 export const getTeam = async (teamId: string) => {
-  const data = (await axios.get<ITeam>(`${env.pollyBaseUrl}/team/${teamId}`)).data
-  data.members = data.members.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-  return data
+  const cached = teamPromiseCache.get(teamId)
+  if (cached) return cached
+
+  const promise = (async () => {
+    try {
+      const data = (await axios.get<ITeam>(`${env.pollyBaseUrl}/team/${teamId}`)).data
+      data.members = data.members.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+      return data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return defaultTeam(teamId)
+      }
+      teamPromiseCache.delete(teamId)
+      throw error
+    }
+  })()
+
+  teamPromiseCache.set(teamId, promise)
+  return promise
 }
 
 export const searchTeam = async (teamSearch: string) => {
