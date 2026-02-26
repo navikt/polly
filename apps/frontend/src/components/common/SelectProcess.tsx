@@ -91,15 +91,17 @@ const SelectProcess = (props: TSelectProcessProps) => {
             />
           </div>
 
-          <div className="mt-2">
-            {renderTagList(
-              formikBag.values.processes.map(
-                (process: IProcessShort) =>
-                  'B' + process.number + ' ' + process.purposes[0].shortName + ': ' + process.name
-              ),
-              arrayHelpers
-            )}
-          </div>
+          {formikBag.values.processes.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {renderTagList(
+                formikBag.values.processes.map(
+                  (process: IProcessShort) =>
+                    'B' + process.number + ' ' + process.purposes[0].shortName + ': ' + process.name
+                ),
+                arrayHelpers
+              )}
+            </div>
+          )}
         </div>
       )}
     />
