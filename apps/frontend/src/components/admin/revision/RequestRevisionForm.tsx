@@ -128,14 +128,23 @@ export const RequestRevisionForm = (props: IRequestRevisionPageProps) => {
               }}
               minRows={6}
               error={formikBag.errors.revisionText}
+              disabled={loading || done}
             />
             <div className="flex justify-end mt-6 gap-4">
-              <Button type="button" variant="secondary" onClick={close}>
-                Avbryt
-              </Button>
-              <Button type="submit" disabled={loading}>
-                Send
-              </Button>
+              {done ? (
+                <Button type="button" onClick={close}>
+                  Lukk
+                </Button>
+              ) : (
+                <>
+                  <Button type="button" variant="secondary" onClick={close}>
+                    Avbryt
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    Send
+                  </Button>
+                </>
+              )}
             </div>
           </Form>
         )}
