@@ -13,6 +13,7 @@ import {
 import axios from 'axios'
 import { Form, Formik } from 'formik'
 import { useEffect, useState } from 'react'
+import { CSSObjectWithLabel } from 'react-select'
 import AsyncSelect from 'react-select/async'
 import * as yup from 'yup'
 import { searchProcessOptions, useAllAreas } from '../../../api/GetAllApi'
@@ -24,6 +25,11 @@ import {
   TOption,
 } from '../../../constants'
 import { env } from '../../../util/env'
+import {
+  DropdownIndicator,
+  noOptionMessage,
+  selectOverrides,
+} from '../../common/AsyncSelectComponents'
 
 const initialValues: IProcessRevisionRequest = {
   processSelection: EProcessSelection.ONE,
@@ -57,6 +63,15 @@ const schema: () => yup.ObjectSchema<IProcessRevisionRequest> = () => {
 
 const requestRevision = async (request: IProcessRevisionRequest) => {
   await axios.post(`${env.pollyBaseUrl}/process/revision`, request)
+}
+
+const requestRevisionSearchSelectOverrides = {
+  ...selectOverrides,
+  placeholder: (base: CSSObjectWithLabel) =>
+    ({
+      ...(selectOverrides as any).placeholder(base),
+      color: '#E0E1E5',
+    }) as CSSObjectWithLabel,
 }
 
 interface IRequestRevisionPageProps {
@@ -155,20 +170,21 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
               </Tabs.List>
               <Tabs.Panel value={EProcessSelection.ONE} className="h-48 w-full p-4">
                 <div className="flex w-full mt-4 my-3">
-                  <div className="my-3">
+                  <div className="my-3 w-1/2">
                     <Label>Legg til en behandling fra Behandlingskatalogen</Label>
 
                     <AsyncSelect
+                      className="w-full mt-1"
                       aria-label="Søk etter behandlinger"
-                      placeholder=""
-                      noOptionsMessage={() => 'Skriv minst 3 tegn for å søke'}
+                      placeholder="Søk"
+                      components={{ DropdownIndicator }}
+                      noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
                       loadingMessage={() => 'Søker...'}
                       isClearable={true}
+                      styles={requestRevisionSearchSelectOverrides}
                       loadOptions={searchProcessOptions}
                       onChange={(val) => {
-                        if (val) {
-                          formikBag.setFieldValue('processId', val.value)
-                        }
+                        formikBag.setFieldValue('processId', val ? (val as any).value : '')
                       }}
                     />
                   </div>
