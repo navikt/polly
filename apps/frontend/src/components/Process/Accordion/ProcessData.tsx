@@ -14,7 +14,7 @@ import {
   IProcess,
   IProcessor,
 } from '../../../constants'
-import { CodelistService, EListName, ICodelistProps } from '../../../service/Codelist'
+import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import {
   checkForAaregDispatcher,
@@ -22,7 +22,6 @@ import {
   shortenLinksInText,
 } from '../../../util/helper-functions'
 import DataText from '../../common/DataText'
-import { DotTags } from '../../common/DotTag'
 import { ActiveIndicator } from '../../common/Durations'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { boolToText } from '../../common/Radio'
@@ -32,8 +31,6 @@ import StartEndDateView from '../AiUsageDescription/StartEndDateView'
 import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
-  const [codelistUtils] = CodelistService()
-
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
       return (
@@ -52,15 +49,20 @@ const showDpiaRequiredField = (dpia?: IDpia) => {
     if (dpia) {
       return (
         <>
-          {'Nei. Begrunnelse: '}
-          <DotTags
-            items={dpia.noDpiaReasons.map((r) => {
-              return r === 'OTHER' && dpia?.grounds
-                ? `${getNoDpiaLabel(r)} (${dpia.grounds})`
-                : getNoDpiaLabel(r)
-            })}
-            codelistUtils={codelistUtils}
-          />
+          <div>Nei</div>
+          <div className="mt-1">
+            <span>Begrunnelse: </span>
+            <ul className="list-disc pl-5">
+              {dpia.noDpiaReasons.map((r) => {
+                const label =
+                  r === 'OTHER' && dpia?.grounds
+                    ? `${getNoDpiaLabel(r)} (${dpia.grounds})`
+                    : getNoDpiaLabel(r)
+
+                return <li key={r}>{label}</li>
+              })}
+            </ul>
+          </div>
         </>
       )
     }

@@ -10,10 +10,34 @@ import RouteLink, { urlForObject } from './RouteLink'
 interface IDotTagProps {
   children: ReactNode
   wrapText?: boolean
+  dotColor?: string
+  dotVariant?: 'outline' | 'filled'
 }
 
 export const DotTag = (props: IDotTagProps) => {
-  const { children, wrapText } = props
+  const { children, wrapText, dotColor, dotVariant } = props
+  const resolvedDotColor = dotColor ?? theme.colors.positive400
+  const resolvedDotVariant = dotVariant ?? 'outline'
+
+  const Dot = () => {
+    if (resolvedDotVariant === 'filled') {
+      return (
+        <span
+          aria-hidden
+          className="block rounded-full"
+          style={{ backgroundColor: resolvedDotColor, width: '.45rem', height: '.45rem' }}
+        />
+      )
+    }
+
+    return (
+      <CircleIcon
+        aria-hidden
+        className="block"
+        style={{ color: resolvedDotColor, fontSize: '.45rem' }}
+      />
+    )
+  }
 
   return (
     <>
@@ -21,22 +45,14 @@ export const DotTag = (props: IDotTagProps) => {
         <div className="mx-1 flex items-center">
           <div className="flex whitespace-normal">
             <div className="mr-1 -mt-0.75">
-              <CircleIcon
-                aria-hidden
-                className="block"
-                style={{ color: theme.colors.positive400, fontSize: '.45rem' }}
-              />
+              <Dot />
             </div>
             <div>{children}</div>
           </div>
         </div>
       )}
       <div className="mx-1 flex items-center">
-        <CircleIcon
-          aria-hidden
-          className="block"
-          style={{ color: theme.colors.positive400, fontSize: '.45rem' }}
-        />
+        <Dot />
         <div className="inline mr-1" />
         <div>{props.children}</div>
       </div>
@@ -86,12 +102,23 @@ type TDotTagsParams = {
   noFlex?: boolean
   direction?: 'row' | 'column'
   wrapText?: boolean
+  dotColor?: string
+  dotVariant?: 'outline' | 'filled'
   codelistUtils: ICodelistProps
   customId?: string
 }
 
 export const DotTags = (props: TDotTagsParams) => {
-  const { commaSeparator, codes, noFlex, direction, wrapText, codelistUtils } = props
+  const {
+    commaSeparator,
+    codes,
+    noFlex,
+    direction,
+    wrapText,
+    dotColor,
+    dotVariant,
+    codelistUtils,
+  } = props
   const items = props.items || codes?.map((code) => code.code) || []
 
   const isColumn = direction === 'column'
@@ -119,7 +146,7 @@ export const DotTags = (props: TDotTagsParams) => {
               key={index}
               className={isColumn ? '' : `${index < items.length ? 'mr-1.5' : '0px'}`}
             >
-              <DotTag wrapText={wrapText}>
+              <DotTag wrapText={wrapText} dotColor={dotColor} dotVariant={dotVariant}>
                 {' '}
                 <Content {...props} codelistUtils={codelistUtils} item={item} />{' '}
               </DotTag>

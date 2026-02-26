@@ -44,7 +44,7 @@ const DpiaItems = (props: IProps) => {
         <></>
       ) : formikBag.values.dpia?.needForDpia ? (
         <>
-          <div className={stacked ? 'w-full mt-4' : 'flex w-full mr-4'}>
+          <div className={stacked ? 'w-full my-4' : 'flex w-full mr-4'}>
             <ModalLabel fullwidth={stacked} label="Ref. til PVK" />
             {stacked ? (
               <div className="mt-2">
