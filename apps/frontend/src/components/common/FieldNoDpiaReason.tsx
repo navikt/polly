@@ -43,11 +43,15 @@ const FieldNoDpiaReason = (props: TFieldNoDpiaReasonProps) => {
                   ))}
               </Select>
             </div>
-            <div>
-              {renderTagList(
-                formikBag.values.dpia.noDpiaReasons.map((reason: string) => getNoDpiaLabel(reason)),
-                arrayHelpers
-              )}
+            <div className={formikBag.values.dpia.noDpiaReasons.length > 0 ? 'mt-1' : ''}>
+              <div className="flex flex-wrap gap-2">
+                {renderTagList(
+                  formikBag.values.dpia.noDpiaReasons.map((reason: string) =>
+                    getNoDpiaLabel(reason)
+                  ),
+                  arrayHelpers
+                )}
+              </div>
             </div>
           </div>
         </>

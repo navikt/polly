@@ -20,6 +20,7 @@ export const PurposeListPage = () => {
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
+  const [createProcessModalKey, setCreateProcessModalKey] = useState(0)
   const [errorProcessModal, setErrorProcessModal] = useState(null)
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const [exportDownloading, setExportDownloading] = useState<'internal' | 'external' | null>(null)
@@ -141,7 +142,11 @@ export const PurposeListPage = () => {
                     <PlusCircleIcon aria-hidden className="block" />
                   </span>
                 }
-                onClick={() => setShowCreateProcessModal(true)}
+                onClick={() => {
+                  setErrorProcessModal(null)
+                  setCreateProcessModalKey((k) => k + 1)
+                  setShowCreateProcessModal(true)
+                }}
               >
                 Opprett ny behandling
               </Button>
@@ -152,9 +157,13 @@ export const PurposeListPage = () => {
         <div className="mb-6" />
 
         <ModalProcess
+          key={createProcessModalKey}
           codelistUtils={codelistUtils}
           title="Opprett ny behandling"
-          onClose={() => setShowCreateProcessModal(false)}
+          onClose={() => {
+            setErrorProcessModal(null)
+            setShowCreateProcessModal(false)
+          }}
           isOpen={showCreateProcessModal}
           submit={(values: IProcessFormValues) => handleCreateProcess(values)}
           errorOnCreate={errorProcessModal}
