@@ -42,7 +42,12 @@ export const LegalBasisView = (props: ILegalBasisViewProps) => {
   return (
     <span>
       {gdprDisplay}
-      {(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay} {descriptionText}
+      {(nationalLawDisplay || descriptionText) && (
+        <>
+          {gdprDisplay ? ' ' : ''}
+          {nationalLawDisplay} {descriptionText}
+        </>
+      )}
     </span>
   )
 }
