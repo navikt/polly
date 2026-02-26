@@ -68,7 +68,7 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
               </div>
             )}
             {!isExportLoading && exportError === '' && (
-              <>
+              <div className="flex gap-2">
                 <Button
                   kind="outline"
                   size="xsmall"
@@ -100,7 +100,7 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                 >
                   Eksport for ekstern bruk
                 </Button>
-              </>
+              </div>
             )}
           </Modal.Body>
         </Modal>
