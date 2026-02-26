@@ -82,6 +82,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [showAddDocumentModal, setShowAddDocumentModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showRevisionModal, setShowRevisionModal] = useState(false)
+  const [revisionModalKey, setRevisionModalKey] = useState(0)
   const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const purposeRef = useRef<HTMLButtonElement>(null)
@@ -265,7 +266,10 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                       <GavelIcon aria-hidden className="block" />
                                     </span>
                                   }
-                                  onClick={() => setShowRevisionModal(true)}
+                                  onClick={() => {
+                                    setRevisionModalKey((k) => k + 1)
+                                    setShowRevisionModal(true)
+                                  }}
                                 >
                                   Ny revidering
                                 </Button>
@@ -415,7 +419,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           >
             <Modal.Body>
               <div className="w-150">
-                <RequestRevisionForm processId={currentProcess.id} close={closeRevision} />
+                <RequestRevisionForm
+                  key={revisionModalKey}
+                  processId={currentProcess.id}
+                  close={closeRevision}
+                />
               </div>
             </Modal.Body>
           </Modal>
