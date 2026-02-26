@@ -1,23 +1,17 @@
-import { Fragment } from 'react/jsx-runtime'
 import { EObjectType, IProcessShort } from '../../../constants'
 import { ObjectLink } from '../../common/RouteLink'
 
-export const LinkListProcess = (
-  items: IProcessShort[],
-) => {
-  const len = items.length
-
+export const LinkListProcess = (items: IProcessShort[]) => {
   return (
-    <>
+    <div className="flex flex-col gap-1">
       {items.map((item: IProcessShort, index: number) => (
-        <Fragment key={index}>
+        <div key={item.id ?? index}>
           <ObjectLink id={item.id} type={EObjectType.PROCESS}>
             {item.purposes.length > 0 ? item.purposes[0].shortName : ''}: {item.name}
           </ObjectLink>
-          {index < len - 1 && <span>, </span>}
-        </Fragment>
+        </div>
       ))}
-    </>
+    </div>
   )
 }
 
