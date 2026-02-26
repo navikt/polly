@@ -320,7 +320,7 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
 
                             <DataText label="Team">
                               {disclosure.productTeams?.length ? (
-                                <TeamList teamIds={disclosure.productTeams} />
+                                <TeamList teamIds={disclosure.productTeams} variant="list" />
                               ) : (
                                 'Ikke angitt'
                               )}
