@@ -161,17 +161,6 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
     ]
   }
 
-  const initialValueMaster = () => {
-    if (!formInitialValues.orgMaster || !codelistUtils) return []
-
-    return [
-      {
-        id: formInitialValues.orgMaster,
-        label: codelistUtils.getShortname(EListName.SYSTEM, formInitialValues.orgMaster),
-      },
-    ]
-  }
-
   const initialValueTerm = async () => {
     if (!formInitialValues.term || !codelistUtils) return []
     return [mapTermToOption(await getTerm(formInitialValues.term))]
@@ -201,9 +190,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
   }, [formInitialValues.term])
 
   useEffect(() => {
-    const initialMaster = initialValueMaster()
-    const first = initialMaster.length ? initialMaster[0] : undefined
-    setMasterInputValue(first?.label || '')
+    setMasterInputValue('')
   }, [formInitialValues.orgMaster, codelistLoaded])
 
   useEffect(() => {
@@ -319,7 +306,6 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                             <UNSAFE_Combobox
                               label=""
                               hideLabel
-                              shouldShowSelectedOptions={false}
                               options={parsedOptions.map((o: IGetParsedOptionsProps) => ({
                                 value: o.id,
                                 label: o.label,
@@ -349,12 +335,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                                   form.setFieldValue('orgMaster', undefined)
                                   return
                                 }
-
-                                const picked = parsedOptions.find(
-                                  (o: IGetParsedOptionsProps) => o.id === optionValue
-                                )
-
-                                setMasterInputValue(picked?.label || '')
+                                setMasterInputValue('')
                                 form.setFieldValue('orgMaster', optionValue)
                               }}
                             />
