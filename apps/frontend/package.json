@@ -10,7 +10,7 @@
     "@navikt/ds-tailwind": "8.6.0",
     "@tailwindcss/postcss": "4.2.1",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
-    "axios": "1.13.5",
+    "axios": "1.13.6",
     "core-js": "3.48.0",
     "flag-icon-css": "4.1.7",
     "formik": "2.4.9",
