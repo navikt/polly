@@ -9,6 +9,8 @@ import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.ProductArea;
 import no.nav.data.polly.teams.domain.Team;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -81,14 +83,6 @@ public class TeamcatTeamClient implements TeamService {
         return filter(getAllTeams(), t -> productAreaId.equals(t.getProductAreaId()));
     }
 
-    private Map<String, ProductArea> getProductAreasResponse() {
-        var response = restTemplate.getForEntity(properties.getProductAreasUrl(), ProductAreaPage.class);
-        List<TeamKatProductArea> teams = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
-        return safeStream(teams)
-                .map(TeamKatProductArea::convertToProductArea)
-                .collect(Collectors.toMap(ProductArea::getId, Function.identity()));
-    }
-
     private Map<String, ProductArea> getProductAreas() {
         return allPaCache.get("singleton");
     }
@@ -98,21 +92,40 @@ public class TeamcatTeamClient implements TeamService {
         return getTeams().containsKey(teamId);
     }
 
+    public void invalidateCache() {
+        allTeamsCache.invalidateAll();
+        allPaCache.invalidateAll();
+    }
+
     private Map<String, Team> getTeams() {
         return allTeamsCache.get("singleton");
     }
 
+    private static final ParameterizedTypeReference<RestResponsePage<TeamKatTeam>> TEAM_PAGE_TYPE =
+            new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<RestResponsePage<TeamKatProductArea>> PA_PAGE_TYPE =
+            new ParameterizedTypeReference<>() {};
+
     private Map<String, Team> getTeamsResponse() {
         List<TeamKatTeam> teams = List.of();
         try {
-            var response = restTemplate.getForEntity(properties.getTeamsUrl(), TeamPage.class);
+            var response = restTemplate.exchange(properties.getTeamsUrl(), HttpMethod.GET, null, TEAM_PAGE_TYPE);
             teams = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
+            log.debug("getTeamsResponse() got {} teams", teams.size());
         } catch (RestClientException e) {
             log.error("Unable to connect to teamkatalog , error: " + e);
         }
         return safeStream(teams)
                 .map(TeamKatTeam::convertToTeam)
                 .collect(Collectors.toMap(Team::getId, Function.identity()));
+    }
+
+    private Map<String, ProductArea> getProductAreasResponse() {
+        var response = restTemplate.exchange(properties.getProductAreasUrl(), HttpMethod.GET, null, PA_PAGE_TYPE);
+        List<TeamKatProductArea> areas = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
+        return safeStream(areas)
+                .map(TeamKatProductArea::convertToProductArea)
+                .collect(Collectors.toMap(ProductArea::getId, Function.identity()));
     }
 
     static class TeamPage extends RestResponsePage<TeamKatTeam> {

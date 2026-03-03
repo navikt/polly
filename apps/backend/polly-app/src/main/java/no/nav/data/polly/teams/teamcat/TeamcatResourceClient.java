@@ -8,6 +8,8 @@ import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.dto.Resource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -75,8 +77,12 @@ public class TeamcatResourceClient implements ResourceService {
         }
     }
 
+    private static final ParameterizedTypeReference<RestResponsePage<Resource>> RESOURCE_PAGE_TYPE =
+            new ParameterizedTypeReference<>() {};
+
     private Map<String, Resource> getResources0(Iterable<? extends String> idents) {
-        var response = restTemplate.postForEntity(properties.getResourcesUrl(), idents, ResourcePage.class);
+        var response = restTemplate.exchange(properties.getResourcesUrl(), HttpMethod.POST,
+                new org.springframework.http.HttpEntity<>(idents), RESOURCE_PAGE_TYPE);
         Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to teamcat failed " + response.getStatusCode());
         Assert.isTrue(response.getBody() != null, "response is null");
         List<Resource> resources = response.getBody().getContent();
@@ -85,7 +91,7 @@ public class TeamcatResourceClient implements ResourceService {
     }
 
     private RestResponsePage<Resource> doSearch(String name) {
-        var response = restTemplate.getForEntity(properties.getResourceSearchUrl(), ResourcePage.class, name);
+        var response = restTemplate.exchange(properties.getResourceSearchUrl(), HttpMethod.GET, null, RESOURCE_PAGE_TYPE, name);
         Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to teamcat failed " + response.getStatusCode());
         return response.getBody();
     }

@@ -2,6 +2,7 @@ package no.nav.data.polly.codelist;
 
 import no.nav.data.AppStarter;
 import no.nav.data.common.exceptions.CodelistNotFoundException;
+import no.nav.data.common.test.MockRepositoriesConfig;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.codelist.commoncode.CommonCodeService;
 import no.nav.data.polly.codelist.domain.Codelist;
@@ -14,15 +15,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,21 +48,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(CodelistController.class)
-@ContextConfiguration(classes = AppStarter.class)
-@WebAppConfiguration
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = WebEnvironment.MOCK, classes = AppStarter.class)
+@Import(MockRepositoriesConfig.class)
+@ActiveProfiles({"test", "test-component"})
 class CodelistControllerTest {
 
     @Autowired
     private WebApplicationContext applicationContext;
     private MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
     private CodelistService service;
-    @MockBean
+    @MockitoBean
     private CodelistRequestValidator requestValidator;
-    @MockBean
+    @MockitoBean
     private CommonCodeService commonCodeService;
 
     @BeforeEach
@@ -187,3 +188,11 @@ class CodelistControllerTest {
         }
     }
 }
+
+
+
+
+
+
+
+

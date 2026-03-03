@@ -13,7 +13,7 @@ import no.nav.data.polly.process.dto.ProcessRevisionRequest;
 import no.nav.data.polly.process.dto.ProcessRevisionRequest.ProcessSelection;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import no.nav.data.polly.test.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

@@ -7,7 +7,8 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistRequestValidator;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,12 +23,12 @@ import java.util.stream.Collectors;
 @Lazy(false)
 @Component
 @RequiredArgsConstructor
-public class CodelistService implements InitializingBean {
-    
+public class CodelistService implements ApplicationListener<ApplicationReadyEvent> {
+
     private final CodelistRepository codelistRepository;
     private final CodelistRequestValidator codelistRequestValidator; // TODO: Avhengighet utover
 
-    @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT1M")
+    @Scheduled(initialDelayString = "${codelist.refresh.initial-delay:PT1M}", fixedRateString = "${codelist.refresh.rate:PT1M}")
     @Transactional
     public void refreshCache() {
         log.info("Refreshing codelist cache");
@@ -76,7 +77,7 @@ public class CodelistService implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() {
+    public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("init codelist cache");
         refreshCache();
     }

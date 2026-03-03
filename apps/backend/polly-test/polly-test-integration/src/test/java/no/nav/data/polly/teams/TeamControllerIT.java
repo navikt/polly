@@ -7,7 +7,7 @@ import no.nav.data.polly.teams.dto.ProductAreaResponse;
 import no.nav.data.polly.teams.dto.TeamResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import no.nav.data.polly.test.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;

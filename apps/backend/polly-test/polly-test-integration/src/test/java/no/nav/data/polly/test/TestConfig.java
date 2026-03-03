@@ -11,6 +11,10 @@ import no.nav.data.common.security.AppIdMapping;
 import no.nav.data.common.security.azure.AADAuthenticationProperties;
 import no.nav.data.common.security.azure.AADStatelessAuthenticationFilter;
 import no.nav.data.common.security.azure.AzureUserInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +27,16 @@ import java.util.List;
 
 @Configuration
 public class TestConfig {
+
+    @Bean
+    public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
+        return new TransactionTemplate(transactionManager);
+    }
+
+    @Bean
+    public TestRestTemplate testRestTemplate(@Value("${local.server.port}") int port, ObjectMapper objectMapper) {
+        return new TestRestTemplate("http://localhost:" + port, objectMapper);
+    }
 
     @Bean
     public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter() throws URISyntaxException {
