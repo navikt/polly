@@ -196,7 +196,6 @@
                     <execution>
                         <id>repackage</id>
                         <configuration>
-                            <file>app.jar</file>
                             <classifier>exec</classifier>
                             <layers>
                                 <enabled>true</enabled>

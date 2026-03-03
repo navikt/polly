@@ -45,7 +45,7 @@
 
         <!-- Test -->
         <testcontainers.version>1.21.4</testcontainers.version>
-        <wiremock.version>2.27.2</wiremock.version>
+        <wiremock.version>3.13.0</wiremock.version>
     </properties>
 
     <dependencies>
@@ -224,8 +224,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <release>21</release>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <forceLegacyJavacApi>true</forceLegacyJavacApi>
                     <parameters>true</parameters>
+                    <compilerArgs>
+                        <arg>-proc:full</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

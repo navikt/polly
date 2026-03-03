@@ -22,6 +22,7 @@ import java.util.List;
  * Wraps a RestTemplate with a fixed base URL so relative paths can be used in tests.
  * Does NOT throw on 4xx/5xx - returns the ResponseEntity with the error status.
  */
+@SuppressWarnings("deprecation")
 public class TestRestTemplate {
 
     private final RestTemplate restTemplate;
