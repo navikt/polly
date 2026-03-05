@@ -508,7 +508,7 @@ const Completeness = (props: ICompletenessProps) => {
   return (
     <DataText label="Kompletthet" text={''}>
       <Tooltip content={getContent()}>
-        <div className="flex h-6 w-full items-center cursor-help">
+        <div className="flex h-6 w-full max-w-[75ch] items-center cursor-help">
           <ProgressBar
             aria-label="Kompletthet"
             className="flex-1"
