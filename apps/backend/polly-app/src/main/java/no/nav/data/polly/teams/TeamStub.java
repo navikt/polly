@@ -39,6 +39,6 @@ public class TeamStub implements TeamService {
 
     @Override
     public boolean teamExists(String teamId) {
-        return false;
+        return true;
     }
 }

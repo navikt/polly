@@ -52,6 +52,7 @@ import no.nav.data.polly.test.TestConfig.MockFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import no.nav.data.polly.teams.teamcat.TeamcatTeamClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -116,6 +117,8 @@ public abstract class IntegrationTestBase {
     protected GenericStorageRepository genericStorageRepository;
     @Autowired
     protected AuditVersionRepository auditRepository;
+    @Autowired(required = false)
+    private TeamcatTeamClient teamcatTeamClient;
 
     static {
         postgreSQLContainer.start();
@@ -128,6 +131,7 @@ public abstract class IntegrationTestBase {
     public void setUpAbstract() {
         CodelistStub.initializeCodelist();
         mockTerms();
+        mockTeams();
         delete();
     }
 
@@ -474,6 +478,14 @@ public abstract class IntegrationTestBase {
         WireMock.stubFor(get("/termcatalog/term/term").willReturn(okJson(JsonUtils.toJson(List.of(termOne)))));
     }
 
+    private void mockTeams() {
+        // TeamcatMocks.mock() in WiremockExtension.beforeEach already stubs /teamcat/team with teamid1.
+        // Invalidate Caffeine cache so TeamcatTeamClient reloads from the fresh WireMock stubs.
+        if (teamcatTeamClient != null) {
+            teamcatTeamClient.invalidateCache();
+        }
+    }
+
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
         @Override
@@ -483,6 +495,7 @@ public abstract class IntegrationTestBase {
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgreSQLContainer.getPassword(),
+                    "spring.main.lazy-initialization=false",
                     "wiremock.server.port=" + WiremockExtension.port()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }

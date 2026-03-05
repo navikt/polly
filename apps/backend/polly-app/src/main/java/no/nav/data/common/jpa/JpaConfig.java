@@ -12,8 +12,9 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -30,6 +31,7 @@ import static no.nav.data.common.utils.MdcUtils.wrapAsync;
 @EnableJpaRepositories(basePackageClasses = AppStarter.class)
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
+@ConditionalOnProperty(name = "polly.jpa.enabled", havingValue = "true", matchIfMissing = true)
 public class JpaConfig {
 
     @Bean

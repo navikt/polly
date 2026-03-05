@@ -21,8 +21,11 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        WIREMOCK.start();
+        if (!WIREMOCK.isRunning()) {
+            WIREMOCK.start();
+        }
         WireMock.configureFor("localhost", WIREMOCK.port());
+        stubCommon();
     }
 
     @Override

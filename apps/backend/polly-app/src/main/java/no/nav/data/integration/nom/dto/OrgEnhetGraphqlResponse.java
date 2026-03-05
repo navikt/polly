@@ -19,8 +19,9 @@ public class OrgEnhetGraphqlResponse {
 
     @Builder
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class DataWrapper {
-
         OrgEnhet orgEnhet;
 
     }

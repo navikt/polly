@@ -8,7 +8,7 @@ import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.dto.ProcessorResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import no.nav.data.polly.test.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

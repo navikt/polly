@@ -7,7 +7,7 @@ import no.nav.data.polly.term.dto.TermCountResponse;
 import no.nav.data.polly.term.dto.TermResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import no.nav.data.polly.test.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;

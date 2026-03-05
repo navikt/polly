@@ -1,8 +1,9 @@
 package no.nav.data.common.rest;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.Parameter;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import no.nav.data.common.utils.StreamUtils;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.function.Function;
 
 @Getter
-@AllArgsConstructor
 @JsonPropertyOrder({"pageNumber", "pageSize", "pages", "numberOfElements", "totalElements", "paged", "content"})
 public class RestResponsePage<T> {
 
@@ -23,6 +23,24 @@ public class RestResponsePage<T> {
     @Parameter(description = "False if operation always returns all elements")
     private final boolean paged;
     private final List<T> content;
+
+    @JsonCreator
+    public RestResponsePage(
+            @JsonProperty("pageNumber") long pageNumber,
+            @JsonProperty("pageSize") long pageSize,
+            @JsonProperty("pages") long pages,
+            @JsonProperty("numberOfElements") long numberOfElements,
+            @JsonProperty("totalElements") long totalElements,
+            @JsonProperty("paged") boolean paged,
+            @JsonProperty("content") List<T> content) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+        this.pages = pages;
+        this.numberOfElements = numberOfElements;
+        this.totalElements = totalElements;
+        this.paged = paged;
+        this.content = content != null ? content : List.of();
+    }
 
     public RestResponsePage(Page<T> page) {
         this.content = page.getContent();
