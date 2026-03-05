@@ -14,7 +14,7 @@ function splitHostAndPort(hostHeader: string | null): { host: string | null; por
   return { host: hostHeader, port: null }
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
 
   const shouldProxy =
