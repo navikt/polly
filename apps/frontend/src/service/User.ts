@@ -50,7 +50,7 @@ const UserService = (): IUserProps => {
       })
   }
 
-  const promise: Promise<any> = fetchData()
+  const promise: Promise<any> = typeof window !== 'undefined' ? fetchData() : Promise.resolve()
 
   const handleGetResponse = (response: AxiosResponse<IUserInfo>): void => {
     if (typeof response.data === 'object' && response.data !== null) {
