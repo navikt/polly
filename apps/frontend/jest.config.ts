@@ -3,7 +3,7 @@
  * https://jestjs.io/docs/en/configuration.html
  */
 
-export default {
+const config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -175,10 +175,13 @@ export default {
   // transform: {},
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/",
-  //   "\\.pnp\\.[^\\/]+$"
-  // ],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(axios|react-day-picker|query-string|decode-uri-component|split-on-first|filter-obj|date-fns|@navikt/ds-react)/)',
+  ],
+
+  moduleNameMapper: {
+    '(\\.\\.?\\/.+)\\.js$': '$1',
+  },
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
@@ -192,3 +195,5 @@ export default {
   // Whether to use watchman for file crawling
   // watchman: true,
 }
+
+export default config

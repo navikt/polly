@@ -58,14 +58,6 @@
       "node -e \"require('child_process').execSync('yarn -s type-check', { stdio: 'inherit' })\""
     ]
   },
-  "jest": {
-    "transformIgnorePatterns": [
-      "/node_modules/(?!(axios|react-day-picker|query-string|decode-uri-component|split-on-first|filter-obj|date-fns|@navikt/ds-react)/)"
-    ],
-    "moduleNameMapper": {
-      "(\\.\\.?\\/.+)\\.js$": "$1"
-    }
-  },
   "browserslist": {
     "production": [
       ">0.2%",
