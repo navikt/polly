@@ -16,14 +16,20 @@ import { TPermissionMode } from '../util/permissionOverride'
 import { TThemeMode } from '../util/themeMode'
 import MainSearch from './search/MainSearch'
 
-function useCurrentUrl() {
+function useAbsoluteCurrentUrl() {
   const location = useLocation()
-  return location.pathname
+
+  if (typeof window === 'undefined') {
+    return undefined
+  }
+
+  return `${window.location.origin}${location.pathname}${location.search ?? ''}${location.hash ?? ''}`
 }
 
 const LoggedInHeader = () => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [openState, setOpenState] = useState(false)
+  const redirectUri = useAbsoluteCurrentUrl()
 
   return (
     <>
@@ -49,7 +55,14 @@ const LoggedInHeader = () => {
             <Label>Navn: {user.getName()}</Label>
             <Label>Grupper: {user.getGroupsHumanReadable().join(', ')}</Label>
             <div className="flex w-full p-1">
-              <Link variant="neutral" href={`/logout?redirect_uri=${useCurrentUrl()}`}>
+              <Link
+                variant="neutral"
+                href={
+                  redirectUri
+                    ? `/logout?redirect_uri=${encodeURIComponent(redirectUri)}`
+                    : '/logout'
+                }
+              >
                 Logg ut
               </Link>
             </div>
@@ -60,11 +73,16 @@ const LoggedInHeader = () => {
   )
 }
 
-const LoginButton = () => (
-  <InternalHeader.Button as="a" href={`/login?redirect_uri=${useCurrentUrl()}`}>
-    Logg inn
-  </InternalHeader.Button>
-)
+const LoginButton = () => {
+  const redirectUri = useAbsoluteCurrentUrl()
+  const href = redirectUri ? `/login?redirect_uri=${encodeURIComponent(redirectUri)}` : '/login'
+
+  return (
+    <InternalHeader.Button as="a" href={href}>
+      Logg inn
+    </InternalHeader.Button>
+  )
+}
 
 interface IAdminOptionsProps {
   showPermissionOverrides: boolean
