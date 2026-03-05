@@ -1,6 +1,6 @@
+import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { Label, Select } from '@navikt/ds-react'
 import { useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { EProcessStatusFilter } from '../../constants'
 
 interface IFilterDashboardStatusProps {

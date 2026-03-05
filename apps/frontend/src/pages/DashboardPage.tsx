@@ -1,6 +1,6 @@
+import { useParams } from '@/util/router'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
 import { getDashboard } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
 import Departments from '../components/Dashboard/Departments'
@@ -9,7 +9,7 @@ import { EProcessStatusFilter, IDashboardData } from '../constants'
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<IDashboardData>()
-  const { processStatus } = useParams<{ processStatus: EProcessStatusFilter }>()
+  const { filterName: processStatus } = useParams<{ filterName: EProcessStatusFilter }>()
   const [dashboardStatus, setDashboardStatus] = useState<EProcessStatusFilter>(
     processStatus ? (processStatus as EProcessStatusFilter) : EProcessStatusFilter.All
   )

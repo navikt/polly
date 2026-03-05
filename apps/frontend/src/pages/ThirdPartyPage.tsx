@@ -1,7 +1,7 @@
+import { useParams } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
 import { getAllDpProcesses } from '../api/DpProcessApi'
 import {
   createDisclosure,

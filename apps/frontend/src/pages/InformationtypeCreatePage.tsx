@@ -1,6 +1,6 @@
+import { useNavigate } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
 import { Fragment, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { createInformationType, mapInfoTypeToFormVals } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import ErrorNotAllowed from '../components/common/ErrorNotAllowed'

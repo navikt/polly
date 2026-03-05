@@ -1,11 +1,11 @@
+import { FileExcelIcon } from '@navikt/aksel-icons'
+import { BodyLong, Button, Link, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import {BodyLong, Button, Link, SortState, Table} from '@navikt/ds-react'
 import { getResourceById } from '../../api/TeamApi'
-import { IProcessShort, IProcessShortWithEmail} from '../../constants'
+import { IProcessShort, IProcessShortWithEmail } from '../../constants'
 import handleExcelExport from '../../util/excelExport'
+import { handleSort } from '../../util/handleTableSort'
 import { processStatusText } from './Accordion/ProcessData'
-import {handleSort} from "../../util/handleTableSort";
-import {FileExcelIcon} from "@navikt/aksel-icons";
 
 interface IProps {
   processes: IProcessShort[]
@@ -43,7 +43,11 @@ export const SimpleProcessTable = (props: IProps) => {
 
   let sortedData: IProcessShortWithEmail[] = processesWithEmail
 
-  const comparator = (a: IProcessShortWithEmail, b: IProcessShortWithEmail, orderBy: string): number => {
+  const comparator = (
+    a: IProcessShortWithEmail,
+    b: IProcessShortWithEmail,
+    orderBy: string
+  ): number => {
     switch (orderBy) {
       case 'name':
         return (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || '')
@@ -51,8 +55,10 @@ export const SimpleProcessTable = (props: IProps) => {
         return (a.affiliation.nomDepartmentName || '').localeCompare(
           b.affiliation.nomDepartmentName || ''
         )
-      case 'commonExternalProcessResponsible' :
-        return (a.commonExternalProcessResponsible?.shortName || '').localeCompare(b.commonExternalProcessResponsible?.shortName || '')
+      case 'commonExternalProcessResponsible':
+        return (a.commonExternalProcessResponsible?.shortName || '').localeCompare(
+          b.commonExternalProcessResponsible?.shortName || ''
+        )
       case 'status':
         return (a.status || '').localeCompare(b.status || '')
       case 'lastModifiedEmail':
@@ -77,7 +83,7 @@ export const SimpleProcessTable = (props: IProps) => {
         <Button
           variant="tertiary"
           size="xsmall"
-          icon={<FileExcelIcon/>}
+          icon={<FileExcelIcon />}
           onClick={() => handleExcelExport(processesWithEmail, title)}
         >
           Eksportér
@@ -91,15 +97,23 @@ export const SimpleProcessTable = (props: IProps) => {
       >
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader sortKey="name" sortable>Behandling</Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="affiliation"  sortable>Avdeling</Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="name" sortable>
+              Behandling
+            </Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="affiliation" sortable>
+              Avdeling
+            </Table.ColumnHeader>
             {showCommonExternalProcessResponsible && (
               <Table.ColumnHeader sortKey="commonExternalProcessResponsible" sortable>
                 Felles behandlingsansvarlig
               </Table.ColumnHeader>
             )}
-            <Table.ColumnHeader sortKey="status" sortable>Status</Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="lastModifiedEmail" sortable>Sist endret av</Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="status" sortable>
+              Status
+            </Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="lastModifiedEmail" sortable>
+              Sist endret av
+            </Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -108,14 +122,14 @@ export const SimpleProcessTable = (props: IProps) => {
           ) : (
             sortedData.map((process: IProcessShortWithEmail) => (
               <Table.Row key={process.id}>
-                <Table.DataCell textSize='small'>
+                <Table.DataCell textSize="small">
                   <Link href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
                     {process.purposes.map((purpose) => purpose.shortName).join(', ') +
                       ': ' +
                       process.name}
                   </Link>
                 </Table.DataCell>
-                <Table.DataCell textSize='small'>
+                <Table.DataCell textSize="small">
                   {process.affiliation.nomDepartmentId === null ? (
                     ''
                   ) : (
@@ -125,7 +139,7 @@ export const SimpleProcessTable = (props: IProps) => {
                   )}
                 </Table.DataCell>
                 {showCommonExternalProcessResponsible && (
-                  <Table.DataCell textSize='small'>
+                  <Table.DataCell textSize="small">
                     {process.commonExternalProcessResponsible === null ? (
                       ''
                     ) : (
@@ -135,8 +149,10 @@ export const SimpleProcessTable = (props: IProps) => {
                     )}
                   </Table.DataCell>
                 )}
-                <Table.DataCell textSize='small'>{processStatusText(process.status)}</Table.DataCell>
-                <Table.DataCell textSize='small'>
+                <Table.DataCell textSize="small">
+                  {processStatusText(process.status)}
+                </Table.DataCell>
+                <Table.DataCell textSize="small">
                   <Link href={'mailto: ' + process.lastModifiedEmail}>
                     {process.lastModifiedEmail}
                   </Link>

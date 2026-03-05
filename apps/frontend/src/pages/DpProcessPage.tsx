@@ -1,7 +1,7 @@
+import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
 import DpProcessModal from '../components/DpProcess/DpProcessModal'
 import DpProcessTable from '../components/DpProcess/DpProcessTable'

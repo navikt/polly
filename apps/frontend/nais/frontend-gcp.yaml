@@ -24,13 +24,13 @@ spec:
       cpu: 50m
       memory: 128Mi
   liveness:
-    path: /isAlive
+    path: /api/isAlive
     timeout: 1
     initialDelay: 5
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /isReady
+    path: /api/isReady
     timeout: 1
     initialDelay: 5
     periodSeconds: 5

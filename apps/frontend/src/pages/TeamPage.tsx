@@ -1,5 +1,5 @@
+import { useParams } from '@/util/router'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
 import { getDpProcessByProductTeam } from '../api/DpProcessApi'
 import { getDisclosureByProductTeam, getInformationTypesBy } from '../api/GetAllApi'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'

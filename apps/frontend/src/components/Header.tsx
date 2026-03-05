@@ -1,3 +1,4 @@
+import { useLocation, useNavigate } from '@/util/router'
 import { CaretDownIcon, PersonIcon } from '@navikt/aksel-icons'
 import {
   Button,
@@ -10,7 +11,6 @@ import {
   ToggleGroup,
 } from '@navikt/ds-react'
 import { useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
 import { EGroup, user } from '../service/User'
 import { TPermissionMode } from '../util/permissionOverride'
 import { TThemeMode } from '../util/themeMode'
@@ -18,7 +18,7 @@ import MainSearch from './search/MainSearch'
 
 function useCurrentUrl() {
   const location = useLocation()
-  return window.location.protocol + '//' + window.location.host + location.pathname
+  return location.pathname
 }
 
 const LoggedInHeader = () => {
@@ -42,6 +42,7 @@ const LoggedInHeader = () => {
         {user.getIdent()}
       </Button>
 
+      {/* eslint-disable-next-line react-hooks/refs */}
       <Popover open={openState} onClose={() => setOpenState(false)} anchorEl={buttonRef.current}>
         <Popover.Content>
           <div className="p-2">

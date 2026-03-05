@@ -1,7 +1,7 @@
-import {BodyLong, Heading, Select} from '@navikt/ds-react'
+import { useLocation, useNavigate } from '@/util/router'
+import { BodyLong, Heading, Select } from '@navikt/ds-react'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
 import { getProcessesFor } from '../api/GetAllApi'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { IPageResponse, IProcess } from '../constants'
@@ -31,8 +31,8 @@ export const LegalPage = () => {
 
   return (
     <div>
-      <Heading size='large'>Søk behandlingsgrunnlag</Heading>
-      <BodyLong size='large'>Velg GDPR artikkel og/eller nasjonal lov</BodyLong>
+      <Heading size="large">Søk behandlingsgrunnlag</Heading>
+      <BodyLong size="large">Velg GDPR artikkel og/eller nasjonal lov</BodyLong>
       <div className="flex mt-3">
         <div className="w-[40%] mt-3">
           <Select
@@ -88,7 +88,7 @@ export const LegalPage = () => {
 
 const ProcessTable = (props: { processes: IProcess[] }) => (
   <div className="flex flex-col mt-3">
-    <Heading size='medium'> Behandlinger ({props.processes.length})</Heading>
+    <Heading size="medium"> Behandlinger ({props.processes.length})</Heading>
     <SimpleProcessTable
       title={'Behandlinger' + ' (' + props.processes.length + ')'}
       processes={props.processes}

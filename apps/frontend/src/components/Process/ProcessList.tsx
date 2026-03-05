@@ -1,7 +1,7 @@
+import { useLocation, useNavigate } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Loader, Select } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,

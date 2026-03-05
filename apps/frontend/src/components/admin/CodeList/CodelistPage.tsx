@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'
 import { CodelistService, ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'

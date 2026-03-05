@@ -1,7 +1,7 @@
+import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { getAll } from '../api/GetAllApi'
 import {
   convertProcessorToFormValues,

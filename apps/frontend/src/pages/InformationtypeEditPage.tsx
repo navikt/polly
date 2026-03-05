@@ -1,6 +1,6 @@
+import { useNavigate, useParams } from '@/util/router'
 import { Heading, Loader } from '@navikt/ds-react'
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '../api/GetAllApi'
 import InformationtypeForm from '../components/InformationType/InformationtypeForm'
 import { IInformationType, IInformationtypeFormValues } from '../constants'

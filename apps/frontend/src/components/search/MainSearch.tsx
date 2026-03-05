@@ -1,7 +1,7 @@
+import { useNavigate } from '@/util/router'
 import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons'
 import { Tag } from '@navikt/ds-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
 import { CSSObjectWithLabel, DropdownIndicatorProps, OptionProps, components } from 'react-select'
 import AsyncSelect from 'react-select/async'
 import { searchDpProcess } from '../../api/DpProcessApi'

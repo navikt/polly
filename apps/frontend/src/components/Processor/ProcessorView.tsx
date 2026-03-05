@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api/GetAllApi'
 import {
   convertProcessorToFormValues,

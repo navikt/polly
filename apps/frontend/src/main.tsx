@@ -1,8 +1,6 @@
 import { Theme } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { BrowserRouter } from 'react-router'
 import { Fragment } from 'react/jsx-runtime'
-import AppRoutes from './AppRoutes'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
 import { CodelistService } from './service/Codelist'
@@ -15,7 +13,7 @@ import {
 } from './util/permissionOverride'
 import { TThemeMode, getInitialThemeMode, persistThemeMode } from './util/themeMode'
 
-const Main = () => {
+const Main = ({ children }: { children: React.ReactNode }) => {
   // all pages need these
   useAwait(user.wait())
   const [codelistUtils] = CodelistService()
@@ -50,28 +48,24 @@ const Main = () => {
 
   return (
     <Fragment>
-      <BrowserRouter window={window}>
-        <Theme theme={themeMode} asChild>
-          <div className="flex min-h-screen w-full flex-col">
-            <Header
-              themeMode={themeMode}
-              onThemeModeChange={setThemeMode}
-              permissionMode={permissionMode}
-              onPermissionModeChange={handlePermissionModeChange}
-            />
+      <Theme theme={themeMode} asChild>
+        <div className="flex min-h-screen w-full flex-col">
+          <Header
+            themeMode={themeMode}
+            onThemeModeChange={setThemeMode}
+            permissionMode={permissionMode}
+            onPermissionModeChange={handlePermissionModeChange}
+          />
 
-            <div className="flex w-full flex-1">
-              <div className="min-w-60">
-                <SideBar />
-              </div>
-
-              <div className="mb-48 w-full px-7 py-7">
-                <AppRoutes />
-              </div>
+          <div className="flex w-full flex-1">
+            <div className="min-w-60">
+              <SideBar />
             </div>
+
+            <div className="mb-48 w-full px-7 py-7">{children}</div>
           </div>
-        </Theme>
-      </BrowserRouter>
+        </div>
+      </Theme>
     </Fragment>
   )
 }

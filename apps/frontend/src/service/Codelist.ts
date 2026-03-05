@@ -91,11 +91,13 @@ export const CodelistService = () => {
   const [countries, setCountries] = useState<ICountryCode[]>()
   const [countriesOutsideEUEEA, setCountriesOutsideEUEEA] = useState<ICountryCode[]>()
 
-  useEffect(() => {
-    ;(async () => {
-      await fetchData()
-    })()
-  }, [])
+  const handleGetCodelistResponse = (response: IAllCodelists): void => {
+    if (typeof response === 'object' && response !== null) {
+      setLists(response)
+    } else {
+      setError(response)
+    }
+  }
 
   const fetchData = async (refresh?: boolean): Promise<void> => {
     if (
@@ -116,13 +118,11 @@ export const CodelistService = () => {
     }
   }
 
-  const handleGetCodelistResponse = (response: IAllCodelists): void => {
-    if (typeof response === 'object' && response !== null) {
-      setLists(response)
-    } else {
-      setError(response)
-    }
-  }
+  useEffect(() => {
+    ;(async () => {
+      await fetchData()
+    })()
+  }, [])
 
   const isLoaded = (): string | IAllCodelists | undefined => {
     return lists || error
