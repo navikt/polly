@@ -18,18 +18,6 @@ const nextConfig: NextConfig = {
         source: '/api/:path*',
         destination: `${backendUrl}/:path*`,
       },
-      {
-        source: '/login',
-        destination: `${backendUrl}/login`,
-      },
-      {
-        source: '/oauth2/:path*',
-        destination: `${backendUrl}/oauth2/:path*`,
-      },
-      {
-        source: '/logout',
-        destination: `${backendUrl}/logout`,
-      },
     ]
   },
 }
