@@ -1,7 +1,7 @@
+import { useNavigate } from '@/util/router'
 import { FileWordIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Heading, LocalAlert, Modal } from '@navikt/ds-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,

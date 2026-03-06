@@ -1,7 +1,7 @@
+import { useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Alert, BodyLong, Heading, Label, Tabs } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
 import {
   deleteDocument,
   getAll,
@@ -30,14 +30,12 @@ const DocumentPage = () => {
   const navigate = useNavigate()
 
   const [currentDocument, setCurrentDocument] = useState<IDocument | undefined>()
-  const [documentId, setDocumentId] = useState<string | undefined>(params.id)
+  const documentId = params.id
   const [isDeleteModalVisible, setDeleteModalVisibility] = useState(false)
   const [documentUsages, setDocumentUsages] = useState<IProcess[]>()
   const [errorMessage, setErrorMessage] = useState<string>()
   const [activeKey, setActiveKey] = useState<string>('containsInformationType')
   const [documents, setDocuments] = useState<IDocument[]>([])
-
-  useEffect(() => setDocumentId(params.id), [params.id])
 
   useEffect(() => {
     ;(async () => {

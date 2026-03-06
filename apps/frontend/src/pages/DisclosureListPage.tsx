@@ -1,7 +1,7 @@
+import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Label, Loader, Search, ToggleGroup } from '@navikt/ds-react'
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { searchAaregAvtale } from '../api/AaregAvtaleApi'
 import {
   IDisclosureSummary,

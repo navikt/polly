@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal } from '@navikt/ds-react'
 import { useEffect, useRef, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   convertProcessToFormValues,
   getDisclosuresByProcessId,

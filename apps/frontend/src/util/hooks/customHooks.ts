@@ -63,6 +63,7 @@ export function useRefs<T>(ids: string[]) {
 }
 
 export function useQuery() {
+  if (typeof window === 'undefined') return new URLSearchParams()
   const location = window.location
   return new URLSearchParams(location.search)
 }

@@ -1,5 +1,5 @@
+import { Location, NavigateFunction, useLocation, useNavigate } from '@/util/router'
 import { BodyShort, Modal } from '@navikt/ds-react'
-import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router'
 import Button from '../../common/Button/CustomButton'
 
 interface IProps {

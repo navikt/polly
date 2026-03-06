@@ -1,3 +1,5 @@
+import { createContext, useContext } from 'react'
+
 export type TPermissionMode = 'admin' | 'write' | 'read'
 
 const MODE_STORAGE_KEY = 'polly.permissionMode'
@@ -52,3 +54,15 @@ export const setPermissionMode = (value: TPermissionMode): void => {
   currentMode = value
   persistPermissionMode(value)
 }
+
+export interface IAppState {
+  permissionMode: TPermissionMode
+  userLoaded: boolean
+}
+
+export const AppStateContext = createContext<IAppState>({
+  permissionMode: DEFAULT_MODE,
+  userLoaded: false,
+})
+
+export const useAppState = (): IAppState => useContext(AppStateContext)

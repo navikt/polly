@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   getCodelistUsageByListName,
   getDisclosuresByInformationTypeId,
@@ -44,7 +44,7 @@ const InformationtypePage = () => {
     })()
   }, [])
 
-  useEffect(() => setInformationTypeId(params.id), [params.id])
+  if (params.id !== informationTypeId) setInformationTypeId(params.id)
 
   useEffect(() => {
     ;(async () => {

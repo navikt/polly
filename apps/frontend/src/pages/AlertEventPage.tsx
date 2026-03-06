@@ -1,3 +1,4 @@
+import { useParams } from '@/util/router'
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons'
 import {
   Button,
@@ -11,7 +12,6 @@ import {
 } from '@navikt/ds-react'
 import moment from 'moment'
 import { useEffect, useReducer } from 'react'
-import { useParams } from 'react-router'
 import { getAlertEvents } from '../api/AlertApi'
 import { Sensitivity } from '../components/InformationType/Sensitivity'
 import { ObjectLink } from '../components/common/RouteLink'

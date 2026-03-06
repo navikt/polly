@@ -1,21 +1,20 @@
 import { Theme } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { BrowserRouter } from 'react-router'
 import { Fragment } from 'react/jsx-runtime'
-import AppRoutes from './AppRoutes'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
 import { CodelistService } from './service/Codelist'
 import { user } from './service/User'
 import { useAwait } from './util'
 import {
+  AppStateContext,
   TPermissionMode,
   getInitialPermissionMode,
   setPermissionMode,
 } from './util/permissionOverride'
 import { TThemeMode, getInitialThemeMode, persistThemeMode } from './util/themeMode'
 
-const Main = () => {
+const Main = ({ children }: { children: React.ReactNode }) => {
   // all pages need these
   useAwait(user.wait())
   const [codelistUtils] = CodelistService()
@@ -25,6 +24,11 @@ const Main = () => {
   const [permissionMode, setPermissionModeState] = useState<TPermissionMode>(() =>
     getInitialPermissionMode()
   )
+  const [userLoaded, setUserLoaded] = useState(() => user.isLoaded())
+
+  useEffect(() => {
+    user.wait().then(() => setUserLoaded(true))
+  }, [])
 
   useEffect(() => {
     persistThemeMode(themeMode)
@@ -49,8 +53,8 @@ const Main = () => {
   }, [themeMode])
 
   return (
-    <Fragment>
-      <BrowserRouter window={window}>
+    <AppStateContext.Provider value={{ permissionMode, userLoaded }}>
+      <Fragment>
         <Theme theme={themeMode} asChild>
           <div className="flex min-h-screen w-full flex-col">
             <Header
@@ -65,14 +69,12 @@ const Main = () => {
                 <SideBar />
               </div>
 
-              <div className="mb-48 w-full px-7 py-7">
-                <AppRoutes />
-              </div>
+              <div className="mb-48 w-full px-7 py-7">{children}</div>
             </div>
           </div>
         </Theme>
-      </BrowserRouter>
-    </Fragment>
+      </Fragment>
+    </AppStateContext.Provider>
   )
 }
 

@@ -14,30 +14,30 @@ interface IDotTagProps {
   dotVariant?: 'outline' | 'filled'
 }
 
+interface IDotProps {
+  dotColor: string
+  dotVariant: 'outline' | 'filled'
+}
+
+const Dot = ({ dotColor, dotVariant }: IDotProps) => {
+  if (dotVariant === 'filled') {
+    return (
+      <span
+        aria-hidden
+        className="block rounded-full"
+        style={{ backgroundColor: dotColor, width: '.45rem', height: '.45rem' }}
+      />
+    )
+  }
+  return (
+    <CircleIcon aria-hidden className="block" style={{ color: dotColor, fontSize: '.45rem' }} />
+  )
+}
+
 export const DotTag = (props: IDotTagProps) => {
   const { children, wrapText, dotColor, dotVariant } = props
   const resolvedDotColor = dotColor ?? theme.colors.positive400
   const resolvedDotVariant = dotVariant ?? 'outline'
-
-  const Dot = () => {
-    if (resolvedDotVariant === 'filled') {
-      return (
-        <span
-          aria-hidden
-          className="block rounded-full"
-          style={{ backgroundColor: resolvedDotColor, width: '.45rem', height: '.45rem' }}
-        />
-      )
-    }
-
-    return (
-      <CircleIcon
-        aria-hidden
-        className="block"
-        style={{ color: resolvedDotColor, fontSize: '.45rem' }}
-      />
-    )
-  }
 
   return (
     <>
@@ -45,14 +45,14 @@ export const DotTag = (props: IDotTagProps) => {
         <div className="mx-1 flex items-center">
           <div className="flex whitespace-normal">
             <div className="mr-1 -mt-0.75">
-              <Dot />
+              <Dot dotColor={resolvedDotColor} dotVariant={resolvedDotVariant} />
             </div>
             <div>{children}</div>
           </div>
         </div>
       )}
       <div className="mx-1 flex items-center">
-        <Dot />
+        <Dot dotColor={resolvedDotColor} dotVariant={resolvedDotVariant} />
         <div className="inline mr-1" />
         <div>{props.children}</div>
       </div>
