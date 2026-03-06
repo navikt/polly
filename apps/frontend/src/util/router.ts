@@ -19,7 +19,10 @@ export function useNavigate(): NavigateFunction {
       if (to === -1) router.back()
       return
     }
-    const url = typeof to === 'string' ? to : (to.pathname ?? '/')
+    const raw = typeof to === 'string' ? to : (to.pathname ?? '/')
+    // Block any URL containing a protocol scheme (e.g. javascript:, http:) to prevent XSS and open redirect
+    if (/^[a-z][a-z0-9+\-.]*:/i.test(raw)) return
+    const url = raw.startsWith('/') || raw.startsWith('?') || raw.startsWith('#') ? raw : `/${raw}`
     if (options?.replace) {
       router.replace(url)
     } else {
