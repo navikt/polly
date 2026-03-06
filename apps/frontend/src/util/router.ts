@@ -14,15 +14,32 @@ export type { Location, NavigateFunction } from 'react-router'
 
 export function useNavigate(): NavigateFunction {
   const router = useRouter()
+
+  const normalizeUrl = (to: To): string => {
+    if (typeof to === 'string') {
+      const trimmed = to.trim()
+      const lower = trimmed.toLowerCase()
+      if (lower.startsWith('javascript:') || lower.startsWith('data:')) {
+        return '/'
+      }
+      if (!trimmed.startsWith('/')) {
+        return '/' + trimmed
+      }
+      return trimmed
+    }
+    const pathname = to.pathname ?? '/'
+    if (!pathname.startsWith('/')) {
+      return '/' + pathname
+    }
+    return pathname
+  }
+
   const navigate = (to: To | number, options?: { replace?: boolean }) => {
     if (typeof to === 'number') {
       if (to === -1) router.back()
       return
     }
-    const raw = typeof to === 'string' ? to : (to.pathname ?? '/')
-    // Block any URL containing a protocol scheme (e.g. javascript:, http:) to prevent XSS and open redirect
-    if (/^[a-z][a-z0-9+\-.]*:/i.test(raw)) return
-    const url = raw.startsWith('/') || raw.startsWith('?') || raw.startsWith('#') ? raw : `/${raw}`
+    const url = normalizeUrl(to)
     if (options?.replace) {
       router.replace(url)
     } else {
