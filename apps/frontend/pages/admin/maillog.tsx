@@ -1,8 +1,9 @@
 import { MailLogPage } from '@/components/admin/maillog/MailLogPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
-import { user } from '@/service/User'
+import { EGroup, user } from '@/service/User'
 
 export default function AdminMaillogPage() {
-  if (!(user.isAdmin() || user.isSuper())) return <ErrorNotAllowed />
+  if (!user.isLoaded()) return null
+  if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
   return <MailLogPage />
 }

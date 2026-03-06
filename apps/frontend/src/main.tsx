@@ -7,6 +7,7 @@ import { CodelistService } from './service/Codelist'
 import { user } from './service/User'
 import { useAwait } from './util'
 import {
+  AppStateContext,
   TPermissionMode,
   getInitialPermissionMode,
   setPermissionMode,
@@ -23,6 +24,11 @@ const Main = ({ children }: { children: React.ReactNode }) => {
   const [permissionMode, setPermissionModeState] = useState<TPermissionMode>(() =>
     getInitialPermissionMode()
   )
+  const [userLoaded, setUserLoaded] = useState(() => user.isLoaded())
+
+  useEffect(() => {
+    user.wait().then(() => setUserLoaded(true))
+  }, [])
 
   useEffect(() => {
     persistThemeMode(themeMode)
@@ -47,26 +53,28 @@ const Main = ({ children }: { children: React.ReactNode }) => {
   }, [themeMode])
 
   return (
-    <Fragment>
-      <Theme theme={themeMode} asChild>
-        <div className="flex min-h-screen w-full flex-col">
-          <Header
-            themeMode={themeMode}
-            onThemeModeChange={setThemeMode}
-            permissionMode={permissionMode}
-            onPermissionModeChange={handlePermissionModeChange}
-          />
+    <AppStateContext.Provider value={{ permissionMode, userLoaded }}>
+      <Fragment>
+        <Theme theme={themeMode} asChild>
+          <div className="flex min-h-screen w-full flex-col">
+            <Header
+              themeMode={themeMode}
+              onThemeModeChange={setThemeMode}
+              permissionMode={permissionMode}
+              onPermissionModeChange={handlePermissionModeChange}
+            />
 
-          <div className="flex w-full flex-1">
-            <div className="min-w-60">
-              <SideBar />
+            <div className="flex w-full flex-1">
+              <div className="min-w-60">
+                <SideBar />
+              </div>
+
+              <div className="mb-48 w-full px-7 py-7">{children}</div>
             </div>
-
-            <div className="mb-48 w-full px-7 py-7">{children}</div>
           </div>
-        </div>
-      </Theme>
-    </Fragment>
+        </Theme>
+      </Fragment>
+    </AppStateContext.Provider>
   )
 }
 

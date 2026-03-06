@@ -1,8 +1,9 @@
 import { RequestRevisionPage } from '@/components/admin/revision/RequestRevisionPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
-import { user } from '@/service/User'
+import { EGroup, user } from '@/service/User'
 
 export default function AdminRequestRevisionPage() {
-  if (!(user.isAdmin() || user.isSuper())) return <ErrorNotAllowed />
+  if (!user.isLoaded()) return null
+  if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
   return <RequestRevisionPage />
 }

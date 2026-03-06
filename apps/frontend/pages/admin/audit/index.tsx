@@ -1,8 +1,9 @@
 import { AuditPage } from '@/components/admin/audit/AuditPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
-import { user } from '@/service/User'
+import { EGroup, user } from '@/service/User'
 
 export default function AdminAuditPage() {
-  if (!(user.isAdmin() || user.isSuper())) return <ErrorNotAllowed />
+  if (!user.isLoaded()) return null
+  if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
   return <AuditPage />
 }

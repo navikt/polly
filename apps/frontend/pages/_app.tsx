@@ -1,4 +1,5 @@
 import '@/main.css'
+import { useAppState } from '@/util/permissionOverride'
 import 'json-diff-kit/dist/viewer.css'
 import 'moment/locale/nb'
 import type { AppProps } from 'next/app'
@@ -15,6 +16,11 @@ function getFavicon(): string {
   return '/favicon_Behandlingskatalog_prod.ico'
 }
 
+function PageWrapper({ Component, pageProps }: Pick<AppProps, 'Component' | 'pageProps'>) {
+  useAppState()
+  return <Component {...pageProps} />
+}
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -24,7 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" href={getFavicon()} />
       </Head>
       <Main>
-        <Component {...pageProps} />
+        <PageWrapper Component={Component} pageProps={pageProps} />
       </Main>
     </>
   )
