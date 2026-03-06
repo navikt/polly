@@ -34,7 +34,12 @@ export function useNavigate(): NavigateFunction {
 
 export function useParams<T extends Record<string, string | undefined>>(): Partial<T> {
   const router = useRouter()
-  return router.query as unknown as Partial<T>
+  const safe = Object.fromEntries(
+    Object.entries(router.query)
+      .filter(([, v]) => typeof v !== 'string' || !/^[a-z][a-z0-9+\-.]*:/i.test(v))
+      .map(([k, v]) => [k, Array.isArray(v) ? v[0] : v])
+  )
+  return safe as unknown as Partial<T>
 }
 
 export function useLocation() {
