@@ -7,12 +7,21 @@ import Head from 'next/head'
 
 const Main = dynamic(() => import('@/main'), { ssr: false })
 
+function getFavicon(): string {
+  if (typeof window === 'undefined') return '/favicon_Behandlingskatalog_prod.ico'
+  const { hostname } = window.location
+  if (hostname === 'localhost') return '/favicon_Behandlingskatalog_localhost.ico'
+  if (hostname.includes('dev')) return '/favicon_Behandlingskatalog_dev.ico'
+  return '/favicon_Behandlingskatalog_prod.ico'
+}
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
         <meta charSet="utf-8" />
         <title>Behandlingskatalog</title>
+        <link rel="icon" href={getFavicon()} />
       </Head>
       <Main>
         <Component {...pageProps} />

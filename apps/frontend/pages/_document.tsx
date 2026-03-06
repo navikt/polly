@@ -5,7 +5,6 @@ export default function Document() {
     <Html lang="nb">
       <Head>
         <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon_Behandlingskatalog_prod.ico" id="favicon" />
       </Head>
       <body>
         <Main />
