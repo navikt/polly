@@ -1,6 +1,6 @@
 import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { Label, Select } from '@navikt/ds-react'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { EProcessStatusFilter } from '../../constants'
 
 interface IFilterDashboardStatusProps {
@@ -22,10 +22,11 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
           value={selectValue}
           label="Filtrer diagrammene på status"
           hideLabel
-          onChange={(event) => {
-            navigate(`/dashboard/${event.target.value}`)
-            setFilter(event.target.value as EProcessStatusFilter)
-            setSelectValue(event.target.value)
+          onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+            const value = event.target.value
+            navigate(`/dashboard/${value}`)
+            setFilter(value as EProcessStatusFilter)
+            setSelectValue(value)
           }}
         >
           <option value={EProcessStatusFilter.All}>Alle</option>

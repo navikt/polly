@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from '@/util/router'
 import { BodyLong, Heading, Select } from '@navikt/ds-react'
 import queryString from 'query-string'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { getProcessesFor } from '../api/GetAllApi'
 import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
 import { IPageResponse, IProcess } from '../constants'
@@ -38,7 +38,7 @@ export const LegalPage = () => {
           <Select
             label="GDPR artikkel"
             value={gdprArticle ?? ''}
-            onChange={(event) =>
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               navigate(
                 location.pathname +
                   '?' +
@@ -61,7 +61,7 @@ export const LegalPage = () => {
           <Select
             label="Nasjonal lov"
             value={nationalLaw ?? ''}
-            onChange={(event) =>
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               navigate(
                 location.pathname +
                   '?' +

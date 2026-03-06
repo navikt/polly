@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Loader, Select } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,
@@ -380,8 +380,15 @@ const ProcessList = ({
             <Select
               label="Status filter"
               hideLabel
-              onChange={(event: any) =>
-                navigate(genProcessPath(section, code, undefined, event.target.value))
+              onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                navigate(
+                  genProcessPath(
+                    section,
+                    code,
+                    undefined,
+                    event.target.value as EProcessStatus | undefined
+                  )
+                )
               }
             >
               <option value="">Alle behandlinger</option>
