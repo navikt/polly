@@ -16,22 +16,18 @@ export function useNavigate(): NavigateFunction {
   const router = useRouter()
 
   const normalizeUrl = (to: To): string => {
-    if (typeof to === 'string') {
-      const trimmed = to.trim()
-      const lower = trimmed.toLowerCase()
-      if (lower.startsWith('javascript:') || lower.startsWith('data:')) {
-        return '/'
-      }
-      if (!trimmed.startsWith('/')) {
-        return '/' + trimmed
-      }
-      return trimmed
+    const raw = typeof to === 'string' ? to.trim() : (to.pathname ?? '/')
+    const lower = raw.toLowerCase()
+    if (
+      lower.startsWith('javascript:') ||
+      lower.startsWith('data:') ||
+      lower.startsWith('vbscript:')
+    ) {
+      return '/'
     }
-    const pathname = to.pathname ?? '/'
-    if (!pathname.startsWith('/')) {
-      return '/' + pathname
-    }
-    return pathname
+    const path = raw.startsWith('/') || raw.startsWith('?') || raw.startsWith('#') ? raw : `/${raw}`
+    // Explicitly encode HTML meta-characters to break XSS taint chain
+    return path.replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, '%22').replace(/'/g, '%27')
   }
 
   const navigate = (to: To | number, options?: { replace?: boolean }) => {
