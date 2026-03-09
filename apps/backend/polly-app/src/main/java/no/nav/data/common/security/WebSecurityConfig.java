@@ -1,8 +1,5 @@
 package no.nav.data.common.security;
 
-import no.nav.data.common.security.azure.AADStatelessAuthenticationFilter;
-import no.nav.data.common.security.dto.AppRole;
-import no.nav.data.common.web.UserFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +10,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import no.nav.data.common.security.azure.AADStatelessAuthenticationFilter;
+import no.nav.data.common.security.dto.AppRole;
+import no.nav.data.common.web.UserFilter;
 
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
@@ -38,6 +39,7 @@ public class WebSecurityConfig {
         addFilters(http);
 
         if (securityProperties == null || !securityProperties.isEnabled()) {
+            http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
             return http.build();
         }
 
