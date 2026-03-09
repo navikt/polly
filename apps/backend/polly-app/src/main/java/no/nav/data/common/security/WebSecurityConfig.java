@@ -38,6 +38,7 @@ public class WebSecurityConfig {
         addFilters(http);
 
         if (securityProperties == null || !securityProperties.isEnabled()) {
+            http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
             return http.build();
         }
 
