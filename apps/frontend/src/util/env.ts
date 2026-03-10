@@ -1,5 +1,5 @@
 export const env = {
-  pollyBaseUrl: process.env.NEXT_PUBLIC_POLLY_ENDPOINT,
+  pollyBaseUrl: process.env.NEXT_PUBLIC_POLLY_ENDPOINT || '/api',
   lovdataLovBaseUrl: process.env.NEXT_PUBLIC_LOVDATA_LOV_BASE_URL,
   lovdataForskriftBaseUrl: process.env.NEXT_PUBLIC_LOVDATA_FORSKRIFT_BASE_URL,
   teamKatBaseUrl: process.env.NEXT_PUBLIC_TEAMKAT_BASE_URL,
