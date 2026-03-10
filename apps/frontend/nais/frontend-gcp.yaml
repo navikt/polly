@@ -36,6 +36,9 @@ spec:
     periodSeconds: 5
     failureThreshold: 30
   
+  env:
+    - name: POLLY_BACKEND_URL
+      value: http://behandlingskatalog-backend
   accessPolicy:
     outbound:
       rules:
