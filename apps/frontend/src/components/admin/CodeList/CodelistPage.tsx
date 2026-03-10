@@ -55,9 +55,9 @@ const CodeListPage = () => {
 
   return (
     <>
-      {!(user.isAdmin() || lists) && (
+      {!lists && (
         <div role="main" className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+          <Loader size="3xlarge" title="Venter..." />
         </div>
       )}
       {user.isAdmin() && lists && (
