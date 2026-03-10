@@ -1,5 +1,4 @@
 import {
-  Accordion,
   Button,
   ErrorMessage,
   ErrorSummary,
@@ -540,92 +539,89 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
                     </>
                   )}
 
-                  <Accordion className="mt-5">
-                    <Accordion.Item>
-                      <Accordion.Header>Organisering</Accordion.Header>
-                      <Accordion.Content>
-                        <div className="w-full">
+                  <div className="mt-5">
+                    <div className="mb-6">
+                      <h3 className="text-xl font-semibold mb-4">Organisering</h3>
+                      <div className="w-full">
+                        <ModalLabel
+                          label="Avdeling"
+                          tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
+                          fullwidth
+                        />
+
+                        <div className="mt-2">
+                          <Select
+                            className="w-full"
+                            id={fieldId('nomDepartmentId')}
+                            label="Velg avdeling"
+                            hideLabel
+                            aria-label="Velg avdeling"
+                            onChange={async (event) => {
+                              const selectedValue = event.target.value
+
+                              if (!selectedValue) {
+                                await formikBag.setFieldValue('nomDepartmentId', '')
+                                await formikBag.setFieldValue('nomDepartmentName', '')
+                                return
+                              }
+
+                              const selected = alleAvdelingOptions.find(
+                                (avdeling) => String(avdeling.value) === selectedValue
+                              )
+
+                              await formikBag.setFieldValue('nomDepartmentId', selectedValue)
+                              await formikBag.setFieldValue(
+                                'nomDepartmentName',
+                                typeof selected?.label === 'string'
+                                  ? selected?.label
+                                  : String(selected?.label ?? '')
+                              )
+                            }}
+                            value={formikBag.values.nomDepartmentId ?? ''}
+                          >
+                            <option value="">Velg avdeling</option>
+                            {alleAvdelingOptions.map((department) => (
+                              <option key={department.value} value={department.value}>
+                                {department.label}
+                              </option>
+                            ))}
+                          </Select>
+                        </div>
+
+                        <div className="mt-4">
                           <ModalLabel
-                            label="Avdeling"
-                            tooltip="Angi hvilken avdeling som har hovedansvar for behandlingen."
+                            label="Team (Oppslag i Teamkatalogen)"
+                            tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
                             fullwidth
                           />
-
-                          <div className="mt-2">
-                            <Select
-                              className="w-full"
-                              id={fieldId('nomDepartmentId')}
-                              label="Velg avdeling"
-                              hideLabel
-                              aria-label="Velg avdeling"
-                              onChange={async (event) => {
-                                const selectedValue = event.target.value
-
-                                if (!selectedValue) {
-                                  await formikBag.setFieldValue('nomDepartmentId', '')
-                                  await formikBag.setFieldValue('nomDepartmentName', '')
-                                  return
-                                }
-
-                                const selected = alleAvdelingOptions.find(
-                                  (avdeling) => String(avdeling.value) === selectedValue
-                                )
-
-                                await formikBag.setFieldValue('nomDepartmentId', selectedValue)
-                                await formikBag.setFieldValue(
-                                  'nomDepartmentName',
-                                  typeof selected?.label === 'string'
-                                    ? selected?.label
-                                    : String(selected?.label ?? '')
-                                )
-                              }}
-                              value={formikBag.values.nomDepartmentId ?? ''}
-                            >
-                              <option value="">Velg avdeling</option>
-                              {alleAvdelingOptions.map((department) => (
-                                <option key={department.value} value={department.value}>
-                                  {department.label}
-                                </option>
-                              ))}
-                            </Select>
-                          </div>
-
-                          <div className="mt-4">
-                            <ModalLabel
-                              label="Team (Oppslag i Teamkatalogen)"
-                              tooltip="Angi hvilke team som har forvaltningsansvaret for IT-systemene."
-                              fullwidth
+                          <div className="mt-2" id={fieldId('productTeams')}>
+                            <FieldProductTeam
+                              productTeams={formikBag.values.productTeams || []}
+                              fieldName="productTeams"
                             />
-                            <div className="mt-2" id={fieldId('productTeams')}>
-                              <FieldProductTeam
-                                productTeams={formikBag.values.productTeams || []}
-                                fieldName="productTeams"
-                              />
-                            </div>
                           </div>
                         </div>
-                      </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item>
-                      <Accordion.Header id={fieldId('legalBasesOpen')}>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4" id={fieldId('legalBasesOpen')}>
                         Behandlingsgrunnlag
-                      </Accordion.Header>
-                      <Accordion.Content>
-                        <div className="mt-4">
-                          <FieldLegalBasis
-                            formikBag={formikBag}
-                            codelistUtils={codelistUtils}
-                            layout="vertical"
-                          />
-                        </div>
-                        <Error
-                          fieldName="legalBasesOpen"
-                          fullWidth={true}
-                          messageClassName="!text-(--a-text-danger)"
+                      </h3>
+                      <div className="mt-4">
+                        <FieldLegalBasis
+                          formikBag={formikBag}
+                          codelistUtils={codelistUtils}
+                          layout="vertical"
                         />
-                      </Accordion.Content>
-                    </Accordion.Item>
-                  </Accordion>
+                      </div>
+                      <Error
+                        fieldName="legalBasesOpen"
+                        fullWidth={true}
+                        messageClassName="!text-(--a-text-danger)"
+                      />
+                    </div>
+                  </div>
                 </Form>
               </div>
             </Modal.Body>
