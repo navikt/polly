@@ -1,5 +1,5 @@
 import { MinusCircleIcon } from '@navikt/aksel-icons'
-import { BodyShort, Button, List, Loader, Modal, Tooltip } from '@navikt/ds-react'
+import { BodyShort, Button, Label, List, Loader, Modal, Tooltip } from '@navikt/ds-react'
 import {
   ArrayHelpers,
   Field,
@@ -184,9 +184,9 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
             return (
               <Form onKeyDown={disableEnter}>
                 <Modal.Body className="min-h-125">
-                  <div className="w-187.5 px-8">
-                    <div className="flex w-full mt-4">
-                      <ModalLabel label="Dokument" />
+                  <div className="flex flex-col gap-4 px-8 py-4">
+                    <div className="flex flex-col gap-1">
+                      <Label size="small">Dokument</Label>
                       <Field name="document">
                         {({ form }: FieldProps<IAddDocumentToProcessFormValues>) => (
                           <>
@@ -206,6 +206,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                                 type="button"
                                 variant="secondary"
                                 size="small"
+                                className="mt-2 self-start"
                                 onClick={() => selectDocument(defaultDoc, true)}
                               >
                                 Standard opplysningstyper
@@ -214,13 +215,17 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                           </>
                         )}
                       </Field>
+                      <Error fieldName="document" />
                     </div>
-                    <Error fieldName="document" />
 
                     {!!formik.values.document && (
-                      <>
-                        <BodyShort>{formik.values.document.description}</BodyShort>
-                        <div className="flex w-full mt-4">
+                      <div className="flex flex-col gap-2">
+                        {formik.values.document.description && (
+                          <BodyShort className="text-gray-600">
+                            {formik.values.document.description}
+                          </BodyShort>
+                        )}
+                        <div className="flex flex-col gap-1">
                           <ModalLabel label="Opplysningstyper" />
                           <FieldArray
                             name="informationTypes"
@@ -232,15 +237,15 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                               />
                             )}
                           />
+                          <Error fieldName="informationTypes" />
                         </div>
-                      </>
+                      </div>
                     )}
-                    <Error fieldName="informationTypes" />
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
-                  <div className="flex justify-end">
-                    <div className="self-end">{error && <p>{error}</p>}</div>
+                  <div className="flex items-center justify-end gap-2">
+                    {error && <p className="text-red-600">{error}</p>}
                     <Button type="button" variant="tertiary" onClick={onCloseModal}>
                       Avbryt
                     </Button>
