@@ -78,7 +78,11 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
           )}
           {!formikBag.values.legalBasesOpen && (
             <div
-              className={props.layout === 'vertical' ? 'flex w-full flex-col gap-4' : 'flex w-full'}
+              className={
+                props.layout === 'vertical'
+                  ? 'flex w-full flex-col gap-4'
+                  : 'flex w-full flex-col gap-4'
+              }
             >
               <div className="w-full">
                 <Tooltip content="Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.">
