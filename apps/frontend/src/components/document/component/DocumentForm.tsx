@@ -1,4 +1,4 @@
-import { Alert, Label, Link, Select, TextField, Textarea } from '@navikt/ds-react'
+import { Alert, Label, Link, Loader, Select, TextField, Textarea } from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -55,7 +55,15 @@ const DocumentForm = (props: TDocumentFormProps) => {
     }
   }
 
-  if (!hasAccess() || isLoading) {
+  if (isLoading) {
+    return (
+      <div className="w-full flex justify-center mt-12">
+        <Loader size="3xlarge" title="Venter..." />
+      </div>
+    )
+  }
+
+  if (!hasAccess()) {
     return null
   }
 

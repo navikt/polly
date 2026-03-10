@@ -1,7 +1,7 @@
 import { PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Table } from '@navikt/ds-react'
 import { FieldArrayRenderProps } from 'formik'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import shortid from 'shortid'
 import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'
 import { ICodelistProps } from '../../../service/Codelist'
@@ -19,6 +19,7 @@ type TDocumentInfoTypeUseWithId = IDocumentInfoTypeUse & { id: string }
 const InformationTypesTable = (props: TInformationTypesTableProps) => {
   const [tableContent, setTableContent] = useState<TDocumentInfoTypeUseWithId[]>([])
   const { arrayHelpers, codelistUtils } = props
+  const hasInitialized = useRef(false)
 
   const newRow = () => ({
     id: shortid.generate(),
@@ -29,10 +30,15 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
 
   const showDeleteRowButton: boolean = arrayHelpers.form.values.informationTypes.length > 1
 
+  const informationTypes = arrayHelpers.form.values.informationTypes
+
   useEffect(() => {
-    if (arrayHelpers.form.values.informationTypes.length < 1) arrayHelpers.push(newRow())
-    setTableContent(arrayHelpers.form.values.informationTypes)
-  }, [arrayHelpers])
+    if (!hasInitialized.current && informationTypes.length < 1) {
+      hasInitialized.current = true
+      arrayHelpers.push(newRow())
+    }
+    setTableContent(informationTypes)
+  }, [informationTypes])
 
   return (
     <Table>

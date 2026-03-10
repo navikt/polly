@@ -1,5 +1,5 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useInfoTypeSearch } from '../../../api/GetAllApi'
 import { IDocumentInfoTypeUse, IInformationTypeShort } from '../../../constants'
 
@@ -13,6 +13,7 @@ const FieldInformationType = (props: {
     documentInformationType.informationType
   )
   const [value, setValue] = useState<string>(documentInformationType.informationType?.name || '')
+  const justSelectedRef = useRef(false)
 
   const options = useMemo(
     () => searchResult.map((it) => ({ value: it.id, label: it.name })),
@@ -20,7 +21,10 @@ const FieldInformationType = (props: {
   )
 
   const selectedOptions = useMemo(
-    () => (selectedInformationType?.id ? [selectedInformationType.id] : []),
+    () =>
+      selectedInformationType?.id
+        ? [{ value: selectedInformationType.id, label: selectedInformationType.name }]
+        : [],
     [selectedInformationType]
   )
 
@@ -28,11 +32,20 @@ const FieldInformationType = (props: {
     <UNSAFE_Combobox
       label=""
       hideLabel
-      placeholder={selectedInformationType ? '' : 'Søk opplysningstyper'}
+      placeholder={selectedInformationType?.id ? '' : 'Søk opplysningstyper'}
       isLoading={isLoading}
       options={options}
       value={value}
       onChange={(newValue) => {
+        if (justSelectedRef.current) {
+          justSelectedRef.current = false
+          return
+        }
+
+        if (!newValue && selectedInformationType?.id) {
+          return
+        }
+
         setValue(newValue)
         setSearchKeyword(newValue)
 
@@ -59,6 +72,7 @@ const FieldInformationType = (props: {
         const picked = searchResult.find((it) => it.id === optionValue)
         if (!picked) return
 
+        justSelectedRef.current = true
         setSelectedInformationType(picked)
         setValue(picked.name)
         handleChange({
