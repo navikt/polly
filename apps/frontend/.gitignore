@@ -13,14 +13,9 @@
 
 # production
 /build
-/.next
 /out
 
 # Next.js
-next-env.d.ts
-tsconfig.tsbuildinfo
-
-# next.js
 /.next/
 /out/
 next-env.d.ts
