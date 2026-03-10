@@ -1,7 +1,7 @@
+import { useNavigate } from '@/util/router'
 import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, BodyShort, Link, Loader, Modal } from '@navikt/ds-react'
 import { Fragment, Key, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api/GetAllApi'
 import {

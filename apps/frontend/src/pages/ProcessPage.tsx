@@ -1,8 +1,7 @@
+import { generatePath, useLocation, useParams } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
-import { generatePath, useLocation, useParams } from 'react-router'
-import { processPath, processPathNoId } from '../AppRoutes'
 import { getDpProcessByDepartment } from '../api/DpProcessApi'
 import { getDashboard, getDisclosureByDepartment } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
@@ -19,6 +18,9 @@ import {
 } from '../constants'
 import { EListName } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
+
+export const processPath = '/process/:section/:code/:processId'
+export const processPathNoId = '/process/:section/:code/'
 
 export enum ESection {
   purpose = 'purpose',

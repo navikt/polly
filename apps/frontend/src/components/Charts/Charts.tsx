@@ -1,5 +1,5 @@
+import { NavigateFunction, useNavigate } from '@/util/router'
 import { BodyLong } from '@navikt/ds-react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import {
   EProcessField,
   EProcessState,

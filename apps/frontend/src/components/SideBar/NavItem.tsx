@@ -1,6 +1,6 @@
+import { useLocation } from '@/util/router'
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 import { BodyShort, Tooltip } from '@navikt/ds-react'
-import { useLocation } from 'react-router'
 import RouteLink from '../common/RouteLink'
 
 interface INavItemProps {

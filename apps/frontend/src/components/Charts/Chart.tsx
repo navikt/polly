@@ -1,7 +1,7 @@
 import { BarChartIcon, CircleIcon, PieChartIcon } from '@navikt/aksel-icons'
 import { Button, Label, Tooltip } from '@navikt/ds-react'
 import * as _ from 'lodash'
-import { Fragment, useReducer, useState } from 'react'
+import { Fragment, useMemo, useReducer, useState } from 'react'
 import { theme } from '../../util'
 
 const cursor = { cursor: 'pointer' }
@@ -82,7 +82,8 @@ export const Chart = (props: IChartProps) => {
     // '#66CBEC',
   ]
 
-  const splice: number = Math.random() * colorsBase.length
+  // eslint-disable-next-line react-hooks/purity
+  const splice: number = useMemo(() => Math.floor(Math.random() * colorsBase.length), [])
   const colors: string[] = [...colorsBase.slice(splice), ...colorsBase.slice(0, splice)]
 
   let s = 0

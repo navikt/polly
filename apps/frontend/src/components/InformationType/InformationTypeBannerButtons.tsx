@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Loader, Modal } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import {
   deleteInformationType,
   getDocumentsForInformationType,

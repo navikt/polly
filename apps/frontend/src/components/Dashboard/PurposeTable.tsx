@@ -1,6 +1,6 @@
+import { useParams } from '@/util/router'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
 import {
   getProcessByStateAndStatus,
   getProcessByStateAndStatusForDepartment,
@@ -23,40 +23,6 @@ const PurposeTable = () => {
   const { filterName, filterValue, filterStatus } = useParams<TPathProps>()
   const department: string | undefined = useQueryParam('department')
   const productareaId: string | undefined = useQueryParam('productarea')
-
-  useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      changeTitle()
-      if (filterName && filterValue) {
-        if (department) {
-          const response: IProcessShort[] = await getProcessByStateAndStatusForDepartment(
-            filterName,
-            filterValue,
-            filterStatus,
-            department
-          )
-          setFiltered(response)
-        } else if (productareaId) {
-          const response: IProcessShort[] = await getProcessByStateAndStatusForProductArea(
-            filterName,
-            filterValue,
-            filterStatus,
-            productareaId
-          )
-          setFiltered(response)
-        } else {
-          const response: IProcessShort[] = await getProcessByStateAndStatus(
-            filterName,
-            filterValue,
-            filterStatus
-          )
-          setFiltered(response)
-        }
-      }
-      setLoading(false)
-    })()
-  }, [filterName, filterValue, filterStatus, department])
 
   const changeTitle = () => {
     if (filterName === EProcessField.DPIA && filterValue) {
@@ -92,6 +58,40 @@ const PurposeTable = () => {
       setTitle('Ref. til PVK ikke angitt')
     }
   }
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      changeTitle()
+      if (filterName && filterValue) {
+        if (department) {
+          const response: IProcessShort[] = await getProcessByStateAndStatusForDepartment(
+            filterName,
+            filterValue,
+            filterStatus,
+            department
+          )
+          setFiltered(response)
+        } else if (productareaId) {
+          const response: IProcessShort[] = await getProcessByStateAndStatusForProductArea(
+            filterName,
+            filterValue,
+            filterStatus,
+            productareaId
+          )
+          setFiltered(response)
+        } else {
+          const response: IProcessShort[] = await getProcessByStateAndStatus(
+            filterName,
+            filterValue,
+            filterStatus
+          )
+          setFiltered(response)
+        }
+      }
+      setLoading(false)
+    })()
+  }, [filterName, filterValue, filterStatus, department])
 
   return (
     <>

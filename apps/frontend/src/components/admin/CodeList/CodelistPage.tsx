@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'
 import { CodelistService, ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
@@ -55,9 +55,9 @@ const CodeListPage = () => {
 
   return (
     <>
-      {!(user.isAdmin() || lists) && (
+      {!lists && (
         <div role="main" className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+          <Loader size="3xlarge" title="Venter..." />
         </div>
       )}
       {user.isAdmin() && lists && (
@@ -75,7 +75,9 @@ const CodeListPage = () => {
               <Select
                 label="Velg kodeverk"
                 hideLabel
-                onChange={(event) => setListname(event.target.value)}
+                onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                  setListname(event.target.value)
+                }
               >
                 <option value="">Velg kodeverk</option>
                 {codelistUtils

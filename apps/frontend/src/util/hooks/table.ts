@@ -84,8 +84,6 @@ export const useTable = <T, K extends keyof T>(
     toDirection(initialSort.newDirection, initialSort.newColumn)
   )
 
-  useEffect(() => setData(sortTableData()), [sortColumn, sortDirection, initialData])
-
   const sortTableData = (): T[] => {
     if (sortColumn) {
       const sortFunct = getSortFunction(sortColumn, !!useDefaultStringCompare, sorting)
@@ -106,6 +104,8 @@ export const useTable = <T, K extends keyof T>(
     }
     return initialData
   }
+
+  useEffect(() => setData(sortTableData()), [sortColumn, sortDirection, initialData])
 
   const sort = (sortColumnName: K): void => {
     const { newDirection, newColumn } = newSort<T, K>(sortColumnName, sortColumn, sortDirection)

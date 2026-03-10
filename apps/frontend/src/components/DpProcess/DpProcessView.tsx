@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router'
 import {
   deleteDpProcess,
   dpProcessToFormValues,
@@ -75,7 +75,7 @@ const DpProcessView = () => {
         await deleteDpProcess(id)
         setErrorDpProcessModal('')
         setShowModal(false)
-        navigate(`/dpprocess`)
+        navigate('/dpprocess')
       }
     } catch (error: any) {
       if (error.response.data.message.includes('already exists')) {

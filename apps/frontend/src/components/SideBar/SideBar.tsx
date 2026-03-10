@@ -1,7 +1,6 @@
 import { BodyShort } from '@navikt/ds-react'
+import Image from 'next/image'
 import { canViewAlerts } from '../../pages/AlertEventPage'
-import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
-import NavLogo from '../../resources/navlogo.svg'
 import { datajegerSlackLink } from '../../util/config'
 import NavItem from './NavItem'
 
@@ -61,13 +60,19 @@ const SideBar = () => (
       <div className="max-w-62 mt-auto pt-6 pb-22">
         <div className="flex justify-center">
           <div className="pb-4 w-[40%]">
-            <img src={NavLogo} alt="Nav logo" width="100%" />
+            <Image
+              src="/navlogo.svg"
+              alt="Nav logo"
+              width={120}
+              height={44}
+              style={{ width: '100%', height: 'auto' }}
+            />
           </div>
         </div>
 
         <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
           <div className="flex justify-center items-center">
-            <img src={SlackLogo} width="60px" alt="slack logo" />
+            <Image src="/Slack_Monochrome_White.svg" width={60} height={60} alt="slack logo" />
             <BodyShort size="small" style={{ color: '#E0E1E5' }}>
               #behandlingskatalogen
             </BodyShort>

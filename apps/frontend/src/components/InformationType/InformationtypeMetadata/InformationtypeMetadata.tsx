@@ -1,7 +1,7 @@
+import { NavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader, Tabs } from '@navikt/ds-react'
 import { useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { IDisclosure, IDocument, IInformationType, IPolicy } from '../../../constants'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 import { CodelistService, ICodelistProps } from '../../../service/Codelist'

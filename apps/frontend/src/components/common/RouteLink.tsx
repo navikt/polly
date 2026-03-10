@@ -1,6 +1,6 @@
+import { NavigateFunction, useNavigate } from '@/util/router'
 import { Link } from '@navikt/ds-react'
 import type { MouseEvent } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router'
 import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
 import { EListName } from '../../service/Codelist'
 import { AuditButton } from '../admin/audit/AuditButton'
