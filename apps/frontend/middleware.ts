@@ -1,25 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+const BACKEND_URL = process.env.POLLY_BACKEND_URL || 'http://localhost:8080'
 
-  if (
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/oauth2') ||
-    pathname.startsWith('/logout')
-  ) {
-    const requestHeaders = new Headers(request.headers)
-    const hostHeader = request.headers.get('host')
-    if (hostHeader) requestHeaders.set('x-forwarded-host', hostHeader)
-    const proto =
-      request.headers.get('x-forwarded-proto') || request.nextUrl.protocol.replace(':', '')
-    if (proto) requestHeaders.set('x-forwarded-proto', proto)
-    return NextResponse.next({ request: { headers: requestHeaders } })
-  }
+export function middleware(request: NextRequest) {
+  const { pathname, search } = request.nextUrl
 
-  if (pathname.startsWith('/api')) {
+  // These are actual Next.js API routes — don't proxy them
+  if (pathname === '/api/isAlive' || pathname === '/api/isReady') {
     return NextResponse.next()
   }
+
+  let backendPath = pathname
+  if (pathname.startsWith('/api/internal/')) {
+    backendPath = pathname.replace(/^\/api\/internal/, '/internal')
+  } else if (pathname.startsWith('/api/')) {
+    backendPath = pathname.replace(/^\/api/, '')
+  }
+
+  const targetUrl = new URL(`${backendPath}${search}`, BACKEND_URL)
+
+  const requestHeaders = new Headers(request.headers)
+  const hostHeader = request.headers.get('host')
+  if (hostHeader) requestHeaders.set('x-forwarded-host', hostHeader)
+  const proto =
+    request.headers.get('x-forwarded-proto') || request.nextUrl.protocol.replace(':', '')
+  if (proto) requestHeaders.set('x-forwarded-proto', proto)
+
+  return NextResponse.rewrite(targetUrl, { request: { headers: requestHeaders } })
 }
 
 export const config: {

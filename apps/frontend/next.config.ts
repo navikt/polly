@@ -7,31 +7,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
-  async rewrites() {
-    const backendUrl = process.env.POLLY_BACKEND_URL || 'http://localhost:8080'
-    return [
-      {
-        source: '/api/internal/:path*',
-        destination: `${backendUrl}/internal/:path*`,
-      },
-      {
-        source: '/api/:path*',
-        destination: `${backendUrl}/:path*`,
-      },
-      {
-        source: '/login/:path*',
-        destination: `${backendUrl}/login/:path*`,
-      },
-      {
-        source: '/oauth2/:path*',
-        destination: `${backendUrl}/oauth2/:path*`,
-      },
-      {
-        source: '/logout/:path*',
-        destination: `${backendUrl}/logout/:path*`,
-      },
-    ]
-  },
 }
 
 export default nextConfig
