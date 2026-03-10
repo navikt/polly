@@ -1,7 +1,7 @@
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   IDisclosureFormValues,
   ILegalBasisFormValues,
@@ -30,6 +30,13 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
   const [sensitivityLevel, setSensitivityLevel] = useState<ESensitivityLevel>(
     ESensitivityLevel.ART6
   )
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (formikBag.values.legalBasesOpen && cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [formikBag.values.legalBasesOpen])
 
   // Open legalBases if this field is rendered and no legalBases exist.
   useEffect(() => {
@@ -46,26 +53,28 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
           {formikBag.values.legalBasesOpen && (
-            <CardLegalBasis
-              codelistUtils={codelistUtils}
-              titleSubmitButton={selectedLegalBasis ? 'Oppdater' : 'Legg til'}
-              initValue={selectedLegalBasis || {}}
-              hideCard={() => {
-                formikBag.setFieldValue('legalBasesOpen', false)
-                setSelectedLegalBasis(undefined)
-              }}
-              submit={(values: ILegalBasisFormValues) => {
-                if (!values) return
-                if (selectedLegalBasis && selectedLegalBasisIndex !== undefined) {
-                  arrayHelpers.replace(selectedLegalBasisIndex, values)
+            <div ref={cardRef}>
+              <CardLegalBasis
+                codelistUtils={codelistUtils}
+                titleSubmitButton={selectedLegalBasis ? 'Oppdater' : 'Legg til'}
+                initValue={selectedLegalBasis || {}}
+                hideCard={() => {
+                  formikBag.setFieldValue('legalBasesOpen', false)
                   setSelectedLegalBasis(undefined)
-                } else {
-                  arrayHelpers.push(values)
-                }
-                formikBag.setFieldValue('legalBasesOpen', false)
-              }}
-              sensitivityLevel={sensitivityLevel}
-            />
+                }}
+                submit={(values: ILegalBasisFormValues) => {
+                  if (!values) return
+                  if (selectedLegalBasis && selectedLegalBasisIndex !== undefined) {
+                    arrayHelpers.replace(selectedLegalBasisIndex, values)
+                    setSelectedLegalBasis(undefined)
+                  } else {
+                    arrayHelpers.push(values)
+                  }
+                  formikBag.setFieldValue('legalBasesOpen', false)
+                }}
+                sensitivityLevel={sensitivityLevel}
+              />
+            </div>
           )}
           {!formikBag.values.legalBasesOpen && (
             <div
