@@ -156,7 +156,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
           <Loader size="3xlarge" />
         </div>
       )}
-      {!loading && (
+      {isOpen && !loading && (
         <Formik
           onSubmit={submit}
           initialValues={
@@ -171,14 +171,17 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
             } as IAddDocumentToProcessFormValues
           }
           validationSchema={addDocumentToProcessSchema()}
-          render={(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
+        >
+          {(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
             const selectDocument: (document: IDocument, isDefault: boolean) => void = (
               document: IDocument,
-              isDefault: boolean
+              _isDefault: boolean
             ) => {
-              formik.setFieldValue('defaultDocument', isDefault)
-              formik.setFieldValue('document', document)
-              formik.setFieldValue('informationTypes', extractInfoTypes(document, process.policies))
+              formik.setValues({
+                ...formik.values,
+                document: document,
+                informationTypes: extractInfoTypes(document, process.policies),
+              })
             }
 
             return (
@@ -188,7 +191,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                     <div className="flex flex-col gap-1">
                       <Label size="small">Dokument</Label>
                       <Field name="document">
-                        {({ form }: FieldProps<IAddDocumentToProcessFormValues>) => (
+                        {({}: FieldProps<IAddDocumentToProcessFormValues>) => (
                           <>
                             <CustomSearchSelect
                               ariaLabel="Søk dokumenter"
@@ -196,7 +199,6 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                               loadOptions={useSearchDocumentOption}
                               onChange={(value: IDocument | undefined) => {
                                 if (value) {
-                                  form.setFieldValue('defaultDocument', false)
                                   selectDocument(value, false)
                                 }
                               }}
@@ -227,16 +229,15 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                         )}
                         <div className="flex flex-col gap-1">
                           <ModalLabel label="Opplysningstyper" />
-                          <FieldArray
-                            name="informationTypes"
-                            render={(arrayHelpers: FieldArrayRenderProps) => (
+                          <FieldArray name="informationTypes">
+                            {(arrayHelpers: FieldArrayRenderProps) => (
                               <ListInformationTypes
                                 informationTypes={formik.values.informationTypes}
                                 formik={formik}
                                 arrayHelpers={arrayHelpers}
                               />
                             )}
-                          />
+                          </FieldArray>
                           <Error fieldName="informationTypes" />
                         </div>
                       </div>
@@ -255,7 +256,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
               </Form>
             )
           }}
-        />
+        </Formik>
       )}
     </Modal>
   )
