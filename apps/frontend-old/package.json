@@ -1,0 +1,126 @@
+{
+  "name": "polly-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "@navikt/aksel-icons": "8.6.0",
+    "@navikt/ds-css": "8.6.0",
+    "@navikt/ds-react": "8.6.0",
+    "@navikt/ds-tailwind": "8.6.0",
+    "@tailwindcss/postcss": "4.2.1",
+    "@trivago/prettier-plugin-sort-imports": "6.0.2",
+    "axios": "1.13.6",
+    "core-js": "3.48.0",
+    "flag-icon-css": "4.1.7",
+    "formik": "2.4.9",
+    "husky": "9.1.7",
+    "json-diff-kit": "1.0.35",
+    "lint-staged": "16.3.2",
+    "lodash": "4.17.23",
+    "moment": "2.30.1",
+    "query-string": "9.3.1",
+    "randomcolor": "0.6.2",
+    "react": "19.2.4",
+    "react-app-polyfill": "3.0.0",
+    "react-diff-viewer": "3.1.1",
+    "react-dom": "19.2.4",
+    "react-helmet": "6.1.0",
+    "react-json-view": "1.21.3",
+    "react-json-view-lite": "2.5.0",
+    "react-localization": "2.0.6",
+    "react-markdown": "10.1.0",
+    "react-process-string": "1.2.0",
+    "react-router": "7.13.1",
+    "react-select": "5.10.2",
+    "rehype-raw": "7.0.0",
+    "remark-gfm": "4.0.1",
+    "shortid": "2.2.17",
+    "typescript": "5.9.3",
+    "xlsx": "0.18.5",
+    "yup": "1.7.1"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "format": "prettier --write \"./src\"",
+    "prettier": "prettier --write \"./src\"",
+    "prepare": "cd ../../ && husky apps/frontend/.husky",
+    "type-check": "tsc --project tsconfig.json"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --list-different --write",
+      "eslint --max-warnings 0"
+    ],
+    "*.{ts,tsx}": [
+      "node -e \"require('child_process').execSync('yarn -s type-check', { stdio: 'inherit' })\""
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app",
+    "rules": {
+      "semi": [
+        "warn",
+        "never"
+      ],
+      "quotes": [
+        "warn",
+        "single"
+      ]
+    }
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(axios|react-day-picker|query-string|decode-uri-component|split-on-first|filter-obj|date-fns|@navikt/ds-react)/)"
+    ],
+    "moduleNameMapper": {
+      "(\\.\\.?\\/.+)\\.js$": "$1"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version",
+      "ie 11"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@craco/craco": "7.1.0",
+    "@types/jest": "30.0.0",
+    "@types/lodash": "4.17.24",
+    "@types/node": "25.3.3",
+    "@types/randomcolor": "0.5.9",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@types/react-helmet": "6.1.11",
+    "@types/react-router": "5.1.20",
+    "@types/shortid": "2.2.0",
+    "@types/yup": "0.32.0",
+    "@typescript-eslint/eslint-plugin": "8.56.1",
+    "@typescript-eslint/parser": "8.56.1",
+    "autoprefixer": "10.4.27",
+    "encoding": "0.1.13",
+    "http-proxy-middleware": "3.0.5",
+    "jest": "30.2.0",
+    "jest-fixed-jsdom": "0.0.11",
+    "jest-watch-typeahead": "3.0.1",
+    "node-fetch": "3.3.2",
+    "npm-run-all": "4.1.5",
+    "postcss": "8.5.8",
+    "postcss-import": "16.1.1",
+    "prettier": "3.8.1",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "4.2.1",
+    "ts-jest": "29.4.6",
+    "ts-node": "10.9.2"
+  }
+}

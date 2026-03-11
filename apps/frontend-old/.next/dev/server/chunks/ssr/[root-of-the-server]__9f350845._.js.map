@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 40, "column": 0}, "map": {"version":3,"sources":["file:///Users/Jeremiah.Augie.Uy/Documents/Repoer/polly/apps/frontend/pages/_document.tsx"],"sourcesContent":["import { Head, Html, Main, NextScript } from 'next/document'\n\nexport default function Document() {\n  return (\n    <Html lang=\"nb\">\n      <Head>\n        <meta charSet=\"utf-8\" />\n      </Head>\n      <body>\n        <Main />\n        <NextScript />\n      </body>\n    </Html>\n  )\n}\n"],"names":[],"mappings":";;;;;AAAA;;;AAEe,SAAS;IACtB,qBACE,qKAAC,iIAAI;QAAC,MAAK;;0BACT,qKAAC,iIAAI;0BACH,cAAA,qKAAC;oBAAK,SAAQ;;;;;;;;;;;0BAEhB,qKAAC;;kCACC,qKAAC,iIAAI;;;;;kCACL,qKAAC,uIAAU;;;;;;;;;;;;;;;;;AAInB"}}]
+}

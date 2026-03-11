@@ -1,0 +1,10 @@
+[00:00:01.179] Server  WARN    ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:01.211] Server  LOG     ✓ Ready in 1126ms
+[00:00:48.285] Server  ERROR   (node:96662) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[00:00:48.547] Browser WARN    Image with src "http://localhost:3000/Slack_Monochrome_White.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:48.547] Browser WARN    Image with src "/navlogo.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:00:58.855] Browser WARN    Image with src "http://localhost:3000/Slack_Monochrome_White.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:01:02.458] Browser WARN    Image with src "http://localhost:3000/Slack_Monochrome_White.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:01:04.551] Browser WARN    Image with src "http://localhost:3000/Slack_Monochrome_White.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.

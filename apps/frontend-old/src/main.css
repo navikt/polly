@@ -1,0 +1,190 @@
+@import 'tailwindcss';
+@import '@navikt/ds-css' layer(components);
+
+@config '../tailwind.config.cjs';
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  .light,
+  .dark {
+    --a-surface-action: var(--ax-bg-strong);
+    --a-border-action: var(--ax-border-default);
+    --a-surface-subtle: var(--ax-bg-soft);
+    --a-border-subtle: var(--ax-border-subtle);
+
+    --a-text-default: var(--ax-text-neutral);
+
+    --a-surface-info-subtle: var(--ax-bg-info-soft);
+    --a-surface-info: var(--ax-bg-info-moderate);
+
+    --a-surface-success: var(--ax-bg-success-moderate);
+    --a-text-success: var(--ax-text-success);
+
+    --a-surface-warning: var(--ax-bg-warning-moderate);
+    --a-text-warning: var(--ax-text-warning);
+
+    --a-surface-danger: var(--ax-bg-danger-moderate);
+    --a-text-danger: var(--ax-text-danger);
+
+    --a-shadow-medium: var(--ax-shadow-dialog);
+
+    --polly-diff-add-bg: var(--ax-success-400A);
+    --polly-diff-remove-bg: var(--ax-danger-400A);
+    --polly-diff-modify-bg: var(--ax-bg-neutral-moderateA);
+  }
+
+  .light {
+    --polly-diff-remove-bg: var(--ax-danger-400A);
+  }
+
+  .dark {
+    --polly-diff-add-bg: var(--ax-bg-success-strong);
+    --polly-diff-remove-bg: var(--ax-bg-danger-strong);
+    --polly-diff-modify-bg: var(--ax-bg-neutral-moderateA);
+  }
+
+  .dark .bg-white {
+    background-color: var(--ax-bg-raised) !important;
+  }
+}
+
+/* App-specific overrides */
+@layer components {
+  /* Remove divider to the right of InternalHeader.Title */
+  .polly-white-internalheader .navds-internalheader__title {
+    border-right: none;
+  }
+
+  .polly-white-internalheader .aksel-internalheader__title {
+    border-right: none !important;
+  }
+
+  .polly-white-internalheader {
+    overflow: visible;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__control {
+    background-color: var(--ax-bg-default) !important;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__menu,
+  .polly-white-internalheader .polly-mainsearch__menu-list {
+    background-color: var(--ax-bg-default) !important;
+  }
+
+  .polly-white-internalheader .polly-mainsearch-filter-menu {
+    background-color: var(--ax-bg-default) !important;
+    opacity: 1 !important;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__placeholder {
+    color: var(--ax-text-subtle) !important;
+  }
+
+  .dark .polly-white-internalheader .polly-mainsearch__placeholder {
+    color: var(--ax-neutral-1000) !important;
+  }
+
+  .polly-white-internalheader .polly-mainsearch__input-container {
+    color: var(--ax-text-neutral) !important;
+    caret-color: var(--ax-text-neutral) !important;
+  }
+
+  .dark
+    .polly-markdown
+    :where(p, span, div, li, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, strong, em) {
+    color: var(--ax-text-neutral) !important;
+  }
+
+  .dark .polly-markdown a {
+    color: var(--ax-text-accent) !important;
+  }
+
+  /* Sidebar brand (avoid default link/label blue) */
+  .polly-sidebar-brand,
+  .polly-sidebar-brand:visited,
+  .polly-sidebar-brand:hover,
+  .polly-sidebar-brand:active {
+    color: var(--ax-text-neutral-contrast) !important;
+  }
+
+  .polly-sidebar-brand__label {
+    color: var(--ax-text-neutral-contrast) !important;
+  }
+}
+
+/* json-diff-kit (admin audit diff viewer)
+   Needs to be unlayered to override `json-diff-kit/dist/viewer.css`. */
+.json-diff-viewer pre {
+  color: var(--ax-text-neutral);
+}
+
+.json-diff-viewer td.line-number {
+  color: var(--ax-text-neutral-subtle);
+  border-right-color: var(--ax-border-neutral-subtleA);
+}
+
+.json-diff-viewer tr.message-line,
+.json-diff-viewer tr.expand-line .has-lines-before,
+.json-diff-viewer tr.expand-line .has-lines-after {
+  border-color: var(--ax-border-neutral-subtleA);
+}
+
+.json-diff-viewer tr.expand-line button {
+  color: var(--ax-text-accent);
+}
+
+.json-diff-viewer tr .line-add {
+  background: var(--polly-diff-add-bg);
+}
+
+.json-diff-viewer tr .line-remove {
+  background: var(--polly-diff-remove-bg);
+}
+
+.json-diff-viewer tr .line-modify {
+  background: var(--polly-diff-modify-bg);
+}
+
+.json-diff-viewer pre .inline-diff-add {
+  background: var(--polly-diff-add-bg);
+}
+
+.json-diff-viewer pre .inline-diff-remove {
+  background: var(--polly-diff-remove-bg);
+}
+
+@layer components {
+  .polly-error-summary-flush .aksel-error-summary__list,
+  .polly-error-summary-flush .navds-error-summary__list {
+    display: block;
+    padding-left: 0;
+    list-style-position: inside;
+    gap: 0;
+  }
+
+  .polly-error-summary-flush .aksel-error-summary__list > li,
+  .polly-error-summary-flush .navds-error-summary__list > li {
+    margin: 0;
+  }
+
+  .polly-error-summary-flush .aksel-error-summary__list > li + li,
+  .polly-error-summary-flush .navds-error-summary__list > li + li {
+    margin-top: var(--ax-space-8);
+  }
+}

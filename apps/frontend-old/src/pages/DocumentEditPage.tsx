@@ -1,0 +1,67 @@
+import { Heading } from '@navikt/ds-react'
+import { Fragment, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
+import shortid from 'shortid'
+import { getDocument, updateInformationTypesDocument } from '../api/GetAllApi'
+import DocumentForm from '../components/document/component/DocumentForm'
+import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '../constants'
+import { convertDocumentToFormRequest } from './DocumentCreatePage'
+
+const convertToDocumentFormValues = (document: IDocument) => {
+  return {
+    id: document.id,
+    name: document.name,
+    description: document.description,
+    dataAccessClass: document.dataAccessClass?.code || '',
+    informationTypes: document.informationTypes.map((it) => {
+      return {
+        id: shortid.generate(),
+        informationTypeId: it.informationTypeId,
+        informationType: it.informationType,
+        subjectCategories: it.subjectCategories,
+      } as IDocumentInfoTypeUse
+    }),
+  } as IDocumentFormValues
+}
+
+const DocumentEditPage = () => {
+  const [document, setDocument] = useState<IDocument>()
+  const [isLoading, setLoading] = useState(false)
+  const params = useParams<{ id: string }>()
+  const navigate = useNavigate()
+
+  const handleEditDocument = async (values: IDocumentFormValues) => {
+    try {
+      const res = await updateInformationTypesDocument(convertDocumentToFormRequest(values))
+      navigate(`/document/${res.id}`)
+    } catch (error: any) {
+      console.debug(error, 'ERR')
+    }
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      if (params.id) {
+        setDocument(await getDocument(params.id))
+      }
+      setLoading(false)
+    })()
+  }, [params.id])
+
+  return (
+    <Fragment>
+      {!isLoading && document && (
+        <Fragment>
+          <Heading size="large">Redigér dokument</Heading>
+          <DocumentForm
+            initialValues={convertToDocumentFormValues(document)}
+            handleSubmit={handleEditDocument}
+          />
+        </Fragment>
+      )}
+    </Fragment>
+  )
+}
+
+export default DocumentEditPage

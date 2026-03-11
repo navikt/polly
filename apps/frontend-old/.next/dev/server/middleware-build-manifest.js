@@ -1,0 +1,54 @@
+globalThis.__BUILD_MANIFEST = {
+  "pages": {
+    "/": [
+      "static/chunks/[root-of-the-server]__330b64ef._.js",
+      "static/chunks/node_modules_next_dist_compiled_caaa605a._.js",
+      "static/chunks/node_modules_next_dist_shared_lib_8bac8163._.js",
+      "static/chunks/node_modules_next_dist_client_5a8a528e._.js",
+      "static/chunks/node_modules_next_dist_75b597d7._.js",
+      "static/chunks/node_modules_next_router_104fab1c.js",
+      "static/chunks/node_modules_react-dom_4411d9bd._.js",
+      "static/chunks/node_modules_@navikt_ds-react_esm_utils_83b044e3._.js",
+      "static/chunks/node_modules_@navikt_ds-react_esm_form_cdab74fa._.js",
+      "static/chunks/node_modules_@navikt_ds-react_esm_date_c0605147._.js",
+      "static/chunks/node_modules_@navikt_ds-react_esm_54ea1539._.js",
+      "static/chunks/node_modules_@navikt_aksel-icons_dist_react_esm_index_c876656c.js",
+      "static/chunks/node_modules_@navikt_aksel-icons_dist_react_esm_d1356f54._.js",
+      "static/chunks/node_modules_date-fns_324cfcf6._.js",
+      "static/chunks/node_modules_@floating-ui_react_dist_ca3caa08._.js",
+      "static/chunks/node_modules_react-day-picker_dist_esm_63d94eea._.js",
+      "static/chunks/node_modules_axios_lib_2c8bf6cb._.js",
+      "static/chunks/node_modules_moment_0c55cd92._.js",
+      "static/chunks/node_modules_1490cfff._.js",
+      "static/chunks/node_modules_micromark-core-commonmark_dev_lib_e19c1c6a._.js",
+      "static/chunks/node_modules_parse5_dist_70dcdc0a._.js",
+      "static/chunks/node_modules_@floating-ui_ababeaec._.js",
+      "static/chunks/node_modules_308cb61c._.js",
+      "static/chunks/pages_index_2da965e7._.js",
+      "static/chunks/turbopack-pages_index_6b112f13._.js"
+    ],
+    "/_app": [
+      "static/chunks/src_main_tsx_f26271e6._.js",
+      "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
+      "static/chunks/node_modules_next_dist_shared_lib_40125ada._.js",
+      "static/chunks/node_modules_next_dist_client_5a8a528e._.js",
+      "static/chunks/node_modules_next_dist_75b597d7._.js",
+      "static/chunks/node_modules_next_5ba47e86._.js",
+      "static/chunks/node_modules_react-dom_4411d9bd._.js",
+      "static/chunks/node_modules_moment_b5d659a7._.js",
+      "static/chunks/node_modules_9dbdf982._.js",
+      "static/chunks/[root-of-the-server]__24bd8782._.js",
+      "static/chunks/_e81299af._.css",
+      "static/chunks/pages__app_2da965e7._.js",
+      "static/chunks/turbopack-pages__app_6fee710d._.js"
+    ]
+  },
+  "devFiles": [],
+  "polyfillFiles": [],
+  "lowPriorityFiles": [],
+  "rootMainFiles": []
+};
+globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
+"/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
+"/static/" + process.env.__NEXT_BUILD_ID + "/_ssgManifest.js"
+];

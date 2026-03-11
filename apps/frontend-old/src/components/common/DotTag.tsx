@@ -1,0 +1,159 @@
+import { CircleIcon } from '@navikt/aksel-icons'
+import { BodyLong } from '@navikt/ds-react'
+import { Fragment, ReactNode } from 'react'
+import { TNavigableItem } from '../../constants'
+import { EListName, ICode, ICodelistProps } from '../../service/Codelist'
+import { theme } from '../../util'
+import { Markdown } from './Markdown'
+import RouteLink, { urlForObject } from './RouteLink'
+
+interface IDotTagProps {
+  children: ReactNode
+  wrapText?: boolean
+  dotColor?: string
+  dotVariant?: 'outline' | 'filled'
+}
+
+export const DotTag = (props: IDotTagProps) => {
+  const { children, wrapText, dotColor, dotVariant } = props
+  const resolvedDotColor = dotColor ?? theme.colors.positive400
+  const resolvedDotVariant = dotVariant ?? 'outline'
+
+  const Dot = () => {
+    if (resolvedDotVariant === 'filled') {
+      return (
+        <span
+          aria-hidden
+          className="block rounded-full"
+          style={{ backgroundColor: resolvedDotColor, width: '.45rem', height: '.45rem' }}
+        />
+      )
+    }
+
+    return (
+      <CircleIcon
+        aria-hidden
+        className="block"
+        style={{ color: resolvedDotColor, fontSize: '.45rem' }}
+      />
+    )
+  }
+
+  return (
+    <>
+      {wrapText && (
+        <div className="mx-1 flex items-center">
+          <div className="flex whitespace-normal">
+            <div className="mr-1 -mt-0.75">
+              <Dot />
+            </div>
+            <div>{children}</div>
+          </div>
+        </div>
+      )}
+      <div className="mx-1 flex items-center">
+        <Dot />
+        <div className="inline mr-1" />
+        <div>{props.children}</div>
+      </div>
+    </>
+  )
+}
+
+interface IContentProps {
+  item: string
+  list?: EListName
+  linkCodelist?: boolean
+  markdown?: boolean
+  customId?: string
+  codelistUtils: ICodelistProps
+}
+
+const Content = (props: IContentProps) => {
+  const { item, list, linkCodelist, markdown, customId, codelistUtils } = props
+
+  return (
+    <div className="wrap-break-word">
+      {list && (
+        <>
+          {linkCodelist && (
+            <RouteLink
+              href={urlForObject(list as EListName & TNavigableItem, customId ? customId : item)}
+            >
+              {codelistUtils.getShortname(list as EListName & TNavigableItem, item)}
+            </RouteLink>
+          )}
+          {!linkCodelist && <>{codelistUtils.getShortname(list, item)}</>}
+        </>
+      )}
+      {!list && markdown && <Markdown source={item} />}
+      {!list && !markdown && <BodyLong className="break-word">{item}</BodyLong>}
+    </div>
+  )
+}
+
+type TDotTagsParams = {
+  items?: string[]
+  codes?: ICode[]
+  commaSeparator?: boolean
+  linkCodelist?: boolean
+  markdown?: boolean
+  list?: EListName
+  noFlex?: boolean
+  direction?: 'row' | 'column'
+  wrapText?: boolean
+  dotColor?: string
+  dotVariant?: 'outline' | 'filled'
+  codelistUtils: ICodelistProps
+  customId?: string
+}
+
+export const DotTags = (props: TDotTagsParams) => {
+  const {
+    commaSeparator,
+    codes,
+    noFlex,
+    direction,
+    wrapText,
+    dotColor,
+    dotVariant,
+    codelistUtils,
+  } = props
+  const items = props.items || codes?.map((code) => code.code) || []
+
+  const isColumn = direction === 'column'
+  const containerClassName = isColumn
+    ? 'flex flex-col gap-1'
+    : `${noFlex ? 'block' : 'flex'} flex-wrap`
+
+  return (
+    <>
+      {!items.length && <>Ikke angitt</>}
+      {commaSeparator && items.length > 0 && (
+        <div className="inline">
+          {items.map((item: string, index: number) => (
+            <Fragment key={index}>
+              <Content {...props} codelistUtils={codelistUtils} item={item} />
+              <span>{index < items.length - 1 ? ', ' : ''}</span>
+            </Fragment>
+          ))}
+        </div>
+      )}
+      {!commaSeparator && items.length > 0 && (
+        <div className={containerClassName}>
+          {items.map((item: string, index: number) => (
+            <div
+              key={index}
+              className={isColumn ? '' : `${index < items.length ? 'mr-1.5' : '0px'}`}
+            >
+              <DotTag wrapText={wrapText} dotColor={dotColor} dotVariant={dotVariant}>
+                {' '}
+                <Content {...props} codelistUtils={codelistUtils} item={item} />{' '}
+              </DotTag>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}

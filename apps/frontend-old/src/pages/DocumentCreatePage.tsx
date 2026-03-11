@@ -1,0 +1,52 @@
+import { Heading } from '@navikt/ds-react'
+import { useNavigate } from 'react-router'
+import { Fragment } from 'react/jsx-runtime'
+import { createInformationTypesDocument } from '../api/GetAllApi'
+import DocumentForm from '../components/document/component/DocumentForm'
+import { IDocumentFormValues } from '../constants'
+
+const initialCreateDocumentFormValues: IDocumentFormValues = {
+  name: '',
+  description: '',
+  informationTypes: [],
+  dataAccessClass: undefined,
+}
+
+export const convertDocumentToFormRequest = (values: IDocumentFormValues) => {
+  const newValue = { ...values, dataAccessClass: values.dataAccessClass }
+
+  newValue.informationTypes.forEach((it) => {
+    const subCatList: any = []
+    it.subjectCategories.forEach((subCat) => {
+      subCatList.push({ code: subCat })
+    })
+    it.subjectCategories = subCatList
+  })
+
+  return newValue
+}
+
+const DocumentCreatePage = () => {
+  const navigate = useNavigate()
+
+  const handleCreateDocument = async (values: IDocumentFormValues) => {
+    try {
+      const res = await createInformationTypesDocument(convertDocumentToFormRequest(values))
+      navigate(`/document/${res.id}`)
+    } catch (error: any) {
+      console.debug(error, 'Error')
+    }
+  }
+
+  return (
+    <Fragment>
+      <Heading size="large">Opprett dokument</Heading>
+      <DocumentForm
+        initialValues={initialCreateDocumentFormValues}
+        handleSubmit={handleCreateDocument}
+      />
+    </Fragment>
+  )
+}
+
+export default DocumentCreatePage
