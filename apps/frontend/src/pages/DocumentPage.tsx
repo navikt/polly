@@ -95,7 +95,7 @@ const DocumentPage = () => {
                   onClick={() => setDeleteModalVisibility(true)}
                   marginLeft
                 >
-                  Slett
+                  Slet
                 </Button>
               )}
 
