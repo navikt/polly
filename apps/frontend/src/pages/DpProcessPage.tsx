@@ -46,7 +46,7 @@ const DpProcessPage = () => {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-4">
         <Heading size="large">Behandlinger hvor Nav er databehandler</Heading>
         <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
