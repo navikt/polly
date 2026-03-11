@@ -1,23 +1,65 @@
 /**
- * Compatibility shim so existing components that import from 'react-router'
- * can be pointed here instead, with equivalent hooks backed by next/router.
+ * Compatibility shim with React Router-like helpers backed by next/router.
  *
- * Replace:  import { useNavigate, useParams, useLocation } from 'react-router'
  * With:     import { useNavigate, useParams, useLocation } from '@/util/router'
  */
 import { useRouter } from 'next/router'
-import type { NavigateFunction, To } from 'react-router'
 
-// Types are re-exported from react-router so callers get the same shapes.
-export { generatePath } from 'react-router'
-export type { Location, NavigateFunction } from 'react-router'
+type Path = {
+  pathname: string
+  search: string
+  hash: string
+}
+
+type To = string | Partial<Path>
+
+type NavigateOptions = {
+  replace?: boolean
+  state?: unknown
+}
+
+export type NavigateFunction = (to: To | number, options?: NavigateOptions) => void
+
+export type Location<State = unknown> = {
+  pathname: string
+  search: string
+  hash: string
+  state: State
+  key: string
+}
+
+export const generatePath = (
+  path: string,
+  params: Record<string, string | number | boolean | null | undefined> = {}
+) => {
+  const withOptional = path.replace(/\/:([A-Za-z0-9_]+)\?/g, (_segment, key: string) => {
+    const value = params[key]
+    if (value === undefined || value === null || value === '') {
+      return ''
+    }
+    return `/${encodeURIComponent(String(value))}`
+  })
+
+  const withRequired = withOptional.replace(/:([A-Za-z0-9_]+)/g, (_segment, key: string) => {
+    const value = params[key]
+    if (value === undefined || value === null || value === '') {
+      throw new Error(`Missing parameter '${key}' for path '${path}'`)
+    }
+    return encodeURIComponent(String(value))
+  })
+
+  return withRequired.replace(/\/+/g, '/')
+}
 
 export function useNavigate(): NavigateFunction {
   const router = useRouter()
 
   const normalizeUrl = (to: To): string => {
-    const raw = typeof to === 'string' ? to.trim() : (to.pathname ?? '/')
-    const lower = raw.toLowerCase()
+    const pathname = typeof to === 'string' ? to.trim() : (to.pathname ?? '/')
+    const search = typeof to === 'string' ? '' : (to.search ?? '')
+    const hash = typeof to === 'string' ? '' : (to.hash ?? '')
+
+    const lower = pathname.toLowerCase()
     if (
       lower.startsWith('javascript:') ||
       lower.startsWith('data:') ||
@@ -25,7 +67,15 @@ export function useNavigate(): NavigateFunction {
     ) {
       return '/'
     }
-    const path = raw.startsWith('/') || raw.startsWith('?') || raw.startsWith('#') ? raw : `/${raw}`
+
+    const normalizedPath =
+      pathname.startsWith('/') || pathname.startsWith('?') || pathname.startsWith('#')
+        ? pathname
+        : `/${pathname}`
+    const normalizedSearch = search && !search.startsWith('?') ? `?${search}` : search
+    const normalizedHash = hash && !hash.startsWith('#') ? `#${hash}` : hash
+
+    const path = `${normalizedPath}${normalizedSearch}${normalizedHash}`
     // Explicitly encode HTML meta-characters to break XSS taint chain
     return path.replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, '%22').replace(/'/g, '%27')
   }
@@ -42,7 +92,7 @@ export function useNavigate(): NavigateFunction {
       router.push(url)
     }
   }
-  return navigate as unknown as NavigateFunction
+  return navigate
 }
 
 export function useParams<T extends Record<string, string | undefined>>(): Partial<T> {
@@ -64,13 +114,13 @@ export function useLocation() {
   const qIdx = withoutHash.indexOf('?')
   const pathname = qIdx >= 0 ? withoutHash.substring(0, qIdx) : withoutHash
   const search = qIdx >= 0 ? withoutHash.substring(qIdx) : ''
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return {
+  const location: Location = {
     pathname,
     search,
     hash,
     state: null as unknown,
     key: 'default',
-    unstable_mask: undefined as any,
   }
+
+  return location
 }
