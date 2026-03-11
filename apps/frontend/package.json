@@ -71,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@eslint/compat": "2.0.3",
     "@types/lodash": "4.17.24",
     "@types/node": "25.4.0",
     "@types/randomcolor": "0.5.9",
@@ -81,7 +82,7 @@
     "@typescript-eslint/parser": "8.57.0",
     "autoprefixer": "10.4.27",
     "encoding": "0.1.13",
-    "eslint": "9.39.3",
+    "eslint": "10.0.3",
     "eslint-config-next": "16.1.6",
     "jest": "30.3.0",
     "jest-environment-jsdom": "30.3.0",
