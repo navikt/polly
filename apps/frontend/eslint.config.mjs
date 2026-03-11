@@ -1,7 +1,8 @@
+import { fixupConfigRules } from '@eslint/compat'
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 
 export default [
-  ...nextCoreWebVitals,
+  ...fixupConfigRules(nextCoreWebVitals),
   {
     linterOptions: {
       reportUnusedDisableDirectives: false,

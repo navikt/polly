@@ -30,7 +30,6 @@
     "react-localization": "2.0.6",
     "react-markdown": "10.1.0",
     "react-process-string": "1.2.0",
-    "react-router": "7.13.1",
     "react-select": "5.10.2",
     "rehype-raw": "7.0.0",
     "remark-gfm": "4.0.1",
@@ -72,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@eslint/compat": "2.0.3",
     "@types/lodash": "4.17.24",
     "@types/node": "25.4.0",
     "@types/randomcolor": "0.5.9",
