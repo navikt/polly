@@ -162,6 +162,8 @@ export const useTeamResourceSearch = () => {
         const options: TOption[] = res.content.map(mapTeamResourceToOption)
         setInfoTypeSearchResult(options)
         setLoading(false)
+      } else {
+        setInfoTypeSearchResult([])
       }
     }
     search()

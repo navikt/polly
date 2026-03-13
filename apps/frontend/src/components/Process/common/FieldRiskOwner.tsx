@@ -1,7 +1,7 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useEffect, useMemo, useState } from 'react'
-import { getResourceById, useTeamResourceSearch } from '../../../api/GetAllApi'
+import { getResourceById, useTeamResourceSearch } from '../../../api/TeamApi'
 import { IProcessFormValues } from '../../../constants'
 
 interface IProps {
@@ -18,7 +18,7 @@ const FieldRiskOwner = (props: IProps) => {
     () =>
       (teamResourceSearchResult || []).map((option: any) => ({
         label: option.label,
-        value: option.id,
+        value: option.value,
       })),
     [teamResourceSearchResult]
   )
