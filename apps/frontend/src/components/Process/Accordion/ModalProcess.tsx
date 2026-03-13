@@ -44,7 +44,6 @@ import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternal
 import FieldDataProcessors from '../common/FieldDataProcessors'
 import FieldDepartment from '../common/FieldDepartment'
 import FieldDescription from '../common/FieldDescription'
-import FieldInput from '../common/FieldInput'
 import FieldLegalBasis from '../common/FieldLegalBasis'
 import FieldName from '../common/FieldName'
 import FieldPurpose from '../common/FieldPurpose'
@@ -266,16 +265,6 @@ const ModalProcess = ({
                     <CustomizedModalBlock>
                       <ModalLabel label="Risikoeier" />
                       <FieldRiskOwner riskOwner={formikBag.values.dpia?.riskOwner} />
-                    </CustomizedModalBlock>
-                  )}
-
-                  {!env.disableRiskOwner && (
-                    <CustomizedModalBlock>
-                      <ModalLabel label="Risikoeier funksjon9" />
-                      <FieldInput
-                        fieldName="dpia.riskOwnerFunction"
-                        fieldValue={formikBag.values.dpia?.riskOwnerFunction}
-                      />
                     </CustomizedModalBlock>
                   )}
 
