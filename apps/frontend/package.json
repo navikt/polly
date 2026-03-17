@@ -83,7 +83,7 @@
     "autoprefixer": "10.4.27",
     "encoding": "0.1.13",
     "eslint": "10.0.3",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.1.7",
     "jest": "30.3.0",
     "jest-environment-jsdom": "30.3.0",
     "jest-fixed-jsdom": "0.0.11",
