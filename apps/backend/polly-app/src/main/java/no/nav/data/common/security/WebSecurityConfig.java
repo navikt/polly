@@ -49,6 +49,7 @@ public class WebSecurityConfig {
                 "/oauth2/callback",
                 "/userinfo",
                 "/internal/**",
+                "/swagger-docs",
                 "/swagger*/**",
                 "/process/shortbyid",
 
