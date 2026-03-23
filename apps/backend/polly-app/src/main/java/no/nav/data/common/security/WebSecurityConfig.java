@@ -50,8 +50,8 @@ public class WebSecurityConfig {
                 "/userinfo",
                 "/internal/**",
                 "/swagger*/**",
-                "/swagger-docs",
-                "/swagger-docs/**",
+                "/v3/api-docs",
+                "/v3/api-docs/**",
                 "/process/shortbyid",
 
                 // Graphql
