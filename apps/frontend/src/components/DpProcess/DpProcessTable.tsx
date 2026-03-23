@@ -1,7 +1,5 @@
-import { Link, Tag } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
-import { getResourceById } from '../../api/GetAllApi'
-import { IDpProcess, IDpProcessWithEmail, dpProcessSort } from '../../constants'
+import { Tag } from '@navikt/ds-react'
+import { IDpProcess, dpProcessSort } from '../../constants'
 import { useTable } from '../../util/hooks'
 import RouteLink from '../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../common/Table'
@@ -12,40 +10,12 @@ type TDpProcessTableProps = {
 
 const DpProcessTable = (props: TDpProcessTableProps) => {
   const { dpProcesses } = props
-  const [dpProcessesWithEmail, setDpProcessesWithEmail] =
-    useState<IDpProcessWithEmail[]>(dpProcesses)
-  const [table, sortColumn] = useTable<IDpProcessWithEmail, keyof IDpProcessWithEmail>(
-    dpProcessesWithEmail,
-    {
-      sorting: dpProcessSort,
-      initialSortColumn: 'name',
-    }
-  )
+  const [table, sortColumn] = useTable<IDpProcess, keyof IDpProcess>(dpProcesses, {
+    sorting: dpProcessSort,
+    initialSortColumn: 'name',
+  })
 
   const today = new Date().toISOString().split('T')[0]
-
-  useEffect(() => {
-    ;(async () => {
-      if (dpProcesses) {
-        const newDpProcessesList: IDpProcessWithEmail[] = []
-        await Promise.all(
-          dpProcesses.map(async (dpp: IDpProcess) => {
-            const userIdent: string = dpp.changeStamp.lastModifiedBy.split(' ')[0]
-            if (userIdent !== 'migration') {
-              await getResourceById(userIdent).then((res) => {
-                newDpProcessesList.push({
-                  ...dpp,
-                  lastModifiedEmail: res.email,
-                })
-              })
-            } else {
-              newDpProcessesList.push({ ...dpp })
-            }
-          })
-        ).then(() => setDpProcessesWithEmail(newDpProcessesList))
-      }
-    })()
-  }, [dpProcesses])
 
   return (
     <>
@@ -60,15 +30,11 @@ const DpProcessTable = (props: TDpProcessTableProps) => {
               column="externalProcessResponsible"
               tableState={[table, sortColumn]}
             />
-            <HeadCell
-              title="Sist endret av"
-              column="lastModifiedEmail"
-              tableState={[table, sortColumn]}
-            />
+            <HeadCell title="Avdeling" column="affiliation" tableState={[table, sortColumn]} />
           </>
         }
       >
-        {table.data.map((process: IDpProcessWithEmail, index: number) => {
+        {table.data.map((process: IDpProcess, index: number) => {
           const isActive: boolean = today < process.end
 
           return (
@@ -95,9 +61,9 @@ const DpProcessTable = (props: TDpProcessTableProps) => {
                 </RouteLink>
               </Cell>
               <Cell>
-                <Link href={'mailto: ' + process.lastModifiedEmail}>
-                  {process.lastModifiedEmail}
-                </Link>
+                {process.affiliation.nomDepartmentName ||
+                  process.affiliation.nomDepartmentId ||
+                  'Ikke utfylt'}
               </Cell>
             </Row>
           )
