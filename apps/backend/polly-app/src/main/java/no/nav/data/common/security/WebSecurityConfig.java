@@ -49,7 +49,6 @@ public class WebSecurityConfig {
                 "/oauth2/callback",
                 "/userinfo",
                 "/internal/**",
-                "/swagger-docs",
                 "/swagger*/**",
                 "/process/shortbyid",
 
@@ -92,6 +91,7 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/logout").authenticated());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());
         http.authorizeHttpRequests(auth -> auth.anyRequest().hasRole(AppRole.WRITE.name()));
         return http.build();
     }
