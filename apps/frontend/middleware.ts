@@ -32,5 +32,14 @@ export function middleware(request: NextRequest) {
 export const config: {
   matcher: string[]
 } = {
-  matcher: ['/api/:path*', '/login/:path*', '/oauth2/:path*', '/logout/:path*'],
+  matcher: [
+    '/api/:path*',
+    '/login/:path*',
+    '/oauth2/:path*',
+    '/logout/:path*',
+    '/swagger-ui',
+    '/swagger-ui/:path*',
+    '/swagger-docs',
+    '/swagger-docs/:path*',
+  ],
 }
