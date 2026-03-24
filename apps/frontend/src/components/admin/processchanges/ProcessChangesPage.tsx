@@ -15,19 +15,45 @@ interface IGroup {
 
 const GROUPS: IGroup[] = [
   {
+    label: 'Organisering',
+    fields: [
+      { value: 'AFFILIATION_DEPARTMENT', label: 'Avdeling' },
+      { value: 'AFFILIATION_SUB_DEPARTMENTS', label: 'Linja' },
+      { value: 'AFFILIATION_PRODUCT_TEAMS', label: 'Team (Oppslag i Teamkatalogen)' },
+      { value: 'COMMON_EXTERNAL_PROCESS_RESPONSIBLE', label: 'Felles behandlingsansvarlig' },
+    ],
+  },
+  {
     label: 'Behandlingsgrunnlag for hele behandlingen',
     fields: [{ value: 'LEGAL_BASES', label: 'Behandlingsgrunnlag for hele behandlingen' }],
   },
   {
     label: 'Automatisering og profilering',
     fields: [
-      { value: 'AUTOMATIC_PROCESSING', label: 'Helautomatisk behandling' },
-      { value: 'PROFILING', label: 'Profilering' },
+      {
+        value: 'AUTOMATIC_PROCESSING',
+        label:
+          'Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling?',
+      },
+      { value: 'PROFILING', label: 'Benyttes profilering' },
+    ],
+  },
+  {
+    label: 'Kunstig intelligens',
+    fields: [
+      {
+        value: 'AI_IN_USE',
+        label: 'Benyttes det KI-systemer for å gjennomføre behandlingen?',
+      },
+      {
+        value: 'AI_REUSING_PERSONAL_INFORMATION',
+        label: 'Gjenbrukes personopplysningene til å utvikle KI-systemer?',
+      },
     ],
   },
   {
     label: 'Databehandler',
-    fields: [{ value: 'DATA_PROCESSING', label: 'Databehandler' }],
+    fields: [{ value: 'DATA_PROCESSING', label: 'Benyttes databehandler(e)' }],
   },
   {
     label: 'Lagringsbehov',
@@ -35,15 +61,7 @@ const GROUPS: IGroup[] = [
   },
   {
     label: 'Personkonsekvensvurdering (PVK)',
-    fields: [{ value: 'DPIA', label: 'Personkonsekvensvurdering (PVK)' }],
-  },
-  {
-    label: 'Kunstig intelligens',
-    fields: [{ value: 'AI_USAGE_DESCRIPTION', label: 'Kunstig intelligens' }],
-  },
-  {
-    label: 'Organisering',
-    fields: [{ value: 'AFFILIATION', label: 'Organisering' }],
+    fields: [{ value: 'DPIA', label: 'Er det behov for PVK?' }],
   },
 ]
 
@@ -78,7 +96,7 @@ const getFieldChangeSummary = async (
 export const ProcessChangesPage = () => {
   const [groupLabel, setGroupLabel] = useState(ALL_LABEL)
   const [from, setFrom] = useState('2025-01-01')
-  const [to, setTo] = useState('2026-01-01')
+  const [to, setTo] = useState('2025-12-31')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
   const [results, setResults] = useState<IResultRow[]>([])

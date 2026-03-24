@@ -10,7 +10,13 @@ public enum ProcessAuditField {
     RETENTION("retention", "Oppbevaringstid"),
     DPIA("dpia", "PVK"),
     AFFILIATION("affiliation", "Tilhørighet"),
-    AI_USAGE_DESCRIPTION("aiUsageDescription", "Kunstig intelligens");
+    AFFILIATION_DEPARTMENT("affiliation,nomDepartmentId", "Avdeling"),
+    AFFILIATION_SUB_DEPARTMENTS("affiliation,subDepartments", "Linja"),
+    AFFILIATION_PRODUCT_TEAMS("affiliation,productTeams", "Team"),
+    COMMON_EXTERNAL_PROCESS_RESPONSIBLE("commonExternalProcessResponsible", "Felles behandlingsansvarlig"),
+    AI_USAGE_DESCRIPTION("aiUsageDescription", "Kunstig intelligens"),
+    AI_IN_USE("aiUsageDescription,aiUsage", "Benyttes KI-systemer"),
+    AI_REUSING_PERSONAL_INFORMATION("aiUsageDescription,reusingPersonalInformation", "Gjenbrukes personopplysningene til å utvikle KI-systemer?");
 
     public final String jsonKey;
     public final String displayName;
