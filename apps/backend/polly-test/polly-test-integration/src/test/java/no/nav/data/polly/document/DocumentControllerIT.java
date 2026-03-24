@@ -166,7 +166,9 @@ class DocumentControllerIT extends IntegrationTestBase {
         var disclosure = createDisclosure("BRUKER", "ART61E", null);
 
         var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
-        policy.getData().getDocumentIds().add(doc.getId());
+        var docIds = new java.util.ArrayList<>(policy.getData().getDocumentIds());
+        docIds.add(doc.getId());
+        policy.getData().setDocumentIds(docIds);
         policyRepository.save(policy);
 
         var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());

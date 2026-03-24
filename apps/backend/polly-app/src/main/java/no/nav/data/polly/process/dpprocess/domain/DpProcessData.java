@@ -10,6 +10,7 @@ import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.dpprocess.domain.sub.DpRetention;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,7 +18,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DpProcessData {
+public class DpProcessData implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String name;
     @Default
