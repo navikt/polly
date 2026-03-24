@@ -3,16 +3,51 @@ import axios from 'axios'
 import { useState } from 'react'
 import { env } from '../../../util/env'
 
-const FIELDS = [
-  { value: 'LEGAL_BASES', label: 'Behandlingsgrunnlag for hele behandlingen' },
-  { value: 'PURPOSES', label: 'Formål' },
-  { value: 'AUTOMATIC_PROCESSING', label: 'Automatisk behandling' },
-  { value: 'PROFILING', label: 'Profilering' },
-  { value: 'DATA_PROCESSING', label: 'Databehandling' },
-  { value: 'RETENTION', label: 'Oppbevaringstid' },
-  { value: 'DPIA', label: 'PVK' },
-  { value: 'AFFILIATION', label: 'Tilhørighet' },
+interface IFieldDef {
+  value: string
+  label: string
+}
+
+interface IGroup {
+  label: string
+  fields: IFieldDef[]
+}
+
+const GROUPS: IGroup[] = [
+  {
+    label: 'Behandlingsgrunnlag for hele behandlingen',
+    fields: [{ value: 'LEGAL_BASES', label: 'Behandlingsgrunnlag for hele behandlingen' }],
+  },
+  {
+    label: 'Automatisering og profilering',
+    fields: [
+      { value: 'AUTOMATIC_PROCESSING', label: 'Helautomatisk behandling' },
+      { value: 'PROFILING', label: 'Profilering' },
+    ],
+  },
+  {
+    label: 'Databehandler',
+    fields: [{ value: 'DATA_PROCESSING', label: 'Databehandler' }],
+  },
+  {
+    label: 'Lagringsbehov',
+    fields: [{ value: 'RETENTION', label: 'Lagringsbehov' }],
+  },
+  {
+    label: 'Personkonsekvensvurdering (PVK)',
+    fields: [{ value: 'DPIA', label: 'Personkonsekvensvurdering (PVK)' }],
+  },
+  {
+    label: 'Kunstig intelligens',
+    fields: [{ value: 'AI_USAGE_DESCRIPTION', label: 'Kunstig intelligens' }],
+  },
+  {
+    label: 'Organisering',
+    fields: [{ value: 'AFFILIATION', label: 'Organisering' }],
+  },
 ]
+
+const ALL_LABEL = 'Alle felt'
 
 interface IFieldChangeSummary {
   field: string
@@ -21,6 +56,11 @@ interface IFieldChangeSummary {
   to: string
   totalProcesses: number
   changedCount: number
+}
+
+interface IResultRow {
+  label: string
+  summary: IFieldChangeSummary
 }
 
 const getFieldChangeSummary = async (
@@ -36,19 +76,34 @@ const getFieldChangeSummary = async (
 }
 
 export const ProcessChangesPage = () => {
-  const [field, setField] = useState(FIELDS[0].value)
+  const [groupLabel, setGroupLabel] = useState(ALL_LABEL)
   const [from, setFrom] = useState('2025-01-01')
   const [to, setTo] = useState('2026-01-01')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
-  const [result, setResult] = useState<IFieldChangeSummary | undefined>()
+  const [results, setResults] = useState<IResultRow[]>([])
+
+  const selectedGroup = GROUPS.find((g) => g.label === groupLabel)
+
+  const handleGroupChange = (label: string) => {
+    setGroupLabel(label)
+    setResults([])
+    setError(undefined)
+  }
 
   const search = async () => {
     setLoading(true)
     setError(undefined)
-    setResult(undefined)
+    setResults([])
+    const fieldsToFetch = selectedGroup ? selectedGroup.fields : GROUPS.flatMap((g) => g.fields)
     try {
-      setResult(await getFieldChangeSummary(field, from, to))
+      const rows = await Promise.all(
+        fieldsToFetch.map(async (f) => ({
+          label: f.label,
+          summary: await getFieldChangeSummary(f.value, from, to),
+        }))
+      )
+      setResults(rows)
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || 'Noe gikk galt')
     }
@@ -62,10 +117,11 @@ export const ProcessChangesPage = () => {
       </Heading>
 
       <div className="flex flex-col gap-4 max-w-xl">
-        <Select label="Felt" value={field} onChange={(e) => setField(e.target.value)}>
-          {FIELDS.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.label}
+        <Select label="Felt" value={groupLabel} onChange={(e) => handleGroupChange(e.target.value)}>
+          <option value={ALL_LABEL}>{ALL_LABEL}</option>
+          {GROUPS.map((g) => (
+            <option key={g.label} value={g.label}>
+              {g.label}
             </option>
           ))}
         </Select>
@@ -113,7 +169,7 @@ export const ProcessChangesPage = () => {
 
       {error && <p className="mt-4 text-red-600">{error}</p>}
 
-      {result && (
+      {results.length > 0 && (
         <div className="mt-8 w-max">
           <Table>
             <Table.Header>
@@ -129,20 +185,20 @@ export const ProcessChangesPage = () => {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              <Table.Row>
-                <Table.DataCell className="whitespace-nowrap">
-                  {result.fieldDisplayName}
-                </Table.DataCell>
-                <Table.DataCell className="whitespace-nowrap">
-                  {result.from} – {result.to}
-                </Table.DataCell>
-                <Table.DataCell className="whitespace-nowrap text-center">
-                  {result.totalProcesses}
-                </Table.DataCell>
-                <Table.DataCell className="whitespace-nowrap text-center">
-                  {result.changedCount}
-                </Table.DataCell>
-              </Table.Row>
+              {results.map((row, i) => (
+                <Table.Row key={i}>
+                  <Table.DataCell className="whitespace-nowrap">{row.label}</Table.DataCell>
+                  <Table.DataCell className="whitespace-nowrap">
+                    {row.summary.from} – {row.summary.to}
+                  </Table.DataCell>
+                  <Table.DataCell className="whitespace-nowrap text-center">
+                    {row.summary.totalProcesses}
+                  </Table.DataCell>
+                  <Table.DataCell className="whitespace-nowrap text-center">
+                    {row.summary.changedCount}
+                  </Table.DataCell>
+                </Table.Row>
+              ))}
             </Table.Body>
           </Table>
         </div>
