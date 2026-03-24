@@ -8,3 +8,4 @@ Applikasjonen er en del av Datakatalog - prosjektet som skal levere en katalog o
 Applikasjonen polly samler all funksjonalitet knyttet til informasjonstyper og policies. En informasjonstype representerer en logisk 
 gruppering av sammenhørende data. Applikasjonen inneholder også kodeverk som benttes av alle applikasjoner i Datakatalog-prosjektet
 
+
