@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PolicyData implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull

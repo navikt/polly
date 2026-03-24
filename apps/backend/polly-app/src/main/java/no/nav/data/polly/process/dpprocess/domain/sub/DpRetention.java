@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionRequest;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class DpRetention implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Integer retentionMonths;

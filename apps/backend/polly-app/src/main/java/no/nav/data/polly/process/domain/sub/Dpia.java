@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.process.dto.sub.DpiaRequest;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 @NoArgsConstructor
 public class Dpia implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Boolean needForDpia;

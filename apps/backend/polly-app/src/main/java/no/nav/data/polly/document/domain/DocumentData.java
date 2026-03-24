@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseRequest;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class DocumentData implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -29,6 +31,7 @@ public class DocumentData implements Serializable {
     @NoArgsConstructor
     public static class InformationTypeUse implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private UUID informationTypeId;

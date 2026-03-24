@@ -12,6 +12,7 @@ import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.process.domain.sub.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProcessData implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull

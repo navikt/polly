@@ -10,6 +10,7 @@ import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 public class InformationTypeData implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class DisclosureData implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String name;
