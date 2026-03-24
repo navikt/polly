@@ -36,6 +36,7 @@ const CreateCodeListModal = ({
   >
     <div>
       <Formik
+        key={String(isOpen)}
         validateOnChange={false}
         validateOnBlur={false}
         onSubmit={(values: ISubmitValues) => {
