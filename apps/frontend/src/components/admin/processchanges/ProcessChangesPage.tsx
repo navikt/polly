@@ -203,7 +203,9 @@ export const ProcessChangesPage = () => {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell className="whitespace-nowrap">Felt</Table.HeaderCell>
-                <Table.HeaderCell className="whitespace-nowrap">Periode</Table.HeaderCell>
+                <Table.HeaderCell className="whitespace-nowrap text-center">
+                  Periode
+                </Table.HeaderCell>
                 <Table.HeaderCell className="whitespace-nowrap text-center">
                   Totalt antall behandlinger
                 </Table.HeaderCell>
@@ -228,7 +230,7 @@ export const ProcessChangesPage = () => {
                   {group.rows.map((row, i) => (
                     <Table.Row key={`${group.groupLabel}-${i}`}>
                       <Table.DataCell className="whitespace-nowrap">{row.label}</Table.DataCell>
-                      <Table.DataCell className="whitespace-nowrap">
+                      <Table.DataCell className="whitespace-nowrap text-center">
                         {row.summary.from} – {row.summary.to}
                       </Table.DataCell>
                       <Table.DataCell className="whitespace-nowrap text-center">
