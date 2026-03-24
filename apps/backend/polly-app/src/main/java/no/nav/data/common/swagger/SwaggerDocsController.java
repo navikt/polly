@@ -35,6 +35,15 @@ public class SwaggerDocsController extends OncePerRequestFilter {
                         super.setHeader(name, value);
                     }
                 }
+
+                @Override
+                public void addHeader(String name, String value) {
+                    if ("Content-Type".equalsIgnoreCase(name)) {
+                        super.setHeader(name, MediaType.APPLICATION_JSON_VALUE);
+                    } else {
+                        super.addHeader(name, value);
+                    }
+                }
             });
         } else {
             chain.doFilter(request, response);
