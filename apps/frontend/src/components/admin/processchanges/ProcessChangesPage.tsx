@@ -111,8 +111,11 @@ export const ProcessChangesPage = () => {
 
   const { datepickerProps: toPickerProps, inputProps: toInputProps } = useDatepicker({
     defaultSelected: new Date('2025-12-31'),
+    fromDate: from ? new Date(from) : undefined,
     onDateChange: (date) => date && setTo(date.toISOString().split('T')[0]),
   })
+
+  const dateRangeInvalid = !!from && !!to && to < from
   const [error, setError] = useState<string | undefined>()
   const [results, setResults] = useState<IGroupResult[]>([])
 
@@ -174,8 +177,12 @@ export const ProcessChangesPage = () => {
           </DatePicker>
         </div>
 
+        {dateRangeInvalid && (
+          <p className="text-red-600 text-sm">Til dato kan ikke være før Fra dato</p>
+        )}
+
         <div>
-          <Button onClick={search} loading={loading} disabled={!from || !to}>
+          <Button onClick={search} loading={loading} disabled={!from || !to || dateRangeInvalid}>
             Hent statistikk
           </Button>
         </div>
