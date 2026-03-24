@@ -114,24 +114,34 @@ export const ProcessChangesPage = () => {
       {error && <p className="mt-4 text-red-600">{error}</p>}
 
       {result && (
-        <div className="mt-8 max-w-xl">
+        <div className="mt-8 w-max">
           <Table>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell>Felt</Table.HeaderCell>
-                <Table.HeaderCell>Periode</Table.HeaderCell>
-                <Table.HeaderCell>Totalt antall behandlinger</Table.HeaderCell>
-                <Table.HeaderCell>Antall med endring</Table.HeaderCell>
+                <Table.HeaderCell className="whitespace-nowrap">Felt</Table.HeaderCell>
+                <Table.HeaderCell className="whitespace-nowrap">Periode</Table.HeaderCell>
+                <Table.HeaderCell className="whitespace-nowrap text-center">
+                  Totalt antall behandlinger
+                </Table.HeaderCell>
+                <Table.HeaderCell className="whitespace-nowrap text-center">
+                  Antall med endring
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               <Table.Row>
-                <Table.DataCell>{result.fieldDisplayName}</Table.DataCell>
-                <Table.DataCell>
+                <Table.DataCell className="whitespace-nowrap">
+                  {result.fieldDisplayName}
+                </Table.DataCell>
+                <Table.DataCell className="whitespace-nowrap">
                   {result.from} – {result.to}
                 </Table.DataCell>
-                <Table.DataCell>{result.totalProcesses}</Table.DataCell>
-                <Table.DataCell>{result.changedCount}</Table.DataCell>
+                <Table.DataCell className="whitespace-nowrap text-center">
+                  {result.totalProcesses}
+                </Table.DataCell>
+                <Table.DataCell className="whitespace-nowrap text-center">
+                  {result.changedCount}
+                </Table.DataCell>
               </Table.Row>
             </Table.Body>
           </Table>
