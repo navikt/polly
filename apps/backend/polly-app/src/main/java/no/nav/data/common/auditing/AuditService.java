@@ -1,16 +1,17 @@
 package no.nav.data.common.auditing;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.common.auditing.dto.AuditMetadata;
 import no.nav.data.polly.process.domain.ProcessAuditField;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +50,23 @@ public class AuditService {
 
         return ((Number) entityManager.createNativeQuery(sql)
                 .setParameter("from", fromDt)
+                .setParameter("to", toDt)
+                .getSingleResult()).longValue();
+    }
+
+    public long countProcessesAtEndOfPeriod(LocalDate to) {
+        String sql = """
+                SELECT COUNT(DISTINCT table_id)
+                FROM audit_version
+                WHERE table_name = 'PROCESS'
+                  AND time < :to
+                  AND table_id NOT IN (
+                      SELECT table_id FROM audit_version
+                      WHERE table_name = 'PROCESS' AND action = 'DELETE' AND time < :to
+                  )
+                """;
+        LocalDateTime toDt = to.plusDays(1).atStartOfDay();
+        return ((Number) entityManager.createNativeQuery(sql)
                 .setParameter("to", toDt)
                 .getSingleResult()).longValue();
     }
