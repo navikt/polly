@@ -9,7 +9,8 @@ public enum ProcessAuditField {
     DATA_PROCESSING("dataProcessing", "Databehandling"),
     RETENTION("retention", "Oppbevaringstid"),
     DPIA("dpia", "PVK"),
-    AFFILIATION("affiliation", "Tilhørighet");
+    AFFILIATION("affiliation", "Tilhørighet"),
+    AI_USAGE_DESCRIPTION("aiUsageDescription", "Kunstig intelligens");
 
     public final String jsonKey;
     public final String displayName;
