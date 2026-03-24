@@ -1,7 +1,6 @@
 import '@/main.css'
 import { useAppState } from '@/util/permissionOverride'
 import 'json-diff-kit/dist/viewer.css'
-import 'moment/locale/nb'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'

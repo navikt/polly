@@ -78,7 +78,8 @@ const CardLegalBasis = ({
       onSubmit={(values) => submit(values)}
       validationSchema={legalBasisSchema()}
       initialValues={initialValues}
-      render={(form: FormikProps<ILegalBasisFormValues>) => (
+    >
+      {(form: FormikProps<ILegalBasisFormValues>) => (
         <div className="bg-white p-4 rounded shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           {renderCardHeader(
             sensitivityLevel === ESensitivityLevel.ART9
@@ -178,7 +179,7 @@ const CardLegalBasis = ({
           )}
         </div>
       )}
-    />
+    </Formik>
   )
 }
 

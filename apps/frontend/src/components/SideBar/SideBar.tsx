@@ -65,6 +65,7 @@ const SideBar = () => (
               alt="Nav logo"
               width={120}
               height={44}
+              priority
               style={{ width: '100%', height: 'auto' }}
             />
           </div>
@@ -72,7 +73,13 @@ const SideBar = () => (
 
         <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
           <div className="flex justify-center items-center">
-            <Image src="/Slack_Monochrome_White.svg" width={60} height={60} alt="slack logo" />
+            <Image
+              src="/Slack_Monochrome_White.svg"
+              width={60}
+              height={60}
+              alt="slack logo"
+              style={{ width: 60, height: 60 }}
+            />
             <BodyShort size="small" style={{ color: '#E0E1E5' }}>
               #behandlingskatalogen
             </BodyShort>

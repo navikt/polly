@@ -81,7 +81,8 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
           process.policies,
           codelistUtils.getCodes(EListName.SUBJECT_CATEGORY)
         )}
-        render={(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
+      >
+        {(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
           return (
             <Form onKeyDown={disableEnter}>
               <Modal.Body>
@@ -265,7 +266,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
             </Form>
           )
         }}
-      />
+      </Formik>
     </Modal>
   )
 }
