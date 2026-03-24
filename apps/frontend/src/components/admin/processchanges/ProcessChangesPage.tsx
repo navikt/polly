@@ -1,4 +1,4 @@
-import { Button, Heading, Loader, Select, Table } from '@navikt/ds-react'
+import { Button, DatePicker, Heading, Loader, Select, Table, useDatepicker } from '@navikt/ds-react'
 import axios from 'axios'
 import { useState } from 'react'
 import { env } from '../../../util/env'
@@ -103,6 +103,16 @@ export const ProcessChangesPage = () => {
   const [from, setFrom] = useState('2025-01-01')
   const [to, setTo] = useState('2025-12-31')
   const [loading, setLoading] = useState(false)
+
+  const { datepickerProps: fromPickerProps, inputProps: fromInputProps } = useDatepicker({
+    defaultSelected: new Date('2025-01-01'),
+    onDateChange: (date) => date && setFrom(date.toISOString().split('T')[0]),
+  })
+
+  const { datepickerProps: toPickerProps, inputProps: toInputProps } = useDatepicker({
+    defaultSelected: new Date('2025-12-31'),
+    onDateChange: (date) => date && setTo(date.toISOString().split('T')[0]),
+  })
   const [error, setError] = useState<string | undefined>()
   const [results, setResults] = useState<IGroupResult[]>([])
 
@@ -155,31 +165,13 @@ export const ProcessChangesPage = () => {
         </Select>
 
         <div className="flex gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-sm" htmlFor="from-date">
-              Fra dato
-            </label>
-            <input
-              id="from-date"
-              type="date"
-              className="border border-gray-400 rounded px-2 py-1"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-            />
-          </div>
+          <DatePicker {...fromPickerProps} dropdownCaption>
+            <DatePicker.Input {...fromInputProps} label="Fra dato" />
+          </DatePicker>
 
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-sm" htmlFor="to-date">
-              Til dato
-            </label>
-            <input
-              id="to-date"
-              type="date"
-              className="border border-gray-400 rounded px-2 py-1"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-            />
-          </div>
+          <DatePicker {...toPickerProps} dropdownCaption>
+            <DatePicker.Input {...toInputProps} label="Til dato" />
+          </DatePicker>
         </div>
 
         <div>
