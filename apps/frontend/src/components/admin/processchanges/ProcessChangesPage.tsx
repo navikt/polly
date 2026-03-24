@@ -81,6 +81,11 @@ interface IResultRow {
   summary: IFieldChangeSummary
 }
 
+interface IGroupResult {
+  groupLabel: string
+  rows: IResultRow[]
+}
+
 const getFieldChangeSummary = async (
   field: string,
   from: string,
@@ -99,7 +104,7 @@ export const ProcessChangesPage = () => {
   const [to, setTo] = useState('2025-12-31')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
-  const [results, setResults] = useState<IResultRow[]>([])
+  const [results, setResults] = useState<IGroupResult[]>([])
 
   const selectedGroup = GROUPS.find((g) => g.label === groupLabel)
 
@@ -113,15 +118,20 @@ export const ProcessChangesPage = () => {
     setLoading(true)
     setError(undefined)
     setResults([])
-    const fieldsToFetch = selectedGroup ? selectedGroup.fields : GROUPS.flatMap((g) => g.fields)
+    const groupsToFetch = selectedGroup ? [selectedGroup] : GROUPS
     try {
-      const rows = await Promise.all(
-        fieldsToFetch.map(async (f) => ({
-          label: f.label,
-          summary: await getFieldChangeSummary(f.value, from, to),
+      const groupResults = await Promise.all(
+        groupsToFetch.map(async (g) => ({
+          groupLabel: g.label,
+          rows: await Promise.all(
+            g.fields.map(async (f) => ({
+              label: f.label,
+              summary: await getFieldChangeSummary(f.value, from, to),
+            }))
+          ),
         }))
       )
-      setResults(rows)
+      setResults(groupResults)
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || 'Noe gikk galt')
     }
@@ -203,19 +213,33 @@ export const ProcessChangesPage = () => {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {results.map((row, i) => (
-                <Table.Row key={i}>
-                  <Table.DataCell className="whitespace-nowrap">{row.label}</Table.DataCell>
-                  <Table.DataCell className="whitespace-nowrap">
-                    {row.summary.from} – {row.summary.to}
-                  </Table.DataCell>
-                  <Table.DataCell className="whitespace-nowrap text-center">
-                    {row.summary.totalProcesses}
-                  </Table.DataCell>
-                  <Table.DataCell className="whitespace-nowrap text-center">
-                    {row.summary.changedCount}
-                  </Table.DataCell>
-                </Table.Row>
+              {results.map((group) => (
+                <>
+                  {results.length > 1 && (
+                    <Table.Row key={`header-${group.groupLabel}`}>
+                      <Table.DataCell
+                        colSpan={4}
+                        className="font-bold uppercase tracking-wide text-xs bg-deepblue-50 text-deepblue-800 border-t-2 border-deepblue-300 pt-5 pb-2"
+                      >
+                        {group.groupLabel}
+                      </Table.DataCell>
+                    </Table.Row>
+                  )}
+                  {group.rows.map((row, i) => (
+                    <Table.Row key={`${group.groupLabel}-${i}`}>
+                      <Table.DataCell className="whitespace-nowrap">{row.label}</Table.DataCell>
+                      <Table.DataCell className="whitespace-nowrap">
+                        {row.summary.from} – {row.summary.to}
+                      </Table.DataCell>
+                      <Table.DataCell className="whitespace-nowrap text-center">
+                        {row.summary.totalProcesses}
+                      </Table.DataCell>
+                      <Table.DataCell className="whitespace-nowrap text-center">
+                        {row.summary.changedCount}
+                      </Table.DataCell>
+                    </Table.Row>
+                  ))}
+                </>
               ))}
             </Table.Body>
           </Table>
