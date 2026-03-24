@@ -100,6 +100,7 @@ const AdminOptions = ({
     { label: 'Versjonering', href: '/admin/audit' },
     { label: 'Innstillinger', href: '/admin/settings' },
     { label: 'Mail log', href: '/admin/maillog' },
+    { label: 'Endringer i behandlinger', href: '/admin/process-changes' },
     { label: 'Trenger revidering', href: '/admin/request-revision', super: true },
   ]
 

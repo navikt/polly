@@ -20,9 +20,11 @@ import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessAuditField;
 import no.nav.data.polly.process.domain.repo.ProcessCount;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.LastEditedResponse;
+import no.nav.data.polly.process.dto.ProcessFieldChangeSummaryResponse;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
@@ -31,6 +33,7 @@ import no.nav.data.polly.teams.domain.Team;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -239,6 +243,28 @@ public class ProcessReadController {
             throw new ValidationException("No count property selected");
         }
         return ResponseEntity.ok(new ProcessCountResponse(counts));
+    }
+
+    @Operation(summary = "Get field change summary for processes",
+            description = "Returns total process count and how many changed a given field within the date range")
+    @ApiResponse(description = "Field change summary fetched")
+    @GetMapping("/fieldchanges")
+    public ResponseEntity<ProcessFieldChangeSummaryResponse> getFieldChangeSummary(
+            @RequestParam ProcessAuditField field,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        log.info("Received request for process field change summary field={} from={} to={}", field, from, to);
+        long total = repository.count();
+        long changed = auditService.countProcessesWithFieldChanges(field, from, to);
+        return ResponseEntity.ok(ProcessFieldChangeSummaryResponse.builder()
+                .field(field)
+                .fieldDisplayName(field.displayName)
+                .from(from)
+                .to(to)
+                .totalProcesses(total)
+                .changedCount(changed)
+                .build());
     }
 
     /**
