@@ -112,20 +112,18 @@ const getFieldChangeSummary = async (
 
 export const ProcessChangesPage = () => {
   const [groupLabel, setGroupLabel] = useState(ALL_LABEL)
-  const [from, setFrom] = useState('2025-01-01')
-  const [to, setTo] = useState('2025-12-31')
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
   const [loading, setLoading] = useState(false)
 
   const { datepickerProps: fromPickerProps, inputProps: fromInputProps } = useDatepicker({
-    defaultSelected: parseLocalDate('2025-01-01'),
     toDate: to ? parseLocalDate(to) : undefined,
-    onDateChange: (date) => date && setFrom(formatLocalDate(date)),
+    onDateChange: (date) => setFrom(date ? formatLocalDate(date) : ''),
   })
 
   const { datepickerProps: toPickerProps, inputProps: toInputProps } = useDatepicker({
-    defaultSelected: parseLocalDate('2025-12-31'),
     fromDate: from ? parseLocalDate(from) : undefined,
-    onDateChange: (date) => date && setTo(formatLocalDate(date)),
+    onDateChange: (date) => setTo(date ? formatLocalDate(date) : ''),
   })
 
   const dateRangeInvalid = !!from && !!to && to < from
