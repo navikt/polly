@@ -350,7 +350,7 @@ const ModalProcess = ({
                               label="Felles behandlingsansvarlig"
                               tooltip="Er Nav behandlingsansvarlig sammen med annen virksomhet?"
                             />
-                            <div className="mt-2">
+                            <div className="mt-2 mb-4">
                               {showResponsibleSelect && (
                                 <FieldCommonExternalProcessResponsible
                                   thirdParty={formikBag.values.commonExternalProcessResponsible}
