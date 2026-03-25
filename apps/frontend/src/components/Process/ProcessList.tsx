@@ -241,7 +241,6 @@ const ProcessList = ({
           updatedProcess,
         ])
       )
-      handleChangePanel(updatedProcess)
       return true
     } catch (error: any) {
       console.debug(error)
