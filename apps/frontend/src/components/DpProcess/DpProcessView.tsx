@@ -245,7 +245,7 @@ const DpProcessView = () => {
             {!!dpProcess?.affiliation.subDepartments.length && (
               <div className="mt-2">
                 <div>
-                  <span>Underavdeling: </span>
+                  <span>Linja: </span>
                   <ul className="list-disc list-inside">
                     {dpProcess.affiliation.subDepartments.map((subDepartment) => (
                       <li key={subDepartment.code}>
