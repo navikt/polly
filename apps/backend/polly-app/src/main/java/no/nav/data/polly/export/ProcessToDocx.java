@@ -370,7 +370,7 @@ public class ProcessToDocx {
                     text("Seksjon: ", seksjonNames),
                     text("Linja (Ytre etat): ", linjaText),
                     documentAccess.equals(DocumentAccess.INTERNAL) ? text("Produktteam (IT): ", String.join(", ", teamNames)) : text(""),
-                    text("Felles behandlingsansvarlig: ", data.getCommonExternalProcessResponsible() == null ? "Ingen" : shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
+                    text("Felles behandlingsansvarlig: ", data.getCommonExternalProcessResponsible() == null ? "Nei" : shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );
         }
 
