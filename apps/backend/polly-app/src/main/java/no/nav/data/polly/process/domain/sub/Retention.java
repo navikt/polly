@@ -7,11 +7,17 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.process.dto.sub.RetentionRequest;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Retention {
+public class Retention implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private Boolean retentionPlan;
     private Integer retentionMonths;

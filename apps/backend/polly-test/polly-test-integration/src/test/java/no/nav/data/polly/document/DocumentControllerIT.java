@@ -19,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -166,7 +167,9 @@ class DocumentControllerIT extends IntegrationTestBase {
         var disclosure = createDisclosure("BRUKER", "ART61E", null);
 
         var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
-        policy.getData().getDocumentIds().add(doc.getId());
+        var docIds = new ArrayList<>(policy.getData().getDocumentIds());
+        docIds.add(doc.getId());
+        policy.getData().setDocumentIds(docIds);
         policyRepository.save(policy);
 
         var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
