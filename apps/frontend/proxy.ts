@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const BACKEND_URL = process.env.POLLY_BACKEND_URL || 'http://localhost:8080'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
 
   // These are actual Next.js API routes — don't proxy them
@@ -29,8 +29,8 @@ export function middleware(request: NextRequest) {
   return NextResponse.rewrite(targetUrl, { request: { headers: requestHeaders } })
 }
 
-export const config: {
-  matcher: string[]
-} = {
+export default proxy
+
+export const config = {
   matcher: ['/api/:path*', '/login/:path*', '/oauth2/:path*', '/logout/:path*'],
 }
