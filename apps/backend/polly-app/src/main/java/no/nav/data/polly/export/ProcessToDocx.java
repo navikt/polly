@@ -1,36 +1,31 @@
 package no.nav.data.polly.export;
 
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.rest.ChangeStampResponse;
-import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.common.utils.ZipUtils;
-import no.nav.data.integration.nom.NomGraphClient;
-import no.nav.data.integration.nom.domain.OrgEnhet;
-import no.nav.data.polly.alert.AlertService;
-import no.nav.data.polly.alert.dto.PolicyAlert;
-import no.nav.data.polly.codelist.CodelistStaticService;
-import no.nav.data.polly.codelist.commoncode.CommonCodeService;
-import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
-import no.nav.data.polly.codelist.domain.Codelist;
-import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.export.domain.DocumentAccess;
-import no.nav.data.polly.export.domain.FileData;
-import no.nav.data.polly.legalbasis.domain.LegalBasis;
-import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.policy.domain.PolicyData;
-import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessStatus;
-import no.nav.data.polly.process.domain.repo.ProcessRepository;
-import no.nav.data.polly.process.domain.sub.*;
-import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
-import no.nav.data.polly.teams.ResourceService;
-import no.nav.data.polly.teams.TeamService;
-import no.nav.data.polly.teams.domain.Team;
-import no.nav.data.polly.teams.dto.Resource;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.copyOf;
+import static no.nav.data.common.utils.StreamUtils.filter;
+import static org.docx4j.com.google.common.base.Strings.nullToEmpty;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.docx4j.com.google.common.base.Function;
 import org.docx4j.jaxb.Context;
@@ -61,31 +56,41 @@ import org.docx4j.wml.Tr;
 import org.docx4j.wml.TrPr;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
-import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.copyOf;
-import static no.nav.data.common.utils.StreamUtils.filter;
-import static org.docx4j.com.google.common.base.Strings.nullToEmpty;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.rest.ChangeStampResponse;
+import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.common.utils.ZipUtils;
+import no.nav.data.integration.nom.NomGraphClient;
+import no.nav.data.integration.nom.domain.OrgEnhet;
+import no.nav.data.polly.alert.AlertService;
+import no.nav.data.polly.alert.dto.PolicyAlert;
+import no.nav.data.polly.codelist.CodelistStaticService;
+import no.nav.data.polly.codelist.commoncode.CommonCodeService;
+import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
+import no.nav.data.polly.codelist.domain.Codelist;
+import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.export.domain.DocumentAccess;
+import no.nav.data.polly.export.domain.FileData;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyData;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessData;
+import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.domain.sub.AiUsageDescription;
+import no.nav.data.polly.process.domain.sub.DataProcessing;
+import no.nav.data.polly.process.domain.sub.Dpia;
+import no.nav.data.polly.process.domain.sub.NoDpiaReason;
+import no.nav.data.polly.process.domain.sub.Retention;
+import no.nav.data.polly.processor.domain.Processor;
+import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.polly.teams.ResourceService;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
+import no.nav.data.polly.teams.dto.Resource;
 
 @Service
 @RequiredArgsConstructor
@@ -349,8 +354,14 @@ public class ProcessToDocx {
                     .map(teamId -> Map.entry(teamId, teamService.getTeam(teamId)))
                     .map(t -> t.getValue().map(Team::getName).orElse(t.getKey()))
                     .collect(toList());
+            var seksjonNames = data.getAffiliation().getSeksjoner() == null ? "" :
+                    data.getAffiliation().getSeksjoner().stream()
+                            .map(s -> s.getNomSeksjonName())
+                            .filter(java.util.Objects::nonNull)
+                            .collect(Collectors.joining(", "));
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
+                    text("Seksjon: ", seksjonNames),
                     text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
                     documentAccess.equals(DocumentAccess.INTERNAL) ? text("Produktteam (IT): ", String.join(", ", teamNames)) : text(""),
                     text("Felles behandlingsansvarlig: ", data.getCommonExternalProcessResponsible() == null ? "Ingen" : shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
