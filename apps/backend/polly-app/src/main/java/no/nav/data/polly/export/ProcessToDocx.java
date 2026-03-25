@@ -360,10 +360,15 @@ public class ProcessToDocx {
                             .map(s -> s.getNomSeksjonName())
                             .filter(Objects::nonNull)
                             .collect(Collectors.joining(", "));
+            var departmentName = data.getAffiliation().getNomDepartmentName() != null
+                    ? data.getAffiliation().getNomDepartmentName()
+                    : "Ikke angitt";
+            var linjaNames = convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd));
+            var linjaText = linjaNames.isEmpty() ? "Ikke angitt" : String.join(", ", linjaNames);
             addTexts(
-                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
+                    text("Avdeling: ", departmentName),
                     text("Seksjon: ", seksjonNames),
-                    text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
+                    text("Linja (Ytre etat): ", linjaText),
                     documentAccess.equals(DocumentAccess.INTERNAL) ? text("Produktteam (IT): ", String.join(", ", teamNames)) : text(""),
                     text("Felles behandlingsansvarlig: ", data.getCommonExternalProcessResponsible() == null ? "Ingen" : shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );
