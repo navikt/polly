@@ -360,8 +360,13 @@ public class ProcessToDocx {
                             .map(s -> s.getNomSeksjonName())
                             .filter(Objects::nonNull)
                             .collect(Collectors.joining(", "));
+            var departmentId = data.getAffiliation().getDepartment();
+            var departmentName = departmentId == null ? "Ikke angitt" :
+                    nomGraphClient.getAvdelingById(departmentId)
+                            .map(OrgEnhet::getNavn)
+                            .orElse("Ikke angitt");
             addTexts(
-                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
+                    text("Avdeling: ", departmentName),
                     text("Seksjon: ", seksjonNames),
                     text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
                     documentAccess.equals(DocumentAccess.INTERNAL) ? text("Produktteam (IT): ", String.join(", ", teamNames)) : text(""),
