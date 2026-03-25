@@ -354,10 +354,11 @@ public class ProcessToDocx {
                     .map(teamId -> Map.entry(teamId, teamService.getTeam(teamId)))
                     .map(t -> t.getValue().map(Team::getName).orElse(t.getKey()))
                     .collect(toList());
-            var seksjonNames = data.getAffiliation().getSeksjoner() == null ? "" :
-                    data.getAffiliation().getSeksjoner().stream()
+            var seksjoner = data.getAffiliation().getSeksjoner();
+            var seksjonNames = (seksjoner == null || seksjoner.isEmpty()) ? "Ikke angitt" :
+                    seksjoner.stream()
                             .map(s -> s.getNomSeksjonName())
-                            .filter(java.util.Objects::nonNull)
+                            .filter(Objects::nonNull)
                             .collect(Collectors.joining(", "));
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
