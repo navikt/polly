@@ -6,15 +6,15 @@
 
 **Mac (VS Code):**
 
-1. Åpne filen i VS Code
-2. Trykk `Cmd+Shift+X` → søk etter `Markdown Preview Mermaid Support` og installer den
-3. Trykk `Cmd+Shift+V` for forhåndsvisning, eller `Cmd+K V` for å åpne den ved siden av koden
+1. Åpne filen i VS Code.
+2. Trykk `Cmd+Shift+X` → søk etter `Markdown Preview Mermaid Support` og installer den.
+3. For å forhåndsvise ordboka og mermaid-diagram, trykk `Cmd+Shift+V`.
 
 **Windows (VS Code):**
 
 1. Åpne filen i VS Code
-2. Trykk `Ctrl+Shift+X` → søk etter `Markdown Preview Mermaid Support` og installer den
-3. Trykk `Ctrl+Shift+V` for forhåndsvisning, eller `Ctrl+K V` for å åpne den ved siden av koden
+2. Trykk `Ctrl+Shift+X` → søk etter `Markdown Preview Mermaid Support` og installer den.
+3. For å forhåndsvise ordboka og mermaid-diagram, trykk `Ctrl+Shift+V`.
 
 ---
 
