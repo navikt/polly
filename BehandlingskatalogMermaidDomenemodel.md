@@ -134,3 +134,140 @@ classDiagram
     Kodeverk <.. BehandlingsData : kodeoppslag
     Kodeverk <.. KoblingData : kodeoppslag
 ```
+
+---
+
+## Sekvensdiagrammer
+
+### 1. Laste inn en behandlingsside
+
+```mermaid
+sequenceDiagram
+    actor Bruker
+    participant Frontend
+    participant ProcessController
+    participant PolicyController
+    participant AlertController
+    participant DB as PostgreSQL
+
+    Bruker->>Frontend: Åpner behandlingsside
+    Frontend->>ProcessController: GET /process/{id}
+    ProcessController->>DB: SELECT * FROM process WHERE id=?
+    DB-->>ProcessController: Process + ProcessData
+    ProcessController-->>Frontend: ProcessResponse
+
+    Frontend->>PolicyController: GET /policy?processId={id}
+    PolicyController->>DB: SELECT * FROM policy WHERE process_id=?
+    DB-->>PolicyController: List<Policy>
+    PolicyController-->>Frontend: List<PolicyResponse>
+
+    Frontend->>AlertController: GET /alert/process/{id}
+    AlertController->>DB: SELECT * FROM generic_storage WHERE type=ALERT
+    DB-->>AlertController: List<AlertEvent>
+    AlertController-->>Frontend: ProcessAlert
+
+    Frontend-->>Bruker: Viser behandling med opplysningstyper og varsler
+```
+
+---
+
+### 2. Eksportere behandling til DOCX
+
+```mermaid
+sequenceDiagram
+    actor Bruker
+    participant Frontend
+    participant ExportController
+    participant ProcessToDocx
+    participant ProcessRepository
+    participant ProcessorRepository
+    participant AlertService
+
+    Bruker->>Frontend: Klikker "Last ned DOCX"
+    Frontend->>ExportController: GET /export/process?list=PURPOSE&code=XYZ
+    ExportController->>ProcessRepository: findByPurpose("XYZ")
+    ProcessRepository-->>ExportController: List<Process>
+    ExportController->>ProcessToDocx: generateDocFor(PURPOSE, "XYZ", INTERNAL)
+    ProcessToDocx->>ProcessorRepository: findAllById(processorIds)
+    ProcessorRepository-->>ProcessToDocx: List<Processor>
+    ProcessToDocx->>AlertService: checkAlertsForProcess(process)
+    AlertService-->>ProcessToDocx: ProcessAlert
+    ProcessToDocx-->>ExportController: byte[] (DOCX)
+    ExportController-->>Frontend: application/octet-stream
+    Frontend-->>Bruker: Laster ned .docx-fil
+```
+
+---
+
+### 3. Opprette en behandling (skriveflyt)
+
+```mermaid
+sequenceDiagram
+    actor Bruker
+    participant Frontend
+    participant ProcessWriteController
+    participant ProcessRequestValidator
+    participant ProcessService
+    participant AlertService
+    participant DB as PostgreSQL
+
+    Bruker->>Frontend: Fyller ut og lagrer behandling
+    Frontend->>ProcessWriteController: POST /process
+    ProcessWriteController->>ProcessRequestValidator: validate(request)
+    ProcessRequestValidator-->>ProcessWriteController: OK / ValidationException
+    ProcessWriteController->>ProcessService: save(process)
+    ProcessService->>DB: INSERT INTO process
+    DB-->>ProcessService: Process
+    ProcessService->>AlertService: updateAlerts(process)
+    AlertService->>DB: UPSERT alert_events
+    ProcessService-->>ProcessWriteController: ProcessResponse
+    ProcessWriteController-->>Frontend: 201 Created
+    Frontend-->>Bruker: Behandling opprettet
+```
+
+---
+
+### 4. Varselgenerering (hva skjer bak kulissene)
+
+```mermaid
+sequenceDiagram
+    participant ProcessService
+    participant AlertService
+    participant AlertRepository
+    participant DB as PostgreSQL
+
+    ProcessService->>AlertService: updateAlerts(process)
+    AlertService->>AlertRepository: deleteAlertsForProcess(processId)
+    loop For each Policy
+        AlertService->>AlertService: checkMissingLegalBasis(policy)
+        AlertService->>AlertService: checkExcessInfo(policy)
+        AlertService->>AlertService: checkMissingArt6(policy)
+        AlertService->>AlertService: checkMissingArt9(policy)
+    end
+    AlertService->>AlertRepository: saveAll(alertEvents)
+    AlertRepository->>DB: INSERT INTO generic_storage (type=ALERT_EVENT)
+```
+
+---
+
+## Systemarkitektur
+
+```mermaid
+graph TD
+    Bruker["Bruker (nettleser)"]
+    FE["Frontend (Next.js / GCP)"]
+    BE["Backend (Spring Boot / GCP)"]
+    DB[("PostgreSQL")]
+    NOM["NOM (NAV org-chart)"]
+    Team["Teamkatalogen"]
+    Kodeverk["NAV Kodeverk (land)"]
+    BQ["GCP BigQuery (AAREG)"]
+
+    Bruker -->|HTTPS| FE
+    FE -->|REST API| BE
+    BE --> DB
+    BE -->|GraphQL| NOM
+    BE -->|REST| Team
+    BE -->|REST| Kodeverk
+    BE -->|BigQuery API| BQ
+```
