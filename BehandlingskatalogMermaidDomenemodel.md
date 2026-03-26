@@ -2,6 +2,20 @@
 
 **Opprettet:** 26. mars 2026
 
+## Innholdsfortegnelse
+
+- [Slik åpner du filen](#slik-åpner-du-filen)
+- [Ordboka (Frontend-navn → Backend-navn)](#ordboka-frontend-navn--backend-navn)
+- [Domenemodell](#domenemodell)
+- [Sekvensdiagrammer](#sekvensdiagrammer)
+  - [1. Laste inn en behandlingsside](#1-laste-inn-en-behandlingsside)
+  - [2. Eksportere behandling til DOCX](#2-eksportere-behandling-til-docx)
+  - [3. Opprette en behandling (skriveflyt)](#3-opprette-en-behandling-skriveflyt)
+  - [4. Varselgenerering (hva skjer bak kulissene)](#4-varselgenerering-hva-skjer-bak-kulissene)
+- [Systemarkitektur](#systemarkitektur)
+
+---
+
 ## Slik åpner du filen
 
 **Mac (VS Code):**
