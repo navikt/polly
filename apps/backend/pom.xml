@@ -41,7 +41,7 @@
         <guava.version>33.5.0-jre</guava.version>
         <jna.version>5.18.1</jna.version>
         <jetbrains.annotation.version>26.1.0</jetbrains.annotation.version>
-        <stax2-api.version>4.2.2</stax2-api.version>
+        <stax2-api.version>4.3.0</stax2-api.version>
 
         <!-- Test -->
         <testcontainers.version>2.0.4</testcontainers.version>
