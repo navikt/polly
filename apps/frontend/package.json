@@ -78,7 +78,7 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/shortid": "2.2.0",
-    "@typescript-eslint/eslint-plugin": "8.58.0",
+    "@typescript-eslint/eslint-plugin": "8.58.1",
     "@typescript-eslint/parser": "8.58.1",
     "autoprefixer": "10.4.27",
     "encoding": "0.1.13",
