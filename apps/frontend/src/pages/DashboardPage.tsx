@@ -28,8 +28,22 @@ export const DashboardPage = () => {
         <FilterDashboardStatus setFilter={setDashboardStatus} />
       </div>
 
-      {dashboardData && <Departments data={dashboardData} />}
-      {dashboardData && <Seksjoner data={dashboardData} />}
+      {dashboardData && (
+        <div className="w-full mt-6">
+          <Heading size="medium" className="mb-2">
+            Avdeling
+          </Heading>
+          <Departments data={dashboardData} />
+        </div>
+      )}
+      {dashboardData && (
+        <div className="w-full mt-6">
+          <Heading size="medium" className="mb-2">
+            Seksjon
+          </Heading>
+          <Seksjoner data={dashboardData} />
+        </div>
+      )}
       {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />}
       {!dashboardData && (
         <div className="flex w-full justify-center">
