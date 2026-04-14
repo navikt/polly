@@ -417,6 +417,7 @@ export const MainSearch = () => {
           loadOptions={useMainSearchOption}
           components={{ Option, DropdownIndicator }}
           noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
+          tabSelectsValue={false}
           controlShouldRenderValue={false}
           loadingMessage={() => 'Søker...'}
           isClearable={false}
@@ -430,7 +431,7 @@ export const MainSearch = () => {
             })()
           }}
         />
-        <div className="relative ml-1 flex items-center">
+        <div className="relative ml-2 flex items-center">
           <Button
             onClick={() => setFilter(!filter)}
             icon={
