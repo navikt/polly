@@ -7,6 +7,7 @@ import {
   IAllDashCount,
   IDepartmentDashCount,
   IProductAreaDashCount,
+  ISeksjonDashCount,
 } from '../../constants'
 import { ESection } from '../../pages/ProcessPage'
 import { clickOnPieChartSlice } from '../../util/dashboard'
@@ -18,7 +19,7 @@ import TriChart from './TriChart'
 const chartSize = 80
 
 type TChartsProps = {
-  chartData: IProductAreaDashCount | IDepartmentDashCount | IAllDashCount
+  chartData: IProductAreaDashCount | IDepartmentDashCount | IAllDashCount | ISeksjonDashCount
   processStatus: EProcessStatusFilter
   type?: ESection
   departmentCode?: string
