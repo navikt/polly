@@ -60,11 +60,13 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
         <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
           <div className="flex flex-col items-center justify-around w-52 h-28">
             <RouteLink
-              href={genProcessPath(
-                ESection.department,
-                department.department ? department.department : 'INGEN',
-                undefined
-              )}
+              href={
+                genProcessPath(
+                  ESection.department,
+                  department.department ? department.department : 'INGEN',
+                  undefined
+                ) + '&tab=Dashboard'
+              }
               style={{ textDecoration: 'none' }}
             >
               <Label style={{ color: 'var(--ax-text-accent)', textAlign: 'center' }}>
@@ -153,11 +155,9 @@ const Departments = (props: TDepartmentsProps) => {
   }
 
   return (
-    <div className="w-full flex flex-wrap justify-between">
+    <div className="w-full flex flex-wrap gap-4">
       {sortedData().map((department: DepartmentProcess, index: number) => (
-        <div key={index} className="mt-4">
-          <DepartmentCard department={department} />
-        </div>
+        <DepartmentCard key={index} department={department} />
       ))}
     </div>
   )

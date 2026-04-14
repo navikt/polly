@@ -24,6 +24,7 @@ interface IProps {
   filter?: EProcessStatus
   thirdTabTitle?: string
   thirdTabContent?: ReactNode
+  defaultTab?: string
 }
 
 export const ProcessDisclosureTabs = (props: IProps) => {
@@ -40,6 +41,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     thirdTabTitle,
     thirdTabContent,
     dpProcessData,
+    defaultTab,
   } = props
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
@@ -115,7 +117,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
   }
 
   return (
-    <Tabs defaultValue="behandlinger">
+    <Tabs defaultValue={defaultTab ?? 'behandlinger'}>
       <Tabs.List>
         <Tabs.Tab value="behandlinger" label="Behandlinger" />
         <Tabs.Tab value="dpprocess" label="NAV som databehandler" />
@@ -143,7 +145,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
       <Tabs.Panel value="utleveringer">
         <div className="my-2">
           <div className="flex">
-            <Heading size="xlarge" level="2">
+            <Heading size="small" level="2">
               Utleveringer ({disclosureData ? disclosureData.length : 0})
             </Heading>
             <Spacer />

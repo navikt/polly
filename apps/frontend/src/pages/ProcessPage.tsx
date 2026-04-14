@@ -4,13 +4,16 @@ import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { getDpProcessByDepartment } from '../api/DpProcessApi'
 import { getDashboard, getDisclosureByDepartment } from '../api/GetAllApi'
+import { getAvdelingByNomId, getSeksjonerForNomAvdeling } from '../api/NomApi'
 import Charts from '../components/Charts/Charts'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
+import Seksjoner from '../components/Dashboard/Seksjoner'
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'
 import {
   EProcessStatus,
   EProcessStatusFilter,
+  IDashboardData,
   IDepartmentDashCount,
   IDisclosure,
   IDpProcess,
@@ -51,9 +54,13 @@ export type TPathParams = {
 const ProcessPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [chartData, setChartData] = useState<IDepartmentDashCount>()
+  const [dashboardData, setDashboardData] = useState<IDashboardData>()
+  const [departmentSeksjonIds, setDepartmentSeksjonIds] = useState<string[]>([])
+  const [avdelingName, setAvdelingName] = useState<string>('')
   const [disclosureData, setDisclosureData] = useState<IDisclosure[]>([])
   const [dpProcessData, setDpProcessData] = useState<IDpProcess[]>([])
   const filter = useQueryParam<EProcessStatus>('filter')
+  const tab = useQueryParam<string>('tab')
   const params = useParams<TPathParams>()
   const { section, code, processId } = params
   const location = useLocation()
@@ -79,13 +86,23 @@ const ProcessPage = () => {
       ;(async () => {
         setIsLoading(true)
         const res = await getDashboard(EProcessStatusFilter.All)
-        if (res) setChartData(res.departments.find((d) => d.department === code))
+        if (res) {
+          setChartData(res.departments.find((d) => d.department === code))
+          setDashboardData(res)
+        }
 
         if (code) {
-          const disclosureResponse = await getDisclosureByDepartment(code)
+          const [seksjonerForAvdeling, disclosureResponse, dpProcessResponse, avdeling] =
+            await Promise.all([
+              getSeksjonerForNomAvdeling(code),
+              getDisclosureByDepartment(code),
+              getDpProcessByDepartment(code),
+              getAvdelingByNomId(code),
+            ])
+          setDepartmentSeksjonIds(seksjonerForAvdeling.map((s) => s.id))
           if (disclosureResponse) setDisclosureData(disclosureResponse.content)
-          const dpProcessResponse = await getDpProcessByDepartment(code)
           if (dpProcessResponse) setDpProcessData(dpProcessResponse.content)
+          if (avdeling) setAvdelingName(avdeling.navn)
         }
 
         setIsLoading(false)
@@ -127,10 +144,11 @@ const ProcessPage = () => {
                 moveScroll={moveScroll}
                 isEditable={true}
                 thirdTabTitle="Dashboard"
+                defaultTab={tab ?? undefined}
                 thirdTabContent={
                   <div className="mb-12">
-                    <Heading size="small" level="2">
-                      Oversikt
+                    <Heading size="small" level="2" className="mt-4">
+                      Oversikt for {avdelingName || code} med alle seksjoner
                     </Heading>
                     {chartData && (
                       <Charts
@@ -143,6 +161,21 @@ const ProcessPage = () => {
                             : ESection.productarea
                         }
                       />
+                    )}
+                    {dashboardData && (
+                      <>
+                        <Heading size="small" level="2" className="mt-6">
+                          Seksjoner
+                        </Heading>
+                        <Seksjoner
+                          data={{
+                            ...dashboardData,
+                            seksjoner: (dashboardData.seksjoner ?? []).filter((s) =>
+                              departmentSeksjonIds.includes(s.seksjonId)
+                            ),
+                          }}
+                        />
+                      </>
                     )}
                   </div>
                 }

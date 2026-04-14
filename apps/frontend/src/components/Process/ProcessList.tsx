@@ -366,7 +366,7 @@ const ProcessList = ({
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <div className="min-w-0 sm:mr-auto">
           {!hideTitle && (
-            <Heading size="xlarge" level="2">
+            <Heading size="small" level="2">
               {titleOverride || 'Behandlinger'} ({processList.length})
             </Heading>
           )}

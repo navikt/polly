@@ -5,7 +5,6 @@ import { getDashboard } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
 import Departments from '../components/Dashboard/Departments'
 import { FilterDashboardStatus } from '../components/Dashboard/FilterDashboardStatus'
-import Seksjoner from '../components/Dashboard/Seksjoner'
 import { EProcessStatusFilter, IDashboardData } from '../constants'
 
 export const DashboardPage = () => {
@@ -23,7 +22,7 @@ export const DashboardPage = () => {
 
   return (
     <div className="mb-12 flex flex-wrap">
-      <div className="flex justify-between w-full">
+      <div className="flex flex-wrap justify-between w-full gap-2">
         <Heading size="large">Dashboard</Heading>
         <FilterDashboardStatus setFilter={setDashboardStatus} />
       </div>
@@ -34,14 +33,6 @@ export const DashboardPage = () => {
             Avdeling
           </Heading>
           <Departments data={dashboardData} />
-        </div>
-      )}
-      {dashboardData && (
-        <div className="w-full mt-6">
-          <Heading size="medium" className="mb-2">
-            Seksjon
-          </Heading>
-          <Seksjoner data={dashboardData} />
         </div>
       )}
       {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />}

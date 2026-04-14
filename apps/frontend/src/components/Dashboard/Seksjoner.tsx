@@ -68,11 +68,9 @@ const Seksjoner = (props: TSeksjonerProps) => {
   }
 
   return (
-    <div className="w-full flex flex-wrap justify-between">
+    <div className="w-full flex flex-wrap gap-4">
       {sortedData().map((seksjon: ISeksjonDashCount, index: number) => (
-        <div key={index} className="mt-4">
-          <SeksjonCard seksjon={seksjon} />
-        </div>
+        <SeksjonCard key={index} seksjon={seksjon} />
       ))}
     </div>
   )
