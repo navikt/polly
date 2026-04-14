@@ -811,6 +811,7 @@ export interface IDashboardData {
   all: IAllDashCount
   departments: IDepartmentDashCount[]
   productAreas: IProductAreaDashCount[]
+  seksjoner: ISeksjonDashCount[]
 }
 
 interface IDashCount {
@@ -847,6 +848,11 @@ export interface IDepartmentDashCount extends IDashCount {
 
 export interface IProductAreaDashCount extends IDashCount {
   productAreaId: string
+}
+
+export interface ISeksjonDashCount extends IDashCount {
+  seksjonId: string
+  seksjonName: string
 }
 
 export interface ICounter {

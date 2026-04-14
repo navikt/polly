@@ -1,18 +1,18 @@
 package no.nav.data.polly.dashboard.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -26,6 +26,8 @@ public class DashResponse {
     private List<DashCount> departments = new ArrayList<>();
     @Builder.Default
     private List<DashCount> productAreas = new ArrayList<>();
+    @Builder.Default
+    private List<DashCount> seksjoner = new ArrayList<>();
 
     @JsonIgnore
     @Builder.Default
@@ -36,6 +38,9 @@ public class DashResponse {
     @JsonIgnore
     @Builder.Default
     private Map<String, DashCount> dashProductAreaMap = new HashMap<>();
+    @JsonIgnore
+    @Builder.Default
+    private Map<String, DashCount> dashSeksjonMap = new HashMap<>();
 
     public DashCount department(String department) {
         return dashDepartmentMap.computeIfAbsent(department, s -> {
@@ -62,6 +67,16 @@ public class DashResponse {
         return dashTeamMap.get(team);
     }
 
+    public DashCount seksjon(String seksjonId, String seksjonName) {
+        return dashSeksjonMap.computeIfAbsent(seksjonId, s -> {
+            var dash = new DashCount();
+            dash.setSeksjonId(seksjonId);
+            dash.setSeksjonName(seksjonName);
+            seksjoner.add(dash);
+            return dash;
+        });
+    }
+
     @Data
     @Builder
     @AllArgsConstructor
@@ -71,6 +86,8 @@ public class DashResponse {
 
         private String department;
         private String productAreaId;
+        private String seksjonId;
+        private String seksjonName;
         private long processes;
         private long dpProcesses;
 
