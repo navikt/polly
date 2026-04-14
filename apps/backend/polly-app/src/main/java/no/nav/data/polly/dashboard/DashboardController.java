@@ -1,7 +1,32 @@
 package no.nav.data.polly.dashboard;
 
+import static java.util.Objects.requireNonNull;
+import static no.nav.data.common.jpa.RepoUtil.doPaged;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.filter;
+import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,29 +51,6 @@ import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessStatusFilter;
 import no.nav.data.polly.teams.TeamService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import static java.util.Objects.requireNonNull;
-import static no.nav.data.common.jpa.RepoUtil.doPaged;
-import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.filter;
-import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
-import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
-import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 @RestController
 @RequestMapping("/dash")
@@ -81,6 +83,10 @@ public class DashboardController {
         // init all departments and load teamId -> productArea mapping
         var nomAvdeling = nomGraphClient.getAllAvdelinger();
         nomAvdeling.forEach(d -> dash.department(d.getId()));
+        nomAvdeling.forEach(avdeling ->
+            nomGraphClient.getAllSeksjonForAvdeling(avdeling.getId())
+                .forEach(seksjon -> dash.seksjon(seksjon.getId(), seksjon.getNavn()))
+        );
         teamService.getAllTeams().forEach(t -> dash.registerTeam(t.getId(), t.getProductAreaId()));
 
         doPaged(processRepository, 50, processes -> {
@@ -161,6 +167,7 @@ public class DashboardController {
         var dashes = new ArrayList<DashCount>();
         dashes.add(dash.getAll());
         Optional.ofNullable(affiliation.getNomDepartmentId()).ifPresent(dep -> dashes.add(dash.department(dep)));
+        nullToEmptyList(affiliation.getSeksjoner()).forEach(s -> dashes.add(dash.seksjon(s.getNomSeksjonId(), s.getNomSeksjonName())));
         // A team might be stored that doesnt exist, producing nulls here
         nullToEmptyList(affiliation.getProductTeams()).stream().map(dash::team).filter(Objects::nonNull).forEach(dashes::add);
         return dashes;
