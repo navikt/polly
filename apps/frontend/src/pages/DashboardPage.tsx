@@ -22,7 +22,7 @@ export const DashboardPage = () => {
 
   return (
     <div className="mb-12 flex flex-wrap">
-      <div className="flex flex-wrap justify-between w-full gap-2">
+      <div className="flex flex-col w-full gap-2">
         <Heading size="large">Dashboard</Heading>
         <FilterDashboardStatus setFilter={setDashboardStatus} />
       </div>

@@ -16,11 +16,14 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
   )
 
   return (
-    <div className="w-full flex flex-row-reverse mt-4">
+    <div className="w-full flex flex-row gap-4 mt-4">
+      <div className="self-center">
+        <Label className="mr-4">Filtrer på status</Label>
+      </div>
       <div className="w-60">
         <Select
           value={selectValue}
-          label="Filtrer diagrammene på status"
+          label="Filtrer på status"
           hideLabel
           onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             const value = event.target.value
@@ -34,9 +37,6 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
           <option value={EProcessStatusFilter.NEEDS_REVISION}>Trenger revidering</option>
           <option value={EProcessStatusFilter.COMPLETED}>Fullført</option>
         </Select>
-      </div>
-      <div className="self-center">
-        <Label className="mr-4">Filtrer diagrammene på status</Label>
       </div>
     </div>
   )
