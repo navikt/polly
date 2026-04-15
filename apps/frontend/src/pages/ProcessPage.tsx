@@ -4,17 +4,21 @@ import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { getDpProcessByDepartment } from '../api/DpProcessApi'
 import { getDashboard, getDisclosureByDepartment } from '../api/GetAllApi'
+import { getAvdelingByNomId, getSeksjonerForNomAvdeling } from '../api/NomApi'
 import Charts from '../components/Charts/Charts'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
+import Seksjoner from '../components/Dashboard/Seksjoner'
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'
 import {
   EProcessStatus,
   EProcessStatusFilter,
+  IDashboardData,
   IDepartmentDashCount,
   IDisclosure,
   IDpProcess,
   IProcess,
+  ISeksjonDashCount,
 } from '../constants'
 import { EListName } from '../service/Codelist'
 import { useQueryParam } from '../util/hooks'
@@ -31,6 +35,7 @@ export enum ESection {
   productarea = 'productarea',
   thirdparty = 'thirdparty',
   processor = 'processor',
+  seksjon = 'seksjon',
 }
 
 export const listNameForSection = (section: ESection) => {
@@ -51,9 +56,18 @@ export type TPathParams = {
 const ProcessPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [chartData, setChartData] = useState<IDepartmentDashCount>()
+  const [dashboardData, setDashboardData] = useState<IDashboardData>()
+  const [departmentSeksjonIds, setDepartmentSeksjonIds] = useState<string[]>([])
+  const [avdelingName, setAvdelingName] = useState<string>('')
+  const [seksjonChartData, setSeksjonChartData] = useState<ISeksjonDashCount>()
+  const [siblingSeksjoner, setSiblingSeksjoner] = useState<ISeksjonDashCount[]>([])
+  const [seksjonAvdelingId, setSeksjonAvdelingId] = useState<string>('')
+  const [seksjonAvdelingName, setSeksjonAvdelingName] = useState<string>('')
   const [disclosureData, setDisclosureData] = useState<IDisclosure[]>([])
   const [dpProcessData, setDpProcessData] = useState<IDpProcess[]>([])
   const filter = useQueryParam<EProcessStatus>('filter')
+  const tab = useQueryParam<string>('tab')
+  const avdeling = useQueryParam<string>('avdeling')
   const params = useParams<TPathParams>()
   const { section, code, processId } = params
   const location = useLocation()
@@ -79,15 +93,45 @@ const ProcessPage = () => {
       ;(async () => {
         setIsLoading(true)
         const res = await getDashboard(EProcessStatusFilter.All)
-        if (res) setChartData(res.departments.find((d) => d.department === code))
-
-        if (code) {
-          const disclosureResponse = await getDisclosureByDepartment(code)
-          if (disclosureResponse) setDisclosureData(disclosureResponse.content)
-          const dpProcessResponse = await getDpProcessByDepartment(code)
-          if (dpProcessResponse) setDpProcessData(dpProcessResponse.content)
+        if (res) {
+          setChartData(res.departments.find((d) => d.department === code))
+          setDashboardData(res)
         }
 
+        if (code) {
+          const [seksjonerForAvdeling, disclosureResponse, dpProcessResponse, avdeling] =
+            await Promise.all([
+              getSeksjonerForNomAvdeling(code),
+              getDisclosureByDepartment(code),
+              getDpProcessByDepartment(code),
+              getAvdelingByNomId(code),
+            ])
+          setDepartmentSeksjonIds(seksjonerForAvdeling.map((s) => s.id))
+          if (disclosureResponse) setDisclosureData(disclosureResponse.content)
+          if (dpProcessResponse) setDpProcessData(dpProcessResponse.content)
+          if (avdeling) setAvdelingName(avdeling.navn)
+        }
+
+        setIsLoading(false)
+      })()
+    }
+
+    if (section === ESection.seksjon && avdeling) {
+      ;(async () => {
+        setIsLoading(true)
+        const [res, seksjonerForAvdeling, avdelingData] = await Promise.all([
+          getDashboard(EProcessStatusFilter.All),
+          getSeksjonerForNomAvdeling(avdeling),
+          getAvdelingByNomId(avdeling),
+        ])
+        if (res) {
+          const allSeksjoner = res.seksjoner ?? []
+          setSeksjonChartData(allSeksjoner.find((s) => s.seksjonId === code))
+          const seksjonIds = seksjonerForAvdeling.map((s) => s.id)
+          setSiblingSeksjoner(allSeksjoner.filter((s) => seksjonIds.includes(s.seksjonId)))
+        }
+        setSeksjonAvdelingId(avdeling)
+        if (avdelingData) setSeksjonAvdelingName(avdelingData.navn)
         setIsLoading(false)
       })()
     }
@@ -102,7 +146,7 @@ const ProcessPage = () => {
         {section && code && <PageHeader section={section} code={code} />}
         {section && code && (
           <div>
-            {section !== ESection.department && (
+            {section !== ESection.department && section !== ESection.seksjon && (
               <ProcessList
                 code={code}
                 listName={listNameForSection(section)}
@@ -127,10 +171,11 @@ const ProcessPage = () => {
                 moveScroll={moveScroll}
                 isEditable={true}
                 thirdTabTitle="Dashboard"
+                defaultTab={tab ?? undefined}
                 thirdTabContent={
                   <div className="mb-12">
-                    <Heading size="small" level="2">
-                      Oversikt
+                    <Heading size="small" level="2" className="mt-4">
+                      Oversikt for {avdelingName || code}
                     </Heading>
                     {chartData && (
                       <Charts
@@ -146,7 +191,49 @@ const ProcessPage = () => {
                     )}
                   </div>
                 }
+                fourthTabTitle="Seksjoner"
+                fourthTabContent={
+                  <div className="mb-12">
+                    {dashboardData && (
+                      <Seksjoner
+                        data={{
+                          ...dashboardData,
+                          seksjoner: (dashboardData.seksjoner ?? []).filter((s) =>
+                            departmentSeksjonIds.includes(s.seksjonId)
+                          ),
+                        }}
+                      />
+                    )}
+                  </div>
+                }
               />
+            )}
+
+            {!isLoading && section === ESection.seksjon && (
+              <div className="mb-12">
+                <Heading size="small" level="2" className="mt-4">
+                  Oversikt for {seksjonChartData?.seksjonName || code}
+                </Heading>
+                {seksjonChartData && (
+                  <Charts chartData={seksjonChartData} processStatus={EProcessStatusFilter.All} />
+                )}
+                {siblingSeksjoner.length > 0 && (
+                  <>
+                    <Heading size="small" level="2" className="mt-6">
+                      Andre seksjoner i {seksjonAvdelingName || seksjonAvdelingId}
+                    </Heading>
+                    <Seksjoner
+                      data={{
+                        all: { ...seksjonChartData!, disclosures: 0, disclosuresIncomplete: 0 },
+                        departments: [],
+                        productAreas: [],
+                        seksjoner: siblingSeksjoner,
+                      }}
+                      activeSeksjonId={code}
+                    />
+                  </>
+                )}
+              </div>
             )}
           </div>
         )}

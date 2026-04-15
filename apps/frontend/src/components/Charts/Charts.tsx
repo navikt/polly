@@ -7,10 +7,12 @@ import {
   IAllDashCount,
   IDepartmentDashCount,
   IProductAreaDashCount,
+  ISeksjonDashCount,
 } from '../../constants'
 import { ESection } from '../../pages/ProcessPage'
 import { clickOnPieChartSlice } from '../../util/dashboard'
 import { chartColor } from '../../util/theme'
+import { useIsDark } from '../../util/themeMode'
 import RouteLink from '../common/RouteLink'
 import { Chart } from './Chart'
 import TriChart from './TriChart'
@@ -18,7 +20,7 @@ import TriChart from './TriChart'
 const chartSize = 80
 
 type TChartsProps = {
-  chartData: IProductAreaDashCount | IDepartmentDashCount | IAllDashCount
+  chartData: IProductAreaDashCount | IDepartmentDashCount | IAllDashCount | ISeksjonDashCount
   processStatus: EProcessStatusFilter
   type?: ESection
   departmentCode?: string
@@ -28,6 +30,7 @@ type TChartsProps = {
 const Charts = (props: TChartsProps) => {
   const { chartData, processStatus, type, departmentCode, productAreaId } = props
   const navigate: NavigateFunction = useNavigate()
+  const isDark = useIsDark()
 
   const link = (
     processField: EProcessField,
@@ -67,11 +70,10 @@ const Charts = (props: TChartsProps) => {
   }
 
   const all = chartData as IAllDashCount
-  const chartCardStyle =
-    'mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]'
+  const chartCardStyle = `mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] ${isDark ? 'bg-[#1e2433]' : 'bg-white'}`
 
   return (
-    <div className="flex flex-wrap w-full justify-between">
+    <div className="flex flex-wrap w-full gap-[5%] ml-4">
       <div className={chartCardStyle}>
         <TriChart
           counter={chartData.dpia}
