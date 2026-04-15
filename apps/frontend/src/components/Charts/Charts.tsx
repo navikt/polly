@@ -1,5 +1,6 @@
 import { NavigateFunction, useNavigate } from '@/util/router'
-import { BodyLong } from '@navikt/ds-react'
+import { InformationSquareIcon } from '@navikt/aksel-icons'
+import { BodyLong, InfoCard } from '@navikt/ds-react'
 import {
   EProcessField,
   EProcessState,
@@ -213,18 +214,23 @@ const Charts = (props: TChartsProps) => {
         </div>
       )}
 
-      <div className={chartCardStyle}>
-        <BodyLong size="small">
-          Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
-          <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
-            {chartData.commonExternalProcessResponsible}
-          </RouteLink>
-        </BodyLong>
-        <BodyLong size="small">
-          Behandlinger hvor Nav er databehandler:{' '}
-          <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
-        </BodyLong>
-      </div>
+      <InfoCard data-color="info" className="h-full">
+        <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+          <InfoCard.Title as="h3">Annen informasjon</InfoCard.Title>
+        </InfoCard.Header>
+        <InfoCard.Content>
+          <BodyLong size="small" className="text-lg">
+            Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
+            <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
+              {chartData.commonExternalProcessResponsible}
+            </RouteLink>
+          </BodyLong>
+          <BodyLong size="small" className="text-lg">
+            Behandlinger hvor Nav er databehandler:{' '}
+            <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
+          </BodyLong>
+        </InfoCard.Content>
+      </InfoCard>
     </div>
   )
 }
