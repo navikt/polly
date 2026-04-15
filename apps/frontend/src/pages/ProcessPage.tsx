@@ -60,7 +60,6 @@ const ProcessPage = () => {
   const [dashboardData, setDashboardData] = useState<IDashboardData>()
   const [departmentSeksjoner, setDepartmentSeksjoner] = useState<IOrgEnhet[]>([])
   const [selectedSeksjonId, setSelectedSeksjonId] = useState<string>('')
-  const [avdelingName, setAvdelingName] = useState<string>('')
   const [seksjonChartData, setSeksjonChartData] = useState<ISeksjonDashCount>()
   const [siblingSeksjoner, setSiblingSeksjoner] = useState<ISeksjonDashCount[]>([])
   const [seksjonAvdelingId, setSeksjonAvdelingId] = useState<string>('')
@@ -101,17 +100,14 @@ const ProcessPage = () => {
         }
 
         if (code) {
-          const [seksjonerForAvdeling, disclosureResponse, dpProcessResponse, avdeling] =
-            await Promise.all([
-              getSeksjonerForNomAvdeling(code),
-              getDisclosureByDepartment(code),
-              getDpProcessByDepartment(code),
-              getAvdelingByNomId(code),
-            ])
+          const [seksjonerForAvdeling, disclosureResponse, dpProcessResponse] = await Promise.all([
+            getSeksjonerForNomAvdeling(code),
+            getDisclosureByDepartment(code),
+            getDpProcessByDepartment(code),
+          ])
           setDepartmentSeksjoner(seksjonerForAvdeling)
           if (disclosureResponse) setDisclosureData(disclosureResponse.content)
           if (dpProcessResponse) setDpProcessData(dpProcessResponse.content)
-          if (avdeling) setAvdelingName(avdeling.navn)
         }
 
         setIsLoading(false)
@@ -198,11 +194,6 @@ const ProcessPage = () => {
                   seksjonFilter={selectedSeksjonId || undefined}
                   thirdTabContent={
                     <div className="mb-12">
-                      <Heading size="small" level="2" className="mt-4">
-                        {selectedSeksjonId
-                          ? `Oversikt for ${departmentSeksjoner.find((s) => s.id === selectedSeksjonId)?.navn || selectedSeksjonId}`
-                          : `Oversikt for ${avdelingName || code}`}
-                      </Heading>
                       {selectedSeksjonId
                         ? dashboardData &&
                           (() => {
