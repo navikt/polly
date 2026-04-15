@@ -72,7 +72,7 @@ const Charts = (props: TChartsProps) => {
     'mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]'
 
   return (
-    <div className="flex flex-wrap w-full justify-between">
+    <div className="flex flex-wrap w-full gap-[5%]">
       <div className={chartCardStyle}>
         <TriChart
           counter={chartData.dpia}
