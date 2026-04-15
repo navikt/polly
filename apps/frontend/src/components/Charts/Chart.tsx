@@ -3,6 +3,7 @@ import { Button, Label, Tooltip } from '@navikt/ds-react'
 import * as _ from 'lodash'
 import { Fragment, useMemo, useReducer, useState } from 'react'
 import { theme } from '../../util'
+import { useIsDark } from '../../util/themeMode'
 
 const cursor = { cursor: 'pointer' }
 
@@ -135,6 +136,7 @@ const Visualization = (props: TVisualizationProps) => {
   const { size, data, chartTitle, leftLegend, hidePercent } = props
   const [hover, setHover] = useState<number>(-1)
   const [type, toggle] = useReducer((old) => (old === 'bar' ? 'pie' : 'bar'), props.type)
+  const isDark = useIsDark()
 
   const noChartData = !data.length || !data.reduce((p, c) => p + c.size, 0)
 
@@ -149,7 +151,7 @@ const Visualization = (props: TVisualizationProps) => {
           )}
         </Tooltip>
       </Button>
-      <div className="bg-white p-4 rounded">
+      <div className="p-4 rounded" style={{ backgroundColor: isDark ? '#1e2433' : '#ffffff' }}>
         <div onMouseLeave={() => setHover(-1)}>
           <div
             className={`flex items-center ${leftLegend ? 'flex-row-reverse' : 'flex-row'} max-w-fit flex-wrap`}
@@ -182,7 +184,17 @@ const Visualization = (props: TVisualizationProps) => {
                     }}
                   >
                     <div
-                      className={`${index === hover ? 'bg-[#EFF3FE]' : 'bg-white'} cursor-pointer flex items-center`}
+                      className="cursor-pointer flex items-center"
+                      style={{
+                        backgroundColor:
+                          index === hover
+                            ? isDark
+                              ? '#3b4252'
+                              : '#EFF3FE'
+                            : isDark
+                              ? '#1e2433'
+                              : '#ffffff',
+                      }}
                     >
                       <CircleIcon aria-hidden className="block" style={{ color: data.color }} />
                       <div className="min-w-10 flex justify-end">{data.size}</div>
@@ -224,19 +236,24 @@ const BarChart = (props: IBarChartProps) => {
           width={size * 3}
           viewBox="0 0 1150 1150"
           style={{ transform: 'scaleY(-1)' }}
+          className="text-black dark:text-white"
         >
           <style>
-            {'text {' + 'transform: scaleY(-1);' + 'font: italic 40px sans-serif;' + '}'}
+            {'text {' +
+              'transform: scaleY(-1);' +
+              'font: italic 40px sans-serif;' +
+              'fill: currentColor;' +
+              '}'}
           </style>
-          <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="black" />
-          <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="black" />
+          <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="currentColor" />
+          <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="currentColor" />
 
           {_.range(0, 11).map((i) => (
             <Fragment key={i}>
               <g transform={`translate(0 ${105 + i * 100})`}>
                 <text>{(maxVal * i * 0.1).toFixed(0)}</text>
               </g>
-              <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="black" />
+              <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="currentColor" />
             </Fragment>
           ))}
 
