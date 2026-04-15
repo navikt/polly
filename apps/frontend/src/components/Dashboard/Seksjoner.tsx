@@ -12,17 +12,11 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
   const { label, number } = props
 
   return (
-    <div className="flex w-fit mb-0 justify-center">
-      <BodyShort className="m-0">
-        {label}{' '}
-        <b
-          style={{
-            textDecoration: 'underline',
-          }}
-        >
-          {number}
-        </b>
-      </BodyShort>
+    <div className="flex justify-between gap-2 w-full">
+      <BodyShort className="m-0">{label}</BodyShort>
+      <b style={{ textDecoration: 'underline', minWidth: '1.5rem', textAlign: 'right' }}>
+        {number}
+      </b>
     </div>
   )
 }
@@ -44,7 +38,7 @@ const SeksjonCard = (props: TSeksjonCardProps) => {
             isActive ? 'ring-2 ring-(--ax-text-accent)' : ''
           }`}
         >
-          <div className="flex flex-col items-center justify-around w-52 h-28">
+          <div className="flex flex-col items-start justify-around w-80 h-28">
             <Label style={{ color: 'var(--ax-text-accent)', textAlign: 'center' }}>
               {seksjon.seksjonName || seksjon.seksjonId}
             </Label>

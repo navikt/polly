@@ -30,7 +30,7 @@ export const DashboardPage = () => {
       {dashboardData && (
         <div className="w-full mt-6">
           <Heading size="medium" className="mb-2">
-            Avdeling
+            Avdelinger
           </Heading>
           <Departments data={dashboardData} />
         </div>
