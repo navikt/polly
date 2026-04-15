@@ -65,7 +65,6 @@ type TSeksjonerProps = {
 
 const Seksjoner = (props: TSeksjonerProps) => {
   const { data, activeSeksjonId } = props
-  const [selectedSeksjon, setSelectedSeksjon] = useState<ISeksjonDashCount | undefined>(undefined)
 
   const sortedData = () => {
     return (data.seksjoner ?? [])
@@ -76,6 +75,10 @@ const Seksjoner = (props: TSeksjonerProps) => {
         return a.seksjonName.localeCompare(b.seksjonName)
       })
   }
+
+  const [selectedSeksjon, setSelectedSeksjon] = useState<ISeksjonDashCount | undefined>(
+    () => sortedData()[0]
+  )
 
   return (
     <div className="w-full">
