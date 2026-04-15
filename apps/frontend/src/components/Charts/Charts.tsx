@@ -213,21 +213,17 @@ const Charts = (props: TChartsProps) => {
         </div>
       )}
 
-      <div className="mt-10 w-full">
-        <div className="bg-red p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
-          <div>
-            <BodyLong size="small">
-              Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
-              <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
-                {chartData.commonExternalProcessResponsible}
-              </RouteLink>
-            </BodyLong>
-            <BodyLong size="small">
-              Behandlinger hvor Nav er databehandler:{' '}
-              <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
-            </BodyLong>
-          </div>
-        </div>
+      <div className={chartCardStyle}>
+        <BodyLong size="small">
+          Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
+          <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
+            {chartData.commonExternalProcessResponsible}
+          </RouteLink>
+        </BodyLong>
+        <BodyLong size="small">
+          Behandlinger hvor Nav er databehandler:{' '}
+          <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
+        </BodyLong>
       </div>
     </div>
   )
