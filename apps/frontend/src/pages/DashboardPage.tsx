@@ -22,7 +22,7 @@ export const DashboardPage = () => {
 
   return (
     <div className="mb-12 flex flex-wrap">
-      <div className="flex flex-wrap justify-between w-full gap-2">
+      <div className="flex flex-col w-full gap-2">
         <Heading size="large">Dashboard</Heading>
         <FilterDashboardStatus setFilter={setDashboardStatus} />
       </div>
@@ -30,12 +30,19 @@ export const DashboardPage = () => {
       {dashboardData && (
         <div className="w-full mt-6">
           <Heading size="medium" className="mb-2">
-            Avdeling
+            Avdelinger
           </Heading>
           <Departments data={dashboardData} />
         </div>
       )}
-      {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />}
+      {dashboardData && (
+        <div className="w-full mt-6">
+          <Heading size="medium" className="mb-2">
+            Behandlingsstatistikk
+          </Heading>
+          <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />
+        </div>
+      )}
       {!dashboardData && (
         <div className="flex w-full justify-center">
           <Loader size="3xlarge" />

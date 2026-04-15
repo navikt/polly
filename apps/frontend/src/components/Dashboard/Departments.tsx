@@ -19,17 +19,11 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
   const { label, number } = props
 
   return (
-    <div className="flex w-fit mb-0 justify-center">
-      <BodyShort className="m-0">
-        {label}{' '}
-        <b
-          style={{
-            textDecoration: 'underline',
-          }}
-        >
-          {number}
-        </b>
-      </BodyShort>
+    <div className="flex justify-between gap-2 w-full">
+      <BodyShort className="m-0">{label}</BodyShort>
+      <b style={{ textDecoration: 'underline', minWidth: '1.5rem', textAlign: 'right' }}>
+        {number}
+      </b>
     </div>
   )
 }
@@ -58,7 +52,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
     <Tooltip content={nomDepartmentName}>
       <Button type="button" variant="tertiary-neutral">
         <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
-          <div className="flex flex-col items-center justify-around w-52 h-28">
+          <div className="flex flex-col items-start justify-around w-80 h-28">
             <RouteLink
               href={
                 genProcessPath(
@@ -81,9 +75,10 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
                 undefined,
                 EProcessStatus.COMPLETED
               )}
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              className="w-full"
             >
-              <TextWithNumber label="Godkjent" number={department.processesCompleted} />
+              <TextWithNumber label="Ferdig dokumentert" number={department.processesCompleted} />
             </RouteLink>
             <RouteLink
               href={genProcessPath(
@@ -92,7 +87,8 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
                 undefined,
                 EProcessStatus.IN_PROGRESS
               )}
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              className="w-full"
             >
               <TextWithNumber label="Under arbeid" number={department.processesInProgress} />
             </RouteLink>
@@ -103,9 +99,13 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
                 undefined,
                 EProcessStatus.NEEDS_REVISION
               )}
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              className="w-full"
             >
-              <TextWithNumber label="Revidering" number={department.processesNeedsRevision} />
+              <TextWithNumber
+                label="Trenger revidering"
+                number={department.processesNeedsRevision}
+              />
             </RouteLink>
           </div>
         </div>
