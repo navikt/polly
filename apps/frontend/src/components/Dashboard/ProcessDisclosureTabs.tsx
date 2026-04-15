@@ -1,5 +1,6 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Heading, Spacer, Tabs } from '@navikt/ds-react'
+import { useRouter } from 'next/router'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
@@ -120,8 +121,14 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     confidentialityDescription: '',
   }
 
+  const router = useRouter()
+
+  const handleTabChange = (value: string) => {
+    router.replace({ query: { ...router.query, tab: value } }, undefined, { shallow: true })
+  }
+
   return (
-    <Tabs defaultValue={defaultTab ?? 'behandlinger'}>
+    <Tabs defaultValue={defaultTab ?? 'behandlinger'} onChange={handleTabChange}>
       <Tabs.List>
         <Tabs.Tab value="behandlinger" label="Behandlinger" />
         <Tabs.Tab value="dpprocess" label="NAV som databehandler" />
