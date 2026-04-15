@@ -35,7 +35,14 @@ export const DashboardPage = () => {
           <Departments data={dashboardData} />
         </div>
       )}
-      {dashboardData && <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />}
+      {dashboardData && (
+        <div className="w-full mt-6">
+          <Heading size="medium" className="mb-2">
+            Behandlingsstatistikk
+          </Heading>
+          <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />
+        </div>
+      )}
       {!dashboardData && (
         <div className="flex w-full justify-center">
           <Loader size="3xlarge" />
