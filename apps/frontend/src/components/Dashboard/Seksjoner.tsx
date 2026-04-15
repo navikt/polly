@@ -48,9 +48,9 @@ const SeksjonCard = (props: TSeksjonCardProps) => {
             <Label style={{ color: 'var(--ax-text-accent)', textAlign: 'center' }}>
               {seksjon.seksjonName || seksjon.seksjonId}
             </Label>
-            <TextWithNumber label="Godkjent" number={seksjon.processesCompleted} />
+            <TextWithNumber label="Ferdig dokumentert" number={seksjon.processesCompleted} />
             <TextWithNumber label="Under arbeid" number={seksjon.processesInProgress} />
-            <TextWithNumber label="Revidering" number={seksjon.processesNeedsRevision} />
+            <TextWithNumber label="Trenger revidering" number={seksjon.processesNeedsRevision} />
           </div>
         </div>
       </Button>

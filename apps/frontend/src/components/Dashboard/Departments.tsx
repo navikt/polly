@@ -83,7 +83,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               )}
               style={{ textDecoration: 'none' }}
             >
-              <TextWithNumber label="Godkjent" number={department.processesCompleted} />
+              <TextWithNumber label="Ferdig dokumentert" number={department.processesCompleted} />
             </RouteLink>
             <RouteLink
               href={genProcessPath(
@@ -105,7 +105,10 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               )}
               style={{ textDecoration: 'none' }}
             >
-              <TextWithNumber label="Revidering" number={department.processesNeedsRevision} />
+              <TextWithNumber
+                label="Trenger revidering"
+                number={department.processesNeedsRevision}
+              />
             </RouteLink>
           </div>
         </div>
