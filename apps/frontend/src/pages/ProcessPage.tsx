@@ -193,7 +193,7 @@ const ProcessPage = () => {
                   defaultTab={tab ?? undefined}
                   seksjonFilter={selectedSeksjonId || undefined}
                   thirdTabContent={
-                    <div className="mb-12">
+                    <div className="mt-4 mb-12">
                       {selectedSeksjonId
                         ? dashboardData &&
                           (() => {
