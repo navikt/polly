@@ -165,7 +165,7 @@ const ProcessPage = () => {
                       hideLabel={false}
                       value={selectedSeksjonId}
                       onChange={(e) => setSelectedSeksjonId(e.target.value)}
-                      style={{ minWidth: '20rem' }}
+                      style={{ minWidth: '30rem' }}
                     >
                       <option value="">Alle seksjoner</option>
                       {[...departmentSeksjoner]
