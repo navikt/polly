@@ -1,7 +1,30 @@
 package no.nav.data.integration.nom;
 
+import static no.nav.data.common.utils.StreamUtils.safeStream;
+import static no.nav.data.common.web.TraceHeaderRequestInterceptor.correlationInterceptor;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
+
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -15,23 +38,6 @@ import no.nav.data.integration.nom.domain.OrgEnhetsType;
 import no.nav.data.integration.nom.domain.Organisering;
 import no.nav.data.integration.nom.dto.OrgEnhetGraphqlResponse;
 import no.nav.data.integration.nom.dto.SearchOrgEnhetGraphqlResponse;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
-import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
-
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static no.nav.data.common.utils.StreamUtils.safeStream;
-import static no.nav.data.common.web.TraceHeaderRequestInterceptor.correlationInterceptor;
 
 @Slf4j
 @Service
