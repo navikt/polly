@@ -141,6 +141,10 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             sql += " and data #>> '{affiliation,nomDepartmentId}' = :department";
             params.put("department", stateDbRequest.getDepartment());
         }
+        if (stateDbRequest.getSeksjonId() != null) {
+            sql += " and data #> '{affiliation,seksjoner}' @> cast(:seksjonFilter as jsonb)";
+            params.put("seksjonFilter", "[{\"nomSeksjonId\":\"" + stateDbRequest.getSeksjonId() + "\"}]");
+        }
         if (stateDbRequest.getTeamIds() != null) {
             sql += " and data #> '{affiliation,productTeams}' ??| array[ :productTeams ]";
             params.put("productTeams", stateDbRequest.getTeamIds());

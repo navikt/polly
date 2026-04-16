@@ -4,7 +4,9 @@ package no.nav.data.polly.process;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.RestResponsePage;
+import no.nav.data.integration.nom.NomGraphClient;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
@@ -30,10 +32,12 @@ public class ProcessStateController {
     
     private final ProcessRepository processRepository;
     private final TeamService teamService;
+    private final NomGraphClient nomGraphClient;
 
-    public ProcessStateController(ProcessRepository processRepository, TeamService teamService) {
+    public ProcessStateController(ProcessRepository processRepository, TeamService teamService, NomGraphClient nomGraphClient) {
         this.processRepository = processRepository;
         this.teamService = teamService;
+        this.nomGraphClient = nomGraphClient;
     }
 
     @Operation(summary = "Get Process for state")
@@ -41,6 +45,9 @@ public class ProcessStateController {
     @GetMapping
     public RestResponsePage<ProcessShortResponse> getProcesses(ProcessStateRequest request) {
         request.validateFieldsAndThrow();
+        if (request.getDepartment() != null && nomGraphClient.getAvdelingById(request.getDepartment()).isEmpty()) {
+            throw new ValidationException("Invalid department id: " + request.getDepartment());
+        }
         if (request.getProcessField().alertEvent && request.getProcessState() != ProcessState.YES) {
             return new RestResponsePage<>(List.of());
         }
@@ -49,7 +56,7 @@ public class ProcessStateController {
             teamIds = convert(teamService.getTeamsForProductArea(request.getProductAreaId()), Team::getId);
         }
         List<Process> processes = processRepository.findForState(
-                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), teamIds, request.getProcessStatus().processStatus));
+                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), request.getSeksjonId(), teamIds, request.getProcessStatus().processStatus));
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }
 

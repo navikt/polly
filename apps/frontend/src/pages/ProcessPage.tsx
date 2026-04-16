@@ -204,6 +204,8 @@ const ProcessPage = () => {
                               <Charts
                                 chartData={seksjonChart}
                                 processStatus={EProcessStatusFilter.All}
+                                type={ESection.seksjon}
+                                seksjonId={selectedSeksjonId}
                               />
                             ) : null
                           })()
@@ -227,7 +229,12 @@ const ProcessPage = () => {
                   Oversikt for {seksjonChartData?.seksjonName || code}
                 </Heading>
                 {seksjonChartData && (
-                  <Charts chartData={seksjonChartData} processStatus={EProcessStatusFilter.All} />
+                  <Charts
+                    chartData={seksjonChartData}
+                    processStatus={EProcessStatusFilter.All}
+                    type={ESection.seksjon}
+                    seksjonId={code}
+                  />
                 )}
                 {siblingSeksjoner.length > 0 && (
                   <>

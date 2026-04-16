@@ -5,6 +5,7 @@ import {
   getProcessByStateAndStatus,
   getProcessByStateAndStatusForDepartment,
   getProcessByStateAndStatusForProductArea,
+  getProcessByStateAndStatusForSeksjon,
 } from '../../api/GetAllApi'
 import { EProcessField, EProcessState, EProcessStatusFilter, IProcessShort } from '../../constants'
 import { useQueryParam } from '../../util/hooks'
@@ -23,6 +24,7 @@ const PurposeTable = () => {
   const { filterName, filterValue, filterStatus } = useParams<TPathProps>()
   const department: string | undefined = useQueryParam('department')
   const productareaId: string | undefined = useQueryParam('productarea')
+  const seksjonId: string | undefined = useQueryParam('seksjon')
 
   const changeTitle = () => {
     if (filterName === EProcessField.DPIA && filterValue) {
@@ -64,7 +66,15 @@ const PurposeTable = () => {
       setLoading(true)
       changeTitle()
       if (filterName && filterValue) {
-        if (department) {
+        if (seksjonId) {
+          const response: IProcessShort[] = await getProcessByStateAndStatusForSeksjon(
+            filterName,
+            filterValue,
+            filterStatus,
+            seksjonId
+          )
+          setFiltered(response)
+        } else if (department) {
           const response: IProcessShort[] = await getProcessByStateAndStatusForDepartment(
             filterName,
             filterValue,
@@ -91,7 +101,7 @@ const PurposeTable = () => {
       }
       setLoading(false)
     })()
-  }, [filterName, filterValue, filterStatus, department])
+  }, [filterName, filterValue, filterStatus, department, seksjonId])
 
   return (
     <>

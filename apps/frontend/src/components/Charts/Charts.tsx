@@ -26,10 +26,11 @@ type TChartsProps = {
   type?: ESection
   departmentCode?: string
   productAreaId?: string
+  seksjonId?: string
 }
 
 const Charts = (props: TChartsProps) => {
-  const { chartData, processStatus, type, departmentCode, productAreaId } = props
+  const { chartData, processStatus, type, departmentCode, productAreaId, seksjonId } = props
   const navigate: NavigateFunction = useNavigate()
   const isDark = useIsDark()
 
@@ -40,6 +41,8 @@ const Charts = (props: TChartsProps) => {
     if (!type) return `/dashboard/${processField}/${processState}/${processStatus}`
     else if (type === ESection.department)
       return `/dashboard/${processField}/${processState}/${processStatus}?department=${departmentCode}`
+    else if (type === ESection.seksjon)
+      return `/dashboard/${processField}/${processState}/${processStatus}?seksjon=${seksjonId}`
     else
       return `/dashboard/${processField}/${processState}/${processStatus}?productarea=${productAreaId}`
   }
@@ -58,6 +61,15 @@ const Charts = (props: TChartsProps) => {
         navigate,
         type,
         departmentCode
+      )
+    else if (type === ESection.seksjon)
+      return clickOnPieChartSlice(
+        processField,
+        processState,
+        processStatus,
+        navigate,
+        type,
+        seksjonId
       )
     else
       return clickOnPieChartSlice(

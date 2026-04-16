@@ -20,6 +20,8 @@ public class StateDbRequest {
     @Nullable
     private final String department;
     @Nullable
+    private final String seksjonId;
+    @Nullable
     private final List<String> teamIds;
     @Nullable
     private final ProcessStatus status;
