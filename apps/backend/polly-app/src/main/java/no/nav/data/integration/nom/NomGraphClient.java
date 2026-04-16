@@ -118,17 +118,17 @@ public class NomGraphClient {
         } else {
             if (securityProperties.isDev()) {
                 return List.of(
-                        createDevOrganisering("seksjon_1", "seksjon 1"),
-                        createDevOrganisering("seksjon_2", "seksjon 2"),
-                        createDevOrganisering("seksjon_3", "seksjon 3"),
-                        createDevOrganisering("seksjon_4", "seksjon 4"),
-                        createDevOrganisering("seksjon_5", "seksjon 5"),
-                        createDevOrganisering("seksjon_6", "seksjon 6"),
-                        createDevOrganisering("seksjon_7", "seksjon 7"),
-                        createDevOrganisering("seksjon_8", "seksjon 8"),
-                        createDevOrganisering("seksjon_9", "seksjon 9"),
-                        createDevOrganisering("seksjon_10", "seksjon 10"),
-                        createDevOrganisering("seksjon_11", "seksjon 11")
+                        createDevOrganisering(avdelingId + "_seksjon_1", avdelingId + " seksjon 1"),
+                        createDevOrganisering(avdelingId + "_seksjon_2", avdelingId + " seksjon 2"),
+                        createDevOrganisering(avdelingId + "_seksjon_3", avdelingId + " seksjon 3"),
+                        createDevOrganisering(avdelingId + "_seksjon_4", avdelingId + " seksjon 4"),
+                        createDevOrganisering(avdelingId + "_seksjon_5", avdelingId + " seksjon 5"),
+                        createDevOrganisering(avdelingId + "_seksjon_6", avdelingId + " seksjon 6"),
+                        createDevOrganisering(avdelingId + "_seksjon_7", avdelingId + " seksjon 7"),
+                        createDevOrganisering(avdelingId + "_seksjon_8", avdelingId + " seksjon 8"),
+                        createDevOrganisering(avdelingId + "_seksjon_9", avdelingId + " seksjon 9"),
+                        createDevOrganisering(avdelingId + "_seksjon_10", avdelingId + " seksjon 10"),
+                        createDevOrganisering(avdelingId + "_seksjon_11", avdelingId + " seksjon 11")
                 );
             } else {
                 var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", avdelingId));
