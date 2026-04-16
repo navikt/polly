@@ -59,6 +59,10 @@ export const SimpleProcessTable = (props: IProps) => {
         return (a.affiliation.nomDepartmentName || '').localeCompare(
           b.affiliation.nomDepartmentName || ''
         )
+      case 'seksjon':
+        return (a.affiliation.seksjoner?.[0]?.nomSeksjonName || '').localeCompare(
+          b.affiliation.seksjoner?.[0]?.nomSeksjonName || ''
+        )
       case 'commonExternalProcessResponsible':
         return (a.commonExternalProcessResponsible?.shortName || '').localeCompare(
           b.commonExternalProcessResponsible?.shortName || ''
@@ -107,6 +111,9 @@ export const SimpleProcessTable = (props: IProps) => {
             <Table.ColumnHeader sortKey="affiliation" sortable>
               Avdeling
             </Table.ColumnHeader>
+            <Table.ColumnHeader sortKey="seksjon" sortable>
+              Seksjon
+            </Table.ColumnHeader>
             {showCommonExternalProcessResponsible && (
               <Table.ColumnHeader sortKey="commonExternalProcessResponsible" sortable>
                 Felles behandlingsansvarlig
@@ -123,7 +130,7 @@ export const SimpleProcessTable = (props: IProps) => {
         <Table.Body>
           {sortedData.length === 0 ? (
             <Table.Row>
-              <Table.DataCell colSpan={showCommonExternalProcessResponsible ? 5 : 4}>
+              <Table.DataCell colSpan={showCommonExternalProcessResponsible ? 6 : 5}>
                 Ingen behandlinger
               </Table.DataCell>
             </Table.Row>
@@ -145,6 +152,11 @@ export const SimpleProcessTable = (props: IProps) => {
                       {process.affiliation.nomDepartmentName}
                     </Link>
                   )}
+                </Table.DataCell>
+                <Table.DataCell textSize="small">
+                  {process.affiliation.seksjoner?.length > 0
+                    ? process.affiliation.seksjoner.map((s) => s.nomSeksjonName).join(', ')
+                    : ''}
                 </Table.DataCell>
                 {showCommonExternalProcessResponsible && (
                   <Table.DataCell textSize="small">
