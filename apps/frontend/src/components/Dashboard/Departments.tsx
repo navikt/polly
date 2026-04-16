@@ -154,6 +154,8 @@ const Departments = (props: TDepartmentsProps) => {
       .filter((department) => department.department !== '')
   }
 
+  if (alleNomAvdelinger.length === 0) return null
+
   return (
     <div className="w-full flex flex-wrap gap-4">
       {sortedData().map((department: DepartmentProcess, index: number) => (
