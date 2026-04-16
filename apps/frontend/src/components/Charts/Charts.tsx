@@ -1,5 +1,6 @@
 import { NavigateFunction, useNavigate } from '@/util/router'
-import { BodyLong } from '@navikt/ds-react'
+import { InformationSquareIcon } from '@navikt/aksel-icons'
+import { BodyLong, InfoCard } from '@navikt/ds-react'
 import {
   EProcessField,
   EProcessState,
@@ -25,10 +26,11 @@ type TChartsProps = {
   type?: ESection
   departmentCode?: string
   productAreaId?: string
+  seksjonId?: string
 }
 
 const Charts = (props: TChartsProps) => {
-  const { chartData, processStatus, type, departmentCode, productAreaId } = props
+  const { chartData, processStatus, type, departmentCode, productAreaId, seksjonId } = props
   const navigate: NavigateFunction = useNavigate()
   const isDark = useIsDark()
 
@@ -39,6 +41,8 @@ const Charts = (props: TChartsProps) => {
     if (!type) return `/dashboard/${processField}/${processState}/${processStatus}`
     else if (type === ESection.department)
       return `/dashboard/${processField}/${processState}/${processStatus}?department=${departmentCode}`
+    else if (type === ESection.seksjon)
+      return `/dashboard/${processField}/${processState}/${processStatus}?seksjon=${seksjonId}`
     else
       return `/dashboard/${processField}/${processState}/${processStatus}?productarea=${productAreaId}`
   }
@@ -58,6 +62,15 @@ const Charts = (props: TChartsProps) => {
         type,
         departmentCode
       )
+    else if (type === ESection.seksjon)
+      return clickOnPieChartSlice(
+        processField,
+        processState,
+        processStatus,
+        navigate,
+        type,
+        seksjonId
+      )
     else
       return clickOnPieChartSlice(
         processField,
@@ -70,10 +83,10 @@ const Charts = (props: TChartsProps) => {
   }
 
   const all = chartData as IAllDashCount
-  const chartCardStyle = `mt-4 w-[95%] sm:w-[45%] md:w-[30%] lg:w-[30%] p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] ${isDark ? 'bg-[#1e2433]' : 'bg-white'}`
+  const chartCardStyle = `p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] ${isDark ? 'bg-[#1e2433]' : 'bg-white'}`
 
   return (
-    <div className="flex flex-wrap w-full gap-[5%] ml-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-4 ml-4">
       <div className={chartCardStyle}>
         <TriChart
           counter={chartData.dpia}
@@ -213,22 +226,23 @@ const Charts = (props: TChartsProps) => {
         </div>
       )}
 
-      <div className="mt-10 w-full">
-        <div className="bg-red p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
-          <div>
-            <BodyLong size="small">
-              Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
-              <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
-                {chartData.commonExternalProcessResponsible}
-              </RouteLink>
-            </BodyLong>
-            <BodyLong size="small">
-              Behandlinger hvor Nav er databehandler:{' '}
-              <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
-            </BodyLong>
-          </div>
-        </div>
-      </div>
+      <InfoCard data-color="info" className="h-full">
+        <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+          <InfoCard.Title as="h3">Annen informasjon</InfoCard.Title>
+        </InfoCard.Header>
+        <InfoCard.Content>
+          <BodyLong size="small" className="text-lg">
+            Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
+            <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
+              {chartData.commonExternalProcessResponsible}
+            </RouteLink>
+          </BodyLong>
+          <BodyLong size="small" className="text-lg">
+            Behandlinger hvor Nav er databehandler:{' '}
+            <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
+          </BodyLong>
+        </InfoCard.Content>
+      </InfoCard>
     </div>
   )
 }

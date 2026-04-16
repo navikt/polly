@@ -44,6 +44,7 @@ import ExportProcessModal from './Export/ExportProcessModal'
 type TProcessListProps = {
   section: ESection
   filter?: EProcessStatus
+  seksjonFilter?: string
   processId?: string
   titleOverride?: string
   hideTitle?: boolean
@@ -61,6 +62,7 @@ const ProcessList = ({
   code,
   listName,
   filter,
+  seksjonFilter,
   processId,
   section,
   moveScroll,
@@ -73,6 +75,7 @@ const ProcessList = ({
   const [codelistUtils, lists] = CodelistService()
 
   const [processList, setProcessList] = useState<IProcessShort[]>([])
+  const [fullProcessList, setFullProcessList] = useState<IProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = useState<IProcess | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
   const [createProcessModalKey, setCreateProcessModalKey] = useState(0)
@@ -87,6 +90,16 @@ const ProcessList = ({
   const [nomAvdelingName, setNomAvdelingName] = useState<string>('')
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
+
+  useEffect(() => {
+    setProcessList(
+      fullProcessList.filter(
+        (process: IProcessShort) =>
+          !seksjonFilter ||
+          process.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter)
+      )
+    )
+  }, [seksjonFilter, fullProcessList])
 
   useEffect(() => {
     ;(async () => {
@@ -159,9 +172,10 @@ const ProcessList = ({
       } else {
         list = (await getCodelistUsage(listName as EListName, code)).processes
       }
-      setProcessList(
-        sortProcess(list).filter((process: IProcessShort) => !filter || process.status === filter)
+      const filtered = sortProcess(list).filter(
+        (process: IProcessShort) => !filter || process.status === filter
       )
+      setFullProcessList(filtered)
     } catch (error: any) {
       console.debug(error)
     }

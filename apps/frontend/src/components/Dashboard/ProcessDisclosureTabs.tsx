@@ -1,5 +1,5 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { BodyShort, Button, Heading, Spacer, Tabs } from '@navikt/ds-react'
+import { Alert, BodyShort, Button, Heading, Spacer, Tabs } from '@navikt/ds-react'
 import { useRouter } from 'next/router'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
@@ -28,6 +28,7 @@ interface IProps {
   fourthTabTitle?: string
   fourthTabContent?: ReactNode
   defaultTab?: string
+  seksjonFilter?: string
 }
 
 export const ProcessDisclosureTabs = (props: IProps) => {
@@ -47,7 +48,14 @@ export const ProcessDisclosureTabs = (props: IProps) => {
     defaultTab,
     fourthTabTitle,
     fourthTabContent,
+    seksjonFilter,
   } = props
+
+  const filteredDpProcessData = seksjonFilter
+    ? dpProcessData.filter((dp) =>
+        dp.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter)
+      )
+    : dpProcessData
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)
 
@@ -143,6 +151,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
             listName={listName}
             processId={processId}
             filter={filter}
+            seksjonFilter={seksjonFilter}
             section={section}
             moveScroll={moveScroll}
             isEditable={isEditable}
@@ -151,59 +160,67 @@ export const ProcessDisclosureTabs = (props: IProps) => {
       </Tabs.Panel>
       <Tabs.Panel value="dpprocess">
         <div className="my-2">
-          <DpProcessTable dpProcesses={dpProcessData} />
+          <DpProcessTable dpProcesses={filteredDpProcessData} />
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="utleveringer">
         <div className="my-2">
-          <div className="flex">
-            <Heading size="small" level="2">
-              Utleveringer ({disclosureData ? disclosureData.length : 0})
-            </Heading>
-            <Spacer />
-            {isEditable && (
-              <div className="flex justify-end">
-                {user.canWrite() && (
-                  <Button
-                    size="small"
-                    variant="tertiary"
-                    onClick={() => setShowCreateDisclosureModal(true)}
-                  >
-                    <PlusCircleIcon aria-hidden />
-                    &nbsp; Opprett ny utlevering
-                  </Button>
+          {seksjonFilter ? (
+            <Alert variant="info" className="mt-4">
+              Utleveringer vises kun når «Alle seksjoner» er valgt.
+            </Alert>
+          ) : (
+            <>
+              <div className="flex">
+                <Heading size="small" level="2">
+                  Utleveringer ({disclosureData ? disclosureData.length : 0})
+                </Heading>
+                <Spacer />
+                {isEditable && (
+                  <div className="flex justify-end">
+                    {user.canWrite() && (
+                      <Button
+                        size="small"
+                        variant="tertiary"
+                        onClick={() => setShowCreateDisclosureModal(true)}
+                      >
+                        <PlusCircleIcon aria-hidden />
+                        &nbsp; Opprett ny utlevering
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
 
-          {disclosureData.length === 0 && (
-            <BodyShort className="my-4">Ingen utleveringer</BodyShort>
+              {disclosureData.length === 0 && (
+                <BodyShort className="my-4">Ingen utleveringer</BodyShort>
+              )}
+
+              {disclosureData.length > 0 && (
+                <AccordionDisclosure
+                  disclosureList={disclosureData}
+                  showRecipient={true}
+                  errorModal={error}
+                  editable={isEditable}
+                  submitDeleteDisclosure={handleDeleteDisclosure}
+                  submitEditDisclosure={handleEditDisclosure}
+                  onCloseModal={() => setError(undefined)}
+                />
+              )}
+
+              <ModalThirdParty
+                title="Opprett utlevering til ekstern part"
+                isOpen={showCreateDisclosureModal}
+                initialValues={initialFormValues}
+                submit={handleCreateDisclosure}
+                onClose={() => {
+                  setShowCreateDisclosureModal(false)
+                  setError(undefined)
+                }}
+                errorOnCreate={error}
+              />
+            </>
           )}
-
-          {disclosureData.length > 0 && (
-            <AccordionDisclosure
-              disclosureList={disclosureData}
-              showRecipient={true}
-              errorModal={error}
-              editable={isEditable}
-              submitDeleteDisclosure={handleDeleteDisclosure}
-              submitEditDisclosure={handleEditDisclosure}
-              onCloseModal={() => setError(undefined)}
-            />
-          )}
-
-          <ModalThirdParty
-            title="Opprett utlevering til ekstern part"
-            isOpen={showCreateDisclosureModal}
-            initialValues={initialFormValues}
-            submit={handleCreateDisclosure}
-            onClose={() => {
-              setShowCreateDisclosureModal(false)
-              setError(undefined)
-            }}
-            errorOnCreate={error}
-          />
         </div>
       </Tabs.Panel>
       {thirdTabTitle && thirdTabContent && (

@@ -62,6 +62,19 @@ export const getProcessByStateAndStatusForDepartment = async (
   ).data.content
 }
 
+export const getProcessByStateAndStatusForSeksjon = async (
+  processField: EProcessField,
+  processState: EProcessState,
+  processStatus: EProcessStatusFilter = EProcessStatusFilter.All,
+  seksjonId: string
+) => {
+  return (
+    await axios.get<IPageResponse<IProcessShort>>(
+      `${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&seksjonId=${seksjonId}`
+    )
+  ).data.content
+}
+
 export const searchProcess = async (text: string) => {
   return (await axios.get<IPageResponse<IProcess>>(`${env.pollyBaseUrl}/process/search/${text}`))
     .data

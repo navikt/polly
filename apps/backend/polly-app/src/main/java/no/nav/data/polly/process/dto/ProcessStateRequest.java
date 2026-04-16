@@ -8,7 +8,6 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.Validated;
 import no.nav.data.polly.alert.domain.AlertEventType;
-import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.ProcessStatus;
 
 @Data
@@ -72,13 +71,13 @@ public class ProcessStateRequest implements Validated {
     private ProcessState processState;
     private ProcessStatusFilter processStatus;
     private String department;
+    private String seksjonId;
     private String productAreaId;
 
     @Override
     public void validate(FieldValidator validator) {
         validator.checkRequiredEnum(Fields.processField, processField);
         validator.checkRequiredEnum(Fields.processState, processState);
-        validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
         validator.checkUUID(Fields.productAreaId, productAreaId);
     }
 

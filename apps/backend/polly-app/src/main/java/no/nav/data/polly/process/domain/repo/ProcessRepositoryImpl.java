@@ -1,22 +1,23 @@
 package no.nav.data.polly.process.domain.repo;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
-import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
-import no.nav.data.polly.process.dto.StateDbRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
+import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
+import no.nav.data.polly.process.dto.StateDbRequest;
 
 @Slf4j
 @Repository
@@ -140,6 +141,10 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         if (stateDbRequest.getDepartment() != null) {
             sql += " and data #>> '{affiliation,nomDepartmentId}' = :department";
             params.put("department", stateDbRequest.getDepartment());
+        }
+        if (stateDbRequest.getSeksjonId() != null) {
+            sql += " and data #> '{affiliation,seksjoner}' @> cast(:seksjonFilter as jsonb)";
+            params.put("seksjonFilter", "[{\"nomSeksjonId\":\"" + stateDbRequest.getSeksjonId() + "\"}]");
         }
         if (stateDbRequest.getTeamIds() != null) {
             sql += " and data #> '{affiliation,productTeams}' ??| array[ :productTeams ]";

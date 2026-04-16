@@ -1,10 +1,20 @@
 package no.nav.data.polly.process;
 
 
+import static no.nav.data.common.utils.StreamUtils.convert;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.RestResponsePage;
+import no.nav.data.integration.nom.NomGraphClient;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
@@ -13,13 +23,6 @@ import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import no.nav.data.polly.process.dto.StateDbRequest;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
-import static no.nav.data.common.utils.StreamUtils.convert;
 
 @RestController
 @Tag(name = "Process", description = "Process State")
@@ -30,10 +33,12 @@ public class ProcessStateController {
     
     private final ProcessRepository processRepository;
     private final TeamService teamService;
+    private final NomGraphClient nomGraphClient;
 
-    public ProcessStateController(ProcessRepository processRepository, TeamService teamService) {
+    public ProcessStateController(ProcessRepository processRepository, TeamService teamService, NomGraphClient nomGraphClient) {
         this.processRepository = processRepository;
         this.teamService = teamService;
+        this.nomGraphClient = nomGraphClient;
     }
 
     @Operation(summary = "Get Process for state")
@@ -41,6 +46,9 @@ public class ProcessStateController {
     @GetMapping
     public RestResponsePage<ProcessShortResponse> getProcesses(ProcessStateRequest request) {
         request.validateFieldsAndThrow();
+        if (request.getDepartment() != null && nomGraphClient.getAvdelingById(request.getDepartment()).isEmpty()) {
+            throw new ValidationException("Invalid department id: " + request.getDepartment());
+        }
         if (request.getProcessField().alertEvent && request.getProcessState() != ProcessState.YES) {
             return new RestResponsePage<>(List.of());
         }
@@ -49,7 +57,7 @@ public class ProcessStateController {
             teamIds = convert(teamService.getTeamsForProductArea(request.getProductAreaId()), Team::getId);
         }
         List<Process> processes = processRepository.findForState(
-                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), teamIds, request.getProcessStatus().processStatus));
+                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), request.getSeksjonId(), teamIds, request.getProcessStatus().processStatus));
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }
 
