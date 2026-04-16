@@ -1,4 +1,4 @@
-import { BodyShort, Button, Label, Tooltip } from '@navikt/ds-react'
+import { BodyShort, Button, Label, Loader, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAllNomAvdelinger, getAvdelingByNomId } from '../../api/NomApi'
 import {
@@ -154,7 +154,7 @@ const Departments = (props: TDepartmentsProps) => {
       .filter((department) => department.department !== '')
   }
 
-  if (alleNomAvdelinger.length === 0) return null
+  if (alleNomAvdelinger.length === 0) return <Loader size="xlarge" />
 
   return (
     <div className="w-full flex flex-wrap gap-4">
