@@ -1,14 +1,15 @@
 package no.nav.data.polly.process.dto;
 
+import java.util.List;
+
+import org.springframework.lang.Nullable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
-import org.springframework.lang.Nullable;
-
-import java.util.List;
 
 @Data
 @Builder

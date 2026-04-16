@@ -8,7 +8,6 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.Validated;
 import no.nav.data.polly.alert.domain.AlertEventType;
-import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.ProcessStatus;
 
 @Data
