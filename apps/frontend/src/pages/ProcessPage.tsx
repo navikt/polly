@@ -206,6 +206,7 @@ const ProcessPage = () => {
                                 processStatus={EProcessStatusFilter.All}
                                 type={ESection.seksjon}
                                 seksjonId={selectedSeksjonId}
+                                departmentCode={code}
                               />
                             ) : null
                           })()

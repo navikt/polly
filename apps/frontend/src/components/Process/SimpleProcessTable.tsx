@@ -26,12 +26,16 @@ export const SimpleProcessTable = (props: IProps) => {
           processes.map(async (process: IProcessShort) => {
             const userIdent = process.changeStamp.lastModifiedBy.split(' ')[0]
             if (userIdent !== 'migration') {
-              await getResourceById(userIdent).then((result) => {
-                newProcessesList.push({
-                  ...process,
-                  lastModifiedEmail: result.email,
+              await getResourceById(userIdent)
+                .then((result) => {
+                  newProcessesList.push({
+                    ...process,
+                    lastModifiedEmail: result.email,
+                  })
                 })
-              })
+                .catch(() => {
+                  newProcessesList.push({ ...process })
+                })
             } else {
               newProcessesList.push({ ...process })
             }
