@@ -1,5 +1,5 @@
 import { FileExcelIcon } from '@navikt/aksel-icons'
-import { BodyLong, Button, Link, SortState, Table } from '@navikt/ds-react'
+import { Button, Link, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../api/TeamApi'
 import { IProcessShort, IProcessShortWithEmail } from '../../constants'
@@ -118,7 +118,11 @@ export const SimpleProcessTable = (props: IProps) => {
         </Table.Header>
         <Table.Body>
           {sortedData.length === 0 ? (
-            <BodyLong>Ingen behandlinger</BodyLong>
+            <Table.Row>
+              <Table.DataCell colSpan={showCommonExternalProcessResponsible ? 5 : 4}>
+                Ingen behandlinger
+              </Table.DataCell>
+            </Table.Row>
           ) : (
             sortedData.map((process: IProcessShortWithEmail) => (
               <Table.Row key={process.id}>
