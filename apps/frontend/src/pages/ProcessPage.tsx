@@ -6,6 +6,7 @@ import { getDpProcessByDepartment } from '../api/DpProcessApi'
 import { getDashboard, getDisclosureByDepartment } from '../api/GetAllApi'
 import { getAvdelingByNomId, getSeksjonerForNomAvdeling } from '../api/NomApi'
 import Charts from '../components/Charts/Charts'
+import DashboardBreadcrumbs from '../components/Dashboard/DashboardBreadcrumbs'
 import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
 import Seksjoner from '../components/Dashboard/Seksjoner'
 import ProcessList from '../components/Process/ProcessList'
@@ -141,6 +142,10 @@ const ProcessPage = () => {
   return (
     <>
       <div role="main">
+        {section === ESection.department && code && <DashboardBreadcrumbs departmentId={code} />}
+        {section === ESection.seksjon && code && (
+          <DashboardBreadcrumbs departmentId={seksjonAvdelingId || undefined} seksjonId={code} />
+        )}
         {section && code && <PageHeader section={section} code={code} />}
         {section && code && (
           <div>

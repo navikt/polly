@@ -10,6 +10,7 @@ import {
 import { EProcessField, EProcessState, EProcessStatusFilter, IProcessShort } from '../../constants'
 import { useQueryParam } from '../../util/hooks'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
+import DashboardBreadcrumbs from './DashboardBreadcrumbs'
 
 type TPathProps = {
   filterName: EProcessField
@@ -105,6 +106,11 @@ const PurposeTable = () => {
 
   return (
     <>
+      <DashboardBreadcrumbs
+        departmentId={department}
+        seksjonId={seksjonId}
+        currentPageTitle={title}
+      />
       <Heading size="large">{title}</Heading>
       {loading && (
         <div className="flex w-full justify-center">

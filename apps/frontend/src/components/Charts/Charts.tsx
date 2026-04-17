@@ -42,7 +42,7 @@ const Charts = (props: TChartsProps) => {
     else if (type === ESection.department)
       return `/dashboard/${processField}/${processState}/${processStatus}?department=${departmentCode}`
     else if (type === ESection.seksjon)
-      return `/dashboard/${processField}/${processState}/${processStatus}?seksjon=${seksjonId}`
+      return `/dashboard/${processField}/${processState}/${processStatus}?seksjon=${seksjonId}${departmentCode ? `&department=${departmentCode}` : ''}`
     else
       return `/dashboard/${processField}/${processState}/${processStatus}?productarea=${productAreaId}`
   }
@@ -69,7 +69,8 @@ const Charts = (props: TChartsProps) => {
         processStatus,
         navigate,
         type,
-        seksjonId
+        seksjonId,
+        departmentCode
       )
     else
       return clickOnPieChartSlice(
