@@ -1,6 +1,6 @@
 # Polly – Domenemodell
 
-**Opprettet:** 26. mars 2026
+**Sist oppdatert:** 20. april 2026
 
 ## Innholdsfortegnelse
 
@@ -54,6 +54,8 @@
 | Kunstig intelligens                 | AiUsageDescription     |
 | Organisering                        | Affiliation            |
 | Formål                              | Purpose (via Codelist) |
+| Nav som databehandler               | DpProcess              |
+| Nav som databehandler data          | DpProcessData          |
 
 ---
 
@@ -130,6 +132,25 @@ classDiagram
         String kortnavn
         String beskrivelse
     }
+    class NavSomDatabehandler["Nav som databehandler (DpProcess)"] {
+        UUID id
+        NavSomDatabehandlerData data
+    }
+    class NavSomDatabehandlerData["Nav som databehandler data (DpProcessData)"] {
+        String navn
+        int dpProsessNummer
+        Organisering organisering
+        String eksternBehandlingsansvarlig
+        LocalDate start
+        LocalDate slutt
+        List~String~ databehandleravtaler
+        Databehandlere underdatabehandling
+        String formålsbeskrivelse
+        String beskrivelse
+        Boolean art9
+        Boolean art10
+        DpLagringstid lagringstid
+    }
 
     Behandling "1" *-- "1" BehandlingsData
     Behandling "1" o-- "N" OpplysningKobling
@@ -147,6 +168,10 @@ classDiagram
     Varslingshendelse --> OpplysningKobling : knyttet til
     Kodeverk <.. BehandlingsData : kodeoppslag
     Kodeverk <.. KoblingData : kodeoppslag
+    NavSomDatabehandler "1" *-- "1" NavSomDatabehandlerData
+    NavSomDatabehandlerData "1" *-- "1" Databehandlere
+    Databehandlere --> Databehandler : refererer til
+    Kodeverk <.. NavSomDatabehandlerData : kodeoppslag
 ```
 
 ---
