@@ -27,6 +27,7 @@ type TSeksjonCardProps = {
   onClick: (seksjon: ISeksjonDashCount) => void
 }
 
+//TODO: depricated maybe? component is no longer rendered
 const SeksjonCard = (props: TSeksjonCardProps) => {
   const { seksjon, isActive, onClick } = props
 
