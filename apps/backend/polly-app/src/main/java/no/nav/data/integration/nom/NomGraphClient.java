@@ -68,20 +68,20 @@ public class NomGraphClient {
     private Map<String, OrgEnhet> getAvdelingCache() {
         if (securityProperties.isDev()) {
             var devAvdelinger = List.of(
-                    createDevOrganisering("avdeling1", "Avdeling for brukeropplevelser"),
-                    createDevOrganisering("avdeling_2", "Internrevisjon"),
-                    createDevOrganisering("avdeling_3", "Kunnskapsavdelingen"),
-                    createDevOrganisering("avdeling_4", "Velferdsavdelingen"),
-                    createDevOrganisering("avdeling_5", "Kommunikasjonsavdelingen"),
-                    createDevOrganisering("avdeling_6", "Avdeling for mennesker og organisasjon"),
-                    createDevOrganisering("avdeling_7", "Ytelsesavdelingen"),
-                    createDevOrganisering("avdeling_8", "Juridisk avdeling"),
-                    createDevOrganisering("avdeling_9", "Arbeids- og velferdsdirektør"),
-                    createDevOrganisering("avdeling_10", "Klageinstans"),
-                    createDevOrganisering("avdeling_11", "Arbeidsavdelingen"),
-                    createDevOrganisering("avdeling_12", "Økonomi- og styringsavdelingen"),
-                    createDevOrganisering("avdeling_13", "Sekretariatet"),
-                    createDevOrganisering("avdeling_14", "Teknologiavdelingen")
+                    createDevOrganisering("arbeidsavdelingen", "Arbeidsavdelingen"),
+                    createDevOrganisering("arbeids_og_velferdsdirektor", "Arbeids- og velferdsdirektør"),
+                    createDevOrganisering("brukeropplevelser", "Avdeling for brukeropplevelser"),
+                    createDevOrganisering("mennesker_og_organisasjon", "Avdeling for mennesker og organisasjon"),
+                    createDevOrganisering("internrevisjon", "Internrevisjon"),
+                    createDevOrganisering("juridisk_avdeling", "Juridisk avdeling"),
+                    createDevOrganisering("klageinstans", "Klageinstans"),
+                    createDevOrganisering("kommunikasjonsavdelingen", "Kommunikasjonsavdelingen"),
+                    createDevOrganisering("kunnskapsavdelingen", "Kunnskapsavdelingen"),
+                    createDevOrganisering("sekretariatet", "Sekretariatet"),
+                    createDevOrganisering("teknologiavdelingen", "Teknologiavdelingen"),
+                    createDevOrganisering("velferdsavdelingen", "Velferdsavdelingen"),
+                    createDevOrganisering("ytelsesavdelingen", "Ytelsesavdelingen"),
+                    createDevOrganisering("okonomi_og_styringsavdelingen", "Økonomi- og styringsavdelingen")
             );
             return safeStream(devAvdelinger)
                     .collect(Collectors.toMap(OrgEnhet::getId, Function.identity()));
@@ -123,19 +123,7 @@ public class NomGraphClient {
             throw new ValidationException("Invalid avdeling id: " +  avdelingId);
         } else {
             if (securityProperties.isDev()) {
-                return List.of(
-                        createDevOrganisering(avdelingId + "_seksjon_1", avdelingId + " seksjon 1"),
-                        createDevOrganisering(avdelingId + "_seksjon_2", avdelingId + " seksjon 2"),
-                        createDevOrganisering(avdelingId + "_seksjon_3", avdelingId + " seksjon 3"),
-                        createDevOrganisering(avdelingId + "_seksjon_4", avdelingId + " seksjon 4"),
-                        createDevOrganisering(avdelingId + "_seksjon_5", avdelingId + " seksjon 5"),
-                        createDevOrganisering(avdelingId + "_seksjon_6", avdelingId + " seksjon 6"),
-                        createDevOrganisering(avdelingId + "_seksjon_7", avdelingId + " seksjon 7"),
-                        createDevOrganisering(avdelingId + "_seksjon_8", avdelingId + " seksjon 8"),
-                        createDevOrganisering(avdelingId + "_seksjon_9", avdelingId + " seksjon 9"),
-                        createDevOrganisering(avdelingId + "_seksjon_10", avdelingId + " seksjon 10"),
-                        createDevOrganisering(avdelingId + "_seksjon_11", avdelingId + " seksjon 11")
-                );
+                return getDevSeksjoner(avdelingId);
             } else {
                 var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", avdelingId));
                 var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
@@ -264,6 +252,82 @@ public class NomGraphClient {
 
     private String getScope() {
         return scopeTemplate.formatted(securityProperties.isDev() ? "dev" : "prod");
+    }
+
+    private List<OrgEnhet> getDevSeksjoner(String avdelingId) {
+        return switch (avdelingId) {
+            case "arbeidsavdelingen" -> List.of(
+                    createDevOrganisering("arb_sek_1", "Seksjon for arbeid og helse"),
+                    createDevOrganisering("arb_sek_2", "Seksjon for arbeidsgivertjenester"),
+                    createDevOrganisering("arb_sek_3", "Seksjon for arbeidsmarkedstiltak"),
+                    createDevOrganisering("arb_sek_4", "Seksjon for arbeidsoppfølging"),
+                    createDevOrganisering("arb_sek_5", "Styringsseksjon for Arbeidsavdelingen")
+            );
+            case "brukeropplevelser" -> List.of(
+                    createDevOrganisering("bru_sek_1", "Designseksjonen"),
+                    createDevOrganisering("bru_sek_2", "Seksjon for brukerflater"),
+                    createDevOrganisering("bru_sek_3", "Seksjon for brukerinnsikt")
+            );
+            case "mennesker_og_organisasjon" -> List.of(
+                    createDevOrganisering("mo_sek_1", "Arbeidsgiverseksjonen"),
+                    createDevOrganisering("mo_sek_2", "Avdeling for mennesker og organisasjon"),
+                    createDevOrganisering("mo_sek_3", "HMS- og styringsseksjonen"),
+                    createDevOrganisering("mo_sek_4", "Seksjon for kompetanseutvikling"),
+                    createDevOrganisering("mo_sek_5", "Seksjon for leder- og teamutvikling")
+            );
+            case "juridisk_avdeling" -> List.of(
+                    createDevOrganisering("jur_sek_1", "Seksjon for personvern og forvaltningsrett"),
+                    createDevOrganisering("jur_sek_2", "Seksjon for rettsavklaring"),
+                    createDevOrganisering("jur_sek_3", "Styringsseksjon for Juridisk avdeling")
+            );
+            case "klageinstans" -> List.of(
+                    createDevOrganisering("kla_sek_1", "Klageinstans Bergen"),
+                    createDevOrganisering("kla_sek_2", "Klageinstans Kristiansand"),
+                    createDevOrganisering("kla_sek_3", "Klageinstans Oslo"),
+                    createDevOrganisering("kla_sek_4", "Klageinstans styringsenhet"),
+                    createDevOrganisering("kla_sek_5", "Klageinstans Tromsø"),
+                    createDevOrganisering("kla_sek_6", "Klageinstans Trondheim"),
+                    createDevOrganisering("kla_sek_7", "Klageinstans Tønsberg")
+            );
+            case "kommunikasjonsavdelingen" -> List.of(
+                    createDevOrganisering("kom_sek_1", "Seksjon for endringskommunikasjon"),
+                    createDevOrganisering("kom_sek_2", "Seksjon for identitet og formidling"),
+                    createDevOrganisering("kom_sek_3", "Seksjon for samfunnskontakt"),
+                    createDevOrganisering("kom_sek_4", "Seksjon for virksomhetskommunikasjon")
+            );
+            case "kunnskapsavdelingen" -> List.of(
+                    createDevOrganisering("kun_sek_1", "Forskningsseksjonen"),
+                    createDevOrganisering("kun_sek_2", "FOU-seksjonen"),
+                    createDevOrganisering("kun_sek_3", "Prognoseseksjonen"),
+                    createDevOrganisering("kun_sek_4", "Seksjon for kunnskapsbasert læring"),
+                    createDevOrganisering("kun_sek_5", "Statistikkseksjonen"),
+                    createDevOrganisering("kun_sek_6", "Styringsseksjon for Kunnskapsavdelingen")
+            );
+            case "teknologiavdelingen" -> List.of(
+                    createDevOrganisering("tek_sek_1", "Data og informasjonsforvaltning"),
+                    createDevOrganisering("tek_sek_2", "Digital ansattopplevelse"),
+                    createDevOrganisering("tek_sek_3", "Digital sikkerhet"),
+                    createDevOrganisering("tek_sek_4", "Organisasjon og styring"),
+                    createDevOrganisering("tek_sek_5", "Plattform og infrastruktur"),
+                    createDevOrganisering("tek_sek_6", "Produktutvikling"),
+                    createDevOrganisering("tek_sek_7", "Utvikling")
+            );
+            case "velferdsavdelingen" -> List.of(
+                    createDevOrganisering("vel_sek_1", "Seksjon for hjelpemidler og tilrettelegging"),
+                    createDevOrganisering("vel_sek_2", "Seksjon for sosiale tjenester"),
+                    createDevOrganisering("vel_sek_3", "Styringsseksjon for Velferdsavdelingen")
+            );
+            case "ytelsesavdelingen" -> List.of(
+                    createDevOrganisering("yt_sek_1", "Seksjon for arbeidsavklaringspenger"),
+                    createDevOrganisering("yt_sek_2", "Seksjon for arbeidsytelser"),
+                    createDevOrganisering("yt_sek_3", "Seksjon for familieytelser"),
+                    createDevOrganisering("yt_sek_4", "Seksjon for helseytelser"),
+                    createDevOrganisering("yt_sek_5", "Seksjon for kontroll og internasjonalt"),
+                    createDevOrganisering("yt_sek_6", "Seksjon for pensjon og uføretrygd"),
+                    createDevOrganisering("yt_sek_7", "Styringsseksjon for Ytelsesavdelingen")
+            );
+            default -> List.of();
+        };
     }
 
     private OrgEnhet createDevOrganisering(String id, String navn) {
