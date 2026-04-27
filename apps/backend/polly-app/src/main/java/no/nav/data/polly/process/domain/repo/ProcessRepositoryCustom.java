@@ -27,6 +27,8 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findByProductTeams(List<String> productTeams);
 
+    List<Process> findBySeksjoner(List<String> seksjoner);
+
     List<Process> findByDocumentId(UUID documentId);
 
     List<Process> findForState(StateDbRequest stateDbRequest);

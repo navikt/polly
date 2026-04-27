@@ -107,6 +107,20 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
+    public List<Process> findBySeksjoner(List<String> seksjoner) {
+        if (seksjoner.isEmpty()) {
+            return List.of();
+        }
+        var resp = jdbcTemplate.queryForList(
+                "SELECT process_id FROM process WHERE EXISTS (" +
+                        "SELECT 1 FROM jsonb_array_elements(data #>'{affiliation,seksjoner}') AS elem " +
+                        "WHERE elem->>'nomSeksjonId' = ANY(:seksjoner))",
+                new MapSqlParameterSource().addValue("seksjoner", seksjoner)
+        );
+        return getProcesses(resp);
+    }
+
+    @Override
     public List<Process> findByDocumentId(UUID documentId) {
         var resp = jdbcTemplate.queryForList("select distinct(process_id) from policy where data #>'{documentIds}' ?? :documentId",
                 new MapSqlParameterSource().addValue("documentId", documentId.toString()));
