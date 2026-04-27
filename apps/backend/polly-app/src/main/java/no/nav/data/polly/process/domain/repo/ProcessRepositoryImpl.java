@@ -116,7 +116,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                         "WHERE jsonb_typeof(data #>'{affiliation,seksjoner}') = 'array' " +
                         "AND EXISTS (" +
                         "  SELECT 1 FROM jsonb_array_elements(data #>'{affiliation,seksjoner}') AS seksjonList " +
-                        "  WHERE seksjonList->>'nomSeksjonId' = ANY(:seksjoner)" +
+                        "  WHERE seksjonList->>'nomSeksjonId' IN (:seksjoner)" +
                         ")",
                 new MapSqlParameterSource().addValue("seksjoner", seksjoner)
         );
