@@ -112,11 +112,15 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             return List.of();
         }
         var resp = jdbcTemplate.queryForList(
-                "SELECT process_id FROM process WHERE EXISTS (" +
-                        "SELECT 1 FROM jsonb_array_elements(data #>'{affiliation,seksjoner}') AS elem " +
-                        "WHERE elem->>'nomSeksjonId' = ANY(:seksjoner))",
+                "SELECT process_id FROM process " +
+                        "WHERE jsonb_typeof(data #>'{affiliation,seksjoner}') = 'array' " +
+                        "AND EXISTS (" +
+                        "  SELECT 1 FROM jsonb_array_elements(data #>'{affiliation,seksjoner}') AS seksjonList " +
+                        "  WHERE seksjonList->>'nomSeksjonId' = ANY(:seksjoner)" +
+                        ")",
                 new MapSqlParameterSource().addValue("seksjoner", seksjoner)
         );
+
         return getProcesses(resp);
     }
 
