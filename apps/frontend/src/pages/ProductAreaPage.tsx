@@ -6,31 +6,30 @@ import Charts from '../components/Charts/Charts'
 import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'
-import { EProcessStatusFilter, IProductAreaDashCount } from '../constants'
+import { EProcessStatusFilter, ISeksjonDashCount } from '../constants'
 import { ESection } from './ProcessPage'
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [chartData, setChartData] = useState<IProductAreaDashCount>()
-  const { productAreaId } = useParams<{ productAreaId: string }>()
+  const [chartData, setChartData] = useState<ISeksjonDashCount>()
+  const { seksjonId } = useParams<{ seksjonId: string }>()
 
   useEffect(() => {
     ;(async () => {
       setIsLoading(true)
       const response = await getDashboard(EProcessStatusFilter.All)
 
-      if (response)
-        setChartData(response.productAreas.find((p) => p.productAreaId === productAreaId))
+      if (response) setChartData(response.seksjoner.find((s) => s.seksjonId === seksjonId))
 
       setIsLoading(false)
     })()
-  }, [productAreaId])
+  }, [seksjonId])
 
   return (
     <>
-      {productAreaId && (
+      {seksjonId && (
         <>
-          <PageHeader section={ESection.productarea} code={productAreaId} />
+          <PageHeader section={ESection.seksjon} code={seksjonId} />
 
           <Tabs defaultValue="behandlinger">
             <Tabs.List>
@@ -39,13 +38,13 @@ export const ProductAreaPage = () => {
               {!isLoading && chartData && <Tabs.Tab value="dashboard" label="Dashboard" />}
             </Tabs.List>
             <Tabs.Panel value="behandlinger">
-              <ProcessList section={ESection.productarea} code={productAreaId} isEditable={false} />
+              <ProcessList section={ESection.seksjon} seksjonFilter={seksjonId} code={seksjonId} isEditable={false} />
             </Tabs.Panel>
             <Tabs.Panel value="Opplysningstyper">
               <InfoTypeTable
                 title="Opplysningstyper"
                 getInfoTypes={async () =>
-                  (await getInformationTypesBy({ productArea: productAreaId })).content
+                  (await getInformationTypesBy({ productArea: seksjonId })).content
                 }
               />
             </Tabs.Panel>
@@ -59,8 +58,8 @@ export const ProductAreaPage = () => {
                   <Charts
                     chartData={chartData}
                     processStatus={EProcessStatusFilter.All}
-                    type={ESection.productarea}
-                    productAreaId={productAreaId}
+                    type={ESection.seksjon}
+                    seksjonId={seksjonId}
                   />
                 </div>
               </Tabs.Panel>

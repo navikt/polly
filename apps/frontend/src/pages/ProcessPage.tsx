@@ -149,7 +149,7 @@ const ProcessPage = () => {
         {section && code && <PageHeader section={section} code={code} />}
         {section && code && (
           <div>
-            {section !== ESection.department && section !== ESection.seksjon && (
+            {section !== ESection.department && (
               <ProcessList
                 code={code}
                 listName={listNameForSection(section)}

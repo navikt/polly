@@ -1,9 +1,9 @@
 import { ExternalLinkIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Link, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { getProductArea, getTeam } from '../../api/GetAllApi'
-import { getAvdelingByNomId } from '../../api/NomApi'
-import { IProductArea, ITeam } from '../../constants'
+import { getTeam } from '../../api/GetAllApi'
+import { getAvdelingByNomId, getByNomId } from '../../api/NomApi'
+import { ITeam } from '../../constants'
 import { ESection, listNameForSection } from '../../pages/ProcessPage'
 import { CodelistService, EListName } from '../../service/Codelist'
 import { theme } from '../../util'
@@ -23,15 +23,15 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
   const [isLoading, setLoading] = useState(false)
   const [team, setTeam] = useState<ITeam>()
-  const [productArea, setProductArea] = useState<IProductArea>()
+  const [seksjonNavn, setSeksjonNavn] = useState<string>()
 
   useEffect(() => {
     ;(async () => {
       setLoading(true)
       if (section === 'team') {
         setTeam(await getTeam(code))
-      } else if (section === 'productarea') {
-        setProductArea(await getProductArea(code))
+      } else if (section === 'seksjon') {
+        setSeksjonNavn((await getByNomId(code)).navn)
       } else if (section === 'department') {
         setNomAvdelingNavn((await getAvdelingByNomId(code)).navn)
       }
@@ -50,8 +50,8 @@ export const PageHeader = (props: IPageHeaderProps) => {
     if (section === ESection.team) {
       return team?.name || ''
     }
-    if (section === ESection.productarea) {
-      return productArea?.name || ''
+    if (section === ESection.seksjon) {
+      return seksjonNavn
     }
     return 'Feil'
   }
@@ -60,7 +60,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
     if (section === ESection.subdepartment) return 'Linja'
     else if (section === ESection.department) return ''
     else if (section === ESection.team) return 'Team'
-    else if (section === ESection.productarea) return 'Produktområde'
+    else if (section === ESection.seksjon) return 'Seksjon'
     else if (section === ESection.system) return 'System'
     else if (section === ESection.processor) return 'Databehandler'
     else if (section === ESection.thirdparty) return 'Felles behandlingsansvarlig med ekstern part}'
@@ -78,8 +78,8 @@ export const PageHeader = (props: IPageHeaderProps) => {
     if (section === ESection.team) {
       return team?.description || ''
     }
-    if (section === ESection.productarea) {
-      return productArea?.description || ''
+    if (section === ESection.seksjon) {
+      return ''
     }
     return ''
   }

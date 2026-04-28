@@ -83,6 +83,8 @@ export const urlForObject = (type: TNavigableItem, id: string, audit?: IAuditIte
       return `/team/${id}`
     case 'productarea':
       return `/productarea/${id}`
+    case 'seksjon':
+      return `/seksjon/${id}`
     case EListName.DEPARTMENT:
       return `/process/department/${id}`
     case EListName.SUB_DEPARTMENT:
