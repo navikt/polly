@@ -1,9 +1,8 @@
 import { useParams } from '@/util/router'
 import { Heading, Tabs } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { getDashboard, getInformationTypesBy } from '../api/GetAllApi'
+import { getDashboard } from '../api/GetAllApi'
 import Charts from '../components/Charts/Charts'
-import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
 import ProcessList from '../components/Process/ProcessList'
 import { PageHeader } from '../components/common/PageHeader'
 import { EProcessStatusFilter, ISeksjonDashCount } from '../constants'
@@ -34,7 +33,6 @@ export const SectionPage = () => {
           <Tabs defaultValue="behandlinger">
             <Tabs.List>
               <Tabs.Tab value="behandlinger" label="Behandlinger" />
-              <Tabs.Tab value="opplysningstyper" label="Opplysningstyper" />
               {!isLoading && chartData && <Tabs.Tab value="dashboard" label="Dashboard" />}
             </Tabs.List>
             <Tabs.Panel value="behandlinger">
@@ -45,18 +43,6 @@ export const SectionPage = () => {
                 isEditable={false}
               />
             </Tabs.Panel>
-            <Tabs.Panel value="Opplysningstyper">
-              {/* TODO har ikke funksjonalitet til å hente opplysnings type via seksjon
-                  har ikke kobling mellom produkt team og seksjon 
-              */}
-              <InfoTypeTable
-                title="Opplysningstyper"
-                getInfoTypes={async () =>
-                  (await getInformationTypesBy({ productArea: seksjonId })).content
-                }
-              />
-            </Tabs.Panel>
-
             {!isLoading && chartData && (
               <Tabs.Panel value="dashboard">
                 <div className="mb-60">
