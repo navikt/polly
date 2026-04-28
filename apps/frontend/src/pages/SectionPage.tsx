@@ -46,6 +46,9 @@ export const SectionPage = () => {
               />
             </Tabs.Panel>
             <Tabs.Panel value="Opplysningstyper">
+              {/* TODO har ikke funksjonalitet til å hente opplysnings type via seksjon
+                  har ikke kobling mellom produkt team og seksjon 
+              */}
               <InfoTypeTable
                 title="Opplysningstyper"
                 getInfoTypes={async () =>
