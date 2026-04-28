@@ -96,6 +96,7 @@ export const getProcessesByProcessor = async (processorId: string) => {
 export const getProcessesFor = async (params: {
   productTeam?: string
   productArea?: string
+  seksjonId?: string
   documentId?: string
   gdprArticle?: string
   nationalLaw?: string

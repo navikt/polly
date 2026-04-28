@@ -129,8 +129,8 @@ const ProcessList = ({
       if (moveScroll) moveScroll()
     })()
     const pathName: string = current_location.pathname.split('/')[1]
-    if (pathName === 'productarea') {
-      setExportHref(`${env.pollyBaseUrl}/export/process?productArea=${code}`)
+    if (pathName === 'seksjon') {
+      setExportHref(`${env.pollyBaseUrl}/export/process?section=${code}`)
     } else if (pathName === 'team') {
       setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
     }
@@ -162,8 +162,8 @@ const ProcessList = ({
         } else {
           list = []
         }
-      } else if (current_location.pathname.includes('productarea')) {
-        const response: IPageResponse<IProcess> = await getProcessesFor({ productArea: code })
+      } else if (current_location.pathname.includes('seksjon')) {
+        const response: IPageResponse<IProcess> = await getProcessesFor({ seksjonId: code })
         if (response.content) {
           list = response.content as IProcessShort[]
         } else {

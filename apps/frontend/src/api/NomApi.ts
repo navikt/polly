@@ -103,6 +103,44 @@ export const getAvdelingSearchItem = async (
   }
 }
 
+export const getSeksjonSearchItem = async (
+  search: string,
+  list: string,
+  typeName: string,
+  backgroundColor?: string
+) => {
+  const avdelinger = await getAllNomAvdelinger()
+
+  const seksjonListe: IOrgEnhet[] = []
+
+  if (avdelinger && avdelinger.length) {
+    const results = await Promise.all(avdelinger.map((avdeling) => getSeksjonerForNomAvdeling(avdeling.id).then((seksjonerForAvdeling) =>
+      seksjonerForAvdeling.filter(
+        (seksjonForAvdeling) =>
+          seksjonForAvdeling.navn.toLowerCase() !== avdeling.navn.toLowerCase()
+      )
+    )))
+
+    seksjonListe.push(...results.flat())
+
+    return seksjonListe
+      .filter((seksjon: IOrgEnhet) => seksjon.navn.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+      .map(
+        (seksjon: IOrgEnhet) =>
+          ({
+            id: seksjon.id,
+            sortKey: seksjon.navn,
+            label: seksjon.navn,
+            type: list,
+            typeName: typeName,
+            tagColor: backgroundColor || '',
+          }) as TSearchItem
+      )
+  } else {
+    return []
+  }
+}
+
 export const searchNavKontorOptions = async (searchParam: string) => {
   if (searchParam && searchParam.length > 2) {
     const navKontorer = await searchNavKontorByName(searchParam)
