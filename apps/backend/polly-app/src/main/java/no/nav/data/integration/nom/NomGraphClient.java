@@ -219,10 +219,28 @@ public class NomGraphClient {
     }
 
     public OrgEnhet getById(String id) {
-        var request = new GraphQLRequest(getByIdQuery, Map.of("id", id));
-        var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
-        assert res.getBody() != null;
-        return res.getBody().getData().getOrgEnhet();
+        if (securityProperties.isProd()) {
+            var request = new GraphQLRequest(getByIdQuery, Map.of("id", id));
+            var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
+            assert res.getBody() != null;
+            return res.getBody().getData().getOrgEnhet();
+        }  else {
+            var seksjoner = List.of(createDevOrganisering("arb_sek_1", "Seksjon for arbeid og helse"),
+                    createDevOrganisering("arb_sek_2", "Seksjon for arbeidsgivertjenester"),
+                    createDevOrganisering("arb_sek_3", "Seksjon for arbeidsmarkedstiltak"),
+                    createDevOrganisering("arb_sek_4", "Seksjon for arbeidsoppfølging"),
+                    createDevOrganisering("arb_sek_5", "Styringsseksjon for Arbeidsavdelingen"),
+                    createDevOrganisering("bru_sek_1", "Designseksjonen"),
+                    createDevOrganisering("bru_sek_2", "Seksjon for brukerflater"),
+                    createDevOrganisering("bru_sek_3", "Seksjon for brukerinnsikt"),
+                    createDevOrganisering("mo_sek_1", "Arbeidsgiverseksjonen"),
+                    createDevOrganisering("mo_sek_2", "Avdeling for mennesker og organisasjon"),
+                    createDevOrganisering("mo_sek_3", "HMS- og styringsseksjonen"),
+                    createDevOrganisering("mo_sek_4", "Seksjon for kompetanseutvikling"),
+                    createDevOrganisering("mo_sek_5", "Seksjon for leder- og teamutvikling"));
+
+            return seksjoner.stream().filter(s -> s.getId().equals(id)).findFirst().orElseThrow(() -> new ValidationException("Couldn't find orgenhet with id: " + id));
+        }
     }
 
     private RestOperations template() {

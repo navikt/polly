@@ -66,7 +66,7 @@ public class ExportController {
             @RequestParam(name = "subDepartment", required = false) String subDepartment,
             @RequestParam(name = "system", required = false) String system,
             @RequestParam(name = "purpose", required = false) String purpose,
-            @RequestParam(name = "productArea", required = false) String productArea,
+            @RequestParam(name = "section", required = false) String section,
             @RequestParam(name = "productTeam", required = false) String productTeam,
             @RequestParam(name = "documentAccess", required = false, defaultValue = "INTERNAL") DocumentAccess documentAccess
     ) {
@@ -86,14 +86,11 @@ public class ExportController {
             }
             doc = processToDocx.generateDocForProcess(p, documentAccess);
             filename = "behandling_" + String.join(".", p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
-        } else if (productArea != null) {
-            var teams = teamService.getTeamsForProductArea(productArea);
-            var productAreaData = teamService.getProductArea(productArea);
-            String productAreaName = productAreaData.isPresent() ? productAreaData.get().getName() : "";
-
-            List<Process> processes = processRepository.findByProductTeams(convert(teams, Team::getId));
-            doc = processToDocx.generateDocForProcessList(processes, "Produktområde: " + StringUtils.capitalize(productAreaName), documentAccess);
-            filename = "behandling_produktområde_" + productArea + ".docx";
+        } else if (section != null) {
+            OrgEnhet seksjonData = nomGraphClient.getById(section);
+            List<Process> processes = processRepository.findBySeksjoner(List.of(section));
+            doc = processToDocx.generateDocForProcessList(processes, "Seksjon: " + StringUtils.capitalize(seksjonData.getNavn()), documentAccess);
+            filename = "behandling_seksjon_" + seksjonData.getNavn() + ".docx";
         } else if (productTeam != null) {
             List<Process> processes = processRepository.findByProductTeam(productTeam);
             var productTeamData = teamService.getTeam(productTeam);
