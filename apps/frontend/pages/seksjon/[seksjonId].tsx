@@ -1,3 +1,3 @@
-import { ProductAreaPage } from '@/pages/ProductAreaPage'
+import { SectionPage } from '@/pages/SectionPage'
 
-export default ProductAreaPage
+export default SectionPage

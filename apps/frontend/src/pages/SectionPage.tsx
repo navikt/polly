@@ -9,7 +9,7 @@ import { PageHeader } from '../components/common/PageHeader'
 import { EProcessStatusFilter, ISeksjonDashCount } from '../constants'
 import { ESection } from './ProcessPage'
 
-export const ProductAreaPage = () => {
+export const SectionPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [chartData, setChartData] = useState<ISeksjonDashCount>()
   const { seksjonId } = useParams<{ seksjonId: string }>()
@@ -38,7 +38,12 @@ export const ProductAreaPage = () => {
               {!isLoading && chartData && <Tabs.Tab value="dashboard" label="Dashboard" />}
             </Tabs.List>
             <Tabs.Panel value="behandlinger">
-              <ProcessList section={ESection.seksjon} seksjonFilter={seksjonId} code={seksjonId} isEditable={false} />
+              <ProcessList
+                section={ESection.seksjon}
+                seksjonFilter={seksjonId}
+                code={seksjonId}
+                isEditable={false}
+              />
             </Tabs.Panel>
             <Tabs.Panel value="Opplysningstyper">
               <InfoTypeTable
