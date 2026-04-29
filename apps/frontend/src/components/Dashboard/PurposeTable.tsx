@@ -85,7 +85,7 @@ const PurposeTable = () => {
             department
           )
           setFiltered(response)
-        } else if (noDepartment) {
+        } else if (noDepartment === 'true') {
           const response: IProcessShort[] = await getProcessByStateAndStatusForNoDepartment(
             filterName,
             filterValue,
@@ -119,7 +119,7 @@ const PurposeTable = () => {
         departmentId={department}
         seksjonId={seksjonId}
         currentPageTitle={title}
-        noDepartment={!!noDepartment}
+        noDepartment={noDepartment === 'true'}
       />
       <Heading size="large">{title}</Heading>
       {loading && (

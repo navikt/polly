@@ -132,11 +132,9 @@ const Departments = (props: TDepartmentsProps) => {
       .filter((department) => department.department !== '')
       .sort((a, b) => {
         const avdelingA: string =
-          alleNomAvdelinger.filter((avdeling) => avdeling.id === a.department)[0]?.navn ||
-          'Fant ikke'
+          alleNomAvdelinger.find((avdeling) => avdeling.id === a.department)?.navn || 'Fant ikke'
         const avdelingB: string =
-          alleNomAvdelinger.filter((avdeling) => avdeling.id === b.department)[0]?.navn ||
-          'Fant ikke'
+          alleNomAvdelinger.find((avdeling) => avdeling.id === b.department)?.navn || 'Fant ikke'
 
         return avdelingA.localeCompare(avdelingB)
       })

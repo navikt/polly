@@ -176,7 +176,7 @@ const ProcessList = ({
         }
       } else if (section === ESection.department && !code) {
         const response = await getProcessesWithNoDepartment()
-        list = response.content ? (response.content as IProcessShort[]) : []
+        list = response.content ?? []
       } else {
         list = (await getCodelistUsage(listName as EListName, code)).processes
       }
@@ -405,7 +405,7 @@ const ProcessList = ({
                 navigate(
                   genProcessPath(
                     section,
-                    code,
+                    navCode,
                     undefined,
                     event.target.value as EProcessStatus | undefined
                   )

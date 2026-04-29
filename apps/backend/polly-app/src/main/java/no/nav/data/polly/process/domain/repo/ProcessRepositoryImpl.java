@@ -159,8 +159,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         if (stateDbRequest.getDepartment() != null) {
             sql += " and data #>> '{affiliation,nomDepartmentId}' = :department";
             params.put("department", stateDbRequest.getDepartment());
-        }
-        if (stateDbRequest.isNoDepartment()) {
+        } else if (stateDbRequest.isNoDepartment()) {
             sql += " and (data #>> '{affiliation,nomDepartmentId}' is null or data #>> '{affiliation,nomDepartmentId}' = '')";
         }
         if (stateDbRequest.getSeksjonId() != null) {

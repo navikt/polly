@@ -98,7 +98,8 @@ export const getProcessesByPurpose = async (text: string) => {
 }
 
 export const getProcessesWithNoDepartment = async () => {
-  return (await axios.get<IPageResponse<IProcess>>(`${env.pollyBaseUrl}/process/nodepartment`)).data
+  return (await axios.get<IPageResponse<IProcessShort>>(`${env.pollyBaseUrl}/process/nodepartment`))
+    .data
 }
 
 export const getProcessesByProcessor = async (processorId: string) => {
