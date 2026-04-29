@@ -853,6 +853,7 @@ export interface IProductAreaDashCount extends IDashCount {
 export interface ISeksjonDashCount extends IDashCount {
   seksjonId: string
   seksjonName: string
+  department?: string
 }
 
 export interface ICounter {

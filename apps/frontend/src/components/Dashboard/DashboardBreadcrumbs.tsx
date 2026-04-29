@@ -12,10 +12,11 @@ type TDashboardBreadcrumbsProps = {
   departmentId?: string
   seksjonId?: string
   currentPageTitle?: string
+  noDepartment?: boolean
 }
 
 const DashboardBreadcrumbs = (props: TDashboardBreadcrumbsProps) => {
-  const { departmentId, seksjonId, currentPageTitle } = props
+  const { departmentId, seksjonId, currentPageTitle, noDepartment } = props
   const [departmentName, setDepartmentName] = useState<string>('')
   const [seksjonName, setSeksjonName] = useState<string>('')
 
@@ -37,7 +38,16 @@ const DashboardBreadcrumbs = (props: TDashboardBreadcrumbsProps) => {
 
   const items: TBreadcrumbItem[] = [{ label: 'Dashboard', href: '/dashboard' }]
 
-  if (departmentId) {
+  if (noDepartment) {
+    if (currentPageTitle) {
+      items.push({
+        label: 'Ingen avdeling',
+        href: '/process/department/Ingen%20avdeling/?tab=Dashboard',
+      })
+    } else {
+      items.push({ label: 'Ingen avdeling' })
+    }
+  } else if (departmentId) {
     const depLabel = departmentName || departmentId
     if (currentPageTitle) {
       items.push({
