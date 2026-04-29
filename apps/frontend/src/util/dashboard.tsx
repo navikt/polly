@@ -10,10 +10,13 @@ export const clickOnPieChartSlice =
     navigate: NavigateFunction,
     type?: ESection,
     id?: string,
-    departmentCode?: string
+    departmentCode?: string,
+    noDepartment?: boolean
   ) =>
   () => {
-    if (!type) navigate(`/dashboard/${processField}/${processState}/${processStatus}`)
+    if (noDepartment)
+      navigate(`/dashboard/${processField}/${processState}/${processStatus}?noDepartment=true`)
+    else if (!type) navigate(`/dashboard/${processField}/${processState}/${processStatus}`)
     else if (type === ESection.department)
       navigate(`/dashboard/${processField}/${processState}/${processStatus}?department=${id}`)
     else if (type === ESection.seksjon)

@@ -72,6 +72,8 @@ const ProcessPage = () => {
   const avdeling = useQueryParam<string>('avdeling')
   const params = useParams<TPathParams>()
   const { section, code, processId } = params
+  const isNoDepartment = section === ESection.department && code === 'Ingen avdeling'
+  const departmentCode = isNoDepartment ? '' : (code ?? '')
   const location = useLocation()
 
   const moveScroll = () => {
@@ -96,15 +98,15 @@ const ProcessPage = () => {
         setIsLoading(true)
         const res = await getDashboard(EProcessStatusFilter.All)
         if (res) {
-          setChartData(res.departments.find((d) => d.department === code))
+          setChartData(res.departments.find((d) => d.department === departmentCode))
           setDashboardData(res)
         }
 
-        if (code) {
+        if (departmentCode) {
           const [seksjonerForAvdeling, disclosureResponse, dpProcessResponse] = await Promise.all([
-            getSeksjonerForNomAvdeling(code),
-            getDisclosureByDepartment(code),
-            getDpProcessByDepartment(code),
+            getSeksjonerForNomAvdeling(departmentCode),
+            getDisclosureByDepartment(departmentCode),
+            getDpProcessByDepartment(departmentCode),
           ])
           setDepartmentSeksjoner(seksjonerForAvdeling)
           if (disclosureResponse) setDisclosureData(disclosureResponse.content)
@@ -142,11 +144,18 @@ const ProcessPage = () => {
   return (
     <>
       <div role="main">
-        {section === ESection.department && code && <DashboardBreadcrumbs departmentId={code} />}
+        {section === ESection.department && code && (
+          <DashboardBreadcrumbs
+            departmentId={isNoDepartment ? undefined : code}
+            noDepartment={isNoDepartment}
+          />
+        )}
         {section === ESection.seksjon && code && (
           <DashboardBreadcrumbs departmentId={seksjonAvdelingId || undefined} seksjonId={code} />
         )}
-        {section && code && <PageHeader section={section} code={code} />}
+        {section && code && (
+          <PageHeader section={section} code={code} noDepartment={isNoDepartment} />
+        )}
         {section && code && (
           <div>
             {section !== ESection.department && section !== ESection.seksjon && (
@@ -180,6 +189,10 @@ const ProcessPage = () => {
                             {s.navn}
                           </option>
                         ))}
+                      {dashboardData?.seksjoner?.some(
+                        (s) =>
+                          s.seksjonId === '__INGEN_SEKSJON__' && s.department === departmentCode
+                      ) && <option value="__INGEN_SEKSJON__">Ikke valgt seksjon</option>}
                     </Select>
                   </div>
                 )}
@@ -187,7 +200,7 @@ const ProcessPage = () => {
                   disclosureData={disclosureData}
                   setDisclosureData={setDisclosureData}
                   dpProcessData={dpProcessData}
-                  code={code}
+                  code={departmentCode}
                   listName={listNameForSection(section)}
                   processId={processId}
                   filter={filter}
@@ -203,7 +216,10 @@ const ProcessPage = () => {
                         ? dashboardData &&
                           (() => {
                             const seksjonChart = dashboardData.seksjoner?.find(
-                              (s) => s.seksjonId === selectedSeksjonId
+                              (s) =>
+                                s.seksjonId === selectedSeksjonId &&
+                                (selectedSeksjonId !== '__INGEN_SEKSJON__' ||
+                                  s.department === departmentCode)
                             )
                             return seksjonChart ? (
                               <Charts
@@ -211,7 +227,7 @@ const ProcessPage = () => {
                                 processStatus={EProcessStatusFilter.All}
                                 type={ESection.seksjon}
                                 seksjonId={selectedSeksjonId}
-                                departmentCode={code}
+                                departmentCode={departmentCode}
                               />
                             ) : null
                           })()
@@ -219,7 +235,7 @@ const ProcessPage = () => {
                             <Charts
                               chartData={chartData}
                               processStatus={EProcessStatusFilter.All}
-                              departmentCode={code}
+                              departmentCode={departmentCode}
                               type={ESection.department}
                             />
                           )}

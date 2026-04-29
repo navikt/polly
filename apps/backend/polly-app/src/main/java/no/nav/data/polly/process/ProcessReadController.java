@@ -153,6 +153,15 @@ public class ProcessReadController {
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
     }
 
+    @Operation(summary = "Get Processes with no department")
+    @ApiResponse(description = "Processes without department fetched")
+    @GetMapping("/nodepartment")
+    public ResponseEntity<RestResponsePage<ProcessResponse>> getProcessesWithNoDepartment() {
+        log.info("Received request for processes with no department");
+        var processes = repository.findByNoDepartment();
+        return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
+    }
+
     @Operation(summary = "Get Processes for Purpose")
     @ApiResponse(description = "Processes fetched")
     @GetMapping("/purpose/{purpose}")

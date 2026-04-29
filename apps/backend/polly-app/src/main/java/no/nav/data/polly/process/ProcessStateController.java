@@ -57,7 +57,7 @@ public class ProcessStateController {
             teamIds = convert(teamService.getTeamsForProductArea(request.getProductAreaId()), Team::getId);
         }
         List<Process> processes = processRepository.findForState(
-                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), request.getSeksjonId(), teamIds, request.getProcessStatus().processStatus));
+                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), Boolean.TRUE.equals(request.getNoDepartment()), request.getSeksjonId(), teamIds, request.getProcessStatus().processStatus));
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }
 

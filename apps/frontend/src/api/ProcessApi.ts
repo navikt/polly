@@ -75,6 +75,18 @@ export const getProcessByStateAndStatusForSeksjon = async (
   ).data.content
 }
 
+export const getProcessByStateAndStatusForNoDepartment = async (
+  processField: EProcessField,
+  processState: EProcessState,
+  processStatus: EProcessStatusFilter = EProcessStatusFilter.All
+) => {
+  return (
+    await axios.get<IPageResponse<IProcessShort>>(
+      `${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&noDepartment=true`
+    )
+  ).data.content
+}
+
 export const searchProcess = async (text: string) => {
   return (await axios.get<IPageResponse<IProcess>>(`${env.pollyBaseUrl}/process/search/${text}`))
     .data
@@ -83,6 +95,10 @@ export const searchProcess = async (text: string) => {
 export const getProcessesByPurpose = async (text: string) => {
   return (await axios.get<IPageResponse<IProcess>>(`${env.pollyBaseUrl}/process/purpose/${text}`))
     .data
+}
+
+export const getProcessesWithNoDepartment = async () => {
+  return (await axios.get<IPageResponse<IProcess>>(`${env.pollyBaseUrl}/process/nodepartment`)).data
 }
 
 export const getProcessesByProcessor = async (processorId: string) => {

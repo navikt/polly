@@ -18,6 +18,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
     List<Process> findByDepartment(String department);
 
+    @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' is null or data #>> '{affiliation,nomDepartmentId}' = ''", nativeQuery = true)
+    List<Process> findByNoDepartment();
+
     @Query(value = "select cast(process_id as text) from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
     List<UUID> findIdByDepartment(String department);
 

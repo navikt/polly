@@ -40,7 +40,9 @@ const Charts = (props: TChartsProps) => {
   ): string => {
     if (!type) return `/dashboard/${processField}/${processState}/${processStatus}`
     else if (type === ESection.department)
-      return `/dashboard/${processField}/${processState}/${processStatus}?department=${departmentCode}`
+      return departmentCode
+        ? `/dashboard/${processField}/${processState}/${processStatus}?department=${departmentCode}`
+        : `/dashboard/${processField}/${processState}/${processStatus}?noDepartment=true`
     else if (type === ESection.seksjon)
       return `/dashboard/${processField}/${processState}/${processStatus}?seksjon=${seksjonId}${departmentCode ? `&department=${departmentCode}` : ''}`
     else
@@ -54,14 +56,25 @@ const Charts = (props: TChartsProps) => {
   ) => {
     if (!type) return clickOnPieChartSlice(processField, processState, processStatus, navigate)
     else if (type === ESection.department)
-      return clickOnPieChartSlice(
-        processField,
-        processState,
-        processStatus,
-        navigate,
-        type,
-        departmentCode
-      )
+      return departmentCode
+        ? clickOnPieChartSlice(
+            processField,
+            processState,
+            processStatus,
+            navigate,
+            type,
+            departmentCode
+          )
+        : clickOnPieChartSlice(
+            processField,
+            processState,
+            processStatus,
+            navigate,
+            undefined,
+            undefined,
+            undefined,
+            true
+          )
     else if (type === ESection.seksjon)
       return clickOnPieChartSlice(
         processField,
