@@ -54,46 +54,43 @@ const Charts = (props: TChartsProps) => {
     processState: EProcessState,
     processStatus: EProcessStatusFilter
   ) => {
-    if (!type) return clickOnPieChartSlice(processField, processState, processStatus, navigate)
+    if (!type) return clickOnPieChartSlice({ processField, processState, processStatus, navigate })
     else if (type === ESection.department)
       return departmentCode
-        ? clickOnPieChartSlice(
+        ? clickOnPieChartSlice({
             processField,
             processState,
             processStatus,
             navigate,
             type,
-            departmentCode
-          )
-        : clickOnPieChartSlice(
+            id: departmentCode,
+          })
+        : clickOnPieChartSlice({
             processField,
             processState,
             processStatus,
             navigate,
-            undefined,
-            undefined,
-            undefined,
-            true
-          )
+            noDepartment: true,
+          })
     else if (type === ESection.seksjon)
-      return clickOnPieChartSlice(
+      return clickOnPieChartSlice({
         processField,
         processState,
         processStatus,
         navigate,
         type,
-        seksjonId,
-        departmentCode
-      )
+        id: seksjonId,
+        departmentCode,
+      })
     else
-      return clickOnPieChartSlice(
+      return clickOnPieChartSlice({
         processField,
         processState,
         processStatus,
         navigate,
         type,
-        productAreaId
-      )
+        id: productAreaId,
+      })
   }
 
   const all = chartData as IAllDashCount

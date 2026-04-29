@@ -172,7 +172,10 @@ const ProcessPage = () => {
 
             {!isLoading && section === ESection.department && (
               <>
-                {departmentSeksjoner.length > 0 && (
+                {(departmentSeksjoner.length > 0 ||
+                  dashboardData?.seksjoner?.some(
+                    (s) => s.seksjonId === '__INGEN_SEKSJON__' && s.department === departmentCode
+                  )) && (
                   <div className="flex items-center gap-4 mb-4 mt-2">
                     <Select
                       label="Filtrer på seksjon"
