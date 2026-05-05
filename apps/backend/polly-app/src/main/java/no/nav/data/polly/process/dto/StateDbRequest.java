@@ -20,7 +20,6 @@ public class StateDbRequest {
     private final ProcessState processState;
     @Nullable
     private final String department;
-    private final boolean noDepartment;
     @Nullable
     private final String seksjonId;
     @Nullable

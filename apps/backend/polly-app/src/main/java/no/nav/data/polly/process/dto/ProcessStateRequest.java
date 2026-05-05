@@ -71,7 +71,6 @@ public class ProcessStateRequest implements Validated {
     private ProcessState processState;
     private ProcessStatusFilter processStatus;
     private String department;
-    private Boolean noDepartment;
     private String seksjonId;
     private String productAreaId;
 
