@@ -35,7 +35,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
         setProductArea(await getProductArea(code))
       } else if (section === 'department') {
         if (noDepartment) {
-          setNomAvdelingNavn('Ingen avdeling')
+          setNomAvdelingNavn('Ikke valgt avdeling')
         } else {
           setNomAvdelingNavn((await getAvdelingByNomId(code)).navn)
         }
