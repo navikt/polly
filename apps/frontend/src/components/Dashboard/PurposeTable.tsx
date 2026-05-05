@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import {
   getProcessByStateAndStatus,
   getProcessByStateAndStatusForDepartment,
+  getProcessByStateAndStatusForNoDepartment,
   getProcessByStateAndStatusForProductArea,
   getProcessByStateAndStatusForSeksjon,
 } from '../../api/GetAllApi'
@@ -26,6 +27,7 @@ const PurposeTable = () => {
   const department: string | undefined = useQueryParam('department')
   const productareaId: string | undefined = useQueryParam('productarea')
   const seksjonId: string | undefined = useQueryParam('seksjon')
+  const noDepartment: string | undefined = useQueryParam('noDepartment')
 
   const changeTitle = () => {
     if (filterName === EProcessField.DPIA && filterValue) {
@@ -83,6 +85,13 @@ const PurposeTable = () => {
             department
           )
           setFiltered(response)
+        } else if (noDepartment === 'true') {
+          const response: IProcessShort[] = await getProcessByStateAndStatusForNoDepartment(
+            filterName,
+            filterValue,
+            filterStatus
+          )
+          setFiltered(response)
         } else if (productareaId) {
           const response: IProcessShort[] = await getProcessByStateAndStatusForProductArea(
             filterName,
@@ -102,7 +111,7 @@ const PurposeTable = () => {
       }
       setLoading(false)
     })()
-  }, [filterName, filterValue, filterStatus, department, seksjonId])
+  }, [filterName, filterValue, filterStatus, department, seksjonId, noDepartment])
 
   return (
     <>
@@ -110,6 +119,7 @@ const PurposeTable = () => {
         departmentId={department}
         seksjonId={seksjonId}
         currentPageTitle={title}
+        noDepartment={noDepartment === 'true'}
       />
       <Heading size="large">{title}</Heading>
       {loading && (

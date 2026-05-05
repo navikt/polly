@@ -57,7 +57,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
               href={
                 genProcessPath(
                   ESection.department,
-                  department.department ? department.department : 'INGEN',
+                  department.department || 'Ingen avdeling',
                   undefined
                 ) + '&tab=Dashboard'
               }
@@ -71,7 +71,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
             <RouteLink
               href={genProcessPath(
                 ESection.department,
-                department.department,
+                department.department || 'Ingen avdeling',
                 undefined,
                 EProcessStatus.COMPLETED
               )}
@@ -83,7 +83,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
             <RouteLink
               href={genProcessPath(
                 ESection.department,
-                department.department,
+                department.department || 'Ingen avdeling',
                 undefined,
                 EProcessStatus.IN_PROGRESS
               )}
@@ -95,7 +95,7 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
             <RouteLink
               href={genProcessPath(
                 ESection.department,
-                department.department,
+                department.department || 'Ingen avdeling',
                 undefined,
                 EProcessStatus.NEEDS_REVISION
               )}
@@ -129,30 +129,18 @@ const Departments = (props: TDepartmentsProps) => {
 
   const sortedData = () => {
     return data.departments
-      .sort((a, b) => {
-        if (a.department === '') {
-          return 1
-        }
-
-        if (b.department === '') {
-          return -1
-        }
-
-        if (a.department !== '' && b.department !== '') {
-          const avdelingA: string =
-            alleNomAvdelinger.filter((avdeling) => avdeling.id === a.department)[0]?.navn ||
-            'Fant ikke'
-          const avdelingB: string =
-            alleNomAvdelinger.filter((avdeling) => avdeling.id === b.department)[0]?.navn ||
-            'Fant ikke'
-
-          return avdelingA.localeCompare(avdelingB)
-        } else {
-          return 0
-        }
-      })
       .filter((department) => department.department !== '')
+      .sort((a, b) => {
+        const avdelingA: string =
+          alleNomAvdelinger.find((avdeling) => avdeling.id === a.department)?.navn || 'Fant ikke'
+        const avdelingB: string =
+          alleNomAvdelinger.find((avdeling) => avdeling.id === b.department)?.navn || 'Fant ikke'
+
+        return avdelingA.localeCompare(avdelingB)
+      })
   }
+
+  const noDepartment = data.departments.find((d) => d.department === '')
 
   if (alleNomAvdelinger.length === 0) return <Loader size="xlarge" />
 
@@ -161,6 +149,7 @@ const Departments = (props: TDepartmentsProps) => {
       {sortedData().map((department: DepartmentProcess, index: number) => (
         <DepartmentCard key={index} department={department} />
       ))}
+      {noDepartment && <DepartmentCard department={noDepartment} />}
     </div>
   )
 }

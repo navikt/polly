@@ -20,6 +20,7 @@ import {
   updateProcess,
 } from '../../api/GetAllApi'
 import { getAvdelingByNomId } from '../../api/NomApi'
+import { getProcessesWithNoDepartment } from '../../api/ProcessApi'
 import {
   ELegalBasesUse,
   EProcessStatus,
@@ -96,14 +97,16 @@ const ProcessList = ({
       fullProcessList.filter(
         (process: IProcessShort) =>
           !seksjonFilter ||
-          process.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter)
+          (seksjonFilter === '__INGEN_SEKSJON__'
+            ? process.affiliation.seksjoner.length === 0
+            : process.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter))
       )
     )
   }, [seksjonFilter, fullProcessList])
 
   useEffect(() => {
     ;(async () => {
-      if (section === ESection.department) {
+      if (section === ESection.department && code) {
         await getAvdelingByNomId(code).then((response) => setNomAvdelingName(response.navn))
       }
     })()
@@ -136,16 +139,18 @@ const ProcessList = ({
     }
   }, [code, filter])
 
+  const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
+
   const handleChangePanel: (process?: Partial<IProcess>) => void = (
     process?: Partial<IProcess>
   ) => {
     if (process?.id !== currentProcess?.id) {
-      navigate(genProcessPath(section, code, process, filter))
+      navigate(genProcessPath(section, navCode, process, filter))
     }
     // reuse method to reload a process
     else if (process?.id) {
       getProcessById(process.id).catch(setErrorProcessModal)
-      navigate(genProcessPath(section, code, process, filter))
+      navigate(genProcessPath(section, navCode, process, filter))
     }
   }
 
@@ -169,6 +174,9 @@ const ProcessList = ({
         } else {
           list = []
         }
+      } else if (section === ESection.department && !code) {
+        const response = await getProcessesWithNoDepartment()
+        list = response.content ?? []
       } else {
         list = (await getCodelistUsage(listName as EListName, code)).processes
       }
@@ -397,7 +405,7 @@ const ProcessList = ({
                 navigate(
                   genProcessPath(
                     section,
-                    code,
+                    navCode,
                     undefined,
                     event.target.value as EProcessStatus | undefined
                   )

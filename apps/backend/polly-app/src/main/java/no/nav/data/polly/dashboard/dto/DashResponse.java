@@ -77,6 +77,18 @@ public class DashResponse {
         });
     }
 
+    public DashCount noSeksjonForDepartment(String departmentId) {
+        var key = "__NO_SEKSJON__" + departmentId;
+        return dashSeksjonMap.computeIfAbsent(key, s -> {
+            var dash = new DashCount();
+            dash.setSeksjonId("__INGEN_SEKSJON__");
+            dash.setSeksjonName("Ikke valgt seksjon");
+            dash.setDepartment(departmentId);
+            seksjoner.add(dash);
+            return dash;
+        });
+    }
+
     @Data
     @Builder
     @AllArgsConstructor

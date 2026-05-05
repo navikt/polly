@@ -1,22 +1,26 @@
 package no.nav.data.polly.process.domain.repo;
 
-import no.nav.data.common.storage.domain.LastModified;
-import no.nav.data.polly.process.domain.Process;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import no.nav.data.common.storage.domain.LastModified;
+import no.nav.data.polly.process.domain.Process;
 
 @Repository
 public interface ProcessRepository extends JpaRepository<Process, UUID>, ProcessRepositoryCustom {
 
     @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
     List<Process> findByDepartment(String department);
+
+    @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' is null or data #>> '{affiliation,nomDepartmentId}' = ''", nativeQuery = true)
+    List<Process> findByNoDepartment();
 
     @Query(value = "select cast(process_id as text) from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
     List<UUID> findIdByDepartment(String department);

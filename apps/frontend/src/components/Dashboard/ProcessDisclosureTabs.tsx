@@ -52,9 +52,11 @@ export const ProcessDisclosureTabs = (props: IProps) => {
   } = props
 
   const filteredDpProcessData = seksjonFilter
-    ? dpProcessData.filter((dp) =>
-        dp.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter)
-      )
+    ? seksjonFilter === '__INGEN_SEKSJON__'
+      ? dpProcessData.filter((dp) => dp.affiliation.seksjoner.length === 0)
+      : dpProcessData.filter((dp) =>
+          dp.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter)
+        )
     : dpProcessData
   const [error, setError] = useState<string>()
   const [showCreateDisclosureModal, setShowCreateDisclosureModal] = useState<boolean>(false)

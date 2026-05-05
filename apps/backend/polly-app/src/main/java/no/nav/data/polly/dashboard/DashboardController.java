@@ -166,8 +166,17 @@ public class DashboardController {
     private ArrayList<DashCount> getDashes(DashResponse dash, Affiliation affiliation) {
         var dashes = new ArrayList<DashCount>();
         dashes.add(dash.getAll());
-        Optional.ofNullable(affiliation.getNomDepartmentId()).ifPresent(dep -> dashes.add(dash.department(dep)));
-        nullToEmptyList(affiliation.getSeksjoner()).forEach(s -> dashes.add(dash.seksjon(s.getNomSeksjonId(), s.getNomSeksjonName())));
+        var depId = affiliation.getNomDepartmentId();
+        if (depId != null && !depId.isEmpty()) {
+            dashes.add(dash.department(depId));
+        } else {
+            dashes.add(dash.department(""));
+        }
+        var seksjonerList = nullToEmptyList(affiliation.getSeksjoner());
+        if (seksjonerList.isEmpty() && depId != null && !depId.isEmpty()) {
+            dashes.add(dash.noSeksjonForDepartment(depId));
+        }
+        seksjonerList.forEach(s -> dashes.add(dash.seksjon(s.getNomSeksjonId(), s.getNomSeksjonName())));
         // A team might be stored that doesnt exist, producing nulls here
         nullToEmptyList(affiliation.getProductTeams()).stream().map(dash::team).filter(Objects::nonNull).forEach(dashes::add);
         return dashes;

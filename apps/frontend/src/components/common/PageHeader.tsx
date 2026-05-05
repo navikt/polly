@@ -14,10 +14,11 @@ import { Markdown } from './Markdown'
 interface IPageHeaderProps {
   section: ESection
   code: string
+  noDepartment?: boolean
 }
 
 export const PageHeader = (props: IPageHeaderProps) => {
-  const { code, section } = props
+  const { code, section, noDepartment } = props
   const [codelistUtils] = CodelistService()
   const [nomAvdelingNavn, setNomAvdelingNavn] = useState<string>('')
 
@@ -33,7 +34,11 @@ export const PageHeader = (props: IPageHeaderProps) => {
       } else if (section === 'productarea') {
         setProductArea(await getProductArea(code))
       } else if (section === 'department') {
-        setNomAvdelingNavn((await getAvdelingByNomId(code)).navn)
+        if (noDepartment) {
+          setNomAvdelingNavn('Ingen avdeling')
+        } else {
+          setNomAvdelingNavn((await getAvdelingByNomId(code)).navn)
+        }
       }
       setLoading(false)
     })()
