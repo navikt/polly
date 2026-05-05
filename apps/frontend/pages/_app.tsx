@@ -4,15 +4,25 @@ import 'json-diff-kit/dist/viewer.css'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
+import { useEffect } from 'react'
 
 const Main = dynamic(() => import('@/main'), { ssr: false })
 
 function getFavicon(): string {
-  if (typeof window === 'undefined') return '/favicon_Behandlingskatalog_prod.ico'
   const { hostname } = window.location
   if (hostname === 'localhost') return '/favicon_Behandlingskatalog_localhost.ico'
   if (hostname.includes('dev')) return '/favicon_Behandlingskatalog_dev.ico'
   return '/favicon_Behandlingskatalog_prod.ico'
+}
+
+function useFavicon() {
+  useEffect(() => {
+    const link: HTMLLinkElement =
+      document.querySelector('link[rel="icon"]') || document.createElement('link')
+    link.rel = 'icon'
+    link.href = getFavicon()
+    document.head.appendChild(link)
+  }, [])
 }
 
 function PageWrapper({ Component, pageProps }: Pick<AppProps, 'Component' | 'pageProps'>) {
@@ -21,12 +31,13 @@ function PageWrapper({ Component, pageProps }: Pick<AppProps, 'Component' | 'pag
 }
 
 export default function App({ Component, pageProps }: AppProps) {
+  useFavicon()
+
   return (
     <>
       <Head>
         <meta charSet="utf-8" />
         <title>Behandlingskatalog</title>
-        <link rel="icon" href={getFavicon()} />
       </Head>
       <Main>
         <PageWrapper Component={Component} pageProps={pageProps} />
