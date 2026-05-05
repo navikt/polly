@@ -1,5 +1,5 @@
 import { generatePath, useLocation, useParams } from '@/util/router'
-import { Heading, Select } from '@navikt/ds-react'
+import { Heading, LocalAlert, Select } from '@navikt/ds-react'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { getDpProcessByDepartment } from '../api/DpProcessApi'
@@ -156,6 +156,16 @@ const ProcessPage = () => {
         {section && code && (
           <PageHeader section={section} code={code} noDepartment={isNoDepartment} />
         )}
+        {isNoDepartment && (
+          <LocalAlert status="warning" className="mb-4">
+            <LocalAlert.Header>
+              <LocalAlert.Title as="h3">Disse behandlingene mangler avdeling</LocalAlert.Title>
+            </LocalAlert.Header>
+            <LocalAlert.Content>
+              Det er viktig at alle oppdaterer informasjon om avdeling i behandlingene sine.
+            </LocalAlert.Content>
+          </LocalAlert>
+        )}
         {section && code && (
           <div>
             {section !== ESection.department && section !== ESection.seksjon && (
@@ -198,6 +208,18 @@ const ProcessPage = () => {
                       ) && <option value="__INGEN_SEKSJON__">Ikke valgt seksjon</option>}
                     </Select>
                   </div>
+                )}
+                {selectedSeksjonId === '__INGEN_SEKSJON__' && (
+                  <LocalAlert status="warning" className="mb-4">
+                    <LocalAlert.Header>
+                      <LocalAlert.Title as="h3">
+                        Disse behandlingene mangler seksjon
+                      </LocalAlert.Title>
+                    </LocalAlert.Header>
+                    <LocalAlert.Content>
+                      Det er viktig at alle oppdaterer informasjon om seksjon i behandlingene sine.
+                    </LocalAlert.Content>
+                  </LocalAlert>
                 )}
                 <ProcessDisclosureTabs
                   disclosureData={disclosureData}
