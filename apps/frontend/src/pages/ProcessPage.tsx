@@ -103,12 +103,19 @@ const ProcessPage = () => {
         }
 
         if (departmentCode) {
-          const [seksjonerForAvdeling, disclosureResponse, dpProcessResponse] = await Promise.all([
-            getSeksjonerForNomAvdeling(departmentCode),
-            getDisclosureByDepartment(departmentCode),
-            getDpProcessByDepartment(departmentCode),
-          ])
-          setDepartmentSeksjoner(seksjonerForAvdeling)
+          const [seksjonerForAvdeling, disclosureResponse, dpProcessResponse, avdelingData] =
+            await Promise.all([
+              getSeksjonerForNomAvdeling(departmentCode),
+              getDisclosureByDepartment(departmentCode),
+              getDpProcessByDepartment(departmentCode),
+              getAvdelingByNomId(departmentCode),
+            ])
+          const avdelingNavn = avdelingData?.navn
+          setDepartmentSeksjoner(
+            avdelingNavn
+              ? seksjonerForAvdeling.filter((s) => s.navn !== avdelingNavn)
+              : seksjonerForAvdeling
+          )
           if (disclosureResponse) setDisclosureData(disclosureResponse.content)
           if (dpProcessResponse) setDpProcessData(dpProcessResponse.content)
         }
