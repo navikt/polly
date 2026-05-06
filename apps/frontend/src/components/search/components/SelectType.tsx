@@ -26,7 +26,7 @@ export const SelectType = (props: IProps) => {
           {SmallRadio('process', 'Behandlinger')}
           {SmallRadio('dpprocess', 'Nav som databehandler')}
           {SmallRadio('team', 'Team')}
-          {SmallRadio('productarea', 'Område')}
+          {SmallRadio('seksjon', 'Seksjon')}
           {SmallRadio('department', 'Avdeling')}
           {SmallRadio('subDepartment', 'Linja')}
           {SmallRadio('thirdParty', 'Ekstern part')}

@@ -63,7 +63,7 @@ export type TSearchType =
   | 'process'
   | 'dpprocess'
   | 'team'
-  | 'productarea'
+  | 'seksjon'
   | 'department'
   | 'subDepartment'
   | 'nationalLaw'
@@ -91,6 +91,7 @@ export type TNavigableItem =
   | EListName.NATIONAL_LAW
   | 'team'
   | 'productarea'
+  | 'seksjon'
 
 export enum EProcessStatusFilter {
   All = 'ALL',

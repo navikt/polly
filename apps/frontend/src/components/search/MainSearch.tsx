@@ -9,17 +9,15 @@ import {
   searchDocuments,
   searchInformationType,
   searchProcess,
-  searchProductArea,
   searchTeam,
 } from '../../api/GetAllApi'
-import { getAvdelingSearchItem } from '../../api/NomApi'
+import { getAvdelingSearchItem, getSeksjonSearchItem } from '../../api/NomApi'
 import {
   EObjectType,
   IDocument,
   IDpProcess,
   IPageResponse,
   IProcess,
-  IProductArea,
   TNavigableItem,
   TSearchType,
 } from '../../constants'
@@ -364,20 +362,16 @@ export const MainSearch = () => {
           )
         }
 
-        if (type === 'all' || type === 'productarea') {
+        if (type === 'all' || type === 'seksjon') {
           searches.push(
             (async () => {
-              const result: IPageResponse<IProductArea> = await searchProductArea(searchParam)
-              add(
-                result.content.map((content) => ({
-                  id: content.id,
-                  sortKey: content.name,
-                  typeName: 'Område',
-                  tagColor: searchResultColor.productAreaBackground,
-                  label: content.name,
-                  type: 'productarea',
-                }))
+              const seksjoner = await getSeksjonSearchItem(
+                searchParam,
+                'seksjon',
+                'Seksjon',
+                searchResultColor.productAreaBackground
               )
+              add(seksjoner)
             })()
           )
         }
