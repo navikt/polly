@@ -158,7 +158,7 @@ public class ProcessReadController {
     @GetMapping("/nodepartment")
     public ResponseEntity<RestResponsePage<ProcessShortResponse>> getProcessesWithNoDepartment() {
         log.info("Received request for processes with no department");
-        var processes = repository.findByNoDepartment().stream().map(Process::convertToShortResponse).collect(toList());
+        var processes = repository.findByDepartment("").stream().map(Process::convertToShortResponse).collect(toList());
         return ResponseEntity.ok(new RestResponsePage<>(processes));
     }
 

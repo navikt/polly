@@ -16,11 +16,8 @@ import no.nav.data.polly.process.domain.Process;
 @Repository
 public interface ProcessRepository extends JpaRepository<Process, UUID>, ProcessRepositoryCustom {
 
-    @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
+    @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' = ?1 or (?1 = '' and (data #>> '{affiliation,nomDepartmentId}' is null ))", nativeQuery = true)
     List<Process> findByDepartment(String department);
-
-    @Query(value = "select * from process where data #>> '{affiliation,nomDepartmentId}' is null or data #>> '{affiliation,nomDepartmentId}' = ''", nativeQuery = true)
-    List<Process> findByNoDepartment();
 
     @Query(value = "select cast(process_id as text) from process where data #>> '{affiliation,nomDepartmentId}' = ?1", nativeQuery = true)
     List<UUID> findIdByDepartment(String department);
