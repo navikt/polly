@@ -8,7 +8,7 @@
     "@navikt/ds-css": "8.10.5",
     "@navikt/ds-react": "8.10.5",
     "@navikt/ds-tailwind": "8.10.5",
-    "@tailwindcss/postcss": "4.2.4",
+    "@tailwindcss/postcss": "4.3.0",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "axios": "1.16.0",
     "core-js": "3.49.0",
@@ -71,7 +71,7 @@
     ]
   },
   "devDependencies": {
-    "@eslint/compat": "2.0.5",
+    "@eslint/compat": "2.1.0",
     "@types/lodash": "4.17.24",
     "@types/node": "25.6.2",
     "@types/randomcolor": "0.5.9",
@@ -84,15 +84,15 @@
     "encoding": "0.1.13",
     "eslint": "10.3.0",
     "eslint-config-next": "16.2.6",
-    "jest": "30.4.0",
-    "jest-environment-jsdom": "30.4.0",
+    "jest": "30.4.2",
+    "jest-environment-jsdom": "30.4.1",
     "jest-fixed-jsdom": "0.0.11",
     "jest-watch-typeahead": "3.0.1",
     "node-fetch": "3.3.2",
     "postcss": "8.5.14",
     "postcss-import": "16.1.1",
     "prettier": "3.8.3",
-    "tailwindcss": "4.2.4",
+    "tailwindcss": "4.3.0",
     "ts-jest": "29.4.9",
     "ts-node": "10.9.2"
   }
