@@ -8,7 +8,7 @@
     "@navikt/ds-css": "8.10.5",
     "@navikt/ds-react": "8.10.5",
     "@navikt/ds-tailwind": "8.10.5",
-    "@tailwindcss/postcss": "4.2.4",
+    "@tailwindcss/postcss": "4.3.0",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "axios": "1.16.0",
     "core-js": "3.49.0",
