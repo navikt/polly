@@ -71,7 +71,7 @@
     ]
   },
   "devDependencies": {
-    "@eslint/compat": "2.0.5",
+    "@eslint/compat": "2.1.0",
     "@types/lodash": "4.17.24",
     "@types/node": "25.6.2",
     "@types/randomcolor": "0.5.9",
