@@ -5,7 +5,11 @@ declare global {
     interface Matchers<R> {
       toBeSchema(value: ObjectSchema<any>): CustomMatcherResult
 
-      toBeSchemaErrorAt(value: ObjectSchema<any>, path: string, message?: string): CustomMatcherResult
+      toBeSchemaErrorAt(
+        value: ObjectSchema<any>,
+        path: string,
+        message?: string
+      ): CustomMatcherResult
     }
   }
 }

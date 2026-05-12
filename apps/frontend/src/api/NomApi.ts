@@ -114,12 +114,16 @@ export const getSeksjonSearchItem = async (
   const seksjonListe: IOrgEnhet[] = []
 
   if (avdelinger && avdelinger.length) {
-    const results = await Promise.all(avdelinger.map((avdeling) => getSeksjonerForNomAvdeling(avdeling.id).then((seksjonerForAvdeling) =>
-      seksjonerForAvdeling.filter(
-        (seksjonForAvdeling) =>
-          seksjonForAvdeling.navn.toLowerCase() !== avdeling.navn.toLowerCase()
+    const results = await Promise.all(
+      avdelinger.map((avdeling) =>
+        getSeksjonerForNomAvdeling(avdeling.id).then((seksjonerForAvdeling) =>
+          seksjonerForAvdeling.filter(
+            (seksjonForAvdeling) =>
+              seksjonForAvdeling.navn.toLowerCase() !== avdeling.navn.toLowerCase()
+          )
+        )
       )
-    )))
+    )
 
     seksjonListe.push(...results.flat())
 

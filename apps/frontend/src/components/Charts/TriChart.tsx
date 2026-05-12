@@ -10,7 +10,11 @@ type TTriChartProps = {
   counter: ICounter
   processField: EProcessField
   processStatus: EProcessStatusFilter
-  onClickPieChartSlice: (processField: EProcessField, processState: EProcessState, processStatus: EProcessStatusFilter) => () => void
+  onClickPieChartSlice: (
+    processField: EProcessField,
+    processState: EProcessState,
+    processStatus: EProcessStatusFilter
+  ) => () => void
 }
 
 const TriChart = (props: TTriChartProps) => {
