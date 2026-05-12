@@ -1,6 +1,33 @@
 package no.nav.data.common.security;
 
 
+import static no.nav.data.common.security.SecurityConstants.COOKIE_NAME;
+import static no.nav.data.common.utils.Constants.SESSION_LENGTH;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_DESCRIPTION;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_URI;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REDIRECT_URI;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.STATE;
+import static org.springframework.security.web.util.UrlUtils.buildFullRequestUrl;
+
+import java.io.IOException;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,31 +41,6 @@ import no.nav.data.common.exceptions.TechnicalException;
 import no.nav.data.common.security.dto.OAuthState;
 import no.nav.data.common.security.dto.UserInfo;
 import no.nav.data.common.security.dto.UserInfoResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
-
-import static no.nav.data.common.security.SecurityConstants.COOKIE_NAME;
-import static no.nav.data.common.utils.Constants.SESSION_LENGTH;
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR;
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_DESCRIPTION;
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_URI;
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REDIRECT_URI;
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.STATE;
-import static org.springframework.security.web.util.UrlUtils.buildFullRequestUrl;
 
 @Slf4j
 @RestController
@@ -72,7 +74,7 @@ public class AuthController {
     @Operation(summary = "oidc callback")
     @ApiResponse(responseCode = "302", description = "token accepted")
     @CrossOrigin
-    @GetMapping(OAUTH_2_CALLBACK_URL)
+    @PostMapping(OAUTH_2_CALLBACK_URL)
     public void oidc(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = CODE, required = false) String code,
             @RequestParam(value = ERROR, required = false) String error,
