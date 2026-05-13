@@ -1,13 +1,14 @@
 package no.nav.data.common.mail;
 
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import no.nav.data.common.security.SecurityProperties;
 import no.nav.data.common.storage.StorageService;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.storage.domain.StorageType;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -43,10 +44,10 @@ public class EmailServiceImpl implements EmailService {
         tasks.forEach(this::sendMailAndDeleteTask);
     }
     
-    @Transactional // Viktig med en transaksjon per mail, slik at ikke allerede sendte mails blir rullet tilbake til repo ved feil 
-    private void sendMailAndDeleteTask(GenericStorage task) {
-        storageRepository.delete(task);
+    @Transactional
+    void sendMailAndDeleteTask(GenericStorage task) {
         sendMail(task.getDataObject(MailTask.class));
+        storageRepository.delete(task);
     }
 
 }
