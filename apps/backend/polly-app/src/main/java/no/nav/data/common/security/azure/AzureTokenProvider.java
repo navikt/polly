@@ -1,5 +1,27 @@
 package no.nav.data.common.security.azure;
 
+import static java.util.Objects.requireNonNull;
+import static no.nav.data.common.security.SecurityConstants.SESS_ID_LEN;
+import static no.nav.data.common.security.SecurityConstants.TOKEN_TYPE;
+import static no.nav.data.common.security.azure.AzureConstants.MICROSOFT_GRAPH_SCOPES;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URL;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.microsoft.aad.msal4j.AuthorizationCodeParameters;
@@ -16,6 +38,7 @@ import com.microsoft.kiota.authentication.AccessTokenProvider;
 import com.microsoft.kiota.authentication.AllowedHostsValidator;
 import com.microsoft.kiota.authentication.BaseBearerTokenAuthenticationProvider;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
+
 import io.prometheus.client.Summary;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.TechnicalException;
@@ -28,27 +51,6 @@ import no.nav.data.common.security.dto.Credential;
 import no.nav.data.common.security.dto.OAuthState;
 import no.nav.data.common.utils.Constants;
 import no.nav.data.common.utils.MetricUtils;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URL;
-import java.time.Duration;
-import java.util.Map;
-import java.util.Set;
-
-import static java.util.Objects.requireNonNull;
-import static no.nav.data.common.security.SecurityConstants.SESS_ID_LEN;
-import static no.nav.data.common.security.SecurityConstants.TOKEN_TYPE;
-import static no.nav.data.common.security.azure.AzureConstants.MICROSOFT_GRAPH_SCOPES;
 
 @Slf4j
 @Service
@@ -145,7 +147,7 @@ public class AzureTokenProvider implements TokenProvider {
         URL url = msalClient.getAuthorizationRequestUrl(AuthorizationRequestUrlParameters
                 .builder(redirectUri, MICROSOFT_GRAPH_SCOPES)
                 .state(new OAuthState(auth.getId().toString(), postLoginRedirectUri, postLoginErrorUri).toJson(encryptor))
-                .responseMode(ResponseMode.QUERY)
+                .responseMode(ResponseMode.FORM_POST)
                 .codeChallengeMethod(CodeChallengeMethod.S256.getValue())
                 .codeChallenge(codeChallenge)
                 .build());
