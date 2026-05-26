@@ -305,13 +305,13 @@ const ProcessList = ({
   }
   const handleEditPolicy = async (values: IPolicyFormValues) => {
     try {
-      const policy: IPolicy = await updatePolicy(values)
+      const updatedPolicy: IPolicy = await updatePolicy(values)
       if (currentProcess) {
         setCurrentProcess({
           ...currentProcess,
           policies: [
-            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== policy.id),
-            policy,
+            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== updatedPolicy.id),
+            updatedPolicy,
           ],
         })
         setErrorPolicyModal(null)
