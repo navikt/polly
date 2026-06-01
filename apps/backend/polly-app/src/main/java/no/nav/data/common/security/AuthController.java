@@ -142,9 +142,16 @@ public class AuthController {
     }
 
     private String callbackRedirectUri(HttpServletRequest request) {
-        String redirectUri = UriComponentsBuilder.fromUriString(buildFullRequestUrl(request))
+        var uriBuilder = UriComponentsBuilder.fromUriString(buildFullRequestUrl(request))
                 .replacePath(OAUTH_2_CALLBACK_URL)
-                .replaceQuery(null).build().toUriString();
+                .replaceQuery(null);
+
+        var uri = uriBuilder.build();
+        if ("https".equalsIgnoreCase(uri.getScheme()) && uri.getPort() != -1 && uri.getPort() != 443) {
+            uriBuilder.port(null);
+        }
+
+        String redirectUri = uriBuilder.build().toUriString();
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Invalid redirect uri " + redirectUri);
         return redirectUri;
     }
