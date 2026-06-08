@@ -22,6 +22,7 @@ public class SecurityConfig {
                         .allowedOrigins("*");
                 registry.addMapping("/**")
                         .allowedOrigins(securityProperties.getRedirectUris().toArray(new String[]{}))
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         .allowCredentials(true);
 
             }
