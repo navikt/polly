@@ -39,7 +39,7 @@
         <commons-compress.version>1.28.0</commons-compress.version>
         <commons-io.version>2.22.0</commons-io.version>
         <guava.version>33.6.0-jre</guava.version>
-        <jna.version>5.18.1</jna.version>
+        <jna.version>5.19.0</jna.version>
         <jetbrains.annotation.version>26.1.0</jetbrains.annotation.version>
         <stax2-api.version>4.3.0</stax2-api.version>
 
