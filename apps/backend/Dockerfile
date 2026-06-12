@@ -1,7 +1,7 @@
 FROM eclipse-temurin:25-jdk-ubi10-minimal AS builder
 WORKDIR application
 COPY polly-app/target/app-exec.jar application.jar
-RUN java -Djarmode=layertools -jar application.jar extract
+RUN java -Djarmode=tools -jar application.jar extract --layers --force
 
 FROM eclipse-temurin:25-jre
 
@@ -13,8 +13,6 @@ COPY run-java.sh /
 COPY --from=builder application/dependencies/ ./
 RUN true
 COPY --from=builder application/snapshot-dependencies/ ./
-RUN true
-COPY --from=builder application/spring-boot-loader/ ./
 RUN true
 COPY --from=builder application/application/ ./
 
