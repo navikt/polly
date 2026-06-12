@@ -1,20 +1,16 @@
 FROM eclipse-temurin:25-jdk-ubi10-minimal AS builder
 WORKDIR application
 COPY polly-app/target/app-exec.jar application.jar
-RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
+RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM eclipse-temurin:25-jre
-WORKDIR /app
 
-ENV MAIN_CLASS=org.springframework.boot.loader.launch.JarLauncher
-ENV JAVA_OPTS="-Xmx1024m \
-               -Djava.security.egd=file:/dev/./urandom"
-COPY run-java.sh /
-
-COPY --from=builder application/extracted/dependencies/ ./
+@@ -14,8 +14,6 @@ COPY --from=builder application/dependencies/ ./
 RUN true
-COPY --from=builder application/extracted/snapshot-dependencies/ ./
+COPY --from=builder application/snapshot-dependencies/ ./
 RUN true
-COPY --from=builder application/extracted/application/ ./
+COPY --from=builder application/spring-boot-loader/ ./
+RUN true
+COPY --from=builder application/application/ ./
 
 CMD ["/run-java.sh"]
