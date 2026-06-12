@@ -5,7 +5,12 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM eclipse-temurin:25-jre
 
-@@ -14,8 +14,6 @@ COPY --from=builder application/dependencies/ ./
+ENV MAIN_CLASS=org.springframework.boot.loader.launch.JarLauncher
+ENV JAVA_OPTS="-Xmx1024m \
+               -Djava.security.egd=file:/dev/./urandom"
+COPY run-java.sh /
+
+COPY --from=builder application/dependencies/ ./
 RUN true
 COPY --from=builder application/snapshot-dependencies/ ./
 RUN true
