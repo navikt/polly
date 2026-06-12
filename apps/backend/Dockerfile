@@ -1,7 +1,7 @@
 FROM eclipse-temurin:25-jdk-ubi10-minimal AS builder
 WORKDIR application
 COPY polly-app/target/app-exec.jar application.jar
-RUN java -Djarmode=tools -jar application.jar extract --layers --force
+RUN java -Djarmode=tools -jar application.jar extract --layers --destination .
 
 FROM eclipse-temurin:25-jre
 
