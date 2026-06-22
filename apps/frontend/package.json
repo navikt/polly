@@ -16,7 +16,7 @@
     "formik": "2.4.9",
     "husky": "9.1.7",
     "json-diff-kit": "1.0.35",
-    "lint-staged": "17.0.7",
+    "lint-staged": "17.0.8",
     "lodash": "4.18.1",
     "moment": "2.30.1",
     "next": "16.2.9",
