@@ -1306,10 +1306,10 @@
   dependencies:
     "@tybys/wasm-util" "^0.10.1"
 
-"@navikt/aksel-icons@8.13.0", "@navikt/aksel-icons@^8.13.0":
-  version "8.13.0"
-  resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-8.13.0.tgz#155c31917736d4283d4637a221133f3d032f6f95"
-  integrity sha512-z2r80EAuKX6W1XUSaBjAvQCAyyjir41XCmXPlmnvvNqOINfV8RFf2LYUx2+FwCqVfuPOdh7sdPLUtzwMl7QNmQ==
+"@navikt/aksel-icons@8.13.1", "@navikt/aksel-icons@^8.13.0":
+  version "8.13.1"
+  resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-8.13.1.tgz#8f5c449c095a191bcd3641f8314ca763eccdd940"
+  integrity sha512-gZSFF0r97WK46yMidgS5jkl+l+S4nBcsspFZexIhZnyXAx0wOIs2Ahgt0kPGDb6pY/3GpfxTiKj178wI3UzBfg==
 
 "@navikt/ds-css@8.13.0":
   version "8.13.0"
