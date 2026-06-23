@@ -2,6 +2,7 @@ FROM node:26.3.1-alpine AS base
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
+RUN corepack enable
 WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
@@ -12,6 +13,7 @@ RUN \
   fi
 
 FROM base AS builder
+RUN corepack enable
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
