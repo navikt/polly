@@ -1,5 +1,6 @@
 package no.nav.data.integration.etterlevelse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +13,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,21 +33,22 @@ public class EtterlevelseClient {
         List<PvkDokumentShort> pvkDokumentShorts = new ArrayList<>();
         try {
             log.info("Getting pvk dokument for behandling {} from etterlevelsesløsning", behandlingId);
-            ResponseEntity<JsonNode> response = restTemplate.getForEntity(properties.getUrl() + "/pvkdokument/behandling/" + behandlingId, JsonNode.class);
-
+            ResponseEntity<String> response = restTemplate.getForEntity(properties.getUrl() + "/pvkdokument/behandling/" + behandlingId, String.class);
+            log.info("Got pvk dokument for behandling {}", response);
             if(response.getBody() != null) {
                 log.info("Succesfully got request from etterlevelsesløsning");
                 return parsePvkDokumentResponse(response.getBody());
             }
-        } catch (RestClientException e) {
+        } catch (RestClientException | JsonProcessingException e) {
             log.error("Unable to connect to Etterlevelse løsning, error: {}", String.valueOf(e));
         }
         return pvkDokumentShorts;
     }
 
-    private List<PvkDokumentShort> parsePvkDokumentResponse(JsonNode body) {
-        if (body.isArray()) {
-            return objectMapper.convertValue(body, PVK_DOKUMENT_SHORT_LIST);
+    private List<PvkDokumentShort> parsePvkDokumentResponse(String body) throws JsonProcessingException {
+        JsonNode json = objectMapper.readTree(body);
+        if (json.isArray()) {
+            return objectMapper.convertValue(json, PVK_DOKUMENT_SHORT_LIST);
         }
         log.warn("Unexpected response format from etterlevelsesløsning: {}", body);
         return List.of();
