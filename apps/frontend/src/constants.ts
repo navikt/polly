@@ -920,7 +920,7 @@ export interface IPvkDokumentShort {
   pvkDokumentId: string
   pvkVurdering: EPvkVurdering
   status: EPvkDokumentStatus
-  ytterligereEgenskaper: IEtterlevelseCodeListResponse
+  ytterligereEgenskaper: IEtterlevelseCodeListResponse[]
   hasPvkDocumentationStarted: boolean
 }
 
