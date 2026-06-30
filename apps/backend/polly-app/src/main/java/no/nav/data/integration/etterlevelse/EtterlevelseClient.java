@@ -26,6 +26,7 @@ public class EtterlevelseClient {
         List<PvkDokumentShort> pvkDokumentShorts = new ArrayList<>();
         try {
             log.info("Getting pvk dokument for behandling {} from etterlevelsesløsning", behandlingId);
+            log.info("connecting to url {}", properties.getUrl());
             var response = restTemplate.getForEntity(properties.getUrl() + "/pvkdokument/behandling/" + behandlingId, PvkDokumentShort[].class);
 
             if(response.getBody() != null) {
@@ -33,7 +34,7 @@ public class EtterlevelseClient {
                 return Arrays.asList(response.getBody());
             }
         } catch (RestClientException e) {
-            log.error("Unable to connect to P360, error: {}", String.valueOf(e));
+            log.error("Unable to connect to Etterlevelse løsning, error: {}", String.valueOf(e));
         }
         return pvkDokumentShorts;
     }
