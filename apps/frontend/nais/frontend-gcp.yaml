@@ -43,3 +43,4 @@ spec:
     outbound:
       rules:
         - application: behandlingskatalog-backend
+        - application: etterlevelse-backend
