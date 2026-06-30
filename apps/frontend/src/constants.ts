@@ -908,3 +908,55 @@ export type TSearchItem = {
   type: TNavigableItem
   number?: number
 }
+
+// etterlevelse data
+
+export interface IPvkDokumentShort {
+  etterlevelseDokumentasjonId: string
+  etterlevelseNummer: number
+  title: string
+  etterlevelseDokumentVersjon: number
+
+  pvkDokumentId: string
+  pvkVurdering: EPvkVurdering
+  status: EPvkDokumentStatus
+  ytterligereEgenskaper: IEtterlevelseCodeListResponse
+  hasPvkDocumentationStarted: boolean
+}
+
+export interface IEtterlevelseCodeListResponse {
+  list: EEtterlevelseListName
+  code: string
+  shortName: string
+  description: string
+}
+
+export enum EPvkVurdering {
+  SKAL_IKKE_UTFORE = 'SKAL_IKKE_UTFORE',
+  SKAL_UTFORE = 'SKAL_UTFORE',
+  ALLEREDE_UTFORT = 'ALLEREDE_UTFORT',
+
+  //Brukes for å nullstille feltet på frontend
+  UNDEFINED = 'UNDEFINED',
+}
+
+export enum EPvkDokumentStatus {
+  UNDERARBEID = 'UNDERARBEID',
+  SENDT_TIL_PVO = 'SENDT_TIL_PVO',
+  PVO_UNDERARBEID = 'PVO_UNDERARBEID',
+  VURDERT_AV_PVO = 'VURDERT_AV_PVO',
+  VURDERT_AV_PVO_TRENGER_MER_ARBEID = 'VURDERT_AV_PVO_TRENGER_MER_ARBEID',
+  SENDT_TIL_PVO_FOR_REVURDERING = 'SENDT_TIL_PVO_FOR_REVURDERING',
+  TRENGER_GODKJENNING = 'TRENGER_GODKJENNING',
+  GODKJENT_AV_RISIKOEIER = 'GODKJENT_AV_RISIKOEIER',
+}
+
+export enum EEtterlevelseListName {
+  RELEVANS = 'RELEVANS',
+  AVDELING = 'AVDELING',
+  UNDERAVDELING = 'UNDERAVDELING',
+  LOV = 'LOV',
+  TEMA = 'TEMA',
+  YTTERLIGERE_EGENSKAPER = 'YTTERLIGERE_EGENSKAPER',
+  PVO_VURDERING = 'PVO_VURDERING',
+}
