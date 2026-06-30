@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 
 import java.util.List;
 import java.util.UUID;
