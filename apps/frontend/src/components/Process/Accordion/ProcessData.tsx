@@ -1,4 +1,7 @@
-import { BodyLong, ProgressBar, Tooltip } from '@navikt/ds-react'
+import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
+import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
+import { InformationSquareIcon } from '@navikt/aksel-icons'
+import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
 import { isNil, sum, uniqBy } from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
 import { getResourceById } from '../../../api/GetAllApi'
@@ -13,6 +16,7 @@ import {
   INomSeksjon,
   IProcess,
   IProcessor,
+  IPvkDokumentShort,
 } from '../../../constants'
 import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
@@ -31,43 +35,46 @@ import StartEndDateView from '../AiUsageDescription/StartEndDateView'
 import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
-  if (dpia?.needForDpia === true) {
-    if (dpia.refToDpia) {
-      return (
-        <>
-          <div>Ja</div>
-          <div className="mt-1">
-            {'Referanse: '}
-            {shortenLinksInText(dpia.refToDpia)}
-          </div>
-        </>
-      )
+  if (dpia) {
+    if (typeof dpia.needForDpia !== 'boolean') {
+      return null
     } else {
-      return 'Ja'
-    }
-  } else if (dpia?.needForDpia === false) {
-    if (dpia) {
       return (
-        <>
-          <div>Nei</div>
-          <div className="mt-1">
-            <span>Begrunnelse: </span>
-            <ul className="list-disc pl-5">
-              {dpia.noDpiaReasons.map((r) => {
-                const label =
-                  r === 'OTHER' && dpia?.grounds
-                    ? `${getNoDpiaLabel(r)} (${dpia.grounds})`
-                    : getNoDpiaLabel(r)
+        <InfoCard data-color="info" className="my-5">
+          <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+            <InfoCard.Title>
+              En tidligere, manuell registrering av behov for PVK finnes, men er ikke lenger
+              redigerbar:
+            </InfoCard.Title>
+          </InfoCard.Header>
+          <InfoCard.Content>
+            <List>
+              <List.Item>
+                Er det behov for PVK? {dpia.needForDpia === true ? 'Ja' : 'Nei'}
+              </List.Item>
+              {dpia.needForDpia && dpia.refToDpia && (
+                <List.Item>Referanse: {shortenLinksInText(dpia.refToDpia)}</List.Item>
+              )}
+              {dpia.needForDpia === false && (
+                <List.Item>
+                  Begrunnelse:
+                  <List>
+                    {dpia.noDpiaReasons.map((r) => {
+                      const label =
+                        r === 'OTHER' && dpia?.grounds
+                          ? `${getNoDpiaLabel(r)} (${dpia.grounds})`
+                          : getNoDpiaLabel(r)
 
-                return <li key={r}>{label}</li>
-              })}
-            </ul>
-          </div>
-        </>
+                      return <List.Item key={r}>{label}</List.Item>
+                    })}
+                  </List>
+                </List.Item>
+              )}
+            </List>
+          </InfoCard.Content>
+        </InfoCard>
       )
     }
-  } else {
-    return 'Uavklart'
   }
 }
 
@@ -94,6 +101,7 @@ const ProcessData = (props: IProcessDataProps) => {
 
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])
+  const [pvkDokumenter, setPvkDokumenter] = useState<IPvkDokumentShort[]>([])
 
   useEffect(() => {
     ;(async () => {
@@ -102,6 +110,8 @@ const ProcessData = (props: IProcessDataProps) => {
       } else {
         setRiskOwnerFullName('')
       }
+
+      await getPvkDokumentForBehandling(process.id).then(setPvkDokumenter)
     })()
   }, [process])
 
@@ -405,8 +415,52 @@ const ProcessData = (props: IProcessDataProps) => {
         </>
       </DataText>
 
-      <DataText label="Er det behov for PVK?" text={''}>
-        <div className="wrap-break-word">{showDpiaRequiredField(process.dpia)}</div>
+      <DataText label="Gjeldende etterlevelser og PVK">
+        {pvkDokumenter.length === 0 && (
+          <BodyLong>Behandlingen er ikke koblet til et etterlevelsesdokument</BodyLong>
+        )}
+        {pvkDokumenter.length !== 0 && (
+          <List>
+            {pvkDokumenter.map((pvkDokument: IPvkDokumentShort) => (
+              <List.Item key={pvkDokument.etterlevelseDokumentasjonId}>
+                <Link
+                  href={
+                    env.etterlevelseUrl +
+                    '/dokumentasjon/' +
+                    pvkDokument.etterlevelseDokumentasjonId
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  E{pvkDokument.etterlevelseNummer}.{pvkDokument.etterlevelseDokumentVersjon}{' '}
+                  {pvkDokument.title}
+                </Link>
+                <BodyLong>
+                  {pvkVurderingToText(pvkDokument.pvkVurdering)} (
+                  {getPvkDokumentStatus(pvkDokument.status, pvkDokument.hasPvkDocumentationStarted)}
+                  )
+                </BodyLong>
+                {pvkDokument.ytterligereEgenskaper.length !== 0 && (
+                  <List>
+                    {pvkDokument.ytterligereEgenskaper.map((egenskap) => {
+                      if (!['', null, undefined].includes(egenskap.shortName)) {
+                        return (
+                          <List.Item key={egenskap.code + '_E' + pvkDokument.etterlevelseNummer}>
+                            {egenskap.shortName}
+                          </List.Item>
+                        )
+                      } else {
+                        return null
+                      }
+                    })}
+                  </List>
+                )}
+              </List.Item>
+            ))}
+          </List>
+        )}
+
+        {showDpiaRequiredField(process.dpia)}
       </DataText>
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
