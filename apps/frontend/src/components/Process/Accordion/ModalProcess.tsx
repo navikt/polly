@@ -38,7 +38,6 @@ import { processSchema } from '../../common/schemaValidation'
 import { DateFieldsAiUsageDescriptionModal } from '../AiUsageDescription/DateFieldsAiUsageDescriptionModal'
 import { DateFieldsProcessModal } from '../DateFieldsProcessModal'
 import BoolField from '../common/BoolField'
-import DpiaItems from '../common/DpiaItems'
 import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
 import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternalProcessResponsible'
 import FieldDataProcessors from '../common/FieldDataProcessors'
@@ -569,14 +568,6 @@ const ModalProcess = ({
                       <Accordion.Header className="z-0">Lagringsbehov</Accordion.Header>
                       <Accordion.Content>
                         <RetentionItems formikBag={formikBag} />
-                      </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item>
-                      <Accordion.Header className="z-0">
-                        Personkonsekvensvurdering (PVK)
-                      </Accordion.Header>
-                      <Accordion.Content>
-                        <DpiaItems formikBag={formikBag} layout="vertical" />
                       </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
