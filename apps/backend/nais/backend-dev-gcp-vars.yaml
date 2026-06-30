@@ -18,3 +18,7 @@ azuregroupid:
 env:
   - name: CLIENT_NOM_GRAPHQL_URL
     value: http://nom-api.nom.svc.cluster.local/graphql
+inboundApp:
+  - application: nav-etterlevelse-mcp
+    namespace: dab
+    cluster: dev-gcp

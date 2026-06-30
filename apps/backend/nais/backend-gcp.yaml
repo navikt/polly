@@ -77,8 +77,14 @@ spec:
           cluster: prod-gcp
         - application: nada-backend
           namespace: nada
+      {{#each inboundApp}}
+        - application: {{this.application}}
+          namespace: {{this.namespace}}
+          cluster: {{this.cluster}}
+      {{/each}}
     outbound:
       rules:
+        - application: etterlevelse-backend
         - application: nom-api
           namespace: nom
           cluster: {{cluster_location}}
