@@ -26,6 +26,6 @@ public class PvkDokumentShort {
     private UUID pvkDokumentId;
     private PvkVurdering pvkVurdering;
     private PvkDokumentStatus status;
-    private List<CodelistResponse> ytterligereEgenskaper;
+    private List<EtterlevelseCodeListResponse> ytterligereEgenskaper;
     private boolean hasPvkDocumentationStarted;
 }
