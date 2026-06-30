@@ -1,6 +1,6 @@
 package no.nav.data.integration.etterlevelse.domain;
 
-public enum ListName {
+public enum EtterlevelseListName {
     RELEVANS,
     AVDELING,
     UNDERAVDELING,

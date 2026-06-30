@@ -11,8 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = "data")
 @JsonPropertyOrder({"list", "code", "shortName", "description", "data"})
-public class CodeListResponse {
-    private ListName list;
+public class EtterlevelseCodeListResponse {
+    private EtterlevelseListName list;
     private String code;
     private String shortName;
     private String description;
