@@ -20,6 +20,7 @@ type TRadioBoolProps = {
   className?: string
   id?: string
   error?: string
+  reverseOrder?: boolean
 }
 
 export const RadioBoolButton = (props: TRadioBoolProps) => {
@@ -34,6 +35,7 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
     className,
     id,
     error,
+    reverseOrder,
   } = props
 
   const horizontalClasses =
@@ -65,12 +67,25 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
       }}
       style={{ justifyContent: justifyContent ? justifyContent : 'stretch' }}
     >
-      <Radio className="mr-8 last:mr-0" value={YES}>
-        Ja {firstButtonLabel}
-      </Radio>
-      <Radio className="mr-8 last:mr-0" value={NO}>
-        Nei {secondButtonLabel}
-      </Radio>
+      {reverseOrder ? (
+        <>
+          <Radio className="mr-8 last:mr-0" value={NO}>
+            Nei {secondButtonLabel}
+          </Radio>
+          <Radio className="mr-8 last:mr-0" value={YES}>
+            Ja {firstButtonLabel}
+          </Radio>
+        </>
+      ) : (
+        <>
+          <Radio className="mr-8 last:mr-0" value={YES}>
+            Ja {firstButtonLabel}
+          </Radio>
+          <Radio className="mr-8 last:mr-0" value={NO}>
+            Nei {secondButtonLabel}
+          </Radio>
+        </>
+      )}
       {!omitUndefined && (
         <Radio className="mr-8 last:mr-0" value={UNCLARIFIED}>
           Uavklart

@@ -294,6 +294,7 @@ const ModalProcess = ({
                           omitUndefined
                           firstButtonLabel="(Brukes unntaksvis)"
                           direction="horizontal"
+                          reverseOrder
                         />
                       </div>
                     </div>

@@ -11,6 +11,7 @@ interface IBoolFieldProps {
   justifyContent?: string
   direction?: 'horizontal' | 'vertical'
   className?: string
+  reverseOrder?: boolean
 }
 
 const BoolField = (props: IBoolFieldProps) => {
@@ -23,6 +24,7 @@ const BoolField = (props: IBoolFieldProps) => {
     justifyContent,
     direction,
     className,
+    reverseOrder,
   } = props
 
   return (
@@ -44,6 +46,7 @@ const BoolField = (props: IBoolFieldProps) => {
             justifyContent={justifyContent}
             direction={direction}
             className={className}
+            reverseOrder={reverseOrder}
             error={showError ? fieldError : undefined}
           />
         )
