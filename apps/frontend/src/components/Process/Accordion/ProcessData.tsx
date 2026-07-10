@@ -425,9 +425,7 @@ const ProcessData = (props: IProcessDataProps) => {
               <List.Item key={pvkDokument.etterlevelseDokumentasjonId}>
                 <Link
                   href={
-                    env.etterlevelseUrl +
-                    '/dokumentasjon/' +
-                    pvkDokument.etterlevelseDokumentasjonId
+                    env.etterlevelseUrl + 'dokumentasjon/' + pvkDokument.etterlevelseDokumentasjonId
                   }
                   target="_blank"
                   rel="noopener noreferrer"
