@@ -79,7 +79,7 @@
     "@types/react-dom": "19.2.3",
     "@types/shortid": "2.2.0",
     "@typescript-eslint/eslint-plugin": "8.63.0",
-    "@typescript-eslint/parser": "8.63.0",
+    "@typescript-eslint/parser": "8.64.0",
     "autoprefixer": "10.5.2",
     "encoding": "0.1.13",
     "eslint": "10.7.0",
