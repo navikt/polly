@@ -178,7 +178,9 @@ export const DisclosureListPage = () => {
               setShowAaregAvtaleTable(!showAaregAvtaleTable)
             }}
           >
-            {showAaregAvtaleTable ? 'Skjul Aa-reg avtaler' : 'Vis Aa-reg avtaler'}
+            {showAaregAvtaleTable
+              ? 'Skjul utleveringer fra Aa-registeret'
+              : 'Vis utleveringer fra Aa-registeret'}
           </Button>
         </div>
         <div className="flex flex-1 justify-end mt-2">
