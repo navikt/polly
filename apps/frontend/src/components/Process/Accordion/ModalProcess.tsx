@@ -206,7 +206,7 @@ const ModalProcess = ({
         {(formikBag: FormikProps<IProcessFormValues>) => (
           <>
             <Modal.Body>
-              <div className="w-240 px-8">
+              <div className="w-full max-w-240 px-8">
                 <Form id="modal-process-form" onKeyDown={disableEnter}>
                   <FormikSubmitEffects
                     formikBag={formikBag}
