@@ -1,5 +1,4 @@
 import { useLocation } from '@/util/router'
-import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 import { BodyShort, Tooltip } from '@navikt/ds-react'
 import RouteLink from '../common/RouteLink'
 
@@ -27,21 +26,6 @@ const NavItem = (props: INavItemProps) => {
   return (
     <RouteLink href={props.to} style={{ textDecoration: 'none' }} className="block w-full">
       <div className="flex items-center h-8.75">
-        <div className="mr-2.5">
-          {isActive ? (
-            <ChevronDownIcon
-              aria-hidden
-              className="block"
-              style={{ fontSize: '1.5rem', color: textColor }}
-            />
-          ) : (
-            <ChevronRightIcon
-              aria-hidden
-              className="block"
-              style={{ fontSize: '1.5rem', color: textColor }}
-            />
-          )}
-        </div>
         {props.tooltip ? (
           <Tooltip content={props.tooltip} maxChar={200}>
             <BodyShort
