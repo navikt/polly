@@ -1,6 +1,5 @@
 import { BodyShort } from '@navikt/ds-react'
 import Image from 'next/image'
-import { canViewAlerts } from '../../pages/AlertEventPage'
 import { datajegerSlackLink } from '../../util/config'
 import NavItem from './NavItem'
 
@@ -49,11 +48,6 @@ const SideBar = () => (
           text="Dashboard"
           tooltip="Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen"
         />
-        {canViewAlerts() && (
-          <div>
-            <NavItem to="/alert/events" text="Varsler" />
-          </div>
-        )}
         <NavItem to="//navikt.github.io/naka/behandlingskatalog" text="Veileder" />
       </div>
 

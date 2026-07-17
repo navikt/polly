@@ -97,11 +97,12 @@ const AdminOptions = ({
 }: IAdminOptionsProps) => {
   const pages = [
     { label: 'Administrering av kodeverk', href: '/admin/codelist' },
-    { label: 'Versjonering', href: '/admin/audit' },
+    { label: 'Endringer i behandlinger', href: '/admin/process-changes' },
     { label: 'Innstillinger', href: '/admin/settings' },
     { label: 'Mail log', href: '/admin/maillog' },
-    { label: 'Endringer i behandlinger', href: '/admin/process-changes' },
     { label: 'Trenger revidering', href: '/admin/request-revision', super: true },
+    { label: 'Varsler', href: '/alert/events' },
+    { label: 'Versjonering', href: '/admin/audit' },
   ]
 
   return (
