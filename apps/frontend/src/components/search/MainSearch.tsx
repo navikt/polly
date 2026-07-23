@@ -402,8 +402,8 @@ export const MainSearch = () => {
   }
 
   return (
-    <div>
-      <div className="flex items-center w-182.5">
+    <div className="w-full min-w-0">
+      <div className="flex items-center w-full max-w-182.5 min-w-0">
         <AsyncSelect
           className="w-full"
           aria-label="Søk"

@@ -21,14 +21,14 @@ export const LastEvents = () => {
 
   const content = events?.content.map((event: TEvent) => {
     const row = (
-      <div className="w-full flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-2">
+      <div className="w-full flex flex-col @sm:flex-row @sm:justify-between gap-1 @sm:gap-2">
         <div className="pr-2 min-w-0 flex items-center gap-1">
           <span className="shrink-0 align-middle">
             <AuditActionIcon action={event.action} />
           </span>
           <span className="overflow-hidden whitespace-nowrap text-ellipsis">{event.name}</span>
         </div>
-        <div className="sm:min-w-32 sm:text-right">
+        <div className="@sm:min-w-32 @sm:text-right">
           <CustomizedStatefulTooltip
             content={moment(event.time).format('lll')}
             text={moment(event.time).fromNow()}
@@ -56,7 +56,7 @@ export const LastEvents = () => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full gap-2">
+      <div className="flex flex-col @sm:flex-row @sm:justify-between @sm:items-center w-full gap-2">
         <Heading size="medium" level="2">
           Siste hendelser
         </Heading>

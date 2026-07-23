@@ -69,7 +69,7 @@ const Main = ({ children }: { children: React.ReactNode }) => {
                 <SideBar />
               </div>
 
-              <div className="mb-48 w-full px-7 py-7">{children}</div>
+              <div className="mb-48 w-full min-w-0 px-7 py-7">{children}</div>
             </div>
           </div>
         </Theme>

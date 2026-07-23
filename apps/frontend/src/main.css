@@ -76,6 +76,25 @@
 
   .polly-white-internalheader {
     overflow: visible;
+    flex-wrap: wrap;
+    height: auto;
+    row-gap: 0.25rem;
+  }
+
+  @media (min-width: 900px) {
+    .polly-white-internalheader {
+      display: grid;
+      grid-template-columns: 1fr minmax(0, 45.625rem) 1fr;
+      align-items: center;
+    }
+
+    .polly-white-internalheader .polly-header-search {
+      justify-self: stretch;
+    }
+
+    .polly-white-internalheader .polly-header-right {
+      justify-self: end;
+    }
   }
 
   .polly-white-internalheader .polly-mainsearch__control {

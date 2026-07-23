@@ -31,11 +31,11 @@ export const RecentEditsByUser = () => {
             key={ps.process.id}
             className="block w-full min-w-0"
           >
-            <div className="w-full flex flex-col sm:flex-row sm:justify-between mb-1.5 min-w-0 gap-1 sm:gap-2">
+            <div className="w-full flex flex-col @sm:flex-row @sm:justify-between mb-1.5 min-w-0 gap-1 @sm:gap-2">
               <div className="min-w-0 overflow-hidden whitespace-nowrap text-ellipsis">
                 {ps.process.name}
               </div>
-              <div className="sm:min-w-32 sm:text-right">
+              <div className="@sm:min-w-32 @sm:text-right">
                 <CustomizedStatefulTooltip
                   content={moment(ps.time).format('lll')}
                   text={moment(ps.time).fromNow()}

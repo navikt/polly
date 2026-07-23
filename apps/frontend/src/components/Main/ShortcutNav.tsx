@@ -14,11 +14,15 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
   const [hover, setHover] = useState(false)
 
   return (
-    <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <RouteLink href={to} hideUnderline={true}>
+    <div
+      className="w-full sm:w-auto"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <RouteLink href={to} hideUnderline={true} className="block w-full sm:w-auto">
         <div
+          className="w-full sm:w-[320px]"
           style={{
-            width: '320px',
             height: '150px',
             margin: theme.sizing.scale200,
             backgroundColor: 'var(--ax-bg-raised)',

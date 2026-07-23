@@ -7,7 +7,6 @@ import {
   Label,
   Link,
   Popover,
-  Spacer,
   ToggleGroup,
 } from '@navikt/ds-react'
 import { useRef, useState } from 'react'
@@ -171,36 +170,36 @@ const Header = ({
   return (
     <InternalHeader className="polly-white-internalheader">
       <InternalHeader.Title href="/">Behandlingskatalog</InternalHeader.Title>
-      <Spacer />
-      <div className="flex items-center py-2">
+      <div className="polly-header-search flex items-center justify-center py-2 min-w-35 basis-0 grow-6 shrink">
         <MainSearch />
       </div>
-      <Spacer />
-      <div className="flex items-center px-2">
-        <ToggleGroup
-          size="small"
-          aria-label="Tema"
-          value={themeMode}
-          onChange={(value) => {
-            if (value === 'dark' || value === 'light') {
-              onThemeModeChange(value)
-            }
-          }}
-        >
-          <ToggleGroup.Item value="light">Lyst tema</ToggleGroup.Item>
-          <ToggleGroup.Item value="dark">Mørkt tema</ToggleGroup.Item>
-        </ToggleGroup>
-      </div>
+      <div className="polly-header-right flex items-center gap-2">
+        <div className="flex items-center px-2">
+          <ToggleGroup
+            size="small"
+            aria-label="Tema"
+            value={themeMode}
+            onChange={(value) => {
+              if (value === 'dark' || value === 'light') {
+                onThemeModeChange(value)
+              }
+            }}
+          >
+            <ToggleGroup.Item value="light">Lyst tema</ToggleGroup.Item>
+            <ToggleGroup.Item value="dark">Mørkt tema</ToggleGroup.Item>
+          </ToggleGroup>
+        </div>
 
-      {canUsePermissionOverrides && (
-        <AdminOptions
-          showPermissionOverrides={canUsePermissionOverrides}
-          permissionMode={permissionMode}
-          onPermissionModeChange={setPermissionMode}
-        />
-      )}
-      {!user.isLoggedIn() && <LoginButton />}
-      {user.isLoggedIn() && <LoggedInHeader />}
+        {canUsePermissionOverrides && (
+          <AdminOptions
+            showPermissionOverrides={canUsePermissionOverrides}
+            permissionMode={permissionMode}
+            onPermissionModeChange={setPermissionMode}
+          />
+        )}
+        {!user.isLoggedIn() && <LoginButton />}
+        {user.isLoggedIn() && <LoggedInHeader />}
+      </div>
     </InternalHeader>
   )
 }
