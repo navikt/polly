@@ -1,5 +1,13 @@
 import { PlusIcon } from '@navikt/aksel-icons'
-import { Button, ErrorSummary, Label, TextField, Textarea, UNSAFE_Combobox } from '@navikt/ds-react'
+import {
+  Button,
+  Chips,
+  ErrorSummary,
+  Label,
+  TextField,
+  Textarea,
+  UNSAFE_Combobox,
+} from '@navikt/ds-react'
 import {
   Field,
   FieldArray,
@@ -11,10 +19,16 @@ import {
   FormikProps,
 } from 'formik'
 import { Fragment, KeyboardEvent, useEffect, useRef, useState } from 'react'
-import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from '../../api/GetAllApi'
-import { IInformationType, IInformationtypeFormValues } from '../../constants'
+import {
+  getTerm,
+  mapTermToOption,
+  searchInformationType,
+  useTermSearchOptions,
+} from '../../api/GetAllApi'
+import { IInformationType, IInformationtypeFormValues, ITerm } from '../../constants'
 import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
+import CustomSearchSelect from '../common/AsyncSelectComponents'
 import { Error } from '../common/ModalSchema'
 import { renderTagList } from '../common/TagList'
 import FieldProductTeam from '../common/form/FieldProductTeam'
@@ -167,8 +181,6 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
   }
 
   const keywordsRef = useRef<HTMLInputElement>({} as HTMLInputElement)
-
-  const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
   const [termInputValue, setTermInputValue] = useState('')
   const [masterInputValue, setMasterInputValue] = useState('')
@@ -354,46 +366,27 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         <div className="mb-2 self-center">
                           <Label>Begrepsdefinisjon (oppslag i Begrepskatalogen)</Label>
                         </div>
-                        <UNSAFE_Combobox
-                          label=""
-                          hideLabel
+                        <CustomSearchSelect
+                          ariaLabel="Søk etter begrep"
                           placeholder="Søk"
-                          isLoading={termSearchLoading}
-                          shouldShowSelectedOptions={false}
-                          options={termSearchResult.flatMap((o) => {
-                            if (!o.value) return []
-                            return [
-                              {
-                                value: String(o.value),
-                                label: String(o.label ?? ''),
-                              },
-                            ]
-                          })}
-                          value={termInputValue}
-                          onChange={(newValue) => {
-                            if (formikBag.values.term && newValue === '') {
-                              return
-                            }
-
-                            setTermInputValue(newValue)
-                            setTermSearch(newValue)
-                            if (formikBag.values.term && newValue !== '') {
-                              form.setFieldValue('term', undefined)
-                            }
-                          }}
-                          selectedOptions={formikBag.values.term ? [formikBag.values.term] : []}
-                          onToggleSelected={(optionValue, isSelected) => {
-                            if (!isSelected) {
-                              setTermInputValue('')
-                              form.setFieldValue('term', undefined)
-                              return
-                            }
-
-                            const selected = termSearchResult.find((o) => o.value === optionValue)
-                            setTermInputValue(String(selected?.label ?? ''))
-                            form.setFieldValue('term', optionValue)
+                          loadOptions={useTermSearchOptions}
+                          onChange={(value: ITerm) => {
+                            setTermInputValue(mapTermToOption(value).label)
+                            form.setFieldValue('term', value.id)
                           }}
                         />
+                        {formikBag.values.term && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <Chips.Removable
+                              onClick={() => {
+                                setTermInputValue('')
+                                form.setFieldValue('term', undefined)
+                              }}
+                            >
+                              {termInputValue}
+                            </Chips.Removable>
+                          </div>
+                        )}
                       </div>
                     )}
                   </Field>

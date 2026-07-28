@@ -42,3 +42,15 @@ export const useTermSearch = () => {
     boolean,
   ]
 }
+
+export const useTermSearchOptions = async (searchParam: string) => {
+  if (searchParam && searchParam.length > 2) {
+    const terms = (await searchTerm(searchParam)).content
+    return terms.map((term: ITerm) => ({
+      ...term,
+      value: term.id,
+      label: mapTermToOption(term).label,
+    }))
+  }
+  return []
+}
