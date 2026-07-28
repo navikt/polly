@@ -12,7 +12,7 @@ data:
   BIGQUERY_AAREG_TABLENAME: aareg_avtaler_for_tilgang
   CLIENT_COMMON_CODE_NAV_URL: https://kodeverk-api.nav.no/api
   CLIENT_TEAMCAT_URL: https://teamkatalog-api.intern.dev.nav.no
-  CLIENT_TERM_CATALOG_URL: https://begrepskatalog-api.intern.dev.nav.no/api/dcat
+  CLIENT_TERM_CATALOG_URL: https://begrepskatalog-api.intern.dev.nav.no/api/terms
   ENVIRONMENT_CLASS: preprod
   GOOGLE_APPLICATION_CREDENTIALS: /var/run/secrets/polly_aareg_integration_key.json
   POLLY_SECURITY_REDIRECT_URIS: http://localhost:3000,https://behandlingskatalog.ansatt.dev.nav.no,https://behandlingskatalog.intern.dev.nav.no
