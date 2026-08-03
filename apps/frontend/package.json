@@ -74,7 +74,7 @@
     "@types/node": "26.1.2",
     "@types/randomcolor": "0.5.9",
     "@types/react": "19.2.17",
-    "@types/react-dom": "19.2.3",
+    "@types/react-dom": "19.2.4",
     "@types/shortid": "2.2.0",
     "@typescript-eslint/eslint-plugin": "8.65.0",
     "@typescript-eslint/parser": "8.65.0",
