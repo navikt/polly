@@ -67,7 +67,7 @@ const SideBar = () => (
               alt="Nav logo"
               width={120}
               height={44}
-              priority
+              loading="eager"
               style={{ width: '100%', height: 'auto' }}
             />
           </div>
@@ -79,6 +79,7 @@ const SideBar = () => (
               src="/Slack_Monochrome_White.svg"
               width={60}
               height={60}
+              loading="eager"
               alt="slack logo"
               style={{ width: 60, height: 60 }}
             />
