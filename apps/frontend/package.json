@@ -3,6 +3,38 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "next dev",
+    "build": "next build",
+    "serve": "next start",
+    "test": "jest",
+    "format": "prettier --write \"./src\"",
+    "prettier": "prettier --write \"./src\"",
+    "prepare": "cd ../../ && husky apps/frontend/.husky",
+    "type-check": "tsc --project tsconfig.json"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --list-different --write",
+      "eslint --max-warnings 0"
+    ],
+    "*.{ts,tsx}": [
+      "node -e \"require('child_process').execSync('yarn -s type-check', { stdio: 'inherit' })\""
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version",
+      "ie 11"
+    ]
+  },
   "dependencies": {
     "@navikt/aksel-icons": "8.16.1",
     "@navikt/ds-css": "8.16.1",
@@ -35,38 +67,6 @@
     "typescript": "6.0.3",
     "xlsx": "0.18.5",
     "yup": "1.7.1"
-  },
-  "scripts": {
-    "start": "next dev",
-    "build": "next build",
-    "serve": "next start",
-    "test": "jest",
-    "format": "prettier --write \"./src\"",
-    "prettier": "prettier --write \"./src\"",
-    "prepare": "cd ../../ && husky apps/frontend/.husky",
-    "type-check": "tsc --project tsconfig.json"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --list-different --write",
-      "eslint --max-warnings 0"
-    ],
-    "*.{ts,tsx}": [
-      "node -e \"require('child_process').execSync('yarn -s type-check', { stdio: 'inherit' })\""
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version",
-      "ie 11"
-    ]
   },
   "devDependencies": {
     "@eslint/compat": "2.1.0",
