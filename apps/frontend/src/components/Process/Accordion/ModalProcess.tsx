@@ -351,19 +351,24 @@ const ModalProcess = ({
                               tooltip="Er Nav behandlingsansvarlig sammen med annen virksomhet?"
                             />
                             <div className="mt-2 mb-4">
+                              <RadioBoolButton
+                                value={showResponsibleSelect}
+                                setValue={(value) => {
+                                  setShowResponsibleSelect(!!value)
+                                  if (!value) {
+                                    formikBag.setFieldValue('commonExternalProcessResponsible', '')
+                                  }
+                                }}
+                                omitUndefined
+                                direction="horizontal"
+                              />
                               {showResponsibleSelect && (
-                                <FieldCommonExternalProcessResponsible
-                                  thirdParty={formikBag.values.commonExternalProcessResponsible}
-                                  hideSelect={() => setShowResponsibleSelect(false)}
-                                />
-                              )}
-                              {!showResponsibleSelect && (
-                                <RadioBoolButton
-                                  value={showResponsibleSelect}
-                                  setValue={(value) => setShowResponsibleSelect(!!value)}
-                                  omitUndefined
-                                  direction="horizontal"
-                                />
+                                <div className="mt-2">
+                                  <FieldCommonExternalProcessResponsible
+                                    thirdParty={formikBag.values.commonExternalProcessResponsible}
+                                    hideSelect={() => setShowResponsibleSelect(false)}
+                                  />
+                                </div>
                               )}
                             </div>
                           </div>
