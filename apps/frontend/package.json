@@ -11,6 +11,7 @@
     "prettier:check": "prettier -c ./src",
     "eslint:check": "eslint . --cache --max-warnings=0",
     "verify:deps-upgrade": "yarn run prettier:check && yarn run eslint:check && yarn run type-check && yarn run build",
+    "pre-commit:deps-check": "node scripts/precommit-deps-check.mjs",
     "format": "prettier --write \"./src\"",
     "prettier": "prettier --write \"./src\"",
     "prepare": "cd ../../ && husky apps/frontend/.husky",
