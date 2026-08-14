@@ -129,11 +129,11 @@ const getCodelistByListnameAndType = (
 
 const Option = (props: OptionProps<TSearchItem>) => (
   <components.Option {...props}>
-    <div className="flex justify-between">
+    <div className='flex justify-between'>
       <span>{props.data.label}</span>
       <Tag
-        size="small"
-        variant="info"
+        size='small'
+        variant='info'
         style={{
           ...(props.data.tagColor ? { backgroundColor: props.data.tagColor } : {}),
           color: 'var(--ax-text-neutral-contrast)',
@@ -147,7 +147,7 @@ const Option = (props: OptionProps<TSearchItem>) => (
 
 export const DropdownIndicator = (props: DropdownIndicatorProps<TSearchItem>) => (
   <components.DropdownIndicator {...props}>
-    <MagnifyingGlassIcon title="Søk" aria-label="Søk" />
+    <MagnifyingGlassIcon title='Søk' aria-label='Søk' />
   </components.DropdownIndicator>
 )
 
@@ -313,7 +313,7 @@ export const MainSearch = () => {
                     sortKey: `${content.name} ${purposes}`,
                     typeName: 'Behandling',
                     tagColor: searchResultColor.processBackground,
-                    label: `${purposes}: ${content.name}`,
+                    label: `B${content.number} ${purposes}: ${content.name}`,
                     type: EObjectType.PROCESS,
                     number: content.number,
                   }
@@ -402,12 +402,12 @@ export const MainSearch = () => {
   }
 
   return (
-    <div className="w-full min-w-0">
-      <div className="flex items-center w-full max-w-182.5 min-w-0">
+    <div className='w-full min-w-0'>
+      <div className='flex items-center w-full max-w-182.5 min-w-0'>
         <AsyncSelect
-          className="w-full"
-          aria-label="Søk"
-          placeholder="Søk"
+          className='w-full'
+          aria-label='Søk'
+          placeholder='Søk'
           loadOptions={useMainSearchOption}
           components={{ Option, DropdownIndicator }}
           noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
@@ -425,17 +425,17 @@ export const MainSearch = () => {
             })()
           }}
         />
-        <div className="relative ml-2 flex items-center">
+        <div className='relative ml-2 flex items-center'>
           <Button
             onClick={() => setFilter(!filter)}
             icon={
-              <span className="flex items-center leading-none">
-                <FilterIcon aria-hidden className="block text-[#D9DBE0]" />
+              <span className='flex items-center leading-none'>
+                <FilterIcon aria-hidden className='block text-[#D9DBE0]' />
               </span>
             }
-            size="xsmall"
+            size='xsmall'
             kind={filter ? 'primary-neutral' : 'tertiary-neutral'}
-            ariaLabel="Filter"
+            ariaLabel='Filter'
           />
           {filter && <SelectType type={type} setType={setType} />}
         </div>
