@@ -40,7 +40,7 @@ const showDpiaRequiredField = (dpia?: IDpia) => {
       return null
     } else {
       return (
-        <InfoCard data-color="info" className="my-5">
+        <InfoCard data-color='info' className='my-5'>
           <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
             <InfoCard.Title>
               En tidligere, manuell registrering av behov for PVK finnes, men er ikke lenger
@@ -131,22 +131,22 @@ const ProcessData = (props: IProcessDataProps) => {
 
   return (
     <div>
-      <DataText label="Behandlingsnummer" text={'B' + process.number} />
+      <DataText label='Behandlingsnummer' text={'B' + process.number} />
 
-      <DataText label="Formål med behandlingen" text="">
-        <div className="max-w-[100ch]">
+      <DataText label='Formål med behandlingen' text=''>
+        <div className='max-w-[100ch]'>
           {shortenLinksInText(process.description?.length ? process.description : 'Ikke utfylt')}
         </div>
       </DataText>
 
       {process.additionalDescription && (
-        <DataText label="Ytterligere beskrivelse" text="">
-          <div className="max-w-[100ch]">{shortenLinksInText(process.additionalDescription)}</div>
+        <DataText label='Ytterligere beskrivelse' text=''>
+          <div className='max-w-[100ch]'>{shortenLinksInText(process.additionalDescription)}</div>
         </DataText>
       )}
 
       {process.legalBases.length ? (
-        <DataText label="Behandlingsgrunnlag for hele behandlingen" text={''}>
+        <DataText label='Behandlingsgrunnlag for hele behandlingen' text={''}>
           {process.legalBases
             .sort((a, b) =>
               codelistUtils
@@ -161,16 +161,16 @@ const ProcessData = (props: IProcessDataProps) => {
         </DataText>
       ) : (
         <>
-          <DataText label="Behandlingsgrunnlag for hele behandlingen" />
+          <DataText label='Behandlingsgrunnlag for hele behandlingen' />
         </>
       )}
 
-      <DataText label="Er behandlingen innført i NAV?" text={''}>
+      <DataText label='Er behandlingen innført i NAV?' text={''}>
         {process.dpia?.processImplemented ? 'Ja' : 'Nei'}
       </DataText>
 
       {!env.disableRiskOwner && (
-        <DataText label="Risikoeier">
+        <DataText label='Risikoeier'>
           <>
             <span>{process.dpia?.riskOwner ? riskOwnerFullName : 'Ikke utfylt'}</span>
             {!!process.dpia?.riskOwnerFunction && (
@@ -180,12 +180,12 @@ const ProcessData = (props: IProcessDataProps) => {
         </DataText>
       )}
 
-      <DataText label="Gyldighetsperiode for behandlingen" text={''}>
+      <DataText label='Gyldighetsperiode for behandlingen' text={''}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
       <DataText
-        label="Personkategorier oppsummert"
+        label='Personkategorier oppsummert'
         text={
           !subjectCategoriesSummarised.length && !process.usesAllInformationTypes
             ? 'Ikke utfylt'
@@ -195,7 +195,7 @@ const ProcessData = (props: IProcessDataProps) => {
         {process.usesAllInformationTypes
           ? 'Bruker potensielt alle personkategorier'
           : !!subjectCategoriesSummarised.length && (
-              <ul className="mt-0 list-disc list-inside">
+              <ul className='mt-0 list-disc list-inside'>
                 {subjectCategoriesSummarised.map((subjectCategory, index: number) => (
                   <li key={`${subjectCategory.code}-${index}`}>
                     {codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)}
@@ -205,25 +205,25 @@ const ProcessData = (props: IProcessDataProps) => {
             )}
       </DataText>
 
-      <DataText label="Organisering" text={''}>
+      <DataText label='Organisering' text={''}>
         {process.affiliation.nomDepartmentId ? (
-          <div className="flex gap-1 items-center">
-            <span className="whitespace-nowrap">Avdeling: </span>
+          <div className='flex gap-1 items-center'>
+            <span className='whitespace-nowrap'>Avdeling: </span>
             <ObjectLink id={process.affiliation.nomDepartmentId} type={EListName.DEPARTMENT}>
               {process.affiliation.nomDepartmentName || process.affiliation.nomDepartmentId}
             </ObjectLink>
           </div>
         ) : (
-          <div className="flex gap-1 items-center">
-            <span className="whitespace-nowrap">Avdeling: </span>
+          <div className='flex gap-1 items-center'>
+            <span className='whitespace-nowrap'>Avdeling: </span>
             <span>Ikke utfylt</span>
           </div>
         )}
 
         {!!process.affiliation.seksjoner.length && (
-          <div className="mt-2">
+          <div className='mt-2'>
             <span>Seksjon: </span>
-            <ul className="list-disc list-inside">
+            <ul className='list-disc list-inside'>
               {process.affiliation.seksjoner.map((seksjon: INomSeksjon) => (
                 <li key={seksjon.nomSeksjonId}>{seksjon.nomSeksjonName}</li>
               ))}
@@ -232,10 +232,10 @@ const ProcessData = (props: IProcessDataProps) => {
         )}
 
         {!!process.affiliation.subDepartments.length && (
-          <div className="mt-2">
+          <div className='mt-2'>
             <div>
               <span>Linja: </span>
-              <ul className="list-disc list-inside">
+              <ul className='list-disc list-inside'>
                 {process.affiliation.subDepartments.map((subDepartment) => (
                   <li key={subDepartment.code}>
                     <ObjectLink id={subDepartment.code} type={EListName.SUB_DEPARTMENT}>
@@ -249,10 +249,10 @@ const ProcessData = (props: IProcessDataProps) => {
             {process.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVFYLKE')
               .length !== 0 &&
               process.affiliation.fylker.length !== 0 && (
-                <div className="flex gap-1">
+                <div className='flex gap-1'>
                   <span>Fylke: </span>
                   <span>
-                    <div className="inline">
+                    <div className='inline'>
                       {process.affiliation.fylker.map((fylke: INomData, index) => (
                         <Fragment key={fylke.nomId}>
                           <>{fylke.nomName}</>
@@ -267,10 +267,10 @@ const ProcessData = (props: IProcessDataProps) => {
             {process.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVKONTORSTAT')
               .length !== 0 &&
               process.affiliation.navKontorer.length !== 0 && (
-                <div className="flex gap-1">
+                <div className='flex gap-1'>
                   <span>Nav-kontor: </span>
                   <span>
-                    <div className="inline">
+                    <div className='inline'>
                       {process.affiliation.navKontorer.map((kontor: INomData, index) => (
                         <Fragment key={kontor.nomId}>
                           <>{kontor.nomName}</>
@@ -286,16 +286,16 @@ const ProcessData = (props: IProcessDataProps) => {
           </div>
         )}
 
-        <div className="mt-2">
+        <div className='mt-2'>
           <span>Team:</span>
           {process.affiliation.productTeams?.length ? (
-            <TeamList teamIds={process.affiliation.productTeams} variant="list" />
+            <TeamList teamIds={process.affiliation.productTeams} variant='list' />
           ) : (
             'Ikke utfylt'
           )}
         </div>
 
-        <div className="mt-2">
+        <div className='mt-2'>
           <span>Felles behandlingsansvarlig: </span>
           <span>
             {process.commonExternalProcessResponsible ? (
@@ -309,9 +309,9 @@ const ProcessData = (props: IProcessDataProps) => {
         </div>
       </DataText>
 
-      <DataText label="System" text={''}>
+      <DataText label='System' text={''}>
         {process.affiliation.products?.length ? (
-          <ul className="mt-0 list-disc list-inside">
+          <ul className='mt-0 list-disc list-inside'>
             {process.affiliation.products.map((system, index: number) => (
               <li key={`${system.code}-${index}`}>
                 <ObjectLink id={system.code} type={EListName.SYSTEM}>
@@ -325,7 +325,7 @@ const ProcessData = (props: IProcessDataProps) => {
         )}
       </DataText>
 
-      <DataText label="Automatisering og profilering" text={''}>
+      <DataText label='Automatisering og profilering' text={''}>
         <div>
           <span>Helautomatisk behandling: </span>
           <span>{boolToText(process.automaticProcessing)}</span>
@@ -336,13 +336,13 @@ const ProcessData = (props: IProcessDataProps) => {
         </div>
       </DataText>
 
-      <DataText label="Kunstig intelligens" text={''}>
+      <DataText label='Kunstig intelligens' text={''}>
         <div>
           <span>KI-systemer benyttes: </span>
           <span>{boolToText(process.aiUsageDescription.aiUsage)}</span>
         </div>
         {process.aiUsageDescription.aiUsage && (
-          <div className="mt-4">
+          <div className='mt-4'>
             <BodyLong>Hvilken rolle har KI-systemet? </BodyLong>
             <BodyLong>{process.aiUsageDescription.description}</BodyLong>
           </div>
@@ -359,14 +359,14 @@ const ProcessData = (props: IProcessDataProps) => {
           </div>
         )}
         {process.aiUsageDescription.reusingPersonalInformation && (
-          <div className="mt-4">
+          <div className='mt-4'>
             <BodyLong>Registreringsnummer i modellregister: </BodyLong>
             <BodyLong>{process.aiUsageDescription.registryNumber}</BodyLong>
           </div>
         )}
       </DataText>
 
-      <DataText label="Databehandler" text={''}>
+      <DataText label='Databehandler' text={''}>
         <>
           {process.dataProcessing?.dataProcessor === null && 'Uavklart om databehandler benyttes'}
           {process.dataProcessing?.dataProcessor === false && 'Databehandler benyttes ikke'}
@@ -377,7 +377,7 @@ const ProcessData = (props: IProcessDataProps) => {
               <div>Databehandler benyttes</div>
               <div>
                 {processors && (
-                  <ul className="mt-0 list-disc list-inside">
+                  <ul className='mt-0 list-disc list-inside'>
                     {processors.map((processor: IProcessor, index: number) => (
                       <li key={`${processor.id}-${index}`}>
                         <RouteLink href={'/processor/' + processor.id}>{processor.name}</RouteLink>
@@ -391,7 +391,7 @@ const ProcessData = (props: IProcessDataProps) => {
         </>
       </DataText>
 
-      <DataText label="Lagringsbehov" text={''}>
+      <DataText label='Lagringsbehov' text={''}>
         <>
           {process.retention?.retentionPlan === null &&
             'Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak'}
@@ -415,55 +415,36 @@ const ProcessData = (props: IProcessDataProps) => {
         </>
       </DataText>
 
-      <DataText label="Gjeldende etterlevelser og PVK">
+      <DataText label='Gjeldende etterlevelser og PVK'>
         {pvkDokumenter.length === 0 && (
           <BodyLong>Behandlingen er ikke koblet til et etterlevelsesdokument</BodyLong>
         )}
-        {pvkDokumenter.length !== 0 && (
-          <List>
-            {pvkDokumenter.map((pvkDokument: IPvkDokumentShort) => (
-              <List.Item key={pvkDokument.etterlevelseDokumentasjonId}>
-                <Link
-                  href={
-                    env.etterlevelseUrl + 'dokumentasjon/' + pvkDokument.etterlevelseDokumentasjonId
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  E{pvkDokument.etterlevelseNummer}.{pvkDokument.etterlevelseDokumentVersjon}{' '}
-                  {pvkDokument.title}
-                </Link>
-                <BodyLong>
-                  {pvkVurderingToText(pvkDokument.pvkVurdering)} (
-                  {getPvkDokumentStatus(pvkDokument.status, pvkDokument.hasPvkDocumentationStarted)}
-                  )
-                </BodyLong>
-                {pvkDokument.ytterligereEgenskaper.length !== 0 && (
-                  <List>
-                    {pvkDokument.ytterligereEgenskaper.map((egenskap) => {
-                      if (!['', null, undefined].includes(egenskap.shortName)) {
-                        return (
-                          <List.Item key={egenskap.code + '_E' + pvkDokument.etterlevelseNummer}>
-                            {egenskap.shortName}
-                          </List.Item>
-                        )
-                      } else {
-                        return null
-                      }
-                    })}
-                  </List>
-                )}
-              </List.Item>
-            ))}
-          </List>
-        )}
+        {pvkDokumenter.length !== 0 &&
+          pvkDokumenter.map((pvkDokument: IPvkDokumentShort) => (
+            <div key={pvkDokument.etterlevelseDokumentasjonId}>
+              <Link
+                href={
+                  env.etterlevelseUrl + 'dokumentasjon/' + pvkDokument.etterlevelseDokumentasjonId
+                }
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                E{pvkDokument.etterlevelseNummer}.{pvkDokument.etterlevelseDokumentVersjon}{' '}
+                {pvkDokument.title}
+              </Link>
+              <BodyLong>
+                {pvkVurderingToText(pvkDokument.pvkVurdering)} (
+                {getPvkDokumentStatus(pvkDokument.status, pvkDokument.hasPvkDocumentationStarted)})
+              </BodyLong>
+            </div>
+          ))}
 
         {showDpiaRequiredField(process.dpia)}
       </DataText>
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
-        <DataText label="Avsender" text={''}>
-          <ul className="mt-0 list-disc list-inside">
+        <DataText label='Avsender' text={''}>
+          <ul className='mt-0 list-disc list-inside'>
             {process.affiliation.disclosureDispatchers.map((dispatcher, index) => (
               <li key={`${dispatcher.code}-${index}`}>
                 <ObjectLink id={dispatcher.code} type={EListName.SYSTEM}>
@@ -476,7 +457,7 @@ const ProcessData = (props: IProcessDataProps) => {
       )}
 
       {(disclosures.length !== 0 || checkForAaregDispatcher(process)) && (
-        <DataText label="Utleveringer" text={''}>
+        <DataText label='Utleveringer' text={''}>
           <div>
             {checkForAaregDispatcher(process) ? (
               <>
@@ -485,7 +466,7 @@ const ProcessData = (props: IProcessDataProps) => {
                 </RouteLink>
               </>
             ) : (
-              <ul className="list-disc pl-5">
+              <ul className='list-disc pl-5'>
                 {disclosures.map((value: IDisclosure) => (
                   <li key={value.id}>
                     <ObjectLink id={value.id} type={EObjectType.DISCLOSURE}>
@@ -500,7 +481,7 @@ const ProcessData = (props: IProcessDataProps) => {
       )}
       <Completeness process={process} />
 
-      <DataText label="Status" text={''}>
+      <DataText label='Status' text={''}>
         {processStatusText(process.status)}
         {process.revisionText && `: ${process.revisionText}`}
       </DataText>
@@ -558,16 +539,16 @@ const Completeness = (props: ICompletenessProps) => {
   }
 
   return (
-    <DataText label="Kompletthet" text={''}>
+    <DataText label='Kompletthet' text={''}>
       <Tooltip content={getContent()}>
-        <div className="flex h-6 w-full max-w-[75ch] items-center cursor-help">
+        <div className='flex h-6 w-full max-w-[75ch] items-center cursor-help'>
           <ProgressBar
-            aria-label="Kompletthet"
-            className="flex-1"
+            aria-label='Kompletthet'
+            className='flex-1'
             value={completed}
             valueMax={completables}
             data-color={colorRole()}
-            size="small"
+            size='small'
           />
         </div>
       </Tooltip>
