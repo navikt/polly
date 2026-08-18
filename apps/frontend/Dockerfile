@@ -1,4 +1,5 @@
 FROM node:26.7.0-alpine AS base
+COPY .yarnrc.yml .
 RUN npm install -g yarn
 
 FROM base AS deps
