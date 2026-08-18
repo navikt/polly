@@ -1,18 +1,11 @@
 FROM node:26.7.0-alpine AS base
 
-# Install dependencies
-RUN node .yarn/releases/yarn-4.16.0.cjs --version && node .yarn/releases/yarn-4.16.0.cjs install --immutable
-
-COPY . .
-
-RUN node .yarn/releases/yarn-4.16.0.cjs run build
-
-RUN npm install -g yarn
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN npm install -g yarn
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
@@ -45,4 +38,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 8080
 
-CMD ["node", ".yarn/releases/yarn-4.16.0.cjs", "server.js"]
+CMD ["node", "server.js"]
