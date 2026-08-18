@@ -1,11 +1,10 @@
 FROM node:26.7.0-alpine AS base
-
+RUN npm install -g yarn
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN npm install -g yarn
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
