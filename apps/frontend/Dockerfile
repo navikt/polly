@@ -1,6 +1,14 @@
 FROM node:26.7.0-alpine AS base
+
 COPY .yarnrc.yml .
-RUN npm install -g yarn
+COPY package.json .
+COPY yarn.lock .
+COPY .yarnrc.yml .
+COPY .yarn/releases ./.yarn/releases
+COPY .yarn/patches ./.yarn/patches
+
+# Install dependencies
+RUN node .yarn/releases/yarn-4.16.0.cjs --version && node .yarn/releases/yarn-4.16.0.cjs install --immutable
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
