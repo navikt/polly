@@ -37,4 +37,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 8080
 
-CMD ["node", "server.js"]
+# Install dependencies
+RUN node .yarn/releases/yarn-4.16.0.cjs --version && node .yarn/releases/yarn-4.16.0.cjs install --immutable
+
+COPY . .
+
+RUN node .yarn/releases/yarn-4.16.0.cjs run build
+
+CMD ["node", ".yarn/releases/yarn-4.16.0.cjs", "server.js"]
