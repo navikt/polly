@@ -7,6 +7,6 @@
     "exports": "warn",
     "duplicates": "warn"
   },
-  "entry": ["pages/**/*.{tsx,ts}", "*.config.{mjs,mts}", "scripts/**/*.mjs"],
-  "project": ["**/*.{tsx,ts,mjs,mts}"]
+  "entry": ["app/**.{tsx,ts,mjs,mts,css}"],
+  "project": ["app/**/*.{tsx,ts,mjs,mts,css}"]
 }
