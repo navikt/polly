@@ -9,6 +9,7 @@ import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import {
   EObjectType,
   EProcessStatus,
+  EPvkVurdering,
   IDisclosure,
   IDpia,
   ILegalBasis,
@@ -433,8 +434,9 @@ const ProcessData = (props: IProcessDataProps) => {
                 {pvkDokument.title}
               </Link>
               <BodyLong>
-                {pvkVurderingToText(pvkDokument.pvkVurdering)} (
-                {getPvkDokumentStatus(pvkDokument.status, pvkDokument.hasPvkDocumentationStarted)})
+                {pvkVurderingToText(pvkDokument.pvkVurdering)}
+                {pvkDokument.pvkVurdering !== EPvkVurdering.ALLEREDE_UTFORT &&
+                  ` (${getPvkDokumentStatus(pvkDokument.status, pvkDokument.hasPvkDocumentationStarted)})`}
               </BodyLong>
             </div>
           ))}
