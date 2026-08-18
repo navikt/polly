@@ -15,8 +15,8 @@ export const FieldTextarea = (props: IFieldTextareaProps) => {
     <Field name={fieldName}>
       {({ field }: FieldProps<string>) => (
         <Textarea
-          className="w-full"
-          label=""
+          className='w-full'
+          label=''
           hideLabel
           {...field}
           rows={rows}

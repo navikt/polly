@@ -13,11 +13,11 @@ const FieldProduct = (props: TFieldProductsProps) => {
 
   return (
     <FieldArray
-      name="affiliation.products"
+      name='affiliation.products'
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="w-full">
+        <div className='w-full'>
           <Combobox
-            label=""
+            label=''
             hideLabel
             isMultiSelect
             options={codelistUtils

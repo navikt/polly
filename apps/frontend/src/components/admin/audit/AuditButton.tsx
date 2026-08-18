@@ -32,15 +32,15 @@ export const AuditButton = (props: IProps) => {
           {!children && (
             <>
               <Button
-                tooltip="Versjonering"
+                tooltip='Versjonering'
                 marginLeft={marginLeft}
                 marginRight={marginRight}
-                size="xsmall"
+                size='xsmall'
                 kind={kind || 'outline'}
-                ariaLabel="Versjonering"
+                ariaLabel='Versjonering'
                 startEnhancer={
-                  <span className="flex items-center leading-none">
-                    <ClockDashedIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <ClockDashedIcon aria-hidden className='block' />
                   </span>
                 }
               ></Button>

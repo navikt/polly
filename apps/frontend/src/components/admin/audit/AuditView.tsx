@@ -50,36 +50,36 @@ export const AuditView = (props: TAuditViewProps) => {
   return (
     <Box>
       {loading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!loading && auditLog && !logFound && <Label>Fant ingen versjonering</Label>}
 
       {logFound && (
         <>
-          <div className="flex justify-between">
-            <div className="w-[90%]">
-              <AuditLabel label="ID:">{auditLog?.id}</AuditLabel>
-              <AuditLabel label="Tabellnavn:">{newestAudit?.table}</AuditLabel>
-              <AuditLabel label="Versjoneringer:">{auditLog?.audits.length}</AuditLabel>
+          <div className='flex justify-between'>
+            <div className='w-[90%]'>
+              <AuditLabel label='ID:'>{auditLog?.id}</AuditLabel>
+              <AuditLabel label='Tabellnavn:'>{newestAudit?.table}</AuditLabel>
+              <AuditLabel label='Versjoneringer:'>{auditLog?.audits.length}</AuditLabel>
             </div>
-            <div className="flex">
+            <div className='flex'>
               {auditLog && (
-                <Button variant="tertiary" onClick={() => setOpen(auditLog.audits.map(() => true))}>
+                <Button variant='tertiary' onClick={() => setOpen(auditLog.audits.map(() => true))}>
                   Åpne alle
                 </Button>
               )}
               {newestAudit && newestAudit.action !== EAuditAction.DELETE && (
                 <ObjectLink id={newestAudit.tableId} type={newestAudit.table} audit={newestAudit}>
-                  <Button variant="tertiary">Vis bruk</Button>
+                  <Button variant='tertiary'>Vis bruk</Button>
                 </ObjectLink>
               )}
-              <Tooltip content="Lukk" placement="top">
+              <Tooltip content='Lukk' placement='top'>
                 <Button
-                  variant="tertiary"
+                  variant='tertiary'
                   onClick={() => viewId('')}
-                  icon={<XMarkIcon title="Lukk" />}
+                  icon={<XMarkIcon title='Lukk' />}
                 />
               </Tooltip>
             </div>
@@ -95,16 +95,16 @@ export const AuditView = (props: TAuditViewProps) => {
                   key={audit.id}
                   ref={refs[audit.id]}
                 >
-                  <div className="flex justify-between">
-                    <div className="w-11/12">
-                      <AuditLabel label="Versjon #:">{auditLog.audits.length - index}</AuditLabel>
-                      <AuditLabel label="Handling:">
+                  <div className='flex justify-between'>
+                    <div className='w-11/12'>
+                      <AuditLabel label='Versjon #:'>{auditLog.audits.length - index}</AuditLabel>
+                      <AuditLabel label='Handling:'>
                         <AuditActionIcon action={audit.action} withText={true} />
                       </AuditLabel>
-                      <AuditLabel label="Tidspunkt: ">
+                      <AuditLabel label='Tidspunkt: '>
                         {time.format('LL')} {time.format('HH:mm:ss.SSS Z')}
                       </AuditLabel>
-                      <AuditLabel label="Bruker">{audit.user}</AuditLabel>
+                      <AuditLabel label='Bruker'>{audit.user}</AuditLabel>
                     </div>
                     <ComparisonView auditLog={auditLog} audit={audit} index={index} />
                   </div>
@@ -135,15 +135,15 @@ const ComparisonView = (props: TComparisonViewProps) => {
       <Button
         key={audit.id}
         onClick={() => setModalOpen(!modalOpen)}
-        variant="tertiary"
-        icon={<ArrowRightLeftIcon title="Se differansen" />}
+        variant='tertiary'
+        icon={<ArrowRightLeftIcon title='Se differansen' />}
       />
       <Modal
         key={audit.id}
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        width="75%"
-        className="h-3/4 overflow-y-scroll"
+        width='75%'
+        className='h-3/4 overflow-y-scroll'
         header={{ heading: 'Sammenligning' }}
       >
         <Modal.Body>

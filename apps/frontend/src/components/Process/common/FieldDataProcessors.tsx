@@ -33,13 +33,13 @@ const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
 
   return (
     <FieldArray
-      name="dataProcessing.processors"
+      name='dataProcessing.processors'
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <div className="w-full">
-            <div className="w-full">
+          <div className='w-full'>
+            <div className='w-full'>
               <Select
-                label="Velg databehandler"
+                label='Velg databehandler'
                 hideLabel
                 onChange={(event) => {
                   if (event.target.value) {
@@ -55,7 +55,7 @@ const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
                   }
                 }}
               >
-                <option value="">Velg databehandler</option>
+                <option value=''>Velg databehandler</option>
                 {options
                   .sort((a, b) =>
                     (a.label || '').toLocaleString().localeCompare((b.label || '').toLocaleString())
@@ -73,7 +73,7 @@ const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
                   ))}
               </Select>
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className='mt-2 flex flex-wrap gap-2'>
               {formikBag.values.dataProcessing.processors &&
                 renderTagList(
                   formikBag.values.dataProcessing.processors.map((processor) => {

@@ -38,29 +38,29 @@ export default function Pagination({
   return (
     <div className={`flex items-center gap-2 ${className ?? ''}`}>
       <Button
-        size="small"
-        variant="tertiary"
+        size='small'
+        variant='tertiary'
         onClick={prev}
         disabled={prevDisabled}
         aria-label={labels?.prevButton ?? 'Forrige'}
         icon={<ChevronLeftIcon aria-hidden />}
-        iconPosition="left"
+        iconPosition='left'
       >
         {labels?.prevButton ?? 'Forrige'}
       </Button>
 
-      <span className="text-sm">
+      <span className='text-sm'>
         {currentPage} {labels?.preposition ?? 'av'} {numPages}
       </span>
 
       <Button
-        size="small"
-        variant="tertiary"
+        size='small'
+        variant='tertiary'
         onClick={next}
         disabled={nextDisabled}
         aria-label={labels?.nextButton ?? 'Neste'}
         icon={<ChevronRightIcon aria-hidden />}
-        iconPosition="right"
+        iconPosition='right'
       >
         {labels?.nextButton ?? 'Neste'}
       </Button>

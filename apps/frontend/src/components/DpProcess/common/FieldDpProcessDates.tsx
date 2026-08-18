@@ -82,7 +82,7 @@ const DpProcessDateInput = (props: {
       }}
     >
       <DatePicker.Input
-        className="mb-2"
+        className='mb-2'
         name={field.name}
         value={textValue}
         onChange={(e) => {
@@ -127,18 +127,18 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
   return (
     <>
       {!showDates && (
-        <div className="flex w-full mt-4">
-          <Button type="button" size="xsmall" onClick={() => setShowDates(true)}>
+        <div className='flex w-full mt-4'>
+          <Button type='button' size='xsmall' onClick={() => setShowDates(true)}>
             Velg datoer
           </Button>
         </div>
       )}
       {showDates && (
         <>
-          <div className="w-full">
-            <div className="flex w-full">
-              <div className="w-1/2 mr-4">
-                <div className="flex w-full mt-4">
+          <div className='w-full'>
+            <div className='flex w-full'>
+              <div className='w-1/2 mr-4'>
+                <div className='flex w-full mt-4'>
                   {(() => {
                     const endVal = formik.values['end']
                     const endDate = parseLocalYMD(endVal)
@@ -147,13 +147,13 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
 
                     return (
                       <DpProcessDateInput
-                        name="start"
+                        name='start'
                         datepickerProps={startDatepickerProps}
                         toDate={startMax}
                         label={
                           <LabelWithToolTip
-                            label="Velg fra og med dato"
-                            tooltip="Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
+                            label='Velg fra og med dato'
+                            tooltip='Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.'
                             noMarginBottom
                           />
                         }
@@ -177,11 +177,11 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                     )
                   })()}
                 </div>
-                <Error fieldName="start" />
+                <Error fieldName='start' />
               </div>
 
-              <div className="w-1/2 mr-4">
-                <div className="flex w-full mt-4">
+              <div className='w-1/2 mr-4'>
+                <div className='flex w-full mt-4'>
                   {(() => {
                     const startVal = formik.values['start']
                     const startDate = parseLocalYMD(startVal)
@@ -195,14 +195,14 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
 
                     return (
                       <DpProcessDateInput
-                        name="end"
+                        name='end'
                         datepickerProps={endDatepickerProps}
                         fromDate={endMin}
                         toDate={finalToDate}
                         label={
                           <LabelWithToolTip
-                            label="Velg til og med dato"
-                            tooltip="Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato."
+                            label='Velg til og med dato'
+                            tooltip='Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato.'
                             noMarginBottom
                           />
                         }
@@ -226,7 +226,7 @@ export const FieldDpProcessDates = (props: IDateModalProps) => {
                     )
                   })()}
                 </div>
-                <Error fieldName="end" />
+                <Error fieldName='end' />
               </div>
             </div>
           </div>

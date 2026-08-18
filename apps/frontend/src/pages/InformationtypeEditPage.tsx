@@ -61,13 +61,13 @@ const InformationtypeEditPage = () => {
   return (
     <Fragment>
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!isLoading && (
         <Fragment>
-          <Heading size="large">Redigér</Heading>
+          <Heading size='large'>Redigér</Heading>
 
           {!error && informationtype ? (
             <Fragment>

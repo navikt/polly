@@ -37,13 +37,13 @@ const SelectInformationTypes = (props: TSelectInformationTypesProps) => {
 
   return (
     <FieldArray
-      name="informationTypes"
+      name='informationTypes'
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="w-full">
-          <div className="w-full">
+        <div className='w-full'>
+          <div className='w-full'>
             <CustomSearchSelect
-              ariaLabel="Søk opplysningersyper"
-              placeholder=""
+              ariaLabel='Søk opplysningersyper'
+              placeholder=''
               loadOptions={useSearchOpplyningstyperOptions}
               onChange={(value) =>
                 arrayHelpers.form.setFieldValue(
@@ -57,7 +57,7 @@ const SelectInformationTypes = (props: TSelectInformationTypesProps) => {
           </div>
 
           {formikBag.values.informationTypes && (
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className='mt-2 flex flex-wrap gap-2'>
               {renderTagList(
                 formikBag.values.informationTypes.map(
                   (informationType: IInformationTypeShort) => informationType.name

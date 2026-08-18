@@ -28,7 +28,7 @@ const UpdateCodeListModal = ({
   submit,
 }: TModalUpdateProps) => (
   <Modal
-    className="px-8 w-full max-w-2xl"
+    className='px-8 w-full max-w-2xl'
     onClose={onClose}
     open={isOpen}
     header={{ heading: title, closeButton: false }}
@@ -46,21 +46,21 @@ const UpdateCodeListModal = ({
       {(formik) => (
         <Form>
           <Modal.Body>
-            <Field name="shortName">
+            <Field name='shortName'>
               {({ field }: FieldProps) => (
                 <TextField
-                  className="w-full"
-                  label="Navn"
+                  className='w-full'
+                  label='Navn'
                   {...field}
                   error={formik.errors.shortName}
                 />
               )}
             </Field>
-            <Field name="description">
+            <Field name='description'>
               {({ field }: FieldProps) => (
                 <Textarea
-                  className="w-full mt-4"
-                  label="Beskrivelse"
+                  className='w-full mt-4'
+                  label='Beskrivelse'
                   {...field}
                   error={formik.errors.description}
                 />
@@ -68,12 +68,12 @@ const UpdateCodeListModal = ({
             </Field>
           </Modal.Body>
           <Modal.Footer>
-            <div className="flex justify-end">
-              <div className="mr-auto">{errorOnUpdate && <p>{errorOnUpdate}</p>}</div>
-              <Button className="mr-4" type="button" variant="secondary" onClick={() => onClose()}>
+            <div className='flex justify-end'>
+              <div className='mr-auto'>{errorOnUpdate && <p>{errorOnUpdate}</p>}</div>
+              <Button className='mr-4' type='button' variant='secondary' onClick={() => onClose()}>
                 Avbryt
               </Button>
-              <Button type="button" onClick={formik.submitForm}>
+              <Button type='button' onClick={formik.submitForm}>
                 Lagre
               </Button>
             </div>

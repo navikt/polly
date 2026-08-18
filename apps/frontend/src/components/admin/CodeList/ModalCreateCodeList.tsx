@@ -28,8 +28,8 @@ const CreateCodeListModal = ({
   submit,
 }: TModalCreateProps) => (
   <Modal
-    className="px-8"
-    width="medium"
+    className='px-8'
+    width='medium'
     open={isOpen}
     header={{ heading: title, closeButton: false }}
     onClose={() => onClose()}
@@ -54,45 +54,45 @@ const CreateCodeListModal = ({
         {({ errors, submitForm }) => (
           <Form>
             <Modal.Body>
-              <Field name="code">
+              <Field name='code'>
                 {({ field }: FieldProps) => (
                   <TextField
-                    className="w-full"
+                    className='w-full'
                     {...field}
-                    label="Kode"
-                    error={errors.code && <ErrorMessage name="code" />}
+                    label='Kode'
+                    error={errors.code && <ErrorMessage name='code' />}
                   />
                 )}
               </Field>
-              <Field name="shortName">
+              <Field name='shortName'>
                 {({ field }: FieldProps) => (
                   <TextField
-                    className="w-full mt-4"
+                    className='w-full mt-4'
                     {...field}
-                    label="Navn"
-                    error={errors.shortName && <ErrorMessage name="shortName" />}
+                    label='Navn'
+                    error={errors.shortName && <ErrorMessage name='shortName' />}
                   />
                 )}
               </Field>
-              <Field name="description">
+              <Field name='description'>
                 {({ field }: FieldProps) => (
                   <Textarea
-                    className="w-full mt-4"
+                    className='w-full mt-4'
                     {...field}
-                    label="Beskrivelse"
+                    label='Beskrivelse'
                     minRows={6}
-                    error={errors.description && <ErrorMessage name="description" />}
+                    error={errors.description && <ErrorMessage name='description' />}
                   />
                 )}
               </Field>
             </Modal.Body>
             <Modal.Footer>
               {errorOnCreate && <BodyShort>{errorOnCreate}</BodyShort>}
-              <div className="flex justify-end mt-6 gap-2">
-                <Button variant="secondary" type="button" onClick={() => onClose()}>
+              <div className='flex justify-end mt-6 gap-2'>
+                <Button variant='secondary' type='button' onClick={() => onClose()}>
                   Avbryt
                 </Button>
-                <Button variant="primary" type="button" onClick={submitForm}>
+                <Button variant='primary' type='button' onClick={submitForm}>
                   Lagre
                 </Button>
               </div>

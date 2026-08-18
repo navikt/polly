@@ -150,7 +150,7 @@ const ProcessPage = () => {
 
   return (
     <>
-      <div role="main">
+      <div role='main'>
         {section === ESection.department && code && (
           <DashboardBreadcrumbs
             departmentId={isNoDepartment ? undefined : code}
@@ -164,9 +164,9 @@ const ProcessPage = () => {
           <PageHeader section={section} code={code} noDepartment={isNoDepartment} />
         )}
         {isNoDepartment && (
-          <LocalAlert status="warning" className="mb-4">
+          <LocalAlert status='warning' className='mb-4'>
             <LocalAlert.Header>
-              <LocalAlert.Title as="h3">Disse behandlingene mangler avdeling</LocalAlert.Title>
+              <LocalAlert.Title as='h3'>Disse behandlingene mangler avdeling</LocalAlert.Title>
             </LocalAlert.Header>
             <LocalAlert.Content>
               Det er viktig at alle oppdaterer informasjon om avdeling i behandlingene sine.
@@ -193,15 +193,15 @@ const ProcessPage = () => {
                   dashboardData?.seksjoner?.some(
                     (s) => s.seksjonId === '__INGEN_SEKSJON__' && s.department === departmentCode
                   )) && (
-                  <div className="flex items-center gap-4 mb-4 mt-2">
+                  <div className='flex items-center gap-4 mb-4 mt-2'>
                     <Select
-                      label="Filtrer på seksjon"
+                      label='Filtrer på seksjon'
                       hideLabel={false}
                       value={selectedSeksjonId}
                       onChange={(e) => setSelectedSeksjonId(e.target.value)}
                       style={{ minWidth: '30rem' }}
                     >
-                      <option value="">Alle seksjoner</option>
+                      <option value=''>Alle seksjoner</option>
                       {[...departmentSeksjoner]
                         .sort((a, b) => a.navn.localeCompare(b.navn))
                         .map((s) => (
@@ -212,14 +212,14 @@ const ProcessPage = () => {
                       {dashboardData?.seksjoner?.some(
                         (s) =>
                           s.seksjonId === '__INGEN_SEKSJON__' && s.department === departmentCode
-                      ) && <option value="__INGEN_SEKSJON__">Ikke valgt seksjon</option>}
+                      ) && <option value='__INGEN_SEKSJON__'>Ikke valgt seksjon</option>}
                     </Select>
                   </div>
                 )}
                 {selectedSeksjonId === '__INGEN_SEKSJON__' && (
-                  <LocalAlert status="warning" className="mb-4">
+                  <LocalAlert status='warning' className='mb-4'>
                     <LocalAlert.Header>
-                      <LocalAlert.Title as="h3">
+                      <LocalAlert.Title as='h3'>
                         Disse behandlingene mangler seksjon
                       </LocalAlert.Title>
                     </LocalAlert.Header>
@@ -239,11 +239,11 @@ const ProcessPage = () => {
                   section={section}
                   moveScroll={moveScroll}
                   isEditable={true}
-                  thirdTabTitle="Dashboard"
+                  thirdTabTitle='Dashboard'
                   defaultTab={tab ?? undefined}
                   seksjonFilter={selectedSeksjonId || undefined}
                   thirdTabContent={
-                    <div className="mt-4 mb-12">
+                    <div className='mt-4 mb-12'>
                       {selectedSeksjonId
                         ? dashboardData &&
                           (() => {
@@ -278,8 +278,8 @@ const ProcessPage = () => {
             )}
 
             {!isLoading && section === ESection.seksjon && (
-              <div className="mb-12">
-                <Heading size="small" level="2" className="mt-4">
+              <div className='mb-12'>
+                <Heading size='small' level='2' className='mt-4'>
                   Oversikt for {seksjonChartData?.seksjonName || code}
                 </Heading>
                 {seksjonChartData && (
@@ -292,7 +292,7 @@ const ProcessPage = () => {
                 )}
                 {siblingSeksjoner.length > 0 && (
                   <>
-                    <Heading size="small" level="2" className="mt-6">
+                    <Heading size='small' level='2' className='mt-6'>
                       Andre seksjoner i {seksjonAvdelingName || seksjonAvdelingId}
                     </Heading>
                     <Seksjoner

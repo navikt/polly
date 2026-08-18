@@ -33,11 +33,11 @@ const LoggedInHeader = () => {
   return (
     <>
       <Button
-        variant="tertiary"
-        data-color="neutral"
+        variant='tertiary'
+        data-color='neutral'
         icon={
-          <span className="flex items-center leading-none">
-            <PersonIcon aria-hidden className="block" />
+          <span className='flex items-center leading-none'>
+            <PersonIcon aria-hidden className='block' />
           </span>
         }
         ref={buttonRef}
@@ -47,15 +47,14 @@ const LoggedInHeader = () => {
         {user.getIdent()}
       </Button>
 
-      {/* eslint-disable-next-line react-hooks/refs */}
       <Popover open={openState} onClose={() => setOpenState(false)} anchorEl={buttonRef.current}>
         <Popover.Content>
-          <div className="p-2">
+          <div className='p-2'>
             <Label>Navn: {user.getName()}</Label>
             <Label>Grupper: {user.getGroupsHumanReadable().join(', ')}</Label>
-            <div className="flex w-full p-1">
+            <div className='flex w-full p-1'>
               <Link
-                variant="neutral"
+                variant='neutral'
                 href={
                   redirectUri
                     ? `/logout?redirect_uri=${encodeURIComponent(redirectUri)}`
@@ -77,7 +76,7 @@ const LoginButton = () => {
   const href = redirectUri ? `/login?redirect_uri=${encodeURIComponent(redirectUri)}` : '/login'
 
   return (
-    <InternalHeader.Button as="a" href={href}>
+    <InternalHeader.Button as='a' href={href}>
       Logg inn
     </InternalHeader.Button>
   )
@@ -107,23 +106,23 @@ const AdminOptions = ({
   return (
     <Dropdown>
       <InternalHeader.Button as={Dropdown.Toggle}>
-        Admin <CaretDownIcon title="a11y-title" fontSize="1.5rem" aria-hidden />
+        Admin <CaretDownIcon title='a11y-title' fontSize='1.5rem' aria-hidden />
       </InternalHeader.Button>
 
       <Dropdown.Menu>
         <Dropdown.Menu.List>
           {pages.map((page) => (
-            <Dropdown.Menu.List.Item key={page.label} as={Link} variant="neutral" href={page.href}>
+            <Dropdown.Menu.List.Item key={page.label} as={Link} variant='neutral' href={page.href}>
               {page.label}
             </Dropdown.Menu.List.Item>
           ))}
         </Dropdown.Menu.List>
 
         {showPermissionOverrides && (
-          <div className="p-2 pt-3">
+          <div className='p-2 pt-3'>
             <ToggleGroup
-              size="small"
-              aria-label="Tilgangsmodus"
+              size='small'
+              aria-label='Tilgangsmodus'
               value={permissionMode}
               onChange={(value) => {
                 if (value === 'admin' || value === 'write' || value === 'read') {
@@ -131,9 +130,9 @@ const AdminOptions = ({
                 }
               }}
             >
-              <ToggleGroup.Item value="admin">Admin</ToggleGroup.Item>
-              <ToggleGroup.Item value="write">Skriv</ToggleGroup.Item>
-              <ToggleGroup.Item value="read">Les</ToggleGroup.Item>
+              <ToggleGroup.Item value='admin'>Admin</ToggleGroup.Item>
+              <ToggleGroup.Item value='write'>Skriv</ToggleGroup.Item>
+              <ToggleGroup.Item value='read'>Les</ToggleGroup.Item>
             </ToggleGroup>
           </div>
         )}
@@ -168,16 +167,16 @@ const Header = ({
   }
 
   return (
-    <InternalHeader className="polly-white-internalheader">
-      <InternalHeader.Title href="/">Behandlingskatalog</InternalHeader.Title>
-      <div className="polly-header-search flex items-center justify-center py-2 min-w-35 basis-0 grow-6 shrink">
+    <InternalHeader className='polly-white-internalheader'>
+      <InternalHeader.Title href='/'>Behandlingskatalog</InternalHeader.Title>
+      <div className='polly-header-search flex items-center justify-center py-2 min-w-35 basis-0 grow-6 shrink'>
         <MainSearch />
       </div>
-      <div className="polly-header-right flex items-center gap-2">
-        <div className="flex items-center px-2">
+      <div className='polly-header-right flex items-center gap-2'>
+        <div className='flex items-center px-2'>
           <ToggleGroup
-            size="small"
-            aria-label="Tema"
+            size='small'
+            aria-label='Tema'
             value={themeMode}
             onChange={(value) => {
               if (value === 'dark' || value === 'light') {
@@ -185,8 +184,8 @@ const Header = ({
               }
             }}
           >
-            <ToggleGroup.Item value="light">Lyst tema</ToggleGroup.Item>
-            <ToggleGroup.Item value="dark">Mørkt tema</ToggleGroup.Item>
+            <ToggleGroup.Item value='light'>Lyst tema</ToggleGroup.Item>
+            <ToggleGroup.Item value='dark'>Mørkt tema</ToggleGroup.Item>
           </ToggleGroup>
         </div>
 

@@ -17,7 +17,7 @@ const CustomizedModalBlock = (props: IProps) => {
         index === 0 ? (
           child
         ) : (
-          <div key={index} className="flex-1 min-w-0">
+          <div key={index} className='flex-1 min-w-0'>
             {child}
           </div>
         )

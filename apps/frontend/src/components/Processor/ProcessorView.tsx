@@ -117,18 +117,18 @@ const ProcessorView = () => {
 
   return (
     <>
-      <div className="flex w-full justify-between">
-        <Heading size="large" level="3">
+      <div className='flex w-full justify-between'>
+        <Heading size='large' level='3'>
           {currentProcessor?.name}
         </Heading>
-        <div className="mt-auto">
+        <div className='mt-auto'>
           {hasAccess() && (
             <>
               <Button
-                kind="outline"
+                kind='outline'
                 icon={
-                  <span className="flex items-center leading-none">
-                    <DocPencilIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <DocPencilIcon aria-hidden className='block' />
                   </span>
                 }
                 onClick={() => setShowEditProcessorModal(true)}
@@ -136,10 +136,10 @@ const ProcessorView = () => {
                 Redigér
               </Button>
               <Button
-                kind="outline"
+                kind='outline'
                 icon={
-                  <span className="flex items-center leading-none">
-                    <TrashIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <TrashIcon aria-hidden className='block' />
                   </span>
                 }
                 onClick={() => {
@@ -154,50 +154,50 @@ const ProcessorView = () => {
         </div>
       </div>
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!isLoading && currentProcessor && (
         <>
           <div>
-            <DataText label="Referanse til databehandleravtale">
+            <DataText label='Referanse til databehandleravtale'>
               {currentProcessor.contract
                 ? shortenLinksInText(currentProcessor.contract)
                 : 'Ikke utfylt'}
             </DataText>
             <DataText
-              label="Avtaleeier"
+              label='Avtaleeier'
               text={currentProcessor.contractOwner && contractOwner?.fullName}
             />
             <DataText
-              label="Fagansvarlig"
+              label='Fagansvarlig'
               text={
                 currentProcessor.operationalContractManagers.length > 0 &&
                 operationalContractManagers.map((r) => r.fullName).join(', ')
               }
             />
-            <DataText label="Merknad" text={currentProcessor.note} />
+            <DataText label='Merknad' text={currentProcessor.note} />
             <DataText
-              label="Behandler databehandler personopplysninger utenfor EU/EØS?"
+              label='Behandler databehandler personopplysninger utenfor EU/EØS?'
               text={boolToText(currentProcessor.outsideEU)}
             />
             {currentProcessor.outsideEU && (
               <>
                 <DataText
-                  label="Overføringsgrunnlag for behandling utenfor EU/EØS"
+                  label='Overføringsgrunnlag for behandling utenfor EU/EØS'
                   text={currentProcessor.transferGroundsOutsideEU?.shortName}
                 />
 
                 {currentProcessor.transferGroundsOutsideEU?.code ===
                   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
                   <DataText
-                    label="Andre overføringsgrunnlag"
+                    label='Andre overføringsgrunnlag'
                     text={currentProcessor.transferGroundsOutsideEUOther}
                   />
                 )}
                 <DataText
-                  label="Land"
+                  label='Land'
                   text={
                     currentProcessor.countries &&
                     currentProcessor.countries?.length > 0 &&
@@ -209,15 +209,15 @@ const ProcessorView = () => {
               </>
             )}
           </div>
-          <div className="flex mb-4 justify-end">
+          <div className='flex mb-4 justify-end'>
             {currentProcessor.changeStamp && (
-              <BodyShort size="small">
+              <BodyShort size='small'>
                 {`Sist endret av ${currentProcessor.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcessor.changeStamp?.lastModifiedDate)}`}
               </BodyShort>
             )}
           </div>
           <ProcessorModal
-            title="Redigér Databehandler"
+            title='Redigér Databehandler'
             isOpen={showEditProcessorModal}
             initialValues={convertProcessorToFormValues(currentProcessor)}
             submit={handleEditDataProcessor}

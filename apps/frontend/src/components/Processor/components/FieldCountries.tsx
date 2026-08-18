@@ -15,17 +15,17 @@ const FieldCountries = (props: IProps) => {
   const countries: string[] = formikBag.values.countries
 
   return (
-    <FieldArray name="countries">
+    <FieldArray name='countries'>
       {(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="w-full mt-4">
+        <div className='w-full mt-4'>
           <Select
-            id="countries"
-            label="I hvilke(t) land lagrer databehandleren personopplysninger i?"
+            id='countries'
+            label='I hvilke(t) land lagrer databehandleren personopplysninger i?'
             onChange={(event) => {
               arrayHelpers.form.setFieldValue('countries', [...countries, event.target.value])
             }}
           >
-            <option value=""></option>
+            <option value=''></option>
             {codelistUtils
               .getCountryCodesOutsideEu()
               .filter((land) => !countries.includes(land.code))

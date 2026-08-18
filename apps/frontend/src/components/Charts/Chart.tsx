@@ -83,7 +83,6 @@ export const Chart = (props: IChartProps) => {
     // '#66CBEC',
   ]
 
-  // eslint-disable-next-line react-hooks/purity
   const splice: number = useMemo(() => Math.floor(Math.random() * colorsBase.length), [])
   const colors: string[] = [...colorsBase.slice(splice), ...colorsBase.slice(0, splice)]
 
@@ -141,17 +140,17 @@ const Visualization = (props: TVisualizationProps) => {
   const noChartData = !data.length || !data.reduce((p, c) => p + c.size, 0)
 
   return (
-    <div className="relative">
-      <Button variant="tertiary-neutral" size="xsmall" onClick={toggle}>
+    <div className='relative'>
+      <Button variant='tertiary-neutral' size='xsmall' onClick={toggle}>
         <Tooltip content={type === 'bar' ? 'Kakediagram' : 'Søylediagram'}>
           {type === 'bar' ? (
-            <PieChartIcon aria-hidden className="block" />
+            <PieChartIcon aria-hidden className='block' />
           ) : (
-            <BarChartIcon aria-hidden className="block" />
+            <BarChartIcon aria-hidden className='block' />
           )}
         </Tooltip>
       </Button>
-      <div className="p-4 rounded" style={{ backgroundColor: isDark ? '#1e2433' : '#ffffff' }}>
+      <div className='p-4 rounded' style={{ backgroundColor: isDark ? '#1e2433' : '#ffffff' }}>
         <div onMouseLeave={() => setHover(-1)}>
           <div
             className={`flex items-center ${leftLegend ? 'flex-row-reverse' : 'flex-row'} max-w-fit flex-wrap`}
@@ -173,7 +172,7 @@ const Visualization = (props: TVisualizationProps) => {
                   <div
                     key={index}
                     tabIndex={-1}
-                    role="button"
+                    role='button'
                     onFocus={() => setHover(index)}
                     onMouseOver={() => setHover(index)}
                     onClick={data.onClick}
@@ -184,7 +183,7 @@ const Visualization = (props: TVisualizationProps) => {
                     }}
                   >
                     <div
-                      className="cursor-pointer flex items-center"
+                      className='cursor-pointer flex items-center'
                       style={{
                         backgroundColor:
                           index === hover
@@ -196,18 +195,18 @@ const Visualization = (props: TVisualizationProps) => {
                               : '#ffffff',
                       }}
                     >
-                      <CircleIcon aria-hidden className="block" style={{ color: data.color }} />
-                      <div className="min-w-10 flex justify-end">{data.size}</div>
+                      <CircleIcon aria-hidden className='block' style={{ color: data.color }} />
+                      <div className='min-w-10 flex justify-end'>{data.size}</div>
                       {!hidePercent && (
-                        <div className="min-w-10 ml-1 flex justify-end">
+                        <div className='min-w-10 ml-1 flex justify-end'>
                           {(data.fraction * 100).toFixed(0)}%
                         </div>
                       )}
-                      <div className="ml-2.5">{data.label}</div>
+                      <div className='ml-2.5'>{data.label}</div>
                     </div>
                   </div>
                 ))}
-              {noChartData && <div className="m-1">Ingen</div>}
+              {noChartData && <div className='m-1'>Ingen</div>}
             </div>
           </div>
         </div>
@@ -234,9 +233,9 @@ const BarChart = (props: IBarChartProps) => {
         <svg
           height={size * 3}
           width={size * 3}
-          viewBox="0 0 1150 1150"
+          viewBox='0 0 1150 1150'
           style={{ transform: 'scaleY(-1)' }}
-          className="text-black dark:text-white"
+          className='text-black dark:text-white'
         >
           <style>
             {'text {' +
@@ -245,15 +244,15 @@ const BarChart = (props: IBarChartProps) => {
               'fill: currentColor;' +
               '}'}
           </style>
-          <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill="currentColor" />
-          <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill="currentColor" />
+          <path d={'M 0 100 l 1100 0 l 0 -5 l -1100 0 '} fill='currentColor' />
+          <path d={'M 100 0 l 0 1100 l -5 0 l 0 -1100 '} fill='currentColor' />
 
           {_.range(0, 11).map((i) => (
             <Fragment key={i}>
               <g transform={`translate(0 ${105 + i * 100})`}>
                 <text>{(maxVal * i * 0.1).toFixed(0)}</text>
               </g>
-              <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill="currentColor" />
+              <path d={`M 80 ${100 + i * 100} l 1010 0 l 0 -1 l -1010 0 `} fill='currentColor' />
             </Fragment>
           ))}
 
@@ -316,7 +315,7 @@ const PieChart = (props: {
     <svg
       height={radius * 2}
       width={radius * 2}
-      viewBox="-1.1 -1.1 2.2 2.2"
+      viewBox='-1.1 -1.1 2.2 2.2'
       style={{ transform: 'rotate(-90deg)' }}
     >
       {data.map((dataItem: IChartDataExpanded, index: number) => (

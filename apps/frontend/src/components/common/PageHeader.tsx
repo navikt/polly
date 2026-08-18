@@ -97,13 +97,13 @@ export const PageHeader = (props: IPageHeaderProps) => {
 
     return (
       <>
-        <div className="mr-12" />
-        <Link target="_blank" rel="noopener noreferrer" href={url}>
+        <div className='mr-12' />
+        <Link target='_blank' rel='noopener noreferrer' href={url}>
           <CustomizedStatefulTooltip
-            content="Gå til side"
+            content='Gå til side'
             icon={
-              <span className="flex items-center leading-none">
-                <ExternalLinkIcon aria-hidden className="block" />
+              <span className='flex items-center leading-none'>
+                <ExternalLinkIcon aria-hidden className='block' />
               </span>
             }
           />
@@ -115,20 +115,20 @@ export const PageHeader = (props: IPageHeaderProps) => {
   return (
     <>
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!isLoading && (
         <>
-          <div className="mb-12 flex items-center">
-            <Heading size="xlarge" level="1">
+          <div className='mb-12 flex items-center'>
+            <Heading size='xlarge' level='1'>
               {getTitle()}
             </Heading>
             {externalLink()}
           </div>
 
-          <div className="mb-10">
+          <div className='mb-10'>
             <Label style={{ marginBottom: theme.sizing.scale600 }}>{metadataTitle()}</Label>
             <div
               style={{

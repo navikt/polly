@@ -91,18 +91,18 @@ const TablePolicy = ({
         headers={
           <>
             <HeadCell
-              title="Opplysningstype"
+              title='Opplysningstype'
               column={'informationType'}
               tableState={[table, sortColumn]}
               $style={{ width: '45%' }}
             />
             <HeadCell
-              title="Personkategori"
+              title='Personkategori'
               column={'subjectCategories'}
               tableState={[table, sortColumn]}
             />
             <HeadCell
-              title="Behandlingsgrunnlag"
+              title='Behandlingsgrunnlag'
               column={'legalBases'}
               tableState={[table, sortColumn]}
             />
@@ -114,8 +114,8 @@ const TablePolicy = ({
           <Fragment key={index}>
             <Row>
               <Cell>
-                <div className="w-full min-w-0">
-                  <div className="min-w-0">
+                <div className='w-full min-w-0'>
+                  <div className='min-w-0'>
                     <Sensitivity
                       sensitivity={row.informationType.sensitivity}
                       codelistUtils={codelistUtils}
@@ -123,13 +123,13 @@ const TablePolicy = ({
                     &nbsp;
                     <RouteLink
                       href={`/informationtype/${row.informationType.id}`}
-                      className="block wrap-break-word whitespace-normal"
+                      className='block wrap-break-word whitespace-normal'
                     >
                       {row.informationType.name}
                     </RouteLink>
                     {!!row.documentIds?.length && (
-                      <Tooltip content="Dokument">
-                        <span className="block opacity-80 wrap-break-word whitespace-normal mt-1">
+                      <Tooltip content='Dokument'>
+                        <span className='block opacity-80 wrap-break-word whitespace-normal mt-1'>
                           {'(' +
                             row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') +
                             ')'}
@@ -162,32 +162,32 @@ const TablePolicy = ({
                 </div>
               </Cell>
               <Cell small>
-                <div className="flex justify-end w-full items-center">
-                  <AuditButton id={row.id} kind="tertiary" />
+                <div className='flex justify-end w-full items-center'>
+                  <AuditButton id={row.id} kind='tertiary' />
                   {hasAccess && (
                     <>
-                      <Tooltip content="Redigér">
+                      <Tooltip content='Redigér'>
                         <Button
-                          variant="tertiary"
-                          aria-label="Redigér"
+                          variant='tertiary'
+                          aria-label='Redigér'
                           onClick={() => {
                             setCurrentPolicy(row)
                             setShowEditModal(true)
                           }}
                         >
-                          <DocPencilIcon aria-hidden className="block" />
+                          <DocPencilIcon aria-hidden className='block' />
                         </Button>
                       </Tooltip>
-                      <Tooltip content="Slett">
+                      <Tooltip content='Slett'>
                         <Button
-                          variant="tertiary"
-                          aria-label="Slett"
+                          variant='tertiary'
+                          aria-label='Slett'
                           onClick={() => {
                             setCurrentPolicy(row)
                             setShowDeleteModal(true)
                           }}
                         >
-                          <TrashIcon aria-hidden className="block" />
+                          <TrashIcon aria-hidden className='block' />
                         </Button>
                       </Tooltip>
                     </>
@@ -201,7 +201,7 @@ const TablePolicy = ({
 
       {showEditModal && currentPolicy && (
         <ModalPolicy
-          title="Rediger behandling for opplysningstype"
+          title='Rediger behandling for opplysningstype'
           initialValues={convertPolicyToFormValues(
             currentPolicy,
             process.policies.filter((policy) => policy.id !== currentPolicy.id)
@@ -230,11 +230,11 @@ const TablePolicy = ({
           </Modal.Body>
 
           <Modal.Footer>
-            <div className="flex justify-end">
-              <div className="self-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</div>
+            <div className='flex justify-end'>
+              <div className='self-end'>{errorDeleteModal && <p>{errorDeleteModal}</p>}</div>
               <Button
-                className="mr-4"
-                variant="secondary"
+                className='mr-4'
+                variant='secondary'
                 onClick={() => setShowDeleteModal(false)}
               >
                 Avbryt

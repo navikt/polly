@@ -35,7 +35,7 @@ const FieldSubjectCategory = (props: {
 
   return (
     <UNSAFE_Combobox
-      label="Subjektkategori"
+      label='Subjektkategori'
       hideLabel
       options={comboboxOptions}
       filteredOptions={comboboxOptions}

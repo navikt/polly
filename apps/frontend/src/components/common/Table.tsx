@@ -57,7 +57,7 @@ export const Table = (props: TTableProps) => {
           overflowY: 'hidden',
         }}
       >
-        <NavTable size="medium" style={{ width: '100%', tableLayout: 'fixed' }}>
+        <NavTable size='medium' style={{ width: '100%', tableLayout: 'fixed' }}>
           <NavTable.Header>
             <NavTable.Row>{headers}</NavTable.Row>
           </NavTable.Header>
@@ -101,11 +101,11 @@ interface ISortDirectionIconProps {
 const SortDirectionIcon = (props: ISortDirectionIconProps) => {
   switch (props?.direction) {
     case SORT_DIRECTION.ASC:
-      return <SortDownIcon aria-hidden className="block" />
+      return <SortDownIcon aria-hidden className='block' />
     case SORT_DIRECTION.DESC:
-      return <SortUpIcon aria-hidden className="block" />
+      return <SortUpIcon aria-hidden className='block' />
     default:
-      return <ArrowsUpDownIcon aria-hidden className="block" />
+      return <ArrowsUpDownIcon aria-hidden className='block' />
   }
 }
 
@@ -130,7 +130,7 @@ export const HeadCell = <T, K extends keyof T>(props: THeadProps<K, T>) => {
 
   return (
     <NavTable.ColumnHeader style={styleOverride}>
-      <button type="button" className={buttonClassName} onClick={() => sortColumn(column)}>
+      <button type='button' className={buttonClassName} onClick={() => sortColumn(column)}>
         <SortDirectionIcon direction={table.direction[column]} />
         <span>{title}</span>
       </button>

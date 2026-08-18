@@ -272,18 +272,18 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
       >
         {(formikBag: FormikProps<IInformationtypeFormValues>) => (
           <Form onKeyDown={disableEnter}>
-            <div className="w-full max-w-[100ch]">
-              <div className="grid gap-6 grid-cols-1">
+            <div className='w-full max-w-[100ch]'>
+              <div className='grid gap-6 grid-cols-1'>
                 <div id={fieldId('name')} tabIndex={-1}>
-                  <Field name="name">
+                  <Field name='name'>
                     {({ form, field }: FieldProps) => (
                       <div>
-                        <div className="mb-2 self-center">
+                        <div className='mb-2 self-center'>
                           <Label>Navn</Label>
                         </div>
                         <TextField
-                          className="w-full"
-                          label=""
+                          className='w-full'
+                          label=''
                           hideLabel
                           {...field}
                           error={
@@ -298,10 +298,10 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                 </div>
 
                 <div id={fieldId('orgMaster')} tabIndex={-1}>
-                  <Field name="orgMaster">
+                  <Field name='orgMaster'>
                     {({ form }: FieldProps<IInformationtypeFormValues>) => (
-                      <div className="mb-4">
-                        <div className="mb-2 self-center">
+                      <div className='mb-4'>
+                        <div className='mb-2 self-center'>
                           <Label>Master i NAV</Label>
                         </div>
 
@@ -316,7 +316,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
 
                           return (
                             <UNSAFE_Combobox
-                              label=""
+                              label=''
                               hideLabel
                               options={parsedOptions.map((o: IGetParsedOptionsProps) => ({
                                 value: o.id,
@@ -356,19 +356,19 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       </div>
                     )}
                   </Field>
-                  <Error fieldName="orgMaster" fullWidth />
+                  <Error fieldName='orgMaster' fullWidth />
                 </div>
 
                 <div id={fieldId('term')} tabIndex={-1}>
-                  <Field name="term">
+                  <Field name='term'>
                     {({ form }: FieldProps<IInformationtypeFormValues>) => (
                       <div>
-                        <div className="mb-2 self-center">
+                        <div className='mb-2 self-center'>
                           <Label>Begrepsdefinisjon (oppslag i Begrepskatalogen)</Label>
                         </div>
                         <CustomSearchSelect
-                          ariaLabel="Søk etter begrep"
-                          placeholder="Søk"
+                          ariaLabel='Søk etter begrep'
+                          placeholder='Søk'
                           loadOptions={useTermSearchOptions}
                           onChange={(value: ITerm) => {
                             setTermInputValue(mapTermToOption(value).label)
@@ -376,7 +376,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                           }}
                         />
                         {formikBag.values.term && (
-                          <div className="mt-2 flex flex-wrap gap-2">
+                          <div className='mt-2 flex flex-wrap gap-2'>
                             <Chips.Removable
                               onClick={() => {
                                 setTermInputValue('')
@@ -390,19 +390,19 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       </div>
                     )}
                   </Field>
-                  <Error fieldName="term" fullWidth />
+                  <Error fieldName='term' fullWidth />
                 </div>
 
                 <div id={fieldId('sources')} tabIndex={-1}>
                   <FieldArray
-                    name="sources"
+                    name='sources'
                     render={(arrayHelpers: FieldArrayRenderProps) => (
                       <div>
-                        <div className="mb-2 self-center">
+                        <div className='mb-2 self-center'>
                           <Label>Kilder</Label>
                         </div>
                         <UNSAFE_Combobox
-                          label=""
+                          label=''
                           hideLabel
                           options={getParsedOptions(
                             EListName.THIRD_PARTY,
@@ -416,7 +416,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                             arrayHelpers.push(optionValue)
                           }}
                         />
-                        <div className="mt-2 flex flex-wrap gap-2">
+                        <div className='mt-2 flex flex-wrap gap-2'>
                           {renderTagList(
                             codelistUtils.getShortnames(
                               EListName.THIRD_PARTY,
@@ -428,20 +428,20 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                       </div>
                     )}
                   />
-                  <Error fieldName="sources" fullWidth />
+                  <Error fieldName='sources' fullWidth />
                 </div>
 
                 <div id={fieldId('keywords')} tabIndex={-1}>
-                  <FieldArray name="keywords">
+                  <FieldArray name='keywords'>
                     {(arrayHelpers: FieldArrayRenderProps) => (
                       <div>
-                        <div className="mb-2 self-center">
+                        <div className='mb-2 self-center'>
                           <Label>Søkeord</Label>
                         </div>
-                        <div className="flex w-full">
+                        <div className='flex w-full'>
                           <TextField
-                            className="w-full"
-                            label=""
+                            className='w-full'
+                            label=''
                             hideLabel
                             value={currentKeywordValue}
                             onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
@@ -452,41 +452,41 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                             ref={keywordsRef}
                           />
                           <Button
-                            className="ml-2"
-                            type="button"
-                            variant="secondary"
+                            className='ml-2'
+                            type='button'
+                            variant='secondary'
                             icon={<PlusIcon aria-hidden />}
-                            aria-label="Legg til søkeord"
+                            aria-label='Legg til søkeord'
                             onClick={() => onAddKeyword(arrayHelpers)}
                           />
                         </div>
-                        <div className="mt-2 flex flex-wrap gap-2">
+                        <div className='mt-2 flex flex-wrap gap-2'>
                           {renderTagList(formikBag.values.keywords, arrayHelpers)}
                         </div>
                       </div>
                     )}
                   </FieldArray>
-                  <Error fieldName="keywords" fullWidth />
+                  <Error fieldName='keywords' fullWidth />
                 </div>
 
                 <div id={fieldId('productTeams')} tabIndex={-1}>
                   <div>
-                    <div className="mb-2 self-center">
+                    <div className='mb-2 self-center'>
                       <Label>Team</Label>
                     </div>
                     <FieldProductTeam
                       productTeams={formikBag.values.productTeams}
-                      fieldName="productTeams"
+                      fieldName='productTeams'
                     />
                   </div>
                 </div>
 
                 <div id={fieldId('categories')} tabIndex={-1}>
                   <FieldArray
-                    name="categories"
+                    name='categories'
                     render={(arrayHelpers: FieldArrayRenderProps) => (
                       <div>
-                        <div className="mb-2 self-center">
+                        <div className='mb-2 self-center'>
                           <Label>Kategorier</Label>
                         </div>
                         {(() => {
@@ -502,7 +502,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
 
                           return (
                             <UNSAFE_Combobox
-                              label=""
+                              label=''
                               hideLabel
                               error={message}
                               options={getParsedOptions(
@@ -522,7 +522,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                             />
                           )
                         })()}
-                        <div className="mt-2 flex flex-wrap gap-2">
+                        <div className='mt-2 flex flex-wrap gap-2'>
                           {renderTagList(
                             codelistUtils.getShortnames(
                               EListName.CATEGORY,
@@ -537,14 +537,14 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                 </div>
 
                 <div id={fieldId('description')} tabIndex={-1}>
-                  <Field name="description">
+                  <Field name='description'>
                     {({ field, form }: FieldProps) => (
                       <div>
-                        <div className="mb-2 self-center">
+                        <div className='mb-2 self-center'>
                           <Label>Nyttig å vite om opplysningstypen</Label>
                         </div>
                         <Textarea
-                          label=""
+                          label=''
                           hideLabel
                           onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
                             if (event.key === 'Enter')
@@ -559,10 +559,10 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                 </div>
 
                 <div id={fieldId('sensitivity')} tabIndex={-1}>
-                  <Field name="sensitivity">
+                  <Field name='sensitivity'>
                     {({ form }: FieldProps<IInformationtypeFormValues>) => (
                       <div>
-                        <div className="mb-2 self-center">
+                        <div className='mb-2 self-center'>
                           <Label>Type personopplysning</Label>
                         </div>
 
@@ -591,7 +591,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
 
                           return (
                             <UNSAFE_Combobox
-                              label=""
+                              label=''
                               hideLabel
                               error={
                                 formikBag.submitCount > 0 &&
@@ -651,11 +651,11 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
               </div>
 
               {formikBag.submitCount > 0 && Object.keys(formikBag.errors ?? {}).length > 0 && (
-                <div className="mt-8">
+                <div className='mt-8'>
                   <ErrorSummary
-                    className="polly-error-summary-flush"
-                    heading="Du må rette disse feilene før du kan lagre"
-                    size="small"
+                    className='polly-error-summary-flush'
+                    heading='Du må rette disse feilene før du kan lagre'
+                    size='small'
                   >
                     {buildErrorSummaryItems(formikBag.errors).map((e) => (
                       <ErrorSummary.Item
@@ -673,16 +673,16 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                 </div>
               )}
 
-              <div className="flex mt-8 justify-end">
+              <div className='flex mt-8 justify-end'>
                 <Button
-                  type="button"
-                  variant="secondary"
-                  className="px-16"
+                  type='button'
+                  variant='secondary'
+                  className='px-16'
                   onClick={() => window.history.back()}
                 >
                   Avbryt
                 </Button>
-                <Button type="submit" className="ml-4 px-16">
+                <Button type='submit' className='ml-4 px-16'>
                   Lagre
                 </Button>
               </div>

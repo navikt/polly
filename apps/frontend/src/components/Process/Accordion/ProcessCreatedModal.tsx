@@ -23,13 +23,13 @@ export const ProcessCreatedModal = (props: IProps) => {
         <BodyShort spacing>Vil du legge til opplysningstyper?</BodyShort>
       </Modal.Body>
       <Modal.Footer>
-        <div className="flex justify-end">
-          <Button size="xsmall" kind="tertiary" marginRight onClick={closeModal}>
+        <div className='flex justify-end'>
+          <Button size='xsmall' kind='tertiary' marginRight onClick={closeModal}>
             Nei
           </Button>
           <Button
-            size="xsmall"
-            kind="primary"
+            size='xsmall'
+            kind='primary'
             marginRight
             onClick={() => {
               closeModal()
@@ -39,8 +39,8 @@ export const ProcessCreatedModal = (props: IProps) => {
             Legg til opplysningstyper enkeltvis
           </Button>
           <Button
-            size="xsmall"
-            kind="primary"
+            size='xsmall'
+            kind='primary'
             onClick={() => {
               closeModal()
               openAddDocument()

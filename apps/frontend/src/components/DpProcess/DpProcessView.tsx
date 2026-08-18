@@ -115,24 +115,24 @@ const DpProcessView = () => {
   return (
     <>
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!isLoading && (
         <>
-          <div className="flex justify-between items-center">
-            <Heading level="1" size="medium" className="m-0 max-w-[100ch]">
+          <div className='flex justify-between items-center'>
+            <Heading level='1' size='medium' className='m-0 max-w-[100ch]'>
               {dpProcess?.name}
             </Heading>
             {user.canWrite() /*!env.disableDpProcess &&*/ && (
               <div>
                 <Button
-                  size="xsmall"
-                  kind="outline"
+                  size='xsmall'
+                  kind='outline'
                   icon={
-                    <span className="flex items-center leading-none">
-                      <DocPencilIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <DocPencilIcon aria-hidden className='block' />
                     </span>
                   }
                   marginRight
@@ -141,12 +141,12 @@ const DpProcessView = () => {
                   Redigér
                 </Button>
                 <Button
-                  size="xsmall"
-                  kind="outline"
+                  size='xsmall'
+                  kind='outline'
                   onClick={() => setShowDeleteModal(true)}
                   icon={
-                    <span className="flex items-center leading-none">
-                      <TrashIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <TrashIcon aria-hidden className='block' />
                     </span>
                   }
                 >
@@ -155,13 +155,13 @@ const DpProcessView = () => {
               </div>
             )}
           </div>
-          <div className="mt-4">
+          <div className='mt-4'>
             <DataText
-              label="Behandlingsnummer"
+              label='Behandlingsnummer'
               text={'D' + dpProcess?.dpProcessNumber.toString()}
             />
           </div>
-          <DataText label="Behandlingsansvarlig" text="">
+          <DataText label='Behandlingsansvarlig' text=''>
             <span>
               {dpProcess?.externalProcessResponsible ? (
                 <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
@@ -173,34 +173,34 @@ const DpProcessView = () => {
             </span>
           </DataText>
 
-          <DataText label="Beskrivelse" text="">
-            <div className="max-w-[100ch] wrap-break-word">
+          <DataText label='Beskrivelse' text=''>
+            <div className='max-w-[100ch] wrap-break-word'>
               {dpProcess?.description?.length ? dpProcess.description : 'Ikke utfylt'}
             </div>
           </DataText>
 
-          <DataText label="Formål" text="">
-            <div className="max-w-[100ch] wrap-break-word">
+          <DataText label='Formål' text=''>
+            <div className='max-w-[100ch] wrap-break-word'>
               {dpProcess?.purposeDescription?.length ? dpProcess.purposeDescription : 'Ikke utfylt'}
             </div>
           </DataText>
 
-          <DataText label="Gyldighetsperiode for behandlingen" text="">
+          <DataText label='Gyldighetsperiode for behandlingen' text=''>
             <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
           </DataText>
 
           <DataText
-            label="Behandles det særlige kategorier av personopplysninger?"
+            label='Behandles det særlige kategorier av personopplysninger?'
             text={boolToText(dpProcess?.art9)}
           />
           <DataText
-            label="Behandles det personopplysninger om straffedommer og lovovertredelser?"
+            label='Behandles det personopplysninger om straffedommer og lovovertredelser?'
             text={boolToText(dpProcess?.art10)}
           />
 
-          <DataText label="System" text="">
+          <DataText label='System' text=''>
             {dpProcess?.affiliation.products?.length ? (
-              <ul className="list-disc list-inside">
+              <ul className='list-disc list-inside'>
                 {dpProcess.affiliation.products.map((system) => (
                   <li key={system.code}>
                     <RouteLink href={urlForObject(EListName.SYSTEM, system.code)}>
@@ -214,10 +214,10 @@ const DpProcessView = () => {
             )}
           </DataText>
 
-          <DataText label="Organisering" text="">
+          <DataText label='Organisering' text=''>
             {dpProcess?.affiliation.nomDepartmentId ? (
-              <div className="flex gap-1 items-center">
-                <span className="whitespace-nowrap">Avdeling: </span>
+              <div className='flex gap-1 items-center'>
+                <span className='whitespace-nowrap'>Avdeling: </span>
                 <RouteLink
                   href={urlForObject(EListName.DEPARTMENT, dpProcess.affiliation.nomDepartmentId)}
                 >
@@ -225,16 +225,16 @@ const DpProcessView = () => {
                 </RouteLink>
               </div>
             ) : (
-              <div className="flex gap-1 items-center">
-                <span className="whitespace-nowrap">Avdeling: </span>
+              <div className='flex gap-1 items-center'>
+                <span className='whitespace-nowrap'>Avdeling: </span>
                 <span>Ikke utfylt</span>
               </div>
             )}
 
             {dpProcess && dpProcess.affiliation.seksjoner.length !== 0 && (
-              <div className="mt-2">
+              <div className='mt-2'>
                 <span>Seksjon: </span>
-                <ul className="list-disc list-inside">
+                <ul className='list-disc list-inside'>
                   {dpProcess.affiliation.seksjoner.map((seksjon: INomSeksjon) => (
                     <li key={seksjon.nomSeksjonId}>{seksjon.nomSeksjonName}</li>
                   ))}
@@ -243,10 +243,10 @@ const DpProcessView = () => {
             )}
 
             {!!dpProcess?.affiliation.subDepartments.length && (
-              <div className="mt-2">
+              <div className='mt-2'>
                 <div>
                   <span>Linja: </span>
-                  <ul className="list-disc list-inside">
+                  <ul className='list-disc list-inside'>
                     {dpProcess.affiliation.subDepartments.map((subDepartment) => (
                       <li key={subDepartment.code}>
                         <RouteLink
@@ -262,9 +262,9 @@ const DpProcessView = () => {
                 {dpProcess.affiliation.subDepartments.filter((subdep) => subdep.code === 'NAVFYLKE')
                   .length !== 0 &&
                   dpProcess.affiliation.fylker.length !== 0 && (
-                    <div className="mt-2">
+                    <div className='mt-2'>
                       <span>Fylke: </span>
-                      <ul className="list-disc list-inside">
+                      <ul className='list-disc list-inside'>
                         {dpProcess.affiliation.fylker.map((fylke: INomData) => (
                           <li key={fylke.nomId}>{fylke.nomName}</li>
                         ))}
@@ -276,9 +276,9 @@ const DpProcessView = () => {
                   (subdep) => subdep.code === 'NAVKONTORSTAT'
                 ).length !== 0 &&
                   dpProcess.affiliation.navKontorer.length !== 0 && (
-                    <div className="mt-2">
+                    <div className='mt-2'>
                       <span>Nav-kontor: </span>
-                      <ul className="list-disc list-inside">
+                      <ul className='list-disc list-inside'>
                         {dpProcess.affiliation.navKontorer.map((kontor: INomData) => (
                           <li key={kontor.nomId}>{kontor.nomName}</li>
                         ))}
@@ -288,27 +288,27 @@ const DpProcessView = () => {
               </div>
             )}
 
-            <div className="mt-2">
-              <span className="whitespace-nowrap">Team:</span>
+            <div className='mt-2'>
+              <span className='whitespace-nowrap'>Team:</span>
               {dpProcess?.affiliation.productTeams?.length ? (
-                <TeamList teamIds={dpProcess?.affiliation.productTeams} variant="list" />
+                <TeamList teamIds={dpProcess?.affiliation.productTeams} variant='list' />
               ) : (
                 <div>Ikke utfylt</div>
               )}
             </div>
           </DataText>
-          <DataText label="Lagringsbehov" text="">
+          <DataText label='Lagringsbehov' text=''>
             <div>
               <RetentionView retention={dpProcess?.retention} />
             </div>
           </DataText>
-          <DataText label="Databehandleravtale med behandlingsansvarlig" text="">
+          <DataText label='Databehandleravtale med behandlingsansvarlig' text=''>
             <div>
               <div>
                 {isDataProcessingAgreementsAvailable && (
                   <div>
-                    <div className="whitespace-nowrap">Ref. til databehandleravtale</div>
-                    <ul className="list-disc list-inside">
+                    <div className='whitespace-nowrap'>Ref. til databehandleravtale</div>
+                    <ul className='list-disc list-inside'>
                       {dpProcess?.dataProcessingAgreements?.map((ref, index) => (
                         <li key={`${ref}-${index}`}>
                           <Markdown source={ref} compact inline />
@@ -321,7 +321,7 @@ const DpProcessView = () => {
             </div>
           </DataText>
 
-          <DataText label="Underdatabehandler" text="">
+          <DataText label='Underdatabehandler' text=''>
             <>
               {dpProcess?.subDataProcessing?.dataProcessor === null &&
                 'Uavklart om databehandler brukes'}
@@ -334,9 +334,9 @@ const DpProcessView = () => {
                   <div>Databehandler benyttes</div>
                   <div>
                     {processors && (
-                      <div className="flex items-center">
-                        <div className="whitespace-nowrap mt-4 mr-0" />
-                        <ul className="list-disc list-inside">
+                      <div className='flex items-center'>
+                        <div className='whitespace-nowrap mt-4 mr-0' />
+                        <ul className='list-disc list-inside'>
                           {processors.map((processor: IProcessor) => (
                             <li key={processor.id}>
                               <RouteLink href={'/processor/' + processor.id}>
@@ -353,7 +353,7 @@ const DpProcessView = () => {
             </>
           </DataText>
           {dpProcess && (
-            <div className="flex justify-end">
+            <div className='flex justify-end'>
               <span>
                 <i>
                   Sist endret av{' '}
@@ -373,7 +373,7 @@ const DpProcessView = () => {
             />
           )}
           <DpProcessDeleteModal
-            title="Bekreft sletting"
+            title='Bekreft sletting'
             isOpen={showDeleteModal}
             onClose={() => setShowDeleteModal(false)}
             onSubmit={() => handleDeleteDpProcess(dpProcess?.id)}

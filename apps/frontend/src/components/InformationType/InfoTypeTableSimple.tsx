@@ -58,30 +58,30 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
   return (
     <>
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!isLoading && (
-        <div className="mb-12">
-          <Heading className="mt-3" size="xlarge" level="2">
+        <div className='mb-12'>
+          <Heading className='mt-3' size='xlarge' level='2'>
             {title} ({informationTypeList.length})
           </Heading>
 
           <Table
-            size="medium"
+            size='medium'
             sort={sort}
             onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}
           >
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader sortKey="name" sortable>
+                <Table.ColumnHeader sortKey='name' sortable>
                   Navn
                 </Table.ColumnHeader>
-                <Table.ColumnHeader sortKey="description" sortable>
+                <Table.ColumnHeader sortKey='description' sortable>
                   Beskrivelse
                 </Table.ColumnHeader>
-                <Table.ColumnHeader sortKey="sources" sortable>
+                <Table.ColumnHeader sortKey='sources' sortable>
                   Kilder
                 </Table.ColumnHeader>
               </Table.Row>
@@ -89,14 +89,14 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
             <Table.Body>
               {sortedData.map((row: IInformationType, index: number) => (
                 <Table.Row key={index}>
-                  <Table.DataCell textSize="small">
+                  <Table.DataCell textSize='small'>
                     <RouteLink href={`/informationtype/${row.id}`}>
                       <Sensitivity sensitivity={row.sensitivity} codelistUtils={codelistUtils} />{' '}
                       {row.name}
                     </RouteLink>
                   </Table.DataCell>
-                  <Table.DataCell textSize="small">{row.description}</Table.DataCell>
-                  <Table.DataCell textSize="small">
+                  <Table.DataCell textSize='small'>{row.description}</Table.DataCell>
+                  <Table.DataCell textSize='small'>
                     <DotTags
                       list={EListName.THIRD_PARTY}
                       codes={row.sources}

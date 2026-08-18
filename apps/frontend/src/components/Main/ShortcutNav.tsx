@@ -15,13 +15,13 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
 
   return (
     <div
-      className="w-full sm:w-auto"
+      className='w-full sm:w-auto'
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <RouteLink href={to} hideUnderline={true} className="block w-full sm:w-auto">
+      <RouteLink href={to} hideUnderline={true} className='block w-full sm:w-auto'>
         <div
-          className="w-full sm:w-[320px]"
+          className='w-full sm:w-[320px]'
           style={{
             height: '150px',
             margin: theme.sizing.scale200,
@@ -38,7 +38,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
             borderRadius: 10,
           }}
         >
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className='flex flex-col items-center justify-center h-full text-center'>
             <div>
               <BodyLong
                 style={{
@@ -54,7 +54,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
                 {title}
               </BodyLong>
             </div>
-            <div className="w-full">
+            <div className='w-full'>
               <BodyShort style={{ color: 'var(--ax-text-neutral)' }}>{subtitle}</BodyShort>
             </div>
           </div>
@@ -65,15 +65,15 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
 }
 
 const ShortcutNav = () => (
-  <div className="flex justify-between flex-wrap">
-    <ShortcutCard title="Behandlinger" subtitle="Se og endre behandlinger" to="/process" />
+  <div className='flex justify-between flex-wrap'>
+    <ShortcutCard title='Behandlinger' subtitle='Se og endre behandlinger' to='/process' />
     <ShortcutCard
-      title="Opplysningstyper"
-      subtitle="Se og endre opplysningstyper"
-      to="/informationtype"
+      title='Opplysningstyper'
+      subtitle='Se og endre opplysningstyper'
+      to='/informationtype'
     />
-    <ShortcutCard title="Eksterne parter" subtitle="Se alle eksterne parter" to="/thirdparty" />
-    <ShortcutCard title="Dashboard" subtitle="Se statistikk over behandlinger" to="/dashboard" />
+    <ShortcutCard title='Eksterne parter' subtitle='Se alle eksterne parter' to='/thirdparty' />
+    <ShortcutCard title='Dashboard' subtitle='Se statistikk over behandlinger' to='/dashboard' />
   </div>
 )
 

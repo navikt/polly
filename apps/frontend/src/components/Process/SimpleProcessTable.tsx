@@ -87,10 +87,10 @@ export const SimpleProcessTable = (props: IProps) => {
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className='flex justify-end'>
         <Button
-          variant="tertiary"
-          size="xsmall"
+          variant='tertiary'
+          size='xsmall'
           icon={<FileExcelIcon />}
           onClick={() => handleExcelExport(processesWithEmail, title)}
         >
@@ -99,30 +99,30 @@ export const SimpleProcessTable = (props: IProps) => {
       </div>
 
       <Table
-        size="small"
+        size='small'
         sort={sort}
         onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}
       >
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader sortKey="name" sortable>
+            <Table.ColumnHeader sortKey='name' sortable>
               Behandling
             </Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="affiliation" sortable>
+            <Table.ColumnHeader sortKey='affiliation' sortable>
               Avdeling
             </Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="seksjon" sortable>
+            <Table.ColumnHeader sortKey='seksjon' sortable>
               Seksjon
             </Table.ColumnHeader>
             {showCommonExternalProcessResponsible && (
-              <Table.ColumnHeader sortKey="commonExternalProcessResponsible" sortable>
+              <Table.ColumnHeader sortKey='commonExternalProcessResponsible' sortable>
                 Felles behandlingsansvarlig
               </Table.ColumnHeader>
             )}
-            <Table.ColumnHeader sortKey="status" sortable>
+            <Table.ColumnHeader sortKey='status' sortable>
               Status
             </Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="lastModifiedEmail" sortable>
+            <Table.ColumnHeader sortKey='lastModifiedEmail' sortable>
               Sist endret av
             </Table.ColumnHeader>
           </Table.Row>
@@ -137,14 +137,14 @@ export const SimpleProcessTable = (props: IProps) => {
           ) : (
             sortedData.map((process: IProcessShortWithEmail) => (
               <Table.Row key={process.id}>
-                <Table.DataCell textSize="small">
+                <Table.DataCell textSize='small'>
                   <Link href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
                     {process.purposes.map((purpose) => purpose.shortName).join(', ') +
                       ': ' +
                       process.name}
                   </Link>
                 </Table.DataCell>
-                <Table.DataCell textSize="small">
+                <Table.DataCell textSize='small'>
                   {process.affiliation.nomDepartmentId === null ? (
                     ''
                   ) : (
@@ -153,13 +153,13 @@ export const SimpleProcessTable = (props: IProps) => {
                     </Link>
                   )}
                 </Table.DataCell>
-                <Table.DataCell textSize="small">
+                <Table.DataCell textSize='small'>
                   {process.affiliation.seksjoner?.length > 0
                     ? process.affiliation.seksjoner.map((s) => s.nomSeksjonName).join(', ')
                     : ''}
                 </Table.DataCell>
                 {showCommonExternalProcessResponsible && (
-                  <Table.DataCell textSize="small">
+                  <Table.DataCell textSize='small'>
                     {process.commonExternalProcessResponsible === null ? (
                       ''
                     ) : (
@@ -169,10 +169,10 @@ export const SimpleProcessTable = (props: IProps) => {
                     )}
                   </Table.DataCell>
                 )}
-                <Table.DataCell textSize="small">
+                <Table.DataCell textSize='small'>
                   {processStatusText(process.status)}
                 </Table.DataCell>
-                <Table.DataCell textSize="small">
+                <Table.DataCell textSize='small'>
                   <Link href={'mailto: ' + process.lastModifiedEmail}>
                     {process.lastModifiedEmail}
                   </Link>

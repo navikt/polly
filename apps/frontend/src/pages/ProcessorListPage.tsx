@@ -48,21 +48,21 @@ export const ProcessorListPage = () => {
   return (
     <>
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!isLoading && (
         <>
-          <Heading size="large">Databehandlere</Heading>
-          <div className="flex w-full justify-end">
-            <div className="mt-auto">
+          <Heading size='large'>Databehandlere</Heading>
+          <div className='flex w-full justify-end'>
+            <div className='mt-auto'>
               {hasAccess() && (
                 <Button
-                  variant="secondary"
+                  variant='secondary'
                   icon={
-                    <span className="flex items-center leading-none">
-                      <PlusCircleIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <PlusCircleIcon aria-hidden className='block' />
                     </span>
                   }
                   onClick={() => setShowCreateProcessorModal(true)}
@@ -82,7 +82,7 @@ export const ProcessorListPage = () => {
             />
           </div>
           <ProcessorModal
-            title="Opprett ny databehandler"
+            title='Opprett ny databehandler'
             isOpen={showCreateProcessorModal}
             initialValues={convertProcessorToFormValues({})}
             submit={handleCreateProcessor}

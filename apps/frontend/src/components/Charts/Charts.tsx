@@ -97,16 +97,16 @@ const Charts = (props: TChartsProps) => {
   const chartCardStyle = `p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] ${isDark ? 'bg-[#1e2433]' : 'bg-white'}`
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-4 ml-4">
+    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-4 ml-4'>
       <div className={chartCardStyle}>
         <TriChart
           counter={chartData.dpia}
-          title="Behov for PVK"
+          title='Behov for PVK'
           processStatus={processStatus}
           processField={EProcessField.DPIA}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
-        <BodyLong size="small">
+        <BodyLong size='small'>
           Ref. til PVK ikke angitt:{' '}
           <RouteLink href={link(EProcessField.DPIA_REFERENCE_MISSING, EProcessState.YES)}>
             {chartData.dpiaReferenceMissing}
@@ -117,7 +117,7 @@ const Charts = (props: TChartsProps) => {
       <div className={chartCardStyle}>
         <TriChart
           counter={chartData.profiling}
-          title="Profilering"
+          title='Profilering'
           processStatus={processStatus}
           processField={EProcessField.PROFILING}
           onClickPieChartSlice={handleClickPieChartSlice}
@@ -127,7 +127,7 @@ const Charts = (props: TChartsProps) => {
       <div className={chartCardStyle}>
         <TriChart
           counter={chartData.automation}
-          title="Helautomatisk behandling"
+          title='Helautomatisk behandling'
           processStatus={processStatus}
           processField={EProcessField.AUTOMATION}
           onClickPieChartSlice={handleClickPieChartSlice}
@@ -136,10 +136,10 @@ const Charts = (props: TChartsProps) => {
 
       <div className={chartCardStyle}>
         <Chart
-          chartTitle="Ufullstendig behandlingsgrunnlag"
+          chartTitle='Ufullstendig behandlingsgrunnlag'
           size={chartSize}
           hidePercent
-          type="bar"
+          type='bar'
           data={[
             {
               label: 'Rettslig grunnlag uavklart',
@@ -179,7 +179,7 @@ const Charts = (props: TChartsProps) => {
         <TriChart
           counter={chartData.retention}
           processStatus={processStatus}
-          title="Omfattes av NAVs bevarings- og kassasjonsvedtak"
+          title='Omfattes av NAVs bevarings- og kassasjonsvedtak'
           processField={EProcessField.RETENTION}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
@@ -195,7 +195,7 @@ const Charts = (props: TChartsProps) => {
         <TriChart
           counter={chartData.dataProcessor}
           processStatus={processStatus}
-          title="Benyttes databehandler(e)?"
+          title='Benyttes databehandler(e)?'
           processField={EProcessField.DATA_PROCESSOR}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
@@ -205,7 +205,7 @@ const Charts = (props: TChartsProps) => {
         <TriChart
           counter={chartData.aiUsage}
           processStatus={processStatus}
-          title="KI systemer benyttes"
+          title='KI systemer benyttes'
           processField={EProcessField.AIUSAGE}
           onClickPieChartSlice={handleClickPieChartSlice}
         />
@@ -214,7 +214,7 @@ const Charts = (props: TChartsProps) => {
       {all.disclosures !== undefined && (
         <div className={chartCardStyle}>
           <Chart
-            chartTitle="Utleveringer behandlingsgrunnlag"
+            chartTitle='Utleveringer behandlingsgrunnlag'
             data={[
               {
                 label: 'Utfylt',
@@ -231,24 +231,24 @@ const Charts = (props: TChartsProps) => {
             ]}
             size={chartSize}
           />
-          <BodyLong size="small">
+          <BodyLong size='small'>
             Utleveringer: <RouteLink href={'/disclosure'}>{all.disclosures}</RouteLink>
           </BodyLong>
         </div>
       )}
 
-      <InfoCard data-color="info" className="h-full">
+      <InfoCard data-color='info' className='h-full'>
         <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
-          <InfoCard.Title as="h3">Annen informasjon</InfoCard.Title>
+          <InfoCard.Title as='h3'>Annen informasjon</InfoCard.Title>
         </InfoCard.Header>
         <InfoCard.Content>
-          <BodyLong size="small" className="text-lg">
+          <BodyLong size='small' className='text-lg'>
             Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part:{' '}
             <RouteLink href={link(EProcessField.COMMON_EXTERNAL_PROCESSOR, EProcessState.YES)}>
               {chartData.commonExternalProcessResponsible}
             </RouteLink>
           </BodyLong>
-          <BodyLong size="small" className="text-lg">
+          <BodyLong size='small' className='text-lg'>
             Behandlinger hvor Nav er databehandler:{' '}
             <RouteLink href={'/dpprocess'}>{chartData.dpProcesses}</RouteLink>
           </BodyLong>

@@ -3,7 +3,7 @@ import { ObjectLink } from '../../common/RouteLink'
 
 export const LinkListProcess = (items: IProcessShort[]) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div className='flex flex-col gap-1'>
       {items.map((item: IProcessShort, index: number) => (
         <div key={item.id ?? index}>
           <ObjectLink id={item.id} type={EObjectType.PROCESS}>

@@ -152,7 +152,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
       open={isOpen}
       onClose={onClose}
       header={{ heading: 'Behandlinger hvor Nav er databehandler' }}
-      width="960px"
+      width='960px'
     >
       <Formik
         onSubmit={(values) => {
@@ -164,19 +164,19 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
         {(formikBag: FormikProps<IDpProcessFormValues>) => (
           <>
             <Modal.Body>
-              <Form id="modal-dp-process-form" onKeyDown={disableEnter}>
+              <Form id='modal-dp-process-form' onKeyDown={disableEnter}>
                 <FormikSubmitEffects formikBag={formikBag} setExpanded={setExpanded} />
                 <CustomizedModalBlock first>
                   <ModalLabel
-                    label="Navn"
-                    tooltip="Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring."
+                    label='Navn'
+                    tooltip='Et kort navn som beskriver hva behandlingen går ut på, f.eks. saksbehandling eller tilgangsstyring.'
                   />
-                  <Field name="name">
+                  <Field name='name'>
                     {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
                       <TextField
-                        className="w-full"
+                        className='w-full'
                         id={fieldId('name')}
-                        label="name"
+                        label='name'
                         hideLabel
                         {...field}
                         error={!!form.errors.name && form.touched.name}
@@ -188,10 +188,10 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
 
                 <CustomizedModalBlock>
                   <ModalLabel
-                    label="Behandlingsansvarlig"
-                    tooltip="Oppgi navn på den behandlingsansvarlige virksomheten."
+                    label='Behandlingsansvarlig'
+                    tooltip='Oppgi navn på den behandlingsansvarlige virksomheten.'
                   />
-                  <div className="w-full" id={fieldId('externalProcessResponsible')} tabIndex={-1}>
+                  <div className='w-full' id={fieldId('externalProcessResponsible')} tabIndex={-1}>
                     <FieldDpProcessExternalProcessResponsible
                       thirdParty={formikBag.values.externalProcessResponsible}
                     />
@@ -200,80 +200,80 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
 
                 <CustomizedModalBlock>
                   <ModalLabel
-                    label="Beskrivelse"
-                    tooltip="Beskriv behandlingen Nav gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger."
+                    label='Beskrivelse'
+                    tooltip='Beskriv behandlingen Nav gjør på vegne av den behandlingsansvarlige, f.eks. innsamling og lagring av personopplysninger.'
                   />
-                  <div className="w-full" id={fieldId('description')} tabIndex={-1}>
+                  <div className='w-full' id={fieldId('description')} tabIndex={-1}>
                     <FieldDescription />
                   </div>
                 </CustomizedModalBlock>
-                <Error fieldName="description" />
+                <Error fieldName='description' />
 
                 <CustomizedModalBlock>
                   <ModalLabel
-                    label="Formål"
-                    tooltip="Beskriv formålet med å bruke personopplysninger i denne behandlingen."
+                    label='Formål'
+                    tooltip='Beskriv formålet med å bruke personopplysninger i denne behandlingen.'
                   />
-                  <div className="w-full" id={fieldId('purposeDescription')} tabIndex={-1}>
+                  <div className='w-full' id={fieldId('purposeDescription')} tabIndex={-1}>
                     <FieldPurposeDescription />
                   </div>
                 </CustomizedModalBlock>
-                <Error fieldName="purposeDescription" />
+                <Error fieldName='purposeDescription' />
 
                 <CustomizedModalBlock>
-                  <ModalLabel label="Gyldighetsperiode for behandlingen" />
+                  <ModalLabel label='Gyldighetsperiode for behandlingen' />
                   <FieldDpProcessDates showDates={true} showLabels={true} />
                 </CustomizedModalBlock>
 
-                <div className="w-full mt-4">
+                <div className='w-full mt-4'>
                   <ModalLabel
-                    label="Behandles det særlige kategorier av personopplysninger?"
-                    tooltip="Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning."
+                    label='Behandles det særlige kategorier av personopplysninger?'
+                    tooltip='Med særlige kategorier personopplysninger menes opplysninger om helse, etnisk opprinnelse, politikk, religion og filosofisk overbevisning, fagforeningsmedlemskap, genetikk og biometri, seksuelle forhold og legning.'
                     fullwidth
                   />
-                  <div className="mt-2">
+                  <div className='mt-2'>
                     <BoolField
-                      fieldName="art9"
+                      fieldName='art9'
                       value={formikBag.values.art9}
-                      direction="horizontal"
+                      direction='horizontal'
                     />
                   </div>
                 </div>
 
-                <div className="w-full mt-4">
+                <div className='w-full mt-4'>
                   <ModalLabel
-                    label="Behandles det personopplysninger om straffedommer og lovovertredelser?"
+                    label='Behandles det personopplysninger om straffedommer og lovovertredelser?'
                     fullwidth
                   />
-                  <div className="mt-2">
+                  <div className='mt-2'>
                     <BoolField
-                      fieldName="art10"
+                      fieldName='art10'
                       value={formikBag.values.art10}
-                      direction="horizontal"
+                      direction='horizontal'
                     />
                   </div>
                 </div>
 
-                <div className="w-full mt-4">
+                <div className='w-full mt-4'>
                   <ModalLabel
-                    label="System"
-                    tooltip="Angi hvilke systemer som er primært i bruk i denne behandlingen."
+                    label='System'
+                    tooltip='Angi hvilke systemer som er primært i bruk i denne behandlingen.'
                     fullwidth
                   />
-                  <div className="mt-2" id={fieldId('affiliation.products')} tabIndex={-1}>
+                  <div className='mt-2' id={fieldId('affiliation.products')} tabIndex={-1}>
                     <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
                   </div>
                 </div>
 
-                <div className="w-full mt-8">
-                  <ModalLabel label="Ref. til databehandleravtale" fullwidth />
-                  <div className="mt-2" id={fieldId('dataProcessingAgreements')} tabIndex={-1}>
+                <div className='w-full mt-8'>
+                  <ModalLabel label='Ref. til databehandleravtale' fullwidth />
+                  <div className='mt-2' id={fieldId('dataProcessingAgreements')} tabIndex={-1}>
                     <FieldDpProcessDataProcessingAgreements formikBag={formikBag} />
                   </div>
                 </div>
-                <Error fieldName="dataProcessingAgreements" />
+                <Error fieldName='dataProcessingAgreements' />
 
-                <Accordion className="mt-6">
+                <Accordion className='mt-6'>
                   <Accordion.Item
                     open={expanded === 'organizing'}
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'organizing')}
@@ -294,7 +294,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'subDataProcessor')}
                   >
                     <Accordion.Header
-                      className="z-0"
+                      className='z-0'
                       id={fieldId('subDataProcessor')}
                       tabIndex={-1}
                     >
@@ -313,7 +313,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                     open={expanded === 'retention'}
                     onOpenChange={(open: boolean) => onOpenChangeAction(open, 'retention')}
                   >
-                    <Accordion.Header className="z-0" id={fieldId('retention')} tabIndex={-1}>
+                    <Accordion.Header className='z-0' id={fieldId('retention')} tabIndex={-1}>
                       Lagringsbehov
                     </Accordion.Header>
                     <Accordion.Content>
@@ -329,13 +329,13 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                 borderTop: 0,
               }}
             >
-              <div className="w-full flex flex-col gap-4">
+              <div className='w-full flex flex-col gap-4'>
                 {formikBag.submitCount > 0 && Object.keys(formikBag.errors ?? {}).length > 0 && (
-                  <div className="max-h-48 overflow-auto">
+                  <div className='max-h-48 overflow-auto'>
                     <ErrorSummary
-                      className="polly-error-summary-flush"
-                      heading="Du må rette disse feilene før du kan lagre"
-                      size="small"
+                      className='polly-error-summary-flush'
+                      heading='Du må rette disse feilene før du kan lagre'
+                      size='small'
                     >
                       {buildErrorSummaryItems(formikBag.errors).map((e) => (
                         <ErrorSummary.Item
@@ -358,13 +358,13 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                   </div>
                 )}
 
-                <div className="flex items-end justify-between gap-4">
-                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <div className="flex justify-end gap-2">
-                    <Button type="button" variant="tertiary" onClick={() => onClose()}>
+                <div className='flex items-end justify-between gap-4'>
+                  <div className='self-end'>{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                  <div className='flex justify-end gap-2'>
+                    <Button type='button' variant='tertiary' onClick={() => onClose()}>
                       Avbryt
                     </Button>
-                    <Button type="submit" form="modal-dp-process-form">
+                    <Button type='submit' form='modal-dp-process-form'>
                       Lagre
                     </Button>
                   </div>

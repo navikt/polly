@@ -79,9 +79,9 @@ const SearchProcess = (props: TSearchProcessProps) => {
   }, [search])
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       <UNSAFE_Combobox
-        label="Søk etter behandlinger"
+        label='Søk etter behandlinger'
         hideLabel
         options={comboboxOptions}
         filteredOptions={comboboxOptions}

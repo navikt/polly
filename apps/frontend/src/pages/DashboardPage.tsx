@@ -21,31 +21,31 @@ export const DashboardPage = () => {
   }, [dashboardStatus])
 
   return (
-    <div className="mb-12 flex flex-wrap">
-      <div className="flex flex-col w-full gap-2">
-        <Heading size="large">Dashboard</Heading>
+    <div className='mb-12 flex flex-wrap'>
+      <div className='flex flex-col w-full gap-2'>
+        <Heading size='large'>Dashboard</Heading>
         <FilterDashboardStatus setFilter={setDashboardStatus} />
       </div>
 
       {dashboardData && (
-        <div className="w-full mt-6">
-          <Heading size="medium" className="mb-2">
+        <div className='w-full mt-6'>
+          <Heading size='medium' className='mb-2'>
             Avdelinger
           </Heading>
           <Departments data={dashboardData} />
         </div>
       )}
       {dashboardData && (
-        <div className="w-full mt-6">
-          <Heading size="medium" className="mb-4">
+        <div className='w-full mt-6'>
+          <Heading size='medium' className='mb-4'>
             Behandlingsstatistikk (ikke inkludert NAV som databehandler)
           </Heading>
           <Charts chartData={dashboardData.all} processStatus={dashboardStatus} />
         </div>
       )}
       {!dashboardData && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
     </div>

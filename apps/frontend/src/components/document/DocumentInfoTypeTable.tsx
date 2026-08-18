@@ -16,17 +16,17 @@ const DocumentInfoTypeTable = (props: TDocumentInfoTypeTableProps) => {
 
   return (
     <Table
-      emptyText="Ingen opplysningstyper"
+      emptyText='Ingen opplysningstyper'
       headers={
         <>
           <HeadCell
-            title="Opplysningstype"
-            column="informationType"
+            title='Opplysningstype'
+            column='informationType'
             tableState={[table, sortColumn]}
           />
           <HeadCell
-            title="Personkategori"
-            column="subjectCategories"
+            title='Personkategori'
+            column='subjectCategories'
             tableState={[table, sortColumn]}
           />
         </>

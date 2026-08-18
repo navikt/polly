@@ -69,13 +69,13 @@ const SelectProcess = (props: TSelectProcessProps) => {
 
   return (
     <FieldArray
-      name="processes"
+      name='processes'
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="w-full">
-          <div className="w-full">
+        <div className='w-full'>
+          <div className='w-full'>
             <CustomSearchSelect
-              ariaLabel="Søk etter behandlinger"
-              placeholder=""
+              ariaLabel='Søk etter behandlinger'
+              placeholder=''
               inputId={inputId}
               instanceId={inputId}
               hasError={hasError}
@@ -92,7 +92,7 @@ const SelectProcess = (props: TSelectProcessProps) => {
           </div>
 
           {formikBag.values.processes.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className='mt-2 flex flex-wrap gap-2'>
               {renderTagList(
                 formikBag.values.processes.map(
                   (process: IProcessShort) =>

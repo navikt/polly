@@ -27,12 +27,12 @@ export const DeleteProcessorModal = (props: IDeleteProcessProps) => {
       </Modal.Body>
 
       <Modal.Footer>
-        <div className="flex justify-end">
-          <div className="self-end">{errorProcessorModal && <p>{errorProcessorModal}</p>}</div>
-          <Button variant="secondary" onClick={onClose}>
+        <div className='flex justify-end'>
+          <div className='self-end'>{errorProcessorModal && <p>{errorProcessorModal}</p>}</div>
+          <Button variant='secondary' onClick={onClose}>
             Avbryt
           </Button>
-          <div className="inline mr-3" />
+          <div className='inline mr-3' />
           <Button
             onClick={() => submitDeleteProcessor(processor).then(onClose)}
             disabled={usageCount > 0}

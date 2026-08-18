@@ -3,11 +3,11 @@ import { Field, FieldProps } from 'formik'
 import { IDpProcessFormValues } from '../../../constants'
 
 const FieldDescription = () => (
-  <Field name="description">
+  <Field name='description'>
     {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
       <Textarea
-        className="w-full"
-        label=""
+        className='w-full'
+        label=''
         hideLabel
         {...field}
         error={!!form.errors.description && form.touched.description}

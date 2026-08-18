@@ -36,21 +36,21 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
           onOpenChange={(open) => setOpenCategory(open ? categoryUsage.code : undefined)}
         >
           <Accordion.Header>
-            <div className="flex w-full flex-col">
-              <div className="min-w-0">
+            <div className='flex w-full flex-col'>
+              <div className='min-w-0'>
                 {codelistUtils.getShortname(EListName.CATEGORY, categoryUsage.code)}
               </div>
-              <div className="mt-1 text-sm opacity-80">
+              <div className='mt-1 text-sm opacity-80'>
                 Opplysningstyper: {categoryUsage.informationTypes.length}
               </div>
             </div>
           </Accordion.Header>
           <Accordion.Content>
-            <ul className="pl-0 pr-0">
+            <ul className='pl-0 pr-0'>
               {categoryUsage.informationTypes
                 .sort((a, b) => a.name.localeCompare(b.name, 'nb'))
                 .map((informationType: IUse) => (
-                  <li key={informationType.id} className="h-10 flex items-center">
+                  <li key={informationType.id} className='h-10 flex items-center'>
                     <RouteLink href={`/informationtype/${informationType.id}`}>
                       {informationType.name}
                     </RouteLink>
@@ -68,16 +68,16 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
         <BodyLong spacing>
           <ExclamationmarkTriangleIcon
             aria-hidden
-            className="block"
+            className='block'
             style={{ color: theme.colors.negative400 }}
           />
-          <div className="mr-1.5 inline" />
+          <div className='mr-1.5 inline' />
           {`Kategori ${codelistUtils.getShortname(EListName.CATEGORY, category)} er ikke i bruk`}
         </BodyLong>
       )}
 
       <div>
-        <Heading level="2" size="small" className="mt-5 mb-2">
+        <Heading level='2' size='small' className='mt-5 mb-2'>
           Kategorier
         </Heading>
         <Accordion>{panelList()}</Accordion>

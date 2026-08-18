@@ -56,13 +56,13 @@ const TeamView = (props: ITeamViewProps) => {
         </ObjectLink>
       )}
       {error && (
-        <Tooltip content="Kunne ikke finne team">
-          <Button type="button" size="small" variant="tertiary-neutral">
+        <Tooltip content='Kunne ikke finne team'>
+          <Button type='button' size='small' variant='tertiary-neutral'>
             <span
-              className="inline-flex items-center leading-none"
+              className='inline-flex items-center leading-none'
               style={{ color: theme.colors.negative500 }}
             >
-              <XMarkOctagonIcon aria-hidden className="block" />
+              <XMarkOctagonIcon aria-hidden className='block' />
             </span>{' '}
             {team.name}
           </Button>
@@ -82,7 +82,7 @@ export const TeamList = (props: ITeamListProps) => {
 
   if (variant === 'list') {
     return (
-      <ul className="mt-0 list-disc list-inside">
+      <ul className='mt-0 list-disc list-inside'>
         {teamIds.map((teamId: string, index: number) => (
           <li key={`${teamId}-${index}`}>
             <TeamView teamId={teamId} />
@@ -93,7 +93,7 @@ export const TeamList = (props: ITeamListProps) => {
   }
 
   return (
-    <div className="flex">
+    <div className='flex'>
       {teamIds.map((teamId: string, index: number) => (
         <DotTag key={index}>
           <TeamView teamId={teamId} />

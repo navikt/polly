@@ -48,12 +48,12 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
           <Table.HeaderCell style={{ maxWidth: '45%' }}>Personkategori</Table.HeaderCell>
           <Table.HeaderCell style={{ maxWidth: '10%', textAlign: 'center' }}>
             <Button
-              type="button"
-              kind="secondary"
-              size="xsmall"
+              type='button'
+              kind='secondary'
+              size='xsmall'
               icon={
-                <span className="flex items-center leading-none">
-                  <PlusIcon aria-hidden className="block" />
+                <span className='flex items-center leading-none'>
+                  <PlusIcon aria-hidden className='block' />
                 </span>
               }
               onClick={() => arrayHelpers.push(newRow())}
@@ -87,11 +87,11 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
               <Table.DataCell style={{ maxWidth: '10%', textAlign: 'center' }}>
                 {showDeleteRowButton && (
                   <Button
-                    kind="secondary"
-                    size="xsmall"
+                    kind='secondary'
+                    size='xsmall'
                     icon={
-                      <span className="flex items-center leading-none">
-                        <TrashIcon aria-hidden className="block" />
+                      <span className='flex items-center leading-none'>
+                        <TrashIcon aria-hidden className='block' />
                       </span>
                     }
                     onClick={() => {

@@ -35,13 +35,13 @@ const FieldDpDataProcessors = (props: TFieldDpDataProcessorsProps) => {
 
   return (
     <FieldArray
-      name="subDataProcessing.processors"
+      name='subDataProcessing.processors'
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <div className="w-full">
-            <div className="w-full">
+          <div className='w-full'>
+            <div className='w-full'>
               <Select
-                label="test"
+                label='test'
                 hideLabel
                 onChange={(event) => {
                   if (event.target.value) {
@@ -53,7 +53,7 @@ const FieldDpDataProcessors = (props: TFieldDpDataProcessorsProps) => {
                   ])
                 }}
               >
-                <option value="">Velg system</option>
+                <option value=''>Velg system</option>
                 {options
                   .filter(
                     (option) => !formikBag.values.affiliation.products.includes(option.id as string)
@@ -65,7 +65,7 @@ const FieldDpDataProcessors = (props: TFieldDpDataProcessorsProps) => {
                   ))}
               </Select>
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className='mt-2 flex flex-wrap gap-2'>
               {formikBag.values.subDataProcessing.processors &&
                 renderTagList(
                   formikBag.values.subDataProcessing.processors.map((dataProcessing: string) => {

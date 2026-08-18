@@ -55,7 +55,7 @@ const Button = (props: IButtonProps) => {
           aria-label={props.ariaLabel}
         >
           {(props.children || props.iconEnd) && (
-            <span className="inline-flex items-center gap-2">
+            <span className='inline-flex items-center gap-2'>
               {props.children}
               {props.iconEnd}
             </span>

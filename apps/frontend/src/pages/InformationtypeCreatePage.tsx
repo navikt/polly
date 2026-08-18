@@ -35,7 +35,7 @@ const InformationtypeCreatePage = () => {
       {!hasAccess() && <ErrorNotAllowed />}
       {hasAccess() && (
         <>
-          <Heading size="large">Opprett opplysningstype</Heading>
+          <Heading size='large'>Opprett opplysningstype</Heading>
           {codelistUtils && (
             <>
               <InformationtypeForm

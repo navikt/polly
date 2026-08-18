@@ -43,7 +43,7 @@ export const Markdown = ({
       const { children } = headerProps
 
       return (
-        <Heading size="medium" level="2">
+        <Heading size='medium' level='2'>
           {children}
         </Heading>
       )
@@ -53,7 +53,7 @@ export const Markdown = ({
       const { children } = headerProps
 
       return (
-        <Heading size="small" level="3">
+        <Heading size='small' level='3'>
           {children}
         </Heading>
       )
@@ -62,7 +62,7 @@ export const Markdown = ({
       const { children } = headerProps
 
       return (
-        <Heading size="xsmall" level="4">
+        <Heading size='xsmall' level='4'>
           {children}
         </Heading>
       )
@@ -77,7 +77,7 @@ export const Markdown = ({
     },
     li: (liProps: any) => {
       const { children } = liProps
-      return <List.Item className="ml-4">{children}</List.Item>
+      return <List.Item className='ml-4'>{children}</List.Item>
     },
     ul: (ulProps: any) => {
       const { children } = ulProps
@@ -87,7 +87,7 @@ export const Markdown = ({
   const htmlPlugins: any = escapeHtml ? [] : [rehypeRaw]
   return (
     <div
-      className="polly-markdown"
+      className='polly-markdown'
       style={{ color: 'var(--ax-text-neutral)', display: inline ? 'inline' : undefined }}
     >
       <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]} rehypePlugins={htmlPlugins}>

@@ -82,63 +82,63 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
   return (
     <>
       <Table
-        size="large"
+        size='large'
         zebraStripes
         sort={sort}
         onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}
       >
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader sortKey="code" className="w-[15%]" sortable>
+            <Table.ColumnHeader sortKey='code' className='w-[15%]' sortable>
               Kode
             </Table.ColumnHeader>
-            <Table.ColumnHeader sortKey="navn" className="w-[25%]" sortable>
+            <Table.ColumnHeader sortKey='navn' className='w-[25%]' sortable>
               Navn
             </Table.ColumnHeader>
-            <Table.ColumnHeader className="w-1/2 break-all">Beskrivelse</Table.ColumnHeader>
+            <Table.ColumnHeader className='w-1/2 break-all'>Beskrivelse</Table.ColumnHeader>
             <Table.ColumnHeader aria-hidden />
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {sortedData.map((row: ICode, index: number) => (
             <Table.Row key={index}>
-              <Table.DataCell className="w-[15%] break-all"> {row.code}</Table.DataCell>
+              <Table.DataCell className='w-[15%] break-all'> {row.code}</Table.DataCell>
               <Table.DataCell>{row.shortName}</Table.DataCell>
-              <Table.DataCell className="w-[15%] break-all">{row.description}</Table.DataCell>
+              <Table.DataCell className='w-[15%] break-all'>{row.description}</Table.DataCell>
               <Table.DataCell>
-                <div className="flex justify-end w-full">
-                  <Tooltip content="Vis bruk">
+                <div className='flex justify-end w-full'>
+                  <Tooltip content='Vis bruk'>
                     <Button
                       variant={row === selectedCode && showUsage ? 'primary' : 'tertiary'}
                       onClick={() => {
                         setSelectedCode(row)
                         setShowUsage(true)
                       }}
-                      icon={<GlassesIcon title="Vis bruk" />}
+                      icon={<GlassesIcon title='Vis bruk' />}
                     />
                   </Tooltip>
 
-                  <AuditButtonDS id={`${row.list}-${row.code}`} variant="tertiary" />
+                  <AuditButtonDS id={`${row.list}-${row.code}`} variant='tertiary' />
 
-                  <Tooltip content="Redigér">
+                  <Tooltip content='Redigér'>
                     <Button
-                      variant="tertiary"
+                      variant='tertiary'
                       onClick={() => {
                         setSelectedCode(row)
                         setShowEditModal(true)
                       }}
-                      icon={<DocPencilIcon title="Redigér" />}
+                      icon={<DocPencilIcon title='Redigér' />}
                     />
                   </Tooltip>
 
-                  <Tooltip content="Slett">
+                  <Tooltip content='Slett'>
                     <Button
-                      variant="tertiary"
+                      variant='tertiary'
                       onClick={() => {
                         setSelectedCode(row)
                         setShowDeleteModal(true)
                       }}
-                      icon={<TrashIcon title="Slett" />}
+                      icon={<TrashIcon title='Slett' />}
                     />
                   </Tooltip>
                 </div>
@@ -150,7 +150,7 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
 
       {showEditModal && selectedCode && (
         <UpdateCodeListModal
-          title="Rediger kode"
+          title='Rediger kode'
           initialValues={{
             list: selectedCode.list ?? '',
             code: selectedCode.code ?? '',
@@ -168,7 +168,7 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
       )}
       {showDeleteModal && selectedCode && (
         <DeleteCodeListModal
-          title="Bekreft sletting"
+          title='Bekreft sletting'
           initialValues={{
             list: selectedCode.list ?? '',
             code: selectedCode.code ?? '',

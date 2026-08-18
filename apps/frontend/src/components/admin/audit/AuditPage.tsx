@@ -55,18 +55,18 @@ export const AuditPage = () => {
   useEffect(() => lookupVersion(idSearch), [idSearch])
 
   return (
-    <div role="main">
-      <Heading size="medium" level="1">
+    <div role='main'>
+      <Heading size='medium' level='1'>
         Versjonering
       </Heading>
-      <div className="mb-4">
-        <AuditLabel label="Søk etter ID">
+      <div className='mb-4'>
+        <AuditLabel label='Søk etter ID'>
           <TextField
-            className="w-72"
-            label="Søk etter ID"
+            className='w-72'
+            label='Søk etter ID'
             hideLabel
             value={idInput}
-            placeholder="ID"
+            placeholder='ID'
             onChange={(e) => setIdInput(format(e.target.value))}
           />
         </AuditLabel>

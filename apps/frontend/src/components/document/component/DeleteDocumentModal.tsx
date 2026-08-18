@@ -30,8 +30,8 @@ const DeleteDocumentModal = ({
     </Modal.Body>
 
     <Modal.Footer>
-      <div className="flex justify-end">
-        <Button className="mr-4" variant="secondary" onClick={() => onClose()}>
+      <div className='flex justify-end'>
+        <Button className='mr-4' variant='secondary' onClick={() => onClose()}>
           Avbryt
         </Button>
         <Button

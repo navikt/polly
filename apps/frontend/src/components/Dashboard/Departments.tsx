@@ -19,8 +19,8 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
   const { label, number } = props
 
   return (
-    <div className="flex justify-between gap-2 w-full">
-      <BodyShort className="m-0">{label}</BodyShort>
+    <div className='flex justify-between gap-2 w-full'>
+      <BodyShort className='m-0'>{label}</BodyShort>
       <b style={{ textDecoration: 'underline', minWidth: '1.5rem', textAlign: 'right' }}>
         {number}
       </b>
@@ -50,9 +50,9 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
 
   return (
     <Tooltip content={nomDepartmentName}>
-      <Button type="button" variant="tertiary-neutral">
-        <div className="bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]">
-          <div className="flex flex-col items-start justify-around w-80 h-28">
+      <Button type='button' variant='tertiary-neutral'>
+        <div className='bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)]'>
+          <div className='flex flex-col items-start justify-around w-80 h-28'>
             <RouteLink
               href={
                 genProcessPath(
@@ -76,9 +76,9 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
                 EProcessStatus.COMPLETED
               )}
               style={{ textDecoration: 'none', color: 'inherit' }}
-              className="w-full"
+              className='w-full'
             >
-              <TextWithNumber label="Ferdig dokumentert" number={department.processesCompleted} />
+              <TextWithNumber label='Ferdig dokumentert' number={department.processesCompleted} />
             </RouteLink>
             <RouteLink
               href={genProcessPath(
@@ -88,9 +88,9 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
                 EProcessStatus.IN_PROGRESS
               )}
               style={{ textDecoration: 'none', color: 'inherit' }}
-              className="w-full"
+              className='w-full'
             >
-              <TextWithNumber label="Under arbeid" number={department.processesInProgress} />
+              <TextWithNumber label='Under arbeid' number={department.processesInProgress} />
             </RouteLink>
             <RouteLink
               href={genProcessPath(
@@ -100,10 +100,10 @@ const DepartmentCard = (props: TDepartmentCardProps) => {
                 EProcessStatus.NEEDS_REVISION
               )}
               style={{ textDecoration: 'none', color: 'inherit' }}
-              className="w-full"
+              className='w-full'
             >
               <TextWithNumber
-                label="Trenger revidering"
+                label='Trenger revidering'
                 number={department.processesNeedsRevision}
               />
             </RouteLink>
@@ -142,10 +142,10 @@ const Departments = (props: TDepartmentsProps) => {
 
   const noDepartment = data.departments.find((d) => d.department === '')
 
-  if (alleNomAvdelinger.length === 0) return <Loader size="xlarge" />
+  if (alleNomAvdelinger.length === 0) return <Loader size='xlarge' />
 
   return (
-    <div className="w-full flex flex-wrap gap-4">
+    <div className='w-full flex flex-wrap gap-4'>
       {sortedData().map((department: DepartmentProcess, index: number) => (
         <DepartmentCard key={index} department={department} />
       ))}

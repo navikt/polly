@@ -53,7 +53,7 @@ const DocumentEditPage = () => {
     <Fragment>
       {!isLoading && document && (
         <Fragment>
-          <Heading size="large">Redigér dokument</Heading>
+          <Heading size='large'>Redigér dokument</Heading>
           <DocumentForm
             initialValues={convertToDocumentFormValues(document)}
             handleSubmit={handleEditDocument}

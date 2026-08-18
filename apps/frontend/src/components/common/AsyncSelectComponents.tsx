@@ -42,9 +42,9 @@ export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
   const menuPortalTarget =
     dialogPortalTarget ?? (typeof document !== 'undefined' ? document.body : undefined)
   return (
-    <div ref={wrapperRef} className="w-full">
+    <div ref={wrapperRef} className='w-full'>
       <AsyncSelect
-        className="w-full"
+        className='w-full'
         aria-label={ariaLabel}
         inputId={inputId}
         instanceId={instanceId}
@@ -67,7 +67,7 @@ export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
 export const DropdownIndicator = (props: DropdownIndicatorProps) => {
   return (
     <components.DropdownIndicator {...props}>
-      <MagnifyingGlassIcon title="Søk" aria-label="Søk" />
+      <MagnifyingGlassIcon title='Søk' aria-label='Søk' />
     </components.DropdownIndicator>
   )
 }

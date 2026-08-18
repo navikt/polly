@@ -21,12 +21,12 @@ export const AAregHjemmelDataText = (props: TAAregHjemmelDataTextProps) => {
   return (
     <div>
       <Table
-        emptyText="Ikke angitt"
+        emptyText='Ikke angitt'
         headers={
           <>
-            <HeadCell title="Formål med behandlingen" />
-            <HeadCell title="NAVs hjemmel for utlevering" />
-            <HeadCell title="Konsumentens hjemmel for behandlingen" />
+            <HeadCell title='Formål med behandlingen' />
+            <HeadCell title='NAVs hjemmel for utlevering' />
+            <HeadCell title='Konsumentens hjemmel for behandlingen' />
           </>
         }
       >

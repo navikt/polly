@@ -125,8 +125,8 @@ export const DisclosureListPage = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <Heading level="1" size="large">
+      <div className='flex justify-between items-center'>
+        <Heading level='1' size='large'>
           Utleveringer
         </Heading>
         <div>
@@ -134,7 +134,7 @@ export const DisclosureListPage = () => {
             Filter behandlingsgrunnlag
           </Label>
           <ToggleGroup
-            size="small"
+            size='small'
             value={!filter ? 'all' : filter}
             onChange={(value) => {
               if (!value) return
@@ -147,21 +147,21 @@ export const DisclosureListPage = () => {
               }
             }}
           >
-            <ToggleGroup.Item value="all">Alle</ToggleGroup.Item>
+            <ToggleGroup.Item value='all'>Alle</ToggleGroup.Item>
             <ToggleGroup.Item value={EFilterType.legalbases}>Utfylt</ToggleGroup.Item>
             <ToggleGroup.Item value={EFilterType.emptylegalbases}>Ufullstendig</ToggleGroup.Item>
           </ToggleGroup>
         </div>
       </div>
-      <div className="flex w-full mb-3">
-        <div className="flex flex-1 items-center gap-2 flex-nowrap min-w-0">
+      <div className='flex w-full mb-3'>
+        <div className='flex flex-1 items-center gap-2 flex-nowrap min-w-0'>
           <Search
-            className="flex-1 min-w-0"
-            label="Søk etter utleveringer"
+            className='flex-1 min-w-0'
+            label='Søk etter utleveringer'
             hideLabel
-            size="small"
-            variant="simple"
-            placeholder="Søk på navn eller mottaker"
+            size='small'
+            variant='simple'
+            placeholder='Søk på navn eller mottaker'
             value={searchInput}
             onChange={(value) => {
               setSearchInput(value)
@@ -169,9 +169,9 @@ export const DisclosureListPage = () => {
             }}
           />
           <Button
-            className="shrink-0"
-            size="small"
-            variant="secondary"
+            className='shrink-0'
+            size='small'
+            variant='secondary'
             loading={isAaregAvtaleLoading}
             onClick={() => {
               if (isAaregAvtaleLoading) return
@@ -183,11 +183,11 @@ export const DisclosureListPage = () => {
               : 'Vis utleveringer fra Aa-registeret'}
           </Button>
         </div>
-        <div className="flex flex-1 justify-end mt-2">
+        <div className='flex flex-1 justify-end mt-2'>
           {user.canWrite() && (
             <Button
-              size="small"
-              variant="tertiary"
+              size='small'
+              variant='tertiary'
               icon={<PlusCircleIcon aria-hidden />}
               onClick={() => setShowCreateModal(true)}
             >
@@ -198,23 +198,23 @@ export const DisclosureListPage = () => {
       </div>
       {!showAaregAvtaleTable && (
         <Table
-          emptyText="Utleveringer"
+          emptyText='Utleveringer'
           headers={
             <>
-              <HeadCell title="Navn på utlevering" column="name" tableState={[table, sortColumn]} />
+              <HeadCell title='Navn på utlevering' column='name' tableState={[table, sortColumn]} />
               <HeadCell
-                title="Mottaker (ekstern part)"
-                column="recipient"
+                title='Mottaker (ekstern part)'
+                column='recipient'
                 tableState={[table, sortColumn]}
               />
               <HeadCell
-                title="Relaterte behandlinger"
-                column="processes"
+                title='Relaterte behandlinger'
+                column='processes'
                 tableState={[table, sortColumn]}
               />
               <HeadCell
-                title="Behandlingsgrunnlag"
-                column="legalBases"
+                title='Behandlingsgrunnlag'
+                column='legalBases'
                 tableState={[table, sortColumn]}
                 $style={{ textAlign: 'center' }}
               />
@@ -234,9 +234,9 @@ export const DisclosureListPage = () => {
                 </ObjectLink>
               </Cell>
               <Cell>
-                <ul className="flex flex-col pl-4 list-disc">
+                <ul className='flex flex-col pl-4 list-disc'>
                   {data.processes.map((process) => (
-                    <li key={process.id} className="mr-2.5">
+                    <li key={process.id} className='mr-2.5'>
                       <ObjectLink id={process.id} type={EObjectType.PROCESS}>
                         B{process.number}{' '}
                         {process.purposes.map((purpose) => purpose.shortName).join(', ')}:{' '}
@@ -252,10 +252,10 @@ export const DisclosureListPage = () => {
         </Table>
       )}
       {showAaregAvtaleTable && (
-        <div className="mt-3">
+        <div className='mt-3'>
           {isAaregAvtaleLoading ? (
-            <div className="flex w-full justify-center">
-              <Loader size="3xlarge" />
+            <div className='flex w-full justify-center'>
+              <Loader size='3xlarge' />
             </div>
           ) : (
             <AaregAvtaleTable aaregAvtaler={aaregAvtaler} />
@@ -263,7 +263,7 @@ export const DisclosureListPage = () => {
         </div>
       )}
       <ModalThirdParty
-        title="Opprett utlevering til ekstern part"
+        title='Opprett utlevering til ekstern part'
         isOpen={showCreateModal}
         initialValues={initialFormValues}
         submit={handleCreateDisclosure}

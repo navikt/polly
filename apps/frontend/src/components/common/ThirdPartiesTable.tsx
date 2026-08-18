@@ -16,11 +16,11 @@ const ThirdPartiesTable = ({ informationTypes, sortName }: TTableInformationType
 
   return (
     <Table
-      emptyText="Ingen innhentinger fra ekstern part"
+      emptyText='Ingen innhentinger fra ekstern part'
       headers={
         <>
-          <HeadCell title="Navn" column="name" tableState={[table, sortColumn]} />
-          <HeadCell title="Master i Nav" column={'orgMaster'} tableState={[table, sortColumn]} />
+          <HeadCell title='Navn' column='name' tableState={[table, sortColumn]} />
+          <HeadCell title='Master i Nav' column={'orgMaster'} tableState={[table, sortColumn]} />
         </>
       }
     >

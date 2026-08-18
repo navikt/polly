@@ -14,13 +14,13 @@ const FieldDispatcher = (props: TFieldDispatcherProps) => {
 
   return (
     <FieldArray
-      name="affiliation.disclosureDispatchers"
+      name='affiliation.disclosureDispatchers'
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <div className="w-full">
-            <div className="w-full">
+          <div className='w-full'>
+            <div className='w-full'>
               <Select
-                label="Velg avsender"
+                label='Velg avsender'
                 hideLabel
                 onChange={(event) => {
                   if (event.target.value) {
@@ -31,7 +31,7 @@ const FieldDispatcher = (props: TFieldDispatcherProps) => {
                   }
                 }}
               >
-                <option value="">Velg avsender</option>
+                <option value=''>Velg avsender</option>
                 {codelistUtils
                   .getParsedOptions(EListName.SYSTEM)
                   .filter(
@@ -45,7 +45,7 @@ const FieldDispatcher = (props: TFieldDispatcherProps) => {
                   ))}
               </Select>
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className='mt-2 flex flex-wrap gap-2'>
               {renderTagList(
                 formikBag.values.affiliation.disclosureDispatchers.map((disclosureDispatcher) =>
                   codelistUtils.getShortname(EListName.SYSTEM, disclosureDispatcher)

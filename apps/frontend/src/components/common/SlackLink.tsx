@@ -19,7 +19,7 @@ export const SlackLink = (props: IProps) => {
     <>
       {channels.map((channel: string, index: number) => (
         <Fragment key={index}>
-          <Link href={slackRedirectUrl(channel)} target="_blank" rel="noopener noreferrer">
+          <Link href={slackRedirectUrl(channel)} target='_blank' rel='noopener noreferrer'>
             #{channel}
           </Link>
           {index < len - 1 && <span>, </span>}

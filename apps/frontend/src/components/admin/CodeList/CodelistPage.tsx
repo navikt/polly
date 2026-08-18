@@ -56,30 +56,30 @@ const CodeListPage = () => {
   return (
     <>
       {!lists && (
-        <div role="main" className="flex w-full justify-center">
-          <Loader size="3xlarge" title="Venter..." />
+        <div role='main' className='flex w-full justify-center'>
+          <Loader size='3xlarge' title='Venter...' />
         </div>
       )}
       {user.isAdmin() && lists && (
-        <div role="main">
-          <Heading size="large" level="1">
+        <div role='main'>
+          <Heading size='large' level='1'>
             Administrering av kodeverk
           </Heading>
           {loading && (
-            <div className="flex w-full justify-center">
-              <Loader size="3xlarge" />
+            <div className='flex w-full justify-center'>
+              <Loader size='3xlarge' />
             </div>
           )}
           {!loading && (
-            <div className="flex justify-between w-full">
+            <div className='flex justify-between w-full'>
               <Select
-                label="Velg kodeverk"
+                label='Velg kodeverk'
                 hideLabel
                 onChange={(event: ChangeEvent<HTMLSelectElement>) =>
                   setListname(event.target.value)
                 }
               >
-                <option value="">Velg kodeverk</option>
+                <option value=''>Velg kodeverk</option>
                 {codelistUtils
                   .makeIdLabelForAllCodeLists()
                   .map((value: IMakeIdLabelForAllCodeListsProps) => (
@@ -92,7 +92,7 @@ const CodeListPage = () => {
                 <div>
                   <Button
                     icon={<PlusIcon aria-hidden />}
-                    variant="tertiary"
+                    variant='tertiary'
                     onClick={() => setCreateCodeListModal(!createCodeListModal)}
                   >
                     Opprett ny kode
@@ -102,13 +102,13 @@ const CodeListPage = () => {
             </div>
           )}
           {!loading && currentCodelist && (
-            <div className="mt-4">
+            <div className='mt-4'>
               <CodeListTable tableData={currentCodelist || []} refresh={update} />
             </div>
           )}
           {listname && (
             <CreateCodeListModal
-              title="Ny kode"
+              title='Ny kode'
               list={listname}
               isOpen={createCodeListModal}
               errorOnCreate={errorOnResponse}

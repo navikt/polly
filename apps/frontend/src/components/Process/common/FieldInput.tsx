@@ -14,8 +14,8 @@ const FieldInput = (props: IFieldInputProps) => {
     <Field name={fieldName}>
       {({ field }: FieldProps<string>) => (
         <TextField
-          className="w-full"
-          label=""
+          className='w-full'
+          label=''
           hideLabel
           {...field}
           placeholder={placeHolder ? placeHolder : ''}

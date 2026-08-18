@@ -25,7 +25,7 @@ export const DeleteProcessModal = (props: IDeleteProcessProps) => {
         {!user.isAdmin() && (
           <BodyShort>
             For å slette behandlingen, kontakt oss på{' '}
-            <Link target="_blank" href="https://nav-it.slack.com/archives/CR1B19E6L">
+            <Link target='_blank' href='https://nav-it.slack.com/archives/CR1B19E6L'>
               slack
             </Link>
             .
@@ -38,8 +38,8 @@ export const DeleteProcessModal = (props: IDeleteProcessProps) => {
               <BodyShort spacing>Bekreft sletting av behandlingen {process.name}</BodyShort>
             )}
             {(!!process.policies.length || !!disclosures.length) && (
-              <List as="ul">
-                <Heading size="medium">Disse koblingene må fjernes</Heading>
+              <List as='ul'>
+                <Heading size='medium'>Disse koblingene må fjernes</Heading>
                 {!!process.policies.length && (
                   <List.Item>{`Kan ikke slette behandlingen ${process.name}, den inneholder fortsatt ${process.policies.length} opplysningstype(r)`}</List.Item>
                 )}
@@ -56,7 +56,7 @@ export const DeleteProcessModal = (props: IDeleteProcessProps) => {
 
       {user.isAdmin() && (
         <Modal.Footer>
-          <div className="self-end">
+          <div className='self-end'>
             {errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}
           </div>
           <Button
@@ -67,7 +67,7 @@ export const DeleteProcessModal = (props: IDeleteProcessProps) => {
           >
             Slett
           </Button>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant='secondary' onClick={onClose}>
             Avbryt
           </Button>
         </Modal.Footer>

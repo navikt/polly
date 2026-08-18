@@ -95,12 +95,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   const renderCreatePolicyButton = () => (
     <Button
-      tooltip="Legg til én informasjonstype"
-      size="xsmall"
-      kind="tertiary"
+      tooltip='Legg til én informasjonstype'
+      size='xsmall'
+      kind='tertiary'
       onClick={() => setShowCreatePolicyModal(true)}
       startEnhancer={
-        <div className="flex justify-center mr-1">
+        <div className='flex justify-center mr-1'>
           <PlusIcon aria-hidden />
         </div>
       }
@@ -111,13 +111,13 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   const renderDeleteAllPolicyButton = () => (
     <Button
-      tooltip="Slett alle opplysningstype"
-      size="xsmall"
-      kind="tertiary"
+      tooltip='Slett alle opplysningstype'
+      size='xsmall'
+      kind='tertiary'
       onClick={() => setShowDeleteAllPolicyModal(true)}
       startEnhancer={
-        <div className="flex items-center justify-center mr-1 leading-none">
-          <TrashIcon aria-hidden className="block" />
+        <div className='flex items-center justify-center mr-1 leading-none'>
+          <TrashIcon aria-hidden className='block' />
         </div>
       }
     >
@@ -127,12 +127,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   const renderAddDocumentButton = () => (
     <Button
-      tooltip="Legg til en samling av opplysningstyper"
-      size="xsmall"
-      kind="tertiary"
+      tooltip='Legg til en samling av opplysningstyper'
+      size='xsmall'
+      kind='tertiary'
       onClick={() => setShowAddDocumentModal(true)}
       startEnhancer={
-        <div className="flex justify-center mr-1">
+        <div className='flex justify-center mr-1'>
           <PlusIcon aria-hidden />
         </div>
       }
@@ -177,7 +177,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   }
 
   return (
-    <div className="mt-3">
+    <div className='mt-3'>
       <Accordion>
         {processList &&
           processList
@@ -211,16 +211,16 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   </Accordion.Header>
                   <Accordion.Content>
                     {expanded && isLoading && (
-                      <div className="p-2.5">
-                        <div className="flex w-full justify-center">
-                          <Loader size="3xlarge" />
+                      <div className='p-2.5'>
+                        <div className='flex w-full justify-center'>
+                          <Loader size='3xlarge' />
                         </div>
                       </div>
                     )}
 
                     {expanded && !isLoading && currentProcess && (
                       <div>
-                        <div className="px-6 pt-6">
+                        <div className='px-6 pt-6'>
                           <ProcessButtonGroup
                             process={process}
                             hasAccess={hasAccess()}
@@ -233,22 +233,22 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             codelistUtils={codelistUtils}
                           />
                           <div>
-                            <div className="flex justify-end">
+                            <div className='flex justify-end'>
                               <span>
                                 <i>{`Sist endret av ${currentProcess.changeStamp.lastModifiedBy}, ${lastModifiedDate(currentProcess.changeStamp?.lastModifiedDate)}`}</i>
                               </span>
                             </div>
                           </div>
-                          <div className="flex flex-col sm:flex-row sm:justify-between mt-20 w-full gap-2">
-                            <div className="flex flex-wrap gap-2">
+                          <div className='flex flex-col sm:flex-row sm:justify-between mt-20 w-full gap-2'>
+                            <div className='flex flex-wrap gap-2'>
                               {canViewAlerts() && (
                                 <Button
-                                  type="button"
-                                  kind="tertiary"
-                                  size="xsmall"
+                                  type='button'
+                                  kind='tertiary'
+                                  size='xsmall'
                                   icon={
-                                    <span className="flex items-center leading-none">
-                                      <ExclamationmarkIcon aria-hidden className="block" />
+                                    <span className='flex items-center leading-none'>
+                                      <ExclamationmarkIcon aria-hidden className='block' />
                                     </span>
                                   }
                                   onClick={() => history(`/alert/events/process/${process.id}`)}
@@ -258,12 +258,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               )}
                               {(user.isAdmin() || user.isSuper()) && (
                                 <Button
-                                  type="button"
-                                  kind="tertiary"
-                                  size="xsmall"
+                                  type='button'
+                                  kind='tertiary'
+                                  size='xsmall'
                                   icon={
-                                    <span className="flex items-center leading-none">
-                                      <GavelIcon aria-hidden className="block" />
+                                    <span className='flex items-center leading-none'>
+                                      <GavelIcon aria-hidden className='block' />
                                     </span>
                                   }
                                   onClick={() => {
@@ -276,7 +276,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               )}
                             </div>
                             {hasAccess() && (
-                              <div className="flex flex-wrap justify-start sm:justify-center gap-2">
+                              <div className='flex flex-wrap justify-start sm:justify-center gap-2'>
                                 <div ref={InformationTypeRef} />
                                 {renderAddDocumentButton()}
                                 {renderCreatePolicyButton()}
@@ -301,7 +301,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               )
             })}
       </Accordion>
-      {!processList.length && <BodyShort className="m-4">Ingen behandlinger</BodyShort>}
+      {!processList.length && <BodyShort className='m-4'>Ingen behandlinger</BodyShort>}
 
       {!!currentProcess && (
         <>
@@ -309,7 +309,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
             <ModalProcess
               codelistUtils={codelistUtils}
               key={currentProcess.id}
-              title="Redigér behandling"
+              title='Redigér behandling'
               onClose={() => setShowEditProcessModal(false)}
               isOpen={showEditProcessModal}
               submit={async (values: IProcessFormValues) => {
@@ -330,7 +330,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
           {showCreatePolicyModal && (
             <ModalPolicy
-              title="Legg til opplysningstyper brukt i behandlingen"
+              title='Legg til opplysningstyper brukt i behandlingen'
               initialValues={{
                 legalBasesOpen: false,
                 informationType: undefined,
@@ -418,7 +418,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
             header={{ heading: 'Ny revidering' }}
           >
             <Modal.Body>
-              <div className="w-150">
+              <div className='w-150'>
                 <RequestRevisionForm
                   key={revisionModalKey}
                   processId={currentProcess.id}

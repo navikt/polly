@@ -46,11 +46,11 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
   const [codelistUtils] = CodelistService()
 
   return (
-    <List as="ul" className="w-full">
+    <List as='ul' className='w-full'>
       {informationTypes.map((informationType: IDocumentInfoTypeUse, index: number) => (
         <List.Item key={informationType.informationTypeId}>
-          <div className="flex w-full justify-between">
-            <div className="flex justify-between w-[90%] items-center">
+          <div className='flex w-full justify-between'>
+            <div className='flex justify-between w-[90%] items-center'>
               <div>
                 <Sensitivity
                   sensitivity={informationType.informationType.sensitivity}
@@ -59,7 +59,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 &nbsp;
                 {informationType.informationType.name}
               </div>
-              <div className="opacity-80">
+              <div className='opacity-80'>
                 {informationType.subjectCategories
                   .map((subjectCategory: ICode) =>
                     codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
@@ -67,11 +67,11 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                   .join(', ')}
               </div>
             </div>
-            <Tooltip content="Fjern">
+            <Tooltip content='Fjern'>
               <Button
-                size="small"
-                variant="tertiary"
-                type="button"
+                size='small'
+                variant='tertiary'
+                type='button'
                 onClick={() => {
                   const length = formik.values.informationTypes.length
                   arrayHelpers.remove(index)
@@ -81,7 +81,7 @@ const ListInformationTypes = (props: IListInformationTypesProps) => {
                 }}
               >
                 {' '}
-                <MinusCircleIcon aria-hidden className="block" />{' '}
+                <MinusCircleIcon aria-hidden className='block' />{' '}
               </Button>
             </Tooltip>
           </div>
@@ -148,12 +148,12 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
     <Modal
       onClose={onCloseModal}
       open={isOpen}
-      width="750px"
+      width='750px'
       header={{ heading: 'Legg til opplysningstyper fra dokument' }}
     >
       {loading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {isOpen && !loading && (
@@ -174,8 +174,7 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
         >
           {(formik: FormikProps<IAddDocumentToProcessFormValues>) => {
             const selectDocument: (document: IDocument, isDefault: boolean) => void = (
-              document: IDocument,
-              _isDefault: boolean
+              document: IDocument
             ) => {
               formik.setValues({
                 ...formik.values,
@@ -186,16 +185,16 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
 
             return (
               <Form onKeyDown={disableEnter}>
-                <Modal.Body className="min-h-125">
-                  <div className="flex flex-col gap-4 px-8 py-4">
-                    <div className="flex flex-col gap-1">
-                      <Label size="small">Dokument</Label>
-                      <Field name="document">
+                <Modal.Body className='min-h-125'>
+                  <div className='flex flex-col gap-4 px-8 py-4'>
+                    <div className='flex flex-col gap-1'>
+                      <Label size='small'>Dokument</Label>
+                      <Field name='document'>
                         {({}: FieldProps<IAddDocumentToProcessFormValues>) => (
                           <>
                             <CustomSearchSelect
-                              ariaLabel="Søk dokumenter"
-                              placeholder=""
+                              ariaLabel='Søk dokumenter'
+                              placeholder=''
                               loadOptions={useSearchDocumentOption}
                               onChange={(value: IDocument | undefined) => {
                                 if (value) {
@@ -205,10 +204,10 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                             />
                             {!formik.values.document && defaultDoc && (
                               <Button
-                                type="button"
-                                variant="secondary"
-                                size="small"
-                                className="mt-2 self-start"
+                                type='button'
+                                variant='secondary'
+                                size='small'
+                                className='mt-2 self-start'
                                 onClick={() => selectDocument(defaultDoc, true)}
                               >
                                 Standard opplysningstyper
@@ -217,19 +216,19 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                           </>
                         )}
                       </Field>
-                      <Error fieldName="document" />
+                      <Error fieldName='document' />
                     </div>
 
                     {!!formik.values.document && (
-                      <div className="flex flex-col gap-2">
+                      <div className='flex flex-col gap-2'>
                         {formik.values.document.description && (
-                          <BodyShort className="text-gray-600">
+                          <BodyShort className='text-gray-600'>
                             {formik.values.document.description}
                           </BodyShort>
                         )}
-                        <div className="flex flex-col gap-1">
-                          <ModalLabel label="Opplysningstyper" />
-                          <FieldArray name="informationTypes">
+                        <div className='flex flex-col gap-1'>
+                          <ModalLabel label='Opplysningstyper' />
+                          <FieldArray name='informationTypes'>
                             {(arrayHelpers: FieldArrayRenderProps) => (
                               <ListInformationTypes
                                 informationTypes={formik.values.informationTypes}
@@ -238,19 +237,19 @@ export const AddDocumentModal = (props: TAddDocumentProps) => {
                               />
                             )}
                           </FieldArray>
-                          <Error fieldName="informationTypes" />
+                          <Error fieldName='informationTypes' />
                         </div>
                       </div>
                     )}
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
-                  <div className="flex items-center justify-end gap-2">
-                    {error && <p className="text-red-600">{error}</p>}
-                    <Button type="button" variant="tertiary" onClick={onCloseModal}>
+                  <div className='flex items-center justify-end gap-2'>
+                    {error && <p className='text-red-600'>{error}</p>}
+                    <Button type='button' variant='tertiary' onClick={onCloseModal}>
                       Avbryt
                     </Button>
-                    <Button type="submit">Legg til</Button>
+                    <Button type='submit'>Legg til</Button>
                   </div>
                 </Modal.Footer>
               </Form>

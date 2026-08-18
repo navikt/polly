@@ -41,19 +41,19 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
   }, [formikBag.values.contractOwner])
 
   return (
-    <div className="w-full mt-4">
+    <div className='w-full mt-4'>
       <LabelWithDescription
-        label="Avtaleeier"
-        description="Den som formelt står som eier av avtalen"
+        label='Avtaleeier'
+        description='Den som formelt står som eier av avtalen'
       />
-      <Field name="contractOwner">
+      <Field name='contractOwner'>
         {({ form }: FieldProps<string, IProcessorFormValues>) => (
           <AsyncSelect
-            className="w-full"
-            aria-label="Avtaleeier"
-            inputId="contractOwner"
-            instanceId="contractOwner"
-            placeholder=""
+            className='w-full'
+            aria-label='Avtaleeier'
+            inputId='contractOwner'
+            instanceId='contractOwner'
+            placeholder=''
             components={{ DropdownIndicator }}
             noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
             controlShouldRenderValue={true}

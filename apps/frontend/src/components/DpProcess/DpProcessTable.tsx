@@ -20,17 +20,17 @@ const DpProcessTable = (props: TDpProcessTableProps) => {
   return (
     <>
       <Table
-        emptyText="Ingen behandlinger"
+        emptyText='Ingen behandlinger'
         headers={
           <>
-            <HeadCell title="Behandling" column="name" tableState={[table, sortColumn]} />
-            <HeadCell title="Status" />
+            <HeadCell title='Behandling' column='name' tableState={[table, sortColumn]} />
+            <HeadCell title='Status' />
             <HeadCell
-              title="Behandlingsansvarlig"
-              column="externalProcessResponsible"
+              title='Behandlingsansvarlig'
+              column='externalProcessResponsible'
               tableState={[table, sortColumn]}
             />
-            <HeadCell title="Avdeling" column="affiliation" tableState={[table, sortColumn]} />
+            <HeadCell title='Avdeling' column='affiliation' tableState={[table, sortColumn]} />
           </>
         }
       >

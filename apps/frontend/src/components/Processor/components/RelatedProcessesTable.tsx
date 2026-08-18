@@ -38,21 +38,21 @@ const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps
 
   return (
     <Table
-      size="large"
+      size='large'
       zebraStripes
       sort={sort}
       onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}
     >
       <Table.Header>
         <Table.Row>
-          <Table.ColumnHeader sortKey="purposes" className="w-1/5" sortable>
+          <Table.ColumnHeader sortKey='purposes' className='w-1/5' sortable>
             Overordnet behandlingsaktivitet
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="name" className="w-2/5" sortable>
+          <Table.ColumnHeader sortKey='name' className='w-2/5' sortable>
             {' '}
             Behandling
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="affiliation" className="w-1/5" sortable>
+          <Table.ColumnHeader sortKey='affiliation' className='w-1/5' sortable>
             Avdeling
           </Table.ColumnHeader>
           <Table.ColumnHeader>System</Table.ColumnHeader>
@@ -77,7 +77,7 @@ const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps
             <Table.DataCell>
               {' '}
               {row.affiliation.products.map((product, index) => (
-                <div className="" key={index}>
+                <div className='' key={index}>
                   <Link href={`/process/system/${product.code}`}>{product.shortName}</Link>
                 </div>
               ))}

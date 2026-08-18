@@ -93,11 +93,11 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
           setExportSuccess('')
           setIsExportModalOpen(true)
         }}
-        kind="outline"
-        size="xsmall"
+        kind='outline'
+        size='xsmall'
         icon={
-          <span className="flex items-center leading-none">
-            <FileWordIcon aria-hidden className="block" />
+          <span className='flex items-center leading-none'>
+            <FileWordIcon aria-hidden className='block' />
           </span>
         }
         marginRight={marginRight}
@@ -119,13 +119,13 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
           <Modal.Body>
             {exportError !== '' && <BodyLong>{exportError}</BodyLong>}
             {exportError === '' && (
-              <div className="flex flex-wrap gap-3">
+              <div className='flex flex-wrap gap-3'>
                 <Button
-                  kind="outline"
-                  size="xsmall"
+                  kind='outline'
+                  size='xsmall'
                   icon={
-                    <span className="flex items-center leading-none">
-                      <FileWordIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <FileWordIcon aria-hidden className='block' />
                     </span>
                   }
                   loading={exportDownloading === 'internal'}
@@ -141,11 +141,11 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
                   Eksport for intern bruk
                 </Button>
                 <Button
-                  kind="outline"
-                  size="xsmall"
+                  kind='outline'
+                  size='xsmall'
                   icon={
-                    <span className="flex items-center leading-none">
-                      <FileWordIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <FileWordIcon aria-hidden className='block' />
                     </span>
                   }
                   loading={exportDownloading === 'external'}
@@ -164,7 +164,7 @@ export const ExportProcessModal: FunctionComponent<TProps> = ({
             )}
 
             {exportSuccess !== '' && (
-              <LocalAlert status="success" className="mt-3" role="status" aria-live="polite">
+              <LocalAlert status='success' className='mt-3' role='status' aria-live='polite'>
                 <LocalAlert.Header>
                   <LocalAlert.Title>Eksport velykket</LocalAlert.Title>
                 </LocalAlert.Header>

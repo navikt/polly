@@ -14,10 +14,10 @@ export const Error = (props: IErrorProps) => {
   return (
     <FormikErrorMessage name={fieldName}>
       {(msg: any) => (
-        <div className="flex w-full mt-1">
+        <div className='flex w-full mt-1'>
           {!fullWidth && <ModalLabel />}
-          <div className="w-full">
-            <div className="navds-form-field__error pt-2" aria-live="polite">
+          <div className='w-full'>
+            <div className='navds-form-field__error pt-2' aria-live='polite'>
               <span className={messageClassName ?? ''}>
                 <DsErrorMessage>{msg}</DsErrorMessage>
               </span>
@@ -43,14 +43,14 @@ export const ModalLabel = (props: IModalLabelProps) => {
     <div className={`self-center pr-4 ${fullwidth ? 'w-full' : 'min-w-[30%] max-w-[30%]'}`}>
       {!tooltip && (
         <div>
-          <Label size="small">{label}</Label>
+          <Label size='small'>{label}</Label>
           <Detail>{description}</Detail>
         </div>
       )}
       {tooltip && (
-        <div className="w-full">
-          <div className="flex items-center w-full">
-            <Label size="small">{label}</Label>
+        <div className='w-full'>
+          <div className='flex items-center w-full'>
+            <Label size='small'>{label}</Label>
             <CustomizedStatefulTooltip content={tooltip} />
           </div>
           <Detail>{description}</Detail>
@@ -73,14 +73,14 @@ export const FormError = ({ fieldName, akselStyling }: IPropsError) => (
 
     {akselStyling && (
       <div
-        className="navds-form-field__error pt-2"
-        id="textField-error-rm"
-        aria-relevant="additions removals"
-        aria-live="polite"
+        className='navds-form-field__error pt-2'
+        id='textField-error-rm'
+        aria-relevant='additions removals'
+        aria-live='polite'
       >
         <FormikErrorMessage name={fieldName}>
           {(msg: string) => (
-            <p className="navds-error-message flex gap-2">
+            <p className='navds-error-message flex gap-2'>
               <span>•</span>
               {msg}
             </p>

@@ -141,16 +141,16 @@ const ThirdPartyPage = () => {
   return (
     <>
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
 
       {!isLoading && codelistUtils && (
         <>
           {params.thirdPartyCode && (
-            <div className="mb-12">
-              <Heading level="1" size="medium" spacing>
+            <div className='mb-12'>
+              <Heading level='1' size='medium' spacing>
                 {codelistUtils.getShortname(EListName.THIRD_PARTY, params.thirdPartyCode)}
               </Heading>
               <BodyLong>
@@ -161,17 +161,17 @@ const ThirdPartyPage = () => {
 
           <Accordion>
             <Accordion.Item
-              className="bg-white"
+              className='bg-white'
               open={expandedAccordion === 'disclosure'}
               onOpenChange={(open: boolean) => handleOnOpenChange(open, 'disclosure')}
             >
               <Accordion.Header>{`Utleveringer til ekstern part (${disclosureList?.length || 0})`}</Accordion.Header>
               <Accordion.Content>
-                <div className="flex justify-end">
+                <div className='flex justify-end'>
                   {user.canWrite() && (
                     <Button
-                      size="small"
-                      variant="tertiary"
+                      size='small'
+                      variant='tertiary'
                       icon={<PlusCircleIcon aria-hidden />}
                       onClick={() => {
                         setError(undefined)
@@ -197,7 +197,7 @@ const ThirdPartyPage = () => {
             </Accordion.Item>
 
             <Accordion.Item
-              className="bg-white"
+              className='bg-white'
               open={expandedAccordion === 'informationtype'}
               onOpenChange={(open: boolean) => handleOnOpenChange(open, 'informationtype')}
             >
@@ -209,7 +209,7 @@ const ThirdPartyPage = () => {
 
             {params.thirdPartyCode && (
               <Accordion.Item
-                className="bg-white"
+                className='bg-white'
                 open={expandedAccordion === 'dpprocess'}
                 onOpenChange={(open: boolean) => handleOnOpenChange(open, 'dpprocess')}
               >
@@ -220,7 +220,7 @@ const ThirdPartyPage = () => {
               </Accordion.Item>
             )}
             <Accordion.Item
-              className="bg-white"
+              className='bg-white'
               open={expandedAccordion === 'process'}
               onOpenChange={(open: boolean) => handleOnOpenChange(open, 'process')}
             >
@@ -242,7 +242,7 @@ const ThirdPartyPage = () => {
 
           <ModalThirdParty
             key={createModalKey}
-            title="Opprett utlevering til ekstern part"
+            title='Opprett utlevering til ekstern part'
             isOpen={showCreateModal}
             initialValues={initialFormValues}
             submit={handleCreateDisclosure}

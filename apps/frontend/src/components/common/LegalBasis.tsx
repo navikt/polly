@@ -78,8 +78,8 @@ const legalBasisLinkProcessor = (codelistUtils: ICodelistProps, law: string, tex
         <Link
           key={key}
           href={`${lovdataBase(codelistUtils, law)}/§${result[3]}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          target='_blank'
+          rel='noopener noreferrer'
         >
           {!result[1] && !result[2] && '§'} {result[2] && '§§'} {result[3]}
         </Link>
@@ -91,8 +91,8 @@ const legalBasisLinkProcessor = (codelistUtils: ICodelistProps, law: string, tex
         <Link
           key={key}
           href={`${lovdataBase(codelistUtils, law)}/KAPITTEL_${result[2]}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          target='_blank'
+          rel='noopener noreferrer'
         >
           Kapittel {result[2]}
         </Link>
@@ -110,17 +110,17 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
 
   const warningIcon = (
     <span>
-      <ExclamationmarkIcon aria-hidden className="inline-block" />
+      <ExclamationmarkIcon aria-hidden className='inline-block' />
       &nbsp;
     </span>
   )
 
   return (
-    <div className="text-[#E85C4A]">
+    <div className='text-[#E85C4A]'>
       <div>
         {alert?.missingLegalBasis && (
-          <Tooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
-            <Button type="button" variant="tertiary-neutral" size="small">
+          <Tooltip content='Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.'>
+            <Button type='button' variant='tertiary-neutral' size='small'>
               {warningIcon} Behandlingsgrunnlag er ikke avklart
             </Button>
           </Tooltip>
@@ -133,7 +133,7 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
               'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.'
             }
           >
-            <Button type="button" variant="tertiary-neutral" size="small">
+            <Button type='button' variant='tertiary-neutral' size='small'>
               {warningIcon} Overskuddsinformasjon
             </Button>
           </Tooltip>
@@ -141,8 +141,8 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
       </div>
       <div>
         {alert?.missingArt6 && (
-          <Tooltip content="Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.">
-            <Button type="button" variant="tertiary-neutral" size="small">
+          <Tooltip content='Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.'>
+            <Button type='button' variant='tertiary-neutral' size='small'>
               {warningIcon} Behandlingsgrunnlag for artikkel 6 mangler
             </Button>
           </Tooltip>
@@ -150,8 +150,8 @@ export const LegalBasesNotClarified = (props: ILegalBasesNotClarifiedProps) => {
       </div>
       <div>
         {alert?.missingArt9 && (
-          <Tooltip content="Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9">
-            <Button type="button" variant="tertiary-neutral" size="small">
+          <Tooltip content='Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9'>
+            <Button type='button' variant='tertiary-neutral' size='small'>
               {warningIcon} Behandlingsgrunnlag for artikkel 9 mangler
             </Button>
           </Tooltip>
@@ -195,18 +195,18 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
         .map((legalBasis: ILegalBasisFormValues, index: number) => (
           <div
             key={index}
-            className="flex items-start justify-between gap-2"
+            className='flex items-start justify-between gap-2'
             style={{ marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100 }}
           >
-            <BodyLong size="small">
+            <BodyLong size='small'>
               <LegalBasisView legalBasisForm={legalBasis} codelistUtils={codelistUtils} />
             </BodyLong>
-            <div className="flex shrink-0">
+            <div className='flex shrink-0'>
               <Button
-                type="button"
-                variant="tertiary"
-                size="small"
-                aria-label="Rediger behandlingsgrunnlag"
+                type='button'
+                variant='tertiary'
+                size='small'
+                aria-label='Rediger behandlingsgrunnlag'
                 onClick={() => {
                   onEdit(
                     legalBases?.findIndex(
@@ -215,13 +215,13 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
                   )
                 }}
               >
-                <DocPencilIcon aria-hidden className="block" />
+                <DocPencilIcon aria-hidden className='block' />
               </Button>
               <Button
-                type="button"
-                variant="tertiary"
-                size="small"
-                aria-label="Slett behandlingsgrunnlag"
+                type='button'
+                variant='tertiary'
+                size='small'
+                aria-label='Slett behandlingsgrunnlag'
                 onClick={() => {
                   onRemove(
                     legalBases?.findIndex(
@@ -230,7 +230,7 @@ export const ListLegalBases = (props: IListLegalBasesProps) => {
                   )
                 }}
               >
-                <TrashIcon aria-hidden className="block" />
+                <TrashIcon aria-hidden className='block' />
               </Button>
             </div>
           </div>
@@ -251,7 +251,7 @@ export const ListLegalBasesInTable = (props: IListLegalBasesInTableProps) => {
     <div>
       <ul style={{ listStyle: 'none', paddingInlineStart: 0, marginTop: 0, marginBottom: 0 }}>
         {legalBases.map((legalBasis: ILegalBasis, index: number) => (
-          <div className="mb-2" key={index}>
+          <div className='mb-2' key={index}>
             <li>
               <LegalBasisView legalBasis={legalBasis} codelistUtils={codelistUtils} />
             </li>

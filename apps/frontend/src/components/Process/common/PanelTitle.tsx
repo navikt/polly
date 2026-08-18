@@ -14,9 +14,9 @@ const PanelTitle = (props: IProps) => {
     <div>
       <Label style={{ color: theme.colors.primary }}>
         {expanded ? (
-          <ChevronDownIcon aria-hidden className="block" />
+          <ChevronDownIcon aria-hidden className='block' />
         ) : (
-          <ChevronRightIcon aria-hidden className="block" />
+          <ChevronRightIcon aria-hidden className='block' />
         )}
         <span> </span>
         <span>{title}</span>

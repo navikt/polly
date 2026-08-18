@@ -38,8 +38,8 @@ export const MailLogPage = () => {
   }, [page, rowsPerPage])
 
   return (
-    <div className="w-full px-16" role="main">
-      <Heading className="mt-4" size="large" level="1" spacing>
+    <div className='w-full px-16' role='main'>
+      <Heading className='mt-4' size='large' level='1' spacing>
         Logg for sendt e-post
       </Heading>
       {log?.content.map((logList: IMailLog, index: number) => {
@@ -54,17 +54,17 @@ export const MailLogPage = () => {
         const rowNum: number = log.pageNumber * log.pageSize + index + 1
 
         return (
-          <div key={index} className="mb-6">
+          <div key={index} className='mb-6'>
             <BodyShort>
               #{rowNum} Tid: {moment(logList.time).format('lll')} Til: {logList.to}
             </BodyShort>
-            <BodyShort className="mb-3">Emne: {logList.subject}</BodyShort>
+            <BodyShort className='mb-3'>Emne: {logList.subject}</BodyShort>
             <Box
-              className="px-2"
-              borderWidth="2"
-              borderColor="neutral-subtle"
-              borderRadius="8"
-              background="default"
+              className='px-2'
+              borderWidth='2'
+              borderColor='neutral-subtle'
+              borderRadius='8'
+              background='default'
             >
               <Markdown source={html} escapeHtml={false} />
             </Box>
@@ -72,18 +72,18 @@ export const MailLogPage = () => {
         )
       })}
 
-      <div className="flex w-full justify-center items-center mt-3">
+      <div className='flex w-full justify-center items-center mt-3'>
         <Select
-          label="Antall rader:"
+          label='Antall rader:'
           value={rowsPerPage}
           onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-          size="small"
+          size='small'
         >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
+          <option value='5'>5</option>
+          <option value='10'>10</option>
+          <option value='20'>20</option>
+          <option value='50'>50</option>
+          <option value='100'>100</option>
         </Select>
         <Spacer />
         <div>
@@ -92,7 +92,7 @@ export const MailLogPage = () => {
             onPageChange={setPage}
             count={log.pages ? log.pages : 1}
             prevNextTexts
-            size="small"
+            size='small'
           />
         </div>
         <Spacer />

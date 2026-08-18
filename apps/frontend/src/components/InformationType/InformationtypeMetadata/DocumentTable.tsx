@@ -37,16 +37,16 @@ export const DocumentTable = (props: IDocumentTableProps) => {
     return 1
   })
   return (
-    <Table size="small" sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
+    <Table size='small' sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
       <Table.Header>
         <Table.Row>
-          <Table.ColumnHeader sortKey="name" className="w-1/3" sortable>
+          <Table.ColumnHeader sortKey='name' className='w-1/3' sortable>
             Navn
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="description" className="w-1/3" sortable>
+          <Table.ColumnHeader sortKey='description' className='w-1/3' sortable>
             Beskrivelse
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="informationTypes" className="w-1/3" sortable>
+          <Table.ColumnHeader sortKey='informationTypes' className='w-1/3' sortable>
             Opplysningstyper
           </Table.ColumnHeader>
         </Table.Row>
@@ -54,11 +54,11 @@ export const DocumentTable = (props: IDocumentTableProps) => {
       <Table.Body>
         {sortedData.map((row: IDocument, index: number) => (
           <Table.Row key={index}>
-            <Table.DataCell textSize="small">
+            <Table.DataCell textSize='small'>
               <Link href={`/document/${row.id}`}>{row.name}</Link>
             </Table.DataCell>
-            <Table.DataCell textSize="small">{row.description}</Table.DataCell>
-            <Table.DataCell textSize="small">
+            <Table.DataCell textSize='small'>{row.description}</Table.DataCell>
+            <Table.DataCell textSize='small'>
               {row.informationTypes
                 .map((informationType) => informationType.informationType.name)
                 .join(', ')}

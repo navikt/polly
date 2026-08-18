@@ -68,8 +68,8 @@ const InformationtypePage = () => {
     return (
       <>
         {!informationtype && (
-          <div className="flex w-full justify-center">
-            <Loader size="3xlarge" />
+          <div className='flex w-full justify-center'>
+            <Loader size='3xlarge' />
           </div>
         )}
         {!error && informationtype && (
@@ -88,17 +88,17 @@ const InformationtypePage = () => {
 
   return (
     <>
-      <div className="flex justify-between">
-        <Heading level="1" size="medium" className="m-0">
+      <div className='flex justify-between'>
+        <Heading level='1' size='medium' className='m-0'>
           Opplysningstyper
         </Heading>
         <div>
           {user.canWrite() && (
             <Button
-              kind="outline"
+              kind='outline'
               startEnhancer={
-                <span className="flex items-center leading-none">
-                  <PlusCircleIcon aria-hidden className="block" />
+                <span className='flex items-center leading-none'>
+                  <PlusCircleIcon aria-hidden className='block' />
                 </span>
               }
               onClick={() => navigate('/informationtype/create')}
@@ -109,8 +109,8 @@ const InformationtypePage = () => {
         </div>
       </div>
       {!categoryUsages && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages} />}

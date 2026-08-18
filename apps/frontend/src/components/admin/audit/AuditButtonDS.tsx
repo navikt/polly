@@ -16,8 +16,8 @@ export const AuditButtonDS = (props: IAuditButtonProps) => {
         <Link href={`/admin/audit/${id}` + (auditId ? `/${auditId}` : '')}>
           {children && children}{' '}
           {!children && (
-            <Tooltip content="Versjonering">
-              <Button {...restProps} icon={<ClockDashedIcon title="Versjonering" />} />
+            <Tooltip content='Versjonering'>
+              <Button {...restProps} icon={<ClockDashedIcon title='Versjonering' />} />
             </Tooltip>
           )}
         </Link>

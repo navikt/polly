@@ -26,13 +26,13 @@ const FieldPurpose = (props: {
 
   return (
     <FieldArray
-      name="purposes"
+      name='purposes'
       render={(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="flex-1 min-w-0">
+        <div className='flex-1 min-w-0'>
           <Select
-            className="w-full"
-            id="purposes"
-            label="Velg overordnet behandlingsaktivitet"
+            className='w-full'
+            id='purposes'
+            label='Velg overordnet behandlingsaktivitet'
             hideLabel
             value={selectedValue}
             error={showError ? purposesError : undefined}
@@ -43,7 +43,7 @@ const FieldPurpose = (props: {
               arrayHelpers.form.setFieldTouched('purposes[0]', true, false)
             }}
           >
-            <option value="">Velg overordnet behandlingsaktivitet</option>
+            <option value=''>Velg overordnet behandlingsaktivitet</option>
             {codelistUtils.getParsedOptions(EListName.PURPOSE).map((codeList, index) => (
               <option key={index + '_' + codeList.id} value={codeList.id}>
                 {codeList.label}

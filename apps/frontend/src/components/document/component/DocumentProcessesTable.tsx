@@ -52,28 +52,28 @@ const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
   return (
     <>
       <Table
-        emptyText="Ingen behandlinger"
+        emptyText='Ingen behandlinger'
         headers={
           <>
             <HeadCell
-              title="Overordnet behandlingsaktivitet"
-              column="purposes"
+              title='Overordnet behandlingsaktivitet'
+              column='purposes'
               tableState={[table, sortColumn]}
             />
-            <HeadCell title="Behandling" column="name" tableState={[table, sortColumn]} />
+            <HeadCell title='Behandling' column='name' tableState={[table, sortColumn]} />
             <HeadCell
-              title="Avdeling"
-              column="nomDepartmentName"
+              title='Avdeling'
+              column='nomDepartmentName'
               tableState={[table, sortColumn]}
             />
-            <HeadCell title="System" column="products" tableState={[table, sortColumn]} />
+            <HeadCell title='System' column='products' tableState={[table, sortColumn]} />
           </>
         }
       >
         {table.data.map((process: IDataFormat, index: number) => (
           <Row key={index}>
             <Cell>
-              <div className="flex flex-col">
+              <div className='flex flex-col'>
                 {process.purposes.map((purpose: ICode, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/process/purpose/${purpose.code}`}>
@@ -99,7 +99,7 @@ const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
               )}
             </Cell>
             <Cell>
-              <div className="flex flex-col">
+              <div className='flex flex-col'>
                 {process.products.map((purpose: ICode, index: number) => (
                   <div key={index}>
                     <RouteLink href={`/system/${purpose.code}`}>

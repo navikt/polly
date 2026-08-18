@@ -29,10 +29,10 @@ const CodelistPage = (props: ICodeListPageProps) => {
 
   return (
     <>
-      {title && <Heading size="large">{title}</Heading>}
+      {title && <Heading size='large'>{title}</Heading>}
       {isLoading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!!codes.length && (
@@ -49,14 +49,14 @@ const CodelistPage = (props: ICodeListPageProps) => {
 export const ThirdPartyListPage = () => (
   <CodelistPage
     listName={EListName.THIRD_PARTY}
-    baseUrl="/thirdparty/"
-    title="Eksterne parter"
+    baseUrl='/thirdparty/'
+    title='Eksterne parter'
     columns={1}
   />
 )
 export const SystemListPage = () => (
-  <CodelistPage listName={EListName.SYSTEM} baseUrl="/system/" title="Systemer" columns={1} />
+  <CodelistPage listName={EListName.SYSTEM} baseUrl='/system/' title='Systemer' columns={1} />
 )
 export const PurposeList = () => (
-  <CodelistPage listName={EListName.PURPOSE} baseUrl="/process/purpose/" columns={1} />
+  <CodelistPage listName={EListName.PURPOSE} baseUrl='/process/purpose/' columns={1} />
 )

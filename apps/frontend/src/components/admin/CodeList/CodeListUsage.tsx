@@ -199,26 +199,26 @@ export const Usage = (props: IUsageProps) => {
   }
 
   return (
-    <div className="mt-8" ref={ref}>
-      <div className="flex justify-between mib-2">
+    <div className='mt-8' ref={ref}>
+      <div className='flex justify-between mib-2'>
         <Label>Bruk</Label>
         {!!usage?.inUse && (
-          <Button type="button" variant="secondary" onClick={() => setShowReplace(true)}>
+          <Button type='button' variant='secondary' onClick={() => setShowReplace(true)}>
             Erstatt all bruk
           </Button>
         )}
       </div>
 
       {showReplace && usage && usage.listName && (
-        <div className="flex m-4 justify-end">
+        <div className='flex m-4 justify-end'>
           <Select
-            label="Velg ny verdi"
+            label='Velg ny verdi'
             hideLabel
-            className="mr-4"
+            className='mr-4'
             value={newValue}
             onChange={(params: ChangeEvent<HTMLSelectElement>) => setNewValue(params.target.value)}
           >
-            <option value="">Ny verdi</option>
+            <option value=''>Ny verdi</option>
 
             {usage.listName === EListName.DEPARTMENT &&
               alleAvdelingOptions.map((department, index) => (
@@ -237,7 +237,7 @@ export const Usage = (props: IUsageProps) => {
                 ))}
           </Select>
 
-          <Button type="button" onClick={replace} disabled={!newValue}>
+          <Button type='button' onClick={replace} disabled={!newValue}>
             Erstatt
           </Button>
         </div>
@@ -245,8 +245,8 @@ export const Usage = (props: IUsageProps) => {
 
       {usage && <UsageTable usage={usage} />}
       {!usage && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
     </div>

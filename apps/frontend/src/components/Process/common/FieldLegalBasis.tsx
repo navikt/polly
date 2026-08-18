@@ -49,7 +49,7 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
 
   return (
     <FieldArray
-      name="legalBases"
+      name='legalBases'
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
           {formikBag.values.legalBasesOpen && (
@@ -84,19 +84,19 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
                   : 'flex w-full flex-col gap-4'
               }
             >
-              <div className="w-full">
-                <Tooltip content="Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.">
+              <div className='w-full'>
+                <Tooltip content='Alle behandlinger av personopplysninger krever et behandlingsgrunnlag iht. personopplysningsloven artikkel 6.'>
                   <div>
                     <Button
-                      size="xsmall"
-                      type="button"
-                      variant="tertiary"
+                      size='xsmall'
+                      type='button'
+                      variant='tertiary'
                       onClick={() => {
                         formikBag.setFieldValue('legalBasesOpen', true)
                         setSensitivityLevel(ESensitivityLevel.ART6)
                       }}
                       icon={
-                        <div className="flex justify-center">
+                        <div className='flex justify-center'>
                           <PlusIcon aria-hidden />
                         </div>
                       }
@@ -122,18 +122,18 @@ const FieldLegalBasis = (props: TFieldLegalBasisProps) => {
                 </div>
               </div>
 
-              <div className="w-full">
-                <Tooltip content="Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.">
+              <div className='w-full'>
+                <Tooltip content='Alle behandlinger av særlige kategorier (sensitive) av personopplysninger krever i tillegg et behandlingsgrunnlag iht personopplysningsloven artikkel 9.'>
                   <Button
-                    size="xsmall"
-                    type="button"
-                    variant="tertiary"
+                    size='xsmall'
+                    type='button'
+                    variant='tertiary'
                     onClick={() => {
                       formikBag.setFieldValue('legalBasesOpen', true)
                       setSensitivityLevel(ESensitivityLevel.ART9)
                     }}
                     icon={
-                      <div className="flex justify-center">
+                      <div className='flex justify-center'>
                         <PlusIcon aria-hidden />
                       </div>
                     }

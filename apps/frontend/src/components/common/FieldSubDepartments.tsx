@@ -27,12 +27,12 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
   return (
     <div>
       <FieldArray
-        name="affiliation.subDepartments"
+        name='affiliation.subDepartments'
         render={(arrayHelpers: FieldArrayRenderProps) => (
-          <div className="w-full">
-            <div className="w-full">
+          <div className='w-full'>
+            <div className='w-full'>
               <Select
-                label=""
+                label=''
                 hideLabel
                 onChange={(event) => {
                   if (event.target.value) {
@@ -43,7 +43,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                   }
                 }}
               >
-                <option value="">Velg linje</option>
+                <option value=''>Velg linje</option>
                 {codelistUtils
                   .getParsedOptions(EListName.SUB_DEPARTMENT)
                   .filter((code) => !formikBag.values.affiliation.subDepartments.includes(code.id))
@@ -54,7 +54,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                   ))}
               </Select>
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className='mt-2 flex flex-wrap gap-2'>
               {renderTagList(
                 formikBag.values.affiliation.subDepartments.map((subDepartment: string) =>
                   codelistUtils.getShortname(EListName.SUB_DEPARTMENT, subDepartment)
@@ -67,15 +67,15 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
       />
 
       {formikBag.values.affiliation.subDepartments.includes('NAVFYLKE') && (
-        <div className="mt-3">
-          <ModalLabel label="Fylke" tooltip="Angi fylke." />
+        <div className='mt-3'>
+          <ModalLabel label='Fylke' tooltip='Angi fylke.' />
 
-          <FieldArray name="affiliation.fylker">
+          <FieldArray name='affiliation.fylker'>
             {(FieldArrayRenderProps: FieldArrayRenderProps) => (
-              <div className="w-full">
-                <div className="w-full">
+              <div className='w-full'>
+                <div className='w-full'>
                   <Select
-                    label="Velg fylke"
+                    label='Velg fylke'
                     hideLabel
                     onChange={async (event) => {
                       if (event.target.value) {
@@ -100,7 +100,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                       }
                     }}
                   >
-                    <option value="">Velg Fylke</option>
+                    <option value=''>Velg Fylke</option>
                     {alleFylker.map((fylke, index) => (
                       <option key={`${fylke.value}_${index}`} value={fylke.value}>
                         {fylke.label}
@@ -108,7 +108,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                     ))}
                   </Select>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className='mt-2 flex flex-wrap gap-2'>
                   {renderTagList(
                     FieldArrayRenderProps.form.values.affiliation.fylker.map(
                       (fylke: INomData) => fylke.nomName
@@ -123,16 +123,16 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
       )}
 
       {formikBag.values.affiliation.subDepartments.includes('NAVKONTORSTAT') && (
-        <div className="mt-3">
-          <ModalLabel label="Kontor" tooltip="Angi Nav kontor." />
+        <div className='mt-3'>
+          <ModalLabel label='Kontor' tooltip='Angi Nav kontor.' />
 
-          <FieldArray name="affiliation.navKontorer">
+          <FieldArray name='affiliation.navKontorer'>
             {(fieldArrayRenderProps: FieldArrayRenderProps) => (
-              <div className="w-full">
-                <div className="w-full">
+              <div className='w-full'>
+                <div className='w-full'>
                   <CustomSearchSelect
-                    ariaLabel="Søk etter Nav kontor"
-                    placeholder="Søk etter Nav kontor"
+                    ariaLabel='Søk etter Nav kontor'
+                    placeholder='Søk etter Nav kontor'
                     loadOptions={searchNavKontorOptions}
                     onChange={async (event: any) => {
                       if (event) {
@@ -154,7 +154,7 @@ const FieldSubDepartments = (props: IFieldSubDepartmentsProps) => {
                     }}
                   />
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className='mt-2 flex flex-wrap gap-2'>
                   {renderTagList(
                     fieldArrayRenderProps.form.values.affiliation.navKontorer.map(
                       (navKontor: INomData) => navKontor.nomName

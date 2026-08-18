@@ -35,8 +35,8 @@ const Purposes = (props: IPurposesProps) => {
 
   return (
     <div>
-      <div className="flex justify-end mr-2.5 mt-2.5">
-        <Button onClick={() => setAccordion(!accordion)} size="xsmall" kind="outline">
+      <div className='flex justify-end mr-2.5 mt-2.5'>
+        <Button onClick={() => setAccordion(!accordion)} size='xsmall' kind='outline'>
           {accordion ? 'Vis alle' : 'Gruppér etter behandlingsaktivitet'}
         </Button>
       </div>
@@ -62,8 +62,8 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
     <>
       {informationtype && (
         <>
-          <div className="flex justify-between">
-            <Heading level="1" size="medium" className="m-0">
+          <div className='flex justify-between'>
+            <Heading level='1' size='medium' className='m-0'>
               {informationtype.name}
             </Heading>
             {user.canWrite() && <InformationTypeBannerButtons id={informationtype.id} />}
@@ -71,16 +71,16 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
 
           <Metadata informationtype={informationtype} codelistUtils={codelistUtils} />
 
-          <div className="flex justify-end mb-4">
+          <div className='flex justify-end mb-4'>
             {canViewAlerts() && (
-              <div className="mr-auto">
+              <div className='mr-auto'>
                 <Button
-                  type="button"
-                  kind="tertiary"
-                  size="xsmall"
+                  type='button'
+                  kind='tertiary'
+                  size='xsmall'
                   icon={
-                    <span className="flex items-center leading-none">
-                      <ExclamationmarkIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <ExclamationmarkIcon aria-hidden className='block' />
                     </span>
                   }
                   onClick={() => navigate(`/alert/events/informationtype/${informationtype.id}`)}
@@ -94,32 +94,32 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
             </BodyShort>
           </div>
 
-          <Tabs defaultValue="purposes">
+          <Tabs defaultValue='purposes'>
             <Tabs.List>
-              <Tabs.Tab value="purposes" label="Brukes til behandlingsaktivitet" />
-              <Tabs.Tab value="disclose" label="Utleveringer til ekstern part" />
-              <Tabs.Tab value="document" label="Dokumenter" />
+              <Tabs.Tab value='purposes' label='Brukes til behandlingsaktivitet' />
+              <Tabs.Tab value='disclose' label='Utleveringer til ekstern part' />
+              <Tabs.Tab value='document' label='Dokumenter' />
             </Tabs.List>
-            <Tabs.Panel value="purposes">
+            <Tabs.Panel value='purposes'>
               {!policies && (
-                <div className="flex w-full justify-center">
-                  <Loader size="3xlarge" />
+                <div className='flex w-full justify-center'>
+                  <Loader size='3xlarge' />
                 </div>
               )}
               {policies && <Purposes policies={policies} codelistUtils={codelistUtils} />}
             </Tabs.Panel>
-            <Tabs.Panel value="disclose">
+            <Tabs.Panel value='disclose'>
               {!disclosures && (
-                <div className="flex w-full justify-center">
-                  <Loader size="3xlarge" />
+                <div className='flex w-full justify-center'>
+                  <Loader size='3xlarge' />
                 </div>
               )}
               {disclosures && <TableDisclosure list={disclosures} codelistUtils={codelistUtils} />}
             </Tabs.Panel>
-            <Tabs.Panel value="document">
+            <Tabs.Panel value='document'>
               {!documents && (
-                <div className="flex w-full justify-center">
-                  <Loader size="3xlarge" />
+                <div className='flex w-full justify-center'>
+                  <Loader size='3xlarge' />
                 </div>
               )}
               {documents && <DocumentTable documents={documents} />}

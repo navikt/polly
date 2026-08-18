@@ -32,11 +32,11 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
 
   return (
     <div>
-      <Field name="affiliation.nomDepartmentId">
+      <Field name='affiliation.nomDepartmentId'>
         {({ form }: FieldProps<IDpProcessFormValues>) => (
-          <div className="w-full">
+          <div className='w-full'>
             <Select
-              label=""
+              label=''
               hideLabel
               value={value}
               onChange={async (event) => {
@@ -54,7 +54,7 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
                 )
               }}
             >
-              <option value="">Velg avdeling</option>
+              <option value=''>Velg avdeling</option>
               {alleAvdelingOptions.map((department) => (
                 <option key={department.value} value={department.value}>
                   {department.label}
@@ -66,17 +66,17 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
       </Field>
 
       {value !== '' && value !== undefined && (
-        <div className="mt-3">
+        <div className='mt-3'>
           <ModalLabel
-            label="Seksjon"
-            tooltip="Angi hvilken seksjon som har hovedansvar for behandlingen."
+            label='Seksjon'
+            tooltip='Angi hvilken seksjon som har hovedansvar for behandlingen.'
           />
-          <FieldArray name="affiliation.seksjoner">
+          <FieldArray name='affiliation.seksjoner'>
             {(FieldArrayRenderProps: FieldArrayRenderProps) => (
-              <div className="w-full">
-                <div className="w-full">
+              <div className='w-full'>
+                <div className='w-full'>
                   <Select
-                    label="Velg seksjon"
+                    label='Velg seksjon'
                     hideLabel
                     onChange={async (event) => {
                       if (event.target.value) {
@@ -98,7 +98,7 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
                       }
                     }}
                   >
-                    <option value="">Velg seksjon</option>
+                    <option value=''>Velg seksjon</option>
                     {seksjonForAvdeling.map((seksjon) => (
                       <option key={seksjon.value} value={seksjon.value}>
                         {seksjon.label}
@@ -106,7 +106,7 @@ const FieldDpProcessDepartment = (props: IFieldDpProcessDepartment) => {
                     ))}
                   </Select>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className='mt-2 flex flex-wrap gap-2'>
                   {renderTagList(
                     FieldArrayRenderProps.form.values.affiliation.seksjoner.map(
                       (seksjon: INomSeksjon) => seksjon.nomSeksjonName

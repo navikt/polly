@@ -24,11 +24,11 @@ const DataText = (props: TDataTextProps) => {
   return (
     <>
       {!hideComponent && (
-        <div className="flex content-start mb-4 w-full">
-          <div className="w-[40%] max-w-75 pr-2.5">
+        <div className='flex content-start mb-4 w-full'>
+          <div className='w-[40%] max-w-75 pr-2.5'>
             <Label>{label}</Label>
           </div>
-          <div className="w-[60%]">
+          <div className='w-[60%]'>
             {texts &&
               texts.map((text: string, index: number) => (
                 <BodyLong
@@ -38,7 +38,7 @@ const DataText = (props: TDataTextProps) => {
                   {text}
                 </BodyLong>
               ))}
-            {children && <div className="text-base ">{children}</div>}
+            {children && <div className='text-base '>{children}</div>}
           </div>
         </div>
       )}

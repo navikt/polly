@@ -66,7 +66,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
       onClose={onCloseModal}
       open={isOpen}
       header={{ heading: 'Legg til en samling av opplysningstyper' }}
-      width="750px"
+      width='750px'
     >
       <Formik
         onSubmit={submit}
@@ -86,18 +86,18 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
           return (
             <Form onKeyDown={disableEnter}>
               <Modal.Body>
-                <div className="w-187.5 px-8">
-                  <div className=" flex w-full mt-4 flex-row">
-                    <ModalLabel label="Master i Nav" />
+                <div className='w-187.5 px-8'>
+                  <div className=' flex w-full mt-4 flex-row'>
+                    <ModalLabel label='Master i Nav' />
                     <Select
-                      label="Master i Nav"
+                      label='Master i Nav'
                       hideLabel
                       value={system}
                       onChange={(event) => {
                         setSystem(event.target.value)
                       }}
                     >
-                      <option value="">Velg system</option>
+                      <option value=''>Velg system</option>
                       {codelistUtils.getParsedOptions(EListName.SYSTEM).map((system) => (
                         <option value={system.id} key={system.id}>
                           {system.label}
@@ -108,9 +108,9 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                 </div>
 
                 {!searchLoading && (
-                  <div className="w-187.5 px-8 mt-1.5">
+                  <div className='w-187.5 px-8 mt-1.5'>
                     <FieldArray
-                      name="informationTypes"
+                      name='informationTypes'
                       render={(informationTypesProps: FieldArrayRenderProps) => {
                         const addable = infoTypes.filter(
                           (infoType: IInformationType) =>
@@ -126,27 +126,27 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                               <>
                                 {!!addable.length && (
                                   <>
-                                    <div className="flex flex-col">
-                                      <BodyShort className="mt-4">Opplysningstyper</BodyShort>
-                                      <div className="flex flex-col w-full mt-4">
+                                    <div className='flex flex-col'>
+                                      <BodyShort className='mt-4'>Opplysningstyper</BodyShort>
+                                      <div className='flex flex-col w-full mt-4'>
                                         {addable.map((informationType: IInformationType) => (
                                           <div
                                             key={informationType.id}
-                                            className="flex items-center my-1"
+                                            className='flex items-center my-1'
                                           >
-                                            <BodyShort className="mr-2">
+                                            <BodyShort className='mr-2'>
                                               {informationType.name}
                                             </BodyShort>
                                             <Button
-                                              size="xsmall"
-                                              kind="tertiary"
-                                              ariaLabel="Legg til"
+                                              size='xsmall'
+                                              kind='tertiary'
+                                              ariaLabel='Legg til'
                                               icon={
-                                                <span className="flex items-center leading-none">
-                                                  <PlusCircleIcon aria-hidden className="block" />
+                                                <span className='flex items-center leading-none'>
+                                                  <PlusCircleIcon aria-hidden className='block' />
                                                 </span>
                                               }
-                                              tooltip="Legg til"
+                                              tooltip='Legg til'
                                               onClick={() =>
                                                 informationTypesProps.push(
                                                   mapToUse(informationType)
@@ -160,23 +160,23 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                   </>
                                 )}
                                 {!addable.length && !infoTypes.length && (
-                                  <BodyShort className="mt-4">Ingen opplysningstyper</BodyShort>
+                                  <BodyShort className='mt-4'>Ingen opplysningstyper</BodyShort>
                                 )}
                                 {!addable.length && !!infoTypes.length && (
-                                  <BodyShort className="mt-4">
+                                  <BodyShort className='mt-4'>
                                     Alle opplysningstyper lagt til
                                   </BodyShort>
                                 )}
 
-                                <div className="my-4 w-full border-solid border-b" />
+                                <div className='my-4 w-full border-solid border-b' />
                               </>
                             )}
 
-                            <div className="flex flex-col w-full mt-4">
+                            <div className='flex flex-col w-full mt-4'>
                               {added.map(
                                 (informationTypeMap: IDocumentInfoTypeUse, index: number) => (
                                   <Fragment key={informationTypeMap.informationType.id}>
-                                    <div className="flex justify-between items-center my-1">
+                                    <div className='flex justify-between items-center my-1'>
                                       <BodyShort>
                                         <Sensitivity
                                           sensitivity={
@@ -188,10 +188,10 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                         {informationTypeMap.informationType.name}
                                       </BodyShort>
 
-                                      <div className="w-[60%] flex item-center">
-                                        <BodyShort className="mr-2">Personkategori:</BodyShort>
+                                      <div className='w-[60%] flex item-center'>
+                                        <BodyShort className='mr-2'>Personkategori:</BodyShort>
                                         <Select
-                                          label="velg personkategori"
+                                          label='velg personkategori'
                                           hideLabel
                                           onChange={(event) => {
                                             informationTypesProps.replace(index, {
@@ -200,7 +200,7 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                             })
                                           }}
                                         >
-                                          <option value="">Velg personkategori</option>
+                                          <option value=''>Velg personkategori</option>
                                           {codelistUtils
                                             .getParsedOptions(EListName.SUBJECT_CATEGORY)
                                             .map((personkategori, index) => (
@@ -214,15 +214,15 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                                         </Select>
                                         <Button
                                           marginLeft
-                                          size="xsmall"
-                                          kind="tertiary"
-                                          ariaLabel="Fjern"
+                                          size='xsmall'
+                                          kind='tertiary'
+                                          ariaLabel='Fjern'
                                           icon={
-                                            <span className="flex items-center leading-none">
-                                              <MinusCircleIcon aria-hidden className="block" />
+                                            <span className='flex items-center leading-none'>
+                                              <MinusCircleIcon aria-hidden className='block' />
                                             </span>
                                           }
-                                          tooltip="Fjern"
+                                          tooltip='Fjern'
                                           onClick={() => informationTypesProps.remove(index)}
                                         />
                                       </div>
@@ -255,12 +255,12 @@ export const AddBatchInformationTypesModal = (props: TAddBatchInformationTypesPr
                 )}
               </Modal.Body>
               <Modal.Footer>
-                <div className="flex justify-end">
-                  <div className="self-end">{error && <p>{error}</p>}</div>
-                  <Button type="button" kind="tertiary" onClick={onCloseModal}>
+                <div className='flex justify-end'>
+                  <div className='self-end'>{error && <p>{error}</p>}</div>
+                  <Button type='button' kind='tertiary' onClick={onCloseModal}>
                     Avbryt
                   </Button>
-                  <Button type="submit">Legg til</Button>
+                  <Button type='submit'>Legg til</Button>
                 </div>
               </Modal.Footer>
             </Form>

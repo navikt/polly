@@ -31,12 +31,12 @@ export const LegalPage = () => {
 
   return (
     <div>
-      <Heading size="large">Søk behandlingsgrunnlag</Heading>
-      <BodyLong size="large">Velg GDPR artikkel og/eller nasjonal lov</BodyLong>
-      <div className="flex mt-3">
-        <div className="w-[40%] mt-3">
+      <Heading size='large'>Søk behandlingsgrunnlag</Heading>
+      <BodyLong size='large'>Velg GDPR artikkel og/eller nasjonal lov</BodyLong>
+      <div className='flex mt-3'>
+        <div className='w-[40%] mt-3'>
           <Select
-            label="GDPR artikkel"
+            label='GDPR artikkel'
             value={gdprArticle ?? ''}
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               navigate(
@@ -49,7 +49,7 @@ export const LegalPage = () => {
               )
             }
           >
-            <option value="">Velg</option>
+            <option value=''>Velg</option>
             {gdprOptions.map((option: ICode) => (
               <option key={option.code} value={option.code}>
                 {option.shortName || option.code}
@@ -57,9 +57,9 @@ export const LegalPage = () => {
             ))}
           </Select>
         </div>
-        <div className="w-[40%] mt-3 ml-2.5">
+        <div className='w-[40%] mt-3 ml-2.5'>
           <Select
-            label="Nasjonal lov"
+            label='Nasjonal lov'
             value={nationalLaw ?? ''}
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               navigate(
@@ -72,7 +72,7 @@ export const LegalPage = () => {
               )
             }
           >
-            <option value="">Velg</option>
+            <option value=''>Velg</option>
             {lawOptions.map((option: ICode) => (
               <option key={option.code} value={option.code}>
                 {option.shortName || option.code}
@@ -87,8 +87,8 @@ export const LegalPage = () => {
 }
 
 const ProcessTable = (props: { processes: IProcess[] }) => (
-  <div className="flex flex-col mt-3">
-    <Heading size="medium"> Behandlinger ({props.processes.length})</Heading>
+  <div className='flex flex-col mt-3'>
+    <Heading size='medium'> Behandlinger ({props.processes.length})</Heading>
     <SimpleProcessTable
       title={'Behandlinger' + ' (' + props.processes.length + ')'}
       processes={props.processes}

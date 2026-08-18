@@ -16,8 +16,8 @@ interface ICustomPanelLabelProps {
 }
 
 const CustomPanelLabel = ({ text }: ICustomPanelLabelProps) => (
-  <div className="w-full mb-4 border-b border-solid border-[#AFAFAF]">
-    <Label className="mt-2">{text}</Label>
+  <div className='w-full mb-4 border-b border-solid border-[#AFAFAF]'>
+    <Label className='mt-2'>{text}</Label>
   </div>
 )
 
@@ -57,7 +57,7 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
 
   return (
     <>
-      <Heading size="large" level="2">
+      <Heading size='large' level='2'>
         Utleveringsavtaler i Aa-registeret
       </Heading>
       <Accordion>
@@ -65,7 +65,7 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
           sortedAaregAvtale.map((aaregisterAvtale) => (
             <Accordion.Item key={aaregisterAvtale.avtalenummer}>
               <Accordion.Header>
-                <div className="w-full">
+                <div className='w-full'>
                   <Label color={theme.colors.primary}>
                     {aaregisterAvtale.virksomhet} - (Avtalenummer-
                     {aaregisterAvtale.avtalenummer.replace('AVT-', '')})
@@ -73,34 +73,34 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
                 </div>
               </Accordion.Header>
               <Accordion.Content>
-                <div className="outline outline-[#99c2e8]">
-                  <div className="p-1">
-                    <CustomPanelLabel text="Konsument" />
-                    <DataText label="Navn" text={aaregisterAvtale.virksomhet || 'Ikke angitt'} />
+                <div className='outline outline-[#99c2e8]'>
+                  <div className='p-1'>
+                    <CustomPanelLabel text='Konsument' />
+                    <DataText label='Navn' text={aaregisterAvtale.virksomhet || 'Ikke angitt'} />
                     <DataText
-                      label="Organisasjonsnummer"
+                      label='Organisasjonsnummer'
                       text={aaregisterAvtale.organisasjonsnummer || 'Ikke angitt'}
                     />
 
-                    <CustomPanelLabel text="Avtale" />
+                    <CustomPanelLabel text='Avtale' />
                     <DataText
-                      label="Avtalenummer"
+                      label='Avtalenummer'
                       text={aaregisterAvtale.avtalenummer || 'Ikke angitt'}
                     />
                     <DataText
-                      label="Dato opprettet"
+                      label='Dato opprettet'
                       text={aaregisterAvtale.opprettet || 'Ikke angitt'}
                     />
 
-                    <CustomPanelLabel text="Formål, Hjemmel og Behandlingsgrunnlag" />
+                    <CustomPanelLabel text='Formål, Hjemmel og Behandlingsgrunnlag' />
 
                     <AAregHjemmelDataText
                       data={aaregisterAvtale.hjemmel_behandlingsgrunnlag_formal}
                     />
 
-                    <CustomPanelLabel text="Type tilgang" />
+                    <CustomPanelLabel text='Type tilgang' />
                     <DataText
-                      label="API"
+                      label='API'
                       text={
                         aaregisterAvtale.integrert_oppslag_api
                           ? 'Tilgjengelig'
@@ -108,25 +108,25 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
                       }
                     />
                     <DataText
-                      label="Uttrekk"
+                      label='Uttrekk'
                       text={aaregisterAvtale.uttrekk ? 'Tilgjengelig' : 'Ikke tilgjengelig'}
                     />
                     <DataText
-                      label="Web-oppslag"
+                      label='Web-oppslag'
                       text={aaregisterAvtale.web_oppslag ? 'Tilgjengelig' : 'Ikke tilgjengelig'}
                     />
                     <DataText
-                      label="Hendelser"
+                      label='Hendelser'
                       text={aaregisterAvtale.hendelser ? 'Tilgjengelig' : 'Ikke tilgjengelig'}
                     />
 
-                    <CustomPanelLabel text="Databehandler" />
+                    <CustomPanelLabel text='Databehandler' />
                     <DataText
-                      label="Organisasjonsnummer"
+                      label='Organisasjonsnummer'
                       text={aaregisterAvtale.databehandler_organisasjonsnummer || 'Ikke angitt'}
                     />
                     <DataText
-                      label="Navn"
+                      label='Navn'
                       text={aaregisterAvtale.databehandler_navn || 'Ikke angitt'}
                     />
                   </div>
@@ -136,15 +136,15 @@ export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
           ))}
       </Accordion>
 
-      <div className="flex justify-between mt-1">
+      <div className='flex justify-between mt-1'>
         <Dropdown>
-          <Button variant="tertiary" as={Dropdown.Toggle}>
+          <Button variant='tertiary' as={Dropdown.Toggle}>
             {`${pageLimit} Rader`}{' '}
-            <span className="ml-2 inline-flex items-center leading-none">
-              <ChevronDownIcon aria-hidden className="block" />
+            <span className='ml-2 inline-flex items-center leading-none'>
+              <ChevronDownIcon aria-hidden className='block' />
             </span>
           </Button>
-          <Dropdown.Menu className="w-fit">
+          <Dropdown.Menu className='w-fit'>
             <Dropdown.Menu.List>
               {[5, 10, 20, 50, 100].map((pageSize: number) => (
                 <Dropdown.Menu.List.Item

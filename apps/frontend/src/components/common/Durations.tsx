@@ -80,8 +80,8 @@ export const ActiveIndicator = (props: IActiveIndicatorProps) => {
       {hasDates && (
         <Tooltip content={getTooltipText()}>
           <button
-            type="button"
-            className="inline-flex items-center align-baseline"
+            type='button'
+            className='inline-flex items-center align-baseline'
             style={{
               background: 'transparent',
               border: 0,

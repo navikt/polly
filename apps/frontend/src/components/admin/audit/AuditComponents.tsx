@@ -13,8 +13,8 @@ export const AuditLabel = (props: IAuditLabelProps) => {
   const { label, children } = props
 
   return (
-    <div className="flex">
-      <div className="flex w-1/5 self-center">
+    <div className='flex'>
+      <div className='flex w-1/5 self-center'>
         <Label>{label}</Label>
       </div>
       {children}
@@ -31,15 +31,15 @@ export const AuditActionIcon = (props: IAuditActionIconProps) => {
   const { action, withText } = props
   const iconStyle = { transform: 'translateY(1px)' } as const
   const icon = (action === EAuditAction.CREATE && {
-    icon: <PlusCircleIcon title="Opprett" style={iconStyle} />,
+    icon: <PlusCircleIcon title='Opprett' style={iconStyle} />,
     color: undefined,
   }) ||
     (action === EAuditAction.UPDATE && {
-      icon: <InformationSquareIcon title="Oppdater" style={iconStyle} />,
+      icon: <InformationSquareIcon title='Oppdater' style={iconStyle} />,
       color: undefined,
     }) ||
     (action === EAuditAction.DELETE && {
-      icon: <MinusCircleIcon title="Slett" style={iconStyle} />,
+      icon: <MinusCircleIcon title='Slett' style={iconStyle} />,
       color: undefined,
     }) || {
       icon: undefined,

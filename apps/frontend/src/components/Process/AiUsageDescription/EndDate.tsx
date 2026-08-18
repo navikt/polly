@@ -46,8 +46,8 @@ export const EndDate = () => {
   }, [field.value])
 
   return (
-    <div className="w-1/2 mr-4">
-      <div className="flex w-full mt-4">
+    <div className='w-1/2 mr-4'>
+      <div className='flex w-full mt-4'>
         <DatePicker
           {...datepickerProps}
           onSelect={(date: any) => {
@@ -62,7 +62,7 @@ export const EndDate = () => {
           }}
         >
           <DatePicker.Input
-            className="mb-2"
+            className='mb-2'
             name={field.name}
             value={textValue}
             onChange={(e) => {
@@ -88,12 +88,12 @@ export const EndDate = () => {
                 helpers.setError('Ugyldig datoformat (dd-mm-åååå)')
               }
             }}
-            label="Til og med dato"
+            label='Til og med dato'
             error={!!meta.error && (meta.touched || !!formik.submitCount)}
           />
         </DatePicker>
       </div>
-      <Error fieldName="aiUsageDescription.endDate" />
+      <Error fieldName='aiUsageDescription.endDate' />
     </div>
   )
 }

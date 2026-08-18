@@ -42,15 +42,15 @@ const FieldOperationalContractManagers = (props: TFieldOperationalContractManage
   }, [currentIds.join('|')])
 
   return (
-    <FieldArray name="operationalContractManagers">
+    <FieldArray name='operationalContractManagers'>
       {(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="mt-4">
-          <LabelWithDescription label="Angi de(n) fagansvarlige som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne." />
+        <div className='mt-4'>
+          <LabelWithDescription label='Angi de(n) fagansvarlige som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne.' />
           <CustomSearchSelect
-            ariaLabel="Fagansvarlig"
-            placeholder=""
-            inputId="operationalContractManagers"
-            instanceId="operationalContractManagers"
+            ariaLabel='Fagansvarlig'
+            placeholder=''
+            inputId='operationalContractManagers'
+            instanceId='operationalContractManagers'
             onChange={(event: any) => {
               if (!event) {
                 return

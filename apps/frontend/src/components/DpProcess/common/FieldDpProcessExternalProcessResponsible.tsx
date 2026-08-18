@@ -16,11 +16,11 @@ const FieldDpProcessExternalProcessResponsible = (
   const [value, setValue] = useState<string>(thirdParty ? thirdParty : '')
 
   return (
-    <Field name="externalProcessResponsible">
+    <Field name='externalProcessResponsible'>
       {({ form }: FieldProps<IDpProcessFormValues>) => (
-        <div className="w-full">
+        <div className='w-full'>
           <Select
-            label=""
+            label=''
             hideLabel
             value={value}
             onChange={(event) => {
@@ -28,7 +28,7 @@ const FieldDpProcessExternalProcessResponsible = (
               form.setFieldValue('externalProcessResponsible', event.target.value)
             }}
           >
-            <option value="">Velg behandlingsansvarlig</option>
+            <option value=''>Velg behandlingsansvarlig</option>
             {codelistUtils.getParsedOptions(EListName.THIRD_PARTY).map((code) => (
               <option key={code.id} value={code.id}>
                 {code.label}

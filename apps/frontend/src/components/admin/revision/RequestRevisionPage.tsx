@@ -113,8 +113,8 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
     return (
       <RadioGroup
         value={formikBag.values.completedOnly}
-        className="flex w-full mt-4"
-        legend="Velg kun fullførte behandlinger"
+        className='flex w-full mt-4'
+        legend='Velg kun fullførte behandlinger'
         onChange={(value) => formikBag.setFieldValue('completedOnly', value)}
         error={formikBag.errors.completedOnly}
       >
@@ -126,13 +126,13 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
 
   return (
     <div>
-      <Heading level="1" size="large">
+      <Heading level='1' size='large'>
         Send anmodning om revidering
       </Heading>
 
       {loading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {error && <Alert variant={'error'}>{error}</Alert>}
@@ -152,31 +152,31 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
           <Form>
             {done && (
               <div>
-                <Alert variant="success">Revidering etterspurt</Alert>
+                <Alert variant='success'>Revidering etterspurt</Alert>
               </div>
             )}
-            <div className="flex w-full mt-4"></div>
+            <div className='flex w-full mt-4'></div>
 
             <Tabs
-              defaultValue="logg"
+              defaultValue='logg'
               value={formikBag.values.processSelection}
               onChange={(value) => formikBag.setFieldValue('processSelection', value)}
             >
               <Tabs.List>
-                <Tabs.Tab value={EProcessSelection.ONE} label="Én behandling" />
-                <Tabs.Tab value={EProcessSelection.ALL} label="Alle behandlinger" />
-                <Tabs.Tab value={EProcessSelection.DEPARTMENT} label="Avdeling" />
-                <Tabs.Tab value={EProcessSelection.PRODUCT_AREA} label="Område" />
+                <Tabs.Tab value={EProcessSelection.ONE} label='Én behandling' />
+                <Tabs.Tab value={EProcessSelection.ALL} label='Alle behandlinger' />
+                <Tabs.Tab value={EProcessSelection.DEPARTMENT} label='Avdeling' />
+                <Tabs.Tab value={EProcessSelection.PRODUCT_AREA} label='Område' />
               </Tabs.List>
-              <Tabs.Panel value={EProcessSelection.ONE} className="h-48 w-full p-4">
-                <div className="flex w-full mt-4 my-3">
-                  <div className="my-3 w-1/2">
+              <Tabs.Panel value={EProcessSelection.ONE} className='h-48 w-full p-4'>
+                <div className='flex w-full mt-4 my-3'>
+                  <div className='my-3 w-1/2'>
                     <Label>Legg til en behandling fra Behandlingskatalogen</Label>
 
                     <AsyncSelect
-                      className="w-full mt-1"
-                      aria-label="Søk etter behandlinger"
-                      placeholder="Søk"
+                      className='w-full mt-1'
+                      aria-label='Søk etter behandlinger'
+                      placeholder='Søk'
                       components={{ DropdownIndicator }}
                       noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
                       loadingMessage={() => 'Søker...'}
@@ -190,25 +190,25 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   </div>
                 </div>
                 {formikBag.errors.processId && (
-                  <p className="navds-error-message flex gap-2">
+                  <p className='navds-error-message flex gap-2'>
                     <span>•</span>
                     Feltet er påkrevd
                   </p>
                 )}
               </Tabs.Panel>
-              <Tabs.Panel value={EProcessSelection.ALL} className="h-48 w-full p-4">
+              <Tabs.Panel value={EProcessSelection.ALL} className='h-48 w-full p-4'>
                 {selectOnlyCompleted(formikBag)}
               </Tabs.Panel>
-              <Tabs.Panel value={EProcessSelection.DEPARTMENT} className="h-68 w-full p-4">
+              <Tabs.Panel value={EProcessSelection.DEPARTMENT} className='h-68 w-full p-4'>
                 <Select
-                  className="w-1/2"
-                  label="Avdeling"
+                  className='w-1/2'
+                  label='Avdeling'
                   hideLabel
                   onChange={(ev) => formikBag.setFieldValue('department', ev.currentTarget.value)}
                   value={formikBag.values.department || ''}
                   error={formikBag.errors.department}
                 >
-                  <option key="" value="">
+                  <option key='' value=''>
                     Velg avdeling
                   </option>
                   {alleAvdelingOptions.map((department) => (
@@ -219,10 +219,10 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                 </Select>
                 {selectOnlyCompleted(formikBag)}
               </Tabs.Panel>
-              <Tabs.Panel value={EProcessSelection.PRODUCT_AREA} className="h-68 w-full p-4">
+              <Tabs.Panel value={EProcessSelection.PRODUCT_AREA} className='h-68 w-full p-4'>
                 <Select
-                  className="w-1/2"
-                  label="Område"
+                  className='w-1/2'
+                  label='Område'
                   hideLabel
                   onChange={(ev) =>
                     formikBag.setFieldValue('productAreaId', ev.currentTarget.value)
@@ -230,7 +230,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                   value={formikBag.values.productAreaId || ''}
                   error={formikBag.errors.productAreaId}
                 >
-                  <option key="" value="">
+                  <option key='' value=''>
                     Velg område
                   </option>
                   {areas.map((productArea) => (
@@ -243,11 +243,11 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
               </Tabs.Panel>
             </Tabs>
 
-            <div className="flex mt-4 ml-4">
+            <div className='flex mt-4 ml-4'>
               <Textarea
-                className="w-1/2"
-                name="revisionText"
-                label="Revideringstekst"
+                className='w-1/2'
+                name='revisionText'
+                label='Revideringstekst'
                 value={formikBag.values.revisionText}
                 onChange={(event) => {
                   formikBag.setFieldValue('revisionText', event.target.value)
@@ -257,11 +257,11 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
               />
             </div>
 
-            <div className="flex justify-end mt-6 gap-2">
-              <Button variant="secondary" type="reset">
+            <div className='flex justify-end mt-6 gap-2'>
+              <Button variant='secondary' type='reset'>
                 Tøm skjema
               </Button>
-              <Button type="submit">Send</Button>
+              <Button type='submit'>Send</Button>
             </div>
           </Form>
         )}

@@ -15,15 +15,15 @@ const CustomizedStatefulTooltip = (props: ICustomizedTooltipProps) => {
   const IconComponent = icon ? (
     icon
   ) : (
-    <InformationSquareIcon title="tooltip" color={color || undefined} />
+    <InformationSquareIcon title='tooltip' color={color || undefined} />
   )
 
   return (
     <Tooltip content={content}>
       <Button
-        type="button"
-        variant="tertiary-neutral"
-        size="small"
+        type='button'
+        variant='tertiary-neutral'
+        size='small'
         icon={hasExplicitIcon ? IconComponent : text ? undefined : IconComponent}
         iconPosition={text && hasExplicitIcon ? 'left' : undefined}
       >

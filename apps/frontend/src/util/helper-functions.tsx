@@ -17,7 +17,7 @@ export const shortenLinksInText = (text: string) => {
       return (
         <span key={index}>
           <Tooltip content={word}>
-            <Link href={word} target="_blank" rel="noopener noreferrer">
+            <Link href={word} target='_blank' rel='noopener noreferrer'>
               se ekstern lenke
             </Link>
           </Tooltip>

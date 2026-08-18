@@ -385,21 +385,21 @@ const ProcessList = ({
 
   return (
     <>
-      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-        <div className="min-w-0 sm:mr-auto">
+      <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'>
+        <div className='min-w-0 sm:mr-auto'>
           {!hideTitle && (
-            <Heading size="small" level="2">
+            <Heading size='small' level='2'>
               {titleOverride || 'Behandlinger'} ({processList.length})
             </Heading>
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+        <div className='flex flex-wrap items-center gap-2 w-full sm:w-auto'>
           <Label style={{ color: theme.colors.primary, marginRight: '1rem' }}>Filter</Label>
 
-          <div className="w-full sm:w-72 min-w-0">
+          <div className='w-full sm:w-72 min-w-0'>
             <Select
-              label="Status filter"
+              label='Status filter'
               hideLabel
               onChange={(event: ChangeEvent<HTMLSelectElement>) =>
                 navigate(
@@ -412,14 +412,14 @@ const ProcessList = ({
                 )
               }
             >
-              <option value="">Alle behandlinger</option>
+              <option value=''>Alle behandlinger</option>
               <option value={EProcessStatus.IN_PROGRESS}>Behandlinger under arbeid</option>
               <option value={EProcessStatus.NEEDS_REVISION}>Trenger revidering</option>
               <option value={EProcessStatus.COMPLETED}>Ferdig dokumenterte behandlinger</option>
             </Select>
           </div>
 
-          <div className="flex flex-wrap gap-2 justify-start sm:justify-end w-full sm:w-auto">
+          <div className='flex flex-wrap gap-2 justify-start sm:justify-end w-full sm:w-auto'>
             <ExportProcessModal
               listName={listName}
               code={code}
@@ -428,11 +428,11 @@ const ProcessList = ({
             />
             {isEditable && hasAccess() && (
               <Button
-                size="xsmall"
-                kind="tertiary"
+                size='xsmall'
+                kind='tertiary'
                 icon={
-                  <span className="flex items-center leading-none">
-                    <PlusIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <PlusIcon aria-hidden className='block' />
                   </span>
                 }
                 onClick={() => {
@@ -449,8 +449,8 @@ const ProcessList = ({
       </div>
 
       {isLoadingProcessList && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
 
@@ -478,7 +478,7 @@ const ProcessList = ({
         <ModalProcess
           key={createProcessModalKey}
           codelistUtils={codelistUtils}
-          title="Opprett ny behandling"
+          title='Opprett ny behandling'
           onClose={() => {
             setErrorProcessModal('')
             setShowCreateProcessModal(false)

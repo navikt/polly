@@ -20,7 +20,7 @@ export const Sensitivity = (props: { sensitivity: ICode; codelistUtils: ICodelis
       icon={
         <ShieldIcon
           aria-hidden
-          className="block"
+          className='block'
           style={{ color: sensitivityColor(props.sensitivity.code) }}
         />
       }

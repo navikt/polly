@@ -57,13 +57,13 @@ const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
         >
           <Accordion.Header>
             <span>
-              <span className="inline-flex items-center leading-none mr-1">
-                <PersonGroupIcon aria-hidden className="block" />
+              <span className='inline-flex items-center leading-none mr-1'>
+                <PersonGroupIcon aria-hidden className='block' />
               </span>
               {codelistUtils.getShortname(EListName.PURPOSE, key)}
             </span>
           </Accordion.Header>
-          <Accordion.Content className="p-0">
+          <Accordion.Content className='p-0'>
             <InformationtypePolicyTable
               policies={getPolicylistForPurpose(key)}
               showPurpose={false}

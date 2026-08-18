@@ -12,8 +12,8 @@ const TextWithNumber = (props: ITextWithNumberProps) => {
   const { label, number } = props
 
   return (
-    <div className="flex justify-between gap-2 w-full">
-      <BodyShort className="m-0">{label}</BodyShort>
+    <div className='flex justify-between gap-2 w-full'>
+      <BodyShort className='m-0'>{label}</BodyShort>
       <b style={{ textDecoration: 'underline', minWidth: '1.5rem', textAlign: 'right' }}>
         {number}
       </b>
@@ -33,19 +33,19 @@ const SeksjonCard = (props: TSeksjonCardProps) => {
 
   return (
     <Tooltip content={seksjon.seksjonName}>
-      <Button type="button" variant="tertiary-neutral" onClick={() => onClick(seksjon)}>
+      <Button type='button' variant='tertiary-neutral' onClick={() => onClick(seksjon)}>
         <div
           className={`bg-white p-4 rounded-lg shadow-[0px_0px_6px_3px_rgba(0,0,0,0.08)] ${
             isActive ? 'ring-2 ring-(--ax-text-accent)' : ''
           }`}
         >
-          <div className="flex flex-col items-start justify-around w-80 h-28">
+          <div className='flex flex-col items-start justify-around w-80 h-28'>
             <Label style={{ color: 'var(--ax-text-accent)', textAlign: 'center' }}>
               {seksjon.seksjonName || seksjon.seksjonId}
             </Label>
-            <TextWithNumber label="Ferdig dokumentert" number={seksjon.processesCompleted} />
-            <TextWithNumber label="Under arbeid" number={seksjon.processesInProgress} />
-            <TextWithNumber label="Trenger revidering" number={seksjon.processesNeedsRevision} />
+            <TextWithNumber label='Ferdig dokumentert' number={seksjon.processesCompleted} />
+            <TextWithNumber label='Under arbeid' number={seksjon.processesInProgress} />
+            <TextWithNumber label='Trenger revidering' number={seksjon.processesNeedsRevision} />
           </div>
         </div>
       </Button>
@@ -76,8 +76,8 @@ const Seksjoner = (props: TSeksjonerProps) => {
   )
 
   return (
-    <div className="w-full">
-      <div className="w-full flex flex-wrap gap-4">
+    <div className='w-full'>
+      <div className='w-full flex flex-wrap gap-4'>
         {sortedData().map((seksjon: ISeksjonDashCount, index: number) => (
           <SeksjonCard
             key={index}
@@ -90,8 +90,8 @@ const Seksjoner = (props: TSeksjonerProps) => {
         ))}
       </div>
       {selectedSeksjon && (
-        <div className="mt-6">
-          <Heading size="small" level="3" className="mb-2">
+        <div className='mt-6'>
+          <Heading size='small' level='3' className='mb-2'>
             {selectedSeksjon.seksjonName || selectedSeksjon.seksjonId}
           </Heading>
           <Charts chartData={selectedSeksjon} processStatus={EProcessStatusFilter.All} />

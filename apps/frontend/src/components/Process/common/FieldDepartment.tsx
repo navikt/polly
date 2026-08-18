@@ -58,12 +58,12 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
 
   return (
     <div>
-      <Field name="affiliation.nomDepartmentId">
+      <Field name='affiliation.nomDepartmentId'>
         {(fieldProps: FieldProps) => (
-          <div className="w-full">
+          <div className='w-full'>
             <Select
-              id="affiliation-nomDepartmentId"
-              label="Velg avdeling"
+              id='affiliation-nomDepartmentId'
+              label='Velg avdeling'
               hideLabel
               error={showDepartmentError}
               value={value}
@@ -85,7 +85,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                 )
               }}
             >
-              <option value="">Velg avdeling</option>
+              <option value=''>Velg avdeling</option>
               {alleAvdelingOptions.map((department) => (
                 <option key={department.value} value={department.value}>
                   {department.label}
@@ -97,18 +97,18 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
       </Field>
 
       {value !== '' && value !== undefined && (
-        <div className="mt-3">
+        <div className='mt-3'>
           <ModalLabel
-            label="Seksjon"
-            tooltip="Angi hvilken seksjon som har hovedansvar for behandlingen."
+            label='Seksjon'
+            tooltip='Angi hvilken seksjon som har hovedansvar for behandlingen.'
           />
-          <FieldArray name="affiliation.seksjoner">
+          <FieldArray name='affiliation.seksjoner'>
             {(FieldArrayRenderProps: FieldArrayRenderProps) => (
-              <div className="w-full">
-                <div className="w-full">
+              <div className='w-full'>
+                <div className='w-full'>
                   <Select
-                    id="affiliation-seksjoner-nomSeksjonId"
-                    label="Velg seksjon"
+                    id='affiliation-seksjoner-nomSeksjonId'
+                    label='Velg seksjon'
                     hideLabel
                     error={showSeksjonerError}
                     onChange={async (event) => {
@@ -131,7 +131,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                       }
                     }}
                   >
-                    <option value="">Velg seksjon</option>
+                    <option value=''>Velg seksjon</option>
                     {seksjonForAvdeling.map((seksjon) => (
                       <option key={seksjon.value} value={seksjon.value}>
                         {seksjon.label}
@@ -139,7 +139,7 @@ const FieldDepartment = (props: IFieldDepartmentProps) => {
                     ))}
                   </Select>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className='mt-2 flex flex-wrap gap-2'>
                   {renderTagList(
                     FieldArrayRenderProps.form.values.affiliation.seksjoner.map(
                       (seksjon: INomSeksjon) => seksjon.nomSeksjonName

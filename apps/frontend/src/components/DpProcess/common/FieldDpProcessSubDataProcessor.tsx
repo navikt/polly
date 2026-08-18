@@ -39,26 +39,26 @@ const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorPr
 
   return (
     <>
-      <div className="w-full">
+      <div className='w-full'>
         <ModalLabel
-          label="Benyttes underdatabehandler(e)?"
-          tooltip="En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler."
+          label='Benyttes underdatabehandler(e)?'
+          tooltip='En underdatabehandler er en virksomhet som behandler personopplysninger på vegne av NAV når NAV selv opptrer som databehandler.'
           fullwidth
         />
-        <div className="mt-2">
+        <div className='mt-2'>
           <BoolField
-            fieldName="subDataProcessing.dataProcessor"
+            fieldName='subDataProcessing.dataProcessor'
             value={formikBag.values.subDataProcessing.dataProcessor}
-            direction="horizontal"
+            direction='horizontal'
           />
         </div>
       </div>
 
       {formikBag.values.subDataProcessing.dataProcessor && (
         <>
-          <div className="w-full mt-4">
-            <ModalLabel label="Databehandler" fullwidth />
-            <div className="mt-2">
+          <div className='w-full mt-4'>
+            <ModalLabel label='Databehandler' fullwidth />
+            <div className='mt-2'>
               <FieldDpDataProcessors
                 formikBag={formikBag}
                 subDataProcessors={subDataProcessors}
@@ -71,7 +71,7 @@ const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorPr
               />
             </div>
           </div>
-          <Error fieldName="subDataProcessing.procesors" />
+          <Error fieldName='subDataProcessing.procesors' />
         </>
       )}
     </>

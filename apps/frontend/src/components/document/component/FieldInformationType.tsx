@@ -30,7 +30,7 @@ const FieldInformationType = (props: {
 
   return (
     <UNSAFE_Combobox
-      label=""
+      label=''
       hideLabel
       placeholder={selectedInformationType?.id ? '' : 'Søk opplysningstyper'}
       isLoading={isLoading}

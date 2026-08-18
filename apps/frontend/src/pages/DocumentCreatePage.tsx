@@ -40,7 +40,7 @@ const DocumentCreatePage = () => {
 
   return (
     <Fragment>
-      <Heading size="large">Opprett dokument</Heading>
+      <Heading size='large'>Opprett dokument</Heading>
       <DocumentForm
         initialValues={initialCreateDocumentFormValues}
         handleSubmit={handleCreateDocument}

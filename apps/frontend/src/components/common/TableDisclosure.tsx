@@ -60,25 +60,25 @@ const TableDisclosure = ({ list, codelistUtils }: TTableDisclosureProps) => {
   }, [list])
 
   return (
-    <Table size="small" sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
+    <Table size='small' sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
       <Table.Header>
         <Table.Row>
-          <Table.ColumnHeader sortKey="recipient" className="w-1/6" sortable>
+          <Table.ColumnHeader sortKey='recipient' className='w-1/6' sortable>
             Mottaker
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="name" className="w-1/6" sortable>
+          <Table.ColumnHeader sortKey='name' className='w-1/6' sortable>
             Navn på utlevering
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="document" className="w-1/6" sortable>
+          <Table.ColumnHeader sortKey='document' className='w-1/6' sortable>
             Dokument
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="recipientPurpose" className="w-1/6" sortable>
+          <Table.ColumnHeader sortKey='recipientPurpose' className='w-1/6' sortable>
             Formål med utlevering
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="description" className="w-1/6" sortable>
+          <Table.ColumnHeader sortKey='description' className='w-1/6' sortable>
             Ytterligere beskrivelse
           </Table.ColumnHeader>
-          <Table.ColumnHeader sortKey="legalBases" className="w-1/6" sortable>
+          <Table.ColumnHeader sortKey='legalBases' className='w-1/6' sortable>
             Behandlingsgrunnlag
           </Table.ColumnHeader>
         </Table.Row>
@@ -89,18 +89,18 @@ const TableDisclosure = ({ list, codelistUtils }: TTableDisclosureProps) => {
         ) : (
           sortedData.map((row: IDisclosure, index: number) => (
             <Table.Row key={index}>
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>
                 <Link href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</Link>
               </Table.DataCell>
-              <Table.DataCell textSize="small">{row.name}</Table.DataCell>
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>{row.name}</Table.DataCell>
+              <Table.DataCell textSize='small'>
                 <Link href={`/document/${row.documentId}`}>{row.document?.name}</Link>
               </Table.DataCell>
-              <Table.DataCell textSize="small">{row.recipientPurpose}</Table.DataCell>
-              <Table.DataCell textSize="small" className="break-all">
+              <Table.DataCell textSize='small'>{row.recipientPurpose}</Table.DataCell>
+              <Table.DataCell textSize='small' className='break-all'>
                 {row.description}
               </Table.DataCell>
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>
                 {row.legalBases && (
                   <ListLegalBasesInTable
                     legalBases={row.legalBases}
@@ -108,7 +108,7 @@ const TableDisclosure = ({ list, codelistUtils }: TTableDisclosureProps) => {
                   />
                 )}
                 {alerts[row.id] && alerts[row.id].missingArt6 && (
-                  <InlineMessage size="small" status="warning">
+                  <InlineMessage size='small' status='warning'>
                     <Link href={`/alert/events/disclosure/${row.id}`}>
                       Behandlingsgrunnlag for artikkel 6 mangler
                     </Link>

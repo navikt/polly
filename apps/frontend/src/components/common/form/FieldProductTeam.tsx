@@ -35,16 +35,16 @@ const FieldProductTeam = (props: { productTeams: string[]; fieldName: string }) 
       <FieldArray
         name={fieldName}
         render={(arrayHelpers: FieldArrayRenderProps) => (
-          <div className="w-full">
+          <div className='w-full'>
             <CustomSearchSelect
-              ariaLabel="Søk etter team"
-              placeholder=""
+              ariaLabel='Søk etter team'
+              placeholder=''
               loadOptions={useTeamSearchOptions}
               onChange={(value: ITeam) => {
                 arrayHelpers.form.setFieldValue(fieldName, [...productTeams, value.id])
               }}
             />
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className='mt-2 flex flex-wrap gap-2'>
               {renderTagList(values.map((value) => value.label) as string[], arrayHelpers)}
             </div>
           </div>

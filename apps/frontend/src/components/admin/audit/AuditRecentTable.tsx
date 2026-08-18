@@ -29,14 +29,14 @@ const CodeView = ({ audit }: ICodeViewProps) => {
 
   return (
     <div>
-      <Button key={audit.id} onClick={() => setModalOpen(!modalOpen)} variant="tertiary">
+      <Button key={audit.id} onClick={() => setModalOpen(!modalOpen)} variant='tertiary'>
         Vis data
       </Button>
       <Modal
         key={audit.id}
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        className="max-h-[75%] overflow-y-scroll"
+        className='max-h-[75%] overflow-y-scroll'
         header={{ heading: 'Data visning' }}
       >
         <Modal.Body>
@@ -114,11 +114,11 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
 
   return (
     <>
-      <div className="flex justify-between mb-2">
-        <Heading size="small">Siste endringer</Heading>
-        <div className="w-72 flex justify-between">
+      <div className='flex justify-between mb-2'>
+        <Heading size='small'>Siste endringer</Heading>
+        <div className='w-72 flex justify-between'>
           <Select
-            label="Tabell:"
+            label='Tabell:'
             onChange={(event: ChangeEvent<HTMLSelectElement>) => {
               if (event.target.value === 'Codelist') {
                 setTable(event.target.value.toUpperCase() as EObjectType)
@@ -127,7 +127,7 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
               }
             }}
           >
-            <option value="">Velg type for versjonering</option>
+            <option value=''>Velg type for versjonering</option>
             {tableOptions.map((tableOption: ITableOptionsProps, index: number) => (
               <option key={index + '_' + tableOption.label} value={tableOption.value}>
                 {tableOption.label}
@@ -137,11 +137,11 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
         </div>
       </div>
 
-      <Table size="large" zebraStripes>
+      <Table size='large' zebraStripes>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader className="w-[13%]">Tidspunkt</Table.ColumnHeader>
-            <Table.ColumnHeader className="w-[17%]">Tabell</Table.ColumnHeader>
+            <Table.ColumnHeader className='w-[13%]'>Tidspunkt</Table.ColumnHeader>
+            <Table.ColumnHeader className='w-[17%]'>Tabell</Table.ColumnHeader>
             <Table.ColumnHeader>ID</Table.ColumnHeader>
             <Table.ColumnHeader>Bruker</Table.ColumnHeader>
             <Table.ColumnHeader aria-hidden></Table.ColumnHeader>
@@ -154,24 +154,24 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
 
             return (
               <Table.Row key={audit.id}>
-                <Table.HeaderCell className="w-[13%]" scope="row">
-                  <div className="flex">
-                    <div className="mr-2">{rowNum}</div>
-                    <AuditButton kind="tertiary" id={audit.tableId} auditId={audit.id}>
-                      <Tooltip content={audit.time} placement="top">
+                <Table.HeaderCell className='w-[13%]' scope='row'>
+                  <div className='flex'>
+                    <div className='mr-2'>{rowNum}</div>
+                    <AuditButton kind='tertiary' id={audit.tableId} auditId={audit.id}>
+                      <Tooltip content={audit.time} placement='top'>
                         <div>{moment(audit.time).fromNow()}</div>
                       </Tooltip>
                     </AuditButton>
                   </div>
                 </Table.HeaderCell>
-                <Table.HeaderCell className="w-[17%]">
-                  <div className="flex items-center gap-2 leading-none">
+                <Table.HeaderCell className='w-[17%]'>
+                  <div className='flex items-center gap-2 leading-none'>
                     <AuditActionIcon action={audit.action} />
-                    <span className="leading-none">{audit.table}</span>
+                    <span className='leading-none'>{audit.table}</span>
                   </div>
                 </Table.HeaderCell>
                 <Table.DataCell>
-                  <Tooltip content={audit.tableId} placement="top">
+                  <Tooltip content={audit.tableId} placement='top'>
                     <div className={`text-[${colors[audit.tableId]}]`}>
                       {_.truncate(audit.tableId, { length })}
                     </div>
@@ -181,9 +181,9 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
                   <div>{audit.user}</div>
                 </Table.DataCell>
                 <Table.HeaderCell>
-                  <div className="flex">
+                  <div className='flex'>
                     <ObjectLink id={audit.tableId} type={audit.table} audit={audit}>
-                      <Button variant="tertiary">Finn bruk</Button>
+                      <Button variant='tertiary'>Finn bruk</Button>
                     </ObjectLink>
                     <CodeView audit={audit} />
                   </div>
@@ -194,20 +194,20 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
         </Table.Body>
       </Table>
 
-      <div className="flex w-full justify-center items-center mt-3">
+      <div className='flex w-full justify-center items-center mt-3'>
         <Select
-          label="Antall rader:"
+          label='Antall rader:'
           value={limit}
           onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             setLimit(parseInt(event.target.value))
           }}
-          size="small"
+          size='small'
         >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
+          <option value='5'>5</option>
+          <option value='10'>10</option>
+          <option value='20'>20</option>
+          <option value='50'>50</option>
+          <option value='100'>100</option>
         </Select>
         <Spacer />
         <div>
@@ -216,7 +216,7 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
             onPageChange={(page: number) => handlePageChange(page)}
             count={audits.pages}
             prevNextTexts
-            size="small"
+            size='small'
           />
         </div>
         <Spacer />

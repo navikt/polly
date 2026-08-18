@@ -16,12 +16,12 @@ export const SystemPage = () => {
         <>
           <PageHeader section={ESection.system} code={systemCode} />
 
-          <Tabs defaultValue="behandlinger">
+          <Tabs defaultValue='behandlinger'>
             <Tabs.List>
-              <Tabs.Tab value="behandlinger" label="Behandlinger" />
-              <Tabs.Tab value="opplysningstyper" label="Opplysningstyper" />
+              <Tabs.Tab value='behandlinger' label='Behandlinger' />
+              <Tabs.Tab value='opplysningstyper' label='Opplysningstyper' />
             </Tabs.List>
-            <Tabs.Panel value="behandlinger">
+            <Tabs.Panel value='behandlinger'>
               <ProcessList
                 section={ESection.system}
                 code={systemCode}
@@ -29,9 +29,9 @@ export const SystemPage = () => {
                 isEditable={false}
               />
             </Tabs.Panel>
-            <Tabs.Panel value="opplysningstyper">
+            <Tabs.Panel value='opplysningstyper'>
               <InfoTypeTable
-                title="Opplysningstyper systemet er master for"
+                title='Opplysningstyper systemet er master for'
                 getInfoTypes={async () =>
                   (await getInformationTypesBy({ orgMaster: systemCode })).content
                 }

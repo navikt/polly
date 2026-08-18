@@ -26,15 +26,15 @@ const FieldDpProcessDataProcessingAgreements = (
   }
 
   return (
-    <FieldArray name="dataProcessingAgreements">
+    <FieldArray name='dataProcessingAgreements'>
       {(arrayHelpers: FieldArrayRenderProps) => (
-        <div className="w-full">
-          <div className="flex w-full">
+        <div className='w-full'>
+          <div className='flex w-full'>
             <TextField
-              className="w-full"
-              label=""
+              className='w-full'
+              label=''
               hideLabel
-              placeholder="(f.eks. lenke til Public 360, Confluence e.l.)"
+              placeholder='(f.eks. lenke til Public 360, Confluence e.l.)'
               value={currentKeywordValue}
               onChange={(event) => setCurrentKeywordValue(event.currentTarget.value)}
               onKeyDown={(event) => {
@@ -43,11 +43,11 @@ const FieldDpProcessDataProcessingAgreements = (
               onBlur={() => onAddAgreement(arrayHelpers)}
               ref={agreementRef}
             />
-            <Button type="button" onClick={() => onAddAgreement(arrayHelpers)}>
+            <Button type='button' onClick={() => onAddAgreement(arrayHelpers)}>
               <PlusIcon aria-hidden />
             </Button>
           </div>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className='mt-2 flex flex-wrap gap-2'>
             {renderTagList(formikBag.values.dataProcessingAgreements, arrayHelpers)}
           </div>
         </div>

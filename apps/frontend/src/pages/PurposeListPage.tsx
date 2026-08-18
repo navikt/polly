@@ -106,22 +106,22 @@ export const PurposeListPage = () => {
   }
 
   return (
-    <div role="main">
+    <div role='main'>
       <>
-        <Heading size="xlarge">Behandlingsaktiviteter</Heading>
-        <div className="flex w-full justify-between">
+        <Heading size='xlarge'>Behandlingsaktiviteter</Heading>
+        <div className='flex w-full justify-between'>
           <div>
             <BodyShort>Velg overordnet behandlingsaktivitet</BodyShort>
           </div>
 
-          <div className="mt-auto flex items-center">
+          <div className='mt-auto flex items-center'>
             {hasAccess() && (
               <Button
-                className="mr-4"
-                variant="secondary"
+                className='mr-4'
+                variant='secondary'
                 icon={
-                  <span className="flex items-center leading-none">
-                    <FileWordIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <FileWordIcon aria-hidden className='block' />
                   </span>
                 }
                 onClick={() => {
@@ -136,10 +136,10 @@ export const PurposeListPage = () => {
 
             {hasAccess() && (
               <Button
-                variant="secondary"
+                variant='secondary'
                 icon={
-                  <span className="flex items-center leading-none">
-                    <PlusCircleIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <PlusCircleIcon aria-hidden className='block' />
                   </span>
                 }
                 onClick={() => {
@@ -154,12 +154,12 @@ export const PurposeListPage = () => {
           </div>
         </div>
 
-        <div className="mb-6" />
+        <div className='mb-6' />
 
         <ModalProcess
           key={createProcessModalKey}
           codelistUtils={codelistUtils}
-          title="Opprett ny behandling"
+          title='Opprett ny behandling'
           onClose={() => {
             setErrorProcessModal(null)
             setShowCreateProcessModal(false)
@@ -183,49 +183,49 @@ export const PurposeListPage = () => {
           }}
         >
           <Modal.Body>
-            <div className="flex flex-wrap gap-3">
+            <div className='flex flex-wrap gap-3'>
               <Button
-                size="small"
-                variant="secondary"
+                size='small'
+                variant='secondary'
                 icon={
-                  <span className="flex items-center leading-none">
-                    <FileWordIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <FileWordIcon aria-hidden className='block' />
                   </span>
                 }
                 loading={exportDownloading === 'internal'}
                 disabled={exportDownloading !== null}
                 onClick={() => handleExport('internal')}
-                type="button"
+                type='button'
               >
                 Eksport for intern bruk
               </Button>
 
               <Button
-                size="small"
-                variant="secondary"
+                size='small'
+                variant='secondary'
                 icon={
-                  <span className="flex items-center leading-none">
-                    <FileWordIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <FileWordIcon aria-hidden className='block' />
                   </span>
                 }
                 loading={exportDownloading === 'external'}
                 disabled={exportDownloading !== null}
                 onClick={() => handleExport('external')}
-                type="button"
+                type='button'
               >
                 Eksport for ekstern bruk
               </Button>
             </div>
 
             {exportSuccess && (
-              <LocalAlert status="success" className="mt-3" role="status" aria-live="polite">
+              <LocalAlert status='success' className='mt-3' role='status' aria-live='polite'>
                 <LocalAlert.Header>
                   <LocalAlert.Title>Eksport velykket</LocalAlert.Title>
                 </LocalAlert.Header>
                 <LocalAlert.Content>{exportSuccess}</LocalAlert.Content>
               </LocalAlert>
             )}
-            {exportError && <BodyShort className="mt-3">{exportError}</BodyShort>}
+            {exportError && <BodyShort className='mt-3'>{exportError}</BodyShort>}
           </Modal.Body>
         </Modal>
 

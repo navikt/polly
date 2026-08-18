@@ -59,7 +59,7 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
       id={id}
       value={boolToRadio(value)}
       className={`w-full ${horizontalClasses} ${horizontalAlignClass} ${className ?? ''}`.trim()}
-      legend=""
+      legend=''
       hideLegend
       error={error}
       onChange={(newValue) => {
@@ -69,25 +69,25 @@ export const RadioBoolButton = (props: TRadioBoolProps) => {
     >
       {reverseOrder ? (
         <>
-          <Radio className="mr-8 last:mr-0" value={NO}>
+          <Radio className='mr-8 last:mr-0' value={NO}>
             Nei {secondButtonLabel}
           </Radio>
-          <Radio className="mr-8 last:mr-0" value={YES}>
+          <Radio className='mr-8 last:mr-0' value={YES}>
             Ja {firstButtonLabel}
           </Radio>
         </>
       ) : (
         <>
-          <Radio className="mr-8 last:mr-0" value={YES}>
+          <Radio className='mr-8 last:mr-0' value={YES}>
             Ja {firstButtonLabel}
           </Radio>
-          <Radio className="mr-8 last:mr-0" value={NO}>
+          <Radio className='mr-8 last:mr-0' value={NO}>
             Nei {secondButtonLabel}
           </Radio>
         </>
       )}
       {!omitUndefined && (
-        <Radio className="mr-8 last:mr-0" value={UNCLARIFIED}>
+        <Radio className='mr-8 last:mr-0' value={UNCLARIFIED}>
           Uavklart
         </Radio>
       )}

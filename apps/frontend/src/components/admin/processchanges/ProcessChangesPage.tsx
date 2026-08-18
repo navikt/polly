@@ -163,13 +163,13 @@ export const ProcessChangesPage = () => {
   }
 
   return (
-    <div role="main" className="w-full px-4">
-      <Heading size="large" level="1" className="mt-4 mb-6">
+    <div role='main' className='w-full px-4'>
+      <Heading size='large' level='1' className='mt-4 mb-6'>
         Endringer i behandlinger
       </Heading>
 
-      <div className="flex flex-col gap-4 max-w-xl">
-        <Select label="Felt" value={groupLabel} onChange={(e) => handleGroupChange(e.target.value)}>
+      <div className='flex flex-col gap-4 max-w-xl'>
+        <Select label='Felt' value={groupLabel} onChange={(e) => handleGroupChange(e.target.value)}>
           <option value={ALL_LABEL}>{ALL_LABEL}</option>
           {GROUPS.map((g) => (
             <option key={g.label} value={g.label}>
@@ -178,18 +178,18 @@ export const ProcessChangesPage = () => {
           ))}
         </Select>
 
-        <div className="flex gap-4">
+        <div className='flex gap-4'>
           <DatePicker {...fromPickerProps} dropdownCaption>
-            <DatePicker.Input {...fromInputProps} label="Fra dato" />
+            <DatePicker.Input {...fromInputProps} label='Fra dato' />
           </DatePicker>
 
           <DatePicker {...toPickerProps} dropdownCaption>
-            <DatePicker.Input {...toInputProps} label="Til dato" />
+            <DatePicker.Input {...toInputProps} label='Til dato' />
           </DatePicker>
         </div>
 
         {dateRangeInvalid && (
-          <p className="text-red-600 text-sm">Til dato kan ikke være før Fra dato</p>
+          <p className='text-red-600 text-sm'>Til dato kan ikke være før Fra dato</p>
         )}
 
         <div>
@@ -200,26 +200,26 @@ export const ProcessChangesPage = () => {
       </div>
 
       {loading && (
-        <div className="mt-8 flex justify-center">
-          <Loader size="3xlarge" />
+        <div className='mt-8 flex justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
 
-      {error && <p className="mt-4 text-red-600">{error}</p>}
+      {error && <p className='mt-4 text-red-600'>{error}</p>}
 
       {results.length > 0 && (
-        <div className="mt-8 w-max">
+        <div className='mt-8 w-max'>
           <Table>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell className="whitespace-nowrap">Felt</Table.HeaderCell>
-                <Table.HeaderCell className="whitespace-nowrap text-center">
+                <Table.HeaderCell className='whitespace-nowrap'>Felt</Table.HeaderCell>
+                <Table.HeaderCell className='whitespace-nowrap text-center'>
                   Periode
                 </Table.HeaderCell>
-                <Table.HeaderCell className="whitespace-nowrap text-center">
+                <Table.HeaderCell className='whitespace-nowrap text-center'>
                   Totalt antall behandlinger
                 </Table.HeaderCell>
-                <Table.HeaderCell className="whitespace-nowrap text-center">
+                <Table.HeaderCell className='whitespace-nowrap text-center'>
                   Antall med endring
                 </Table.HeaderCell>
               </Table.Row>
@@ -231,7 +231,7 @@ export const ProcessChangesPage = () => {
                     <Table.Row key={`header-${group.groupLabel}`}>
                       <Table.DataCell
                         colSpan={4}
-                        className="font-bold uppercase tracking-wide text-xs bg-deepblue-50 text-deepblue-800 border-t-2 border-deepblue-300 pt-5 pb-2"
+                        className='font-bold uppercase tracking-wide text-xs bg-deepblue-50 text-deepblue-800 border-t-2 border-deepblue-300 pt-5 pb-2'
                       >
                         {group.groupLabel}
                       </Table.DataCell>
@@ -239,14 +239,14 @@ export const ProcessChangesPage = () => {
                   )}
                   {group.rows.map((row, i) => (
                     <Table.Row key={`${group.groupLabel}-${i}`}>
-                      <Table.DataCell className="whitespace-nowrap">{row.label}</Table.DataCell>
-                      <Table.DataCell className="whitespace-nowrap text-center">
+                      <Table.DataCell className='whitespace-nowrap'>{row.label}</Table.DataCell>
+                      <Table.DataCell className='whitespace-nowrap text-center'>
                         {row.summary.from} – {row.summary.to}
                       </Table.DataCell>
-                      <Table.DataCell className="whitespace-nowrap text-center">
+                      <Table.DataCell className='whitespace-nowrap text-center'>
                         {row.summary.totalProcesses}
                       </Table.DataCell>
-                      <Table.DataCell className="whitespace-nowrap text-center">
+                      <Table.DataCell className='whitespace-nowrap text-center'>
                         {row.summary.changedCount}
                       </Table.DataCell>
                     </Table.Row>

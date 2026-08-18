@@ -67,37 +67,37 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
   }, [policies])
 
   return (
-    <Table size="small" sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
+    <Table size='small' sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
       <Table.Header>
         <Table.Row>
           {showPurpose && (
-            <Table.ColumnHeader textSize="small" sortKey="purposes" className="w-/5" sortable>
+            <Table.ColumnHeader textSize='small' sortKey='purposes' className='w-/5' sortable>
               Overordnet behandlingsaktivitet
             </Table.ColumnHeader>
           )}
-          <Table.ColumnHeader textSize="small" sortKey="process" className="w-2/5" sortable>
+          <Table.ColumnHeader textSize='small' sortKey='process' className='w-2/5' sortable>
             Behandling
           </Table.ColumnHeader>
           <Table.ColumnHeader
-            textSize="small"
-            sortKey="subjectCategories"
-            className="w-1/5"
+            textSize='small'
+            sortKey='subjectCategories'
+            className='w-1/5'
             sortable
           >
             Personkategori
           </Table.ColumnHeader>
-          <Table.ColumnHeader textSize="small" className="w-1/5">
+          <Table.ColumnHeader textSize='small' className='w-1/5'>
             Behandlingsgrunnlag
           </Table.ColumnHeader>
-          <Table.ColumnHeader textSize="small">Lagringsbehov</Table.ColumnHeader>
+          <Table.ColumnHeader textSize='small'>Lagringsbehov</Table.ColumnHeader>
         </Table.Row>
       </Table.Header>
       <Table.Body>
         {sortedData.map((row: IPolicy, index: number) => (
           <Table.Row key={index}>
             {showPurpose && (
-              <Table.DataCell textSize="small">
-                <div className="flex flex-col">
+              <Table.DataCell textSize='small'>
+                <div className='flex flex-col'>
                   {row.purposes.map((purpose: ICode, index: number) => (
                     <div key={index}>
                       <Link href={`/process/purpose/${purpose.code}`}>
@@ -109,13 +109,13 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
               </Table.DataCell>
             )}
 
-            <Table.DataCell textSize="small">
+            <Table.DataCell textSize='small'>
               <Link href={`/process/purpose/${row.purposes[0].code}/${row.process.id}`}>
                 {row.process && row.process.name}
               </Link>
             </Table.DataCell>
 
-            <Table.DataCell textSize="small">
+            <Table.DataCell textSize='small'>
               {row.subjectCategories
                 .map((subjectCategory: ICode) =>
                   codelistUtils.getShortname(EListName.SUBJECT_CATEGORY, subjectCategory.code)
@@ -123,7 +123,7 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
                 .join(', ')}
             </Table.DataCell>
 
-            <Table.DataCell textSize="small">
+            <Table.DataCell textSize='small'>
               <div>
                 {row.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES &&
                   row.legalBases &&
@@ -149,7 +149,7 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
               </div>
             </Table.DataCell>
 
-            <Table.DataCell textSize="small">
+            <Table.DataCell textSize='small'>
               <RetentionView retention={row.process.retention} />
             </Table.DataCell>
           </Table.Row>

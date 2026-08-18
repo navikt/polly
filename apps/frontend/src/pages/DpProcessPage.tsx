@@ -46,15 +46,15 @@ const DpProcessPage = () => {
 
   return (
     <>
-      <div className="flex justify-between mb-4">
-        <Heading size="large">Behandlinger hvor Nav er databehandler</Heading>
+      <div className='flex justify-between mb-4'>
+        <Heading size='large'>Behandlinger hvor Nav er databehandler</Heading>
         <div>
           {user.canWrite() /*!env.disableDpProcess &&*/ && (
             <Button
-              kind="outline"
+              kind='outline'
               icon={
-                <span className="flex items-center leading-none">
-                  <PlusCircleIcon aria-hidden className="block" />
+                <span className='flex items-center leading-none'>
+                  <PlusCircleIcon aria-hidden className='block' />
                 </span>
               }
               onClick={() => {
@@ -84,8 +84,8 @@ const DpProcessPage = () => {
       {!isLoading ? (
         <DpProcessTable dpProcesses={dpProcesses} />
       ) : (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
     </>

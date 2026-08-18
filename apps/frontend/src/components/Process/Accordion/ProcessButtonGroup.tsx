@@ -39,15 +39,15 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
   }
 
   return (
-    <div className="flex flex-wrap justify-end gap-2 mb-3">
+    <div className='flex flex-wrap justify-end gap-2 mb-3'>
       <AuditButton id={process.id} />
       <Button
         onClick={() => setIsExportModalOpen(true)}
-        kind="outline"
-        size="xsmall"
+        kind='outline'
+        size='xsmall'
         icon={
-          <span className="flex items-center leading-none">
-            <FileWordIcon aria-hidden className="block" />
+          <span className='flex items-center leading-none'>
+            <FileWordIcon aria-hidden className='block' />
           </span>
         }
       >
@@ -63,18 +63,18 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
           <Modal.Body>
             {exportError !== '' && <BodyLong>{exportError}</BodyLong>}
             {isExportLoading && (
-              <div className="flex w-full justify-center">
-                <Loader size="3xlarge" />
+              <div className='flex w-full justify-center'>
+                <Loader size='3xlarge' />
               </div>
             )}
             {!isExportLoading && exportError === '' && (
-              <div className="flex gap-2">
+              <div className='flex gap-2'>
                 <Button
-                  kind="outline"
-                  size="xsmall"
+                  kind='outline'
+                  size='xsmall'
                   icon={
-                    <span className="flex items-center leading-none">
-                      <FileWordIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <FileWordIcon aria-hidden className='block' />
                     </span>
                   }
                   onClick={async () => {
@@ -84,11 +84,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                   Eksport for intern bruk
                 </Button>
                 <Button
-                  kind="outline"
-                  size="xsmall"
+                  kind='outline'
+                  size='xsmall'
                   icon={
-                    <span className="flex items-center leading-none">
-                      <FileWordIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <FileWordIcon aria-hidden className='block' />
                     </span>
                   }
                   disabled={process.status !== EProcessStatus.COMPLETED}
@@ -109,11 +109,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
       {hasAccess && (
         <>
           <Button
-            kind="outline"
-            size="xsmall"
+            kind='outline'
+            size='xsmall'
             icon={
-              <span className="flex items-center leading-none">
-                <DocPencilIcon aria-hidden className="block" />
+              <span className='flex items-center leading-none'>
+                <DocPencilIcon aria-hidden className='block' />
               </span>
             }
             onClick={editProcess}
@@ -122,11 +122,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
           </Button>
 
           <Button
-            kind="outline"
-            size="xsmall"
+            kind='outline'
+            size='xsmall'
             icon={
-              <span className="flex items-center leading-none">
-                <DocPencilIcon aria-hidden className="block" />
+              <span className='flex items-center leading-none'>
+                <DocPencilIcon aria-hidden className='block' />
               </span>
             }
             onClick={() => {
@@ -139,11 +139,11 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
           </Button>
 
           <Button
-            kind="outline"
-            size="xsmall"
+            kind='outline'
+            size='xsmall'
             icon={
-              <span className="flex items-center leading-none">
-                <TrashIcon aria-hidden className="block" />
+              <span className='flex items-center leading-none'>
+                <TrashIcon aria-hidden className='block' />
               </span>
             }
             onClick={deleteProcess}

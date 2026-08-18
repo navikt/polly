@@ -34,10 +34,10 @@ export const SettingsPage = () => {
 
   return (
     <div>
-      <Heading size="large">Innstillinger</Heading>
+      <Heading size='large'>Innstillinger</Heading>
       {loading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!loading && (error || !settings) && error}
@@ -53,11 +53,11 @@ export const SettingsPage = () => {
             message={settings?.frontpageMessage}
             setMessage={(frontpageMessage) => setSettings({ ...settings, frontpageMessage })}
           />
-          <div className="flex justify-end mt-6 gap-2">
-            <Button variant="secondary" onClick={load}>
+          <div className='flex justify-end mt-6 gap-2'>
+            <Button variant='secondary' onClick={load}>
               Avbryt
             </Button>
-            <Button type="button" onClick={save}>
+            <Button type='button' onClick={save}>
               Lagre
             </Button>
           </div>
@@ -94,10 +94,10 @@ const DefaultProcessDocument = (props: IDefaultProcessDocumentProps) => {
   }, [])
 
   return (
-    <div className="flex align-middle">
-      <div className="w-2/5">
+    <div className='flex align-middle'>
+      <div className='w-2/5'>
         <Select
-          label="Dokument for standard informasjonstyper i behandling"
+          label='Dokument for standard informasjonstyper i behandling'
           value={documentId}
           onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             setDocumentId(event.target.value)
@@ -123,12 +123,12 @@ const FrontpageMessage = (props: IFrontpageMessageProps) => {
   const { message, setMessage } = props
 
   return (
-    <div className="align-middle mt-4">
-      <div className="w-full flex">
-        <div className="w-1/2 mr-4">
+    <div className='align-middle mt-4'>
+      <div className='w-full flex'>
+        <div className='w-1/2 mr-4'>
           <Textarea
-            className="w-full"
-            label="Forsidemelding"
+            className='w-full'
+            label='Forsidemelding'
             value={message}
             minRows={16}
             onChange={(event: any) =>
@@ -136,7 +136,7 @@ const FrontpageMessage = (props: IFrontpageMessageProps) => {
             }
           />
         </div>
-        <div className="w-1/2 mt-8">
+        <div className='w-1/2 mt-8'>
           <Markdown source={message} escapeHtml={false} />
         </div>
       </div>

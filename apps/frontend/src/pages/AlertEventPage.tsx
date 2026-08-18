@@ -144,30 +144,30 @@ export const AlertEventPage = () => {
 
   return (
     <>
-      <div className="flex w-full justify-between items-center">
-        <Heading size="large">Varsler</Heading>
+      <div className='flex w-full justify-between items-center'>
+        <Heading size='large'>Varsler</Heading>
         {(state.informationTypeId || state.processId || state.disclosureId) && (
-          <div className="flex items-center">
-            <Label className="mr-3">Filter:</Label>
+          <div className='flex items-center'>
+            <Label className='mr-3'>Filter:</Label>
             <Button
-              variant="secondary"
-              size="xsmall"
-              className="mx-2.5"
+              variant='secondary'
+              size='xsmall'
+              className='mx-2.5'
               onClick={() => dispatch({ type: 'OBJECT_FILTER' })}
             >
               {state.processId && 'Behandling'}
               {state.informationTypeId && 'Opplysningstype'}
               {state.disclosureId && 'Utlevering'}
-              <span className="ml-2 inline-flex items-center leading-none">
-                <XMarkIcon aria-hidden className="block" />
+              <span className='ml-2 inline-flex items-center leading-none'>
+                <XMarkIcon aria-hidden className='block' />
               </span>
             </Button>
           </div>
         )}
       </div>
-      <div className="w-full flex mb-1.5">
+      <div className='w-full flex mb-1.5'>
         <Select
-          label="Type varsel"
+          label='Type varsel'
           onChange={(event) => {
             if (event.target.value !== '') {
               setType(event.target.value as EAlertEventType)
@@ -176,7 +176,7 @@ export const AlertEventPage = () => {
             }
           }}
         >
-          <option value="">Velg type</option>
+          <option value=''>Velg type</option>
           {Object.values(EAlertEventType).map((t: EAlertEventType) => (
             <option key={t} value={t}>
               {tekster[t]}
@@ -184,8 +184,8 @@ export const AlertEventPage = () => {
           ))}
         </Select>
 
-        <div className="w-full flex justify-end items-center">
-          <Label className="mr-3">Nivå:</Label>
+        <div className='w-full flex justify-end items-center'>
+          <Label className='mr-3'>Nivå:</Label>
           <Chips>
             {filterToggle('Alle')}
             {filterToggle('Info', EAlertEventLevel.INFO)}
@@ -194,7 +194,7 @@ export const AlertEventPage = () => {
           </Chips>
         </div>
       </div>
-      <Table size="small">
+      <Table size='small'>
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeader>Behandling</Table.ColumnHeader>
@@ -208,7 +208,7 @@ export const AlertEventPage = () => {
         <Table.Body>
           {state.events.content.map((event: IAlertEvent, index: number) => (
             <Table.Row key={index}>
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>
                 {event.process ? (
                   <ObjectLink id={event.process.id} type={EObjectType.PROCESS}>
                     {codelistUtils.getShortnameForCodes(event.process.purposes)}:{' '}
@@ -219,7 +219,7 @@ export const AlertEventPage = () => {
                 )}
               </Table.DataCell>
 
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>
                 {event.informationType ? (
                   <ObjectLink id={event.informationType.id} type={EObjectType.INFORMATION_TYPE}>
                     <Sensitivity
@@ -234,7 +234,7 @@ export const AlertEventPage = () => {
                 )}
               </Table.DataCell>
 
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>
                 {event.disclosure ? (
                   <ObjectLink id={event.disclosure.id} type={EObjectType.DISCLOSURE}>
                     {event.disclosure.name}
@@ -244,26 +244,26 @@ export const AlertEventPage = () => {
                 )}
               </Table.DataCell>
 
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>
                 {tekster[event.level]} - {tekster[event.type]}
               </Table.DataCell>
-              <Table.DataCell textSize="small">
+              <Table.DataCell textSize='small'>
                 {moment(event.changeStamp.lastModifiedDate).format('lll')}
               </Table.DataCell>
-              <Table.DataCell textSize="small">{event.changeStamp.lastModifiedBy}</Table.DataCell>
+              <Table.DataCell textSize='small'>{event.changeStamp.lastModifiedBy}</Table.DataCell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table>
-      <div className="flex justify-between mt-4">
+      <div className='flex justify-between mt-4'>
         <Dropdown>
-          <Button variant="tertiary" as={Dropdown.Toggle}>
+          <Button variant='tertiary' as={Dropdown.Toggle}>
             {`${state.limit} Rader`}
-            <span className="ml-2 inline-flex items-center leading-none">
-              <ChevronDownIcon aria-hidden className="block" />
+            <span className='ml-2 inline-flex items-center leading-none'>
+              <ChevronDownIcon aria-hidden className='block' />
             </span>
           </Button>
-          <Dropdown.Menu className="w-fit">
+          <Dropdown.Menu className='w-fit'>
             <Dropdown.Menu.List>
               {[5, 10, 20, 50, 100].map((pageSize: number) => (
                 <Dropdown.Menu.List.Item
@@ -282,7 +282,7 @@ export const AlertEventPage = () => {
           onPageChange={setPage}
           count={state.events.pages || 1}
           prevNextTexts
-          size="small"
+          size='small'
         />
       </div>
     </>

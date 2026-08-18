@@ -13,16 +13,16 @@ export const DateFieldsAiUsageDescriptionModal = (props: IDateModalProps) => {
   return (
     <>
       {!showDates && (
-        <div className="flex w-full mt-4">
-          <Button size="xsmall" type="button" onClick={() => setShowDates(true)}>
+        <div className='flex w-full mt-4'>
+          <Button size='xsmall' type='button' onClick={() => setShowDates(true)}>
             Velg datoer
           </Button>
         </div>
       )}{' '}
       {showDates && (
         <>
-          <div className="w-full">
-            <div className="flex w-full">
+          <div className='w-full'>
+            <div className='flex w-full'>
               <StartDate />
 
               <EndDate />

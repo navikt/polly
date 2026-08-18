@@ -56,7 +56,7 @@ const Main = ({ children }: { children: React.ReactNode }) => {
     <AppStateContext.Provider value={{ permissionMode, userLoaded }}>
       <Fragment>
         <Theme theme={themeMode} asChild>
-          <div className="flex min-h-screen w-full flex-col">
+          <div className='flex min-h-screen w-full flex-col'>
             <Header
               themeMode={themeMode}
               onThemeModeChange={setThemeMode}
@@ -64,12 +64,12 @@ const Main = ({ children }: { children: React.ReactNode }) => {
               onPermissionModeChange={handlePermissionModeChange}
             />
 
-            <div className="flex w-full flex-1">
-              <div className="min-w-60">
+            <div className='flex w-full flex-1'>
+              <div className='min-w-60'>
                 <SideBar />
               </div>
 
-              <div className="mb-48 w-full min-w-0 px-7 py-7">{children}</div>
+              <div className='mb-48 w-full min-w-0 px-7 py-7'>{children}</div>
             </div>
           </div>
         </Theme>

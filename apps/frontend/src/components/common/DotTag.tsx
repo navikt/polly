@@ -24,13 +24,13 @@ const Dot = ({ dotColor, dotVariant }: IDotProps) => {
     return (
       <span
         aria-hidden
-        className="block rounded-full"
+        className='block rounded-full'
         style={{ backgroundColor: dotColor, width: '.45rem', height: '.45rem' }}
       />
     )
   }
   return (
-    <CircleIcon aria-hidden className="block" style={{ color: dotColor, fontSize: '.45rem' }} />
+    <CircleIcon aria-hidden className='block' style={{ color: dotColor, fontSize: '.45rem' }} />
   )
 }
 
@@ -42,18 +42,18 @@ export const DotTag = (props: IDotTagProps) => {
   return (
     <>
       {wrapText && (
-        <div className="mx-1 flex items-center">
-          <div className="flex whitespace-normal">
-            <div className="mr-1 -mt-0.75">
+        <div className='mx-1 flex items-center'>
+          <div className='flex whitespace-normal'>
+            <div className='mr-1 -mt-0.75'>
               <Dot dotColor={resolvedDotColor} dotVariant={resolvedDotVariant} />
             </div>
             <div>{children}</div>
           </div>
         </div>
       )}
-      <div className="mx-1 flex items-center">
+      <div className='mx-1 flex items-center'>
         <Dot dotColor={resolvedDotColor} dotVariant={resolvedDotVariant} />
-        <div className="inline mr-1" />
+        <div className='inline mr-1' />
         <div>{props.children}</div>
       </div>
     </>
@@ -73,7 +73,7 @@ const Content = (props: IContentProps) => {
   const { item, list, linkCodelist, markdown, customId, codelistUtils } = props
 
   return (
-    <div className="wrap-break-word">
+    <div className='wrap-break-word'>
       {list && (
         <>
           {linkCodelist && (
@@ -87,7 +87,7 @@ const Content = (props: IContentProps) => {
         </>
       )}
       {!list && markdown && <Markdown source={item} />}
-      {!list && !markdown && <BodyLong className="break-word">{item}</BodyLong>}
+      {!list && !markdown && <BodyLong className='break-word'>{item}</BodyLong>}
     </div>
   )
 }
@@ -130,7 +130,7 @@ export const DotTags = (props: TDotTagsParams) => {
     <>
       {!items.length && <>Ikke angitt</>}
       {commaSeparator && items.length > 0 && (
-        <div className="inline">
+        <div className='inline'>
           {items.map((item: string, index: number) => (
             <Fragment key={index}>
               <Content {...props} codelistUtils={codelistUtils} item={item} />

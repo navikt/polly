@@ -70,8 +70,8 @@ export const EndDate = () => {
   }
 
   return (
-    <div className="w-1/2 mr-4">
-      <div className="flex w-full mt-4">
+    <div className='w-1/2 mr-4'>
+      <div className='flex w-full mt-4'>
         {(() => {
           const startVal = formik.values['start']
           const startDate = parseLocalYMD(startVal)
@@ -104,7 +104,7 @@ export const EndDate = () => {
               }}
             >
               <DatePicker.Input
-                className="mb-2"
+                className='mb-2'
                 name={field.name}
                 value={textValue}
                 onChange={(e) => {
@@ -138,8 +138,8 @@ export const EndDate = () => {
                 }}
                 label={
                   <LabelWithToolTip
-                    label="Velg til og med dato"
-                    tooltip="Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato."
+                    label='Velg til og med dato'
+                    tooltip='Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato.'
                     noMarginBottom
                   />
                 }
@@ -149,7 +149,7 @@ export const EndDate = () => {
           )
         })()}
       </div>
-      <Error fieldName="end" />
+      <Error fieldName='end' />
     </div>
   )
 }

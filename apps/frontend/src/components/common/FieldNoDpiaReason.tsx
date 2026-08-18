@@ -13,13 +13,13 @@ const FieldNoDpiaReason = (props: TFieldNoDpiaReasonProps) => {
 
   return (
     <FieldArray
-      name="dpia.noDpiaReasons"
+      name='dpia.noDpiaReasons'
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <>
-          <div className="w-full">
-            <div className="w-full">
+          <div className='w-full'>
+            <div className='w-full'>
               <Select
-                label="Velg begrunnelse"
+                label='Velg begrunnelse'
                 hideLabel
                 onChange={(event) => {
                   if (event.target.value) {
@@ -30,7 +30,7 @@ const FieldNoDpiaReason = (props: TFieldNoDpiaReasonProps) => {
                   }
                 }}
               >
-                <option value="">Velg begrunnelse</option>
+                <option value=''>Velg begrunnelse</option>
                 {Object.keys(ENoDpiaReason)
                   .filter(
                     (reason: string) => formikBag.values.dpia.noDpiaReasons.indexOf(reason) === -1
@@ -44,7 +44,7 @@ const FieldNoDpiaReason = (props: TFieldNoDpiaReasonProps) => {
               </Select>
             </div>
             <div className={formikBag.values.dpia.noDpiaReasons.length > 0 ? 'mt-1' : ''}>
-              <div className="flex flex-wrap gap-2">
+              <div className='flex flex-wrap gap-2'>
                 {renderTagList(
                   formikBag.values.dpia.noDpiaReasons.map((reason: string) =>
                     getNoDpiaLabel(reason)

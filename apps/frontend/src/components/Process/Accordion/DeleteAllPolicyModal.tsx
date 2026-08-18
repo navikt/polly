@@ -17,7 +17,7 @@ export const DeleteAllPolicyModal = (props: IProps) => {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={submitDeleteAllPolicies}>Slett</Button>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant='secondary' onClick={onClose}>
             Avbryt
           </Button>
         </Modal.Footer>

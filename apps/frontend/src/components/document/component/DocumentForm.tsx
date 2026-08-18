@@ -57,8 +57,8 @@ const DocumentForm = (props: TDocumentFormProps) => {
 
   if (isLoading) {
     return (
-      <div className="w-full flex justify-center mt-12">
-        <Loader size="3xlarge" title="Venter..." />
+      <div className='w-full flex justify-center mt-12'>
+        <Loader size='3xlarge' title='Venter...' />
       </div>
     )
   }
@@ -75,40 +75,40 @@ const DocumentForm = (props: TDocumentFormProps) => {
     >
       {(formikProps: FormikProps<IDocumentFormValues>) => (
         <Form onKeyDown={disableEnter}>
-          <div className="w-[50%] mb-8 mt-3">
+          <div className='w-[50%] mb-8 mt-3'>
             <div>
               <Label>Navn </Label>
-              <Field name="name">
+              <Field name='name'>
                 {(props: FieldProps) => (
-                  <TextField className="w-full" label="" hideLabel {...props.field} />
+                  <TextField className='w-full' label='' hideLabel {...props.field} />
                 )}
               </Field>
-              <Error fieldName="name" fullWidth={true} />
+              <Error fieldName='name' fullWidth={true} />
             </div>
           </div>
-          <div className="w-[50%]">
-            <Label className="mb-10">Beskrivelse</Label>
-            <Field name="description">
+          <div className='w-[50%]'>
+            <Label className='mb-10'>Beskrivelse</Label>
+            <Field name='description'>
               {(props: FieldProps) => (
-                <Textarea className="w-full" label="" hideLabel {...props.field} />
+                <Textarea className='w-full' label='' hideLabel {...props.field} />
               )}
             </Field>
-            <Error fieldName="description" fullWidth={true} />
+            <Error fieldName='description' fullWidth={true} />
           </div>
 
-          <div className="w-[50%] mb-8">
-            <Field name="dataAccessClass">
+          <div className='w-[50%] mb-8'>
+            <Field name='dataAccessClass'>
               {({ form }: FieldProps<IDocumentFormValues>) => (
                 <div>
-                  <div className="my-4">
+                  <div className='my-4'>
                     <ModalLabel
-                      label="Datatilgangsklasse"
+                      label='Datatilgangsklasse'
                       description={
                         <div>
                           Mer informasjon finner du{' '}
                           <Link
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            target='_blank'
+                            rel='noopener noreferrer'
                             href={
                               'https://confluence.adeo.no/pages/viewpage.action?pageId=245389995'
                             }
@@ -120,14 +120,14 @@ const DocumentForm = (props: TDocumentFormProps) => {
                     />
                   </div>
                   <Select
-                    label="Datatilgangsklasse"
+                    label='Datatilgangsklasse'
                     value={formikProps.values.dataAccessClass ?? ''}
                     onChange={(e) => {
                       form.setFieldValue('dataAccessClass', e.target.value || undefined)
                     }}
                     error={!!form.errors.dataAccessClass && !!form.submitCount}
                   >
-                    <option value="">Velg datatilgangsklasse</option>
+                    <option value=''>Velg datatilgangsklasse</option>
                     {codelistUtils.getCodes(EListName.DATA_ACCESS_CLASS).map((option) => (
                       <option key={option.code} value={option.code}>
                         {option.shortName || option.code}
@@ -137,34 +137,34 @@ const DocumentForm = (props: TDocumentFormProps) => {
                 </div>
               )}
             </Field>
-            <Error fieldName="dataAccessClass" fullWidth={true} />
+            <Error fieldName='dataAccessClass' fullWidth={true} />
           </div>
 
-          <div className="mt-12">
+          <div className='mt-12'>
             <Label style={{ marginBottom: '2rem', display: 'block' }}>
               Opplysningstyper i dokumentet
             </Label>
             <FieldArray
-              name="informationTypes"
+              name='informationTypes'
               render={(arrayHelpers: FieldArrayRenderProps) => (
                 <InformationTypesTable codelistUtils={codelistUtils} arrayHelpers={arrayHelpers} />
               )}
             />
           </div>
-          <div className="flex justify-end mt-2.5">
+          <div className='flex justify-end mt-2.5'>
             {errorMessage && (
-              <div className="mr-6">
-                <Alert variant="error" size="small">
+              <div className='mr-6'>
+                <Alert variant='error' size='small'>
                   {errorMessage}
                 </Alert>
               </div>
             )}
 
-            <Button type="button" kind="secondary" onClick={() => window.history.back()}>
+            <Button type='button' kind='secondary' onClick={() => window.history.back()}>
               Avbryt
             </Button>
 
-            <Button type="submit" kind="primary" marginLeft marginRight>
+            <Button type='submit' kind='primary' marginLeft marginRight>
               Lagre
             </Button>
           </div>

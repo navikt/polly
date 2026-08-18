@@ -89,8 +89,8 @@ export const RequestRevisionForm = (props: IRequestRevisionPageProps) => {
   return (
     <div>
       {loading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
 
@@ -108,20 +108,20 @@ export const RequestRevisionForm = (props: IRequestRevisionPageProps) => {
       >
         {(formikBag) => (
           <Form>
-            <Heading level="1" size="large">
+            <Heading level='1' size='large'>
               Send anmodning om revidering
             </Heading>
 
             {done && (
-              <div className="mt-4">
-                <Alert variant="success">Revidering etterspurt</Alert>
+              <div className='mt-4'>
+                <Alert variant='success'>Revidering etterspurt</Alert>
               </div>
             )}
 
             <Textarea
-              className="w-full mt-4"
-              name="revisionText"
-              label="Revideringstekst"
+              className='w-full mt-4'
+              name='revisionText'
+              label='Revideringstekst'
               value={formikBag.values.revisionText}
               onChange={(event) => {
                 formikBag.setFieldValue('revisionText', event.target.value)
@@ -130,17 +130,17 @@ export const RequestRevisionForm = (props: IRequestRevisionPageProps) => {
               error={formikBag.errors.revisionText}
               disabled={loading || done}
             />
-            <div className="flex justify-end mt-6 gap-4">
+            <div className='flex justify-end mt-6 gap-4'>
               {done ? (
-                <Button type="button" onClick={close}>
+                <Button type='button' onClick={close}>
                   Lukk
                 </Button>
               ) : (
                 <>
-                  <Button type="button" variant="secondary" onClick={close}>
+                  <Button type='button' variant='secondary' onClick={close}>
                     Avbryt
                   </Button>
-                  <Button type="submit" disabled={loading}>
+                  <Button type='submit' disabled={loading}>
                     Send
                   </Button>
                 </>

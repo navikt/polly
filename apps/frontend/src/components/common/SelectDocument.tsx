@@ -30,16 +30,16 @@ const SelectDocument = (props: TSelectDocumentProps) => {
   }
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       <CustomSearchSelect
-        ariaLabel="Søk etter dokumenter"
-        placeholder=""
+        ariaLabel='Søk etter dokumenter'
+        placeholder=''
         loadOptions={useSearchDocumentOption}
         onChange={handleChange}
       />
 
       {form.values.document && (
-        <div className="mt-2 flex flex-wrap gap-2" style={{ maxWidth: '550px' }}>
+        <div className='mt-2 flex flex-wrap gap-2' style={{ maxWidth: '550px' }}>
           <Chips.Removable onClick={() => form.setFieldValue('document', null)}>
             {form.values.document.name}
           </Chips.Removable>

@@ -19,9 +19,9 @@ import { IDocument, IProcess } from '../constants'
 import { user } from '../service/User'
 
 const renderTextWithLabel = (label: string, text: string) => (
-  <div className="mt-10 max-w-[100ch]">
+  <div className='mt-10 max-w-[100ch]'>
     <Label>{label}</Label>
-    <BodyLong className="wrap-break-word">{text}</BodyLong>
+    <BodyLong className='wrap-break-word'>{text}</BodyLong>
   </div>
 )
 
@@ -75,23 +75,23 @@ const DocumentPage = () => {
   return (
     <>
       <>
-        <div className="w-full">
-          <Heading size="large">Dokumenter</Heading>
+        <div className='w-full'>
+          <Heading size='large'>Dokumenter</Heading>
         </div>
-        <div className="mt-2.5 flex justify-end">
+        <div className='mt-2.5 flex justify-end'>
           {user.canWrite() && (
-            <div className="flex items-center">
+            <div className='flex items-center'>
               {currentDocument && <AuditButton id={currentDocument.id} />}
 
               {currentDocument && (
                 <Button
                   icon={
-                    <span className="flex items-center leading-none">
-                      <TrashIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <TrashIcon aria-hidden className='block' />
                     </span>
                   }
-                  kind="outline"
-                  size="xsmall"
+                  kind='outline'
+                  size='xsmall'
                   onClick={() => setDeleteModalVisibility(true)}
                   marginLeft
                 >
@@ -102,12 +102,12 @@ const DocumentPage = () => {
               {currentDocument && (
                 <Button
                   icon={
-                    <span className="flex items-center leading-none">
-                      <DocPencilIcon aria-hidden className="block" />
+                    <span className='flex items-center leading-none'>
+                      <DocPencilIcon aria-hidden className='block' />
                     </span>
                   }
-                  kind="outline"
-                  size="xsmall"
+                  kind='outline'
+                  size='xsmall'
                   onClick={() => navigate(`/document/${currentDocument.id}/edit`)}
                   marginLeft
                 >
@@ -116,11 +116,11 @@ const DocumentPage = () => {
               )}
 
               <Button
-                kind="outline"
-                size="xsmall"
+                kind='outline'
+                size='xsmall'
                 startEnhancer={
-                  <span className="flex items-center leading-none">
-                    <PlusCircleIcon aria-hidden className="block" />
+                  <span className='flex items-center leading-none'>
+                    <PlusCircleIcon aria-hidden className='block' />
                   </span>
                 }
                 onClick={() => navigate('/document/create')}
@@ -139,7 +139,7 @@ const DocumentPage = () => {
           />
         )}
         {currentDocument && (
-          <div className="mt-1.25 p-1.25">
+          <div className='mt-1.25 p-1.25'>
             {renderTextWithLabel('Navn', currentDocument.name)}
             {renderTextWithLabel('Beskrivelse', currentDocument.description)}
             {renderTextWithLabel(
@@ -154,29 +154,29 @@ const DocumentPage = () => {
         {currentDocument && (
           <Tabs value={activeKey} onChange={(val) => setActiveKey(val as string)}>
             <Tabs.List>
-              <Tabs.Tab value="containsInformationType" label="Inneholder opplysningstyper" />
+              <Tabs.Tab value='containsInformationType' label='Inneholder opplysningstyper' />
               {documentUsages && documentUsages.length > 0 && (
-                <Tabs.Tab value="containsProcesses" label="Brukes i behandlinger" />
+                <Tabs.Tab value='containsProcesses' label='Brukes i behandlinger' />
               )}
             </Tabs.List>
 
-            <Tabs.Panel value="containsInformationType">
+            <Tabs.Panel value='containsInformationType'>
               <DocumentMetadata document={currentDocument} />
             </Tabs.Panel>
 
             {documentUsages && documentUsages.length > 0 && (
-              <Tabs.Panel value="containsProcesses">
+              <Tabs.Panel value='containsProcesses'>
                 <DocumentProcessesTable documentUsages={documentUsages} />
               </Tabs.Panel>
             )}
           </Tabs>
         )}
 
-        {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
+        {errorMessage && <Alert variant='error'>{errorMessage}</Alert>}
       </>
 
       <DeleteDocumentModal
-        title="Bekreft sletting"
+        title='Bekreft sletting'
         documentName={currentDocument?.name as string}
         isOpen={isDeleteModalVisible}
         submit={handleDelete}

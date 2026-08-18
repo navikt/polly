@@ -31,11 +31,11 @@ const FieldInformationType = () => {
   }, [])
 
   return (
-    <Field name="informationType">
+    <Field name='informationType'>
       {({ form }: FieldProps<IPolicyFormValues>) => (
         <>
           <Select
-            label="Opplysningstyper"
+            label='Opplysningstyper'
             hideLabel
             value={form.values.informationType ? form.values.informationType.id : selectedValue}
             onChange={(event) => {
@@ -51,7 +51,7 @@ const FieldInformationType = () => {
             }}
             error={!!form.errors.informationType && !!form.submitCount}
           >
-            <option value="">Søk opplysningstyper</option>
+            <option value=''>Søk opplysningstyper</option>
             {infoTypes.map((infoType: IInformationTypeShort) => (
               <option key={infoType.id} value={infoType.id}>
                 {infoType.name}
@@ -68,12 +68,12 @@ const FieldLegalBasesUse = (props: { legalBasesUse: ELegalBasesUse }) => {
   const [value, setValue] = useState(props.legalBasesUse)
 
   return (
-    <Field name="legalBasesUse">
+    <Field name='legalBasesUse'>
       {({ form }: FieldProps<IPolicyFormValues>) => (
-        <div className="w-full">
+        <div className='w-full'>
           <RadioGroup
             value={value}
-            legend=""
+            legend=''
             hideLegend
             error={!!form.errors.legalBasesUse && !!form.submitCount}
             onChange={(selected) => {
@@ -87,9 +87,9 @@ const FieldLegalBasesUse = (props: { legalBasesUse: ELegalBasesUse }) => {
             <Radio value={ELegalBasesUse.UNRESOLVED}>Uavklart</Radio>
             <Radio value={ELegalBasesUse.DEDICATED_LEGAL_BASES}>Har eget Behandlingsgrunnlag</Radio>
             <Radio value={ELegalBasesUse.EXCESS_INFO}>
-              <span className="flex items-center gap-2">
+              <span className='flex items-center gap-2'>
                 <span>Overskuddsinformasjon</span>
-                <CustomizedStatefulTooltip content="Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen." />
+                <CustomizedStatefulTooltip content='Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.' />
               </span>
             </Radio>
           </RadioGroup>
@@ -123,8 +123,8 @@ const ModalPolicy = ({
   addBatch,
   codelistUtils,
 }: TModalPolicyProps) => (
-  <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width="750px">
-    <div className="w-[750px] px-8">
+  <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width='750px'>
+    <div className='w-[750px] px-8'>
       <Formik
         initialValues={initialValues}
         validationSchema={policySchema(codelistUtils.getCodes(EListName.SUBJECT_CATEGORY))}
@@ -138,33 +138,33 @@ const ModalPolicy = ({
             <Form onKeyDown={disableEnter}>
               <Modal.Body>
                 {addBatch && (
-                  <div className="w-full mt-4">
-                    <Button type="button" variant="secondary" size="small" onClick={addBatch}>
+                  <div className='w-full mt-4'>
+                    <Button type='button' variant='secondary' size='small' onClick={addBatch}>
                       Legg til flere fra et system
                     </Button>
                   </div>
                 )}
 
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Opplysningstype" fullwidth />
+                <div className='flex w-full mt-4'>
+                  <ModalLabel label='Opplysningstype' fullwidth />
                 </div>
 
-                <div className="w-full mt-2">
+                <div className='w-full mt-2'>
                   <FieldInformationType />
                 </div>
-                <Error fieldName="informationType" fullWidth />
+                <Error fieldName='informationType' fullWidth />
 
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Personkategori" fullwidth />
+                <div className='flex w-full mt-4'>
+                  <ModalLabel label='Personkategori' fullwidth />
                 </div>
 
-                <div className="w-full mt-2">
+                <div className='w-full mt-2'>
                   <FieldArray
-                    name="subjectCategories"
+                    name='subjectCategories'
                     render={(arrayHelpers: FieldArrayRenderProps) => (
-                      <div className="w-full">
+                      <div className='w-full'>
                         <Select
-                          label="Personkategori"
+                          label='Personkategori'
                           hideLabel
                           onChange={(event) => {
                             arrayHelpers.push(event.target.value ? event.target.value : null)
@@ -185,7 +185,7 @@ const ModalPolicy = ({
                               </option>
                             ))}
                         </Select>
-                        <div className="mt-2 flex flex-wrap gap-2">
+                        <div className='mt-2 flex flex-wrap gap-2'>
                           {renderTagList(
                             codelistUtils.getShortnames(
                               EListName.SUBJECT_CATEGORY,
@@ -198,15 +198,15 @@ const ModalPolicy = ({
                     )}
                   />
                 </div>
-                <Error fieldName="subjectCategories" fullWidth />
+                <Error fieldName='subjectCategories' fullWidth />
 
                 {!!formikBag.values.documentIds?.length && docs && (
-                  <div className="flex w-full mt-4">
-                    <ModalLabel label="Dokumenter" />
+                  <div className='flex w-full mt-4'>
+                    <ModalLabel label='Dokumenter' />
                     <FieldArray
-                      name="documentIds"
+                      name='documentIds'
                       render={(arrayHelpers: FieldArrayRenderProps) => (
-                        <div className="w-full">
+                        <div className='w-full'>
                           {renderTagList(
                             formikBag.values.documentIds.map((id: string) => docs[id].name),
                             arrayHelpers
@@ -217,28 +217,28 @@ const ModalPolicy = ({
                   </div>
                 )}
 
-                <div className="flex w-full mt-4">
-                  <ModalLabel label="Behandlingsgrunnlag" fullwidth />
+                <div className='flex w-full mt-4'>
+                  <ModalLabel label='Behandlingsgrunnlag' fullwidth />
                 </div>
 
-                <div className="w-full mt-2">
+                <div className='w-full mt-2'>
                   <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
                 </div>
-                <Error fieldName="legalBasesUse" fullWidth />
+                <Error fieldName='legalBasesUse' fullWidth />
 
                 {formikBag.values.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES && (
                   <FieldLegalBasis formikBag={formikBag} codelistUtils={codelistUtils} />
                 )}
               </Modal.Body>
-              <Error fieldName="legalBasesOpen" fullWidth={true} />
+              <Error fieldName='legalBasesOpen' fullWidth={true} />
 
               <Modal.Footer>
-                <div className="flex justify-end">
-                  <div className="self-end">{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type="button" variant="tertiary" onClick={onClose}>
+                <div className='flex justify-end'>
+                  <div className='self-end'>{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                  <Button type='button' variant='tertiary' onClick={onClose}>
                     Avbryt
                   </Button>
-                  <Button type="submit">Lagre</Button>
+                  <Button type='submit'>Lagre</Button>
                 </div>
               </Modal.Footer>
             </Form>

@@ -16,14 +16,14 @@ export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
   )
 
   return (
-    <div className="w-full flex flex-row gap-4 mt-4">
-      <div className="self-center">
-        <Label className="mr-4">Filtrer på status</Label>
+    <div className='w-full flex flex-row gap-4 mt-4'>
+      <div className='self-center'>
+        <Label className='mr-4'>Filtrer på status</Label>
       </div>
-      <div className="w-60">
+      <div className='w-60'>
         <Select
           value={selectValue}
-          label="Filtrer på status"
+          label='Filtrer på status'
           hideLabel
           onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             const value = event.target.value

@@ -114,9 +114,9 @@ export const ObjectLink = (props: TObjectLinkProps) => {
   )
 
   return withHistory ? (
-    <div className="flex justify-between w-full items-center">
+    <div className='flex justify-between w-full items-center'>
       {link}
-      <AuditButton id={id} kind="tertiary" />
+      <AuditButton id={id} kind='tertiary' />
     </div>
   ) : (
     link

@@ -41,30 +41,30 @@ const DescriptionData = (props: IDescriptionDataProps) => {
   }, [termId])
 
   return (
-    <div className="flex flex-col" style={{ gap: theme.sizing.scale800 }}>
+    <div className='flex flex-col' style={{ gap: theme.sizing.scale800 }}>
       <div>
-        <div className="flex" />
+        <div className='flex' />
         <TextWithLabel
-          label="Begrepsdefinisjon"
+          label='Begrepsdefinisjon'
           text={term || 'Ingen begrepsdefinisjon oppgitt'}
           error={termError ? 'Kunne ikke finne begrepsdefinisjon' : undefined}
         />
         {termId && (
-          <Link target="_blank" rel="noopener noreferrer" href={termUrl(termId)}>
-            <ExternalLinkIcon aria-hidden className="block" />
+          <Link target='_blank' rel='noopener noreferrer' href={termUrl(termId)}>
+            <ExternalLinkIcon aria-hidden className='block' />
           </Link>
         )}
       </div>
       <div>
         <TextWithLabel
-          label="Søkeord"
+          label='Søkeord'
           compact
           text={
             keywords && keywords.length ? (
-              <ul className="mt-0 list-disc list-inside">
+              <ul className='mt-0 list-disc list-inside'>
                 {keywords.map((keyword, index) => (
                   <li key={`${keyword}-${index}`}>
-                    <BodyLong as="span">{keyword}</BodyLong>
+                    <BodyLong as='span'>{keyword}</BodyLong>
                   </li>
                 ))}
               </ul>
@@ -75,7 +75,7 @@ const DescriptionData = (props: IDescriptionDataProps) => {
         />
       </div>
       <div>
-        <TextWithLabel label="Nyttig å vite om opplysningstypen">
+        <TextWithLabel label='Nyttig å vite om opplysningstypen'>
           <Markdown source={description} />
         </TextWithLabel>
       </div>
@@ -97,9 +97,9 @@ const PropertyData = (props: IPropertDataProps) => {
   const { orgMaster, sources, categories, productTeams, sensitivity, codelistUtils } = props
 
   return (
-    <div className="flex flex-col" style={{ gap: theme.sizing.scale800 }}>
+    <div className='flex flex-col' style={{ gap: theme.sizing.scale800 }}>
       <div>
-        <TextWithLabel label="Master i NAV">
+        <TextWithLabel label='Master i NAV'>
           <DotTags
             list={EListName.SYSTEM}
             codes={orgMaster ? [orgMaster] : []}
@@ -110,9 +110,9 @@ const PropertyData = (props: IPropertDataProps) => {
         </TextWithLabel>
       </div>
       <div>
-        <TextWithLabel label="Kilder">
+        <TextWithLabel label='Kilder'>
           {sources.length ? (
-            <ul className="mt-0 list-disc list-inside">
+            <ul className='mt-0 list-disc list-inside'>
               {sources.map((source, index) => (
                 <li key={`${source.code}-${index}`}>
                   <RouteLink href={urlForObject(EListName.THIRD_PARTY, source.code)}>
@@ -128,17 +128,17 @@ const PropertyData = (props: IPropertDataProps) => {
       </div>
       <div>
         <TextWithLabel
-          label="Team"
+          label='Team'
           compact
           text={
-            productTeams.length ? <TeamList teamIds={productTeams} variant="list" /> : 'Ikke angitt'
+            productTeams.length ? <TeamList teamIds={productTeams} variant='list' /> : 'Ikke angitt'
           }
         />
       </div>
       <div>
-        <TextWithLabel label="Kategorier">
+        <TextWithLabel label='Kategorier'>
           {categories.length ? (
-            <ul className="mt-0 list-disc list-inside">
+            <ul className='mt-0 list-disc list-inside'>
               {categories.map((category, index) => (
                 <li key={`${category.code}-${index}`}>
                   <RouteLink href={urlForObject(EListName.CATEGORY, category.code)}>
@@ -154,9 +154,9 @@ const PropertyData = (props: IPropertDataProps) => {
       </div>
       <div>
         <TextWithLabel
-          label="Type personopplysning"
+          label='Type personopplysning'
           text={sensitivity ? sensitivity.shortName : ''}
-          icon={<ShieldIcon aria-hidden className="block" />}
+          icon={<ShieldIcon aria-hidden className='block' />}
           iconColor={sensitivityColor(sensitivity.code)}
         />
       </div>
@@ -173,15 +173,15 @@ const Metadata = (props: IMetaDataProps) => {
   const { informationtype, codelistUtils } = props
 
   return (
-    <div className="flex mb-4">
-      <div className="w-[40%] pr-24">
+    <div className='flex mb-4'>
+      <div className='w-[40%] pr-24'>
         <DescriptionData
           termId={informationtype.term}
           description={informationtype.description}
           keywords={informationtype.keywords}
         />
       </div>
-      <div className="w-[60%] pl-24 border-solid border-l border-[#AFAFAF]">
+      <div className='w-[60%] pl-24 border-solid border-l border-[#AFAFAF]'>
         <PropertyData
           orgMaster={informationtype.orgMaster}
           sources={informationtype.sources || []}

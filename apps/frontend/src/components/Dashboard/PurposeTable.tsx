@@ -121,10 +121,10 @@ const PurposeTable = () => {
         currentPageTitle={title}
         noDepartment={noDepartment === 'true'}
       />
-      <Heading size="large">{title}</Heading>
+      <Heading size='large'>{title}</Heading>
       {loading && (
-        <div className="flex w-full justify-center">
-          <Loader size="3xlarge" />
+        <div className='flex w-full justify-center'>
+          <Loader size='3xlarge' />
         </div>
       )}
       {!loading && (

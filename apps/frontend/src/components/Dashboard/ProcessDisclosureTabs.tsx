@@ -140,14 +140,14 @@ export const ProcessDisclosureTabs = (props: IProps) => {
   return (
     <Tabs defaultValue={defaultTab ?? 'behandlinger'} onChange={handleTabChange}>
       <Tabs.List>
-        <Tabs.Tab value="behandlinger" label="Behandlinger" />
-        <Tabs.Tab value="dpprocess" label="NAV som databehandler" />
-        <Tabs.Tab value="utleveringer" label="Utleveringer" />
+        <Tabs.Tab value='behandlinger' label='Behandlinger' />
+        <Tabs.Tab value='dpprocess' label='NAV som databehandler' />
+        <Tabs.Tab value='utleveringer' label='Utleveringer' />
         {thirdTabTitle && <Tabs.Tab value={thirdTabTitle} label={thirdTabTitle} />}
         {fourthTabTitle && <Tabs.Tab value={fourthTabTitle} label={fourthTabTitle} />}
       </Tabs.List>
-      <Tabs.Panel value="behandlinger">
-        <div className="my-2">
+      <Tabs.Panel value='behandlinger'>
+        <div className='my-2'>
           <ProcessList
             code={code}
             listName={listName}
@@ -160,30 +160,30 @@ export const ProcessDisclosureTabs = (props: IProps) => {
           />
         </div>
       </Tabs.Panel>
-      <Tabs.Panel value="dpprocess">
-        <div className="my-2">
+      <Tabs.Panel value='dpprocess'>
+        <div className='my-2'>
           <DpProcessTable dpProcesses={filteredDpProcessData} />
         </div>
       </Tabs.Panel>
-      <Tabs.Panel value="utleveringer">
-        <div className="my-2">
+      <Tabs.Panel value='utleveringer'>
+        <div className='my-2'>
           {seksjonFilter ? (
-            <Alert variant="info" className="mt-4">
+            <Alert variant='info' className='mt-4'>
               Utleveringer vises kun når «Alle seksjoner» er valgt.
             </Alert>
           ) : (
             <>
-              <div className="flex">
-                <Heading size="small" level="2">
+              <div className='flex'>
+                <Heading size='small' level='2'>
                   Utleveringer ({disclosureData ? disclosureData.length : 0})
                 </Heading>
                 <Spacer />
                 {isEditable && (
-                  <div className="flex justify-end">
+                  <div className='flex justify-end'>
                     {user.canWrite() && (
                       <Button
-                        size="small"
-                        variant="tertiary"
+                        size='small'
+                        variant='tertiary'
                         onClick={() => setShowCreateDisclosureModal(true)}
                       >
                         <PlusCircleIcon aria-hidden />
@@ -195,7 +195,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
               </div>
 
               {disclosureData.length === 0 && (
-                <BodyShort className="my-4">Ingen utleveringer</BodyShort>
+                <BodyShort className='my-4'>Ingen utleveringer</BodyShort>
               )}
 
               {disclosureData.length > 0 && (
@@ -211,7 +211,7 @@ export const ProcessDisclosureTabs = (props: IProps) => {
               )}
 
               <ModalThirdParty
-                title="Opprett utlevering til ekstern part"
+                title='Opprett utlevering til ekstern part'
                 isOpen={showCreateDisclosureModal}
                 initialValues={initialFormValues}
                 submit={handleCreateDisclosure}

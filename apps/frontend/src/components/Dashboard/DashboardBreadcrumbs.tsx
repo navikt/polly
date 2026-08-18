@@ -69,23 +69,23 @@ const DashboardBreadcrumbs = (props: TDashboardBreadcrumbsProps) => {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-4">
-      <ol className="flex items-center gap-1 list-none p-0 m-0">
+    <nav aria-label='Breadcrumb' className='mb-4'>
+      <ol className='flex items-center gap-1 list-none p-0 m-0'>
         {items.map((item, index) => (
-          <li key={index} className="flex items-center gap-1">
+          <li key={index} className='flex items-center gap-1'>
             {index > 0 && (
-              <BodyShort as="span" style={{ fontSize: '18px' }} className="text-gray-500">
+              <BodyShort as='span' style={{ fontSize: '18px' }} className='text-gray-500'>
                 /
               </BodyShort>
             )}
             {item.href ? (
               <RouteLink href={item.href}>
-                <BodyShort as="span" style={{ fontSize: '18px' }}>
+                <BodyShort as='span' style={{ fontSize: '18px' }}>
                   {item.label}
                 </BodyShort>
               </RouteLink>
             ) : (
-              <BodyShort as="span" style={{ fontSize: '18px' }} className="text-gray-600">
+              <BodyShort as='span' style={{ fontSize: '18px' }} className='text-gray-600'>
                 {item.label}
               </BodyShort>
             )}

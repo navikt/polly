@@ -54,8 +54,8 @@ export const DeleteModal = (props: IDeleteModalProps) => {
     <Modal header={{ heading: 'Bekreft sletting' }} onClose={closeModal} open={showDeleteModal}>
       <Modal.Body>
         {!infoType && (
-          <div className="flex w-full justify-center">
-            <Loader size="3xlarge" />
+          <div className='flex w-full justify-center'>
+            <Loader size='3xlarge' />
           </div>
         )}
         {canDelete && (
@@ -71,10 +71,10 @@ export const DeleteModal = (props: IDeleteModalProps) => {
       </Modal.Body>
 
       <Modal.Footer>
-        <div className="self-end">
+        <div className='self-end'>
           {errorProcessModal && <BodyShort>{errorProcessModal}</BodyShort>}
         </div>
-        <Button kind="secondary" onClick={closeModal}>
+        <Button kind='secondary' onClick={closeModal}>
           Avbryt
         </Button>
         <Button onClick={submitDeleteProcess} disabled={!canDelete}>
@@ -95,17 +95,17 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
 
   return (
     <>
-      <div className="self-center flex">
+      <div className='self-center flex'>
         <AuditButton id={id} />
 
-        <RouteLink href={`/informationtype/${id}/edit`} className="no-underline">
+        <RouteLink href={`/informationtype/${id}/edit`} className='no-underline'>
           <Button
-            size="xsmall"
-            kind="outline"
+            size='xsmall'
+            kind='outline'
             marginRight
             startEnhancer={
-              <span className="flex items-center leading-none">
-                <DocPencilIcon aria-hidden className="block" />
+              <span className='flex items-center leading-none'>
+                <DocPencilIcon aria-hidden className='block' />
               </span>
             }
           >
@@ -114,12 +114,12 @@ export const InformationTypeBannerButtons = (props: IInformationTypeBannerButton
         </RouteLink>
 
         <Button
-          size="xsmall"
-          kind="outline"
+          size='xsmall'
+          kind='outline'
           onClick={() => setShowDeleteModal(true)}
           startEnhancer={
-            <span className="flex items-center leading-none">
-              <TrashIcon aria-hidden className="block" />
+            <span className='flex items-center leading-none'>
+              <TrashIcon aria-hidden className='block' />
             </span>
           }
         >

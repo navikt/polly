@@ -17,16 +17,16 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
   const { text, error, icon, iconColor, label, children, compact } = props
   const errorIcon = (
     <span
-      className="inline-flex items-center leading-none"
+      className='inline-flex items-center leading-none'
       style={{ color: theme.colors.negative500 }}
     >
-      <XMarkOctagonIcon aria-hidden className="block" />
+      <XMarkOctagonIcon aria-hidden className='block' />
     </span>
   )
 
   const labelIcon = icon ? (
     <span
-      className="inline-flex items-center leading-none"
+      className='inline-flex items-center leading-none'
       style={iconColor ? { color: iconColor } : undefined}
     >
       {icon}
@@ -34,7 +34,7 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
   ) : null
 
   const value = text && (
-    <div className="whitespace-pre-wrap block m-0 text-base">
+    <div className='whitespace-pre-wrap block m-0 text-base'>
       {error && errorIcon} {text}
     </div>
   )
@@ -43,7 +43,7 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
     <>
       <Label style={{ marginBottom: compact ? 0 : theme.sizing.scale100, display: 'block' }}>
         {labelIcon ? (
-          <span className="inline-flex items-center gap-1">
+          <span className='inline-flex items-center gap-1'>
             {labelIcon}
             <span>{label}</span>
           </span>
@@ -54,7 +54,7 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
       {!error && value}
       {error && (
         <Tooltip content={error}>
-          <Button type="button" size="small" variant="tertiary-neutral">
+          <Button type='button' size='small' variant='tertiary-neutral'>
             {value}
           </Button>
         </Tooltip>

@@ -70,8 +70,8 @@ export const StartDate = () => {
   }
 
   return (
-    <div className="w-1/2 mr-4">
-      <div className="flex w-full mt-4">
+    <div className='w-1/2 mr-4'>
+      <div className='flex w-full mt-4'>
         {(() => {
           const endVal = formik.values['end']
           const endDate = parseLocalYMD(endVal)
@@ -96,7 +96,7 @@ export const StartDate = () => {
               }}
             >
               <DatePicker.Input
-                className="mb-2"
+                className='mb-2'
                 name={field.name}
                 value={textValue}
                 onChange={(e) => {
@@ -130,8 +130,8 @@ export const StartDate = () => {
                 }}
                 label={
                   <LabelWithToolTip
-                    label="Velg fra og med dato"
-                    tooltip="Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid."
+                    label='Velg fra og med dato'
+                    tooltip='Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.'
                     noMarginBottom
                   />
                 }
@@ -141,7 +141,7 @@ export const StartDate = () => {
           )
         })()}
       </div>
-      <Error fieldName="start" />
+      <Error fieldName='start' />
     </div>
   )
 }

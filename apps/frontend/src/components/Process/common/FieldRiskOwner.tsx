@@ -34,11 +34,11 @@ const FieldRiskOwner = (props: IProps) => {
   }, [riskOwner])
 
   return (
-    <Field name="dpia.riskOwner">
+    <Field name='dpia.riskOwner'>
       {({ form }: FieldProps<IProcessFormValues>) => (
-        <div className="w-full">
+        <div className='w-full'>
           <UNSAFE_Combobox
-            label="Risikoeier"
+            label='Risikoeier'
             hideLabel
             options={comboboxOptions}
             filteredOptions={comboboxOptions}

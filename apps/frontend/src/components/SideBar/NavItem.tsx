@@ -24,12 +24,12 @@ const NavItem = (props: INavItemProps) => {
   const textColor = isActive ? '#ffffff' : '#E0E1E5'
 
   return (
-    <RouteLink href={props.to} style={{ textDecoration: 'none' }} className="block w-full">
-      <div className="flex items-center h-8.75">
+    <RouteLink href={props.to} style={{ textDecoration: 'none' }} className='block w-full'>
+      <div className='flex items-center h-8.75'>
         {props.tooltip ? (
           <Tooltip content={props.tooltip} maxChar={200}>
             <BodyShort
-              size="small"
+              size='small'
               style={{
                 color: textColor,
                 fontWeight: isActive ? 600 : undefined,
@@ -41,7 +41,7 @@ const NavItem = (props: INavItemProps) => {
           </Tooltip>
         ) : (
           <BodyShort
-            size="small"
+            size='small'
             style={{
               color: textColor,
               fontWeight: isActive ? 600 : undefined,

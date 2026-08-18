@@ -36,13 +36,13 @@ const ThirdPartiesDpProcessTable = ({ dpProcesses }: TTableDpProcessType) => {
 
   return (
     <Table
-      emptyText="Ingen databehandlinger"
+      emptyText='Ingen databehandlinger'
       headers={
         <>
-          <HeadCell title="Navn" column={'name'} tableState={[table, sortColumn]} />
-          <HeadCell title="Beskrivelse" column={'description'} tableState={[table, sortColumn]} />
-          <HeadCell title="Avdeling" column={'affiliation'} tableState={[table, sortColumn]} />
-          <HeadCell title="Team" column={'affiliation'} tableState={[table, sortColumn]} />
+          <HeadCell title='Navn' column={'name'} tableState={[table, sortColumn]} />
+          <HeadCell title='Beskrivelse' column={'description'} tableState={[table, sortColumn]} />
+          <HeadCell title='Avdeling' column={'affiliation'} tableState={[table, sortColumn]} />
+          <HeadCell title='Team' column={'affiliation'} tableState={[table, sortColumn]} />
         </>
       }
     >
