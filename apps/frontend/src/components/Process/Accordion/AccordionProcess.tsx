@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal } from '@navikt/ds-react'
 import { useEffect, useRef, useState } from 'react'
@@ -73,7 +73,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     submitAddDocument,
     errorDocumentModal,
   } = props
-  const history: NavigateFunction = useNavigate()
+  const history: TNavigateFunction = useNavigate()
 
   const [showEditProcessModal, setShowEditProcessModal] = useState(false)
   const [showCreatePolicyModal, setShowCreatePolicyModal] = useState(false)

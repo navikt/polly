@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { BodyLong, InfoCard } from '@navikt/ds-react'
 import {
@@ -31,7 +31,7 @@ type TChartsProps = {
 
 const Charts = (props: TChartsProps) => {
   const { chartData, processStatus, type, departmentCode, productAreaId, seksjonId } = props
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
   const isDark = useIsDark()
 
   const link = (

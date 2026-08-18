@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader, Tabs } from '@navikt/ds-react'
 import { useState } from 'react'
@@ -55,7 +55,7 @@ const Purposes = (props: IPurposesProps) => {
 
 export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) => {
   const { informationtype, policies, disclosures, documents } = props
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
   const [codelistUtils] = CodelistService()
 
   return (

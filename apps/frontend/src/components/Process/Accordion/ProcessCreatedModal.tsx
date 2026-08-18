@@ -1,4 +1,4 @@
-import { Location, NavigateFunction, useLocation, useNavigate } from '@/util/router'
+import { TLocation, TNavigateFunction, useLocation, useNavigate } from '@/util/router'
 import { BodyShort, Modal } from '@navikt/ds-react'
 import Button from '../../common/Button/CustomButton'
 
@@ -9,8 +9,8 @@ interface IProps {
 
 export const ProcessCreatedModal = (props: IProps) => {
   const { openAddPolicy, openAddDocument } = props
-  const history: NavigateFunction = useNavigate()
-  const location: Location<any> = useLocation()
+  const history: TNavigateFunction = useNavigate()
+  const location: TLocation<any> = useLocation()
   const closeModal = () => history(location.pathname)
 
   return (

@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { Link } from '@navikt/ds-react'
 import type { MouseEvent } from 'react'
 import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
@@ -13,7 +13,7 @@ type TRouteLinkProps = {
 
 const RouteLink = (props: TRouteLinkProps & any) => {
   const { hideUnderline, plain, ...restprops } = props
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
 
   // Treat absolute URLs (https:, mailto:, //example.com, etc.) as external.
   const isExternalHref = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(props.href)

@@ -1,4 +1,4 @@
-import { NavigateFunction } from '@/util/router'
+import { TNavigateFunction } from '@/util/router'
 import { EProcessField, EProcessState, EProcessStatusFilter } from '../constants'
 import { ESection } from '../pages/ProcessPage'
 
@@ -6,7 +6,7 @@ type TPieChartSliceOptions = {
   processField: EProcessField
   processState: EProcessState
   processStatus: EProcessStatusFilter
-  navigate: NavigateFunction
+  navigate: TNavigateFunction
   type?: ESection
   id?: string
   departmentCode?: string

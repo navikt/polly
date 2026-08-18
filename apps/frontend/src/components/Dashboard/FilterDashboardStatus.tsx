@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { Label, Select } from '@navikt/ds-react'
 import { ChangeEvent, useState } from 'react'
 import { EProcessStatusFilter } from '../../constants'
@@ -9,7 +9,7 @@ interface IFilterDashboardStatusProps {
 
 export const FilterDashboardStatus = (props: IFilterDashboardStatusProps) => {
   const { setFilter } = props
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
   const { processStatus } = useParams<{ processStatus: EProcessStatusFilter }>()
   const [selectValue, setSelectValue] = useState<string>(
     processStatus ? (processStatus as EProcessStatusFilter) : EProcessStatusFilter.All

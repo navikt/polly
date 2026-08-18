@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { BodyLong, Heading, TextField } from '@navikt/ds-react'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
@@ -18,7 +18,7 @@ export const AuditPage = () => {
       auditId?: string
     }>
   > = useParams<{ id?: string; auditId?: string }>()
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
   const [auditLog, setAuditLog] = useState<IAuditLog>()

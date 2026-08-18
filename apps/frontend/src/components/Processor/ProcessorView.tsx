@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
@@ -44,7 +44,7 @@ const ProcessorView = () => {
   const [usageCount, setUsageCount] = useState<number>(0)
 
   const hasAccess = (): boolean => user.canWrite()
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
   const params: Readonly<
     Partial<{
       id?: string

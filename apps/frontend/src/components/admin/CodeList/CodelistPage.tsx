@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -15,7 +15,7 @@ const CodeListPage = () => {
       listname?: string
     }>
   > = useParams<{ listname?: string }>()
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
   const [codelistUtils, lists] = CodelistService()
 
   const [loading, setLoading] = useState(true)

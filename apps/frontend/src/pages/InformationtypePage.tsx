@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
@@ -27,7 +27,7 @@ export type TPurposeMap = { [purpose: string]: IPolicy[] }
 
 const InformationtypePage = () => {
   const params = useParams<{ id?: string }>()
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
 
   const [error, setError] = useState(null)
   const [informationTypeId, setInformationTypeId] = useState(params.id)

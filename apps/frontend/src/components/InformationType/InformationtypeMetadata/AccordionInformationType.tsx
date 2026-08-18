@@ -1,4 +1,4 @@
-import { Location, NavigateFunction, useLocation, useNavigate } from '@/util/router'
+import { TLocation, TNavigateFunction, useLocation, useNavigate } from '@/util/router'
 import { PersonGroupIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort } from '@navikt/ds-react'
 import queryString from 'query-string'
@@ -31,8 +31,8 @@ export interface IAccordionInformationtypeProps {
 const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
   const { policies, codelistUtils } = props
   const selectedPurpose = useQueryParam('purpose')
-  const navigate: NavigateFunction = useNavigate()
-  const location: Location<any> = useLocation()
+  const navigate: TNavigateFunction = useNavigate()
+  const location: TLocation<any> = useLocation()
   const [openPurpose, setOpenPurpose] = useState<string | undefined>(selectedPurpose || undefined)
 
   if (!policies) return <BodyShort>Fant ingen formål</BodyShort>

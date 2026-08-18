@@ -5,22 +5,22 @@
  */
 import { useRouter } from 'next/router'
 
-type Path = {
+type TPath = {
   pathname: string
   search: string
   hash: string
 }
 
-type To = string | Partial<Path>
+type TTo = string | Partial<TPath>
 
-type NavigateOptions = {
+type TNavigateOptions = {
   replace?: boolean
   state?: unknown
 }
 
-export type NavigateFunction = (to: To | number, options?: NavigateOptions) => void
+export type TNavigateFunction = (to: TTo | number, options?: TNavigateOptions) => void
 
-export type Location<State = unknown> = {
+export type TLocation<State = unknown> = {
   pathname: string
   search: string
   hash: string
@@ -51,10 +51,10 @@ export const generatePath = (
   return withRequired.replace(/\/+/g, '/')
 }
 
-export function useNavigate(): NavigateFunction {
+export function useNavigate(): TNavigateFunction {
   const router = useRouter()
 
-  const normalizeUrl = (to: To): string => {
+  const normalizeUrl = (to: TTo): string => {
     const pathname = typeof to === 'string' ? to.trim() : (to.pathname ?? '/')
     const search = typeof to === 'string' ? '' : (to.search ?? '')
     const hash = typeof to === 'string' ? '' : (to.hash ?? '')
@@ -80,7 +80,7 @@ export function useNavigate(): NavigateFunction {
     return path.replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, '%22').replace(/'/g, '%27')
   }
 
-  const navigate = (to: To | number, options?: { replace?: boolean }) => {
+  const navigate = (to: TTo | number, options?: { replace?: boolean }) => {
     if (typeof to === 'number') {
       if (to === -1) router.back()
       return
@@ -114,7 +114,7 @@ export function useLocation() {
   const qIdx = withoutHash.indexOf('?')
   const pathname = qIdx >= 0 ? withoutHash.substring(0, qIdx) : withoutHash
   const search = qIdx >= 0 ? withoutHash.substring(qIdx) : ''
-  const location: Location = {
+  const location: TLocation = {
     pathname,
     search,
     hash,

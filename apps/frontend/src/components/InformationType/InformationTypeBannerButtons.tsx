@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Loader, Modal } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
@@ -25,7 +25,7 @@ export const DeleteModal = (props: IDeleteModalProps) => {
   const [infoType, setInfoType] = useState<IInformationType>()
   const [policies, setPolicies] = useState<number>()
   const [documents, setDocuments] = useState<number>()
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
 
   useEffect(() => {
     ;(async () => {

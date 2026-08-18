@@ -1,4 +1,4 @@
-import { NavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
@@ -32,7 +32,7 @@ import { DpProcessDeleteModal } from './DpProcessDeleteModal'
 import DpProcessModal from './DpProcessModal'
 
 const DpProcessView = () => {
-  const navigate: NavigateFunction = useNavigate()
+  const navigate: TNavigateFunction = useNavigate()
   const params: Readonly<
     Partial<{
       id?: string
