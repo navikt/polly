@@ -1,18 +1,5 @@
 FROM node:26.7.0-alpine AS base
-
-COPY .yarnrc.yml .
-COPY package.json .
-COPY yarn.lock .
-COPY .yarnrc.yml .
-COPY .yarn/releases ./.yarn/releases
-COPY .yarn/patches ./.yarn/patches
-
-# Install dependencies
-RUN node .yarn/releases/yarn-4.16.0.cjs --version && node .yarn/releases/yarn-4.16.0.cjs install --immutable
-
-COPY . .
-
-RUN node .yarn/releases/yarn-4.16.0.cjs run build
+RUN npm install -g yarn
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
@@ -50,4 +37,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 8080
 
-CMD ["node", ".yarn/releases/yarn-4.16.0.cjs", "server.js"]
+CMD ["node", "server.js"]
