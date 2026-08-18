@@ -7,6 +7,13 @@
     "exports": "warn",
     "duplicates": "warn"
   },
-  "entry": ["app/**.{tsx,ts,mjs,mts,css}"],
-  "project": ["app/**/*.{tsx,ts,mjs,mts,css}"]
+  "entry": [
+    "pages/**/*.{tsx,ts}",
+    "next.config.ts",
+    "proxy.ts",
+    "jest.config.ts",
+    "*.config.{mjs,mts}",
+    "scripts/**/*.mjs"
+  ],
+  "project": ["**/*.{tsx,ts,mjs,mts}"]
 }
