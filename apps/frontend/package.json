@@ -14,7 +14,7 @@
     "prettier:check": "prettier -c ./src",
     "eslint:check": "eslint . --cache --max-warnings=0",
     "knip:test": "yarn knip --max-show-issues 5",
-    "verify:deps-upgrade": "yarn run prettier:check && yarn run eslint:check && yarn run type-check && yarn run build && yarn knip:test",
+    "verify:deps-upgrade": "yarn run prettier:check && yarn run eslint:check && yarn run type-check && yarn run jest && yarn run build && yarn knip:test",
     "pre-commit:deps-check": "node scripts/precommit-deps-check.mjs",
     "format": "prettier --write \"./src\"",
     "prettier": "prettier --write \"./src\"",
@@ -26,6 +26,7 @@
       "prettier --list-different --write",
       "eslint --max-warnings 0",
       "bash -c 'yarn run type-check'",
+      "bash -c 'yarn run jest'",
       "bash -c 'yarn knip --cache --max-issues=0'",
       "bash -c 'yarn knip --max-show-issues 5'"
     ]
