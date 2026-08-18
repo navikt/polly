@@ -1785,6 +1785,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@navikt/ds-react@patch:@navikt/ds-react@npm%3A8.16.1#~/.yarn/patches/@navikt-ds-react-npm-8.16.1-07df5781d1.patch":
+  version: 8.16.1
+  resolution: "@navikt/ds-react@patch:@navikt/ds-react@npm%3A8.16.1#~/.yarn/patches/@navikt-ds-react-npm-8.16.1-07df5781d1.patch::version=8.16.1&hash=e1fe3b"
+  dependencies:
+    "@floating-ui/react": "npm:0.27.20"
+    "@floating-ui/react-dom": "npm:^2.1.9"
+    "@navikt/aksel-icons": "npm:^8.16.1"
+    "@navikt/ds-tokens": "npm:^8.16.1"
+    date-fns: "npm:^4.0.0"
+    react-day-picker: "npm:10.0.1"
+  peerDependencies:
+    "@types/react": ^17.0.30 || ^18 || ^19
+    react: ^17 || ^18 || ^19
+    react-dom: ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/63c81ad53a4f2c46ab132261eb73eaf6efc4051d67edfeacbd30958f42ad46d462886c190458eb64d9b74b73a874c55a2e79ffefefa92de4dd6932d91fe77986
+  languageName: node
+  linkType: hard
+
 "@navikt/ds-tailwind@npm:8.16.1":
   version: 8.16.1
   resolution: "@navikt/ds-tailwind@npm:8.16.1"
@@ -7018,6 +7039,24 @@ __metadata:
   bin:
     jsondiff: bin/jsondiff.cjs
   checksum: 10c0/9daef1afafbd78aff354e04d8ce69e55bd00bef41faded555483d8f4a95a5db2afc93b40a1debd1405a375cd44e64bc307671d280d81472420926106f0d6a584
+  languageName: node
+  linkType: hard
+
+"json-diff-kit@patch:json-diff-kit@npm%3A1.0.35#~/.yarn/patches/json-diff-kit-npm-1.0.35-99a2649175.patch":
+  version: 1.0.35
+  resolution: "json-diff-kit@patch:json-diff-kit@npm%3A1.0.35#~/.yarn/patches/json-diff-kit-npm-1.0.35-99a2649175.patch::version=1.0.35&hash=142798"
+  dependencies:
+    commander: "npm:^11.1.0"
+    fast-myers-diff: "npm:^3.0.1"
+    lodash: "npm:^4.17.21"
+    prompts: "npm:^2.4.2"
+    terminal-kit: "npm:^3.0.1"
+  dependenciesMeta:
+    terminal-kit:
+      optional: true
+  bin:
+    jsondiff: bin/jsondiff.cjs
+  checksum: 10c0/525e338ac3fbc23396b9d66d205ca1b1eafbb21ff89b1ee56487339323f85acef844e0c7cd95f1993f7c0f61bc78625bfd2ad179fc9bee1da3fe2273505be847
   languageName: node
   linkType: hard
 
