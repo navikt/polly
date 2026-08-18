@@ -1,5 +1,5 @@
 FROM node:26.7.0-alpine AS base
-RUN yarn install --immutable
+RUN npm install -g yarn
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
