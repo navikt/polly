@@ -96,12 +96,10 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
     setPage(nextPage)
   }
 
-  useEffect(() => {
-    const nextPageNum: number = Math.ceil(audits.totalElements / limit)
-    if (audits.totalElements && nextPageNum < page) {
-      setPage(nextPageNum)
-    }
-  }, [limit, audits.totalElements])
+  const nextPageNum: number = Math.ceil(audits.totalElements / limit)
+  if (audits.totalElements && nextPageNum < page) {
+    setPage(nextPageNum)
+  }
 
   if (!show) {
     return null

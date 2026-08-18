@@ -1,6 +1,6 @@
 import { Button, DatePicker, useDatepicker } from '@navikt/ds-react'
 import { useField, useFormikContext } from 'formik'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
 import LabelWithToolTip from '../../common/LabelWithTooltip'
 import { Error } from '../../common/ModalSchema'
@@ -65,10 +65,12 @@ const DpProcessDateInput = (props: {
   const [field, meta, helpers] = useField<string | undefined>(props.name)
   const { submitCount } = useFormikContext<IDpProcessFormValues>()
   const [textValue, setTextValue] = useState<string>(() => ymdToDmy(field.value))
+  const [prevFieldValue, setPrevFieldValue] = useState(field.value)
 
-  useEffect(() => {
+  if (field.value !== prevFieldValue) {
+    setPrevFieldValue(field.value)
     setTextValue(ymdToDmy(field.value))
-  }, [field.value])
+  }
 
   return (
     <DatePicker

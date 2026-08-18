@@ -33,13 +33,16 @@ const TeamView = (props: ITeamViewProps) => {
   const { teamId } = props
   const [team, setTeam] = useState<ITeam>(defaultTeam(teamId))
   const [error, setError] = useState(false)
+  const [prevTeamId, setPrevTeamId] = useState(teamId)
+
+  if (teamId !== prevTeamId) {
+    setPrevTeamId(teamId)
+    setError(false)
+    setTeam(defaultTeam(teamId))
+  }
 
   useEffect(() => {
     let update = true
-    if (team.id !== teamId) {
-      setError(false)
-      setTeam(defaultTeam(teamId))
-    }
     getTeam(teamId)
       .then((response: ITeam) => update && setTeam(response))
       .catch(() => setError(true))

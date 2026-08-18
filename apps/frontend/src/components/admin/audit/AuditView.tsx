@@ -30,6 +30,12 @@ export const AuditView = (props: TAuditViewProps) => {
   const { auditLog, auditId, loading, viewId } = props
   const refs = useRefs<HTMLDivElement>(auditLog?.audits.map((audit) => audit.id) || [])
   const [open, setOpen] = useState(initialOpen(auditLog, auditId))
+  const [prevKey, setPrevKey] = useState({ auditLog, auditId })
+
+  if (prevKey.auditLog !== auditLog || prevKey.auditId !== auditId) {
+    setPrevKey({ auditLog, auditId })
+    setOpen(initialOpen(auditLog, auditId))
+  }
 
   useEffect(() => {
     if (
@@ -41,7 +47,6 @@ export const AuditView = (props: TAuditViewProps) => {
     ) {
       refs[auditId].current.scrollIntoView({ block: 'start' })
     }
-    setOpen(initialOpen(auditLog, auditId))
   }, [auditId, auditLog])
 
   const logFound: boolean | undefined = auditLog && !!auditLog.audits.length

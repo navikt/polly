@@ -1,6 +1,6 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import { useField, useFormikContext } from 'formik'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
 import { Error } from '../../common/ModalSchema'
 
@@ -40,10 +40,12 @@ export const EndDate = () => {
   const [field, meta, helpers] = useField<string | undefined>('aiUsageDescription.endDate')
   const formik = useFormikContext<IProcessFormValues>()
   const [textValue, setTextValue] = useState<string>(() => ymdToDmy(field.value))
+  const [prevFieldValue, setPrevFieldValue] = useState(field.value)
 
-  useEffect(() => {
+  if (field.value !== prevFieldValue) {
+    setPrevFieldValue(field.value)
     setTextValue(ymdToDmy(field.value))
-  }, [field.value])
+  }
 
   return (
     <div className='w-1/2 mr-4'>

@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   ActionMeta,
   CSSObjectWithLabel,
@@ -26,11 +26,9 @@ interface ICustomSearchSelectProps {
 export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
   const { ariaLabel, placeholder, inputId, instanceId, hasError, onChange, loadOptions } = props
 
-  const wrapperRef = useRef<HTMLDivElement>(null)
   const [dialogPortalTarget, setDialogPortalTarget] = useState<HTMLElement | null>(null)
 
-  useEffect(() => {
-    const wrapper = wrapperRef.current
+  const wrapperRefCallback = useCallback((wrapper: HTMLDivElement | null) => {
     if (!wrapper) return
 
     const closestDialog = (wrapper.closest('dialog') ||
@@ -42,7 +40,7 @@ export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
   const menuPortalTarget =
     dialogPortalTarget ?? (typeof document !== 'undefined' ? document.body : undefined)
   return (
-    <div ref={wrapperRef} className='w-full'>
+    <div ref={wrapperRefCallback} className='w-full'>
       <AsyncSelect
         className='w-full'
         aria-label={ariaLabel}

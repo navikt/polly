@@ -29,7 +29,10 @@ export const SettingsPage = () => {
   }
 
   useEffect(() => {
-    load()
+    ;(async () => {
+      setSettings(await getSettings())
+      setLoading(false)
+    })()
   }, [])
 
   return (
