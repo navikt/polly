@@ -7,9 +7,9 @@
     "node": ">=22.22.1"
   },
   "scripts": {
-    "start": "next dev",
+    "dev": "next dev",
     "build": "next build",
-    "serve": "next start",
+    "start": "next start",
     "test": "jest",
     "prettier:check": "prettier -c ./src",
     "eslint:check": "eslint . --cache --max-warnings=0",
