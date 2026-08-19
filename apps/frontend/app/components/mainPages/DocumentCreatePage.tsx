@@ -1,9 +1,9 @@
+import { createInformationTypesDocument } from '@/api/DocumentApi'
+import { IDocumentFormValues } from '@/constants'
 import { useNavigate } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
 import { Fragment } from 'react/jsx-runtime'
-import { createInformationTypesDocument } from '../api/GetAllApi'
-import DocumentForm from '../components/document/component/DocumentForm'
-import { IDocumentFormValues } from '../constants'
+import DocumentForm from '../document/component/DocumentForm'
 
 const initialCreateDocumentFormValues: IDocumentFormValues = {
   name: '',
