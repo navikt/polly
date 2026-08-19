@@ -2,7 +2,7 @@ import dsTailwind from '@navikt/ds-tailwind'
 
 /** @type {import('tailwindcss').Config} */
 const config = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}', '!./node_modules'],
+  content: ['./app/**/*.{js,jsx,ts,tsx}', '!./node_modules'],
   darkMode: 'class',
   theme: {
     screens: {
