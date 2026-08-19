@@ -28,11 +28,18 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: '26.x'
-          cache: 'yarn'
-          cache-dependency-path: apps/frontend/yarn.lock
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
+      - uses: actions/cache@v6
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+      
       - name: yarn install
-        run: yarn install --immutable     
+        run: yarn install
         
       - name: use prod config
         if: github.ref == 'refs/heads/prod'
