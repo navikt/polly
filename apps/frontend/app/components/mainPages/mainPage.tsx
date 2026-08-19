@@ -1,13 +1,13 @@
+import { getDashboard } from '@/api/DashboardApi'
+import { getSettings } from '@/api/SettingsApi'
+import { EProcessStatusFilter, IDashboardData, ISettings } from '@/constants'
+import { user } from '@/service/User'
 import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { getDashboard } from '../api/GetAllApi'
-import { getSettings } from '../api/SettingsApi'
-import ShortcutNav from '../components/Main/ShortcutNav'
-import { LastEvents } from '../components/admin/audit/LastEvents'
-import { RecentEditsByUser } from '../components/admin/audit/RecentEditsByUser'
-import { Markdown } from '../components/common/Markdown'
-import { EProcessStatusFilter, IDashboardData, ISettings } from '../constants'
-import { user } from '../service/User'
+import Markdown from 'react-markdown'
+import ShortcutNav from '../Main/ShortcutNav'
+import { LastEvents } from '../admin/audit/LastEvents'
+import { RecentEditsByUser } from '../admin/audit/RecentEditsByUser'
 
 export const MainPage = () => {
   const [settings, setSettings] = useState<ISettings>()
