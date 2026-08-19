@@ -1,3 +1,5 @@
 import DpProcessView from '@/components/DpProcess/DpProcessView'
 
-export default DpProcessView
+const Page = () => <DpProcessView />
+
+export default Page

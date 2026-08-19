@@ -1,13 +1,13 @@
+import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '@/api/DpProcessApi'
+import { IDpProcess, IDpProcessFormValues } from '@/constants'
+import { user } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '../api/DpProcessApi'
-import DpProcessModal from '../components/DpProcess/DpProcessModal'
-import DpProcessTable from '../components/DpProcess/DpProcessTable'
-import Button from '../components/common/Button/CustomButton'
-import { IDpProcess, IDpProcessFormValues } from '../constants'
-import { user } from '../service/User'
+import DpProcessModal from '../DpProcess/DpProcessModal'
+import DpProcessTable from '../DpProcess/DpProcessTable'
+import Button from '../common/Button/CustomButton'
 
 const DpProcessPage = () => {
   const [showModal, setShowModal] = useState(false)

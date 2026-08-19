@@ -1,17 +1,8 @@
-import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
-import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
-import {
-  getCodelistUsageByListName,
-  getDisclosuresByInformationTypeId,
-  getDocumentsForInformationType,
-  getInformationType,
-  getPoliciesForInformationType,
-} from '../api/GetAllApi'
-import { InformationtypeMetadata } from '../components/InformationType/InformationtypeMetadata/InformationtypeMetadata'
-import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
-import Button from '../components/common/Button/CustomButton'
+import { getCodelistUsageByListName } from '@/api/CodelistApi'
+import { getDisclosuresByInformationTypeId } from '@/api/DisclosureApi'
+import { getDocumentsForInformationType } from '@/api/DocumentApi'
+import { getInformationType } from '@/api/InfoTypeApi'
+import { getPoliciesForInformationType } from '@/api/PolicyApi'
 import {
   ICategoryUsage,
   ICodeUsage,
@@ -19,9 +10,16 @@ import {
   IDocument,
   IInformationType,
   IPolicy,
-} from '../constants'
-import { EListName } from '../service/Codelist'
-import { user } from '../service/User'
+} from '@/constants'
+import { EListName } from '@/service/Codelist'
+import { user } from '@/service/User'
+import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Heading, Loader } from '@navikt/ds-react'
+import { useEffect, useState } from 'react'
+import { InformationtypeMetadata } from '../InformationType/InformationtypeMetadata/InformationtypeMetadata'
+import ListCategoryInformationtype from '../InformationType/ListCategoryInformationtype'
+import Button from '../common/Button/CustomButton'
 
 export type TPurposeMap = { [purpose: string]: IPolicy[] }
 
