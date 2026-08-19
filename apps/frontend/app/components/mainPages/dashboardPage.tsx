@@ -1,11 +1,11 @@
+import { getDashboard } from '@/api/DashboardApi'
+import { EProcessStatusFilter, IDashboardData } from '@/constants'
 import { useParams } from '@/util/router'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { getDashboard } from '../api/GetAllApi'
-import Charts from '../components/Charts/Charts'
-import Departments from '../components/Dashboard/Departments'
-import { FilterDashboardStatus } from '../components/Dashboard/FilterDashboardStatus'
-import { EProcessStatusFilter, IDashboardData } from '../constants'
+import Charts from '../Charts/Charts'
+import Departments from '../Dashboard/Departments'
+import { FilterDashboardStatus } from '../Dashboard/FilterDashboardStatus'
 
 export const DashboardPage = () => {
   const [dashboardData, setDashboardData] = useState<IDashboardData>()
