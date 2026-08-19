@@ -1,10 +1,10 @@
+import { getDocument, updateInformationTypesDocument } from '@/api/DocumentApi'
+import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '@/constants'
 import { useNavigate, useParams } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
 import { Fragment, useEffect, useState } from 'react'
 import shortid from 'shortid'
-import { getDocument, updateInformationTypesDocument } from '../api/GetAllApi'
-import DocumentForm from '../components/document/component/DocumentForm'
-import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '../constants'
+import DocumentForm from '../document/component/DocumentForm'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
 
 const convertToDocumentFormValues = (document: IDocument) => {
