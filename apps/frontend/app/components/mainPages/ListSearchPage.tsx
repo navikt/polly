@@ -1,3 +1,5 @@
+'use client'
+
 import { CodelistService, EListName, ICode } from '@/service/Codelist'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
