@@ -1,22 +1,17 @@
+import { deleteDocument, getDocument, getDocumentByPageAndPageSize } from '@/api/DocumentApi'
+import { getAll } from '@/api/GetAllApi'
+import { getProcessesFor } from '@/api/ProcessApi'
+import { IDocument, IProcess } from '@/constants'
+import { user } from '@/service/User'
 import { useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons'
-import { Alert, BodyLong, Heading, Label, Tabs } from '@navikt/ds-react'
+import { Alert, BodyLong, Button, Heading, Label, Tabs } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import {
-  deleteDocument,
-  getAll,
-  getDocument,
-  getDocumentByPageAndPageSize,
-  getProcessesFor,
-} from '../api/GetAllApi'
-import { AuditButton } from '../components/admin/audit/AuditButton'
-import AlphabeticList from '../components/common/AlphabeticList'
-import Button from '../components/common/Button/CustomButton'
-import DocumentMetadata from '../components/document/DocumentMetadata'
-import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
-import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import { IDocument, IProcess } from '../constants'
-import { user } from '../service/User'
+import { AuditButton } from '../admin/audit/AuditButton'
+import AlphabeticList from '../common/AlphabeticList'
+import DocumentMetadata from '../document/DocumentMetadata'
+import DeleteDocumentModal from '../document/component/DeleteDocumentModal'
+import DocumentProcessesTable from '../document/component/DocumentProcessesTable'
 
 const renderTextWithLabel = (label: string, text: string) => (
   <div className='mt-10 max-w-[100ch]'>
