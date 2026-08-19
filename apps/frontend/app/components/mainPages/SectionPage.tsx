@@ -1,11 +1,11 @@
+import { getDashboard } from '@/api/DashboardApi'
+import { EProcessStatusFilter, ISeksjonDashCount } from '@/constants'
 import { useParams } from '@/util/router'
 import { Heading, Tabs } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import { getDashboard } from '../api/GetAllApi'
-import Charts from '../components/Charts/Charts'
-import ProcessList from '../components/Process/ProcessList'
-import { PageHeader } from '../components/common/PageHeader'
-import { EProcessStatusFilter, ISeksjonDashCount } from '../constants'
+import Charts from '../Charts/Charts'
+import ProcessList from '../Process/ProcessList'
+import { PageHeader } from '../common/PageHeader'
 import { ESection } from './ProcessPage'
 
 export const SectionPage = () => {

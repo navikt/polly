@@ -1,3 +1,4 @@
+import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { canViewAlerts } from '@/components/mainPages/alertEventPage'
 import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
@@ -18,7 +19,6 @@ import {
   IProcessFormValues,
   IProcessShort,
 } from '../../../constants'
-import { TPathParams } from '../../../pages/ProcessPage'
 import { ICode, ICodelistProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { lastModifiedDate } from '../../../util/date-formatter'

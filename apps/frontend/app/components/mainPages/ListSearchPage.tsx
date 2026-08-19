@@ -1,7 +1,7 @@
+import { CodelistService, EListName, ICode } from '@/service/Codelist'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import AlphabeticList from '../components/common/AlphabeticList'
-import { CodelistService, EListName, ICode } from '../service/Codelist'
+import AlphabeticList from '../common/AlphabeticList'
 
 interface ICodeListPageProps {
   listName: EListName

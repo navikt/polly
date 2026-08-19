@@ -1,17 +1,17 @@
-import { useNavigate } from '@/util/router'
-import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Button, Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
-import { getAll } from '../api/GetAllApi'
+import { getAll } from '@/api/GetAllApi'
 import {
   convertProcessorToFormValues,
   createProcessor,
   getProcessorsByPageAndPageSize,
-} from '../api/ProcessorApi'
-import ProcessorModal from '../components/Processor/ProcessorModal'
-import AlphabeticList from '../components/common/AlphabeticList'
-import { IProcessor, IProcessorFormValues } from '../constants'
-import { user } from '../service/User'
+} from '@/api/ProcessorApi'
+import { IProcessor, IProcessorFormValues } from '@/constants'
+import { user } from '@/service/User'
+import { useNavigate } from '@/util/router'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Button, Heading, Loader } from '@navikt/ds-react'
+import { useEffect, useState } from 'react'
+import ProcessorModal from '../Processor/ProcessorModal'
+import AlphabeticList from '../common/AlphabeticList'
 
 export const ProcessorListPage = () => {
   const [processors, setProcessors] = useState<IProcessor[]>([])

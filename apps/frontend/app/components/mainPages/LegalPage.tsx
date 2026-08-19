@@ -1,12 +1,12 @@
+import { getProcessesFor } from '@/api/ProcessApi'
+import { IPageResponse, IProcess } from '@/constants'
+import { CodelistService, EListName, ICode } from '@/service/Codelist'
+import { useQueryParam } from '@/util/hooks'
 import { useLocation, useNavigate } from '@/util/router'
 import { BodyLong, Heading, Select } from '@navikt/ds-react'
 import queryString from 'query-string'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getProcessesFor } from '../api/GetAllApi'
-import { SimpleProcessTable } from '../components/Process/SimpleProcessTable'
-import { IPageResponse, IProcess } from '../constants'
-import { CodelistService, EListName, ICode } from '../service/Codelist'
-import { useQueryParam } from '../util/hooks'
+import { SimpleProcessTable } from '../Process/SimpleProcessTable'
 
 export const LegalPage = () => {
   const [processes, setProcesses] = useState<IProcess[]>([])

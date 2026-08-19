@@ -1,18 +1,14 @@
+import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
+import { convertProcessToFormValues, createProcess } from '@/api/ProcessApi'
+import { IProcessFormValues } from '@/constants'
+import { CodelistService } from '@/service/Codelist'
+import { user } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { FileWordIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Heading, LocalAlert, Modal } from '@navikt/ds-react'
+import { env } from 'process'
 import { useState } from 'react'
-import {
-  convertDisclosureToFormValues,
-  convertProcessToFormValues,
-  createProcess,
-  updateDisclosure,
-} from '../api/GetAllApi'
-import ModalProcess from '../components/Process/Accordion/ModalProcess'
-import { IProcessFormValues } from '../constants'
-import { CodelistService } from '../service/Codelist'
-import { user } from '../service/User'
-import { env } from '../util/env'
+import ModalProcess from '../Process/Accordion/ModalProcess'
 import { PurposeList } from './ListSearchPage'
 import { ESection, genProcessPath } from './ProcessPage'
 

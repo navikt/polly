@@ -1,16 +1,7 @@
-import { generatePath, useLocation, useParams } from '@/util/router'
-import { Heading, LocalAlert, Select } from '@navikt/ds-react'
-import queryString from 'query-string'
-import { useEffect, useState } from 'react'
-import { getDpProcessByDepartment } from '../api/DpProcessApi'
-import { getDashboard, getDisclosureByDepartment } from '../api/GetAllApi'
-import { getAvdelingByNomId, getSeksjonerForNomAvdeling } from '../api/NomApi'
-import Charts from '../components/Charts/Charts'
-import DashboardBreadcrumbs from '../components/Dashboard/DashboardBreadcrumbs'
-import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
-import Seksjoner from '../components/Dashboard/Seksjoner'
-import ProcessList from '../components/Process/ProcessList'
-import { PageHeader } from '../components/common/PageHeader'
+import { getDashboard } from '@/api/DashboardApi'
+import { getDisclosureByDepartment } from '@/api/DisclosureApi'
+import { getDpProcessByDepartment } from '@/api/DpProcessApi'
+import { getAvdelingByNomId, getSeksjonerForNomAvdeling } from '@/api/NomApi'
 import {
   EProcessStatus,
   EProcessStatusFilter,
@@ -21,9 +12,19 @@ import {
   IOrgEnhet,
   IProcess,
   ISeksjonDashCount,
-} from '../constants'
-import { EListName } from '../service/Codelist'
-import { useQueryParam } from '../util/hooks'
+} from '@/constants'
+import { EListName } from '@/service/Codelist'
+import { useQueryParam } from '@/util/hooks'
+import { generatePath, useLocation, useParams } from '@/util/router'
+import { Heading, LocalAlert, Select } from '@navikt/ds-react'
+import queryString from 'query-string'
+import { useEffect, useState } from 'react'
+import Charts from '../Charts/Charts'
+import DashboardBreadcrumbs from '../Dashboard/DashboardBreadcrumbs'
+import ProcessDisclosureTabs from '../Dashboard/ProcessDisclosureTabs'
+import Seksjoner from '../Dashboard/Seksjoner'
+import ProcessList from '../Process/ProcessList'
+import { PageHeader } from '../common/PageHeader'
 
 export const processPath = '/process/:section/:code/:processId'
 export const processPathNoId = '/process/:section/:code/'

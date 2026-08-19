@@ -1,10 +1,10 @@
+import { getInformationTypesBy } from '@/api/InfoTypeApi'
+import { EListName } from '@/service/Codelist'
 import { useParams } from '@/util/router'
 import { Tabs } from '@navikt/ds-react'
-import { getInformationTypesBy } from '../api/GetAllApi'
-import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
-import ProcessList from '../components/Process/ProcessList'
-import { PageHeader } from '../components/common/PageHeader'
-import { EListName } from '../service/Codelist'
+import { InfoTypeTable } from '../InformationType/InfoTypeTableSimple'
+import ProcessList from '../Process/ProcessList'
+import { PageHeader } from '../common/PageHeader'
 import { ESection } from './ProcessPage'
 
 export const SystemPage = () => {

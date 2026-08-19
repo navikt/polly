@@ -4,10 +4,10 @@ import { EProcessStatusFilter, IDashboardData, ISettings } from '@/constants'
 import { user } from '@/service/User'
 import { Heading } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
-import Markdown from 'react-markdown'
 import ShortcutNav from '../Main/ShortcutNav'
 import { LastEvents } from '../admin/audit/LastEvents'
 import { RecentEditsByUser } from '../admin/audit/RecentEditsByUser'
+import { Markdown } from '../common/Markdown'
 
 export const MainPage = () => {
   const [settings, setSettings] = useState<ISettings>()

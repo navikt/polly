@@ -1,11 +1,12 @@
+import { getDisclosureByProductTeam } from '@/api/DisclosureApi'
+import { getDpProcessByProductTeam } from '@/api/DpProcessApi'
+import { getInformationTypesBy } from '@/api/InfoTypeApi'
+import { IDisclosure, IDpProcess } from '@/constants'
 import { useParams } from '@/util/router'
 import { useEffect, useState } from 'react'
-import { getDpProcessByProductTeam } from '../api/DpProcessApi'
-import { getDisclosureByProductTeam, getInformationTypesBy } from '../api/GetAllApi'
-import ProcessDisclosureTabs from '../components/Dashboard/ProcessDisclosureTabs'
-import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
-import { PageHeader } from '../components/common/PageHeader'
-import { IDisclosure, IDpProcess } from '../constants'
+import ProcessDisclosureTabs from '../Dashboard/ProcessDisclosureTabs'
+import { InfoTypeTable } from '../InformationType/InfoTypeTableSimple'
+import { PageHeader } from '../common/PageHeader'
 import { ESection } from './ProcessPage'
 
 export const TeamPage = () => {

@@ -1,23 +1,23 @@
-import { useParams } from '@/util/router'
-import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
-import { getAllDpProcesses } from '../api/DpProcessApi'
 import {
   createDisclosure,
   deleteDisclosure,
   getDisclosuresByRecipient,
-  getInformationTypesBy,
   updateDisclosure,
-} from '../api/GetAllApi'
-import ProcessList from '../components/Process/ProcessList'
-import AccordionDisclosure from '../components/ThirdParty/AccordionDisclosure'
-import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import ThirdPartiesDpProcessTable from '../components/common/ThirdPartiesDpProcessTable'
-import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
-import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '../constants'
-import { CodelistService, EListName } from '../service/Codelist'
-import { user } from '../service/User'
+} from '@/api/DisclosureApi'
+import { getAllDpProcesses } from '@/api/DpProcessApi'
+import { getInformationTypesBy } from '@/api/InfoTypeApi'
+import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '@/constants'
+import { CodelistService, EListName } from '@/service/Codelist'
+import { user } from '@/service/User'
+import { useParams } from '@/util/router'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
+import { useEffect, useState } from 'react'
+import ProcessList from '../Process/ProcessList'
+import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
+import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
+import ThirdPartiesDpProcessTable from '../common/ThirdPartiesDpProcessTable'
+import ThirdPartiesTable from '../common/ThirdPartiesTable'
 import { ESection } from './ProcessPage'
 
 export type TPathParams = {

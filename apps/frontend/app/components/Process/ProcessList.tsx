@@ -32,12 +32,12 @@ import {
   IProcessFormValues,
   IProcessShort,
 } from '../../constants'
-import { ESection, genProcessPath } from '../../pages/ProcessPage'
 import { CodelistService, EListName, ICode } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
+import { ESection, genProcessPath } from '../mainPages/ProcessPage'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ExportProcessModal from './Export/ExportProcessModal'

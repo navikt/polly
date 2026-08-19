@@ -10,11 +10,11 @@ import {
   IProductAreaDashCount,
   ISeksjonDashCount,
 } from '../../constants'
-import { ESection } from '../../pages/ProcessPage'
 import { clickOnPieChartSlice } from '../../util/dashboard'
 import { chartColor } from '../../util/theme'
 import { useIsDark } from '../../util/themeMode'
 import RouteLink from '../common/RouteLink'
+import { ESection } from '../mainPages/ProcessPage'
 import { Chart } from './Chart'
 import TriChart from './TriChart'
 

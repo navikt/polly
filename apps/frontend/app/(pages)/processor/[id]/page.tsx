@@ -1,3 +1,5 @@
 import ProcessorView from '@/components/Processor/ProcessorView'
 
-export default ProcessorView
+const Page = () => <ProcessorView />
+
+export default Page
