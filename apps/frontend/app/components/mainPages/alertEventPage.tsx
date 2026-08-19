@@ -1,3 +1,14 @@
+import { getAlertEvents } from '@/api/AlertApi'
+import {
+  EAlertEventLevel,
+  EAlertEventType,
+  EObjectType,
+  IAlertEvent,
+  IPageResponse,
+} from '@/constants'
+import { CodelistService } from '@/service/Codelist'
+import { user } from '@/service/User'
+import { tekster } from '@/util/codeToFineText'
 import { useParams } from '@/util/router'
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons'
 import {
@@ -11,20 +22,9 @@ import {
   Table,
 } from '@navikt/ds-react'
 import moment from 'moment'
-import { useEffect, useReducer } from 'react'
-import { getAlertEvents } from '../api/AlertApi'
-import { Sensitivity } from '../components/InformationType/Sensitivity'
-import { ObjectLink } from '../components/common/RouteLink'
-import {
-  EAlertEventLevel,
-  EAlertEventType,
-  EObjectType,
-  IAlertEvent,
-  IPageResponse,
-} from '../constants'
-import { CodelistService } from '../service/Codelist'
-import { user } from '../service/User'
-import { tekster } from '../util/codeToFineText'
+import { ChangeEvent, useEffect, useReducer } from 'react'
+import { Sensitivity } from '../InformationType/Sensitivity'
+import { ObjectLink } from '../common/RouteLink'
 
 type TState = {
   events: IPageResponse<IAlertEvent>
@@ -168,7 +168,7 @@ export const AlertEventPage = () => {
       <div className='w-full flex mb-1.5'>
         <Select
           label='Type varsel'
-          onChange={(event) => {
+          onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             if (event.target.value !== '') {
               setType(event.target.value as EAlertEventType)
             } else {
