@@ -1,23 +1,19 @@
+import { searchAaregAvtale } from '@/api/AaregAvtaleApi'
+import { IDisclosureSummary, createDisclosure, getDisclosureSummaries } from '@/api/DisclosureApi'
+import { getAll } from '@/api/GetAllApi'
+import { EObjectType, IAaregAvtale, IDisclosure, IDisclosureFormValues } from '@/constants'
+import { EListName } from '@/service/Codelist'
+import { user } from '@/service/User'
+import { theme, useDebouncedState } from '@/util'
+import { useQueryParam, useTable } from '@/util/hooks'
 import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Button, Heading, Label, Loader, Search, ToggleGroup } from '@navikt/ds-react'
+import { Button, Heading, Label, Loader, Search, Table, ToggleGroup } from '@navikt/ds-react'
 import { useEffect, useMemo, useState } from 'react'
-import { searchAaregAvtale } from '../api/AaregAvtaleApi'
-import {
-  IDisclosureSummary,
-  createDisclosure,
-  getAll,
-  getDisclosureSummaries,
-} from '../api/GetAllApi'
-import { AaregAvtaleTable } from '../components/AaregAvtale/AaregAvtaleTable'
-import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
-import { ObjectLink } from '../components/common/RouteLink'
-import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { EObjectType, IAaregAvtale, IDisclosure, IDisclosureFormValues } from '../constants'
-import { EListName } from '../service/Codelist'
-import { user } from '../service/User'
-import { theme, useDebouncedState } from '../util'
-import { useQueryParam, useTable } from '../util/hooks'
+import AaregAvtaleTable from '../AaregAvtale/AaregAvtaleTable'
+import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
+import { ObjectLink } from '../common/RouteLink'
+import { Cell, HeadCell, Row } from '../common/Table'
 
 enum EFilterType {
   legalbases = 'legalbases',
