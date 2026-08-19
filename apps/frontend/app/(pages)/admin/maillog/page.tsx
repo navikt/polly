@@ -1,9 +1,9 @@
-import { RequestRevisionPage } from '@/components/admin/revision/RequestRevisionPage'
+import { MailLogPage } from '@/components/admin/maillog/MailLogPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
 import { EGroup, user } from '@/service/User'
 import { Loader } from '@navikt/ds-react'
 
-export default function AdminRequestRevisionPage() {
+const Page = () => {
   if (!user.isLoaded())
     return (
       <div className='w-full flex justify-center mt-12'>
@@ -11,5 +11,7 @@ export default function AdminRequestRevisionPage() {
       </div>
     )
   if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
-  return <RequestRevisionPage />
+  return <MailLogPage />
 }
+
+export default Page

@@ -1,8 +1,10 @@
-import CodelistPage from '@/components/admin/CodeList/CodelistPage'
+import { AuditPage } from '@/components/admin/audit/AuditPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
 import { user } from '@/service/User'
 
-export default function AdminCodelistListnamePage() {
+const Page = () => {
   if (!(user.isAdmin() || user.isSuper())) return <ErrorNotAllowed />
-  return <CodelistPage />
+  return <AuditPage />
 }
+
+export default Page

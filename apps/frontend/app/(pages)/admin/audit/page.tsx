@@ -1,9 +1,9 @@
-import { MailLogPage } from '@/components/admin/maillog/MailLogPage'
+import { AuditPage } from '@/components/admin/audit/AuditPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
 import { EGroup, user } from '@/service/User'
 import { Loader } from '@navikt/ds-react'
 
-export default function AdminMaillogPage() {
+const Page = () => {
   if (!user.isLoaded())
     return (
       <div className='w-full flex justify-center mt-12'>
@@ -11,5 +11,7 @@ export default function AdminMaillogPage() {
       </div>
     )
   if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
-  return <MailLogPage />
+  return <AuditPage />
 }
+
+export default Page

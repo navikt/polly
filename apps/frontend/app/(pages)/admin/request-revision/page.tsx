@@ -1,9 +1,9 @@
-import CodelistPage from '@/components/admin/CodeList/CodelistPage'
+import { RequestRevisionPage } from '@/components/admin/revision/RequestRevisionPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
 import { EGroup, user } from '@/service/User'
 import { Loader } from '@navikt/ds-react'
 
-export default function AdminCodelistPage() {
+const Page = () => {
   if (!user.isLoaded())
     return (
       <div className='w-full flex justify-center mt-12'>
@@ -11,5 +11,7 @@ export default function AdminCodelistPage() {
       </div>
     )
   if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
-  return <CodelistPage />
+  return <RequestRevisionPage />
 }
+
+export default Page

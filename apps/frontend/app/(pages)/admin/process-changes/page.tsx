@@ -1,9 +1,9 @@
-import { AuditPage } from '@/components/admin/audit/AuditPage'
+import { ProcessChangesPage } from '@/components/admin/processchanges/ProcessChangesPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
 import { EGroup, user } from '@/service/User'
 import { Loader } from '@navikt/ds-react'
 
-export default function AdminAuditPage() {
+const Page = () => {
   if (!user.isLoaded())
     return (
       <div className='w-full flex justify-center mt-12'>
@@ -11,5 +11,7 @@ export default function AdminAuditPage() {
       </div>
     )
   if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
-  return <AuditPage />
+  return <ProcessChangesPage />
 }
+
+export default Page

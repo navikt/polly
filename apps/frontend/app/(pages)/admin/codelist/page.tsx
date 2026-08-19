@@ -1,9 +1,9 @@
-import { ProcessChangesPage } from '@/components/admin/processchanges/ProcessChangesPage'
+import CodelistPage from '@/components/admin/CodeList/CodelistPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
 import { EGroup, user } from '@/service/User'
 import { Loader } from '@navikt/ds-react'
 
-export default function AdminProcessChangesPage() {
+const Page = () => {
   if (!user.isLoaded())
     return (
       <div className='w-full flex justify-center mt-12'>
@@ -11,5 +11,7 @@ export default function AdminProcessChangesPage() {
       </div>
     )
   if (!(user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER))) return <ErrorNotAllowed />
-  return <ProcessChangesPage />
+  return <CodelistPage />
 }
+
+export default Page

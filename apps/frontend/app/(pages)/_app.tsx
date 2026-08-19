@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useEffect } from 'react'
 
-const Main = dynamic(() => import('@/main'), { ssr: false })
+const Main = dynamic(() => import('@/page'), { ssr: false })
 
 function getFavicon(): string {
   const { hostname } = window.location
