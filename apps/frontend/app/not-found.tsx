@@ -1,3 +1,5 @@
+'use client'
+
 import notFound from '@/resources/notfound.svg'
 import { BodyLong } from '@navikt/ds-react'
 import Image from 'next/image'

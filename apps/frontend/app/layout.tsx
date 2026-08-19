@@ -1,3 +1,5 @@
+'use client'
+
 import { Theme } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'

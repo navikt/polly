@@ -1,3 +1,5 @@
+'use client'
+
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons'
 import { useEffect, useRef, useState } from 'react'
 import {

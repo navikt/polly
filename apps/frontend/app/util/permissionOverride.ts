@@ -1,3 +1,5 @@
+'use client'
+
 import { createContext, useContext } from 'react'
 
 export type TPermissionMode = 'admin' | 'write' | 'read'

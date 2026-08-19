@@ -1,3 +1,5 @@
+'use client'
+
 import { getDashboard } from '@/api/DashboardApi'
 import { getSettings } from '@/api/SettingsApi'
 import { EProcessStatusFilter, IDashboardData, ISettings } from '@/constants'

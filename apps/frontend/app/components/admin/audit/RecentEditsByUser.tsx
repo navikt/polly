@@ -1,3 +1,5 @@
+'use client'
+
 import { Heading } from '@navikt/ds-react'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
