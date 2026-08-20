@@ -1,3 +1,5 @@
+'use client'
+
 import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { canViewAlerts } from '@/components/mainPages/alertEventPage'
 import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
