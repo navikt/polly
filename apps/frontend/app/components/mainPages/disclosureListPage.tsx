@@ -1,3 +1,5 @@
+'use client'
+
 import { searchAaregAvtale } from '@/api/AaregAvtaleApi'
 import { IDisclosureSummary, createDisclosure, getDisclosureSummaries } from '@/api/DisclosureApi'
 import { getAll } from '@/api/GetAllApi'
