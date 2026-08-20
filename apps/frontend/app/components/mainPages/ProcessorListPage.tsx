@@ -1,3 +1,5 @@
+'use client'
+
 import { getAll } from '@/api/GetAllApi'
 import {
   convertProcessorToFormValues,
