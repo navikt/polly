@@ -4,13 +4,13 @@ import { useRouter } from 'next/router'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
-import { ESection } from '../../pages/ProcessPage'
 import { EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import DpProcessTable from '../DpProcess/DpProcessTable'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
+import { ESection } from '../mainPages/ProcessPage'
 
 interface IProps {
   disclosureData: IDisclosure[]

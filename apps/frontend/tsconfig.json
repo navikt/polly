@@ -32,9 +32,6 @@
   },
   "include": [
     "moment-locale.d.ts",
-    "pages/**/*.ts",
-    "pages/**/*.tsx",
-    "pages/**/*.d.ts",
     "app/**/*.ts",
     "app/**/*.tsx",
     "app/**/*.d.ts",

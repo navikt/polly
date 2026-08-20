@@ -1,3 +1,5 @@
+'use client'
+
 import axios from 'axios'
 import queryString from 'query-string'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'

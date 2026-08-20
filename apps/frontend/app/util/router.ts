@@ -3,7 +3,8 @@
  *
  * With:     import { useNavigate, useParams, useLocation } from '@/util/router'
  */
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
+import { useQuery } from './hooks'
 
 type TPath = {
   pathname: string
@@ -96,9 +97,9 @@ export function useNavigate(): TNavigateFunction {
 }
 
 export function useParams<T extends Record<string, string | undefined>>(): Partial<T> {
-  const router = useRouter()
+  const query = useQuery()
   const safe = Object.fromEntries(
-    Object.entries(router.query)
+    Object.entries(query)
       .filter(([, v]) => typeof v !== 'string' || !/^[a-z][a-z0-9+\-.]*:/i.test(v))
       .map(([k, v]) => [k, Array.isArray(v) ? v[0] : v])
   )
@@ -106,16 +107,16 @@ export function useParams<T extends Record<string, string | undefined>>(): Parti
 }
 
 export function useLocation() {
-  const router = useRouter()
-  const asPath = router.asPath
+  const pathName = usePathname()
+  const asPath = pathName
   const hashIdx = asPath.indexOf('#')
   const withoutHash = hashIdx >= 0 ? asPath.substring(0, hashIdx) : asPath
   const hash = hashIdx >= 0 ? asPath.substring(hashIdx) : ''
   const qIdx = withoutHash.indexOf('?')
-  const pathname = qIdx >= 0 ? withoutHash.substring(0, qIdx) : withoutHash
+  const pathnameWithoutHash = qIdx >= 0 ? withoutHash.substring(0, qIdx) : withoutHash
   const search = qIdx >= 0 ? withoutHash.substring(qIdx) : ''
   const location: TLocation = {
-    pathname,
+    pathname: pathnameWithoutHash,
     search,
     hash,
     state: null as unknown,
