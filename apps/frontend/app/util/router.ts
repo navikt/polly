@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * Compatibility shim with React Router-like helpers backed by next/router.
  *
