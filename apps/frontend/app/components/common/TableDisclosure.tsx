@@ -1,3 +1,5 @@
+'use client'
+
 import { BodyLong, InlineMessage, Link, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAlertForDisclosure } from '../../api/AlertApi'
