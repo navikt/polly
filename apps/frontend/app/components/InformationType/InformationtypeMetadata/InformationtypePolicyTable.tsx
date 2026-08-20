@@ -1,3 +1,5 @@
+'use client'
+
 import { Link, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAlertForInformationType } from '../../../api/AlertApi'

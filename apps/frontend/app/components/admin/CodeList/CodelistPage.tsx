@@ -1,3 +1,5 @@
+'use client'
+
 import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'

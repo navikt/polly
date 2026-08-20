@@ -1,3 +1,5 @@
+'use client'
+
 import { ExternalLinkIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Link, Loader } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'

@@ -1,3 +1,5 @@
+'use client'
+
 import { ExternalLinkIcon, ShieldIcon } from '@navikt/aksel-icons'
 import { BodyLong, Link } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'

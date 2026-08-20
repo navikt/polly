@@ -1,3 +1,5 @@
+'use client'
+
 import { Button, DatePicker, Heading, Loader, Select, Table, useDatepicker } from '@navikt/ds-react'
 import axios from 'axios'
 import { useState } from 'react'

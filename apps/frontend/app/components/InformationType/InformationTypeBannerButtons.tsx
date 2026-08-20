@@ -1,3 +1,5 @@
+'use client'
+
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Loader, Modal } from '@navikt/ds-react'

@@ -1,3 +1,5 @@
+'use client'
+
 import { BodyShort, Button, Label, Loader, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAllNomAvdelinger, getAvdelingByNomId } from '../../api/NomApi'

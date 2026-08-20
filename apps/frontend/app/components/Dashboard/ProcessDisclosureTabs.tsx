@@ -1,6 +1,8 @@
+'use client'
+
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Alert, BodyShort, Button, Heading, Spacer, Tabs } from '@navikt/ds-react'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
@@ -132,9 +134,13 @@ export const ProcessDisclosureTabs = (props: IProps) => {
   }
 
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const handleTabChange = (value: string) => {
-    router.replace({ query: { ...router.query, tab: value } }, undefined, { shallow: true })
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('tab', value)
+    router.replace(`${pathname}?${params.toString()}`)
   }
 
   return (

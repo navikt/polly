@@ -1,12 +1,14 @@
+'use client'
+
 import { getProcess } from '@/api/GetAllApi'
-import { useRouter } from 'next/router'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export default function ProcessSectionOrRedirect() {
   const router = useRouter()
-  const { section } = router.query as { section: string }
+  const { section } = useParams<{ section: string }>()
 
   useEffect(() => {
     if (!section || !UUID_RE.test(section)) return

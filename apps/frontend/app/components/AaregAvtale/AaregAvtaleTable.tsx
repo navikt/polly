@@ -1,3 +1,5 @@
+'use client'
+
 import { ChevronDownIcon } from '@navikt/aksel-icons'
 import { Accordion, Button, Dropdown, Heading, Label } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
