@@ -1,3 +1,5 @@
+'use client'
+
 import { getAlertEvents } from '@/api/AlertApi'
 import {
   EAlertEventLevel,
