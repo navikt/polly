@@ -1,3 +1,5 @@
+'use client'
+
 import { getDashboard } from '@/api/DashboardApi'
 import { getDisclosureByDepartment } from '@/api/DisclosureApi'
 import { getDpProcessByDepartment } from '@/api/DpProcessApi'
