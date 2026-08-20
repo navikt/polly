@@ -1,3 +1,5 @@
+'use client'
+
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '@/api/DpProcessApi'
 import { IDpProcess, IDpProcessFormValues } from '@/constants'
 import { user } from '@/service/User'
