@@ -1,3 +1,5 @@
+'use client'
+
 import { deleteDocument, getDocument, getDocumentByPageAndPageSize } from '@/api/DocumentApi'
 import { getAll } from '@/api/GetAllApi'
 import { getProcessesFor } from '@/api/ProcessApi'
