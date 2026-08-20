@@ -1,3 +1,5 @@
+'use client'
+
 import { BodyShort } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAvdelingByNomId, getByNomId } from '../../api/NomApi'
