@@ -1,3 +1,5 @@
+'use client'
+
 import { getCodelistUsageByListName } from '@/api/CodelistApi'
 import { getDisclosuresByInformationTypeId } from '@/api/DisclosureApi'
 import { getDocumentsForInformationType } from '@/api/DocumentApi'

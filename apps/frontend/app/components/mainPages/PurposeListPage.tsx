@@ -1,3 +1,5 @@
+'use client'
+
 import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
 import { convertProcessToFormValues, createProcess } from '@/api/ProcessApi'
 import { IProcessFormValues } from '@/constants'

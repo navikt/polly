@@ -1,3 +1,5 @@
+'use client'
+
 import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { BodyLong, Heading, TextField } from '@navikt/ds-react'
 import _ from 'lodash'

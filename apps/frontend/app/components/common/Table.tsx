@@ -1,3 +1,5 @@
+'use client'
+
 import { ArrowsUpDownIcon, SortDownIcon, SortUpIcon } from '@navikt/aksel-icons'
 import { BodyShort, Table as NavTable } from '@navikt/ds-react'
 import { Children, ReactElement, ReactNode, createContext } from 'react'

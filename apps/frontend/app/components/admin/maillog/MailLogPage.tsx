@@ -1,3 +1,5 @@
+'use client'
+
 import { BodyShort, Box, Heading, Pagination, Select, Spacer } from '@navikt/ds-react'
 import axios from 'axios'
 import moment from 'moment'

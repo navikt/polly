@@ -1,3 +1,5 @@
+'use client'
+
 import { getDashboard } from '@/api/DashboardApi'
 import { EProcessStatusFilter, IDashboardData } from '@/constants'
 import { useParams } from '@/util/router'

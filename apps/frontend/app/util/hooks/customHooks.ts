@@ -1,3 +1,5 @@
+'use client'
+
 import { Dispatch, RefObject, SetStateAction, createRef, useEffect, useState } from 'react'
 
 export function useDebouncedState<T>(
