@@ -10,6 +10,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 `yarn install`
 
+
+#### For windows users
+
+you may need to add the path where corepack executable is located to your PATH variable in Environment variables.
+
+I.e.`C:\Users\(User Name)\AppData\Roaming\npm\`
+
+
 To check node version:
 
 `node -v`
