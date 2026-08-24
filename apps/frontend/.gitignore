@@ -7,6 +7,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.eslintcache
 .yarn/*
 .yarn/install-state.gz
 !.yarn/patches
