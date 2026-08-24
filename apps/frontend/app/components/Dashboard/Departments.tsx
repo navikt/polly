@@ -7,8 +7,8 @@ import {
   IDashboardData,
   IOrgEnhet,
 } from '../../constants'
-import { ESection, genProcessPath } from '../../pages/ProcessPage'
 import RouteLink from '../common/RouteLink'
+import { ESection, genProcessPath } from '../mainPages/ProcessPage'
 
 interface ITextWithNumberProps {
   label: string

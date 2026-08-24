@@ -1,3 +1,5 @@
+'use client'
+
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IPageResponse, IProductArea, ITeam, ITeamResource, TOption } from '../constants'

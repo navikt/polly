@@ -1,0 +1,55 @@
+import { getDisclosureByProductTeam } from '@/api/DisclosureApi'
+import { getDpProcessByProductTeam } from '@/api/DpProcessApi'
+import { getInformationTypesBy } from '@/api/InfoTypeApi'
+import { IDisclosure, IDpProcess } from '@/constants'
+import { useParams } from '@/util/router'
+import { useEffect, useState } from 'react'
+import ProcessDisclosureTabs from '../Dashboard/ProcessDisclosureTabs'
+import { InfoTypeTable } from '../InformationType/InfoTypeTableSimple'
+import { PageHeader } from '../common/PageHeader'
+import { ESection } from './ProcessPage'
+
+export const TeamPage = () => {
+  const { teamId } = useParams<{ teamId: string }>()
+  const [disclosureData, setDisclosureData] = useState<IDisclosure[]>([])
+  const [dpProcessData, setDpProcessData] = useState<IDpProcess[]>([])
+
+  useEffect(() => {
+    if (teamId) {
+      ;(async () => {
+        const disclosureResponse = await getDisclosureByProductTeam(teamId)
+        if (disclosureResponse) setDisclosureData(disclosureResponse.content)
+        const dpProcessResponse = await getDpProcessByProductTeam(teamId)
+        if (dpProcessResponse) setDpProcessData(dpProcessResponse.content)
+      })()
+    }
+  }, [teamId])
+
+  return (
+    <>
+      {teamId && (
+        <>
+          <PageHeader section={ESection.team} code={teamId} />
+
+          <ProcessDisclosureTabs
+            disclosureData={disclosureData}
+            setDisclosureData={setDisclosureData}
+            dpProcessData={dpProcessData}
+            section={ESection.team}
+            code={teamId}
+            isEditable={false}
+            thirdTabTitle='Opplysningstyper'
+            thirdTabContent={
+              <InfoTypeTable
+                title='Opplysningstyper'
+                getInfoTypes={async () =>
+                  (await getInformationTypesBy({ productTeam: teamId })).content
+                }
+              />
+            }
+          />
+        </>
+      )}
+    </>
+  )
+}

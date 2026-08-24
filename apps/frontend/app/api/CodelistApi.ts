@@ -1,3 +1,5 @@
+'use client'
+
 import axios from 'axios'
 import { ICategoryUsage, ICodeUsage } from '../constants'
 import { EListName, IAllCodelists, ICode, ICountryCode } from '../service/Codelist'

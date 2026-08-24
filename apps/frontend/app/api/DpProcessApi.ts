@@ -1,3 +1,5 @@
+'use client'
+
 import axios from 'axios'
 import { IDpProcess, IDpProcessFormValues, IPageResponse } from '../constants'
 import { env } from '../util/env'

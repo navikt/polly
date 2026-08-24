@@ -1,6 +1,6 @@
+import { ESection } from '@/components/mainPages/ProcessPage'
 import { TNavigateFunction } from '@/util/router'
 import { EProcessField, EProcessState, EProcessStatusFilter } from '../constants'
-import { ESection } from '../pages/ProcessPage'
 
 type TPieChartSliceOptions = {
   processField: EProcessField

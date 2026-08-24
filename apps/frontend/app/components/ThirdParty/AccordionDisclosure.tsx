@@ -11,7 +11,6 @@ import {
   IInformationTypeShort,
   ILegalBasis,
 } from '../../constants'
-import { canViewAlerts } from '../../pages/AlertEventPage'
 import { CodelistService, EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
@@ -21,6 +20,7 @@ import DataText from '../common/DataText'
 import { DotTags } from '../common/DotTag'
 import { LegalBasisView } from '../common/LegalBasis'
 import { TeamList } from '../common/Team'
+import { canViewAlerts } from '../mainPages/alertEventPage'
 import ModalThirdParty from './ModalThirdPartyForm'
 import LinkListInformationType from './components/LinkListInformationType'
 import LinkListProcess from './components/LinkListProcess'
