@@ -45,9 +45,6 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: echo "REACT_APP_GIT_VERSION=${GITHUB_SHA}" >> .env
 
-      - name: yarn install
-        run: yarn install
-
       - name: Test
         run: yarn run test
 
