@@ -13,12 +13,12 @@ COPY .yarn/releases ./.yarn/releases
 COPY .yarn/patches ./.yarn/patches
 
 # Install dependencies
-RUN node .yarn/releases/yarn-4.16.0.mjs --version && node .yarn/releases/yarn-4.16.0.mjs install --immutable
+RUN node .yarn/releases/yarn-4.16.0.cjs --version && node .yarn/releases/yarn-4.16.0.cjs install --immutable
 
-RUN node .yarn/releases/yarn-4.16.0.mjs run test
+RUN node .yarn/releases/yarn-4.16.0.cjs run test
 
 COPY . .
 
-RUN node .yarn/releases/yarn-4.16.0.mjs run build
+RUN node .yarn/releases/yarn-4.16.0.cjs run build
 
-CMD ["node", ".yarn/releases/yarn-4.16.0.mjs", "run", "start"]
+CMD ["node", ".yarn/releases/yarn-4.16.0.cjs", "run", "start"]
