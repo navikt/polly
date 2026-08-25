@@ -28,30 +28,30 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: '26.x'
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - uses: actions/cache@v6
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+      - name: use dev config and dev favicon
+        if: github.ref == 'refs/heads/master'
+        run: |
+          cp .env.dev .env
+          cp ./public/faviconDev.svg ./public/favicon.svg
+
+      - name: use prod config and prod favicon
+        if: github.ref == 'refs/heads/prod'
+        run: |
+          cp .env.prod .env
+          cp ./public/faviconProd.svg ./public/favicon.svg
       
+      - name: add version
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: echo "REACT_APP_GIT_VERSION=${GITHUB_SHA}" >> .env
+
       - name: yarn install
         run: yarn install
         
       - name: use prod config
         if: github.ref == 'refs/heads/prod'
         run: cp .env.prod .env
-
-      - name: add version
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-        run: echo "REACT_APP_GIT_VERSION=${GITHUB_SHA}" >> .env
-      
-      - name: Build
-        run: CI=false yarn run build
 
       - name: Test
         run: yarn run test
@@ -65,6 +65,7 @@ jobs:
           push_image: true
           image_suffix: frontend
           docker_context: ./apps/frontend
+          
           
   deploy-dev-gcp:
     name: Frontend - deploy Dev GCP
