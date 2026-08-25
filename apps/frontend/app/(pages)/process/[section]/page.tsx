@@ -13,7 +13,7 @@ const Page = () => {
   const { section } = useParams<{ section: string }>()
 
   useEffect(() => {
-    if (!section || !UUID_RE.test(section) || !BNummer_RE.test(section)) return
+    if (!section || (!UUID_RE.test(section) && !BNummer_RE.test(section))) return
     getProcess(section).then((process) => {
       router.replace(`/process/purpose/${process.purposes[0].code}/${process.id}`)
     })
