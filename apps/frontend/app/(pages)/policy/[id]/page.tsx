@@ -1,10 +1,11 @@
 import { getPolicy } from '@/api/GetAllApi'
-import { useRouter } from 'next/router'
+import { Loader } from '@navikt/ds-react'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-export default function PolicyRedirect() {
+const Page = () => {
   const router = useRouter()
-  const { id } = router.query as { id: string }
+  const { id } = useParams<{ id: string }>()
 
   useEffect(() => {
     if (!id) return
@@ -13,5 +14,7 @@ export default function PolicyRedirect() {
     })
   }, [id, router])
 
-  return null
+  return <Loader />
 }
+
+export default Page
