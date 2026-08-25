@@ -15,9 +15,9 @@ COPY .yarn/patches ./.yarn/patches
 # Install dependencies
 RUN node .yarn/releases/yarn-4.16.0.cjs --version && node .yarn/releases/yarn-4.16.0.cjs install --immutable
 
-RUN node .yarn/releases/yarn-4.16.0.cjs run test
-
 COPY . .
+
+RUN node .yarn/releases/yarn-4.16.0.cjs run test
 
 RUN node .yarn/releases/yarn-4.16.0.cjs run build
 
