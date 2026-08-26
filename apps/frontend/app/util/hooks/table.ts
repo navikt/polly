@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 export const SORT_DIRECTION = {
   ASC: 'ASC' as const,
@@ -77,8 +77,6 @@ export const useTable = <T, K extends keyof T>(
   const { sorting, useDefaultStringCompare, showLast } = config || {}
   const initialSort = newSort<T, K>(config?.initialSortColumn)
 
-  const [data, setData] = useState<T[]>(initialData)
-
   const [isInitialSort, setIsInitialSort] = useState(true)
   const [sortDirection, setSortDirection] = useState(initialSort.newDirection)
   const [sortColumn, setSortColumn] = useState(initialSort.newColumn)
@@ -86,7 +84,7 @@ export const useTable = <T, K extends keyof T>(
     toDirection(initialSort.newDirection, initialSort.newColumn)
   )
 
-  const sortTableData = (): T[] => {
+  const data = useMemo((): T[] => {
     if (sortColumn) {
       const sortFunct = getSortFunction(sortColumn, !!useDefaultStringCompare, sorting)
       if (!sortFunct) {
@@ -105,9 +103,15 @@ export const useTable = <T, K extends keyof T>(
       }
     }
     return initialData
-  }
-
-  useEffect(() => setData(sortTableData()), [sortColumn, sortDirection, initialData])
+  }, [
+    sortColumn,
+    sortDirection,
+    initialData,
+    isInitialSort,
+    showLast,
+    sorting,
+    useDefaultStringCompare,
+  ])
 
   const sort = (sortColumnName: K): void => {
     const { newDirection, newColumn } = newSort<T, K>(sortColumnName, sortColumn, sortDirection)

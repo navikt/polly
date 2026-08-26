@@ -9,7 +9,7 @@ import {
   Popover,
   ToggleGroup,
 } from '@navikt/ds-react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { EGroup, user } from '../service/User'
 import { TPermissionMode } from '../util/permissionOverride'
 import { TThemeMode } from '../util/themeMode'
@@ -26,7 +26,7 @@ function useAbsoluteCurrentUrl() {
 }
 
 const LoggedInHeader = () => {
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [openState, setOpenState] = useState(false)
   const redirectUri = useAbsoluteCurrentUrl()
 
@@ -40,18 +40,22 @@ const LoggedInHeader = () => {
             <PersonIcon aria-hidden className='block' />
           </span>
         }
-        ref={buttonRef}
+        ref={setAnchorEl}
         onClick={() => setOpenState(!openState)}
         aria-expanded={openState}
       >
         {user.getIdent()}
       </Button>
 
-      <Popover open={openState} onClose={() => setOpenState(false)} anchorEl={buttonRef.current}>
+      <Popover open={openState} onClose={() => setOpenState(false)} anchorEl={anchorEl}>
         <Popover.Content>
           <div className='p-2'>
-            <Label>Navn: {user.getName()}</Label>
-            <Label>Grupper: {user.getGroupsHumanReadable().join(', ')}</Label>
+            <div>
+              <Label>Navn: {user.getName()}</Label>
+            </div>
+            <div>
+              <Label>Grupper: {user.getGroupsHumanReadable().join(', ')}</Label>
+            </div>
             <div className='flex w-full p-1'>
               <Link
                 variant='neutral'

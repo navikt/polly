@@ -32,16 +32,18 @@ export const AuditView = (props: TAuditViewProps) => {
   const [open, setOpen] = useState(initialOpen(auditLog, auditId))
 
   useEffect(() => {
-    if (
-      auditId &&
-      auditLog &&
-      refs[auditId] &&
-      auditId !== auditLog.audits[0].id &&
-      refs[auditId].current
-    ) {
-      refs[auditId].current.scrollIntoView({ block: 'start' })
-    }
-    setOpen(initialOpen(auditLog, auditId))
+    ;(async () => {
+      if (
+        auditId &&
+        auditLog &&
+        refs[auditId] &&
+        auditId !== auditLog.audits[0].id &&
+        refs[auditId].current
+      ) {
+        refs[auditId].current.scrollIntoView({ block: 'start' })
+      }
+      setOpen(initialOpen(auditLog, auditId))
+    })()
   }, [auditId, auditLog])
 
   const logFound: boolean | undefined = auditLog && !!auditLog.audits.length

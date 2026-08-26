@@ -32,13 +32,15 @@ export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
   const [dialogPortalTarget, setDialogPortalTarget] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
-    const wrapper = wrapperRef.current
-    if (!wrapper) return
+    ;(async () => {
+      const wrapper = wrapperRef.current
+      if (!wrapper) return
 
-    const closestDialog = (wrapper.closest('dialog') ||
-      wrapper.closest('[role="dialog"]')) as HTMLElement | null
+      const closestDialog = (wrapper.closest('dialog') ||
+        wrapper.closest('[role="dialog"]')) as HTMLElement | null
 
-    setDialogPortalTarget(closestDialog)
+      setDialogPortalTarget(closestDialog)
+    })()
   }, [])
 
   const menuPortalTarget =

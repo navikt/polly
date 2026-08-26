@@ -35,7 +35,10 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
       })()
     }
   }, [showUsage, selectedCode])
-  useEffect(() => setShowUsage(false), [tableData])
+
+  useEffect(() => {
+    ;(async () => setShowUsage(false))()
+  }, [tableData])
 
   const handleEditCodelist = async (values: ICodeListFormValues): Promise<void> => {
     try {

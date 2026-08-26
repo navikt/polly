@@ -1,7 +1,7 @@
 import { PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Table } from '@navikt/ds-react'
 import { FieldArrayRenderProps } from 'formik'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import shortid from 'shortid'
 import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'
 import { ICodelistProps } from '../../../service/Codelist'
@@ -17,7 +17,6 @@ type TInformationTypesTableProps = {
 type TDocumentInfoTypeUseWithId = IDocumentInfoTypeUse & { id: string }
 
 const InformationTypesTable = (props: TInformationTypesTableProps) => {
-  const [tableContent, setTableContent] = useState<TDocumentInfoTypeUseWithId[]>([])
   const { arrayHelpers, codelistUtils } = props
   const hasInitialized = useRef(false)
 
@@ -37,7 +36,6 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
       hasInitialized.current = true
       arrayHelpers.push(newRow())
     }
-    setTableContent(informationTypes)
   }, [informationTypes])
 
   return (
@@ -64,7 +62,7 @@ const InformationTypesTable = (props: TInformationTypesTableProps) => {
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {tableContent.map((row: TDocumentInfoTypeUseWithId, index: number) => (
+        {informationTypes.map((row: TDocumentInfoTypeUseWithId, index: number) => (
           <Fragment key={row.id}>
             <Table.Row>
               <Table.DataCell style={{ maxWidth: '45%' }}>
