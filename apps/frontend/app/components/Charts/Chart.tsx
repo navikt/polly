@@ -38,7 +38,6 @@ export const Chart = (props: IChartProps) => {
   const { headerTitle, size, total, data, chartTitle, leftLegend, hidePercent } = props
   const totSize = data.map((data: IChartData) => data.size).reduce((a, b) => a + b, 0)
   const totalFraction = total !== undefined ? total : totSize
-  const [pieStartValue, setPieStartValue] = useState<number>(0)
 
   const colorsBase = [
     '#a6cee3',
@@ -86,21 +85,26 @@ export const Chart = (props: IChartProps) => {
 
   const [splice] = useState<number>(() => Math.floor(Math.random() * colorsBase.length))
   const colors: string[] = [...colorsBase.slice(splice), ...colorsBase.slice(0, splice)]
-
-  const expData: IChartDataExpanded[] = data.map((d, idx) => {
-    // last color can't be same color as first color, as they are next to each other
-    const colorIndex = data.length - 1 === colors.length && idx >= data.length - 1 ? idx + 1 : idx
-    const pieData = {
-      ...d,
-      color: d.color || colors[colorIndex % colors.length],
-      start: pieStartValue,
-      sizeFraction: totSize === 0 ? 0 : d.size / totSize,
-      fraction: totalFraction === 0 ? 0 : d.size / totalFraction,
-    }
-
-    setPieStartValue(pieStartValue + pieData.sizeFraction)
-    return pieData
-  })
+  const expData: IChartDataExpanded[] = data.reduce<IChartDataExpanded[]>(
+    (previousDataValue, chartData, index) => {
+      // last color can't be same color as first color, as they are next to each other
+      const colorIndex =
+        data.length - 1 === colors.length && index >= data.length - 1 ? index + 1 : index
+      const start = previousDataValue.length
+        ? previousDataValue[previousDataValue.length - 1].start +
+          previousDataValue[previousDataValue.length - 1].sizeFraction
+        : 0
+      previousDataValue.push({
+        ...chartData,
+        color: chartData.color || colors[colorIndex % colors.length],
+        start,
+        sizeFraction: totSize === 0 ? 0 : chartData.size / totSize,
+        fraction: totalFraction === 0 ? 0 : chartData.size / totalFraction,
+      })
+      return previousDataValue
+    },
+    []
+  )
 
   return (
     <>
