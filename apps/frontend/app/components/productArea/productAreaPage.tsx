@@ -1,13 +1,14 @@
+import { getDashboard } from '@/api/DashboardApi'
+import { getInformationTypesBy } from '@/api/InfoTypeApi'
+import { EProcessStatusFilter, IProductAreaDashCount } from '@/constants'
 import { Heading, Tabs } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
-import { getDashboard, getInformationTypesBy } from '../api/GetAllApi'
-import Charts from '../components/Charts/Charts'
-import { InfoTypeTable } from '../components/InformationType/InfoTypeTableSimple'
-import ProcessList from '../components/Process/ProcessList'
-import { PageHeader } from '../components/common/PageHeader'
-import { EProcessStatusFilter, IProductAreaDashCount } from '../constants'
-import { ESection } from './ProcessPage'
+import Charts from '../Charts/Charts'
+import { InfoTypeTable } from '../InformationType/InfoTypeTableSimple'
+import ProcessList from '../Process/ProcessList'
+import { PageHeader } from '../common/PageHeader'
+import { ESection } from '../mainPages/ProcessPage'
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = useState(true)
