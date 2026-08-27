@@ -41,7 +41,7 @@ export const sortAaregAvtaleList = (aaregAvtaler: IAaregAvtale[]): IAaregAvtale[
   })
 }
 
-export const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
+const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
   const { aaregAvtaler } = props
   const [pageLimit, setPageLimit] = useState(10)
   const [page, setPage] = useState(1)

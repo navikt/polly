@@ -4,7 +4,7 @@ type TAAregHjemmelDataTextProps = {
   data: string
 }
 
-export const AAregHjemmelDataText = (props: TAAregHjemmelDataTextProps) => {
+const AAregHjemmelDataText = (props: TAAregHjemmelDataTextProps) => {
   const { data } = props
   const rawData: string[] = data ? prepareString(data).split('\n') : []
 

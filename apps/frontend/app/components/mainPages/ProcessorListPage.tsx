@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 import ProcessorModal from '../Processor/ProcessorModal'
 import AlphabeticList from '../common/AlphabeticList'
 
-export const ProcessorListPage = () => {
+const ProcessorListPage = () => {
   const [processors, setProcessors] = useState<IProcessor[]>([])
   const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)

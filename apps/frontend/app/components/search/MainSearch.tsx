@@ -151,7 +151,7 @@ export const DropdownIndicator = (props: DropdownIndicatorProps<TSearchItem>) =>
   </components.DropdownIndicator>
 )
 
-export const MainSearch = () => {
+const MainSearch = () => {
   const [codelistUtils] = CodelistService()
 
   const [filter, setFilter] = useState(false)

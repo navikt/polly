@@ -6,7 +6,7 @@ type TProps = {
   aiUsageDescription: IAiUsageDescription
 }
 
-export const StartEndDateView: FunctionComponent<TProps> = (props) => {
+const StartEndDateView: FunctionComponent<TProps> = (props) => {
   const { aiUsageDescription } = props
   const startDate = aiUsageDescription.startDate
     ? moment(aiUsageDescription.startDate).locale('nb')

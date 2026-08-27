@@ -25,7 +25,7 @@ interface ICustomSearchSelectProps {
   ) => Promise<OptionsOrGroups<any, any>> | void
 }
 
-export const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
+const CustomSearchSelect = (props: ICustomSearchSelectProps) => {
   const { ariaLabel, placeholder, inputId, instanceId, hasError, onChange, loadOptions } = props
 
   const wrapperRef = useRef<HTMLDivElement>(null)

@@ -12,7 +12,7 @@ type TProps = {
   exportHref?: string
 }
 
-export const ExportProcessModal: FunctionComponent<TProps> = ({
+const ExportProcessModal: FunctionComponent<TProps> = ({
   code,
   listName,
   marginRight,
