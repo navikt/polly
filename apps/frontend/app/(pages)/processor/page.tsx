@@ -1,4 +1,4 @@
-import { ProcessorListPage } from '@/components/mainPages/ProcessorListPage'
+import ProcessorListPage from '@/components/mainPages/ProcessorListPage'
 
 const Page = () => <ProcessorListPage />
 
