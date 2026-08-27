@@ -23,7 +23,7 @@ const reducePolicyList = (list: IPolicy[]) => {
   }, {})
 }
 
-export interface IAccordionInformationtypeProps {
+interface IAccordionInformationtypeProps {
   policies: IPolicy[]
   codelistUtils: ICodelistProps
 }

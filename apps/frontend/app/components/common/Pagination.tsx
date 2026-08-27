@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
 
-export interface IPaginationLabels {
+interface IPaginationLabels {
   prevButton?: string
   nextButton?: string
   preposition?: string

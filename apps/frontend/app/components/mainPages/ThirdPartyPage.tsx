@@ -20,7 +20,7 @@ import ThirdPartiesDpProcessTable from '../common/ThirdPartiesDpProcessTable'
 import ThirdPartiesTable from '../common/ThirdPartiesTable'
 import { ESection } from './ProcessPage'
 
-export type TPathParams = {
+type TPathParams = {
   thirdPartyCode: string
   section: 'disclosure' | 'dpprocess' | 'informationtype' | 'process' | undefined
   id?: string
