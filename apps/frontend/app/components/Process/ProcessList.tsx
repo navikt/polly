@@ -115,48 +115,20 @@ const ProcessList = ({
   }, [section])
 
   useEffect(() => {
-    if (processId) {
-      getProcessById(processId)
-    }
+    ;(async () => {
+      if (processId) {
+        getProcessById(processId)
+      }
+    })()
   }, [processId])
 
   useEffect(() => {
-    if (lists) {
-      setCodelistLoading(!codelistUtils.isLoaded())
-    }
-  }, [lists])
-
-  useEffect(() => {
     ;(async () => {
-      setIsLoadingProcessList(true)
-      await getProcessList()
-      setIsLoadingProcessList(false)
-      if (moveScroll) moveScroll()
+      if (lists) {
+        setCodelistLoading(!codelistUtils.isLoaded())
+      }
     })()
-    const pathName: string = current_location.pathname.split('/')[1]
-    if (pathName === 'seksjon') {
-      setExportHref(`${env.pollyBaseUrl}/export/process?section=${code}`)
-    } else if (pathName === 'team') {
-      setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
-    }
-  }, [code, filter])
-
-  const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
-
-  const handleChangePanel: (process?: Partial<IProcess>) => void = (
-    process?: Partial<IProcess>
-  ) => {
-    if (process?.id !== currentProcess?.id) {
-      navigate(genProcessPath(section, navCode, process, filter))
-    }
-    // reuse method to reload a process
-    else if (process?.id) {
-      getProcessById(process.id).catch(setErrorProcessModal)
-      navigate(genProcessPath(section, navCode, process, filter))
-    }
-  }
-
-  const hasAccess = (): boolean => user.canWrite() || user.isAdmin()
+  }, [lists])
 
   const getProcessList = async (): Promise<void> => {
     try {
@@ -190,6 +162,38 @@ const ProcessList = ({
       console.debug(error)
     }
   }
+
+  useEffect(() => {
+    ;(async () => {
+      setIsLoadingProcessList(true)
+      await getProcessList()
+      setIsLoadingProcessList(false)
+      if (moveScroll) moveScroll()
+      const pathName: string = current_location.pathname.split('/')[1]
+      if (pathName === 'seksjon') {
+        setExportHref(`${env.pollyBaseUrl}/export/process?section=${code}`)
+      } else if (pathName === 'team') {
+        setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
+      }
+    })()
+  }, [code, filter])
+
+  const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
+
+  const handleChangePanel: (process?: Partial<IProcess>) => void = (
+    process?: Partial<IProcess>
+  ) => {
+    if (process?.id !== currentProcess?.id) {
+      navigate(genProcessPath(section, navCode, process, filter))
+    }
+    // reuse method to reload a process
+    else if (process?.id) {
+      getProcessById(process.id).catch(setErrorProcessModal)
+      navigate(genProcessPath(section, navCode, process, filter))
+    }
+  }
+
+  const hasAccess = (): boolean => user.canWrite() || user.isAdmin()
 
   const getProcessById = async (id: string) => {
     try {

@@ -88,9 +88,11 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
   } = props
 
   useEffect(() => {
-    if (expand) {
-      renewDisclosureDetails(expand)
-    }
+    ;(async () => {
+      if (expand) {
+        renewDisclosureDetails(expand)
+      }
+    })()
   }, [expand])
 
   const renewDisclosureDetails = async (disclosureId: string) => {
