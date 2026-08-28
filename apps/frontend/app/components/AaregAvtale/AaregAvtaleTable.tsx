@@ -48,13 +48,17 @@ const AaregAvtaleTable = (props: TAaregAvtaleTableProps) => {
   const [sortedAaregAvtale, setSortedAaregAvtale] = useState<IAaregAvtale[]>([])
 
   useEffect(() => {
-    setSortedAaregAvtale(sortAaregAvtaleList(aaregAvtaler).slice(0, 10))
+    ;(async () => {
+      setSortedAaregAvtale(sortAaregAvtaleList(aaregAvtaler).slice(0, 10))
+    })()
   }, [aaregAvtaler])
 
   useEffect(() => {
-    setSortedAaregAvtale(
-      sortAaregAvtaleList(aaregAvtaler).slice((page - 1) * pageLimit, pageLimit * page)
-    )
+    ;(async () => {
+      setSortedAaregAvtale(
+        sortAaregAvtaleList(aaregAvtaler).slice((page - 1) * pageLimit, pageLimit * page)
+      )
+    })()
   }, [pageLimit, page])
 
   return (
