@@ -176,8 +176,10 @@ export const Usage = (props: IUsageProps) => {
   const ref = createRef<HTMLDivElement>()
 
   useEffect(() => {
-    setShowReplace(false)
-    setTimeout(() => ref.current && window.scrollTo({ top: ref.current.offsetTop }), 200)
+    ;(async () => {
+      setShowReplace(false)
+      setTimeout(() => ref.current && window.scrollTo({ top: ref.current.offsetTop }), 200)
+    })()
   }, [usage])
 
   useEffect(() => {
