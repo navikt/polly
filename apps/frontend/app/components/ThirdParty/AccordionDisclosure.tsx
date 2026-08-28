@@ -87,14 +87,6 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
     onCloseModal,
   } = props
 
-  useEffect(() => {
-    ;(async () => {
-      if (expand) {
-        renewDisclosureDetails(expand)
-      }
-    })()
-  }, [expand])
-
   const renewDisclosureDetails = async (disclosureId: string) => {
     setLoading(true)
     const disc = await getDisclosure(disclosureId)
@@ -103,6 +95,14 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
     setHasAlert(alert.missingArt6)
     setLoading(false)
   }
+
+  useEffect(() => {
+    ;(async () => {
+      if (expand) {
+        renewDisclosureDetails(expand)
+      }
+    })()
+  }, [expand])
 
   return (
     <Fragment>
