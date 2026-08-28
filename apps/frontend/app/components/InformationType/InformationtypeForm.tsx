@@ -202,7 +202,9 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
   }, [formInitialValues.term])
 
   useEffect(() => {
-    setMasterInputValue('')
+    ;(async () => {
+      setMasterInputValue('')
+    })()
   }, [formInitialValues.orgMaster, codelistLoaded])
 
   useEffect(() => {
