@@ -1,3 +1,5 @@
+'use client'
+
 import { Button, ErrorSummary, Modal, Radio, RadioGroup, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik } from 'formik'
 import { useRef, useState } from 'react'

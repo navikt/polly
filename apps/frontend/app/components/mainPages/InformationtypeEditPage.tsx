@@ -1,3 +1,5 @@
+'use client'
+
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '@/api/InfoTypeApi'
 import { IInformationType, IInformationtypeFormValues } from '@/constants'
 import { useNavigate, useParams } from '@/util/router'

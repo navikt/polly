@@ -1,3 +1,5 @@
+'use client'
+
 import { FileExcelIcon } from '@navikt/aksel-icons'
 import { Button, Link, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'

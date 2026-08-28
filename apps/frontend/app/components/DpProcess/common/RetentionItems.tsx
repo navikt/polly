@@ -1,3 +1,5 @@
+'use client'
+
 import { TextField } from '@navikt/ds-react'
 import { Field, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'

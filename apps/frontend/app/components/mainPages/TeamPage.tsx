@@ -1,3 +1,5 @@
+'use client'
+
 import { getDisclosureByProductTeam } from '@/api/DisclosureApi'
 import { getDpProcessByProductTeam } from '@/api/DpProcessApi'
 import { getInformationTypesBy } from '@/api/InfoTypeApi'

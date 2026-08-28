@@ -1,3 +1,5 @@
+'use client'
+
 import { getDisclosure } from '@/api/GetAllApi'
 import { IDisclosure } from '@/constants'
 import { Loader } from '@navikt/ds-react'

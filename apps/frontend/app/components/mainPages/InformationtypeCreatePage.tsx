@@ -1,3 +1,5 @@
+'use client'
+
 import { createInformationType, mapInfoTypeToFormVals } from '@/api/InfoTypeApi'
 import { IInformationtypeFormValues } from '@/constants'
 import { CodelistService } from '@/service/Codelist'

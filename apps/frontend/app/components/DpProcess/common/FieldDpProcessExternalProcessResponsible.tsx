@@ -1,3 +1,5 @@
+'use client'
+
 import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useState } from 'react'

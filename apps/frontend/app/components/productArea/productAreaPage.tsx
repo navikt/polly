@@ -1,3 +1,5 @@
+'use client'
+
 import { getDashboard } from '@/api/DashboardApi'
 import { getInformationTypesBy } from '@/api/InfoTypeApi'
 import { EProcessStatusFilter, IProductAreaDashCount } from '@/constants'

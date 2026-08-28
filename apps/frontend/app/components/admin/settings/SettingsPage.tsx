@@ -1,3 +1,5 @@
+'use client'
+
 import { Button, Heading, Loader, Select, Textarea } from '@navikt/ds-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { getDocument, getDocumentByPageAndPageSize } from '../../../api/GetAllApi'

@@ -1,3 +1,5 @@
+'use client'
+
 import { XMarkOctagonIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'

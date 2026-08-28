@@ -1,3 +1,5 @@
+'use client'
+
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { InformationSquareIcon } from '@navikt/aksel-icons'

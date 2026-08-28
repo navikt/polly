@@ -1,3 +1,5 @@
+'use client'
+
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IPageResponse, IProcess } from '@/constants'
 import { CodelistService, EListName, ICode } from '@/service/Codelist'

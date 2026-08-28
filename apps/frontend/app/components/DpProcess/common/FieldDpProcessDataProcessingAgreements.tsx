@@ -1,3 +1,5 @@
+'use client'
+
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, TextField } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
