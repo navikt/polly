@@ -52,7 +52,9 @@ const CodeListPage = () => {
   }, [listname, lists])
 
   useEffect(() => {
-    setLoading(!codelistUtils.isLoaded())
+    ;(async () => {
+      setLoading(!codelistUtils.isLoaded())
+    })()
   }, [lists])
 
   return (
