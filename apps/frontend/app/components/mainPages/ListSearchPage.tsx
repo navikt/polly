@@ -19,9 +19,11 @@ const CodelistPage = (props: ICodeListPageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    if (codelistUtils.isLoaded()) {
-      setIsLoading(false)
-    }
+    ;(async () => {
+      if (codelistUtils.isLoaded()) {
+        setIsLoading(false)
+      }
+    })()
   }, [codelistUtils])
 
   const codes =
