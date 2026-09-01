@@ -106,7 +106,7 @@
     "knip": "^6.32.2",
     "node-fetch": "3.3.2",
     "postcss": "8.5.26",
-    "postcss-import": "16.2.0",
+    "postcss-import": "17.0.0",
     "prettier": "3.9.6",
     "tailwindcss": "4.3.3",
     "ts-jest": "^29.4.12",
