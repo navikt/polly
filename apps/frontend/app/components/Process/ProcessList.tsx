@@ -92,72 +92,6 @@ const ProcessList = ({
   const [exportHref, setExportHref] = useState<string>('')
   const [nomAvdelingName, setNomAvdelingName] = useState<string>('')
 
-  useEffect(() => getCount && getCount(processList.length), [processList.length])
-
-  useEffect(() => {
-    setProcessList(
-      fullProcessList.filter(
-        (process: IProcessShort) =>
-          !seksjonFilter ||
-          (seksjonFilter === '__INGEN_SEKSJON__'
-            ? process.affiliation.seksjoner.length === 0
-            : process.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter))
-      )
-    )
-  }, [seksjonFilter, fullProcessList])
-
-  useEffect(() => {
-    ;(async () => {
-      if (section === ESection.department && code) {
-        await getAvdelingByNomId(code).then((response) => setNomAvdelingName(response.navn))
-      }
-    })()
-  }, [section])
-
-  useEffect(() => {
-    if (processId) {
-      getProcessById(processId)
-    }
-  }, [processId])
-
-  useEffect(() => {
-    if (lists) {
-      setCodelistLoading(!codelistUtils.isLoaded())
-    }
-  }, [lists])
-
-  useEffect(() => {
-    ;(async () => {
-      setIsLoadingProcessList(true)
-      await getProcessList()
-      setIsLoadingProcessList(false)
-      if (moveScroll) moveScroll()
-    })()
-    const pathName: string = current_location.pathname.split('/')[1]
-    if (pathName === 'seksjon') {
-      setExportHref(`${env.pollyBaseUrl}/export/process?section=${code}`)
-    } else if (pathName === 'team') {
-      setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
-    }
-  }, [code, filter])
-
-  const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
-
-  const handleChangePanel: (process?: Partial<IProcess>) => void = (
-    process?: Partial<IProcess>
-  ) => {
-    if (process?.id !== currentProcess?.id) {
-      navigate(genProcessPath(section, navCode, process, filter))
-    }
-    // reuse method to reload a process
-    else if (process?.id) {
-      getProcessById(process.id).catch(setErrorProcessModal)
-      navigate(genProcessPath(section, navCode, process, filter))
-    }
-  }
-
-  const hasAccess = (): boolean => user.canWrite() || user.isAdmin()
-
   const getProcessList = async (): Promise<void> => {
     try {
       let list: IProcessShort[]
@@ -190,6 +124,23 @@ const ProcessList = ({
       console.debug(error)
     }
   }
+
+  const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
+
+  const handleChangePanel: (process?: Partial<IProcess>) => void = (
+    process?: Partial<IProcess>
+  ) => {
+    if (process?.id !== currentProcess?.id) {
+      navigate(genProcessPath(section, navCode, process, filter))
+    }
+    // reuse method to reload a process
+    else if (process?.id) {
+      getProcessById(process.id).catch(setErrorProcessModal)
+      navigate(genProcessPath(section, navCode, process, filter))
+    }
+  }
+
+  const hasAccess = (): boolean => user.canWrite() || user.isAdmin()
 
   const getProcessById = async (id: string) => {
     try {
@@ -384,6 +335,61 @@ const ProcessList = ({
     }
     return true
   }
+
+  useEffect(() => getCount && getCount(processList.length), [processList.length])
+
+  useEffect(() => {
+    ;(async () => {
+      setProcessList(
+        fullProcessList.filter(
+          (process: IProcessShort) =>
+            !seksjonFilter ||
+            (seksjonFilter === '__INGEN_SEKSJON__'
+              ? process.affiliation.seksjoner.length === 0
+              : process.affiliation.seksjoner.some((s) => s.nomSeksjonId === seksjonFilter))
+        )
+      )
+    })()
+  }, [seksjonFilter, fullProcessList])
+
+  useEffect(() => {
+    ;(async () => {
+      if (section === ESection.department && code) {
+        await getAvdelingByNomId(code).then((response) => setNomAvdelingName(response.navn))
+      }
+    })()
+  }, [section])
+
+  useEffect(() => {
+    ;(async () => {
+      if (processId) {
+        getProcessById(processId)
+      }
+    })()
+  }, [processId])
+
+  useEffect(() => {
+    ;(async () => {
+      if (lists) {
+        setCodelistLoading(!codelistUtils.isLoaded())
+      }
+    })()
+  }, [lists])
+
+  useEffect(() => {
+    ;(async () => {
+      setIsLoadingProcessList(true)
+      await getProcessList()
+      setIsLoadingProcessList(false)
+      if (moveScroll) moveScroll()
+      const pathName: string = current_location.pathname.split('/')[1]
+      if (pathName === 'seksjon') {
+        setExportHref(`${env.pollyBaseUrl}/export/process?section=${code}`)
+      } else if (pathName === 'team') {
+        setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
+      }
+    })()
+  }, [code, filter])
 
   return (
     <>

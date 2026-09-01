@@ -1,3 +1,5 @@
+'use client'
+
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { useMemo, useRef, useState } from 'react'
 import { useInfoTypeSearch } from '../../../api/GetAllApi'

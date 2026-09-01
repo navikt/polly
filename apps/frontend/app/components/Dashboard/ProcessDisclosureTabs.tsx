@@ -33,7 +33,7 @@ interface IProps {
   seksjonFilter?: string
 }
 
-export const ProcessDisclosureTabs = (props: IProps) => {
+const ProcessDisclosureTabs = (props: IProps) => {
   const {
     disclosureData,
     setDisclosureData,

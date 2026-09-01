@@ -1,3 +1,5 @@
+'use client'
+
 import { Accordion, Button, ErrorSummary, Modal, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik'
 import { useEffect, useRef, useState } from 'react'

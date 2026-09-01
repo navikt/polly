@@ -1,3 +1,5 @@
+'use client'
+
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { useEffect, useMemo, useState } from 'react'
 import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'

@@ -1,3 +1,5 @@
+'use client'
+
 import { Button, DatePicker, useDatepicker } from '@navikt/ds-react'
 import { useField, useFormikContext } from 'formik'
 import { useEffect, useState } from 'react'

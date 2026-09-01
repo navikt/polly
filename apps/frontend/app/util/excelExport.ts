@@ -2,7 +2,7 @@ import { utils, writeFile } from 'xlsx'
 import { processStatusText } from '../components/Process/Accordion/ProcessData'
 import { IProcessShortWithEmail } from '../constants'
 
-export const handleExcelExport = (processes: IProcessShortWithEmail[], fileName: string) => {
+const handleExcelExport = (processes: IProcessShortWithEmail[], fileName: string) => {
   const newWorkBook = utils.book_new()
 
   const workSheetData: any[] = []

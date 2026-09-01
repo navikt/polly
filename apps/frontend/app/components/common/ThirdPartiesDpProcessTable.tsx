@@ -1,3 +1,5 @@
+'use client'
+
 import { Fragment, useEffect, useState } from 'react'
 import { getTeam } from '../../api/GetAllApi'
 import { IDpProcess, ITeam, dpProcessSort } from '../../constants'

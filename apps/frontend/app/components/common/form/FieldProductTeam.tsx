@@ -1,3 +1,5 @@
+'use client'
+
 import { FieldArray, FieldArrayRenderProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getTeam, mapTeamToOption, useTeamSearchOptions } from '../../../api/GetAllApi'

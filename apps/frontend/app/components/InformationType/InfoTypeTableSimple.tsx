@@ -1,3 +1,5 @@
+'use client'
+
 import { Heading, Loader, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { IInformationType } from '../../constants'

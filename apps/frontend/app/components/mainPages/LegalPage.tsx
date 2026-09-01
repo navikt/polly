@@ -1,3 +1,5 @@
+'use client'
+
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IPageResponse, IProcess } from '@/constants'
 import { CodelistService, EListName, ICode } from '@/service/Codelist'
@@ -18,12 +20,14 @@ export const LegalPage = () => {
   const [codelistUtils] = CodelistService()
 
   useEffect(() => {
-    if (!gdprArticle && !nationalLaw) {
-      return setProcesses([])
-    }
-    getProcessesFor({ gdprArticle, nationalLaw }).then((result: IPageResponse<IProcess>) =>
-      setProcesses(result.content)
-    )
+    ;(async () => {
+      if (!gdprArticle && !nationalLaw) {
+        return setProcesses([])
+      }
+      getProcessesFor({ gdprArticle, nationalLaw }).then((result: IPageResponse<IProcess>) =>
+        setProcesses(result.content)
+      )
+    })()
   }, [gdprArticle, nationalLaw])
 
   const gdprOptions = codelistUtils.getCodes(EListName.GDPR_ARTICLE)

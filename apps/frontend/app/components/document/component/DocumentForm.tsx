@@ -1,3 +1,5 @@
+'use client'
+
 import { Alert, Label, Link, Loader, Select, TextField, Textarea } from '@navikt/ds-react'
 import {
   Field,

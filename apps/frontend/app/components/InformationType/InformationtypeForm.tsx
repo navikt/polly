@@ -202,13 +202,17 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
   }, [formInitialValues.term])
 
   useEffect(() => {
-    setMasterInputValue('')
+    ;(async () => {
+      setMasterInputValue('')
+    })()
   }, [formInitialValues.orgMaster, codelistLoaded])
 
   useEffect(() => {
-    const initialSensitivity = initialValueSensitivity()
-    const first = initialSensitivity.length ? initialSensitivity[0] : undefined
-    setSensitivityInputValue(first?.label || '')
+    ;(async () => {
+      const initialSensitivity = initialValueSensitivity()
+      const first = initialSensitivity.length ? initialSensitivity[0] : undefined
+      setSensitivityInputValue(first?.label || '')
+    })()
   }, [formInitialValues.sensitivity, codelistLoaded])
 
   const getParsedOptions = (listName: EListName, values: string[]) => {

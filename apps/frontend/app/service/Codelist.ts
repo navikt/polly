@@ -277,7 +277,7 @@ export interface IAllCodelists {
   codelist: IList
 }
 
-export interface IList {
+interface IList {
   [name: string]: ICode[]
 }
 

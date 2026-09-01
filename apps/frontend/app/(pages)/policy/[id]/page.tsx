@@ -1,3 +1,5 @@
+'use client'
+
 import { getPolicy } from '@/api/GetAllApi'
 import { Loader } from '@navikt/ds-react'
 import { useParams, useRouter } from 'next/navigation'

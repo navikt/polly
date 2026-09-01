@@ -1,3 +1,5 @@
+'use client'
+
 import { getDocument, updateInformationTypesDocument } from '@/api/DocumentApi'
 import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '@/constants'
 import { useNavigate, useParams } from '@/util/router'
