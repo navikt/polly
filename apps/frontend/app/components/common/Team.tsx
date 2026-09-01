@@ -35,17 +35,19 @@ const TeamView = (props: ITeamViewProps) => {
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    let update = true
-    if (team.id !== teamId) {
-      setError(false)
-      setTeam(defaultTeam(teamId))
-    }
-    getTeam(teamId)
-      .then((response: ITeam) => update && setTeam(response))
-      .catch(() => setError(true))
-    return () => {
-      update = false
-    }
+    ;(async () => {
+      let update = true
+      if (team.id !== teamId) {
+        setError(false)
+        setTeam(defaultTeam(teamId))
+      }
+      await getTeam(teamId)
+        .then((response: ITeam) => update && setTeam(response))
+        .catch(() => setError(true))
+      return () => {
+        update = false
+      }
+    })()
   }, [teamId])
 
   return (

@@ -57,7 +57,7 @@ export const StartDate = () => {
   const [textValue, setTextValue] = useState<string>(() => ymdToDmy(field.value))
 
   useEffect(() => {
-    setTextValue(ymdToDmy(field.value))
+    ;(async () => setTextValue(ymdToDmy(field.value)))()
   }, [field.value])
 
   const validateRelative = (startStr?: string) => {

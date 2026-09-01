@@ -1,7 +1,7 @@
 import { BarChartIcon, CircleIcon, PieChartIcon } from '@navikt/aksel-icons'
 import { Button, Label, Tooltip } from '@navikt/ds-react'
 import * as _ from 'lodash'
-import { Fragment, useMemo, useReducer, useState } from 'react'
+import { Fragment, useReducer, useState } from 'react'
 import { theme } from '../../util'
 import { useIsDark } from '../../util/themeMode'
 
@@ -83,23 +83,28 @@ export const Chart = (props: IChartProps) => {
     // '#66CBEC',
   ]
 
-  const splice: number = useMemo(() => Math.floor(Math.random() * colorsBase.length), [])
+  const [splice] = useState<number>(() => Math.floor(Math.random() * colorsBase.length))
   const colors: string[] = [...colorsBase.slice(splice), ...colorsBase.slice(0, splice)]
-
-  let s = 0
-  const expData: IChartDataExpanded[] = data.map((d, idx) => {
-    // last color can't be same color as first color, as they are next to each other
-    const colorIndex = data.length - 1 === colors.length && idx >= data.length - 1 ? idx + 1 : idx
-    const pieData = {
-      ...d,
-      color: d.color || colors[colorIndex % colors.length],
-      start: s,
-      sizeFraction: totSize === 0 ? 0 : d.size / totSize,
-      fraction: totalFraction === 0 ? 0 : d.size / totalFraction,
-    }
-    s += pieData.sizeFraction
-    return pieData
-  })
+  const expData: IChartDataExpanded[] = data.reduce<IChartDataExpanded[]>(
+    (previousDataValue, chartData, index) => {
+      // last color can't be same color as first color, as they are next to each other
+      const colorIndex =
+        data.length - 1 === colors.length && index >= data.length - 1 ? index + 1 : index
+      const start = previousDataValue.length
+        ? previousDataValue[previousDataValue.length - 1].start +
+          previousDataValue[previousDataValue.length - 1].sizeFraction
+        : 0
+      previousDataValue.push({
+        ...chartData,
+        color: chartData.color || colors[colorIndex % colors.length],
+        start,
+        sizeFraction: totSize === 0 ? 0 : chartData.size / totSize,
+        fraction: totalFraction === 0 ? 0 : chartData.size / totalFraction,
+      })
+      return previousDataValue
+    },
+    []
+  )
 
   return (
     <>

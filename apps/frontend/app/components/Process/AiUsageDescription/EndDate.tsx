@@ -42,7 +42,7 @@ export const EndDate = () => {
   const [textValue, setTextValue] = useState<string>(() => ymdToDmy(field.value))
 
   useEffect(() => {
-    setTextValue(ymdToDmy(field.value))
+    ;(async () => setTextValue(ymdToDmy(field.value)))()
   }, [field.value])
 
   return (

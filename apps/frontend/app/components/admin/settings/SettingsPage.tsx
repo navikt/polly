@@ -29,7 +29,7 @@ export const SettingsPage = () => {
   }
 
   useEffect(() => {
-    load()
+    ;(async () => load())()
   }, [])
 
   return (
