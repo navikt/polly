@@ -17,8 +17,9 @@ import {
 } from '@/constants'
 import { EListName } from '@/service/Codelist'
 import { useQueryParam } from '@/util/hooks'
-import { generatePath, useLocation, useParams } from '@/util/router'
+import { generatePath, useLocation } from '@/util/router'
 import { Heading, LocalAlert, Select } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import Charts from '../Charts/Charts'
@@ -78,6 +79,8 @@ const ProcessPage = () => {
   const isNoDepartment = section === ESection.department && code === 'Ingen avdeling'
   const departmentCode = isNoDepartment ? '' : (code ?? '')
   const location = useLocation()
+
+  console.debug(params)
 
   const moveScroll = () => {
     window.scrollTo(

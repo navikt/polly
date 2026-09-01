@@ -1,3 +1,5 @@
+'use client'
+
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '@/api/CodelistApi'
 import {
   ICountryCode,
@@ -116,7 +118,9 @@ export const CodelistProvider: FunctionComponent<TProps> = ({ children }) => {
 
   const fetchData = async (refresh?: boolean): Promise<void> => {
     if (
-      (lists === undefined && countries === undefined && countriesOutsideEUEEA === undefined) ||
+      (lists.codelist === undefined &&
+        countries === undefined &&
+        countriesOutsideEUEEA === undefined) ||
       refresh
     ) {
       const codeListPromise = await getAllCodelists(refresh)
@@ -248,7 +252,7 @@ export const CodelistProvider: FunctionComponent<TProps> = ({ children }) => {
   }
 
   useEffect(() => {
-    ;(async () => await fetchData())()
+    ;(async () => await fetchData(true))()
   }, [])
 
   return (

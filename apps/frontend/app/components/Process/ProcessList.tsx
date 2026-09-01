@@ -371,7 +371,7 @@ const ProcessList = ({
 
   useEffect(() => {
     ;(async () => {
-      if (lists) {
+      if (lists.codelist) {
         setCodelistLoading(!codelistUtils.isLoaded())
       }
     })()
@@ -483,7 +483,7 @@ const ProcessList = ({
           errorDocumentModal={errorDocumentModal}
         />
       )}
-      {!codelistLoading && (
+      {!codelistLoading && showCreateProcessModal && (
         <ModalProcess
           key={createProcessModalKey}
           codelistUtils={codelistUtils}
