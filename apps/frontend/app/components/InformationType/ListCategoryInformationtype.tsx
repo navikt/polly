@@ -1,8 +1,9 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, Heading } from '@navikt/ds-react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { ICodeUsage, IUse } from '../../constants'
-import { CodelistService, EListName } from '../../service/Codelist'
+import { EListName } from '../../service/Codelist'
 import { theme } from '../../util'
 import { useQueryParam } from '../../util/hooks'
 import RouteLink from '../common/RouteLink'
@@ -13,7 +14,7 @@ type TInformationTypeAccordionProps = {
 
 const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordionProps) => {
   const category = useQueryParam('category')
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
   const [openCategory, setOpenCategory] = useState<string | undefined>(category || undefined)
 
   const categoryNotInUse =

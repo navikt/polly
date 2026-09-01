@@ -1,9 +1,10 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { useLocation, useNavigate } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Loader, Select } from '@navikt/ds-react'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,
@@ -34,7 +35,7 @@ import {
   IProcessFormValues,
   IProcessShort,
 } from '../../constants'
-import { CodelistService, EListName, ICode } from '../../service/Codelist'
+import { EListName, ICode } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { theme } from '../../util'
 import { env } from '../../util/env'
@@ -75,7 +76,7 @@ const ProcessList = ({
   getCount,
 }: TProcessListProps) => {
   const navigate = useNavigate()
-  const [codelistUtils, lists] = CodelistService()
+  const { utils: codelistUtils, lists } = useContext(CodelistContext)
 
   const [processList, setProcessList] = useState<IProcessShort[]>([])
   const [fullProcessList, setFullProcessList] = useState<IProcessShort[]>([])

@@ -1,7 +1,8 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { useNavigate } from '@/util/router'
 import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons'
 import { Tag } from '@navikt/ds-react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { CSSObjectWithLabel, DropdownIndicatorProps, OptionProps, components } from 'react-select'
 import AsyncSelect from 'react-select/async'
 import { searchDpProcess } from '../../api/DpProcessApi'
@@ -21,7 +22,7 @@ import {
   TNavigableItem,
   TSearchType,
 } from '../../constants'
-import { CodelistService, EListName, ICode, ICodelistProps } from '../../service/Codelist'
+import { EListName, ICode, ICodelistProps } from '../../service/Codelist'
 import { prefixBiasedSort } from '../../util/sort'
 import { searchResultColor } from '../../util/theme'
 import { noOptionMessage, selectOverrides } from '../common/AsyncSelectComponents'
@@ -152,7 +153,7 @@ export const DropdownIndicator = (props: DropdownIndicatorProps<TSearchItem>) =>
 )
 
 const MainSearch = () => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [filter, setFilter] = useState(false)
   const [type, setType] = useState<TSearchType>('all')

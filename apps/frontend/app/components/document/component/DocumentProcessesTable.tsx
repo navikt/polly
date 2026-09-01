@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { CodelistContext } from '@/provider/kodeverkProvider'
+import { useContext, useState } from 'react'
 import { IProcess } from '../../../constants'
-import { CodelistService, ICode } from '../../../service/Codelist'
+import { ICode } from '../../../service/Codelist'
 import { TColumnCompares, useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
@@ -32,7 +33,7 @@ const sorting: TColumnCompares<IDataFormat> = {
 
 const DocumentProcessesTable = (props: TDocumentProcessesProps) => {
   const { documentUsages } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [processes] = useState(
     documentUsages.map((documentUsage: IProcess) => ({

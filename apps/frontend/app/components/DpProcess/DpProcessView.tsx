@@ -1,9 +1,10 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {
   deleteDpProcess,
   dpProcessToFormValues,
@@ -19,7 +20,7 @@ import {
   INomSeksjon,
   IProcessor,
 } from '../../constants'
-import { CodelistService, EListName } from '../../service/Codelist'
+import { EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
@@ -40,7 +41,7 @@ const DpProcessView = () => {
       id?: string
     }>
   > = useParams<{ id?: string }>()
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [dpProcess, setDpProcess] = useState<IDpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)

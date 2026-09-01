@@ -1,3 +1,4 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { PlusIcon } from '@navikt/aksel-icons'
 import {
   Button,
@@ -18,7 +19,7 @@ import {
   FormikHelpers,
   FormikProps,
 } from 'formik'
-import { Fragment, KeyboardEvent, useEffect, useRef, useState } from 'react'
+import { Fragment, KeyboardEvent, useContext, useEffect, useRef, useState } from 'react'
 import {
   getTerm,
   mapTermToOption,
@@ -26,7 +27,7 @@ import {
   useTermSearchOptions,
 } from '../../api/GetAllApi'
 import { IInformationType, IInformationtypeFormValues, ITerm } from '../../constants'
-import { CodelistService, EListName, IGetParsedOptionsProps } from '../../service/Codelist'
+import { EListName, IGetParsedOptionsProps } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
 import CustomSearchSelect from '../common/AsyncSelectComponents'
 import { Error } from '../common/ModalSchema'
@@ -161,7 +162,7 @@ const focusById = (anchorId: string) => {
 }
 
 const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
   const codelistLoaded = codelistUtils.isLoaded()
 
   const initialValueSensitivity = () => {

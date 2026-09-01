@@ -539,6 +539,28 @@ export interface IDurationed {
   end: string
 }
 
+export interface IMakeIdLabelForAllCodeListsProps {
+  id: string
+  label: string
+}
+
+export interface ICountryCode {
+  code: string
+  description: string
+  validFrom: string
+  validTo: string
+}
+
+export interface IGetParsedOptionsForListProps {
+  id: string
+  label: string
+}
+
+export interface IGetParsedOptionsFilterOutSelectedProps {
+  id: string
+  label: string
+}
+
 export interface ICodeListFormValues {
   list: string
   code: string

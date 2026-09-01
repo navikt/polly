@@ -1,12 +1,13 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { ExternalLinkIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Link, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { getTeam } from '../../api/GetAllApi'
 import { getAvdelingByNomId, getByNomId } from '../../api/NomApi'
 import { ITeam } from '../../constants'
-import { CodelistService, EListName } from '../../service/Codelist'
+import { EListName } from '../../service/Codelist'
 import { theme } from '../../util'
 import { productAreaLink, teamLink } from '../../util/config'
 import { ESection, listNameForSection } from '../mainPages/ProcessPage'
@@ -21,7 +22,7 @@ interface IPageHeaderProps {
 
 export const PageHeader = (props: IPageHeaderProps) => {
   const { code, section, noDepartment } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
   const [nomAvdelingNavn, setNomAvdelingNavn] = useState<string>('')
 
   const [isLoading, setLoading] = useState(false)

@@ -3,13 +3,13 @@
 import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
 import { convertProcessToFormValues, createProcess } from '@/api/ProcessApi'
 import { IProcessFormValues } from '@/constants'
-import { CodelistService } from '@/service/Codelist'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { user } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { FileWordIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Heading, LocalAlert, Modal } from '@navikt/ds-react'
 import { env } from 'process'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import ModalProcess from '../Process/Accordion/ModalProcess'
 import { PurposeList } from './ListSearchPage'
 import { ESection, genProcessPath } from './ProcessPage'
@@ -24,7 +24,7 @@ export const PurposeListPage = () => {
   const [exportDownloading, setExportDownloading] = useState<'internal' | 'external' | null>(null)
   const [exportError, setExportError] = useState<string | null>(null)
   const [exportSuccess, setExportSuccess] = useState<string | null>(null)
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const downloadFile = async (url: string, fallbackFilename: string) => {
     const response = await fetch(url, { credentials: 'include' })

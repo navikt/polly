@@ -1,8 +1,9 @@
 'use client'
 
-import { CodelistService, EListName, ICode } from '@/service/Codelist'
+import { CodelistContext } from '@/provider/kodeverkProvider'
+import { EListName, ICode } from '@/service/Codelist'
 import { Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import AlphabeticList from '../common/AlphabeticList'
 
 interface ICodeListPageProps {
@@ -14,7 +15,7 @@ interface ICodeListPageProps {
 
 const CodelistPage = (props: ICodeListPageProps) => {
   const { listName, baseUrl, title, columns } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
 

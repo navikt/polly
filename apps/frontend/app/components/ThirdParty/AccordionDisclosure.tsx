@@ -1,7 +1,8 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { useNavigate } from '@/util/router'
 import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, BodyShort, Link, Loader, Modal } from '@navikt/ds-react'
-import { Fragment, Key, useEffect, useState } from 'react'
+import { Fragment, Key, useContext, useEffect, useState } from 'react'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api/GetAllApi'
 import {
@@ -11,7 +12,7 @@ import {
   IInformationTypeShort,
   ILegalBasis,
 } from '../../constants'
-import { CodelistService, EListName } from '../../service/Codelist'
+import { EListName } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
@@ -67,7 +68,7 @@ const showAbroad = (abroad: IDisclosureAbroad) => {
 
 const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
   const { expand } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [showEditModal, setShowEditModal] = useState<boolean>(false)

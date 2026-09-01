@@ -1,5 +1,6 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Alert, Label, Link, Loader, Select, TextField, Textarea } from '@navikt/ds-react'
 import {
   Field,
@@ -11,10 +12,10 @@ import {
   FormikHelpers,
   FormikProps,
 } from 'formik'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { searchDocuments } from '../../../api/GetAllApi'
 import { IDocument, IDocumentFormValues } from '../../../constants'
-import { CodelistService, EListName } from '../../../service/Codelist'
+import { EListName } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { useAwait } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
@@ -30,7 +31,7 @@ type TDocumentFormProps = {
 
 const DocumentForm = (props: TDocumentFormProps) => {
   const { initialValues, handleSubmit } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [isLoading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)

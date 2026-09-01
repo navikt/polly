@@ -1,8 +1,9 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { CodelistService, EListName } from '../../../service/Codelist'
+import { EListName } from '../../../service/Codelist'
 
 interface IFieldCommonExternalProcessResponsibleProps {
   thirdParty?: string
@@ -13,7 +14,7 @@ const FieldCommonExternalProcessResponsible = (
   props: IFieldCommonExternalProcessResponsibleProps
 ) => {
   const { thirdParty, hideSelect } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [selected, setSelected] = useState<{ label: string; value: string }[]>(
     thirdParty

@@ -2,16 +2,16 @@
 
 import { createInformationType, mapInfoTypeToFormVals } from '@/api/InfoTypeApi'
 import { IInformationtypeFormValues } from '@/constants'
-import { CodelistService } from '@/service/Codelist'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { user } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useContext, useMemo, useState } from 'react'
 import InformationtypeForm from '../InformationType/InformationtypeForm'
 import ErrorNotAllowed from '../common/ErrorNotAllowed'
 
 const InformationtypeCreatePage = () => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const initialValues = useMemo(() => mapInfoTypeToFormVals({}), [])
 

@@ -6,7 +6,7 @@ import { Fragment } from 'react/jsx-runtime'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
 import './main.css'
-import { CodelistService } from './service/Codelist'
+import { CodelistProvider } from './provider/kodeverkProvider'
 import { user } from './service/User'
 import { useAwait } from './util'
 import {
@@ -20,8 +20,6 @@ import { TThemeMode, getInitialThemeMode, persistThemeMode } from './util/themeM
 const Main = ({ children }: { children: React.ReactNode }) => {
   // all pages need these
   useAwait(user.wait())
-  const [codelistUtils] = CodelistService()
-  useAwait(codelistUtils.fetchData())
 
   const [themeMode, setThemeMode] = useState<TThemeMode>(() => getInitialThemeMode())
   const [permissionMode, setPermissionModeState] = useState<TPermissionMode>(() =>
@@ -63,28 +61,30 @@ const Main = ({ children }: { children: React.ReactNode }) => {
         <title>Behandlingskatalog</title>
       </head>
       <body>
-        <AppStateContext.Provider value={{ permissionMode, userLoaded }}>
-          <Fragment>
-            <Theme theme={themeMode} asChild>
-              <div className='flex min-h-screen w-full flex-col'>
-                <Header
-                  themeMode={themeMode}
-                  onThemeModeChange={setThemeMode}
-                  permissionMode={permissionMode}
-                  onPermissionModeChange={handlePermissionModeChange}
-                />
+        <CodelistProvider>
+          <AppStateContext.Provider value={{ permissionMode, userLoaded }}>
+            <Fragment>
+              <Theme theme={themeMode} asChild>
+                <div className='flex min-h-screen w-full flex-col'>
+                  <Header
+                    themeMode={themeMode}
+                    onThemeModeChange={setThemeMode}
+                    permissionMode={permissionMode}
+                    onPermissionModeChange={handlePermissionModeChange}
+                  />
 
-                <div className='flex w-full flex-1'>
-                  <div className='min-w-60'>
-                    <SideBar />
+                  <div className='flex w-full flex-1'>
+                    <div className='min-w-60'>
+                      <SideBar />
+                    </div>
+
+                    <div className='mb-48 w-full min-w-0 px-7 py-7'>{children}</div>
                   </div>
-
-                  <div className='mb-48 w-full min-w-0 px-7 py-7'>{children}</div>
                 </div>
-              </div>
-            </Theme>
-          </Fragment>
-        </AppStateContext.Provider>
+              </Theme>
+            </Fragment>
+          </AppStateContext.Provider>
+        </CodelistProvider>
       </body>
     </html>
   )

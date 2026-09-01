@@ -1,12 +1,13 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'
-import { CodelistService, ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
+import { ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import CodeListTable from './CodeListStyledTable'
 import CreateCodeListModal from './ModalCreateCodeList'
@@ -18,7 +19,7 @@ const CodeListPage = () => {
     }>
   > = useParams<{ listname?: string }>()
   const navigate: TNavigateFunction = useNavigate()
-  const [codelistUtils, lists] = CodelistService()
+  const codelist = useContext(CodelistContext)
 
   const [loading, setLoading] = useState(true)
   const [listname, setListname] = useState(params.listname)
@@ -26,13 +27,13 @@ const CodeListPage = () => {
   const [errorOnResponse, setErrorOnResponse] = useState(null)
 
   const currentCodelist: ICode[] | undefined =
-    lists && listname ? lists?.codelist[listname] : undefined
+    codelist.lists && listname ? codelist.lists?.codelist[listname] : undefined
 
   const handleCreateCodelist = async (values: ICodeListFormValues): Promise<void> => {
     setLoading(true)
     try {
       await createCodelist({ ...values } as ICode)
-      await codelistUtils.fetchData(true)
+      await codelist.utils.fetchData(true)
       setCreateCodeListModal(false)
     } catch (error: any) {
       setCreateCodeListModal(true)
@@ -42,29 +43,29 @@ const CodeListPage = () => {
   }
 
   const update = async (): Promise<void> => {
-    await codelistUtils.fetchData(true)
+    await codelist.utils.fetchData(true)
   }
 
   useEffect(() => {
     if (listname && listname !== params.listname) {
       navigate(`/admin/codelist/${listname}`, { replace: true })
     }
-  }, [listname, lists])
+  }, [listname, codelist.lists])
 
   useEffect(() => {
     ;(async () => {
-      setLoading(!codelistUtils.isLoaded())
+      setLoading(!codelist.utils.isLoaded())
     })()
-  }, [lists])
+  }, [codelist.lists])
 
   return (
     <>
-      {!lists && (
+      {!codelist.lists && (
         <div role='main' className='flex w-full justify-center'>
           <Loader size='3xlarge' title='Venter...' />
         </div>
       )}
-      {user.isAdmin() && lists && (
+      {user.isAdmin() && codelist.lists && (
         <div role='main'>
           <Heading size='large' level='1'>
             Administrering av kodeverk
@@ -84,7 +85,7 @@ const CodeListPage = () => {
                 }
               >
                 <option value=''>Velg kodeverk</option>
-                {codelistUtils
+                {codelist.utils
                   .makeIdLabelForAllCodeLists()
                   .map((value: IMakeIdLabelForAllCodeListsProps) => (
                     <option key={value.id} value={value.id}>

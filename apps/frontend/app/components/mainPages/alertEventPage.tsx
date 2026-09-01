@@ -8,7 +8,7 @@ import {
   IAlertEvent,
   IPageResponse,
 } from '@/constants'
-import { CodelistService } from '@/service/Codelist'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { user } from '@/service/User'
 import { tekster } from '@/util/codeToFineText'
 import { useParams } from '@/util/router'
@@ -24,7 +24,7 @@ import {
   Table,
 } from '@navikt/ds-react'
 import moment from 'moment'
-import { ChangeEvent, useEffect, useReducer } from 'react'
+import { ChangeEvent, useContext, useEffect, useReducer } from 'react'
 import { Sensitivity } from '../InformationType/Sensitivity'
 import { ObjectLink } from '../common/RouteLink'
 
@@ -84,7 +84,7 @@ const reducer = (state: TState, action: TAction): TState => {
 }
 
 export const AlertEventPage = () => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const { objectType, id } = useParams<{ objectType?: TAlertObjectType; id?: string }>()
   const [state, dispatch] = useReducer(reducer, {

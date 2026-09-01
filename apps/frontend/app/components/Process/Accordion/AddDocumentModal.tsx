@@ -1,3 +1,4 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { MinusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Label, List, Loader, Modal, Tooltip } from '@navikt/ds-react'
 import {
@@ -10,7 +11,7 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { getDefaultProcessDocument, searchDocuments } from '../../../api/GetAllApi'
 import {
   IAddDocumentToProcessFormValues,
@@ -19,7 +20,7 @@ import {
   IPolicy,
   IProcess,
 } from '../../../constants'
-import { CodelistService, EListName, ICode } from '../../../service/Codelist'
+import { EListName, ICode } from '../../../service/Codelist'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import CustomSearchSelect from '../../common/AsyncSelectComponents'
@@ -43,7 +44,7 @@ interface IListInformationTypesProps {
 
 const ListInformationTypes = (props: IListInformationTypesProps) => {
   const { informationTypes, formik, arrayHelpers } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   return (
     <List as='ul' className='w-full'>
