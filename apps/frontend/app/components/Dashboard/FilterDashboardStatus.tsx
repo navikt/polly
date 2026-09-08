@@ -1,5 +1,6 @@
-import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { Label, Select } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { ChangeEvent, useState } from 'react'
 import { EProcessStatusFilter } from '../../constants'
 

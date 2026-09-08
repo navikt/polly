@@ -11,7 +11,6 @@ import {
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { user } from '@/service/User'
 import { tekster } from '@/util/codeToFineText'
-import { useParams } from '@/util/router'
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons'
 import {
   Button,
@@ -24,6 +23,7 @@ import {
   Table,
 } from '@navikt/ds-react'
 import moment from 'moment'
+import { useParams } from 'next/navigation'
 import { ChangeEvent, useContext, useEffect, useReducer } from 'react'
 import { Sensitivity } from '../InformationType/Sensitivity'
 import { ObjectLink } from '../common/RouteLink'

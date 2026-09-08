@@ -2,8 +2,8 @@
 
 import { getDashboard } from '@/api/DashboardApi'
 import { EProcessStatusFilter, ISeksjonDashCount } from '@/constants'
-import { useParams } from '@/util/router'
 import { Heading, Tabs } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Charts from '../Charts/Charts'
 import ProcessList from '../Process/ProcessList'

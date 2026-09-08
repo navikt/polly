@@ -1,7 +1,7 @@
 'use client'
 
-import { useParams } from '@/util/router'
 import { Heading, Loader } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
   getProcessByStateAndStatus,

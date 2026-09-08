@@ -1,9 +1,10 @@
 'use client'
 
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { useContext, useEffect, useState } from 'react'
 import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api/GetAllApi'
 import {
