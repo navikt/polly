@@ -1,3 +1,5 @@
+'use client'
+
 import { useLocation, useNavigate } from '@/util/router'
 import { CaretDownIcon, PersonIcon } from '@navikt/aksel-icons'
 import {
@@ -9,8 +11,8 @@ import {
   Popover,
   ToggleGroup,
 } from '@navikt/ds-react'
-import { useState } from 'react'
-import { EGroup, user } from '../service/User'
+import { useContext, useState } from 'react'
+import { EGroup, IUserContext, UserContext } from '../service/User'
 import { TPermissionMode } from '../util/permissionOverride'
 import { TThemeMode } from '../util/themeMode'
 import MainSearch from './search/MainSearch'
@@ -26,6 +28,7 @@ function useAbsoluteCurrentUrl() {
 }
 
 const LoggedInHeader = () => {
+  const user: IUserContext = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [openState, setOpenState] = useState(false)
   const redirectUri = useAbsoluteCurrentUrl()
@@ -158,6 +161,7 @@ const Header = ({
   permissionMode,
   onPermissionModeChange,
 }: IHeaderProps) => {
+  const user: IUserContext = useContext(UserContext)
   const location = useLocation()
   const navigate = useNavigate()
 

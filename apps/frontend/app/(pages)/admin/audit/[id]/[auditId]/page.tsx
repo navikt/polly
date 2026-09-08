@@ -1,8 +1,13 @@
+'use client'
+
 import { AuditPage } from '@/components/admin/audit/AuditPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
+import { useContext } from 'react'
 
 const Page = () => {
+  const user: IUserContext = useContext(UserContext)
+
   if (!(user.isAdmin() || user.isSuper())) return <ErrorNotAllowed />
   return <AuditPage />
 }

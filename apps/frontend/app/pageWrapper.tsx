@@ -1,10 +1,10 @@
 'use client'
 
 import { Theme } from '@navikt/ds-react'
-import { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react'
+import { Fragment, FunctionComponent, ReactNode, useContext, useEffect, useState } from 'react'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
-import { user } from './service/User'
+import { IUserContext, UserContext } from './service/User'
 import {
   AppStateContext,
   TPermissionMode,
@@ -18,6 +18,7 @@ type TProps = {
 }
 
 const PageWrapper: FunctionComponent<TProps> = ({ children }) => {
+  const user: IUserContext = useContext(UserContext)
   const [themeMode, setThemeMode] = useState<TThemeMode>(() => getInitialThemeMode())
   const [permissionMode, setPermissionModeState] = useState<TPermissionMode>(() =>
     getInitialPermissionMode()
@@ -25,7 +26,11 @@ const PageWrapper: FunctionComponent<TProps> = ({ children }) => {
   const [userLoaded, setUserLoaded] = useState(() => user.isLoaded())
 
   useEffect(() => {
-    user.wait().then(() => setUserLoaded(true))
+    ;(async () => {
+      if (user) {
+        setUserLoaded(true)
+      }
+    })()
   }, [])
 
   useEffect(() => {

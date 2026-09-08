@@ -6,7 +6,7 @@ import { BodyShort, Heading, Loader, Tabs } from '@navikt/ds-react'
 import { useContext, useState } from 'react'
 import { IDisclosure, IDocument, IInformationType, IPolicy } from '../../../constants'
 import { ICodelistProps } from '../../../service/Codelist'
-import { user } from '../../../service/User'
+import { IUserContext, UserContext } from '../../../service/User'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { useQueryParam } from '../../../util/hooks'
 import Button from '../../common/Button/CustomButton'
@@ -56,6 +56,8 @@ const Purposes = (props: IPurposesProps) => {
 
 export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) => {
   const { informationtype, policies, disclosures, documents } = props
+  const user: IUserContext = useContext(UserContext)
+
   const navigate: TNavigateFunction = useNavigate()
   const { utils: codelistUtils } = useContext(CodelistContext)
 

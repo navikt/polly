@@ -1,4 +1,7 @@
+'use client'
+
 import { AxiosResponse } from 'axios'
+import { FunctionComponent, ReactNode, createContext, useEffect, useState } from 'react'
 import { getUserInfo } from '../api/UserApi'
 import { IUserInfo } from '../constants'
 import { tekster } from '../util/codeToFineText'
@@ -11,7 +14,7 @@ export enum EGroup {
   ADMIN = 'ADMIN',
 }
 
-interface IUserProps {
+export interface IUserContext {
   isLoggedIn: () => boolean
   getIdent: () => string
   getEmail: () => string
@@ -25,41 +28,59 @@ interface IUserProps {
   canWrite: () => boolean
   isSuper: () => boolean
   isAdmin: () => boolean
-  wait: () => Promise<any>
   isLoaded: () => boolean
 }
 
-const UserService = (): IUserProps => {
-  let loaded: boolean = false
-  let userInfo: IUserInfo = { loggedIn: false, groups: [] }
-  let error: string
+export const UserContext = createContext<IUserContext>({
+  isLoggedIn: () => false,
+  getIdent: () => '',
+  getEmail: () => '',
+  getName: () => '',
+  getGivenName: () => '',
+  getFamilyName: () => '',
+  hasGroup: () => false,
+  canRead: () => false,
+  getGroups: () => [''],
+  getGroupsHumanReadable: () => [''],
+  canWrite: () => false,
+  isSuper: () => false,
+  isAdmin: () => false,
+  isLoaded: () => false,
+})
+
+type TProps = {
+  children: ReactNode
+}
+
+export const UserProvider: FunctionComponent<TProps> = ({ children }) => {
+  const [loaded, setLoaded] = useState<boolean>(false)
+  const [userInfo, setUserInfo] = useState<IUserInfo>({ loggedIn: false, groups: [] })
+  const [error, setError] = useState<string>('')
 
   const getMode = () => getPermissionMode()
 
-  const fetchData = async (): Promise<void> => {
-    return await getUserInfo()
+  const handleGetResponse = (response: AxiosResponse<IUserInfo>): void => {
+    if (typeof response.data === 'object' && response.data !== null) {
+      setUserInfo({ ...response.data })
+    } else {
+      setError(response.data)
+      console.debug({ error })
+    }
+    setLoaded(true)
+  }
+
+  const fetchUserInfo = async (): Promise<void> => {
+    await getUserInfo()
       .then((response: AxiosResponse<IUserInfo, any>) => {
         if (response.status === 200) {
           handleGetResponse(response)
         }
       })
       .catch((error: any) => {
-        error = error.message
+        setError(error.message)
         console.debug({ error })
-        loaded = true
+        setLoaded(true)
       })
-  }
-
-  const promise: Promise<any> = typeof window !== 'undefined' ? fetchData() : Promise.resolve()
-
-  const handleGetResponse = (response: AxiosResponse<IUserInfo>): void => {
-    if (typeof response.data === 'object' && response.data !== null) {
-      userInfo = response.data
-    } else {
-      error = response.data
-      console.debug({ error })
-    }
-    loaded = true
   }
 
   const isLoggedIn = (): boolean => {
@@ -129,31 +150,36 @@ const UserService = (): IUserProps => {
     return getMode() === 'admin' && hasGroup(EGroup.ADMIN)
   }
 
-  const wait = async (): Promise<void> => {
-    await promise
-  }
-
   const isLoaded = (): boolean => {
     return loaded
   }
 
-  return {
-    isLoggedIn,
-    getIdent,
-    getEmail,
-    getName,
-    getGivenName,
-    getFamilyName,
-    getGroups,
-    getGroupsHumanReadable,
-    hasGroup,
-    canRead,
-    canWrite,
-    isSuper,
-    isAdmin,
-    wait,
-    isLoaded,
-  }
-}
+  useEffect(() => {
+    ;(async () => {
+      await fetchUserInfo()
+    })()
+  }, [])
 
-export const user: IUserProps = UserService()
+  return (
+    <UserContext.Provider
+      value={{
+        isLoggedIn,
+        getIdent,
+        getEmail,
+        getName,
+        getGivenName,
+        getFamilyName,
+        getGroups,
+        getGroupsHumanReadable,
+        hasGroup,
+        canRead,
+        canWrite,
+        isSuper,
+        isAdmin,
+        isLoaded,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  )
+}

@@ -22,7 +22,7 @@ import {
   IProcessor,
 } from '../../constants'
 import { EListName } from '../../service/Codelist'
-import { user } from '../../service/User'
+import { IUserContext, UserContext } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { RetentionView } from '../Process/Retention'
 import Button from '../common/Button/CustomButton'
@@ -36,6 +36,8 @@ import { DpProcessDeleteModal } from './DpProcessDeleteModal'
 import DpProcessModal from './DpProcessModal'
 
 const DpProcessView = () => {
+  const user: IUserContext = useContext(UserContext)
+
   const navigate: TNavigateFunction = useNavigate()
   const params: Readonly<
     Partial<{

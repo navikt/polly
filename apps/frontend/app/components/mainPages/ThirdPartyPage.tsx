@@ -11,7 +11,7 @@ import { getInformationTypesBy } from '@/api/InfoTypeApi'
 import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '@/constants'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { EListName } from '@/service/Codelist'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
@@ -30,8 +30,9 @@ type TPathParams = {
 }
 
 const ThirdPartyPage = () => {
-  const params = useParams<TPathParams>()
+  const user: IUserContext = useContext(UserContext)
   const { utils: codelistUtils } = useContext(CodelistContext)
+  const params = useParams<TPathParams>()
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [disclosureList, setDisclosureList] = useState<IDisclosure[]>([])

@@ -2,6 +2,7 @@ import { FunctionComponent, ReactNode } from 'react'
 import './main.css'
 import PageWrapper from './pageWrapper'
 import { CodelistProvider } from './provider/kodeverkProvider'
+import { UserProvider } from './service/User'
 
 type TProps = {
   children: ReactNode
@@ -16,9 +17,11 @@ const Main: FunctionComponent<TProps> = async ({ children }) => {
         <title>Behandlingskatalog</title>
       </head>
       <body>
-        <CodelistProvider>
-          <PageWrapper>{children}</PageWrapper>
-        </CodelistProvider>
+        <UserProvider>
+          <CodelistProvider>
+            <PageWrapper>{children}</PageWrapper>
+          </CodelistProvider>
+        </UserProvider>
       </body>
     </html>
   )

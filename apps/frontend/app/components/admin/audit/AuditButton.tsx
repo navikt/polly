@@ -1,5 +1,8 @@
+'use client'
+
 import { ClockDashedIcon } from '@navikt/aksel-icons'
-import { user } from '../../../service/User'
+import { FunctionComponent, useContext } from 'react'
+import { IUserContext, UserContext } from '../../../service/User'
 import Button from '../../common/Button/CustomButton'
 import RouteLink from '../../common/RouteLink'
 
@@ -20,8 +23,15 @@ interface IProps {
   children?: any
 }
 
-export const AuditButton = (props: IProps) => {
-  const { id, auditId, kind, marginLeft, marginRight, children } = props
+export const AuditButton: FunctionComponent<IProps> = ({
+  id,
+  auditId,
+  kind,
+  marginLeft,
+  marginRight,
+  children,
+}) => {
+  const user: IUserContext = useContext(UserContext)
 
   return (
     <>

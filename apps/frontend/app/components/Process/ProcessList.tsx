@@ -1,6 +1,7 @@
 'use client'
 
 import { CodelistContext } from '@/provider/kodeverkProvider'
+import { IUserContext, UserContext } from '@/service/User'
 import { useLocation, useNavigate } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Loader, Select } from '@navikt/ds-react'
@@ -36,7 +37,6 @@ import {
   IProcessShort,
 } from '../../constants'
 import { EListName, ICode } from '../../service/Codelist'
-import { user } from '../../service/User'
 import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
@@ -76,6 +76,7 @@ const ProcessList = ({
   getCount,
 }: TProcessListProps) => {
   const navigate = useNavigate()
+  const user: IUserContext = useContext(UserContext)
   const { utils: codelistUtils, lists } = useContext(CodelistContext)
 
   const [processList, setProcessList] = useState<IProcessShort[]>([])

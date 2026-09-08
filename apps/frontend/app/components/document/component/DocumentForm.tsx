@@ -16,7 +16,7 @@ import { useContext, useState } from 'react'
 import { searchDocuments } from '../../../api/GetAllApi'
 import { IDocument, IDocumentFormValues } from '../../../constants'
 import { EListName } from '../../../service/Codelist'
-import { user } from '../../../service/User'
+import { IUserContext, UserContext } from '../../../service/User'
 import { useAwait } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import Button from '../../common/Button/CustomButton'
@@ -31,6 +31,7 @@ type TDocumentFormProps = {
 
 const DocumentForm = (props: TDocumentFormProps) => {
   const { initialValues, handleSubmit } = props
+  const user: IUserContext = useContext(UserContext)
   const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [isLoading, setLoading] = useState(false)
