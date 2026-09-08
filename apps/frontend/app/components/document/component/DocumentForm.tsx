@@ -40,7 +40,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
 
   useEffect(() => {
     ;(async () => {
-      if (user) {
+      if (user.isLoggedIn()) {
         setLoading(false)
       }
     })()
