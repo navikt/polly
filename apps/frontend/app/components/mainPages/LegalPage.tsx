@@ -2,12 +2,13 @@
 
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IPageResponse, IProcess } from '@/constants'
-import { CodelistService, EListName, ICode } from '@/service/Codelist'
+import { CodelistContext } from '@/provider/kodeverkProvider'
+import { EListName, ICode } from '@/service/Codelist'
 import { useQueryParam } from '@/util/hooks'
 import { useLocation, useNavigate } from '@/util/router'
 import { BodyLong, Heading, Select } from '@navikt/ds-react'
 import queryString from 'query-string'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
 
 export const LegalPage = () => {
@@ -17,7 +18,7 @@ export const LegalPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   useEffect(() => {
     ;(async () => {

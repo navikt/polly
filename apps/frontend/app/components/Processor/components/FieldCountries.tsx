@@ -1,7 +1,8 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { useContext } from 'react'
 import { IProcessorFormValues } from '../../../constants'
-import { CodelistService } from '../../../service/Codelist'
 import { RenderTagList } from '../../common/RenderTagList'
 
 interface IProps {
@@ -10,7 +11,7 @@ interface IProps {
 
 const FieldCountries = (props: IProps) => {
   const { formikBag } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const countries: string[] = formikBag.values.countries
 

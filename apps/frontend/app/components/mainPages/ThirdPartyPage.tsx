@@ -9,12 +9,13 @@ import {
 import { getAllDpProcesses } from '@/api/DpProcessApi'
 import { getInformationTypesBy } from '@/api/InfoTypeApi'
 import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from '@/constants'
-import { CodelistService, EListName } from '@/service/Codelist'
+import { CodelistContext } from '@/provider/kodeverkProvider'
+import { EListName } from '@/service/Codelist'
 import { user } from '@/service/User'
 import { useParams } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
@@ -30,7 +31,7 @@ type TPathParams = {
 
 const ThirdPartyPage = () => {
   const params = useParams<TPathParams>()
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [disclosureList, setDisclosureList] = useState<IDisclosure[]>([])

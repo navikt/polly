@@ -1,9 +1,10 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Heading, Loader, SortState, Table } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { IInformationType } from '../../constants'
-import { CodelistService, EListName } from '../../service/Codelist'
+import { EListName } from '../../service/Codelist'
 import { handleSort } from '../../util/handleTableSort'
 import { DotTags } from '../common/DotTag'
 import RouteLink from '../common/RouteLink'
@@ -16,7 +17,7 @@ type TTableProps = {
 }
 
 export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableProps) => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
   const [informationTypeList, setInformationTypeList] = useState<IInformationType[]>(
     informationTypes || []
   )

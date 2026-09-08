@@ -1,10 +1,11 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { IDpProcessFormValues } from '../../../constants'
-import { CodelistService, EListName } from '../../../service/Codelist'
+import { EListName } from '../../../service/Codelist'
 
 interface IFieldDpProcessExternalProcessResponsible {
   thirdParty?: string
@@ -14,7 +15,7 @@ const FieldDpProcessExternalProcessResponsible = (
   props: IFieldDpProcessExternalProcessResponsible
 ) => {
   const { thirdParty } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
   const [value, setValue] = useState<string>(thirdParty ? thirdParty : '')
 
   return (

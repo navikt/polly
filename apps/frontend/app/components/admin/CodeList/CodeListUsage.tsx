@@ -1,5 +1,6 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
-import { ChangeEvent, createRef, useEffect, useState } from 'react'
+import { ChangeEvent, createRef, useContext, useEffect, useState } from 'react'
 import { replaceCodelistUsage } from '../../../api/GetAllApi'
 import { getAllNomAvdelinger } from '../../../api/NomApi'
 import {
@@ -11,12 +12,7 @@ import {
   IUse,
   IUseWithPurpose,
 } from '../../../constants'
-import {
-  CodelistService,
-  EListName,
-  ICode,
-  IGetParsedOptionsProps,
-} from '../../../service/Codelist'
+import { EListName, ICode, IGetParsedOptionsProps } from '../../../service/Codelist'
 import { ObjectLink } from '../../common/RouteLink'
 
 interface IProps {
@@ -24,7 +20,7 @@ interface IProps {
 }
 
 const UsageTable = (props: IProps) => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const { usage } = props
   const informationTypes = !!usage.informationTypes.length
@@ -169,7 +165,7 @@ interface IUsageProps {
 
 export const Usage = (props: IUsageProps) => {
   const { usage, refresh } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
   const [alleAvdelingOptions, setAlleAvdelingOptions] = useState<IOrgEnhet[]>([])
   const [showReplace, setShowReplace] = useState(false)
   const [newValue, setNewValue] = useState<string>()

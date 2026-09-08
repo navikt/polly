@@ -1,5 +1,6 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import {
   Button,
   ErrorMessage,
@@ -19,10 +20,10 @@ import {
   FormikProps,
   getIn,
 } from 'formik'
-import { KeyboardEvent, useEffect, useState } from 'react'
+import { KeyboardEvent, useContext, useEffect, useState } from 'react'
 import { getAvdelingOptions } from '../../api/NomApi'
 import { IDisclosureFormValues, IDocument, TOption } from '../../constants'
-import { CodelistService, EListName, ICountryCode } from '../../service/Codelist'
+import { EListName, ICountryCode } from '../../service/Codelist'
 import BoolField from '../Process/common/BoolField'
 import FieldLegalBasis from '../Process/common/FieldLegalBasis'
 import { Error, ModalLabel } from '../common/ModalSchema'
@@ -160,7 +161,7 @@ interface IFieldRecipientProps {
 const FieldRecipient = (props: IFieldRecipientProps) => {
   const { value, disabled } = props
   const [recipientValue, setRecipientValue] = useState<string>(value ? value : '')
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   return (
     <Field name='recipient'>
@@ -270,7 +271,7 @@ const ModalThirdParty = (props: TModalThirdPartyProps) => {
   const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } =
     props
   const [alleAvdelingOptions, setAlleAvdelingOptions] = useState<TOption[]>([])
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   useEffect(() => {
     ;(async () => {

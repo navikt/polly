@@ -1,8 +1,9 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { UNSAFE_Combobox } from '@navikt/ds-react'
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IPageResponse, IProcess } from '../../constants'
-import { CodelistService, EListName, ICode } from '../../service/Codelist'
+import { EListName, ICode } from '../../service/Codelist'
 import { useDebouncedState } from '../../util'
 
 type TSearchProcessProps = {
@@ -12,7 +13,7 @@ type TSearchProcessProps = {
 
 const SearchProcess = (props: TSearchProcessProps) => {
   const { selectedProcess, setSelectedProcess } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [processList, setProcessList] = useState<IProcess[]>([])
   const [search, setSearch] = useDebouncedState<string>('', 400)

@@ -1,10 +1,11 @@
 import { canViewAlerts } from '@/components/mainPages/alertEventPage'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader, Tabs } from '@navikt/ds-react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { IDisclosure, IDocument, IInformationType, IPolicy } from '../../../constants'
-import { CodelistService, ICodelistProps } from '../../../service/Codelist'
+import { ICodelistProps } from '../../../service/Codelist'
 import { user } from '../../../service/User'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { useQueryParam } from '../../../util/hooks'
@@ -56,7 +57,7 @@ const Purposes = (props: IPurposesProps) => {
 export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) => {
   const { informationtype, policies, disclosures, documents } = props
   const navigate: TNavigateFunction = useNavigate()
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   return (
     <>

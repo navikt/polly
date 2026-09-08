@@ -1,9 +1,10 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { getProcessesByProcessor, getResourceById, getResourcesByIds } from '../../api/GetAllApi'
 import {
   convertProcessorToFormValues,
@@ -19,7 +20,6 @@ import {
   ITeamResource,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
-import { CodelistService } from '../../service/Codelist'
 import { user } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
@@ -31,7 +31,7 @@ import ProcessorModal from './ProcessorModal'
 import RelatedProcessesTable from './components/RelatedProcessesTable'
 
 const ProcessorView = () => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [currentProcessor, setCurrentProcessor] = useState<IProcessor>()

@@ -1,10 +1,10 @@
 'use client'
 
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Accordion, Button, ErrorSummary, Modal, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { IDpProcessFormValues } from '../../constants'
-import { CodelistService } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
 import BoolField from '../Process/common/BoolField'
 import CustomizedModalBlock from '../common/CustomizedModalBlock'
@@ -143,7 +143,7 @@ type TModalDpProcessProps = {
 
 const DpProcessModal = (props: TModalDpProcessProps) => {
   const { initialValues, errorOnCreate, isOpen, submit, onClose } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
   const [expanded, setExpanded] = useState<string>('')
 
   const onOpenChangeAction = (open: boolean, key: string): void =>

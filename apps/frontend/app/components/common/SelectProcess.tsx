@@ -1,7 +1,9 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { useContext } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IDisclosureFormValues, IProcess, IProcessShort } from '../../constants'
-import { CodelistService, EListName, ICode } from '../../service/Codelist'
+import { EListName, ICode } from '../../service/Codelist'
 import CustomSearchSelect from './AsyncSelectComponents'
 import { renderTagList } from './TagList'
 
@@ -13,7 +15,7 @@ type TSelectProcessProps = {
 
 const SelectProcess = (props: TSelectProcessProps) => {
   const { formikBag, inputId, hasError } = props
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   const useSearchProcessOptions = async (searchParam: string): Promise<IProcess[]> => {
     if (searchParam && searchParam.length > 2) {

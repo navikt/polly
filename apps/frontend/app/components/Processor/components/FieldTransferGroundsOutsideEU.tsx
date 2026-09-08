@@ -1,10 +1,12 @@
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
+import { useContext } from 'react'
 import { IProcessorFormValues } from '../../../constants'
-import { CodelistService, EListName } from '../../../service/Codelist'
+import { EListName } from '../../../service/Codelist'
 
 const FieldTransferGroundsOutsideEU = () => {
-  const [codelistUtils] = CodelistService()
+  const { utils: codelistUtils } = useContext(CodelistContext)
 
   return (
     <Field name='transferGroundsOutsideEU'>
