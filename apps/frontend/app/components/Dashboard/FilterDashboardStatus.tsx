@@ -1,3 +1,5 @@
+'use client'
+
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { Label, Select } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'

@@ -1,3 +1,5 @@
+'use client'
+
 import { getInformationTypesBy } from '@/api/InfoTypeApi'
 import { EListName } from '@/service/Codelist'
 import { Tabs } from '@navikt/ds-react'
