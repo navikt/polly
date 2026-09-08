@@ -7,15 +7,17 @@ import {
   getProcessorsByPageAndPageSize,
 } from '@/api/ProcessorApi'
 import { IProcessor, IProcessorFormValues } from '@/constants'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import ProcessorModal from '../Processor/ProcessorModal'
 import AlphabeticList from '../common/AlphabeticList'
 
 const ProcessorListPage = () => {
+  const user: IUserContext = useContext(UserContext)
+
   const [processors, setProcessors] = useState<IProcessor[]>([])
   const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)

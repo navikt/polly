@@ -1,3 +1,5 @@
+'use client'
+
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { useNavigate } from '@/util/router'
 import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
@@ -13,7 +15,7 @@ import {
   ILegalBasis,
 } from '../../constants'
 import { EListName } from '../../service/Codelist'
-import { user } from '../../service/User'
+import { IUserContext, UserContext } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
 import Button from '../common/Button/CustomButton'
@@ -68,6 +70,7 @@ const showAbroad = (abroad: IDisclosureAbroad) => {
 
 const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
   const { expand } = props
+  const user: IUserContext = useContext(UserContext)
   const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)

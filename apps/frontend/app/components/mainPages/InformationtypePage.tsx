@@ -14,12 +14,12 @@ import {
   IPolicy,
 } from '@/constants'
 import { EListName } from '@/service/Codelist'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { InformationtypeMetadata } from '../InformationType/InformationtypeMetadata/InformationtypeMetadata'
 import ListCategoryInformationtype from '../InformationType/ListCategoryInformationtype'
 import Button from '../common/Button/CustomButton'
@@ -27,6 +27,8 @@ import Button from '../common/Button/CustomButton'
 export type TPurposeMap = { [purpose: string]: IPolicy[] }
 
 const InformationtypePage = () => {
+  const user: IUserContext = useContext(UserContext)
+
   const params = useParams<{ id?: string }>()
   const navigate: TNavigateFunction = useNavigate()
 

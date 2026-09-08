@@ -21,7 +21,7 @@ import {
   ITeamResource,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
-import { user } from '../../service/User'
+import { IUserContext, UserContext } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
 import Button from '../common/Button/CustomButton'
@@ -32,6 +32,7 @@ import ProcessorModal from './ProcessorModal'
 import RelatedProcessesTable from './components/RelatedProcessesTable'
 
 const ProcessorView = () => {
+  const user: IUserContext = useContext(UserContext)
   const { utils: codelistUtils } = useContext(CodelistContext)
 
   const [isLoading, setIsLoading] = useState<boolean>(true)

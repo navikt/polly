@@ -9,7 +9,7 @@ import {
   IPageResponse,
 } from '@/constants'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { tekster } from '@/util/codeToFineText'
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons'
 import {
@@ -291,4 +291,8 @@ export const AlertEventPage = () => {
   )
 }
 
-export const canViewAlerts = () => user.isSuper() || user.isAdmin()
+export const canViewAlerts = () => {
+  const user: IUserContext = useContext(UserContext)
+
+  return user.isSuper() || user.isAdmin()
+}

@@ -3,11 +3,11 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Alert, BodyShort, Button, Heading, Spacer, Tabs } from '@navikt/ds-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
 import { EListName } from '../../service/Codelist'
-import { user } from '../../service/User'
+import { IUserContext, UserContext } from '../../service/User'
 import DpProcessTable from '../DpProcess/DpProcessTable'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
@@ -52,6 +52,7 @@ const ProcessDisclosureTabs = (props: IProps) => {
     fourthTabContent,
     seksjonFilter,
   } = props
+  const user: IUserContext = useContext(UserContext)
 
   const filteredDpProcessData = seksjonFilter
     ? seksjonFilter === '__INGEN_SEKSJON__'

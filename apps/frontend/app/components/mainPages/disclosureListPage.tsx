@@ -5,13 +5,13 @@ import { IDisclosureSummary, createDisclosure, getDisclosureSummaries } from '@/
 import { getAll } from '@/api/GetAllApi'
 import { EObjectType, IAaregAvtale, IDisclosure, IDisclosureFormValues } from '@/constants'
 import { EListName } from '@/service/Codelist'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { theme, useDebouncedState } from '@/util'
 import { useQueryParam, useTable } from '@/util/hooks'
 import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Label, Loader, Search, Table, ToggleGroup } from '@navikt/ds-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import AaregAvtaleTable from '../AaregAvtale/AaregAvtaleTable'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 import { ObjectLink } from '../common/RouteLink'
@@ -23,6 +23,8 @@ enum EFilterType {
 }
 
 export const DisclosureListPage = () => {
+  const user: IUserContext = useContext(UserContext)
+
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [newDisclosure, setNewDisclosure] = useState<IDisclosure>()
   const [error, setError] = useState<string>()

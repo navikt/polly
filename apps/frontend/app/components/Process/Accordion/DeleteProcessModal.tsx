@@ -1,6 +1,9 @@
+'use client'
+
+import { IUserContext, UserContext } from '@/service/User'
 import { BodyShort, Button, Heading, Link, List, Modal } from '@navikt/ds-react'
+import { useContext } from 'react'
 import { IDisclosure, IProcess } from '../../../constants'
-import { user } from '../../../service/User'
 
 interface IDeleteProcessProps {
   onClose: () => void
@@ -13,6 +16,7 @@ interface IDeleteProcessProps {
 
 export const DeleteProcessModal = (props: IDeleteProcessProps) => {
   const { process, onClose, isOpen, submitDeleteProcess, errorProcessModal, disclosures } = props
+  const user: IUserContext = useContext(UserContext)
 
   return (
     <Modal header={{ heading: 'Bekreft sletting' }} onClose={onClose} open={isOpen}>

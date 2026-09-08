@@ -4,12 +4,12 @@ import { deleteDocument, getDocument, getDocumentByPageAndPageSize } from '@/api
 import { getAll } from '@/api/GetAllApi'
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IDocument, IProcess } from '@/constants'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { DocPencilIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Alert, BodyLong, Heading, Label, Tabs } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AuditButton } from '../admin/audit/AuditButton'
 import AlphabeticList from '../common/AlphabeticList'
 import Button from '../common/Button/CustomButton'
@@ -25,6 +25,8 @@ const renderTextWithLabel = (label: string, text: string) => (
 )
 
 const DocumentPage = () => {
+  const user: IUserContext = useContext(UserContext)
+
   const params = useParams<{ id?: string }>()
   const navigate = useNavigate()
 

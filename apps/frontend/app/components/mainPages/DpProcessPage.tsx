@@ -2,16 +2,18 @@
 
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '@/api/DpProcessApi'
 import { IDpProcess, IDpProcessFormValues } from '@/constants'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import DpProcessModal from '../DpProcess/DpProcessModal'
 import DpProcessTable from '../DpProcess/DpProcessTable'
 import Button from '../common/Button/CustomButton'
 
 const DpProcessPage = () => {
+  const user: IUserContext = useContext(UserContext)
+
   const [showModal, setShowModal] = useState(false)
   const [createDpProcessModalKey, setCreateDpProcessModalKey] = useState(0)
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')

@@ -1,6 +1,7 @@
 'use client'
 
 import { CodelistContext } from '@/provider/kodeverkProvider'
+import { IUserContext, UserContext } from '@/service/User'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
@@ -9,7 +10,6 @@ import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'
 import { ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
-import { user } from '../../../service/User'
 import CodeListTable from './CodeListStyledTable'
 import CreateCodeListModal from './ModalCreateCodeList'
 
@@ -21,6 +21,7 @@ const CodeListPage = () => {
   > = useParams<{ listname?: string }>()
   const navigate: TNavigateFunction = useNavigate()
   const codelist = useContext(CodelistContext)
+  const user: IUserContext = useContext(UserContext)
 
   const [loading, setLoading] = useState(true)
   const [listname, setListname] = useState(params.listname)

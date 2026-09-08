@@ -3,15 +3,16 @@
 import { getDashboard } from '@/api/DashboardApi'
 import { getSettings } from '@/api/SettingsApi'
 import { EProcessStatusFilter, IDashboardData, ISettings } from '@/constants'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { Heading } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import ShortcutNav from '../Main/ShortcutNav'
 import { LastEvents } from '../admin/audit/LastEvents'
 import { RecentEditsByUser } from '../admin/audit/RecentEditsByUser'
 import { Markdown } from '../common/Markdown'
 
 export const MainPage = () => {
+  const user: IUserContext = useContext(UserContext)
   const [settings, setSettings] = useState<ISettings>()
   const [isLoading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<IDashboardData>()

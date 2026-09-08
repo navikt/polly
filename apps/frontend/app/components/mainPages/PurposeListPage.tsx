@@ -4,7 +4,7 @@ import { convertDisclosureToFormValues, updateDisclosure } from '@/api/Disclosur
 import { convertProcessToFormValues, createProcess } from '@/api/ProcessApi'
 import { IProcessFormValues } from '@/constants'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { user } from '@/service/User'
+import { IUserContext, UserContext } from '@/service/User'
 import { useNavigate } from '@/util/router'
 import { FileWordIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Heading, LocalAlert, Modal } from '@navikt/ds-react'
@@ -15,6 +15,8 @@ import { PurposeList } from './ListSearchPage'
 import { ESection, genProcessPath } from './ProcessPage'
 
 export const PurposeListPage = () => {
+  const user: IUserContext = useContext(UserContext)
+
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)

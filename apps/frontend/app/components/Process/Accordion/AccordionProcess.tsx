@@ -2,11 +2,12 @@
 
 import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { canViewAlerts } from '@/components/mainPages/alertEventPage'
+import { IUserContext, UserContext } from '@/service/User'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import {
   convertProcessToFormValues,
   getDisclosuresByProcessId,
@@ -23,7 +24,6 @@ import {
   IProcessShort,
 } from '../../../constants'
 import { ICode, ICodelistProps } from '../../../service/Codelist'
-import { user } from '../../../service/User'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
@@ -77,6 +77,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     errorDocumentModal,
   } = props
   const history: TNavigateFunction = useNavigate()
+  const user: IUserContext = useContext(UserContext)
 
   const [showEditProcessModal, setShowEditProcessModal] = useState(false)
   const [showCreatePolicyModal, setShowCreatePolicyModal] = useState(false)
