@@ -27,11 +27,11 @@ const PageWrapper: FunctionComponent<TProps> = ({ children }) => {
 
   useEffect(() => {
     ;(async () => {
-      if (user) {
+      if (user.isLoggedIn()) {
         setUserLoaded(true)
       }
     })()
-  }, [])
+  }, [user])
 
   useEffect(() => {
     persistThemeMode(themeMode)
