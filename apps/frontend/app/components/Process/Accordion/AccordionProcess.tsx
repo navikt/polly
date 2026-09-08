@@ -2,9 +2,10 @@
 
 import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { canViewAlerts } from '@/components/mainPages/alertEventPage'
-import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import {
   convertProcessToFormValues,

@@ -1,8 +1,9 @@
 'use client'
 
-import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { BodyLong, Heading, TextField } from '@navikt/ds-react'
 import _ from 'lodash'
+import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { getAuditLog } from '../../../api/AuditApi'
 import { IAuditLog } from '../../../constants'

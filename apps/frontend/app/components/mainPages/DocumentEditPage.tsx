@@ -2,8 +2,9 @@
 
 import { getDocument, updateInformationTypesDocument } from '@/api/DocumentApi'
 import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '@/constants'
-import { useNavigate, useParams } from '@/util/router'
+import { useNavigate } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { Fragment, useEffect, useState } from 'react'
 import shortid from 'shortid'
 import DocumentForm from '../document/component/DocumentForm'

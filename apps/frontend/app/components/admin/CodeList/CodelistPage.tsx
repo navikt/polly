@@ -1,9 +1,10 @@
 'use client'
 
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { TNavigateFunction, useNavigate, useParams } from '@/util/router'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'

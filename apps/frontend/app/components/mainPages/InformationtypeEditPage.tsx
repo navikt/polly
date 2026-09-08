@@ -2,8 +2,9 @@
 
 import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '@/api/InfoTypeApi'
 import { IInformationType, IInformationtypeFormValues } from '@/constants'
-import { useNavigate, useParams } from '@/util/router'
+import { useNavigate } from '@/util/router'
 import { Heading, Loader } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import InformationtypeForm from '../InformationType/InformationtypeForm'
 
