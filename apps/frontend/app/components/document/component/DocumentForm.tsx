@@ -44,7 +44,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
         setLoading(false)
       }
     })()
-  }, [])
+  }, [user])
 
   const onSubmit = async (
     values: IDocumentFormValues,
