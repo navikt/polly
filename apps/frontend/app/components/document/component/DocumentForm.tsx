@@ -12,12 +12,11 @@ import {
   FormikHelpers,
   FormikProps,
 } from 'formik'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { searchDocuments } from '../../../api/GetAllApi'
 import { IDocument, IDocumentFormValues } from '../../../constants'
 import { EListName } from '../../../service/Codelist'
 import { IUserContext, UserContext } from '../../../service/User'
-import { useAwait } from '../../../util'
 import { disableEnter } from '../../../util/helper-functions'
 import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'
@@ -34,11 +33,18 @@ const DocumentForm = (props: TDocumentFormProps) => {
   const user: IUserContext = useContext(UserContext)
   const { utils: codelistUtils } = useContext(CodelistContext)
 
-  const [isLoading, setLoading] = useState(false)
+  const [isLoading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
 
   const hasAccess = (): boolean => user.canWrite()
-  useAwait(user.wait(), setLoading)
+
+  useEffect(() => {
+    ;(async () => {
+      if (user) {
+        setLoading(false)
+      }
+    })()
+  }, [])
 
   const onSubmit = async (
     values: IDocumentFormValues,
