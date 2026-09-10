@@ -5,7 +5,6 @@ import { FunctionComponent, ReactNode, createContext, useEffect, useState } from
 import { getUserInfo } from '../api/UserApi'
 import { IUserInfo } from '../constants'
 import { tekster } from '../util/codeToFineText'
-import { getPermissionMode } from '../util/permissionOverride'
 
 export enum EGroup {
   READ = 'READ',
@@ -25,8 +24,10 @@ export interface IUserContext {
   canRead: () => boolean
   getGroups: () => string[]
   getGroupsHumanReadable: () => string[]
+  getCurrentMode: () => EGroup
+  updateCurrentMode: (group: EGroup) => void
   canWrite: () => boolean
-  isSuper: () => boolean
+  isSuperUser: () => boolean
   isAdmin: () => boolean
   isLoaded: () => boolean
 }
@@ -42,8 +43,10 @@ export const UserContext = createContext<IUserContext>({
   canRead: () => false,
   getGroups: () => [''],
   getGroupsHumanReadable: () => [''],
+  getCurrentMode: () => EGroup.READ,
+  updateCurrentMode: () => '',
   canWrite: () => false,
-  isSuper: () => false,
+  isSuperUser: () => false,
   isAdmin: () => false,
   isLoaded: () => false,
 })
@@ -55,9 +58,8 @@ type TProps = {
 export const UserProvider: FunctionComponent<TProps> = ({ children }) => {
   const [loaded, setLoaded] = useState<boolean>(false)
   const [userInfo, setUserInfo] = useState<IUserInfo>({ loggedIn: false, groups: [] })
+  const [currentMode, setCurrentMode] = useState<EGroup>(EGroup.READ)
   const [error, setError] = useState<string>('')
-
-  const getMode = () => getPermissionMode()
 
   const handleGetResponse = (response: AxiosResponse<IUserInfo>): void => {
     if (typeof response.data === 'object' && response.data !== null) {
@@ -74,6 +76,16 @@ export const UserProvider: FunctionComponent<TProps> = ({ children }) => {
       .then((response: AxiosResponse<IUserInfo, any>) => {
         if (response.status === 200) {
           handleGetResponse(response)
+          if (
+            response.data.groups.includes(EGroup.SUPER) ||
+            response.data.groups.includes(EGroup.ADMIN)
+          ) {
+            setCurrentMode(EGroup.ADMIN)
+          } else if (response.data.groups.includes(EGroup.WRITE)) {
+            setCurrentMode(EGroup.WRITE)
+          } else {
+            setCurrentMode(EGroup.READ)
+          }
         }
       })
       .catch((error: any) => {
@@ -119,14 +131,18 @@ export const UserProvider: FunctionComponent<TProps> = ({ children }) => {
     return getGroups().indexOf(group) >= 0
   }
 
+  const getCurrentMode = (): EGroup => currentMode
+
+  const updateCurrentMode = (group: EGroup) => {
+    setCurrentMode(group)
+  }
+
   const canRead = (): boolean => {
     return hasGroup(EGroup.READ)
   }
 
   const canWrite = (): boolean => {
-    const mode = getMode()
-
-    if (mode === 'read') {
+    if (currentMode === EGroup.READ) {
       return false
     }
 
@@ -134,20 +150,20 @@ export const UserProvider: FunctionComponent<TProps> = ({ children }) => {
     const hasAdmin = hasGroup(EGroup.ADMIN)
     const hasSuper = hasGroup(EGroup.SUPER)
 
-    if (mode === 'write') {
+    if (currentMode === EGroup.WRITE) {
       return hasWrite || hasAdmin || hasSuper
     }
 
-    // mode === 'admin'
+    // currentGroup === 'admin'
     return hasWrite || hasAdmin || hasSuper
   }
 
-  const isSuper = (): boolean => {
-    return getMode() === 'admin' && hasGroup(EGroup.SUPER)
+  const isSuperUser = (): boolean => {
+    return currentMode === EGroup.ADMIN && hasGroup(EGroup.SUPER)
   }
 
   const isAdmin = (): boolean => {
-    return getMode() === 'admin' && hasGroup(EGroup.ADMIN)
+    return currentMode === EGroup.ADMIN && hasGroup(EGroup.ADMIN)
   }
 
   const isLoaded = (): boolean => {
@@ -172,9 +188,11 @@ export const UserProvider: FunctionComponent<TProps> = ({ children }) => {
         getGroups,
         getGroupsHumanReadable,
         hasGroup,
+        getCurrentMode,
+        updateCurrentMode,
         canRead,
         canWrite,
-        isSuper,
+        isSuperUser,
         isAdmin,
         isLoaded,
       }}
