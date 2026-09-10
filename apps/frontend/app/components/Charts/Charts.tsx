@@ -184,7 +184,7 @@ const Charts = (props: TChartsProps) => {
           onClickPieChartSlice={handleClickPieChartSlice}
         />
         <BodyLong>
-          Behandlinger med ufullstendig lagringstid:{' '}
+          Behandlinger omfattet av NAVs bevarings- og kassasjonsvedtak uten registrert lagringstid:{' '}
           <RouteLink href={link(EProcessField.RETENTION_DATA)}>
             {chartData.retentionDataIncomplete}
           </RouteLink>
