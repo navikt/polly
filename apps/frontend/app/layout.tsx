@@ -1,6 +1,6 @@
 import { FunctionComponent, ReactNode } from 'react'
 import './main.css'
-import PageWrapper from './pageWrapper'
+import PageThemeWrapper from './pageThemeWrapper'
 import { CodelistProvider } from './provider/kodeverkProvider'
 import { UserProvider } from './service/User'
 
@@ -19,7 +19,7 @@ const Main: FunctionComponent<TProps> = async ({ children }) => {
       <body>
         <UserProvider>
           <CodelistProvider>
-            <PageWrapper>{children}</PageWrapper>
+            <PageThemeWrapper>{children}</PageThemeWrapper>
           </CodelistProvider>
         </UserProvider>
       </body>

@@ -11,9 +11,8 @@ import {
   Popover,
   ToggleGroup,
 } from '@navikt/ds-react'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { EGroup, IUserContext, UserContext } from '../service/User'
-import { TPermissionMode } from '../util/permissionOverride'
 import { TThemeMode } from '../util/themeMode'
 import MainSearch from './search/MainSearch'
 
@@ -91,15 +90,16 @@ const LoginButton = () => {
 
 interface IAdminOptionsProps {
   showPermissionOverrides: boolean
-  permissionMode: TPermissionMode
-  onPermissionModeChange: (mode: TPermissionMode) => void
 }
 
-const AdminOptions = ({
-  showPermissionOverrides,
-  permissionMode,
-  onPermissionModeChange,
-}: IAdminOptionsProps) => {
+const AdminOptions = ({ showPermissionOverrides }: IAdminOptionsProps) => {
+  const user = useContext(UserContext)
+
+  const [activeToggle, setActiveToggle] = useState<string>(EGroup.ADMIN.toString())
+
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const pages = [
     { label: 'Administrering av kodeverk', href: '/admin/codelist' },
     { label: 'Endringer i behandlinger', href: '/admin/process-changes' },
@@ -109,6 +109,32 @@ const AdminOptions = ({
     { label: 'Varsler', href: '/alert/events' },
     { label: 'Versjonering', href: '/admin/audit' },
   ]
+
+  useEffect(() => {
+    ;(async () => {
+      const roles = sessionStorage.getItem('activeRoles')
+      if (roles) {
+        try {
+          const parsedRoles = JSON.parse(roles)
+          if (parsedRoles.length !== 0) {
+            setActiveToggle(parsedRoles)
+            user.updateCurrentMode(parsedRoles)
+          }
+        } catch {
+          sessionStorage.removeItem('activeRoles')
+        }
+      }
+    })()
+  }, [])
+
+  const onRoleChange = (group: EGroup): void => {
+    setActiveToggle(group)
+    user.updateCurrentMode(group)
+    sessionStorage.setItem('activeRoles', JSON.stringify(group))
+    if (group !== EGroup.ADMIN && location.pathname.startsWith('/admin')) {
+      navigate('/')
+    }
+  }
 
   return (
     <Dropdown>
@@ -130,16 +156,14 @@ const AdminOptions = ({
             <ToggleGroup
               size='small'
               aria-label='Tilgangsmodus'
-              value={permissionMode}
+              value={activeToggle}
               onChange={(value) => {
-                if (value === 'admin' || value === 'write' || value === 'read') {
-                  onPermissionModeChange(value)
-                }
+                onRoleChange(value as EGroup)
               }}
             >
-              <ToggleGroup.Item value='admin'>Admin</ToggleGroup.Item>
-              <ToggleGroup.Item value='write'>Skriv</ToggleGroup.Item>
-              <ToggleGroup.Item value='read'>Les</ToggleGroup.Item>
+              <ToggleGroup.Item value={EGroup.ADMIN.toString()}>Admin</ToggleGroup.Item>
+              <ToggleGroup.Item value={EGroup.WRITE.toString()}>Skriv</ToggleGroup.Item>
+              <ToggleGroup.Item value={EGroup.READ.toString()}>Les</ToggleGroup.Item>
             </ToggleGroup>
           </div>
         )}
@@ -151,28 +175,12 @@ const AdminOptions = ({
 interface IHeaderProps {
   themeMode: TThemeMode
   onThemeModeChange: (mode: TThemeMode) => void
-  permissionMode: TPermissionMode
-  onPermissionModeChange: (value: TPermissionMode) => void
 }
 
-const Header = ({
-  themeMode,
-  onThemeModeChange,
-  permissionMode,
-  onPermissionModeChange,
-}: IHeaderProps) => {
+const Header = ({ themeMode, onThemeModeChange }: IHeaderProps) => {
   const user: IUserContext = useContext(UserContext)
-  const location = useLocation()
-  const navigate = useNavigate()
 
   const canUsePermissionOverrides = user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER)
-
-  const setPermissionMode = (mode: TPermissionMode) => {
-    onPermissionModeChange(mode)
-    if (mode !== 'admin' && location.pathname.startsWith('/admin')) {
-      navigate('/')
-    }
-  }
 
   return (
     <InternalHeader className='polly-white-internalheader'>
@@ -198,11 +206,7 @@ const Header = ({
         </div>
 
         {canUsePermissionOverrides && (
-          <AdminOptions
-            showPermissionOverrides={canUsePermissionOverrides}
-            permissionMode={permissionMode}
-            onPermissionModeChange={setPermissionMode}
-          />
+          <AdminOptions showPermissionOverrides={canUsePermissionOverrides} />
         )}
         {!user.isLoggedIn() && <LoginButton />}
         {user.isLoggedIn() && <LoggedInHeader />}

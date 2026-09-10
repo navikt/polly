@@ -80,8 +80,6 @@ const ProcessPage = () => {
   const departmentCode = isNoDepartment ? '' : (code ?? '')
   const location = useLocation()
 
-  console.debug(params)
-
   const moveScroll = () => {
     window.scrollTo(
       0,

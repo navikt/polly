@@ -23,7 +23,6 @@ import DataText from '../common/DataText'
 import { DotTags } from '../common/DotTag'
 import { LegalBasisView } from '../common/LegalBasis'
 import { TeamList } from '../common/Team'
-import { canViewAlerts } from '../mainPages/alertEventPage'
 import ModalThirdParty from './ModalThirdPartyForm'
 import LinkListInformationType from './components/LinkListInformationType'
 import LinkListProcess from './components/LinkListProcess'
@@ -132,28 +131,30 @@ const AccordionDisclosure = (props: TAccordionDisclosureProps) => {
                   <Accordion.Content>
                     {editable && (
                       <div className=' w-full flex justify-end mb-5'>
-                        {selectedDisclosure && hasAlert && canViewAlerts() && (
-                          <Button
-                            kind={'outline'}
-                            size='xsmall'
-                            icon={
-                              <span className='flex items-center leading-none'>
-                                <ExclamationmarkIcon aria-hidden className='block' />
-                              </span>
-                            }
-                            marginRight
-                            tooltip={
-                              hasAlert
-                                ? 'Varsler: Behandlingsgrunnlag for artikkel 6 mangler'
-                                : 'Varsler: Nei'
-                            }
-                            onClick={() =>
-                              navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)
-                            }
-                          >
-                            Varsler
-                          </Button>
-                        )}
+                        {selectedDisclosure &&
+                          hasAlert &&
+                          (user.isSuperUser() || user.isAdmin()) && (
+                            <Button
+                              kind={'outline'}
+                              size='xsmall'
+                              icon={
+                                <span className='flex items-center leading-none'>
+                                  <ExclamationmarkIcon aria-hidden className='block' />
+                                </span>
+                              }
+                              marginRight
+                              tooltip={
+                                hasAlert
+                                  ? 'Varsler: Behandlingsgrunnlag for artikkel 6 mangler'
+                                  : 'Varsler: Nei'
+                              }
+                              onClick={() =>
+                                navigate(`/alert/events/disclosure/${selectedDisclosure.id}`)
+                              }
+                            >
+                              Varsler
+                            </Button>
+                          )}
                         {user.isLoggedIn() && (
                           <>
                             <Button

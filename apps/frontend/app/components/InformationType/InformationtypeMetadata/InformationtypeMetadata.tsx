@@ -1,4 +1,3 @@
-import { canViewAlerts } from '@/components/mainPages/alertEventPage'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon } from '@navikt/aksel-icons'
@@ -75,7 +74,7 @@ export const InformationtypeMetadata = (props: IInformationtypeMetadataProps) =>
           <Metadata informationtype={informationtype} codelistUtils={codelistUtils} />
 
           <div className='flex justify-end mb-4'>
-            {canViewAlerts() && (
+            {(user.isSuperUser() || user.isAdmin()) && (
               <div className='mr-auto'>
                 <Button
                   type='button'

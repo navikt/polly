@@ -8,7 +8,7 @@ import { useContext } from 'react'
 const Page = () => {
   const user: IUserContext = useContext(UserContext)
 
-  if (!(user.isAdmin() || user.isSuper())) return <ErrorNotAllowed />
+  if (!(user.isAdmin() || user.isSuperUser())) return <ErrorNotAllowed />
   return <AuditPage />
 }
 

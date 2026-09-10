@@ -1,7 +1,6 @@
 'use client'
 
 import { TPathParams } from '@/components/mainPages/ProcessPage'
-import { canViewAlerts } from '@/components/mainPages/alertEventPage'
 import { IUserContext, UserContext } from '@/service/User'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
@@ -245,7 +244,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                           </div>
                           <div className='flex flex-col sm:flex-row sm:justify-between mt-20 w-full gap-2'>
                             <div className='flex flex-wrap gap-2'>
-                              {canViewAlerts() && (
+                              {(user.isSuperUser() || user.isAdmin()) && (
                                 <Button
                                   type='button'
                                   kind='tertiary'
@@ -260,7 +259,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                   Varsler
                                 </Button>
                               )}
-                              {(user.isAdmin() || user.isSuper()) && (
+                              {(user.isAdmin() || user.isSuperUser()) && (
                                 <Button
                                   type='button'
                                   kind='tertiary'
