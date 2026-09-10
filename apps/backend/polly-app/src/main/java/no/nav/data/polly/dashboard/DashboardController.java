@@ -139,9 +139,9 @@ public class DashboardController {
         dashes.stream().map(DashCount::getAutomation).forEach(d -> count(d, pd.map(ProcessData::getAutomaticProcessing).orElse(null)));
         var ret = pd.map(ProcessData::getRetention);
         dashes.stream().map(DashCount::getRetention).forEach(d -> count(d, ret.map(Retention::getRetentionPlan).orElse(null)));
-        var retStart = ret.map(Retention::getRetentionStart).orElse(null);
-        var retMonths = ret.map(Retention::getRetentionMonths).orElse(null);
-        if (retStart == null || retMonths == null) {
+        var retPlan = ret.map(Retention::getRetentionPlan).orElse(false);
+        var retMonths = ret.map(Retention::getRetentionMonths).orElse(0);
+        if (retPlan && retMonths == 0) {
             dashes.forEach(DashCount::retentionDataIncomplete);
         }
 
