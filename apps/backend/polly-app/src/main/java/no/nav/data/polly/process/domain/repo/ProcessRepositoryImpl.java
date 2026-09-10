@@ -187,7 +187,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case AIUSAGE -> " data #> '{aiUsageDescription,aiUsage}' %s ";
             case AUTOMATION -> " data #> '{automaticProcessing}' %s ";
             case RETENTION -> " data #> '{retention,retentionPlan}' %s ";
-            case RETENTION_DATA -> " data #> '{retention,retentionStart}' %1$s or data #> '{retention,retentionMonths}' %1$s ";
+            case RETENTION_DATA -> " data #> '{retention,retentionPlan}' = 'true'::jsonb and (nullif(data #>> '{retention,retentionMonth}', '') is not null or nullif(data #>> '{retention,retentionYear}', '') is not null) ";
             case DATA_PROCESSOR -> " data #> '{dataProcessing,dataProcessor}' %s ";
 
             // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
