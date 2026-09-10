@@ -32,17 +32,19 @@ const CodeView = ({ audit }: ICodeViewProps) => {
       <Button key={audit.id} onClick={() => setModalOpen(!modalOpen)} variant='tertiary'>
         Vis data
       </Button>
-      <Modal
-        key={audit.id}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        className='max-h-[75%] overflow-y-scroll'
-        header={{ heading: 'Data visning' }}
-      >
-        <Modal.Body>
-          <JsonView data={audit.data} />
-        </Modal.Body>
-      </Modal>
+      {modalOpen && (
+        <Modal
+          key={audit.id}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          className='max-h-[75%] overflow-y-scroll'
+          header={{ heading: 'Data visning' }}
+        >
+          <Modal.Body>
+            <JsonView data={audit.data} />
+          </Modal.Body>
+        </Modal>
+      )}
     </div>
   )
 }
@@ -62,7 +64,7 @@ export const AuditRecentTable = (props: IAuditRecentTableProps) => {
     content: [],
     numberOfElements: 0,
     pageNumber: 0,
-    pages: 0,
+    pages: 1,
     pageSize: 1,
     totalElements: 0,
   })

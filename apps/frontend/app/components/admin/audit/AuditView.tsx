@@ -135,36 +135,38 @@ const ComparisonView = (props: TComparisonViewProps) => {
   return (
     <div>
       <Button
-        key={audit.id}
+        key={`${audit.id}_modal_button`}
         onClick={() => setModalOpen(!modalOpen)}
         variant='tertiary'
         icon={<ArrowRightLeftIcon title='Se differansen' />}
       />
-      <Modal
-        key={audit.id}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        width='75%'
-        className='h-3/4 overflow-y-scroll'
-        header={{ heading: 'Sammenligning' }}
-      >
-        <Modal.Body>
-          <Viewer
-            diff={new Differ().diff(
-              auditLog && auditLog.audits[index + 1] ? auditLog.audits[index + 1].data : {},
-              audit.data
-            )}
-            bgColour={{
-              add: 'var(--polly-diff-add-bg)',
-              remove: 'var(--polly-diff-remove-bg)',
-              modify: 'var(--polly-diff-modify-bg)',
-            }}
-            highlightInlineDiff={true}
-            lineNumbers={true}
-            indent={4}
-          />
-        </Modal.Body>
-      </Modal>
+      {modalOpen && (
+        <Modal
+          key={`${audit.id}_modal`}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          width='75%'
+          className='h-3/4 overflow-y-scroll'
+          header={{ heading: 'Sammenligning' }}
+        >
+          <Modal.Body>
+            <Viewer
+              diff={new Differ().diff(
+                auditLog && auditLog.audits[index + 1] ? auditLog.audits[index + 1].data : {},
+                audit.data
+              )}
+              bgColour={{
+                add: 'var(--polly-diff-add-bg)',
+                remove: 'var(--polly-diff-remove-bg)',
+                modify: 'var(--polly-diff-modify-bg)',
+              }}
+              highlightInlineDiff={true}
+              lineNumbers={true}
+              indent={4}
+            />
+          </Modal.Body>
+        </Modal>
+      )}
     </div>
   )
 }
