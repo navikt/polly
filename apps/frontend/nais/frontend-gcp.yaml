@@ -23,18 +23,6 @@ spec:
     requests:
       cpu: 50m
       memory: 128Mi
-  liveness:
-    path: /api/isAlive
-    timeout: 1
-    initialDelay: 5
-    periodSeconds: 5
-    failureThreshold: 30
-  readiness:
-    path: /api/isReady
-    timeout: 1
-    initialDelay: 5
-    periodSeconds: 5
-    failureThreshold: 30
   
   env:
     - name: POLLY_BACKEND_URL

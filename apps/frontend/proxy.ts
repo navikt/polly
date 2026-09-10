@@ -5,11 +5,6 @@ const BACKEND_URL = process.env.POLLY_BACKEND_URL || 'http://localhost:8080'
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
 
-  // These are actual Next.js API routes — don't proxy them
-  if (pathname === '/api/isAlive' || pathname === '/api/isReady') {
-    return NextResponse.next()
-  }
-
   let backendPath = pathname
   if (pathname.startsWith('/api/internal/')) {
     backendPath = pathname.replace(/^\/api\/internal/, '/internal')
