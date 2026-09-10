@@ -197,10 +197,9 @@ export const DisclosureListPage = () => {
         </div>
       </div>
       {!showAaregAvtaleTable && (
-        <Table
-          emptyText='Utleveringer'
-          headers={
-            <>
+        <Table>
+          <Table.Header>
+            <Table.Row>
               <HeadCell title='Navn på utlevering' column='name' tableState={[table, sortColumn]} />
               <HeadCell
                 title='Mottaker (ekstern part)'
@@ -218,37 +217,38 @@ export const DisclosureListPage = () => {
                 tableState={[table, sortColumn]}
                 $style={{ textAlign: 'center' }}
               />
-            </>
-          }
-        >
-          {table.data.map((data) => (
-            <Row key={data.id}>
-              <Cell>
-                <ObjectLink id={data.id} type={EObjectType.DISCLOSURE}>
-                  {data.name}
-                </ObjectLink>
-              </Cell>
-              <Cell>
-                <ObjectLink id={data.recipient.code} type={EListName.THIRD_PARTY}>
-                  {data.recipient.shortName}
-                </ObjectLink>
-              </Cell>
-              <Cell>
-                <ul className='flex flex-col pl-4 list-disc'>
-                  {data.processes.map((process) => (
-                    <li key={process.id} className='mr-2.5'>
-                      <ObjectLink id={process.id} type={EObjectType.PROCESS}>
-                        B{process.number}{' '}
-                        {process.purposes.map((purpose) => purpose.shortName).join(', ')}:{' '}
-                        {process.name}
-                      </ObjectLink>
-                    </li>
-                  ))}
-                </ul>
-              </Cell>
-              <Cell $style={{ textAlign: 'center' }}>{data.legalBases ? 'Ja' : 'Nei'}</Cell>
-            </Row>
-          ))}
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {table.data.map((data) => (
+              <Row key={data.id}>
+                <Cell>
+                  <ObjectLink id={data.id} type={EObjectType.DISCLOSURE}>
+                    {data.name}
+                  </ObjectLink>
+                </Cell>
+                <Cell>
+                  <ObjectLink id={data.recipient.code} type={EListName.THIRD_PARTY}>
+                    {data.recipient.shortName}
+                  </ObjectLink>
+                </Cell>
+                <Cell>
+                  <ul className='flex flex-col pl-4 list-disc'>
+                    {data.processes.map((process) => (
+                      <li key={process.id} className='mr-2.5'>
+                        <ObjectLink id={process.id} type={EObjectType.PROCESS}>
+                          B{process.number}{' '}
+                          {process.purposes.map((purpose) => purpose.shortName).join(', ')}:{' '}
+                          {process.name}
+                        </ObjectLink>
+                      </li>
+                    ))}
+                  </ul>
+                </Cell>
+                <Cell $style={{ textAlign: 'center' }}>{data.legalBases ? 'Ja' : 'Nei'}</Cell>
+              </Row>
+            ))}
+          </Table.Body>
         </Table>
       )}
       {showAaregAvtaleTable && (
