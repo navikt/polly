@@ -2,7 +2,7 @@
 
 import { createDpProcess, dpProcessToFormValues, getAllDpProcesses } from '@/api/DpProcessApi'
 import { IDpProcess, IDpProcessFormValues } from '@/constants'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'

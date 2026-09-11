@@ -1,3 +1,4 @@
+import { ICode } from '@/constants/codelistConstant'
 import axios from 'axios'
 import shortid from 'shortid'
 import {
@@ -7,7 +8,6 @@ import {
   IPolicy,
   IPolicyFormValues,
 } from '../constants'
-import { ICode } from '../service/Codelist'
 import { env } from '../util/env'
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {

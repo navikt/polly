@@ -3,7 +3,7 @@
 import { getDashboard } from '@/api/DashboardApi'
 import { getSettings } from '@/api/SettingsApi'
 import { EProcessStatusFilter, IDashboardData, ISettings } from '@/constants'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { Heading } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
 import ShortcutNav from '../Main/ShortcutNav'

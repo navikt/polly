@@ -1,6 +1,6 @@
+import { EListName, ESensitivityLevel, ICode } from '@/constants/codelistConstant'
 import { policySchema } from '../../components/common/schemaValidation'
 import { ELegalBasesUse, IPolicy, IPolicyFormValues, IProcess } from '../../constants'
-import { EListName, ESensitivityLevel, ICode } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 

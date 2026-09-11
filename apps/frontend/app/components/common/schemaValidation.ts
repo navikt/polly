@@ -1,3 +1,12 @@
+import {
+  ARTICLE_6_PREFIX,
+  ARTICLE_9_PREFIX,
+  DESCRIPTION_GDPR_ARTICLES,
+  EListName,
+  ESensitivityLevel,
+  ICode,
+  NATIONAL_LAW_GDPR_ARTICLES,
+} from '@/constants/codelistConstant'
 import * as yup from 'yup'
 import {
   ELegalBasesUse,
@@ -22,15 +31,6 @@ import {
   IProcessorFormValues,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
-import {
-  ARTICLE_6_PREFIX,
-  ARTICLE_9_PREFIX,
-  DESCRIPTION_GDPR_ARTICLES,
-  EListName,
-  ESensitivityLevel,
-  ICode,
-  NATIONAL_LAW_GDPR_ARTICLES,
-} from '../../service/Codelist'
 import { subjectCategoryExistsGen } from './schema'
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/

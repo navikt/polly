@@ -1,11 +1,12 @@
 'use client'
 
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getFylkerOptions, searchNavKontorOptions } from '../../api/NomApi'
 import { IDpProcessFormValues, INomData, IProcessFormValues, TOption } from '../../constants'
-import { EListName, ICodelistProps } from '../../service/Codelist'
 import CustomSearchSelect from './AsyncSelectComponents'
 import { ModalLabel } from './ModalSchema'
 import { renderTagList } from './TagList'

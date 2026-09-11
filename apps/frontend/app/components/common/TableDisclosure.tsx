@@ -1,10 +1,10 @@
 'use client'
 
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { BodyLong, InlineMessage, Link, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { IDisclosure, IDisclosureAlert } from '../../constants'
-import { ICodelistProps } from '../../service/Codelist'
 import { handleSort } from '../../util/handleTableSort'
 import { ListLegalBasesInTable } from './LegalBasis'
 

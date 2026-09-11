@@ -1,7 +1,7 @@
+import { ICode } from '@/constants/codelistConstant'
 import { Link, Tooltip } from '@navikt/ds-react'
 import { KeyboardEvent } from 'react'
 import { IProcess } from '../constants'
-import { ICode } from '../service/Codelist'
 
 export const isLink = (text: string): boolean => {
   const regex = /http[s]?:\/\/.*/gm

@@ -2,7 +2,7 @@
 
 import { MailLogPage } from '@/components/admin/maillog/MailLogPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
-import { EGroup, IUserContext, UserContext } from '@/service/User'
+import { EGroup, IUserContext, UserContext } from '@/provider/userProvider'
 import { Loader } from '@navikt/ds-react'
 import { useContext } from 'react'
 

@@ -1,4 +1,5 @@
-import { EListName, ICode, ICodelistProps } from './service/Codelist'
+import { EListName, ICode } from './constants/codelistConstant'
+import { ICodelistProps } from './provider/kodeverkProvider'
 import { TColumnCompares } from './util/hooks'
 
 export enum ELegalBasesUse {

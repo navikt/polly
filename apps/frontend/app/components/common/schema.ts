@@ -1,6 +1,6 @@
+import { ICode } from '@/constants/codelistConstant'
 import * as yup from 'yup'
 import { IInformationTypeShort, IPolicy } from '../../constants'
-import { ICode } from '../../service/Codelist'
 
 export const subjectCategoryExistsGen = (
   informationType: IInformationTypeShort,

@@ -7,7 +7,7 @@ import {
   getProcessorsByPageAndPageSize,
 } from '@/api/ProcessorApi'
 import { IProcessor, IProcessorFormValues } from '@/constants'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader } from '@navikt/ds-react'

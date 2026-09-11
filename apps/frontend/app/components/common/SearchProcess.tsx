@@ -1,9 +1,9 @@
+import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import { getProcessesByPurpose, searchProcess } from '../../api/GetAllApi'
 import { IPageResponse, IProcess } from '../../constants'
-import { EListName, ICode } from '../../service/Codelist'
 import { useDebouncedState } from '../../util'
 
 type TSearchProcessProps = {

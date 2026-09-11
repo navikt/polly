@@ -1,5 +1,5 @@
+import { EListName, ICode } from '@/constants/codelistConstant'
 import { codeListSchema } from '../../components/common/schemaValidation'
-import { EListName, ICode } from '../../service/Codelist'
 import '../config/schemaValidator'
 
 const schema = codeListSchema()

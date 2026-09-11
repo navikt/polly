@@ -27,6 +27,19 @@ import {
   useState,
 } from 'react'
 
+const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT'
+const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
+
+interface IGetParsedOptionsForListProps {
+  id: string
+  label: string
+}
+
+interface IGetParsedOptionsFilterOutSelectedProps {
+  id: string
+  label: string
+}
+
 export interface ICodelistProps {
   fetchData: (refresh?: boolean) => Promise<any>
   isLoaded: () => string | IAllCodelists | undefined
@@ -58,9 +71,6 @@ export interface ICodelistProps {
   showSubDepartment: (departmentCode?: string) => boolean | '' | undefined
   makeIdLabelForAllCodeLists: () => IMakeIdLabelForAllCodeListsProps[]
 }
-
-const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT'
-const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
 export const CodelistContext = createContext<{
   utils: ICodelistProps

@@ -4,7 +4,7 @@ import { deleteDocument, getDocument, getDocumentByPageAndPageSize } from '@/api
 import { getAll } from '@/api/GetAllApi'
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IDocument, IProcess } from '@/constants'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
 import { DocPencilIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Alert, BodyLong, Heading, Label, Tabs } from '@navikt/ds-react'

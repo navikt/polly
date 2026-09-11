@@ -2,7 +2,7 @@
 
 import { AuditPage } from '@/components/admin/audit/AuditPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useContext } from 'react'
 
 const Page = () => {

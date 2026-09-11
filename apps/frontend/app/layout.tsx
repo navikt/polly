@@ -2,7 +2,7 @@ import { FunctionComponent, ReactNode } from 'react'
 import './main.css'
 import PageThemeWrapper from './pageThemeWrapper'
 import { CodelistProvider } from './provider/kodeverkProvider'
-import { UserProvider } from './service/User'
+import { UserProvider } from './provider/userProvider'
 
 type TProps = {
   children: ReactNode

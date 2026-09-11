@@ -13,8 +13,8 @@ import {
   IInformationType,
   IPolicy,
 } from '@/constants'
-import { EListName } from '@/service/Codelist'
-import { IUserContext, UserContext } from '@/service/User'
+import { EListName } from '@/constants/codelistConstant'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'

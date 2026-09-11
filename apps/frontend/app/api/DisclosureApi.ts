@@ -1,9 +1,9 @@
 'use client'
 
+import { ICode } from '@/constants/codelistConstant'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IAffiliation, IDisclosure, IDisclosureFormValues, IPageResponse } from '../constants'
-import { ICode } from '../service/Codelist'
 import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'

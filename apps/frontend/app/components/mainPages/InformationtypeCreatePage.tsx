@@ -3,7 +3,7 @@
 import { createInformationType, mapInfoTypeToFormVals } from '@/api/InfoTypeApi'
 import { IInformationtypeFormValues } from '@/constants'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
 import { Fragment, useContext, useMemo, useState } from 'react'

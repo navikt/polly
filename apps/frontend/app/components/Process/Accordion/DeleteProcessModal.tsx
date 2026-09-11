@@ -1,6 +1,6 @@
 'use client'
 
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { BodyShort, Button, Heading, Link, List, Modal } from '@navikt/ds-react'
 import { useContext } from 'react'
 import { IDisclosure, IProcess } from '../../../constants'

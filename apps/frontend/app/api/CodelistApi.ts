@@ -1,8 +1,8 @@
 'use client'
 
+import { EListName, IAllCodelists, ICode } from '@/constants/codelistConstant'
 import axios from 'axios'
-import { ICategoryUsage, ICodeUsage } from '../constants'
-import { EListName, IAllCodelists, ICode, ICountryCode } from '../service/Codelist'
+import { ICategoryUsage, ICodeUsage, ICountryCode } from '../constants'
 import { env } from '../util/env'
 
 // refresh will force backend to re-read codelists from db, due to caching and multibackend

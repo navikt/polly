@@ -1,6 +1,6 @@
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { FormikProps } from 'formik'
 import { IDpProcessFormValues } from '../../../constants'
-import { ICodelistProps } from '../../../service/Codelist'
 import FieldSubDepartments from '../../common/FieldSubDepartments'
 import { ModalLabel } from '../../common/ModalSchema'
 import FieldProductTeam from '../../common/form/FieldProductTeam'
