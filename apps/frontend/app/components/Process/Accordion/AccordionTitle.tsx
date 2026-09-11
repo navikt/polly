@@ -1,8 +1,9 @@
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 import { Label, Tag } from '@navikt/ds-react'
 import { Ref, createRef } from 'react'
 import { IProcessShort } from '../../../constants'
-import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 
 type TAccordionTitleProps = {

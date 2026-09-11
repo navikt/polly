@@ -1,13 +1,9 @@
+import { EListName, ESensitivityLevel, IGetParsedOptionsProps } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Alert, Button, Detail, Label, Select, TextField } from '@navikt/ds-react'
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
 import shortid from 'shortid'
 import { ILegalBasisFormValues } from '../../../constants'
-import {
-  EListName,
-  ESensitivityLevel,
-  ICodelistProps,
-  IGetParsedOptionsProps,
-} from '../../../service/Codelist'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { legalBasisSchema } from '../../common/schemaValidation'
 import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
@@ -105,7 +101,7 @@ const CardLegalBasis = ({
                   error={!!form.errors.gdpr && !!form.submitCount}
                 >
                   <option value=''>Velg gdpr</option>
-                  {getOptionsBySensitivityLevel().map((artikkel) => (
+                  {getOptionsBySensitivityLevel().map((artikkel: IGetParsedOptionsProps) => (
                     <option value={artikkel.id} key={artikkel.id}>
                       {artikkel.label}
                     </option>
@@ -133,11 +129,13 @@ const CardLegalBasis = ({
                   error={!!form.errors.nationalLaw && !!form.submitCount}
                 >
                   <option value=''>Velg lov eller forskrift</option>
-                  {codelistUtils.getParsedOptions(EListName.NATIONAL_LAW).map((lov) => (
-                    <option value={lov.id} key={lov.id}>
-                      {lov.label}
-                    </option>
-                  ))}
+                  {codelistUtils
+                    .getParsedOptions(EListName.NATIONAL_LAW)
+                    .map((lov: IGetParsedOptionsProps) => (
+                      <option value={lov.id} key={lov.id}>
+                        {lov.label}
+                      </option>
+                    ))}
                 </Select>
               )}
             </Field>

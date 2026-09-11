@@ -1,7 +1,7 @@
+import { EListName } from '@/constants/codelistConstant'
 import { FileWordIcon } from '@navikt/aksel-icons'
 import { BodyLong, LocalAlert, Modal } from '@navikt/ds-react'
 import { FunctionComponent, useState } from 'react'
-import { EListName } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import Button from '../../common/Button/CustomButton'
 

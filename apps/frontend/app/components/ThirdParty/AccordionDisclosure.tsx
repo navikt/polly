@@ -1,6 +1,8 @@
 'use client'
 
+import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
 import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, BodyShort, Link, Loader, Modal } from '@navikt/ds-react'
@@ -14,8 +16,6 @@ import {
   IInformationTypeShort,
   ILegalBasis,
 } from '../../constants'
-import { EListName } from '../../service/Codelist'
-import { IUserContext, UserContext } from '../../service/User'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
 import Button from '../common/Button/CustomButton'

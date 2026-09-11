@@ -1,9 +1,9 @@
+import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useContext, useMemo, useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { EListName } from '../../../service/Codelist'
 
 interface IFieldCommonExternalProcessResponsibleProps {
   thirdParty?: string

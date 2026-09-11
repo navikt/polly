@@ -1,5 +1,6 @@
 'use client'
 
+import { EGroup, IUserContext, UserContext } from '@/provider/userProvider'
 import { useLocation, useNavigate } from '@/util/router'
 import { CaretDownIcon, PersonIcon } from '@navikt/aksel-icons'
 import {
@@ -12,7 +13,6 @@ import {
   ToggleGroup,
 } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
-import { EGroup, IUserContext, UserContext } from '../service/User'
 import { TThemeMode } from '../util/themeMode'
 import MainSearch from './search/MainSearch'
 

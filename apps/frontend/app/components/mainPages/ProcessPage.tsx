@@ -15,7 +15,7 @@ import {
   IProcess,
   ISeksjonDashCount,
 } from '@/constants'
-import { EListName } from '@/service/Codelist'
+import { EListName } from '@/constants/codelistConstant'
 import { useQueryParam } from '@/util/hooks'
 import { generatePath, useLocation } from '@/util/router'
 import { Heading, LocalAlert, Select } from '@navikt/ds-react'

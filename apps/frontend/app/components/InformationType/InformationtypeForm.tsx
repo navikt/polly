@@ -1,3 +1,4 @@
+import { EListName, IGetParsedOptionsProps } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { PlusIcon } from '@navikt/aksel-icons'
 import {
@@ -27,7 +28,6 @@ import {
   useTermSearchOptions,
 } from '../../api/GetAllApi'
 import { IInformationType, IInformationtypeFormValues, ITerm } from '../../constants'
-import { EListName, IGetParsedOptionsProps } from '../../service/Codelist'
 import { disableEnter } from '../../util/helper-functions'
 import CustomSearchSelect from '../common/AsyncSelectComponents'
 import { Error } from '../common/ModalSchema'

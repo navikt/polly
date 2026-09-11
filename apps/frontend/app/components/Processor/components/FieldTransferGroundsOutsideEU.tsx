@@ -1,9 +1,9 @@
+import { EListName, IGetParsedOptionsProps } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useContext } from 'react'
 import { IProcessorFormValues } from '../../../constants'
-import { EListName } from '../../../service/Codelist'
 
 const FieldTransferGroundsOutsideEU = () => {
   const { utils: codelistUtils } = useContext(CodelistContext)
@@ -21,11 +21,13 @@ const FieldTransferGroundsOutsideEU = () => {
           }}
         >
           <option value=''></option>
-          {codelistUtils.getParsedOptions(EListName.TRANSFER_GROUNDS_OUTSIDE_EU).map((grunnlag) => (
-            <option value={grunnlag.id} key={grunnlag.id}>
-              {grunnlag.label}
-            </option>
-          ))}
+          {codelistUtils
+            .getParsedOptions(EListName.TRANSFER_GROUNDS_OUTSIDE_EU)
+            .map((grunnlag: IGetParsedOptionsProps) => (
+              <option value={grunnlag.id} key={grunnlag.id}>
+                {grunnlag.label}
+              </option>
+            ))}
         </Select>
       )}
     </Field>

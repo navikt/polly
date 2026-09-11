@@ -1,10 +1,10 @@
 'use client'
 
+import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Heading, Loader, SortState, Table } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
 import { IInformationType } from '../../constants'
-import { EListName } from '../../service/Codelist'
 import { handleSort } from '../../util/handleTableSort'
 import { DotTags } from '../common/DotTag'
 import RouteLink from '../common/RouteLink'

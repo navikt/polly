@@ -1,4 +1,5 @@
-import { CodelistContext } from '@/provider/kodeverkProvider'
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { CodelistContext, ICodelistProps } from '@/provider/kodeverkProvider'
 import { useNavigate } from '@/util/router'
 import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons'
 import { Tag } from '@navikt/ds-react'
@@ -22,7 +23,6 @@ import {
   TNavigableItem,
   TSearchType,
 } from '../../constants'
-import { EListName, ICode, ICodelistProps } from '../../service/Codelist'
 import { prefixBiasedSort } from '../../util/sort'
 import { searchResultColor } from '../../util/theme'
 import { noOptionMessage, selectOverrides } from '../common/AsyncSelectComponents'

@@ -5,7 +5,7 @@ import { IDisclosureSummary, createDisclosure, getDisclosureSummaries } from '@/
 import { getAll } from '@/api/GetAllApi'
 import { EObjectType, IAaregAvtale, IDisclosure, IDisclosureFormValues } from '@/constants'
 import { IUserContext, UserContext } from '@/provider/userProvider'
-import { EListName } from '@/service/Codelist'
+import { EListName } from '@/constants/codelistConstant'
 import { theme, useDebouncedState } from '@/util'
 import { useQueryParam, useTable } from '@/util/hooks'
 import { useNavigate } from '@/util/router'

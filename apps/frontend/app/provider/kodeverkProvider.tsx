@@ -17,7 +17,7 @@ import {
   ICode,
   IGetParsedOptionsProps,
   NATIONAL_LAW_GDPR_ARTICLES,
-} from '@/service/Codelist'
+} from '@/constants/codelistConstant'
 import {
   Dispatch,
   FunctionComponent,
@@ -29,16 +29,6 @@ import {
 
 const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT'
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
-
-interface IGetParsedOptionsForListProps {
-  id: string
-  label: string
-}
-
-interface IGetParsedOptionsFilterOutSelectedProps {
-  id: string
-  label: string
-}
 
 export interface ICodelistProps {
   fetchData: (refresh?: boolean) => Promise<any>

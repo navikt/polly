@@ -1,11 +1,11 @@
 'use client'
 
+import { ICode } from '@/constants/codelistConstant'
 import { DocPencilIcon, GlassesIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Button, SortState, Table, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues, ICodeUsage } from '../../../constants'
-import { ICode } from '../../../service/Codelist'
 import { handleSort } from '../../../util/handleTableSort'
 import { AuditButtonDS } from '../audit/AuditButtonDS'
 import { Usage } from './CodeListUsage'

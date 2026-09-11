@@ -1,7 +1,7 @@
 'use client'
 
 import { getInformationTypesBy } from '@/api/InfoTypeApi'
-import { EListName } from '@/service/Codelist'
+import { EListName } from '@/constants/codelistConstant'
 import { Tabs } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { InfoTypeTable } from '../InformationType/InfoTypeTableSimple'

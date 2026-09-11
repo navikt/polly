@@ -1,3 +1,5 @@
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Button, Modal, Tooltip } from '@navikt/ds-react'
 import _ from 'lodash'
@@ -12,7 +14,6 @@ import {
   IProcessAlert,
   getPolicySort,
 } from '../../../constants'
-import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import { Sensitivity } from '../../InformationType/Sensitivity'

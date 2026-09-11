@@ -27,7 +27,7 @@
       "prettier --list-different --write",
       "eslint --cache --max-warnings 0",
       "bash -c 'yarn run type-check'",
-      "bash -c 'yarn run --cache jest'",
+      "bash -c 'yarn run jest'",
       "bash -c 'yarn knip --max-issues=0'",
       "bash -c 'yarn knip --max-show-issues 5'"
     ]

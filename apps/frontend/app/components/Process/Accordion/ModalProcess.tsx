@@ -1,5 +1,7 @@
 'use client'
 
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import {
   Accordion,
   Alert,
@@ -25,7 +27,6 @@ import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
-import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'

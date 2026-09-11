@@ -1,6 +1,8 @@
 'use client'
 
+import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { Alert, Label, Link, Loader, Select, TextField, Textarea } from '@navikt/ds-react'
 import {
   Field,
@@ -15,8 +17,6 @@ import {
 import { useContext, useEffect, useState } from 'react'
 import { searchDocuments } from '../../../api/GetAllApi'
 import { IDocument, IDocumentFormValues } from '../../../constants'
-import { EListName } from '../../../service/Codelist'
-import { IUserContext, UserContext } from '../../../service/User'
 import { disableEnter } from '../../../util/helper-functions'
 import Button from '../../common/Button/CustomButton'
 import { Error, ModalLabel } from '../../common/ModalSchema'

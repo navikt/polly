@@ -1,6 +1,6 @@
+import { EListName } from '@/constants/codelistConstant'
 import axios from 'axios'
 import { IOrgEnhet, IPageResponse, TSearchItem } from '../constants'
-import { EListName } from '../service/Codelist'
 import { env } from '../util/env'
 
 export const getAllNomAvdelinger = async () => {

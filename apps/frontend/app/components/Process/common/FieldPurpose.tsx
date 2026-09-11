@@ -1,8 +1,9 @@
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps, getIn } from 'formik'
 import { useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
-import { EListName, ICodelistProps } from '../../../service/Codelist'
 
 const FieldPurpose = (props: {
   formikBag: FormikProps<IProcessFormValues>

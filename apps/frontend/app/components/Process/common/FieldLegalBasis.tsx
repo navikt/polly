@@ -1,5 +1,7 @@
 'use client'
 
+import { ESensitivityLevel } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
@@ -10,7 +12,6 @@ import {
   IPolicyFormValues,
   IProcessFormValues,
 } from '../../../constants'
-import { ESensitivityLevel, ICodelistProps } from '../../../service/Codelist'
 import { ListLegalBases } from '../../common/LegalBasis'
 import CardLegalBasis from '../Accordion/CardLegalBasis'
 
