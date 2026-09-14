@@ -10,7 +10,6 @@ import {
   EProcessStatusFilter,
   IPageResponse,
   IProcess,
-  IProcessCount,
   IProcessFormValues,
   IProcessShort,
   IRecentEdits,
@@ -127,12 +126,6 @@ export const getProcessesFor = async (params: {
   ).data
 }
 
-export const getProcessPurposeCount = async (
-  query: 'purpose' | 'department' | 'subDepartment' | 'team'
-) => {
-  return (await axios.get<IProcessCount>(`${env.pollyBaseUrl}/process/count?${query}`)).data
-}
-
 export const createProcess = async (process: IProcessFormValues) => {
   const body = convertFormValuesToProcess(process)
   return (await axios.post<IProcess>(`${env.pollyBaseUrl}/process`, body)).data
@@ -237,7 +230,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
   }
 }
 
-export const convertFormValuesToProcess = (values: IProcessFormValues) => {
+const convertFormValuesToProcess = (values: IProcessFormValues) => {
   return {
     id: values.id,
     name: values.name,

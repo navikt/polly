@@ -46,7 +46,7 @@ export const deletePoliciesByProcessId = async (processId: string) => {
   return (await axios.delete<IPolicy[]>(`${env.pollyBaseUrl}/policy/process/${processId}`)).data
 }
 
-export const mapPolicyFromForm = (values: IPolicyFormValues) => {
+const mapPolicyFromForm = (values: IPolicyFormValues) => {
   return {
     ...values,
     subjectCategories: values.subjectCategories,

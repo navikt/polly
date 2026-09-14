@@ -306,7 +306,7 @@ export const codeListSchema: () => yup.ObjectSchema<ICode> = () =>
     invalidCode: yup.boolean(),
   })
 
-export const disclosureAbroadSchema: () => yup.ObjectSchema<IDisclosureAbroad> = () =>
+const disclosureAbroadSchema: () => yup.ObjectSchema<IDisclosureAbroad> = () =>
   yup.object({
     abroad: yup.boolean(),
     countries: yup.array().of(yup.string().required()).required(),

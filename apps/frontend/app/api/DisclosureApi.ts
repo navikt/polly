@@ -2,45 +2,19 @@
 
 import { ICode } from '@/constants/codelistConstant'
 import axios from 'axios'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IAffiliation, IDisclosure, IDisclosureFormValues, IPageResponse } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'
 import { convertLegalBasesToFormValues } from './PolicyApi'
 
-export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
-  return (
-    await axios.get<IPageResponse<IDisclosure>>(
-      `${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`
-    )
-  ).data.content
-}
-
 export const getDisclosure = async (disclosureId: string) => {
   return (await axios.get<IDisclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
-}
-
-export const getDisclosuresByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
-  return (
-    await axios.get<IPageResponse<IDisclosure>>(
-      `${env.pollyBaseUrl}/disclosure?pageNumber=${pageNumber}&pageSize=${pageSize}`
-    )
-  ).data
 }
 
 export const getDisclosureSummaries = async () => {
   return (
     await axios.get<IPageResponse<IDisclosureSummary>>(`${env.pollyBaseUrl}/disclosure/summary`)
   ).data
-}
-
-export const getDisclosuresWithEmptyLegalBases = async () => {
-  return (
-    await axios.get<IPageResponse<IDisclosure>>(
-      `${env.pollyBaseUrl}/disclosure?emptyLegalBases=true`
-    )
-  ).data.content
 }
 
 export const getDisclosuresByRecipient = async (recipient: string) => {
@@ -67,7 +41,7 @@ export const getDisclosuresByInformationTypeId = async (informationTypeId: strin
   ).data.content
 }
 
-export const searchDisclosure = async (text: string) => {
+const searchDisclosure = async (text: string) => {
   return (
     await axios.get<IPageResponse<IDisclosure>>(`${env.pollyBaseUrl}/disclosure/search/${text}`)
   ).data
@@ -103,7 +77,7 @@ export const deleteDisclosure = async (disclosureId: string) => {
   return (await axios.delete<IDisclosure>(`${env.pollyBaseUrl}/disclosure/${disclosureId}`)).data
 }
 
-export const convertFormValuesToDisclosure = (values: IDisclosureFormValues) => {
+const convertFormValuesToDisclosure = (values: IDisclosureFormValues) => {
   return {
     id: values.id,
     recipient: values.recipient,
@@ -175,30 +149,6 @@ export const convertDisclosureToFormValues: (disclosure: IDisclosure) => IDisclo
     assessedConfidentiality: mapBool(disclosure.assessedConfidentiality),
     confidentialityDescription: disclosure.confidentialityDescription || '',
   }
-}
-
-export const useDisclosureSearch = () => {
-  const [disclosureSearch, setDisclosureSearch] = useDebouncedState<string>('', 200)
-  const [disclosureSearchResult, setDisclosureSearchResult] = useState<IDisclosure[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    ;(async () => {
-      if (disclosureSearch && disclosureSearch.length > 2) {
-        setLoading(true)
-        setDisclosureSearchResult((await searchDisclosure(disclosureSearch)).content)
-        setLoading(false)
-      } else {
-        setDisclosureSearchResult([])
-      }
-    })()
-  }, [disclosureSearch])
-
-  return [disclosureSearchResult, setDisclosureSearch, loading] as [
-    IDisclosure[],
-    Dispatch<SetStateAction<string>>,
-    boolean,
-  ]
 }
 
 export interface IDisclosureSummary {

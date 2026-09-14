@@ -90,7 +90,7 @@ export const convertProcessorToOption = (processor: IProcessor) => {
   }
 }
 
-export const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
+const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
   return {
     id: values.id,
     name: values.name,
