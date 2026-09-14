@@ -41,7 +41,9 @@ const PurposeTable = () => {
     } else if (filterName === EProcessField.MISSING_ARTICLE_9) {
       setTitle('Behandlinger med rettslig grunnlag artikkel 9 mangler')
     } else if (filterName === EProcessField.RETENTION_DATA) {
-      setTitle('Uavklart lagringsbehov')
+      setTitle(
+        'Behandlinger omfattet av NAVs bevarings- og kassasjonsvedtak uten registrert lagringstid'
+      )
     } else if (filterName === EProcessField.RETENTION) {
       switch (filterValue) {
         case EProcessState.YES:
@@ -65,6 +67,10 @@ const PurposeTable = () => {
       setTitle('Ref. til PVK ikke angitt')
     }
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [filterName, filterValue, filterStatus, department, productareaId, seksjonId, noDepartment])
 
   useEffect(() => {
     ;(async () => {
