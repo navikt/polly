@@ -1,7 +1,7 @@
 import { Link, SortState, Table } from '@navikt/ds-react'
 import { useState } from 'react'
 import { IDocument } from '../../../constants'
-import { handleSort } from '../../../util/handleTableSort'
+import { handleSort, sortTableData } from '../../../util/handleTableSort'
 
 interface IDocumentTableProps {
   documents: IDocument[]
@@ -10,8 +10,6 @@ interface IDocumentTableProps {
 export const DocumentTable = (props: IDocumentTableProps) => {
   const { documents } = props
   const [sort, setSort] = useState<SortState>()
-
-  let sortedData: IDocument[] = documents
 
   const comparator = (a: IDocument, b: IDocument, orderBy: string): number => {
     switch (orderBy) {
@@ -28,14 +26,8 @@ export const DocumentTable = (props: IDocumentTableProps) => {
     }
   }
 
-  sortedData = sortedData.sort((a: IDocument, b: IDocument) => {
-    if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
-    }
-    return 1
-  })
+  const sortedData: IDocument[] = sortTableData(documents, comparator, 'name', sort)
+
   return (
     <Table size='small' sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
       <Table.Header>

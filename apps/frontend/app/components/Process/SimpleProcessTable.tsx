@@ -1,12 +1,12 @@
 'use client'
 
 import { FileExcelIcon } from '@navikt/aksel-icons'
-import { Button, Link, SortState, Table } from '@navikt/ds-react'
+import { Button, Link, Loader, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getResourceById } from '../../api/TeamApi'
 import { IProcessShort, IProcessShortWithEmail } from '../../constants'
 import handleExcelExport from '../../util/excelExport'
-import { handleSort } from '../../util/handleTableSort'
+import { handleSort, sortTableData } from '../../util/handleTableSort'
 import { processStatusText } from './Accordion/ProcessData'
 
 interface IProps {
@@ -15,39 +15,44 @@ interface IProps {
   showCommonExternalProcessResponsible?: boolean
 }
 
+const processLabel = (process: IProcessShort): string =>
+  process.purposes.map((purpose) => purpose.shortName).join(', ') + ': ' + process.name
+
 export const SimpleProcessTable = (props: IProps) => {
   const { processes, showCommonExternalProcessResponsible, title } = props
-  const [processesWithEmail, setProcessesWithEmail] = useState<IProcessShortWithEmail[]>(processes)
+  const [processesWithEmail, setProcessesWithEmail] = useState<IProcessShortWithEmail[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [sort, setSort] = useState<SortState>()
 
   useEffect(() => {
-    ;(async () => {
-      if (processes) {
-        const newProcessesList: IProcessShortWithEmail[] = []
-        await Promise.all(
-          processes.map(async (process: IProcessShort) => {
-            const userIdent = process.changeStamp.lastModifiedBy.split(' ')[0]
-            if (userIdent !== 'migration') {
-              await getResourceById(userIdent)
-                .then((result) => {
-                  newProcessesList.push({
-                    ...process,
-                    lastModifiedEmail: result.email,
-                  })
-                })
-                .catch(() => {
-                  newProcessesList.push({ ...process })
-                })
-            } else {
-              newProcessesList.push({ ...process })
-            }
-          })
-        ).then(() => setProcessesWithEmail(newProcessesList))
-      }
-    })()
-  }, [processes])
+    let isActive = true
 
-  let sortedData: IProcessShortWithEmail[] = processesWithEmail
+    ;(async () => {
+      setIsLoading(true)
+
+      const enrichedProcesses: IProcessShortWithEmail[] = await Promise.all(
+        (processes ?? []).map(async (process: IProcessShort) => {
+          const userIdent: string = process.changeStamp.lastModifiedBy.split(' ')[0]
+          if (userIdent === 'migration') return { ...process }
+
+          try {
+            const result = await getResourceById(userIdent)
+            return { ...process, lastModifiedEmail: result.email }
+          } catch {
+            return { ...process }
+          }
+        })
+      )
+
+      if (!isActive) return
+      setProcessesWithEmail(enrichedProcesses)
+      setIsLoading(false)
+    })()
+
+    return () => {
+      isActive = false
+    }
+  }, [processes])
 
   const comparator = (
     a: IProcessShortWithEmail,
@@ -56,7 +61,7 @@ export const SimpleProcessTable = (props: IProps) => {
   ): number => {
     switch (orderBy) {
       case 'name':
-        return (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || '')
+        return processLabel(a).localeCompare(processLabel(b))
       case 'affiliation':
         return (a.affiliation.nomDepartmentName || '').localeCompare(
           b.affiliation.nomDepartmentName || ''
@@ -78,14 +83,20 @@ export const SimpleProcessTable = (props: IProps) => {
     }
   }
 
-  sortedData = sortedData.sort((a: IProcessShortWithEmail, b: IProcessShortWithEmail) => {
-    if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
-    }
-    return 1
-  })
+  const sortedData: IProcessShortWithEmail[] = sortTableData(
+    processesWithEmail,
+    comparator,
+    'name',
+    sort
+  )
+
+  if (isLoading) {
+    return (
+      <div className='flex w-full justify-center'>
+        <Loader size='3xlarge' />
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -141,9 +152,7 @@ export const SimpleProcessTable = (props: IProps) => {
               <Table.Row key={process.id}>
                 <Table.DataCell textSize='small'>
                   <Link href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
-                    {process.purposes.map((purpose) => purpose.shortName).join(', ') +
-                      ': ' +
-                      process.name}
+                    {processLabel(process)}
                   </Link>
                 </Table.DataCell>
                 <Table.DataCell textSize='small'>
