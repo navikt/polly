@@ -69,6 +69,10 @@ const PurposeTable = () => {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [filterName, filterValue, filterStatus, department, productareaId, seksjonId, noDepartment])
+
+  useEffect(() => {
     ;(async () => {
       setLoading(true)
       changeTitle()
