@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 
 export type TThemeMode = 'light' | 'dark'
@@ -5,7 +7,6 @@ export type TThemeMode = 'light' | 'dark'
 const storageKey = 'polly-theme-mode'
 
 export const getInitialThemeMode = (): TThemeMode => {
-  if (typeof window === 'undefined') return 'light'
   const stored = window.localStorage.getItem(storageKey)
   if (stored === 'light' || stored === 'dark') {
     return stored
