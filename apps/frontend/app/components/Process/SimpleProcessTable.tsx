@@ -15,7 +15,7 @@ interface IProps {
   showCommonExternalProcessResponsible?: boolean
 }
 
-const processLabel = (process: IProcessShort): string =>
+const processLabel = (process: Pick<IProcessShort, 'purposes' | 'name'>): string =>
   process.purposes.map((purpose) => purpose.shortName).join(', ') + ': ' + process.name
 
 export const SimpleProcessTable = (props: IProps) => {

@@ -11,7 +11,7 @@ import {
   IProcessAlert,
 } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
-import { handleSort } from '../../../util/handleTableSort'
+import { handleSort, sortTableData } from '../../../util/handleTableSort'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 
