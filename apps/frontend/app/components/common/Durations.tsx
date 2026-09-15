@@ -1,7 +1,7 @@
+import { theme } from '@/util/theme'
 import { ClockIcon } from '@navikt/aksel-icons'
 import { Tooltip } from '@navikt/ds-react'
 import moment, { Moment } from 'moment'
-import { theme } from '../../util'
 import { env } from '../../util/env'
 
 const defaultStart: Moment = moment(env.defaultStartDate).locale('nb')

@@ -1,10 +1,10 @@
 import { EListName, ESensitivityLevel } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { theme } from '@/util/theme'
 import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
 import { BodyLong, Button, Link, Tooltip } from '@navikt/ds-react'
 import { Fragment, JSX } from 'react/jsx-runtime'
 import { ILegalBasis, ILegalBasisFormValues, IPolicyAlert } from '../../constants'
-import { theme } from '../../util'
 import { env } from '../../util/env'
 import { processString } from '../../util/string-processor'
 

@@ -2,12 +2,12 @@
 
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { theme } from '@/util/theme'
 import { ExternalLinkIcon, ShieldIcon } from '@navikt/aksel-icons'
 import { BodyLong, Link } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getTerm, mapTermToOption } from '../../../api/GetAllApi'
 import { IInformationType, ITerm } from '../../../constants'
-import { theme } from '../../../util'
 import { termUrl } from '../../../util/config'
 import { DotTags } from '../../common/DotTag'
 import { Markdown } from '../../common/Markdown'

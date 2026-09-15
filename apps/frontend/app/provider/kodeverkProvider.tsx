@@ -5,7 +5,6 @@ import {
   ICountryCode,
   IGetParsedOptionsFilterOutSelectedProps,
   IGetParsedOptionsForListProps,
-  IMakeIdLabelForAllCodeListsProps,
 } from '@/constants'
 import {
   ARTICLE_6_PREFIX,
@@ -16,6 +15,7 @@ import {
   IAllCodelists,
   ICode,
   IGetParsedOptionsProps,
+  IMakeIdLabelForAllCodeListsProps,
   NATIONAL_LAW_GDPR_ARTICLES,
 } from '@/constants/codelistConstant'
 import {

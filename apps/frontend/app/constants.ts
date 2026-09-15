@@ -540,11 +540,6 @@ export interface IDurationed {
   end: string
 }
 
-export interface IMakeIdLabelForAllCodeListsProps {
-  id: string
-  label: string
-}
-
 export interface ICountryCode {
   code: string
   description: string

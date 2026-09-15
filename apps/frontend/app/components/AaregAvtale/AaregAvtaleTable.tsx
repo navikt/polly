@@ -1,10 +1,10 @@
 'use client'
 
+import { theme } from '@/util/theme'
 import { ChevronDownIcon } from '@navikt/aksel-icons'
 import { Accordion, Button, Dropdown, Heading, Label } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { IAaregAvtale } from '../../constants'
-import { theme } from '../../util'
 import DataText from '../common/DataText'
 import Pagination from '../common/Pagination'
 import AAregHjemmelDataText from './AAregHjemmelDataText'

@@ -1,5 +1,6 @@
 'use client'
 
+import { useDebouncedState } from '@/util/hooks'
 import axios from 'axios'
 import queryString from 'query-string'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -14,7 +15,6 @@ import {
   IProcessShort,
   IRecentEdits,
 } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'
 import { convertLegalBasesToFormValues } from './PolicyApi'

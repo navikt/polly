@@ -1,7 +1,7 @@
+import { theme } from '@/util/theme'
 import { XMarkOctagonIcon } from '@navikt/aksel-icons'
 import { Button, Label, Tooltip } from '@navikt/ds-react'
 import { ReactNode } from 'react'
-import { theme } from '../../util'
 
 interface ITextWithLabelProps {
   label: string

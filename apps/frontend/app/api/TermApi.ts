@@ -1,9 +1,9 @@
 'use client'
 
+import { useDebouncedState } from '@/util/hooks'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IPageResponse, ITerm, TOption } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
 export const getTerm = async (termId: string) => {

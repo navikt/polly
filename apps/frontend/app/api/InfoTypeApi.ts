@@ -1,5 +1,6 @@
 'use client'
 
+import { useDebouncedState } from '@/util/hooks'
 import axios from 'axios'
 import queryString from 'query-string'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -10,7 +11,6 @@ import {
   IPageResponse,
   IPolicy,
 } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
 export const getInformationTypesShort = async () => {

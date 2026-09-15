@@ -1,5 +1,6 @@
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { theme } from '@/util/theme'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Button, Modal, Tooltip } from '@navikt/ds-react'
 import _ from 'lodash'
@@ -14,7 +15,6 @@ import {
   IProcessAlert,
   getPolicySort,
 } from '../../../constants'
-import { theme } from '../../../util'
 import { useTable } from '../../../util/hooks'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import { AuditButton } from '../../admin/audit/AuditButton'
