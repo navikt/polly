@@ -1,7 +1,7 @@
 import { Link, SortState, Table } from '@navikt/ds-react'
 import { useState } from 'react'
 import { IProcess } from '../../../constants'
-import { handleSort } from '../../../util/handleTableSort'
+import { handleSort, sortTableData } from '../../../util/handleTableSort'
 
 type TRelatedProcessesTableProps = {
   relatedProcesses: IProcess[]
@@ -9,8 +9,6 @@ type TRelatedProcessesTableProps = {
 
 const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps) => {
   const [sort, setSort] = useState<SortState>()
-
-  let sortedData: IProcess[] = relatedProcesses
 
   const comparator = (a: IProcess, b: IProcess, orderBy: string): number => {
     switch (orderBy) {
@@ -27,14 +25,7 @@ const RelatedProcessesTable = ({ relatedProcesses }: TRelatedProcessesTableProps
     }
   }
 
-  sortedData = sortedData.sort((a: IProcess, b: IProcess) => {
-    if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
-    }
-    return 1
-  })
+  const sortedData: IProcess[] = sortTableData(relatedProcesses, comparator, 'purposes', sort)
 
   return (
     <Table

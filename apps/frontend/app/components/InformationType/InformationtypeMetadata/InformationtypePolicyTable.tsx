@@ -1,6 +1,6 @@
 'use client'
 
-import { Link, SortState, Table } from '@navikt/ds-react'
+import { Link, Loader, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAlertForInformationType } from '../../../api/AlertApi'
 import {
@@ -11,7 +11,7 @@ import {
   IProcessAlert,
 } from '../../../constants'
 import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
-import { handleSort } from '../../../util/handleTableSort'
+import { handleSort, sortTableData } from '../../../util/handleTableSort'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 
@@ -27,8 +27,7 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
   const { policies, showPurpose, codelistUtils } = props
   const [sort, setSort] = useState<SortState>()
   const [alerts, setAlerts] = useState<TAlerts>()
-
-  let sortedData: IPolicy[] = policies
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const comparator = (a: IPolicy, b: IPolicy, orderBy: string): number => {
     switch (orderBy) {
@@ -43,30 +42,50 @@ const InformationtypePolicyTable = (props: TTableInformationtypeProps) => {
     }
   }
 
-  sortedData = sortedData.sort((a: IPolicy, b: IPolicy) => {
-    if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
-    }
-    return 1
-  })
+  const sortedData: IPolicy[] = sortTableData(
+    policies,
+    comparator,
+    showPurpose ? 'purposes' : 'process',
+    sort
+  )
 
   useEffect(() => {
+    let isActive = true
+
     ;(async () => {
-      const infoTypeId = policies && policies.length && policies[0].informationType.id
-      if (infoTypeId) {
-        const infoTypeAlert: IInformationTypeAlert = await getAlertForInformationType(infoTypeId)
-        const reduced: TAlerts = infoTypeAlert.processes
-          .flatMap((process: IProcessAlert) => process.policies)
-          .reduce((agg: TAlerts, policy: IPolicyAlert) => {
-            agg[policy.policyId] = policy
-            return agg
-          }, {} as TAlerts)
-        setAlerts(reduced)
+      setIsLoading(true)
+
+      try {
+        const infoTypeId = policies && policies.length && policies[0].informationType.id
+        if (infoTypeId) {
+          const infoTypeAlert: IInformationTypeAlert = await getAlertForInformationType(infoTypeId)
+          const reduced: TAlerts = infoTypeAlert.processes
+            .flatMap((process: IProcessAlert) => process.policies)
+            .reduce((agg: TAlerts, policy: IPolicyAlert) => {
+              agg[policy.policyId] = policy
+              return agg
+            }, {} as TAlerts)
+
+          if (!isActive) return
+          setAlerts(reduced)
+        }
+      } finally {
+        if (isActive) setIsLoading(false)
       }
     })()
+
+    return () => {
+      isActive = false
+    }
   }, [policies])
+
+  if (isLoading) {
+    return (
+      <div className='flex w-full justify-center'>
+        <Loader size='3xlarge' />
+      </div>
+    )
+  }
 
   return (
     <Table size='small' sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>

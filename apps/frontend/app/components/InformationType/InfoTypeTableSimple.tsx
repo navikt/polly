@@ -5,7 +5,7 @@ import { Heading, Loader, SortState, Table } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
 import { IInformationType } from '../../constants'
 import { EListName } from '../../service/Codelist'
-import { handleSort } from '../../util/handleTableSort'
+import { handleSort, sortTableData } from '../../util/handleTableSort'
 import { DotTags } from '../common/DotTag'
 import RouteLink from '../common/RouteLink'
 import { Sensitivity } from './Sensitivity'
@@ -23,8 +23,6 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
   )
   const [sort, setSort] = useState<SortState>()
 
-  let sortedData: IInformationType[] = informationTypeList
-
   const comparator = (a: IInformationType, b: IInformationType, orderBy: string): number => {
     switch (orderBy) {
       case 'name':
@@ -38,14 +36,12 @@ export const InfoTypeTable = ({ informationTypes, getInfoTypes, title }: TTableP
     }
   }
 
-  sortedData = sortedData.sort((a: IInformationType, b: IInformationType) => {
-    if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
-    }
-    return 1
-  })
+  const sortedData: IInformationType[] = sortTableData(
+    informationTypeList,
+    comparator,
+    'name',
+    sort
+  )
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
