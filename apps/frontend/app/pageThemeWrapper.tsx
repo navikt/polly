@@ -4,18 +4,21 @@ import { Theme } from '@navikt/ds-react'
 import { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
-import { TThemeMode, getInitialThemeMode, persistThemeMode } from './util/themeMode'
+import { TThemeMode, persistThemeMode, useStoredThemeMode } from './util/themeMode'
 
 type TProps = {
   children: ReactNode
 }
 
 const PageThemeWrapper: FunctionComponent<TProps> = ({ children }) => {
-  const [themeMode, setThemeMode] = useState<TThemeMode>(() => getInitialThemeMode())
+  const storedThemeMode = useStoredThemeMode()
+  const [themeModeOverride, setThemeModeOverride] = useState<TThemeMode | undefined>(undefined)
+  const themeMode = themeModeOverride ?? storedThemeMode
 
-  useEffect(() => {
-    persistThemeMode(themeMode)
-  }, [themeMode])
+  const handleThemeModeChange = (mode: TThemeMode) => {
+    setThemeModeOverride(mode)
+    persistThemeMode(mode)
+  }
 
   useEffect(() => {
     document.documentElement.classList.remove('light', 'dark')
@@ -34,7 +37,7 @@ const PageThemeWrapper: FunctionComponent<TProps> = ({ children }) => {
     <Fragment>
       <Theme theme={themeMode} asChild>
         <div className='flex min-h-screen w-full flex-col'>
-          <Header themeMode={themeMode} onThemeModeChange={setThemeMode} />
+          <Header themeMode={themeMode} onThemeModeChange={handleThemeModeChange} />
 
           <div className='flex w-full flex-1'>
             <div className='min-w-60'>

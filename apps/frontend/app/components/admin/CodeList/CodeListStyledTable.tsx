@@ -6,7 +6,8 @@ import { Button, SortState, Table, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues, ICodeUsage } from '../../../constants'
-import { handleSort } from '../../../util/handleTableSort'
+import { ICode } from '../../../service/Codelist'
+import { handleSort, sortTableData } from '../../../util/handleTableSort'
 import { AuditButtonDS } from '../audit/AuditButtonDS'
 import { Usage } from './CodeListUsage'
 import DeleteCodeListModal from './ModalDeleteCodeList'
@@ -62,8 +63,6 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
     }
   }
 
-  let sortedData: ICode[] = tableData
-
   const comparator = (a: ICode, b: ICode, orderBy: string): number => {
     switch (orderBy) {
       case 'code':
@@ -75,14 +74,7 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
     }
   }
 
-  sortedData = sortedData.sort((a: ICode, b: ICode) => {
-    if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
-    }
-    return 1
-  })
+  const sortedData: ICode[] = sortTableData(tableData, comparator, 'code', sort)
 
   return (
     <>

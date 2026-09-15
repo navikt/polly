@@ -1,11 +1,11 @@
 'use client'
 
-import { ICodelistProps } from '@/provider/kodeverkProvider'
-import { BodyLong, InlineMessage, Link, SortState, Table } from '@navikt/ds-react'
+import { BodyLong, InlineMessage, Link, Loader, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { IDisclosure, IDisclosureAlert } from '../../constants'
-import { handleSort } from '../../util/handleTableSort'
+import { ICodelistProps } from '../../service/Codelist'
+import { handleSort, sortTableData } from '../../util/handleTableSort'
 import { ListLegalBasesInTable } from './LegalBasis'
 
 type TTableDisclosureProps = {
@@ -17,9 +17,8 @@ type TAlerts = { [k: string]: IDisclosureAlert }
 
 const TableDisclosure = ({ list, codelistUtils }: TTableDisclosureProps) => {
   const [alerts, setAlerts] = useState<TAlerts>({})
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [sort, setSort] = useState<SortState>()
-
-  let sortedData: IDisclosure[] = list
 
   const comparator = (a: IDisclosure, b: IDisclosure, orderBy: string): number => {
     switch (orderBy) {
@@ -40,26 +39,43 @@ const TableDisclosure = ({ list, codelistUtils }: TTableDisclosureProps) => {
     }
   }
 
-  sortedData = sortedData.sort((a: IDisclosure, b: IDisclosure) => {
-    if (sort) {
-      return sort.direction === 'ascending'
-        ? comparator(b, a, sort.orderBy)
-        : comparator(a, b, sort.orderBy)
-    }
-    return 1
-  })
+  const sortedData: IDisclosure[] = sortTableData(list, comparator, 'recipient', sort)
 
   useEffect(() => {
+    let isActive = true
+
     ;(async () => {
-      const alertMap: TAlerts = (
-        await Promise.all(list.map((list: IDisclosure) => getAlertForDisclosure(list.id)))
-      ).reduce((acc: TAlerts, alert: IDisclosureAlert) => {
-        acc[alert.disclosureId] = alert
-        return acc
-      }, {} as TAlerts)
-      setAlerts(alertMap)
+      setIsLoading(true)
+
+      try {
+        const alertMap: TAlerts = (
+          await Promise.all(
+            list.map((disclosure: IDisclosure) => getAlertForDisclosure(disclosure.id))
+          )
+        ).reduce((acc: TAlerts, alert: IDisclosureAlert) => {
+          acc[alert.disclosureId] = alert
+          return acc
+        }, {} as TAlerts)
+
+        if (!isActive) return
+        setAlerts(alertMap)
+      } finally {
+        if (isActive) setIsLoading(false)
+      }
     })()
+
+    return () => {
+      isActive = false
+    }
   }, [list])
+
+  if (isLoading) {
+    return (
+      <div className='flex w-full justify-center'>
+        <Loader size='3xlarge' />
+      </div>
+    )
+  }
 
   return (
     <Table size='small' sort={sort} onSortChange={(sortKey) => handleSort(sort, setSort, sortKey)}>
