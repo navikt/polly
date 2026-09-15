@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactNode } from 'react'
+import { FunctionComponent, ReactNode, Suspense } from 'react'
 import './main.css'
 import PageThemeWrapper from './pageThemeWrapper'
 import { CodelistProvider } from './provider/kodeverkProvider'
@@ -19,7 +19,9 @@ const Main: FunctionComponent<TProps> = async ({ children }) => {
       <body>
         <UserProvider>
           <CodelistProvider>
-            <PageThemeWrapper>{children}</PageThemeWrapper>
+            <Suspense fallback={<div>Loading...</div>}>
+              <PageThemeWrapper>{children}</PageThemeWrapper>
+            </Suspense>
           </CodelistProvider>
         </UserProvider>
       </body>

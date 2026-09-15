@@ -1,18 +1,26 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 
 export type TThemeMode = 'light' | 'dark'
 
 const storageKey = 'polly-theme-mode'
 
-export const getInitialThemeMode = (): TThemeMode => {
-  const stored = window.localStorage.getItem(storageKey)
-  if (stored === 'light' || stored === 'dark') {
-    return stored
-  }
-  return 'light'
+const subscribe = (callback: () => void) => {
+  window.addEventListener('storage', callback)
+  return () => window.removeEventListener('storage', callback)
 }
+
+const getSnapshot = (): TThemeMode => {
+  const stored = window.localStorage.getItem(storageKey)
+  return stored === 'light' || stored === 'dark' ? stored : 'light'
+}
+
+const getServerSnapshot = (): TThemeMode => 'light'
+
+// avoids SSR/hydration mismatch: renders 'light' until React swaps in the real client snapshot
+export const useStoredThemeMode = (): TThemeMode =>
+  useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 
 export const persistThemeMode = (mode: TThemeMode) => {
   if (typeof window === 'undefined') return
