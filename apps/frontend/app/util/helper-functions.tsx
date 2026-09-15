@@ -3,7 +3,7 @@ import { Link, Tooltip } from '@navikt/ds-react'
 import { KeyboardEvent } from 'react'
 import { IProcess } from '../constants'
 
-export const isLink = (text: string): boolean => {
+const isLink = (text: string): boolean => {
   const regex = /http[s]?:\/\/.*/gm
   if (!regex.test(text)) {
     return false

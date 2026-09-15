@@ -23,7 +23,7 @@ const CustomPanelLabel = ({ text }: ICustomPanelLabelProps) => (
   </div>
 )
 
-export const sortAaregAvtaleList = (aaregAvtaler: IAaregAvtale[]): IAaregAvtale[] => {
+const sortAaregAvtaleList = (aaregAvtaler: IAaregAvtale[]): IAaregAvtale[] => {
   return aaregAvtaler.sort((a: IAaregAvtale, b: IAaregAvtale) => {
     if (a.virksomhet > b.virksomhet) {
       return 1

@@ -22,36 +22,6 @@ export function useDebouncedState<T>(
   return [debouncedValue, setValue, value]
 }
 
-export function useForceUpdate() {
-  const [val, setVal] = useState(0)
-  return () => setVal(val + 1)
-}
-
-export function useUpdateOnChange(value: any) {
-  const update = useForceUpdate()
-
-  useEffect(() => {
-    update()
-  }, [value])
-}
-
-export function useAwait<T>(promise: Promise<T>, setLoading?: Dispatch<SetStateAction<boolean>>) {
-  const update: () => void = useForceUpdate()
-
-  useEffect(() => {
-    ;(async () => {
-      if (setLoading) {
-        setLoading(true)
-      }
-      await promise
-      update()
-      if (setLoading) {
-        setLoading(false)
-      }
-    })()
-  }, [])
-}
-
 type TRefs<T> = { [id: string]: RefObject<T> }
 
 export function useRefs<T>(ids: string[]) {
@@ -64,7 +34,7 @@ export function useRefs<T>(ids: string[]) {
   return refs
 }
 
-export function useQuery() {
+function useQuery() {
   if (typeof window === 'undefined') return new URLSearchParams()
   const location = window.location
   return new URLSearchParams(location.search)

@@ -21,7 +21,7 @@ interface IDeleteModalProps {
   closeModal: () => void
 }
 
-export const DeleteModal = (props: IDeleteModalProps) => {
+const DeleteModal = (props: IDeleteModalProps) => {
   const { showDeleteModal, id, closeModal } = props
   const [errorProcessModal, setErrorProcessModal] = useState(false)
   const [infoType, setInfoType] = useState<IInformationType>()

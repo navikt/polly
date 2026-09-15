@@ -21,11 +21,11 @@ export const getByNomId = async (id: string) => {
   return (await axios.get<IOrgEnhet>(`${env.pollyBaseUrl}/nom/${id}`)).data
 }
 
-export const getAllNomFylker = async () => {
+const getAllNomFylker = async () => {
   return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/fylker`)).data
 }
 
-export const searchNavKontorByName = async (searchTerm: string) => {
+const searchNavKontorByName = async (searchTerm: string) => {
   return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/nav-kontor/${searchTerm}`)).data
 }
 

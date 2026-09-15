@@ -146,7 +146,7 @@ const Option = (props: OptionProps<TSearchItem>) => (
   </components.Option>
 )
 
-export const DropdownIndicator = (props: DropdownIndicatorProps<TSearchItem>) => (
+const DropdownIndicator = (props: DropdownIndicatorProps<TSearchItem>) => (
   <components.DropdownIndicator {...props}>
     <MagnifyingGlassIcon title='Søk' aria-label='Søk' />
   </components.DropdownIndicator>

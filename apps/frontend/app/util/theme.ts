@@ -1,4 +1,4 @@
-export const primitives = {
+const primitives = {
   primary: 'var(--a-surface-action)',
   primary50: 'var(--a-surface-subtle)',
   primary100: 'var(--a-surface-subtle)',
