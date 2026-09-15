@@ -5,7 +5,6 @@ import {
   ICountryCode,
   IGetParsedOptionsFilterOutSelectedProps,
   IGetParsedOptionsForListProps,
-  IMakeIdLabelForAllCodeListsProps,
 } from '@/constants'
 import {
   ARTICLE_6_PREFIX,
@@ -16,8 +15,9 @@ import {
   IAllCodelists,
   ICode,
   IGetParsedOptionsProps,
+  IMakeIdLabelForAllCodeListsProps,
   NATIONAL_LAW_GDPR_ARTICLES,
-} from '@/service/Codelist'
+} from '@/constants/codelistConstant'
 import {
   Dispatch,
   FunctionComponent,
@@ -26,6 +26,9 @@ import {
   useEffect,
   useState,
 } from 'react'
+
+const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT'
+const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
 export interface ICodelistProps {
   fetchData: (refresh?: boolean) => Promise<any>
@@ -58,9 +61,6 @@ export interface ICodelistProps {
   showSubDepartment: (departmentCode?: string) => boolean | '' | undefined
   makeIdLabelForAllCodeLists: () => IMakeIdLabelForAllCodeListsProps[]
 }
-
-const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT'
-const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']
 
 export const CodelistContext = createContext<{
   utils: ICodelistProps

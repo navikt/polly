@@ -1,5 +1,6 @@
 'use client'
 
+import { EListName, ICountryCode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import {
   Button,
@@ -23,7 +24,6 @@ import {
 import { KeyboardEvent, useContext, useEffect, useState } from 'react'
 import { getAvdelingOptions } from '../../api/NomApi'
 import { IDisclosureFormValues, IDocument, TOption } from '../../constants'
-import { EListName, ICountryCode } from '../../service/Codelist'
 import BoolField from '../Process/common/BoolField'
 import FieldLegalBasis from '../Process/common/FieldLegalBasis'
 import { Error, ModalLabel } from '../common/ModalSchema'

@@ -1,9 +1,7 @@
 'use client'
 
 import axios from 'axios'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IPageResponse, IProcessor, IProcessorFormValues } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'
 
@@ -27,19 +25,9 @@ export const getProcessorsByPageAndPageSize = async (pageNumber: number, pageSiz
   ).data
 }
 
-export const getAllProcessors = async () => {
-  return (await axios.get<IPageResponse<IProcessor>>(`${env.pollyBaseUrl}/processor`)).data
-}
-
 export const createProcessor = async (processor: IProcessorFormValues) => {
   const body = convertFormValuesToProcessor(processor)
   return (await axios.post<IProcessor>(`${env.pollyBaseUrl}/processor`, body)).data
-}
-
-export const searchProcessor = async (name: string) => {
-  return (
-    await axios.get<IPageResponse<IProcessor>>(`${env.pollyBaseUrl}/processor/search/${name}`)
-  ).data
 }
 
 export const updateProcessor = async (processor: IProcessorFormValues) => {
@@ -83,14 +71,7 @@ export const convertProcessorToFormValues = (
   }
 }
 
-export const convertProcessorToOption = (processor: IProcessor) => {
-  return {
-    value: processor.id,
-    label: processor.name,
-  }
-}
-
-export const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
+const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
   return {
     id: values.id,
     name: values.name,
@@ -104,28 +85,4 @@ export const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
     transferGroundsOutsideEUOther: values.transferGroundsOutsideEUOther,
     countries: values.countries,
   }
-}
-
-export const useProcessorSearch = () => {
-  const [processorSearch, setProcessorSearch] = useDebouncedState<string>('', 200)
-  const [processorSearchResult, setProcessorSearchResult] = useState<IProcessor[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    ;(async () => {
-      if (processorSearch && processorSearch.length > 2) {
-        setLoading(true)
-        setProcessorSearchResult((await searchProcessor(processorSearch)).content)
-        setLoading(false)
-      } else {
-        setProcessorSearchResult([])
-      }
-    })()
-  }, [processorSearch])
-
-  return [processorSearchResult, setProcessorSearch, loading] as [
-    IProcessor[],
-    Dispatch<SetStateAction<string>>,
-    boolean,
-  ]
 }

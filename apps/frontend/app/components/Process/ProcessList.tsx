@@ -1,8 +1,10 @@
 'use client'
 
+import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useLocation, useNavigate } from '@/util/router'
+import { theme } from '@/util/theme'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Heading, Label, Loader, Select } from '@navikt/ds-react'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
@@ -36,8 +38,6 @@ import {
   IProcessFormValues,
   IProcessShort,
 } from '../../constants'
-import { EListName, ICode } from '../../service/Codelist'
-import { theme } from '../../util'
 import { env } from '../../util/env'
 import Button from '../common/Button/CustomButton'
 import { ESection, genProcessPath } from '../mainPages/ProcessPage'

@@ -22,7 +22,7 @@ export const getAllDpProcesses = async () => {
   }
 }
 
-export const getDpProcessByPageAndSize = async (pageNumber: number, pageSize: number) => {
+const getDpProcessByPageAndSize = async (pageNumber: number, pageSize: number) => {
   return (
     await axios.get<IPageResponse<IDpProcess>>(
       `${env.pollyBaseUrl}/dpprocess?pageNumber=${pageNumber}&pageSize=${pageSize}`
@@ -121,7 +121,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<IDpProcess>): IDpProces
   }
 }
 
-export const fromValuesToDpProcess = (values: IDpProcessFormValues) => {
+const fromValuesToDpProcess = (values: IDpProcessFormValues) => {
   return {
     affiliation: values.affiliation,
     art10: values.art10,

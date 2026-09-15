@@ -1,6 +1,6 @@
+import { theme } from '@/util/theme'
 import { BodyLong, BodyShort } from '@navikt/ds-react'
 import { useState } from 'react'
-import { theme } from '../../util'
 import RouteLink from '../common/RouteLink'
 
 type TShortcutCardProps = {
@@ -9,7 +9,7 @@ type TShortcutCardProps = {
   to: string
 }
 
-export const ShortcutCard = (props: TShortcutCardProps) => {
+const ShortcutCard = (props: TShortcutCardProps) => {
   const { title, subtitle, to } = props
   const [hover, setHover] = useState(false)
 
@@ -64,7 +64,7 @@ export const ShortcutCard = (props: TShortcutCardProps) => {
   )
 }
 
-const ShortcutNav = () => (
+export const ShortcutNav = () => (
   <div className='flex justify-between flex-wrap'>
     <ShortcutCard title='Behandlinger' subtitle='Se og endre behandlinger' to='/process' />
     <ShortcutCard
@@ -76,5 +76,3 @@ const ShortcutNav = () => (
     <ShortcutCard title='Dashboard' subtitle='Se statistikk over behandlinger' to='/dashboard' />
   </div>
 )
-
-export default ShortcutNav

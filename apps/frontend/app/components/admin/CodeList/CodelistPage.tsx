@@ -1,7 +1,8 @@
 'use client'
 
+import { ICode, IMakeIdLabelForAllCodeListsProps } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader, Select } from '@navikt/ds-react'
@@ -9,7 +10,6 @@ import { useParams } from 'next/navigation'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { createCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues } from '../../../constants'
-import { ICode, IMakeIdLabelForAllCodeListsProps } from '../../../service/Codelist'
 import CodeListTable from './CodeListStyledTable'
 import CreateCodeListModal from './ModalCreateCodeList'
 

@@ -1,5 +1,5 @@
 // Mock codelist
-import { EListName } from '../../service/Codelist'
+import { EListName } from '@/constants/codelistConstant'
 
 export const addCode = (list: EListName, code: string) => {
   const newCode = {

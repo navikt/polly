@@ -2,7 +2,7 @@
 
 import { RequestRevisionPage } from '@/components/admin/revision/RequestRevisionPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
-import { EGroup, IUserContext, UserContext } from '@/service/User'
+import { EGroup, IUserContext, UserContext } from '@/provider/userProvider'
 import { Loader } from '@navikt/ds-react'
 import { useContext } from 'react'
 

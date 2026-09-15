@@ -1,3 +1,4 @@
+import { EListName, ICode, IGetParsedOptionsProps } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
 import { ChangeEvent, createRef, useContext, useEffect, useState } from 'react'
@@ -12,7 +13,6 @@ import {
   IUse,
   IUseWithPurpose,
 } from '../../../constants'
-import { EListName, ICode, IGetParsedOptionsProps } from '../../../service/Codelist'
 import { ObjectLink } from '../../common/RouteLink'
 
 interface IProps {

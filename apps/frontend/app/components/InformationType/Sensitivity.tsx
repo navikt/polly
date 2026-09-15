@@ -1,5 +1,6 @@
+import { EListName, ESensitivityLevel, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { ShieldIcon } from '@navikt/aksel-icons'
-import { EListName, ESensitivityLevel, ICode, ICodelistProps } from '../../service/Codelist'
 import { theme } from '../../util/theme'
 import CustomizedStatefulTooltip from '../common/CustomizedStatefulTooltip'
 

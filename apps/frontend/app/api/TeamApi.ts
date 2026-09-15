@@ -1,9 +1,9 @@
 'use client'
 
+import { useDebouncedState } from '@/util/hooks'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IPageResponse, IProductArea, ITeam, ITeamResource, TOption } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 
 const defaultTeam = (teamId: string): ITeam => ({
@@ -17,11 +17,6 @@ const defaultTeam = (teamId: string): ITeam => ({
 })
 
 const teamPromiseCache = new Map<string, Promise<ITeam>>()
-
-export const getAllTeams = async () => {
-  const data = (await axios.get<IPageResponse<ITeam>>(`${env.pollyBaseUrl}/team`)).data
-  return data
-}
 
 export const getTeam = async (teamId: string) => {
   const cached = teamPromiseCache.get(teamId)
@@ -50,30 +45,16 @@ export const searchTeam = async (teamSearch: string) => {
     .data
 }
 
-export const getAllProductAreas = async () => {
+const getAllProductAreas = async () => {
   return (await axios.get<IPageResponse<IProductArea>>(`${env.pollyBaseUrl}/team/productarea`)).data
     .content
-}
-
-export const getProductArea = async (paId: string) => {
-  const data = (await axios.get<IProductArea>(`${env.pollyBaseUrl}/team/productarea/${paId}`)).data
-  data.members = data.members.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-  return data
-}
-
-export const searchProductArea = async (search: string) => {
-  return (
-    await axios.get<IPageResponse<IProductArea>>(
-      `${env.pollyBaseUrl}/team/productarea/search/${search}`
-    )
-  ).data
 }
 
 export const getResourceById = async (resourceId: string) => {
   return (await axios.get<ITeamResource>(`${env.pollyBaseUrl}/team/resource/${resourceId}`)).data
 }
 
-export const searchResourceByName = async (resourceName: string) => {
+const searchResourceByName = async (resourceName: string) => {
   return (
     await axios.get<IPageResponse<ITeamResource>>(
       `${env.pollyBaseUrl}/team/resource/search/${resourceName}`
@@ -89,7 +70,7 @@ export const getResourcesByIds = async (ids: string[]) => {
   return resourcesPromise.length > 0 ? await Promise.all(resourcesPromise) : []
 }
 
-export const mapTeamResourceToOption = (teamResource: ITeamResource) => ({
+const mapTeamResourceToOption = (teamResource: ITeamResource) => ({
   value: teamResource.navIdent,
   label: teamResource.fullName,
 })
@@ -99,31 +80,6 @@ export const mapTeamToOption = (team: ITeam, index?: number) => ({
   label: team.name,
   index,
 })
-
-export const useTeamSearch = () => {
-  const [teamSearch, setTeamSearch] = useDebouncedState<string>('', 200)
-  const [searchResult, setInfoTypeSearchResult] = useState<TOption[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    const search = async () => {
-      if (teamSearch && teamSearch.length > 2) {
-        setLoading(true)
-        const res = await searchTeam(teamSearch)
-        const options: TOption[] = res.content.map(mapTeamToOption)
-        setInfoTypeSearchResult(options)
-        setLoading(false)
-      }
-    }
-    search()
-  }, [teamSearch])
-
-  return [searchResult, setTeamSearch, loading] as [
-    TOption[],
-    Dispatch<SetStateAction<string>>,
-    boolean,
-  ]
-}
 
 export const useTeamSearchOptions = async (searchParam: string) => {
   if (searchParam && searchParam.length > 2) {

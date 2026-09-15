@@ -1,9 +1,10 @@
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { theme } from '@/util/theme'
 import { CircleIcon } from '@navikt/aksel-icons'
 import { BodyLong } from '@navikt/ds-react'
 import { Fragment, ReactNode } from 'react'
 import { TNavigableItem } from '../../constants'
-import { EListName, ICode, ICodelistProps } from '../../service/Codelist'
-import { theme } from '../../util'
 import { Markdown } from './Markdown'
 import RouteLink, { urlForObject } from './RouteLink'
 

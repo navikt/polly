@@ -4,7 +4,7 @@ import { convertDisclosureToFormValues, updateDisclosure } from '@/api/Disclosur
 import { convertProcessToFormValues, createProcess } from '@/api/ProcessApi'
 import { IProcessFormValues } from '@/constants'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IUserContext, UserContext } from '@/service/User'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
 import { FileWordIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Heading, LocalAlert, Modal } from '@navikt/ds-react'

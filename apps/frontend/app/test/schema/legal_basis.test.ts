@@ -1,6 +1,6 @@
+import { NATIONAL_LAW_GDPR_ARTICLES } from '@/constants/codelistConstant'
 import { legalBasisSchema } from '../../components/common/schemaValidation'
 import { ILegalBasisFormValues } from '../../constants'
-import { NATIONAL_LAW_GDPR_ARTICLES } from '../../service/Codelist'
 import '../config/schemaValidator'
 
 describe('Legal basis', () => {

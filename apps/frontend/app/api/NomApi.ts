@@ -1,6 +1,6 @@
+import { EListName } from '@/constants/codelistConstant'
 import axios from 'axios'
 import { IOrgEnhet, IPageResponse, TSearchItem } from '../constants'
-import { EListName } from '../service/Codelist'
 import { env } from '../util/env'
 
 export const getAllNomAvdelinger = async () => {
@@ -21,11 +21,11 @@ export const getByNomId = async (id: string) => {
   return (await axios.get<IOrgEnhet>(`${env.pollyBaseUrl}/nom/${id}`)).data
 }
 
-export const getAllNomFylker = async () => {
+const getAllNomFylker = async () => {
   return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/fylker`)).data
 }
 
-export const searchNavKontorByName = async (searchTerm: string) => {
+const searchNavKontorByName = async (searchTerm: string) => {
   return (await axios.get<IOrgEnhet[]>(`${env.pollyBaseUrl}/nom/nav-kontor/${searchTerm}`)).data
 }
 

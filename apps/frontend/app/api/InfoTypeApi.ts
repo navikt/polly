@@ -1,5 +1,6 @@
 'use client'
 
+import { useDebouncedState } from '@/util/hooks'
 import axios from 'axios'
 import queryString from 'query-string'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -10,16 +11,7 @@ import {
   IPageResponse,
   IPolicy,
 } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
-
-export const getInformationTypes = async (page: number, limit: number) => {
-  return (
-    await axios.get<IPageResponse<IInformationType>>(
-      `${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`
-    )
-  ).data
-}
 
 export const getInformationTypesShort = async () => {
   return (

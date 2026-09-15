@@ -1,18 +1,12 @@
+import { theme } from '@/util/theme'
 import { ClockIcon } from '@navikt/aksel-icons'
 import { Tooltip } from '@navikt/ds-react'
 import moment, { Moment } from 'moment'
-import { theme } from '../../util'
 import { env } from '../../util/env'
 
 const defaultStart: Moment = moment(env.defaultStartDate).locale('nb')
 const defaultEnd: Moment = moment('9999-12-31').locale('nb')
 const dateFormat = 'll'
-
-export const hasSpecifiedDate = (obj: { start?: string; end?: string }): boolean => {
-  const startDate: Moment | undefined = obj.start ? moment(obj.start).locale('nb') : undefined
-  const endDate: Moment | undefined = obj.end ? moment(obj.end).locale('nb') : undefined
-  return checkDate(startDate, endDate).hasDates
-}
 
 interface ICheckDateReturn {
   hasStart: boolean

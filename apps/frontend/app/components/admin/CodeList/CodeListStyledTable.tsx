@@ -1,5 +1,6 @@
 'use client'
 
+import { ICode } from '@/constants/codelistConstant'
 import { DocPencilIcon, GlassesIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Button, SortState, Table, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'

@@ -13,7 +13,7 @@ export const pvkVurderingToText = (vurdering: EPvkVurdering) => {
   }
 }
 
-export const pvkDokumentStatusToText = (status: EPvkDokumentStatus) => {
+const pvkDokumentStatusToText = (status: EPvkDokumentStatus) => {
   switch (status) {
     case EPvkDokumentStatus.UNDERARBEID:
       return 'Underarbeid'

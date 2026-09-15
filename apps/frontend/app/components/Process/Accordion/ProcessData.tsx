@@ -1,6 +1,8 @@
 'use client'
 
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
@@ -21,7 +23,6 @@ import {
   IProcessor,
   IPvkDokumentShort,
 } from '../../../constants'
-import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { env } from '../../../util/env'
 import {
   checkForAaregDispatcher,

@@ -1,3 +1,4 @@
+import { EListName } from '@/constants/codelistConstant'
 import {
   addBatchInfoTypesToProcessSchema,
   addDocumentToProcessSchema,
@@ -10,7 +11,6 @@ import {
   IPolicy,
   IProcess,
 } from '../../constants'
-import { EListName } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 

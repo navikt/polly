@@ -1,4 +1,5 @@
-import { EListName, ICode, ICodelistProps } from './service/Codelist'
+import { EListName, ICode } from './constants/codelistConstant'
+import { ICodelistProps } from './provider/kodeverkProvider'
 import { TColumnCompares } from './util/hooks'
 
 export enum ELegalBasesUse {
@@ -537,11 +538,6 @@ export interface IDurationed {
   active: boolean
   start: string
   end: string
-}
-
-export interface IMakeIdLabelForAllCodeListsProps {
-  id: string
-  label: string
 }
 
 export interface ICountryCode {

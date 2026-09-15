@@ -1,14 +1,12 @@
 'use client'
 
 import axios from 'axios'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   IDocument,
   IDocumentFormValues,
   IDocumentInformationTypes,
   IPageResponse,
 } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { getSettings } from './SettingsApi'
 
@@ -69,27 +67,3 @@ const mapFormValuesToDocument = (document: IDocumentFormValues) => ({
   ),
   dataAccessClass: document.dataAccessClass,
 })
-
-export const useDocumentSearch = () => {
-  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 200)
-  const [documentSearchResult, setDocumentSearchResult] = useState<IDocument[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    ;(async () => {
-      if (documentSearch && documentSearch.length > 2) {
-        setLoading(true)
-        setDocumentSearchResult((await searchDocuments(documentSearch)).content)
-        setLoading(false)
-      } else {
-        setDocumentSearchResult([])
-      }
-    })()
-  }, [documentSearch])
-
-  return [documentSearchResult, setDocumentSearch, loading] as [
-    IDocument[],
-    Dispatch<SetStateAction<string>>,
-    boolean,
-  ]
-}

@@ -1,3 +1,5 @@
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Modal, Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
@@ -10,7 +12,6 @@ import {
   IPageResponse,
   IProcess,
 } from '../../../constants'
-import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import Button from '../../common/Button/CustomButton'

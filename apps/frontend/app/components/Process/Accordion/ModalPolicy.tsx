@@ -1,3 +1,5 @@
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Button, Modal, Radio, RadioGroup, Select } from '@navikt/ds-react'
 import {
   Field,
@@ -11,7 +13,6 @@ import {
 import { useEffect, useState } from 'react'
 import { getInformationTypesShort } from '../../../api/GetAllApi'
 import { ELegalBasesUse, IInformationTypeShort, IPolicyFormValues } from '../../../constants'
-import { EListName, ICodelistProps } from '../../../service/Codelist'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import { Error, ModalLabel } from '../../common/ModalSchema'

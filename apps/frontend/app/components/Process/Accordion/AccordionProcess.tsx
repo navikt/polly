@@ -1,7 +1,9 @@
 'use client'
 
 import { TPathParams } from '@/components/mainPages/ProcessPage'
-import { IUserContext, UserContext } from '@/service/User'
+import { ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal } from '@navikt/ds-react'
@@ -22,7 +24,6 @@ import {
   IProcessFormValues,
   IProcessShort,
 } from '../../../constants'
-import { ICode, ICodelistProps } from '../../../service/Codelist'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'

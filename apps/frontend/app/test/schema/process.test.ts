@@ -1,6 +1,6 @@
+import { EListName, NATIONAL_LAW_GDPR_ARTICLES } from '@/constants/codelistConstant'
 import { processSchema } from '../../components/common/schemaValidation'
 import { EProcessStatus, ILegalBasisFormValues, IProcessFormValues } from '../../constants'
-import { EListName, NATIONAL_LAW_GDPR_ARTICLES } from '../../service/Codelist'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 

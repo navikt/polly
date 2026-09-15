@@ -2,7 +2,6 @@
 
 import axios from 'axios'
 import queryString from 'query-string'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   EProcessField,
   EProcessState,
@@ -10,12 +9,10 @@ import {
   EProcessStatusFilter,
   IPageResponse,
   IProcess,
-  IProcessCount,
   IProcessFormValues,
   IProcessShort,
   IRecentEdits,
 } from '../constants'
-import { useDebouncedState } from '../util'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'
 import { convertLegalBasesToFormValues } from './PolicyApi'
@@ -127,12 +124,6 @@ export const getProcessesFor = async (params: {
   ).data
 }
 
-export const getProcessPurposeCount = async (
-  query: 'purpose' | 'department' | 'subDepartment' | 'team'
-) => {
-  return (await axios.get<IProcessCount>(`${env.pollyBaseUrl}/process/count?${query}`)).data
-}
-
 export const createProcess = async (process: IProcessFormValues) => {
   const body = convertFormValuesToProcess(process)
   return (await axios.post<IProcess>(`${env.pollyBaseUrl}/process`, body)).data
@@ -237,7 +228,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
   }
 }
 
-export const convertFormValuesToProcess = (values: IProcessFormValues) => {
+const convertFormValuesToProcess = (values: IProcessFormValues) => {
   return {
     id: values.id,
     name: values.name,
@@ -282,30 +273,6 @@ export const convertFormValuesToProcess = (values: IProcessFormValues) => {
       noDpiaReasons: values.dpia.noDpiaReasons || [],
     },
   }
-}
-
-export const useProcessSearch = () => {
-  const [processSearch, setProcessSearch] = useDebouncedState<string>('', 200)
-  const [processSearchResult, setProcessSearchResult] = useState<IProcess[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    ;(async () => {
-      if (processSearch && processSearch.length > 2) {
-        setLoading(true)
-        setProcessSearchResult((await searchProcess(processSearch)).content)
-        setLoading(false)
-      } else {
-        setProcessSearchResult([])
-      }
-    })()
-  }, [processSearch])
-
-  return [processSearchResult, setProcessSearch, loading] as [
-    IProcess[],
-    Dispatch<SetStateAction<string>>,
-    boolean,
-  ]
 }
 
 export const searchProcessOptions = async (searchParam: string) => {

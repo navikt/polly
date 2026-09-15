@@ -1,3 +1,4 @@
+import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { MinusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Label, List, Loader, Modal, Tooltip } from '@navikt/ds-react'
@@ -20,7 +21,6 @@ import {
   IPolicy,
   IProcess,
 } from '../../../constants'
-import { EListName, ICode } from '../../../service/Codelist'
 import { disableEnter } from '../../../util/helper-functions'
 import { Sensitivity } from '../../InformationType/Sensitivity'
 import CustomSearchSelect from '../../common/AsyncSelectComponents'

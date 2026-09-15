@@ -15,7 +15,7 @@ import {
   IProcess,
   ISeksjonDashCount,
 } from '@/constants'
-import { EListName } from '@/service/Codelist'
+import { EListName } from '@/constants/codelistConstant'
 import { useQueryParam } from '@/util/hooks'
 import { generatePath, useLocation } from '@/util/router'
 import { Heading, LocalAlert, Select } from '@navikt/ds-react'
@@ -29,8 +29,8 @@ import Seksjoner from '../Dashboard/Seksjoner'
 import ProcessList from '../Process/ProcessList'
 import { PageHeader } from '../common/PageHeader'
 
-export const processPath = '/process/:section/:code/:processId'
-export const processPathNoId = '/process/:section/:code/'
+const processPath = '/process/:section/:code/:processId'
+const processPathNoId = '/process/:section/:code/'
 
 export enum ESection {
   purpose = 'purpose',

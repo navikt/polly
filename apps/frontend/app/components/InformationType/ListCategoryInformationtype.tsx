@@ -1,10 +1,10 @@
+import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
+import { theme } from '@/util/theme'
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, Heading } from '@navikt/ds-react'
 import { useContext, useState } from 'react'
 import { ICodeUsage, IUse } from '../../constants'
-import { EListName } from '../../service/Codelist'
-import { theme } from '../../util'
 import { useQueryParam } from '../../util/hooks'
 import RouteLink from '../common/RouteLink'
 

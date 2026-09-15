@@ -1,9 +1,10 @@
 'use client'
 
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 import { useEffect, useMemo, useState } from 'react'
 import { IDocumentInfoTypeUse, IDocumentInformationTypes } from '../../../constants'
-import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 
 const FieldSubjectCategory = (props: {
   documentInformationType: IDocumentInfoTypeUse

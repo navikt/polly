@@ -1,7 +1,8 @@
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
-import { EListName, ICodelistProps } from '../../service/Codelist'
 
 type TFieldProductsProps = {
   formikBag: FormikProps<IProcessFormValues> | FormikProps<IDpProcessFormValues>

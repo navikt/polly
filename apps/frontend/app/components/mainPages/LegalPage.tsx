@@ -2,8 +2,8 @@
 
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IPageResponse, IProcess } from '@/constants'
+import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { EListName, ICode } from '@/service/Codelist'
 import { useQueryParam } from '@/util/hooks'
 import { useLocation, useNavigate } from '@/util/router'
 import { BodyLong, Heading, Select } from '@navikt/ds-react'
