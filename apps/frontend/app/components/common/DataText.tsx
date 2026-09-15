@@ -38,7 +38,7 @@ const DataText = (props: TDataTextProps) => {
                   {text}
                 </BodyLong>
               ))}
-            {children && <div className='text-base '>{children}</div>}
+            {children && <div>{children}</div>}
           </div>
         </div>
       )}

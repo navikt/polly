@@ -34,7 +34,7 @@ const TextWithLabel = (props: ITextWithLabelProps) => {
   ) : null
 
   const value = text && (
-    <div className='whitespace-pre-wrap block m-0 text-base'>
+    <div className='whitespace-pre-wrap block m-0'>
       {error && errorIcon} {text}
     </div>
   )
