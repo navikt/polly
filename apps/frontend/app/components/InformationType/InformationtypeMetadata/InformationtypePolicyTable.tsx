@@ -1,5 +1,7 @@
 'use client'
 
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Link, Loader, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
 import { getAlertForInformationType } from '../../../api/AlertApi'
@@ -10,7 +12,6 @@ import {
   IPolicyAlert,
   IProcessAlert,
 } from '../../../constants'
-import { EListName, ICode, ICodelistProps } from '../../../service/Codelist'
 import { handleSort, sortTableData } from '../../../util/handleTableSort'
 import { RetentionView } from '../../Process/Retention'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
