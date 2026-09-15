@@ -6,10 +6,10 @@ import { EProcessStatusFilter, IDashboardData, ISettings } from '@/constants'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { Heading } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
-import ShortcutNav from '../Main/ShortcutNav'
 import { LastEvents } from '../admin/audit/LastEvents'
 import { RecentEditsByUser } from '../admin/audit/RecentEditsByUser'
 import { Markdown } from '../common/Markdown'
+import ShortcutNav from '../main/shortcutNav'
 
 export const MainPage = () => {
   const user: IUserContext = useContext(UserContext)

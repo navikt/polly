@@ -41,12 +41,6 @@ export const getDisclosuresByInformationTypeId = async (informationTypeId: strin
   ).data.content
 }
 
-const searchDisclosure = async (text: string) => {
-  return (
-    await axios.get<IPageResponse<IDisclosure>>(`${env.pollyBaseUrl}/disclosure/search/${text}`)
-  ).data
-}
-
 export const getDisclosureByDepartment = async (department: string) => {
   return (
     await axios.get<IPageResponse<IDisclosure>>(

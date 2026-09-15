@@ -1,9 +1,7 @@
 'use client'
 
-import { useDebouncedState } from '@/util/hooks'
 import axios from 'axios'
 import queryString from 'query-string'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   EProcessField,
   EProcessState,
@@ -275,30 +273,6 @@ const convertFormValuesToProcess = (values: IProcessFormValues) => {
       noDpiaReasons: values.dpia.noDpiaReasons || [],
     },
   }
-}
-
-export const useProcessSearch = () => {
-  const [processSearch, setProcessSearch] = useDebouncedState<string>('', 200)
-  const [processSearchResult, setProcessSearchResult] = useState<IProcess[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    ;(async () => {
-      if (processSearch && processSearch.length > 2) {
-        setLoading(true)
-        setProcessSearchResult((await searchProcess(processSearch)).content)
-        setLoading(false)
-      } else {
-        setProcessSearchResult([])
-      }
-    })()
-  }, [processSearch])
-
-  return [processSearchResult, setProcessSearch, loading] as [
-    IProcess[],
-    Dispatch<SetStateAction<string>>,
-    boolean,
-  ]
 }
 
 export const searchProcessOptions = async (searchParam: string) => {
