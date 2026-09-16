@@ -185,18 +185,18 @@ const ProcessDisclosureTabs = (props: IProps) => {
                   Utleveringer ({disclosureData ? disclosureData.length : 0})
                 </Heading>
                 <Spacer />
-                {isEditable && (
+                {isEditable && user.canWrite() && (
                   <div className='flex justify-end'>
-                    {user.canWrite() && (
-                      <Button
-                        size='small'
-                        variant='tertiary'
-                        onClick={() => setShowCreateDisclosureModal(true)}
-                      >
+                    <Button
+                      size='small'
+                      variant='tertiary'
+                      onClick={() => setShowCreateDisclosureModal(true)}
+                    >
+                      <div className='flex'>
                         <PlusCircleIcon aria-hidden />
                         &nbsp; Opprett ny utlevering
-                      </Button>
-                    )}
+                      </div>
+                    </Button>
                   </div>
                 )}
               </div>
