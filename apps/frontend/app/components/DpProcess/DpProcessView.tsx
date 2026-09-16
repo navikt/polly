@@ -128,9 +128,11 @@ const DpProcessView = () => {
       {!isLoading && (
         <>
           <div className='flex justify-between items-center'>
-            <Heading level='1' size='medium' className='m-0 max-w-[100ch]'>
-              {dpProcess?.name}
-            </Heading>
+            <div className='max-w-[100ch]'>
+              <Heading level='1' size='medium' className='m-0 max-w-[100ch]'>
+                {dpProcess?.name}
+              </Heading>
+            </div>
             {user.canWrite() /*!env.disableDpProcess &&*/ && (
               <div>
                 <Button
