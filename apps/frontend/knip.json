@@ -8,5 +8,6 @@
     "duplicates": "warn"
   },
   "entry": ["app/**.{tsx,ts,mjs,mts,css}"],
-  "project": ["app/**/*.{tsx,ts,mjs,mts,css}"]
+  "project": ["app/**/*.{tsx,ts,mjs,mts,css}"],
+  "ignoreDependencies": ["ts-node"]
 }

@@ -77,7 +77,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^16.3.5",
-    "@types/eslint-plugin-jsx-a11y": "^6",
+    "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.25",
     "@types/node": "^26.5.1",
@@ -100,7 +100,8 @@
     "postcss": "^8.5.28",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
-    "ts-jest": "^29.4.12"
+    "ts-jest": "^29.4.12",
+    "ts-node": "^10.9.2"
   },
   "resolutions": {
     "@navikt/ds-react": "patch:@navikt/ds-react@npm%3A8.16.1#~/.yarn/patches/@navikt-ds-react-npm-8.16.1-07df5781d1.patch",
