@@ -421,7 +421,9 @@ const ProcessData = (props: IProcessDataProps) => {
 
       <DataText label='Gjeldende etterlevelser og PVK'>
         {pvkDokumenter.length === 0 && (
-          <BodyLong>Behandlingen er ikke koblet til et etterlevelsesdokument</BodyLong>
+          <BodyLong className='mb-3'>
+            Behandlingen er ikke koblet til et etterlevelsesdokument
+          </BodyLong>
         )}
         {pvkDokumenter.length !== 0 &&
           pvkDokumenter.map((pvkDokument: IPvkDokumentShort) => (
@@ -436,7 +438,7 @@ const ProcessData = (props: IProcessDataProps) => {
                 E{pvkDokument.etterlevelseNummer}.{pvkDokument.etterlevelseDokumentVersjon}{' '}
                 {pvkDokument.title}
               </Link>
-              <BodyLong>
+              <BodyLong className='mb-3'>
                 {pvkVurderingToText(pvkDokument.pvkVurdering)}
                 {pvkDokument.pvkVurdering !== EPvkVurdering.ALLEREDE_UTFORT &&
                   ` (${getPvkDokumentStatus(pvkDokument.status, pvkDokument.hasPvkDocumentationStarted)})`}
