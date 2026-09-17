@@ -287,6 +287,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                           <Label>Navn</Label>
                         </div>
                         <TextField
+                          type='text'
                           className='w-full'
                           label=''
                           hideLabel
@@ -445,6 +446,7 @@ const InformationtypeForm = ({ formInitialValues, submit }: TFormProps) => {
                         </div>
                         <div className='flex w-full'>
                           <TextField
+                            type='text'
                             className='w-full'
                             label=''
                             hideLabel

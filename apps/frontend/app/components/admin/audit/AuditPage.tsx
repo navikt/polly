@@ -65,6 +65,7 @@ export const AuditPage = () => {
       <div className='mb-4'>
         <AuditLabel label='Søk etter ID'>
           <TextField
+            type='text'
             className='w-72'
             label='Søk etter ID'
             hideLabel

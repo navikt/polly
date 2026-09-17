@@ -6,6 +6,7 @@ const FieldTransferGroundsOutsideEUOther = () => (
   <Field name='transferGroundsOutsideEUOther'>
     {({ field }: FieldProps<string, IProcessorFormValues>) => (
       <TextField
+        type='text'
         id='transferGroundsOutsideEUOther'
         className='w-full mt-4'
         label='Spesifiser overføringsgrunnlaget'

@@ -57,6 +57,7 @@ const CreateCodeListModal = ({
               <Field name='code'>
                 {({ field }: FieldProps) => (
                   <TextField
+                    type='text'
                     className='w-full'
                     {...field}
                     label='Kode'
@@ -67,6 +68,7 @@ const CreateCodeListModal = ({
               <Field name='shortName'>
                 {({ field }: FieldProps) => (
                   <TextField
+                    type='text'
                     className='w-full mt-4'
                     {...field}
                     label='Navn'

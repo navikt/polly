@@ -90,7 +90,7 @@ const DocumentForm = (props: TDocumentFormProps) => {
               <Label>Navn </Label>
               <Field name='name'>
                 {(props: FieldProps) => (
-                  <TextField className='w-full' label='' hideLabel {...props.field} />
+                  <TextField className='w-full' type='text' label='' hideLabel {...props.field} />
                 )}
               </Field>
               <Error fieldName='name' fullWidth={true} />

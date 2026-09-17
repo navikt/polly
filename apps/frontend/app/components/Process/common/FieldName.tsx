@@ -12,6 +12,7 @@ const FieldName = () => (
         return (
           <TextField
             id='name'
+            type='text'
             className='w-full'
             {...field}
             label=''

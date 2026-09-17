@@ -51,6 +51,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
               <Field name='name'>
                 {({ field }: FieldProps<string, IProcessorFormValues>) => (
                   <TextField
+                    type='text'
                     id='name'
                     className='w-full'
                     label='Navn på databehandler'
@@ -63,6 +64,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
               <Field name='contract'>
                 {({ field }: FieldProps<string, IProcessorFormValues>) => (
                   <TextField
+                    type='url'
                     className='w-full mt-4'
                     label='Referanse til databehandleravtalen, gjerne lenke(URL) i Public 360 e.l.'
                     {...field}

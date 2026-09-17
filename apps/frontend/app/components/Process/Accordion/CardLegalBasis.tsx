@@ -148,6 +148,7 @@ const CardLegalBasis = ({
               {({ field }: FieldProps<string, ILegalBasisFormValues>) => (
                 <TextField
                   {...field}
+                  type='text'
                   className='w-full'
                   label='Beskrivelse'
                   hideLabel

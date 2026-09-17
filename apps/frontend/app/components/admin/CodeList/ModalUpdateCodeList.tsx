@@ -49,6 +49,7 @@ const UpdateCodeListModal = ({
             <Field name='shortName'>
               {({ field }: FieldProps) => (
                 <TextField
+                  type='text'
                   className='w-full'
                   label='Navn'
                   {...field}

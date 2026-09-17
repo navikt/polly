@@ -176,6 +176,7 @@ const DpProcessModal = (props: TModalDpProcessProps) => {
                   <Field name='name'>
                     {({ field, form }: FieldProps<string, IDpProcessFormValues>) => (
                       <TextField
+                        type='text'
                         className='w-full'
                         id={fieldId('name')}
                         label='name'

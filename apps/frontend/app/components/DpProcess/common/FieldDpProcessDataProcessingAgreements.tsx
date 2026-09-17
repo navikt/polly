@@ -33,6 +33,7 @@ const FieldDpProcessDataProcessingAgreements = (
         <div className='w-full'>
           <div className='flex w-full'>
             <TextField
+              type='url'
               className='w-full'
               label=''
               hideLabel
