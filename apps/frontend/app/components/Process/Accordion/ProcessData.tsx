@@ -503,7 +503,6 @@ interface ICompletenessProps {
 const Completeness = (props: ICompletenessProps) => {
   const { process } = props
   const completeness = {
-    dpia: !isNil(process.dpia?.needForDpia),
     dpiaReference: !process.dpia?.needForDpia || !isNil(process.dpia?.refToDpia),
     profiling: !isNil(process.profiling),
     automation: !isNil(process.automaticProcessing),
@@ -532,7 +531,6 @@ const Completeness = (props: ICompletenessProps) => {
   const getContent = () => {
     let content = ''
     content += completed === completables ? 'Godkjent' : 'Ikke utfylt: '
-    if (!completeness.dpia) content += 'Behov for PVK, '
     if (!completeness.dpiaReference) content += 'Ref. til PVK, '
     if (!completeness.profiling) content += 'Profilering, '
     if (!completeness.automation) content += 'Automatisering og profilering, '
