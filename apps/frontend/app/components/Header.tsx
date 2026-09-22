@@ -19,7 +19,8 @@ import MainSearch from './search/MainSearch'
 function useAbsoluteCurrentUrl(origin?: string) {
   const location = useLocation()
 
-  const resolvedOrigin = origin ?? (typeof window !== 'undefined' ? window.location.origin : undefined)
+  const resolvedOrigin =
+    origin ?? (typeof window !== 'undefined' ? window.location.origin : undefined)
   if (!resolvedOrigin) {
     return undefined
   }
