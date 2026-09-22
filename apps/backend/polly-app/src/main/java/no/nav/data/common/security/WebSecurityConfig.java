@@ -32,7 +32,8 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        // Stateless API using bearer tokens (no cookies/sessions), so CSRF does not apply
+        http.csrf(AbstractHttpConfigurer::disable) // codeql[java/spring-disabled-csrf-protection]
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
