@@ -167,6 +167,7 @@ const ModalPolicy = ({
                         <Select
                           label='Personkategori'
                           hideLabel
+                          value=''
                           onChange={(event) => {
                             arrayHelpers.push(event.target.value ? event.target.value : null)
                           }}
@@ -175,6 +176,7 @@ const ModalPolicy = ({
                             !!formikBag.touched.subjectCategories
                           }
                         >
+                          <option value=''>Velg personkategori</option>
                           {codelistUtils
                             .getParsedOptionsFilterOutSelected(
                               EListName.SUBJECT_CATEGORY,
