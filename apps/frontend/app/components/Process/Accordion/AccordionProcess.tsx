@@ -90,6 +90,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const purposeRef = useRef<HTMLButtonElement>(null)
+  const scrollToPolicyTable = useRef(false)
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
 
@@ -153,11 +154,15 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     })()
     if (params.processId && !isLoading) {
       setTimeout(() => {
-        if (purposeRef.current) {
-          const headerEl = document.querySelector(
-            '.polly-white-internalheader'
-          ) as HTMLElement | null
-          const headerOffset = headerEl?.offsetHeight ?? 0
+        const headerEl = document.querySelector('.polly-white-internalheader') as HTMLElement | null
+        const headerOffset = headerEl?.offsetHeight ?? 0
+        if (scrollToPolicyTable.current && InformationTypeRef.current) {
+          scrollToPolicyTable.current = false
+          window.scrollTo({
+            top: InformationTypeRef.current.offsetTop - headerOffset - 16,
+            behavior: 'smooth',
+          })
+        } else if (purposeRef.current) {
           window.scrollTo({ top: purposeRef.current.offsetTop - headerOffset - 16 })
         }
       }, 200)
@@ -350,9 +355,13 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               onClose={() => setShowCreatePolicyModal(false)}
               isOpen={showCreatePolicyModal}
               submit={(values: IPolicyFormValues) => {
+                scrollToPolicyTable.current = true
                 submitCreatePolicy(values)
                   .then(() => setShowCreatePolicyModal(false))
-                  .catch(() => setShowCreatePolicyModal(true))
+                  .catch(() => {
+                    scrollToPolicyTable.current = false
+                    setShowCreatePolicyModal(true)
+                  })
               }}
               addBatch={() => {
                 setShowCreatePolicyModal(false)
