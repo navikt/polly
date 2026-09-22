@@ -16,21 +16,22 @@ import { useContext, useEffect, useState } from 'react'
 import { TThemeMode } from '../util/themeMode'
 import MainSearch from './search/MainSearch'
 
-function useAbsoluteCurrentUrl() {
+function useAbsoluteCurrentUrl(origin?: string) {
   const location = useLocation()
 
-  if (typeof window === 'undefined') {
+  const resolvedOrigin = origin ?? (typeof window !== 'undefined' ? window.location.origin : undefined)
+  if (!resolvedOrigin) {
     return undefined
   }
 
-  return `${window.location.origin}${location.pathname}${location.search ?? ''}${location.hash ?? ''}`
+  return `${resolvedOrigin}${location.pathname}${location.search ?? ''}${location.hash ?? ''}`
 }
 
-const LoggedInHeader = () => {
+const LoggedInHeader = ({ origin }: { origin?: string }) => {
   const user: IUserContext = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [openState, setOpenState] = useState(false)
-  const redirectUri = useAbsoluteCurrentUrl()
+  const redirectUri = useAbsoluteCurrentUrl(origin)
 
   return (
     <>
@@ -77,8 +78,8 @@ const LoggedInHeader = () => {
   )
 }
 
-const LoginButton = () => {
-  const redirectUri = useAbsoluteCurrentUrl()
+const LoginButton = ({ origin }: { origin?: string }) => {
+  const redirectUri = useAbsoluteCurrentUrl(origin)
   const href = redirectUri ? `/login?redirect_uri=${encodeURIComponent(redirectUri)}` : '/login'
 
   return (
@@ -175,9 +176,10 @@ const AdminOptions = ({ showPermissionOverrides }: IAdminOptionsProps) => {
 interface IHeaderProps {
   themeMode: TThemeMode
   onThemeModeChange: (mode: TThemeMode) => void
+  origin?: string
 }
 
-const Header = ({ themeMode, onThemeModeChange }: IHeaderProps) => {
+const Header = ({ themeMode, onThemeModeChange, origin }: IHeaderProps) => {
   const user: IUserContext = useContext(UserContext)
 
   const canUsePermissionOverrides = user.hasGroup(EGroup.ADMIN) || user.hasGroup(EGroup.SUPER)
@@ -208,8 +210,8 @@ const Header = ({ themeMode, onThemeModeChange }: IHeaderProps) => {
         {canUsePermissionOverrides && (
           <AdminOptions showPermissionOverrides={canUsePermissionOverrides} />
         )}
-        {!user.isLoggedIn() && <LoginButton />}
-        {user.isLoggedIn() && <LoggedInHeader />}
+        {!user.isLoggedIn() && <LoginButton origin={origin} />}
+        {user.isLoggedIn() && <LoggedInHeader origin={origin} />}
       </div>
     </InternalHeader>
   )

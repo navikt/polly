@@ -1,3 +1,4 @@
+import { headers } from 'next/headers'
 import { FunctionComponent, ReactNode, Suspense } from 'react'
 import './main.css'
 import PageThemeWrapper from './pageThemeWrapper'
@@ -9,6 +10,12 @@ type TProps = {
 }
 
 const Main: FunctionComponent<TProps> = async ({ children }) => {
+  const requestHeaders = await headers()
+  const host = requestHeaders.get('host') ?? ''
+  const proto =
+    requestHeaders.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
+  const origin = host ? `${proto}://${host}` : undefined
+
   return (
     <html lang='nb'>
       <head>
@@ -20,7 +27,7 @@ const Main: FunctionComponent<TProps> = async ({ children }) => {
         <UserProvider>
           <CodelistProvider>
             <Suspense fallback={<div>Loading...</div>}>
-              <PageThemeWrapper>{children}</PageThemeWrapper>
+              <PageThemeWrapper origin={origin}>{children}</PageThemeWrapper>
             </Suspense>
           </CodelistProvider>
         </UserProvider>

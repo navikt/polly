@@ -8,9 +8,10 @@ import { TThemeMode, persistThemeMode, useStoredThemeMode } from './util/themeMo
 
 type TProps = {
   children: ReactNode
+  origin?: string
 }
 
-const PageThemeWrapper: FunctionComponent<TProps> = ({ children }) => {
+const PageThemeWrapper: FunctionComponent<TProps> = ({ children, origin }) => {
   const storedThemeMode = useStoredThemeMode()
   const [themeModeOverride, setThemeModeOverride] = useState<TThemeMode | undefined>(undefined)
   const themeMode = themeModeOverride ?? storedThemeMode
@@ -37,7 +38,7 @@ const PageThemeWrapper: FunctionComponent<TProps> = ({ children }) => {
     <Fragment>
       <Theme theme={themeMode} asChild>
         <div className='flex min-h-screen w-full flex-col'>
-          <Header themeMode={themeMode} onThemeModeChange={handleThemeModeChange} />
+          <Header themeMode={themeMode} onThemeModeChange={handleThemeModeChange} origin={origin} />
 
           <div className='flex w-full flex-1'>
             <div className='min-w-60'>
