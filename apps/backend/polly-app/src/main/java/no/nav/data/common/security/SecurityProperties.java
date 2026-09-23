@@ -30,7 +30,13 @@ public class SecurityProperties {
     }
 
     public String findBaseUrl() {
-        return tryFind(getRedirectUris(), uri -> uri.contains(Constants.PREF_DOMAIN)).orElse(getRedirectUris().get(0));
+        return findBaseUrl(null);
+    }
+
+    public String findBaseUrl(String requestOrigin) {
+        return tryFind(getRedirectUris(), uri -> StringUtils.startsWithIgnoreCase(requestOrigin, uri))
+                .or(() -> tryFind(getRedirectUris(), uri -> uri.contains(Constants.PREF_DOMAIN)))
+                .orElse(getRedirectUris().get(0));
     }
 
     public boolean isDev() {
