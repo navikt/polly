@@ -66,7 +66,7 @@ public class AuthController {
         log.debug("Request to login");
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         Assert.isTrue(securityProperties.isValidRedirectUri(errorUri), "Illegal error_uri " + errorUri);
-        var usedRedirect = redirectUri != null ? redirectUri : securityProperties.findBaseUrl(requestOrigin(request));
+        var usedRedirect = redirectUri != null ? redirectUri : securityProperties.findBaseUrl();
         String redirectUrl = tokenProvider.createAuthRequestRedirectUrl(usedRedirect, errorUri, callbackRedirectUri(request));
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
@@ -154,15 +154,6 @@ public class AuthController {
         String redirectUri = uriBuilder.build().toUriString();
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Invalid redirect uri " + redirectUri);
         return redirectUri;
-    }
-
-    private String requestOrigin(HttpServletRequest request) {
-        var uri = UriComponentsBuilder.fromUriString(buildFullRequestUrl(request)).build();
-        return UriComponentsBuilder.newInstance()
-                .scheme(uri.getScheme())
-                .host(uri.getHost())
-                .port(uri.getPort())
-                .toUriString();
     }
 
 }
