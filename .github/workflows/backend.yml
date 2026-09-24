@@ -58,7 +58,7 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v7
-      - uses: nais/deploy/actions/deploy@v2
+      - uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: dev-gcp
           RESOURCE: apps/backend/nais/behandlingskatalog-configmap-dev-gcp.yaml,apps/backend/nais/backend-gcp.yaml
@@ -68,7 +68,7 @@ jobs:
           TELEMETRY: ${{ needs.build.outputs.telemetry }}
 
       - name: deploy alerts to dev-gcp
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: dev-gcp
           RESOURCE: apps/backend/nais/alerts.yaml
@@ -85,7 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: nais/deploy/actions/deploy@v2
+      - uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: prod-gcp
           RESOURCE: apps/backend/nais/behandlingskatalog-configmap-prod-gcp.yaml,apps/backend/nais/backend-gcp.yaml
@@ -95,7 +95,7 @@ jobs:
           TELEMETRY: ${{ needs.build.outputs.telemetry }}
 
       - name: deploy alerts to prod-gcp
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: prod-gcp
           RESOURCE: apps/backend/nais/alerts.yaml
