@@ -2,8 +2,8 @@
 
 [![Dependabot Updates](https://github.com/navikt/polly/actions/workflows/dependabot/dependabot-updates/badge.svg?branch=master)](https://github.com/navikt/polly/actions/workflows/dependabot/dependabot-updates)
 
-[![Backend](https://github.com/navikt/polly/actions/workflows/backend.yml/badge.svg?branch=master)](https://github.com/navikt/polly/actions/workflows/backend)
-[![Frontend](https://github.com/navikt/polly/actions/workflows/frontend.yml/badge.svg)](https://github.com/navikt/polly/actions/workflows/frontend)
+[![Backend](https://github.com/navikt/polly/actions/workflows/backend.yml/badge.svg?branch=master)](https://github.com/navikt/polly/actions/workflows/backend.yml)
+[![Frontend](https://github.com/navikt/polly/actions/workflows/frontend.yml/badge.svg)](https://github.com/navikt/polly/actions/workflows/frontend.yml)
 
 Url for løsningen:
 
