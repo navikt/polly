@@ -209,8 +209,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   onOpenChange={(open) => {
                     onChangeProcess(open ? process.id : undefined)
                   }}
+                  className='relative'
                 >
-                  <Accordion.Header ref={expanded ? purposeRef : undefined}>
+                  <Accordion.Header
+                    ref={expanded ? purposeRef : undefined}
+                    className=' sticky top-0 z-10 bg-[#FFFFFF]'
+                  >
                     <AccordionTitle
                       codelistUtils={codelistUtils}
                       process={process}
