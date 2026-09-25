@@ -1,0 +1,72 @@
+package no.nav.data.common.varsle.domain;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
+import lombok.Value;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static no.nav.data.common.utils.StreamUtils.convert;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Varsel {
+
+    private String title;
+    @Singular
+    private List<Paragraph> paragraphs;
+
+
+    @Data
+    public static class Paragraph {
+
+        private String val;
+        private List<VarselUrl> urls = new ArrayList<>();
+
+        public Paragraph(String val) {
+            this.val = val;
+        }
+
+        public Paragraph(String val, VarselUrl... urls) {
+            this.val = val;
+            this.urls = Arrays.asList(urls);
+        }
+
+        public String toSlack() {
+            var urlsFormatted = convert(urls, u -> "<%s%s|%s>".formatted(u.url, source(u), u.name));
+            return val.formatted(urlsFormatted.toArray());
+        }
+
+        public String toHtml() {
+            var urlsFormatted = convert(urls, u -> "<a href=\"%s%s\">%s</a>".formatted(u.url, source(u), u.name));
+            return val.formatted(urlsFormatted.toArray());
+        }
+
+        private String source(VarselUrl u) {
+            return (u.url.contains("?") ? "&" : "?") + "source=varsel";
+        }
+
+        @Value
+        public static class VarselUrl {
+            String url;
+            String name;
+            public static VarselUrl url(String url, String name) {
+                return new VarselUrl(url, name);
+            }
+        }
+
+    }
+
+    public String toHtml() {
+        return "<h1>%s</h1>".formatted(title) +
+                String.join("\n", convert(paragraphs, p -> "<p>%s</p>".formatted(p.toHtml())));
+    }
+
+}
