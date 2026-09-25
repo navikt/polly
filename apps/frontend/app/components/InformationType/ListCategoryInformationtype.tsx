@@ -35,16 +35,17 @@ const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordi
           key={categoryUsage.code}
           open={openCategory === categoryUsage.code}
           onOpenChange={(open) => setOpenCategory(open ? categoryUsage.code : undefined)}
+          className='relative'
         >
-          <Accordion.Header>
-            <div className='flex w-full flex-col'>
+          <Accordion.Header className=' sticky top-0 z-10 bg-[#FFFFFF]'>
+            <Heading level='3' size='xsmall' className='flex w-full flex-col'>
               <div className='min-w-0'>
                 {codelistUtils.getShortname(EListName.CATEGORY, categoryUsage.code)}
               </div>
               <div className='mt-1 text-sm opacity-80'>
                 Opplysningstyper: {categoryUsage.informationTypes.length}
               </div>
-            </div>
+            </Heading>
           </Accordion.Header>
           <Accordion.Content>
             <ul className='pl-0 pr-0'>
