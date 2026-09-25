@@ -1,5 +1,5 @@
-import { EListName } from '@/constants/codelistConstant'
 import axios from 'axios'
+import { EListName } from '@/constants/codelistConstant'
 import { IOrgEnhet, IPageResponse, TSearchItem } from '../constants'
 import { env } from '../util/env'
 

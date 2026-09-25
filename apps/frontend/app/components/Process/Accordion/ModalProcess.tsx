@@ -1,7 +1,5 @@
 'use client'
 
-import { EListName } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
 import {
   Accordion,
   Alert,
@@ -23,6 +21,8 @@ import {
   FormikProps,
 } from 'formik'
 import { useEffect, useRef, useState } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'

@@ -1,6 +1,6 @@
+import { useContext, useState } from 'react'
 import { ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { useContext, useState } from 'react'
 import { IProcess } from '../../../constants'
 import { TColumnCompares, useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'

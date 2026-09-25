@@ -1,6 +1,6 @@
-import { ICode } from '@/constants/codelistConstant'
 import axios from 'axios'
 import shortid from 'shortid'
+import { ICode } from '@/constants/codelistConstant'
 import {
   ELegalBasesUse,
   ILegalBasis,

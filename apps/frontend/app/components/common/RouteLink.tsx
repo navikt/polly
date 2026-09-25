@@ -1,7 +1,7 @@
-import { EListName } from '@/constants/codelistConstant'
-import { TNavigateFunction, useNavigate } from '@/util/router'
 import { Link } from '@navikt/ds-react'
 import type { MouseEvent } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { EObjectType, IAuditItem, TNavigableItem } from '../../constants'
 import { AuditButton } from '../admin/audit/AuditButton'
 

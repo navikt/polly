@@ -1,5 +1,13 @@
 'use client'
 
+import {
+  Dispatch,
+  FunctionComponent,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from 'react'
 import { getAllCodelists, getAllCountries, getCountriesOutsideEUEEA } from '@/api/CodelistApi'
 import {
   ICountryCode,
@@ -18,14 +26,6 @@ import {
   IMakeIdLabelForAllCodeListsProps,
   NATIONAL_LAW_GDPR_ARTICLES,
 } from '@/constants/codelistConstant'
-import {
-  Dispatch,
-  FunctionComponent,
-  SetStateAction,
-  createContext,
-  useEffect,
-  useState,
-} from 'react'
 
 const LOVDATA_FORSKRIFT_PREFIX = 'FORSKRIFT'
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['OESA', 'YTA', 'ATA']

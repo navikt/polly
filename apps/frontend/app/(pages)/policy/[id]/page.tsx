@@ -1,9 +1,9 @@
 'use client'
 
-import { getPolicy } from '@/api/GetAllApi'
 import { Loader } from '@navikt/ds-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { getPolicy } from '@/api/GetAllApi'
 
 const Page = () => {
   const router = useRouter()

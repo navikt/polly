@@ -1,5 +1,3 @@
-import { EListName, ICode } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { MinusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Button, Label, List, Loader, Modal, Tooltip } from '@navikt/ds-react'
 import {
@@ -13,6 +11,8 @@ import {
   FormikProps,
 } from 'formik'
 import { useContext, useEffect, useState } from 'react'
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { getDefaultProcessDocument, searchDocuments } from '../../../api/GetAllApi'
 import {
   IAddDocumentToProcessFormValues,

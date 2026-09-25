@@ -1,8 +1,5 @@
 'use client'
 
-import { EListName } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IUserContext, UserContext } from '@/provider/userProvider'
 import { Alert, Label, Link, Loader, Select, TextField, Textarea } from '@navikt/ds-react'
 import {
   Field,
@@ -15,6 +12,9 @@ import {
   FormikProps,
 } from 'formik'
 import { useContext, useEffect, useState } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { searchDocuments } from '../../../api/GetAllApi'
 import { IDocument, IDocumentFormValues } from '../../../constants'
 import { disableEnter } from '../../../util/helper-functions'

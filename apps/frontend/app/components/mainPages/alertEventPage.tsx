@@ -1,15 +1,5 @@
 'use client'
 
-import { getAlertEvents } from '@/api/AlertApi'
-import {
-  EAlertEventLevel,
-  EAlertEventType,
-  EObjectType,
-  IAlertEvent,
-  IPageResponse,
-} from '@/constants'
-import { CodelistContext } from '@/provider/kodeverkProvider'
-import { tekster } from '@/util/codeToFineText'
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons'
 import {
   Button,
@@ -24,6 +14,16 @@ import {
 import moment from 'moment'
 import { useParams } from 'next/navigation'
 import { ChangeEvent, useContext, useEffect, useReducer } from 'react'
+import { getAlertEvents } from '@/api/AlertApi'
+import {
+  EAlertEventLevel,
+  EAlertEventType,
+  EObjectType,
+  IAlertEvent,
+  IPageResponse,
+} from '@/constants'
+import { CodelistContext } from '@/provider/kodeverkProvider'
+import { tekster } from '@/util/codeToFineText'
 import { Sensitivity } from '../InformationType/Sensitivity'
 import { ObjectLink } from '../common/RouteLink'
 

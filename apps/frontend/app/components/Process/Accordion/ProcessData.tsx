@@ -1,13 +1,13 @@
 'use client'
 
-import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
-import { EListName } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
-import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
 import { isNil, sum, uniqBy } from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
+import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import {

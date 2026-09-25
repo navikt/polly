@@ -1,6 +1,6 @@
-import { ICode } from '@/constants/codelistConstant'
 import { Link, Tooltip } from '@navikt/ds-react'
 import { KeyboardEvent } from 'react'
+import { ICode } from '@/constants/codelistConstant'
 import { IProcess } from '../constants'
 
 const isLink = (text: string): boolean => {

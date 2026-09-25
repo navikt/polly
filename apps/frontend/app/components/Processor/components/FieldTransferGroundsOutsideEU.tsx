@@ -1,8 +1,8 @@
-import { EListName, IGetParsedOptionsProps } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useContext } from 'react'
+import { EListName, IGetParsedOptionsProps } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IProcessorFormValues } from '../../../constants'
 
 const FieldTransferGroundsOutsideEU = () => {

@@ -1,6 +1,6 @@
-import { theme } from '@/util/theme'
 import { BodyLong, BodyShort } from '@navikt/ds-react'
 import { useState } from 'react'
+import { theme } from '@/util/theme'
 import RouteLink from '../common/RouteLink'
 
 type TShortcutCardProps = {

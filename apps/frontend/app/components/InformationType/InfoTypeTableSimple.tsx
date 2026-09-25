@@ -1,9 +1,9 @@
 'use client'
 
-import { EListName } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Heading, Loader, SortState, Table } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IInformationType } from '../../constants'
 import { handleSort, sortTableData } from '../../util/handleTableSort'
 import { DotTags } from '../common/DotTag'

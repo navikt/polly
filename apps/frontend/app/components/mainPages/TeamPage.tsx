@@ -1,11 +1,11 @@
 'use client'
 
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { getDisclosureByProductTeam } from '@/api/DisclosureApi'
 import { getDpProcessByProductTeam } from '@/api/DpProcessApi'
 import { getInformationTypesBy } from '@/api/InfoTypeApi'
 import { IDisclosure, IDpProcess } from '@/constants'
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import ProcessDisclosureTabs from '../Dashboard/ProcessDisclosureTabs'
 import { InfoTypeTable } from '../InformationType/InfoTypeTableSimple'
 import { PageHeader } from '../common/PageHeader'

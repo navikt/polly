@@ -1,8 +1,8 @@
 'use client'
 
-import { IUserContext, UserContext } from '@/provider/userProvider'
 import { BodyShort, Button, Heading, Link, List, Modal } from '@navikt/ds-react'
 import { useContext } from 'react'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { IDisclosure, IProcess } from '../../../constants'
 
 interface IDeleteProcessProps {

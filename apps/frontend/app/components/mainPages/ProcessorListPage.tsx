@@ -1,5 +1,8 @@
 'use client'
 
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Button, Heading, Loader } from '@navikt/ds-react'
+import { useContext, useEffect, useState } from 'react'
 import { getAll } from '@/api/GetAllApi'
 import {
   convertProcessorToFormValues,
@@ -9,9 +12,6 @@ import {
 import { IProcessor, IProcessorFormValues } from '@/constants'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
-import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Button, Heading, Loader } from '@navikt/ds-react'
-import { useContext, useEffect, useState } from 'react'
 import ProcessorModal from '../Processor/ProcessorModal'
 import AlphabeticList from '../common/AlphabeticList'
 

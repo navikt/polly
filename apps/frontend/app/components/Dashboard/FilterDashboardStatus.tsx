@@ -1,9 +1,9 @@
 'use client'
 
-import { TNavigateFunction, useNavigate } from '@/util/router'
 import { Label, Select } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { ChangeEvent, useState } from 'react'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import { EProcessStatusFilter } from '../../constants'
 
 interface IFilterDashboardStatusProps {

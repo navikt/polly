@@ -1,10 +1,10 @@
 'use client'
 
+import { Loader } from '@navikt/ds-react'
+import { useContext } from 'react'
 import { ProcessChangesPage } from '@/components/admin/processchanges/ProcessChangesPage'
 import ErrorNotAllowed from '@/components/common/ErrorNotAllowed'
 import { EGroup, IUserContext, UserContext } from '@/provider/userProvider'
-import { Loader } from '@navikt/ds-react'
-import { useContext } from 'react'
 
 const Page = () => {
   const user: IUserContext = useContext(UserContext)

@@ -1,9 +1,9 @@
 'use client'
 
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Accordion, Button, ErrorSummary, Modal, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik'
 import { useContext, useEffect, useRef, useState } from 'react'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IDpProcessFormValues } from '../../constants'
 import { disableEnter } from '../../util/helper-functions'
 import BoolField from '../Process/common/BoolField'

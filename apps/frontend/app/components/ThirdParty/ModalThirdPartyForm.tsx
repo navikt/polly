@@ -1,7 +1,5 @@
 'use client'
 
-import { EListName, ICountryCode } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import {
   Button,
   ErrorMessage,
@@ -22,6 +20,8 @@ import {
   getIn,
 } from 'formik'
 import { KeyboardEvent, useContext, useEffect, useState } from 'react'
+import { EListName, ICountryCode } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { getAvdelingOptions } from '../../api/NomApi'
 import { IDisclosureFormValues, IDocument, TOption } from '../../constants'
 import BoolField from '../Process/common/BoolField'

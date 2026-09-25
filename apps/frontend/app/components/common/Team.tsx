@@ -1,9 +1,9 @@
 'use client'
 
-import { theme } from '@/util/theme'
 import { XMarkOctagonIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
+import { theme } from '@/util/theme'
 import { getTeam } from '../../api/GetAllApi'
 import { ITeam } from '../../constants'
 import { DotTag } from './DotTag'

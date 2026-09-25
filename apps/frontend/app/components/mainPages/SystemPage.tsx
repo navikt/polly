@@ -1,9 +1,9 @@
 'use client'
 
-import { getInformationTypesBy } from '@/api/InfoTypeApi'
-import { EListName } from '@/constants/codelistConstant'
 import { Tabs } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
+import { getInformationTypesBy } from '@/api/InfoTypeApi'
+import { EListName } from '@/constants/codelistConstant'
 import { InfoTypeTable } from '../InformationType/InfoTypeTableSimple'
 import ProcessList from '../Process/ProcessList'
 import { PageHeader } from '../common/PageHeader'

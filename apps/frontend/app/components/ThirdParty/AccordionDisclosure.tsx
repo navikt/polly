@@ -1,12 +1,12 @@
 'use client'
 
+import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
+import { Accordion, BodyLong, BodyShort, Link, Loader, Modal } from '@navikt/ds-react'
+import { Fragment, Key, useContext, useEffect, useState } from 'react'
 import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
-import { DocPencilIcon, ExclamationmarkIcon, TrashIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyLong, BodyShort, Link, Loader, Modal } from '@navikt/ds-react'
-import { Fragment, Key, useContext, useEffect, useState } from 'react'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { convertDisclosureToFormValues, getDisclosure } from '../../api/GetAllApi'
 import {

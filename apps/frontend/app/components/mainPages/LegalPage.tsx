@@ -1,14 +1,14 @@
 'use client'
 
+import { BodyLong, Heading, Select } from '@navikt/ds-react'
+import queryString from 'query-string'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IPageResponse, IProcess } from '@/constants'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { useQueryParam } from '@/util/hooks'
 import { useLocation, useNavigate } from '@/util/router'
-import { BodyLong, Heading, Select } from '@navikt/ds-react'
-import queryString from 'query-string'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
 
 export const LegalPage = () => {

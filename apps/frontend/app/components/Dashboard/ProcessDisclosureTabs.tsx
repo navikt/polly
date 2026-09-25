@@ -1,11 +1,11 @@
 'use client'
 
-import { EListName } from '@/constants/codelistConstant'
-import { IUserContext, UserContext } from '@/provider/userProvider'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Alert, BodyShort, Button, Heading, Spacer, Tabs } from '@navikt/ds-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
 import DpProcessTable from '../DpProcess/DpProcessTable'

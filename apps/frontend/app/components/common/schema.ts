@@ -1,5 +1,5 @@
-import { ICode } from '@/constants/codelistConstant'
 import * as yup from 'yup'
+import { ICode } from '@/constants/codelistConstant'
 import { IInformationTypeShort, IPolicy } from '../../constants'
 
 export const subjectCategoryExistsGen = (

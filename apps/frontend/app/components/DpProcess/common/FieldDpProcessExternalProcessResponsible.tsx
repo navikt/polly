@@ -1,10 +1,10 @@
 'use client'
 
-import { EListName } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
 import { useContext, useState } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IDpProcessFormValues } from '../../../constants'
 
 interface IFieldDpProcessExternalProcessResponsible {

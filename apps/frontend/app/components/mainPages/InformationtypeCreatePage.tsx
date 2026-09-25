@@ -1,12 +1,12 @@
 'use client'
 
+import { Heading } from '@navikt/ds-react'
+import { Fragment, useContext, useMemo, useState } from 'react'
 import { createInformationType, mapInfoTypeToFormVals } from '@/api/InfoTypeApi'
 import { IInformationtypeFormValues } from '@/constants'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
-import { Heading } from '@navikt/ds-react'
-import { Fragment, useContext, useMemo, useState } from 'react'
 import InformationtypeForm from '../InformationType/InformationtypeForm'
 import ErrorNotAllowed from '../common/ErrorNotAllowed'
 

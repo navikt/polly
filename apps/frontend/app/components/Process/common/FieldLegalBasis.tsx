@@ -1,11 +1,11 @@
 'use client'
 
-import { ESensitivityLevel } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { PlusIcon } from '@navikt/aksel-icons'
 import { Button, Tooltip } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useRef, useState } from 'react'
+import { ESensitivityLevel } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import {
   IDisclosureFormValues,
   ILegalBasisFormValues,

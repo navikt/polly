@@ -1,7 +1,7 @@
-import { EListName } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { IDpProcessFormValues, IProcessFormValues } from '../../constants'
 import { renderTagList } from './TagList'
 

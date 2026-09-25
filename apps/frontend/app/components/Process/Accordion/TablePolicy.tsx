@@ -1,10 +1,10 @@
-import { EListName, ICode } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
-import { theme } from '@/util/theme'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Button, Modal, Tooltip } from '@navikt/ds-react'
 import _ from 'lodash'
 import { Fragment, useEffect, useState } from 'react'
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { theme } from '@/util/theme'
 import { getAlertForProcess } from '../../../api/AlertApi'
 import { convertPolicyToFormValues, getDocument } from '../../../api/GetAllApi'
 import {

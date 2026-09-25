@@ -1,11 +1,11 @@
-import { EListName, ICode } from '@/constants/codelistConstant'
-import { CodelistContext, ICodelistProps } from '@/provider/kodeverkProvider'
-import { useNavigate } from '@/util/router'
 import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons'
 import { Tag } from '@navikt/ds-react'
 import { useContext, useState } from 'react'
 import { CSSObjectWithLabel, DropdownIndicatorProps, OptionProps, components } from 'react-select'
 import AsyncSelect from 'react-select/async'
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { CodelistContext, ICodelistProps } from '@/provider/kodeverkProvider'
+import { useNavigate } from '@/util/router'
 import { searchDpProcess } from '../../api/DpProcessApi'
 import {
   searchDocuments,

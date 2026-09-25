@@ -1,6 +1,6 @@
-import { TNavigateFunction, useNavigate } from '@/util/router'
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { BodyLong, InfoCard } from '@navikt/ds-react'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import {
   EProcessField,
   EProcessState,

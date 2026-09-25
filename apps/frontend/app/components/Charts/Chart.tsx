@@ -1,8 +1,8 @@
-import { theme } from '@/util/theme'
 import { BarChartIcon, CircleIcon, PieChartIcon } from '@navikt/aksel-icons'
 import { Button, Label, Tooltip } from '@navikt/ds-react'
 import * as _ from 'lodash'
 import { Fragment, useReducer, useState } from 'react'
+import { theme } from '@/util/theme'
 import { useIsDark } from '../../util/themeMode'
 
 const cursor = { cursor: 'pointer' }

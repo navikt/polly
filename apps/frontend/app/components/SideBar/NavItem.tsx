@@ -1,5 +1,5 @@
-import { useLocation } from '@/util/router'
 import { BodyShort, Tooltip } from '@navikt/ds-react'
+import { useLocation } from '@/util/router'
 import RouteLink from '../common/RouteLink'
 
 interface INavItemProps {

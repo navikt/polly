@@ -1,5 +1,9 @@
 'use client'
 
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
+import { useContext, useEffect, useState } from 'react'
 import {
   createDisclosure,
   deleteDisclosure,
@@ -12,10 +16,6 @@ import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from
 import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
-import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
-import { useParams } from 'next/navigation'
-import { useContext, useEffect, useState } from 'react'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'

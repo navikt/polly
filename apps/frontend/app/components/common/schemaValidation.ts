@@ -1,3 +1,4 @@
+import * as yup from 'yup'
 import {
   ARTICLE_6_PREFIX,
   ARTICLE_9_PREFIX,
@@ -7,7 +8,6 @@ import {
   ICode,
   NATIONAL_LAW_GDPR_ARTICLES,
 } from '@/constants/codelistConstant'
-import * as yup from 'yup'
 import {
   ELegalBasesUse,
   EProcessStatus,

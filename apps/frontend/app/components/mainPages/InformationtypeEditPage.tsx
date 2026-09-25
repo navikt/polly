@@ -1,11 +1,11 @@
 'use client'
 
-import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '@/api/InfoTypeApi'
-import { IInformationType, IInformationtypeFormValues } from '@/constants'
-import { useNavigate } from '@/util/router'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { Fragment, useEffect, useMemo, useState } from 'react'
+import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '@/api/InfoTypeApi'
+import { IInformationType, IInformationtypeFormValues } from '@/constants'
+import { useNavigate } from '@/util/router'
 import InformationtypeForm from '../InformationType/InformationtypeForm'
 
 const InformationtypeEditPage = () => {

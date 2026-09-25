@@ -1,13 +1,13 @@
 'use client'
 
-import { EListName } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IUserContext, UserContext } from '@/provider/userProvider'
-import { TNavigateFunction, useNavigate } from '@/util/router'
 import { DocPencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { useContext, useEffect, useState } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
+import { IUserContext, UserContext } from '@/provider/userProvider'
+import { TNavigateFunction, useNavigate } from '@/util/router'
 import {
   deleteDpProcess,
   dpProcessToFormValues,

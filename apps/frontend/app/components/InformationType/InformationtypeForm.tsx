@@ -1,5 +1,3 @@
-import { EListName, IGetParsedOptionsProps } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { PlusIcon } from '@navikt/aksel-icons'
 import {
   Button,
@@ -21,6 +19,8 @@ import {
   FormikProps,
 } from 'formik'
 import { Fragment, KeyboardEvent, useContext, useEffect, useRef, useState } from 'react'
+import { EListName, IGetParsedOptionsProps } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import {
   getTerm,
   mapTermToOption,

@@ -1,13 +1,13 @@
 'use client'
 
+import { PlusIcon } from '@navikt/aksel-icons'
+import { Heading, Label, Loader, Select } from '@navikt/ds-react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useLocation, useNavigate } from '@/util/router'
 import { theme } from '@/util/theme'
-import { PlusIcon } from '@navikt/aksel-icons'
-import { Heading, Label, Loader, Select } from '@navikt/ds-react'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,

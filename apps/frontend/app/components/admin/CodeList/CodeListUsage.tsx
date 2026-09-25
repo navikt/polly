@@ -1,7 +1,7 @@
-import { EListName, ICode, IGetParsedOptionsProps } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Button, Label, Loader, Select, Table } from '@navikt/ds-react'
 import { ChangeEvent, createRef, useContext, useEffect, useState } from 'react'
+import { EListName, ICode, IGetParsedOptionsProps } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { replaceCodelistUsage } from '../../../api/GetAllApi'
 import { getAllNomAvdelinger } from '../../../api/NomApi'
 import {

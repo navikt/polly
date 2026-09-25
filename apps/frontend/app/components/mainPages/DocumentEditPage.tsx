@@ -1,12 +1,12 @@
 'use client'
 
-import { getDocument, updateInformationTypesDocument } from '@/api/DocumentApi'
-import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '@/constants'
-import { useNavigate } from '@/util/router'
 import { Heading } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { Fragment, useEffect, useState } from 'react'
 import shortid from 'shortid'
+import { getDocument, updateInformationTypesDocument } from '@/api/DocumentApi'
+import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '@/constants'
+import { useNavigate } from '@/util/router'
 import DocumentForm from '../document/component/DocumentForm'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
 

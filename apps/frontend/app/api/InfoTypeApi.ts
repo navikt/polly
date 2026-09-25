@@ -1,9 +1,9 @@
 'use client'
 
-import { useDebouncedState } from '@/util/hooks'
 import axios from 'axios'
 import queryString from 'query-string'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useDebouncedState } from '@/util/hooks'
 import {
   IInformationType,
   IInformationTypeShort,

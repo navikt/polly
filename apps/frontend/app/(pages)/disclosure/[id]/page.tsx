@@ -1,8 +1,8 @@
 'use client'
-import { getDisclosure } from '@/api/DisclosureApi'
 import { Loader } from '@navikt/ds-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { getDisclosure } from '@/api/DisclosureApi'
 
 const Page = () => {
   const router = useRouter()

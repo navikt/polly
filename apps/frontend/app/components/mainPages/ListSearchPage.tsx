@@ -1,9 +1,9 @@
 'use client'
 
-import { EListName, ICode } from '@/constants/codelistConstant'
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import AlphabeticList from '../common/AlphabeticList'
 
 interface ICodeListPageProps {

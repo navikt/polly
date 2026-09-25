@@ -1,9 +1,9 @@
 'use client'
 
-import { theme } from '@/util/theme'
 import { ArrowsUpDownIcon, SortDownIcon, SortUpIcon } from '@navikt/aksel-icons'
 import { BodyShort, Table as NavTable } from '@navikt/ds-react'
 import { Children, ReactElement, ReactNode, createContext } from 'react'
+import { theme } from '@/util/theme'
 import { TTableState } from '../../util/hooks'
 import { SORT_DIRECTION } from '../../util/hooks/table'
 

@@ -1,9 +1,9 @@
 'use client'
 
-import { getProcess } from '@/api/GetAllApi'
 import { Loader } from '@navikt/ds-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { getProcess } from '@/api/GetAllApi'
 
 const BNummer_RE = /[0-9]*/i
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i

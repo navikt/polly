@@ -1,10 +1,10 @@
 'use client'
 
-import { getDashboard } from '@/api/DashboardApi'
-import { EProcessStatusFilter, IDashboardData } from '@/constants'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { getDashboard } from '@/api/DashboardApi'
+import { EProcessStatusFilter, IDashboardData } from '@/constants'
 import Charts from '../Charts/Charts'
 import Departments from '../Dashboard/Departments'
 import { FilterDashboardStatus } from '../Dashboard/FilterDashboardStatus'

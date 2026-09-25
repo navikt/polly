@@ -1,9 +1,9 @@
 'use client'
 
-import { EListName, ICode } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Link, Loader, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getAlertForInformationType } from '../../../api/AlertApi'
 import {
   ELegalBasesUse,

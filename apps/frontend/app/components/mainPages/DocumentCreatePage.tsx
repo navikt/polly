@@ -1,10 +1,10 @@
 'use client'
 
+import { Heading } from '@navikt/ds-react'
+import { Fragment } from 'react/jsx-runtime'
 import { createInformationTypesDocument } from '@/api/DocumentApi'
 import { IDocumentFormValues } from '@/constants'
 import { useNavigate } from '@/util/router'
-import { Heading } from '@navikt/ds-react'
-import { Fragment } from 'react/jsx-runtime'
 import DocumentForm from '../document/component/DocumentForm'
 
 const initialCreateDocumentFormValues: IDocumentFormValues = {

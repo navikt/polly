@@ -1,5 +1,3 @@
-import { EListName } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { Button, Modal, Radio, RadioGroup, Select } from '@navikt/ds-react'
 import {
   Field,
@@ -11,6 +9,8 @@ import {
   FormikProps,
 } from 'formik'
 import { useEffect, useState } from 'react'
+import { EListName } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getInformationTypesShort } from '../../../api/GetAllApi'
 import { ELegalBasesUse, IInformationTypeShort, IPolicyFormValues } from '../../../constants'
 import { disableEnter } from '../../../util/helper-functions'

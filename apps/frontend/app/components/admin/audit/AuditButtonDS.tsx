@@ -1,9 +1,9 @@
 'use client'
 
-import { IUserContext, UserContext } from '@/provider/userProvider'
 import { ClockDashedIcon } from '@navikt/aksel-icons'
 import { Button, ButtonProps, Link, Tooltip } from '@navikt/ds-react'
 import { FunctionComponent, useContext } from 'react'
+import { IUserContext, UserContext } from '@/provider/userProvider'
 
 interface IAuditButtonProps extends ButtonProps {
   id: string

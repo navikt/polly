@@ -1,8 +1,8 @@
 'use client'
 
-import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { BodyLong, InlineMessage, Link, Loader, SortState, Table } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getAlertForDisclosure } from '../../api/AlertApi'
 import { IDisclosure, IDisclosureAlert } from '../../constants'
 import { handleSort, sortTableData } from '../../util/handleTableSort'

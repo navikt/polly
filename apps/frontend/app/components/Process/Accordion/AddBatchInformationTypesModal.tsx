@@ -1,9 +1,9 @@
-import { EListName, ICode } from '@/constants/codelistConstant'
-import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { BodyShort, Modal, Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, Form, Formik, FormikProps } from 'formik'
 import { Fragment, useEffect, useState } from 'react'
+import { EListName, ICode } from '@/constants/codelistConstant'
+import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getInformationTypesBy } from '../../../api/GetAllApi'
 import {
   IAddDocumentToProcessFormValues,

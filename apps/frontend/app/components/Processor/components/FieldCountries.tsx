@@ -1,7 +1,7 @@
-import { CodelistContext } from '@/provider/kodeverkProvider'
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useContext } from 'react'
+import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IProcessorFormValues } from '../../../constants'
 import { RenderTagList } from '../../common/RenderTagList'
 
