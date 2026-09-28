@@ -44,6 +44,9 @@ public final class SlackDtos {
             return error + "\n" + JsonUtils.toJson(responseMetadata);
         }
 
+        @Override
+        public boolean isOk() { return ok; }
+
     }
 
     @Data
