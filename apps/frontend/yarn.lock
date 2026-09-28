@@ -1958,13 +1958,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/eslint-plugin-next@npm:^16.3.5":
-  version: 16.3.5
-  resolution: "@next/eslint-plugin-next@npm:16.3.5"
+"@next/eslint-plugin-next@npm:^16.3.6":
+  version: 16.3.6
+  resolution: "@next/eslint-plugin-next@npm:16.3.6"
   dependencies:
     "@eslint-community/eslint-utils": "npm:4.9.1"
     fast-glob: "npm:3.3.1"
-  checksum: 10c0/c5b9facd82c30d6fd37c5ff0c6ad137e0194963b9b0842a42746814d72c43e05289a6bf30384a180d5b22645a720e7f311e1073c9083db082ab3c524f39d76b6
+  checksum: 10c0/f78b03376db616dd12cfd9c511a2d0d4fadea41e72e01d21fac6df50ac29bbaefb14aebb7f2a87215ee9526fea8e78de18e674e483f658c6cd3ee8c38eaf7687
   languageName: node
   linkType: hard
 
@@ -8880,7 +8880,7 @@ __metadata:
     "@navikt/ds-css": "npm:^8.16.2"
     "@navikt/ds-react": "npm:^8.16.2"
     "@navikt/ds-tailwind": "npm:^8.16.2"
-    "@next/eslint-plugin-next": "npm:^16.3.5"
+    "@next/eslint-plugin-next": "npm:^16.3.6"
     "@tailwindcss/postcss": "npm:^4.3.3"
     "@trivago/prettier-plugin-sort-imports": "npm:^6.0.2"
     "@types/eslint-plugin-jsx-a11y": "npm:^6.10.1"
