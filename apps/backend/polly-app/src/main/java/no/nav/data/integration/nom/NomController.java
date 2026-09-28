@@ -33,7 +33,6 @@ public class NomController {
     public RestResponsePage<OrgEnhet> getAllAvdelinger() {
         log.info("Get all avdelinger from nom");
         List<OrgEnhet> response = nomGraphClient.getAllAvdelinger();
-        varselService.errorVarsling("Tester varsling via behandlingskatalog", "Dette er et test varsle fra dev miljøet som er trigget manuelt");
         return new RestResponsePage<>(response);
     }
 

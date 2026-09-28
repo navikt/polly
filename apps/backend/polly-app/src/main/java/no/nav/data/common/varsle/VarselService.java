@@ -45,8 +45,6 @@ public class VarselService {
                 .paragraph(new Varsel.Paragraph(melding))
                 .build();
 
-
-        log.debug("Sending error varsel to channel {} with title: {} and message: {}", channelToRecieve, title, melding);
         varsle(List.of(Varslingsadresse.builder()
                 .type(AdresseType.SLACK)
                 .adresse(channelToRecieve)
