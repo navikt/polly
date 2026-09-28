@@ -23,6 +23,7 @@ public class SlackService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void scheduleSlack(SlackMeldingData melding) {
         SlackMelding sm =  SlackMelding.builder().data(melding).build();
+        log.debug("Scheduling slack melding {}", sm);
         repo.save(sm);
     }
 
