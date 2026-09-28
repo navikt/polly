@@ -1,6 +1,7 @@
 package no.nav.data.common.varsle;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.security.SecurityProperties;
 import no.nav.data.common.varsle.domain.AdresseType;
 import no.nav.data.common.varsle.domain.Varsel;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VarselService {
 
     private final SlackService slackService;
@@ -43,6 +45,8 @@ public class VarselService {
                 .paragraph(new Varsel.Paragraph(melding))
                 .build();
 
+
+        log.debug("Sending error varsel to channel {} with title: {} and message: {}", channelToRecieve, title, melding);
         varsle(List.of(Varslingsadresse.builder()
                 .type(AdresseType.SLACK)
                 .adresse(channelToRecieve)
