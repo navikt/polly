@@ -97,6 +97,7 @@ spec:
     - configmap: behandlingskatalogcfg
     - secret: polly-enckey
     - secret: polly-mail-pwd
+    - secret: behandlingskatalog-secrets
   env:
   {{#each env}}
    - name: {{this.name}}

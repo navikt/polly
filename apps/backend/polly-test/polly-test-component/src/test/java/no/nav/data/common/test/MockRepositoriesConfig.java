@@ -21,6 +21,7 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.integration.slack.domain.SlackMeldingRepo;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -64,6 +65,7 @@ public class MockRepositoriesConfig {
     @Bean @Primary public ProcessRepository processRepository() { return mock(ProcessRepository.class); }
     @Bean @Primary public DpProcessRepository dpProcessRepository() { return mock(DpProcessRepository.class); }
     @Bean @Primary public ProcessorRepository processorRepository() { return mock(ProcessorRepository.class); }
+    @Bean @Primary public SlackMeldingRepo slackMeldingRepo() { return mock(SlackMeldingRepo.class); }
     @Bean @Primary public StorageService storageService() { return mock(StorageService.class); }
     @Bean @Primary public EmailServiceImpl emailServiceImpl() { return mock(EmailServiceImpl.class); }
     @Bean @Primary public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter() { return mock(AADStatelessAuthenticationFilter.class); }
