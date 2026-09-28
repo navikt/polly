@@ -21,7 +21,7 @@ import {
 } from '@/constants'
 import { EListName } from '@/constants/codelistConstant'
 import { useQueryParam } from '@/util/hooks'
-import { generatePath, useLocation } from '@/util/router'
+import { generatePath } from '@/util/router'
 import Charts from '../Charts/Charts'
 import DashboardBreadcrumbs from '../Dashboard/DashboardBreadcrumbs'
 import ProcessDisclosureTabs from '../Dashboard/ProcessDisclosureTabs'
@@ -78,23 +78,6 @@ const ProcessPage = () => {
   const { section, code, processId } = params
   const isNoDepartment = section === ESection.department && code === 'Ingen avdeling'
   const departmentCode = isNoDepartment ? '' : (code ?? '')
-  const location = useLocation()
-
-  const moveScroll = () => {
-    window.scrollTo(
-      0,
-      localStorage.getItem('Yposition' + location.pathname) != null
-        ? Number(localStorage.getItem('Yposition' + location.pathname)) + 200
-        : 0
-    )
-    localStorage.removeItem('Yposition' + location.pathname)
-  }
-
-  const saveScroll = () => {
-    if (window.pageYOffset !== 0) {
-      localStorage.setItem('Yposition' + location.pathname, window.pageYOffset.toString())
-    }
-  }
 
   useEffect(() => {
     if (section === ESection.department) {
@@ -147,9 +130,6 @@ const ProcessPage = () => {
         setIsLoading(false)
       })()
     }
-
-    window.addEventListener('scroll', saveScroll)
-    return () => window.removeEventListener('scroll', saveScroll)
   }, [section, code])
 
   return (
@@ -186,7 +166,6 @@ const ProcessPage = () => {
                 processId={processId}
                 filter={filter}
                 section={section}
-                moveScroll={moveScroll}
                 isEditable={true}
               />
             )}
@@ -241,7 +220,6 @@ const ProcessPage = () => {
                   processId={processId}
                   filter={filter}
                   section={section}
-                  moveScroll={moveScroll}
                   isEditable={true}
                   thirdTabTitle='Dashboard'
                   defaultTab={tab ?? undefined}

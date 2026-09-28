@@ -89,7 +89,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [revisionModalKey, setRevisionModalKey] = useState(0)
   const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
-  const purposeRef = useRef<HTMLButtonElement>(null)
+  const purposeRef = useRef<HTMLDivElement>(null)
   const scrollToPolicyTable = useRef(false)
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
@@ -152,8 +152,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
         setDisclosures(await getDisclosuresByProcessId(params.processId))
       }
     })()
-    if (params.processId && !isLoading) {
-      setTimeout(() => {
+  }, [params.processId])
+
+  useEffect(() => {
+    if (params.processId && currentProcess?.id === params.processId && !isLoading) {
+      const timeoutId = window.setTimeout(() => {
         const headerEl = document.querySelector('.polly-white-internalheader') as HTMLElement | null
         const headerOffset = headerEl?.offsetHeight ?? 0
         if (scrollToPolicyTable.current && InformationTypeRef.current) {
@@ -163,11 +166,16 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
             behavior: 'smooth',
           })
         } else if (purposeRef.current) {
-          window.scrollTo({ top: purposeRef.current.offsetTop - headerOffset - 16 })
+          window.scrollTo({
+            top:
+              window.scrollY + purposeRef.current.getBoundingClientRect().top - headerOffset - 16,
+          })
         }
-      }, 200)
+      }, 300)
+
+      return () => window.clearTimeout(timeoutId)
     }
-  }, [isLoading])
+  }, [currentProcess?.id, isLoading, params.processId])
 
   useEffect(() => {
     ;(async () => {
@@ -205,16 +213,14 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               return (
                 <Accordion.Item
                   key={process.id}
+                  ref={expanded ? purposeRef : undefined}
                   open={expanded}
                   onOpenChange={(open) => {
                     onChangeProcess(open ? process.id : undefined)
                   }}
                   className='relative'
                 >
-                  <Accordion.Header
-                    ref={expanded ? purposeRef : undefined}
-                    className=' sticky top-0 z-10 bg-[#FFFFFF]'
-                  >
+                  <Accordion.Header className=' sticky top-0 z-10 bg-[#FFFFFF]'>
                     <AccordionTitle
                       codelistUtils={codelistUtils}
                       process={process}

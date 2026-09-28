@@ -18,6 +18,7 @@ type TTo = string | Partial<TPath>
 type TNavigateOptions = {
   replace?: boolean
   state?: unknown
+  scroll?: boolean
 }
 
 export type TNavigateFunction = (to: TTo | number, options?: TNavigateOptions) => void
@@ -82,16 +83,16 @@ export function useNavigate(): TNavigateFunction {
     return path.replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, '%22').replace(/'/g, '%27')
   }
 
-  const navigate = (to: TTo | number, options?: { replace?: boolean }) => {
+  const navigate = (to: TTo | number, options?: TNavigateOptions) => {
     if (typeof to === 'number') {
       if (to === -1) router.back()
       return
     }
     const url = normalizeUrl(to)
     if (options?.replace) {
-      router.replace(url)
+      router.replace(url, { scroll: options.scroll })
     } else {
-      router.push(url)
+      router.push(url, { scroll: options?.scroll })
     }
   }
   return navigate

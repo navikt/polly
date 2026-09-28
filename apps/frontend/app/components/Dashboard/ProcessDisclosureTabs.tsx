@@ -21,7 +21,6 @@ interface IProps {
   code: string
   section: ESection
   isEditable: boolean
-  moveScroll?: () => void
   listName?: EListName
   processId?: string
   filter?: EProcessStatus
@@ -42,7 +41,6 @@ const ProcessDisclosureTabs = (props: IProps) => {
     processId,
     filter,
     section,
-    moveScroll,
     isEditable,
     thirdTabTitle,
     thirdTabContent,
@@ -162,7 +160,6 @@ const ProcessDisclosureTabs = (props: IProps) => {
             filter={filter}
             seksjonFilter={seksjonFilter}
             section={section}
-            moveScroll={moveScroll}
             isEditable={isEditable}
           />
         </div>

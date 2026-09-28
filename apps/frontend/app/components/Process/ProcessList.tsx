@@ -54,7 +54,6 @@ type TProcessListProps = {
   hideTitle?: boolean
   code: string
   listName?: EListName
-  moveScroll?: () => void
   isEditable: boolean
   getCount?: (i: number) => void
 }
@@ -69,7 +68,6 @@ const ProcessList = ({
   seksjonFilter,
   processId,
   section,
-  moveScroll,
   titleOverride,
   hideTitle,
   isEditable,
@@ -133,12 +131,12 @@ const ProcessList = ({
     process?: Partial<IProcess>
   ) => {
     if (process?.id !== currentProcess?.id) {
-      navigate(genProcessPath(section, navCode, process, filter))
+      navigate(genProcessPath(section, navCode, process, filter), { scroll: false })
     }
     // reuse method to reload a process
     else if (process?.id) {
       getProcessById(process.id).catch(setErrorProcessModal)
-      navigate(genProcessPath(section, navCode, process, filter))
+      navigate(genProcessPath(section, navCode, process, filter), { scroll: false })
     }
   }
 
@@ -383,7 +381,6 @@ const ProcessList = ({
       setIsLoadingProcessList(true)
       await getProcessList()
       setIsLoadingProcessList(false)
-      if (moveScroll) moveScroll()
       const pathName: string = current_location.pathname.split('/')[1]
       if (pathName === 'seksjon') {
         setExportHref(`${env.pollyBaseUrl}/export/process?section=${code}`)
