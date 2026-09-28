@@ -7170,9 +7170,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:^6.37.0":
-  version: 6.37.0
-  resolution: "knip@npm:6.37.0"
+"knip@npm:^6.38.0":
+  version: 6.38.0
+  resolution: "knip@npm:6.38.0"
   dependencies:
     fdir: "npm:^6.5.0"
     formatly: "npm:^0.7.0"
@@ -7190,7 +7190,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/7043798047205c26c1ecdcf677944d25d6dcb78329c9798c0922f09cf3e2b494aa055985ed5eee890e87b8120da133bfa39862a08de1cc43ea97f5924adf1dcf
+  checksum: 10c0/c5f95d1baebfc746133bdcc4a9f244d071f683b40916db1f30cb4f566c5b5b6d730008f8d778a350ddc9507e1016bf7fc01c2b1b580898a221afb5216b4f7d45
   languageName: node
   linkType: hard
 
@@ -8906,7 +8906,7 @@ __metadata:
     jest-environment-jsdom: "npm:^30.5.2"
     jest-fixed-jsdom: "npm:^0.0.11"
     json-diff-kit: "npm:^1.0.35"
-    knip: "npm:^6.37.0"
+    knip: "npm:^6.38.0"
     lint-staged: "npm:^17.5.1"
     lodash: "npm:^4.18.1"
     moment: "npm:^2.31.0"
