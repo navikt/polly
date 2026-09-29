@@ -13,12 +13,14 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import no.nav.data.common.varsle.VarselService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -48,6 +50,7 @@ public class NomGraphClient {
     private final SecurityProperties securityProperties;
     private final TokenProvider tokenProvider;
     private final NomGraphQlProperties nomGraphQlProperties;
+    private final VarselService varselService;
 
     private static final String getUnderOrganiseringerQuery = readCpFile("nom/graphql/queries/get_all_under_organiseringer.graphql");
     private static final String getByIdQuery = readCpFile("nom/graphql/queries/get_by_id.graphql");
@@ -86,22 +89,28 @@ public class NomGraphClient {
             return safeStream(devAvdelinger)
                     .collect(Collectors.toMap(OrgEnhet::getId, Function.identity()));
         } else {
-            var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", "bu431e"));
-            var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
+            try {
+                var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", "bu431e"));
+                var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
 
-            assert res.getBody() != null;
-            assert res.getBody().getData() != null;
+                assert res.getBody() != null;
+                assert res.getBody().getData() != null;
 
-            var response = res.getBody().getData();
+                var response = res.getBody().getData();
 
-            if (response.getOrgEnhet() == null) {
+                if (response.getOrgEnhet() == null) {
+                    return new HashMap<>();
+                }
+
+                var alleAvdelinger = response.getOrgEnhet().getOrganiseringer().stream().map(Organisering::getOrgEnhet).toList();
+
+                return safeStream(alleAvdelinger)
+                        .collect(Collectors.toMap(OrgEnhet::getId, Function.identity()));
+            } catch (RestClientException e) {
+                log.error("Unable to connect to Nom løsning, error: {}", String.valueOf(e));
+                varselService.errorVarsling("Unable to connect to Nom løsning",  "error: " + e.getMessage());
                 return new HashMap<>();
             }
-
-            var alleAvdelinger = response.getOrgEnhet().getOrganiseringer().stream().map(Organisering::getOrgEnhet).toList();
-
-            return safeStream(alleAvdelinger)
-                    .collect(Collectors.toMap(OrgEnhet::getId, Function.identity()));
         }
     }
 
@@ -125,20 +134,25 @@ public class NomGraphClient {
             if (securityProperties.isDev()) {
                 return getDevSeksjoner(avdelingId);
             } else {
-                var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", avdelingId));
-                var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
+                try {
+                    var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", avdelingId));
+                    var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
 
-                assert res.getBody() != null;
-                assert res.getBody().getData() != null;
+                    assert res.getBody() != null;
+                    assert res.getBody().getData() != null;
 
-                var response = res.getBody().getData();
+                    var response = res.getBody().getData();
 
-                if (response.getOrgEnhet() == null) {
+                    if (response.getOrgEnhet() == null) {
+                        return List.of();
+                    }
+
+                    return response.getOrgEnhet().getOrganiseringer().stream().map(Organisering::getOrgEnhet).toList();
+                } catch (RestClientException e) {
+                    log.error("Unable to connect to Nom løsning, error: {}", String.valueOf(e));
+                    varselService.errorVarsling("Unable to connect to Nom løsning",  "error: " + e.getMessage());
                     return List.of();
                 }
-
-               return response.getOrgEnhet().getOrganiseringer().stream().map(Organisering::getOrgEnhet).toList();
-
             }
         }
     }
@@ -161,20 +175,25 @@ public class NomGraphClient {
                         createDevOrganisering("fylke_11", "fylke 11")
                 );
             } else {
-                var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", "ry630r"));
-                var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
+                try {
+                    var request = new GraphQLRequest(getUnderOrganiseringerQuery, Map.of("id", "ry630r"));
+                    var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, OrgEnhetGraphqlResponse.class);
 
-                assert res.getBody() != null;
-                assert res.getBody().getData() != null;
+                    assert res.getBody() != null;
+                    assert res.getBody().getData() != null;
 
-                var response = res.getBody().getData();
+                    var response = res.getBody().getData();
 
-                if (response.getOrgEnhet() == null) {
+                    if (response.getOrgEnhet() == null) {
+                        return List.of();
+                    }
+
+                    return response.getOrgEnhet().getOrganiseringer().stream().map(Organisering::getOrgEnhet).toList();
+                } catch (RestClientException e) {
+                    log.error("Unable to connect to Nom løsning, error: {}", String.valueOf(e));
+                    varselService.errorVarsling("Unable to connect to Nom løsning",  "error: " + e.getMessage());
                     return List.of();
                 }
-
-                return response.getOrgEnhet().getOrganiseringer().stream().map(Organisering::getOrgEnhet).toList();
-
             }
         }
 
@@ -196,22 +215,27 @@ public class NomGraphClient {
                         createDevOrganisering("kontor_11", "kontor 11")
                 );
             } else {
-                var request = new GraphQLRequest(searchOrgenhetByTermQuary, Map.of("searchTerm", searchTerm));
-                var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, SearchOrgEnhetGraphqlResponse.class);
+                try {
+                    var request = new GraphQLRequest(searchOrgenhetByTermQuary, Map.of("searchTerm", searchTerm));
+                    var res = template().postForEntity(nomGraphQlProperties.getUrl(), request, SearchOrgEnhetGraphqlResponse.class);
 
-                assert res.getBody() != null;
-                assert res.getBody().getData() != null;
+                    assert res.getBody() != null;
+                    assert res.getBody().getData() != null;
 
-                var response = res.getBody().getData();
+                    var response = res.getBody().getData();
 
-                if (response.getSearchOrgEnhet() == null) {
+                    if (response.getSearchOrgEnhet() == null) {
+                        return List.of();
+                    }
+
+                    return response.getSearchOrgEnhet().stream()
+                            .filter(orgEnhet -> orgEnhet.getOrgEnhetsType() == OrgEnhetsType.NAV_KONTOR && orgEnhet.getNomNivaa() == null)
+                            .toList();
+                } catch (RestClientException e) {
+                    log.error("Unable to connect to Nom løsning, error: {}", String.valueOf(e));
+                    varselService.errorVarsling("Unable to connect to Nom løsning",  "error: " + e.getMessage());
                     return List.of();
                 }
-
-                return response.getSearchOrgEnhet().stream()
-                        .filter(orgEnhet -> orgEnhet.getOrgEnhetsType() == OrgEnhetsType.NAV_KONTOR && orgEnhet.getNomNivaa() == null)
-                        .toList();
-
             }
         } else {
            return List.of();

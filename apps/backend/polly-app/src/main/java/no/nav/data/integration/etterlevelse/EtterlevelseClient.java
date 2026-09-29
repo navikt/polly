@@ -2,6 +2,7 @@ package no.nav.data.integration.etterlevelse;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.varsle.VarselService;
 import no.nav.data.integration.etterlevelse.domain.PvkDokumentShort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -17,6 +18,7 @@ public class EtterlevelseClient {
 
     private RestTemplate restTemplate;
     private EtterlevelseClientProperties properties;
+    private VarselService varselService;
 
     public List<PvkDokumentShort> getPvkDokumentForBehandling(UUID behandlingId) {
         List<PvkDokumentShort> pvkDokumentShorts = new ArrayList<>();
@@ -30,6 +32,7 @@ public class EtterlevelseClient {
             }
         } catch (RestClientException e) {
             log.error("Unable to connect to Etterlevelse løsning, error: {}", String.valueOf(e));
+            varselService.errorVarsling("Unable to connect to Etterlevelse løsning",  "error: " + e.getMessage());
         }
         return pvkDokumentShorts;
     }
