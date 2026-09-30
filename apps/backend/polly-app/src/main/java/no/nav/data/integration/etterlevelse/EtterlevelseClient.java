@@ -32,7 +32,9 @@ public class EtterlevelseClient {
             }
         } catch (RestClientException e) {
             log.error("Unable to connect to Etterlevelse løsning, error: {}", String.valueOf(e));
-            varselService.errorVarsling("Unable to connect to Etterlevelse løsning",  "error: " + e.getMessage());
+            if (e.getMessage() != null && !e.getMessage().contains("404")) {
+                varselService.errorVarsling("Unable to connect to Etterlevelse løsning",  "error: " + e.getMessage());
+            }
         }
         return pvkDokumentShorts;
     }
