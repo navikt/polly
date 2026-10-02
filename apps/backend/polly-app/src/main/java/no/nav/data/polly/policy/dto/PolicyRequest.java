@@ -50,8 +50,13 @@ public class PolicyRequest implements RequestElement {
     private int requestIndex;
     private boolean update;
 
+    @Schema(description = "Versjonen klienten sist leste. Må sendes ved oppdatering (optimistisk låsing)")
+    private Integer version; // For optimistisk låsing, må sendes ved oppdatering, og ikke kopieres til entity.
+
     @JsonIgnore
     private InformationType informationType;
+    
+    // TODO: process og existingPolicy trengs sannsynligvis bare hvis arbeid gjøres i feil lag
     @JsonIgnore
     private Process process;
     @JsonIgnore

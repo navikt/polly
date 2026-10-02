@@ -109,5 +109,7 @@ export const mapInfoTypeToFormVals = (
     keywords: data.keywords || [],
     description: data.description || '',
     orgMaster: data.orgMaster?.code || '',
+    // Optimistisk låsing: ta vare på versjonen vi leste, slik at den kan sendes ved lagring
+    version: data.version,
   }
 }

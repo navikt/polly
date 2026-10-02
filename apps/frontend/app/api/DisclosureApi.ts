@@ -74,6 +74,8 @@ export const deleteDisclosure = async (disclosureId: string) => {
 const convertFormValuesToDisclosure = (values: IDisclosureFormValues) => {
   return {
     id: values.id,
+    // Optimistisk låsing: versjonen klienten sist leste. Backend svarer 409 hvis den er utdatert.
+    version: values.version,
     recipient: values.recipient,
     name: values.name,
     recipientPurpose: values.recipientPurpose,
@@ -107,6 +109,8 @@ export const convertDisclosureToFormValues: (disclosure: IDisclosure) => IDisclo
 ): IDisclosureFormValues => {
   return {
     id: disclosure.id,
+    // Optimistisk låsing: ta vare på versjonen vi leste, slik at den kan sendes ved lagring
+    version: disclosure.version,
     recipient: disclosure.recipient.code || '',
     name: disclosure.name || '',
     recipientPurpose: disclosure ? disclosure.recipientPurpose : '',
@@ -119,6 +123,7 @@ export const convertDisclosureToFormValues: (disclosure: IDisclosure) => IDisclo
             ? disclosure.document.dataAccessClass.code
             : '',
           informationTypes: disclosure.document.informationTypes,
+          version: disclosure.document.version,
         }
       : undefined,
     legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),

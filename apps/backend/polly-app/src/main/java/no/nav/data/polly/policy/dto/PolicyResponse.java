@@ -36,5 +36,7 @@ public class PolicyResponse {
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     private List<UUID> documentIds;
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
+
 
 }

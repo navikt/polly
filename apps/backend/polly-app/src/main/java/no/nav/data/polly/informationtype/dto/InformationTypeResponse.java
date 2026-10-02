@@ -39,12 +39,14 @@ public class InformationTypeResponse {
     private List<CodelistResponse> sources;
     private List<String> keywords;
     private ChangeStampResponse changeStamp;
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
 
     public InformationTypeResponse(InformationType informationType) {
         id = informationType.getId();
         setTerm(informationType.getTermId());
         mapJsonFields(informationType.getData());
         setChangeStamp(informationType.convertChangeStampResponse());
+        setVersion(informationType.getVersion());
     }
 
     private void mapJsonFields(@NotNull InformationTypeData data) {

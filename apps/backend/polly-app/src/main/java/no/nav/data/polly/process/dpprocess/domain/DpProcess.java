@@ -73,6 +73,7 @@ public class DpProcess extends Auditable {
         data.setArt9(request.getArt9());
         data.setArt10(request.getArt10());
         data.setRetention(convertRetention(request.getRetention()));
+        // Version skal aldri kopieres fra request til entity
         return this;
     }
 
@@ -94,6 +95,7 @@ public class DpProcess extends Auditable {
                 .art10(data.getArt10())
                 .retention(data.getRetention().convertToResponse())
                 .changeStamp(convertChangeStampResponse())
+                .version(getVersion())
                 .build();
     }
 

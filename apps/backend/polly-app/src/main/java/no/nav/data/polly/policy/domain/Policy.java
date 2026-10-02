@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.nav.data.common.auditing.domain.Auditable;
+import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -87,7 +88,14 @@ public class Policy extends Auditable {
 
     // TODO: Snu avhengigheten innover
     public static Policy mapRequestToPolicy(PolicyRequest policyRequest) {
-        Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : Policy.builder().generateId().data(new PolicyData()).build();
+        Policy policy;
+        if (policyRequest.getExistingPolicy() != null) {
+            policy = policyRequest.getExistingPolicy();
+            // Optimistisk låsing: sjekk før mapping. Hibernate øker version selv ved flush.
+            OptimisticLockingUtil.checkVersion(policy, policyRequest.getVersion());
+        } else {
+            policy = Policy.builder().generateId().data(new PolicyData()).build();
+        }
         policyRequest.getInformationType().addPolicy(policy);
         policyRequest.getProcess().addPolicy(policy);
         policy.getData().setPurposes(List.copyOf(policyRequest.getPurposes()));
@@ -111,6 +119,7 @@ public class Policy extends Auditable {
                 .legalBasesUse(getData().getLegalBasesUse())
                 .legalBases(convert(getData().getLegalBases(), LegalBasis::convertToResponse))
                 .documentIds(getData().getDocumentIds())
+                .version(getVersion())
                 .build();
     }
 

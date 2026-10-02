@@ -63,6 +63,10 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(processResponse.getChangeStamp().getLastModifiedBy()).isNotNull();
         assertThat(processResponse.getChangeStamp().getLastModifiedDate()).isNotNull();
         processResponse.setChangeStamp(null);
+        // Optimistisk låsing: version er en flytende verdi, sammenlignes ikke her
+        assertThat(processResponse.getVersion()).isNotNull();
+        processResponse.setVersion(null);
+        processResponse.getPolicies().forEach(p -> p.setVersion(null));
 
         assertThat(processResponse).isEqualTo(processResponseBuilder(policy.getProcess().getId())
                 .policy(PolicyResponse.builder()
@@ -228,7 +232,11 @@ class ProcessControllerIT extends IntegrationTestBase {
             assertThat(processPage).isNotNull();
 
             assertThat(processPage.getContent()).hasSize(2);
-            processPage.getContent().forEach(p -> p.setChangeStamp(null));
+            // dont compare fluid values
+            processPage.getContent().forEach(p -> {
+                p.setChangeStamp(null);
+                p.setVersion(null);
+            });
             assertThat(processPage.getContent()).contains(
                     processResponseBuilder(policy.getProcess().getId())
                             .name("Auto_" + PURPOSE_CODE1)

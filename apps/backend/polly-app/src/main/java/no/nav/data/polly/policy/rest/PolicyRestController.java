@@ -44,7 +44,7 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @Tag(name = "Policy", description = "Data Catalog Policies")
 @RequestMapping("/policy")
-@Transactional // TODO: Flytt dette inn til tjenestelaget
+@Transactional // FIXME: MÅ flyttes til Service. Lager krøll for optimistisk låsing.
 @RequiredArgsConstructor
 public class PolicyRestController {
 

@@ -38,6 +38,8 @@ public class PolicyService {
     @Transactional
     public List<Policy> saveAll(List<Policy> policies) {
         var all = policyRepository.saveAll(policies);
+        // Flush slik at Hibernate har økt version (i tilfelle omsluttende transaksjon utsetter flush)
+        policyRepository.flush();
         onChange(all, false);
         return all;
     }

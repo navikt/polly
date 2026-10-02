@@ -102,6 +102,7 @@ class DpProcessControllerIT extends IntegrationTestBase {
         // dont compare fluid values
         body.setId(null);
         body.setChangeStamp(null);
+        body.setVersion(null);
         assertThat(body).isEqualTo(DpProcessResponse.builder()
                 .name("name")
                 .dpProcessNumber(body.getDpProcessNumber())

@@ -3,6 +3,7 @@ package no.nav.data.polly.codelist;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.CodelistNotFoundException;
+import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
@@ -39,6 +40,8 @@ public class CodelistService implements ApplicationListener<ApplicationReadyEven
     @Transactional
     public List<Codelist> save(List<Codelist> codelists) {
         List<Codelist> saved = codelistRepository.saveAll(codelists);
+        // Flush slik at Hibernate har satt version før responsen bygges og før cachen oppdateres
+        codelistRepository.flush();
         saved.forEach(CodelistCache::set);
         return saved;
     }
@@ -50,6 +53,8 @@ public class CodelistService implements ApplicationListener<ApplicationReadyEven
                 .map(this::updateDescriptionInRepository)
                 .collect(Collectors.toList());
         List<Codelist> saved = codelistRepository.saveAll(codelists);
+        // Flush slik at Hibernate har økt version før responsen bygges og før cachen oppdateres
+        codelistRepository.flush();
         saved.forEach(CodelistCache::set);
         return saved;
     }
@@ -58,6 +63,8 @@ public class CodelistService implements ApplicationListener<ApplicationReadyEven
         Optional<Codelist> byListAndCode = codelistRepository.findByListAndCode(request.getListAsListName(), request.getCode());
         Assert.isTrue(byListAndCode.isPresent(), "item not found, should be validated");
         Codelist codelist = byListAndCode.get(); // All request are validated at this point
+        // Optimistisk låsing. Codelist har sammensatt nøkkel og ingen UUID-id, så vi bruker list+code som identifikator.
+        OptimisticLockingUtil.checkVersion(Codelist.class, request.getIdentifyingFields(), codelist.getVersion(), request.getVersion());
         codelist.setShortName(request.getShortName());
         codelist.setDescription(request.getDescription());
         return codelist;

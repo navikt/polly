@@ -114,6 +114,7 @@ class ProcessorControllerIT extends IntegrationTestBase {
         // dont compare fluid values
         body.setId(null);
         body.setChangeStamp(null);
+        body.setVersion(null);
         assertThat(body).isEqualTo(ProcessorResponse.builder()
                 .name("name")
                 .contract("contract")

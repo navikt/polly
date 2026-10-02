@@ -41,7 +41,6 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 
 @Service
-@Transactional
 public class CodeUsageService {
 
     private final ProcessRepository processRepository;
@@ -93,10 +92,12 @@ public class CodeUsageService {
         requestValidator.validateCodeUsageRequests(requests);
     }
 
+    @Transactional(readOnly = true)
     public List<CodeUsageResponse> findCodeUsageOfList(ListName list) {
         return CodelistStaticService.getCodelist(list).stream().map(c -> findCodeUsage(c.getList(), c.getCode())).collect(toList());
     }
 
+    @Transactional(readOnly = true)
     public CodeUsageResponse findCodeUsage(ListName listName, String code) {
         return summary.labels(listName.name()).time(() -> {
             CodeUsageResponse codeUsage = new CodeUsageResponse(listName, code);
@@ -111,6 +112,7 @@ public class CodeUsageService {
         });
     }
 
+    @Transactional
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
     public CodeUsageResponse replaceUsage(ListName listName, String oldCode, String newCode, String newCodeName) {
         var usage = findCodeUsage(listName, oldCode);

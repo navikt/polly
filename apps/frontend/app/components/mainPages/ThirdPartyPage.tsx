@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from 'react'
 import {
   createDisclosure,
   deleteDisclosure,
+  getDisclosure,
   getDisclosuresByRecipient,
   updateDisclosure,
 } from '@/api/DisclosureApi'
@@ -16,6 +17,11 @@ import { IDisclosure, IDisclosureFormValues, IDpProcess, IInformationType } from
 import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
+import { getConflictAwareErrorMessage, isConflictError } from '@/util/optimisticLocking'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Accordion, BodyLong, Button, Heading, Loader } from '@navikt/ds-react'
+import { useParams } from 'next/navigation'
+import { useContext, useEffect, useState } from 'react'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
@@ -81,7 +87,16 @@ const ThirdPartyPage = () => {
       ])
       return true
     } catch (error: any) {
-      setError(error.message)
+      if (isConflictError(error) && disclosure.id) {
+        // Optimistisk låsing: utleveringen er endret av en annen bruker.
+        // Hent inn gjeldende data på nytt i stedet for å overskrive i stillhet.
+        const fresh: IDisclosure = await getDisclosure(disclosure.id)
+        setDisclosureList([
+          ...disclosureList.filter((item: IDisclosure) => item.id !== fresh.id),
+          fresh,
+        ])
+      }
+      setError(getConflictAwareErrorMessage(error, error.message))
       return false
     }
   }

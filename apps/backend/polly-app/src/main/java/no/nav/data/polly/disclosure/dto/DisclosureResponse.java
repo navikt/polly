@@ -1,6 +1,7 @@
 package no.nav.data.polly.disclosure.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,6 +53,8 @@ public class DisclosureResponse {
     private String nomDepartmentId;
     private String nomDepartmentName;
     private List<String> productTeams;
+    @Schema(description = "Versjon for optimistisk låsing. Må sendes tilbake ved oppdatering")
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);

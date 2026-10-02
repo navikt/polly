@@ -143,6 +143,7 @@ public class DpProcessController {
     @ApiResponse(description = "DpProcess deleted")
     @DeleteMapping("/{id}")
     public ResponseEntity<DpProcessResponse> delete(@PathVariable UUID id) {
+        // FIXME: Mangler Opt lock
         log.info("Received a request to delete DpProcess with id={}", id);
         Optional<DpProcess> fromRepository = repository.findById(id);
         if (fromRepository.isEmpty()) {
