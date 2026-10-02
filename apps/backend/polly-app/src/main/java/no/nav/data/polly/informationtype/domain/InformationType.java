@@ -105,7 +105,7 @@ public class InformationType extends Auditable {
         data.setCategories(copyOf(request.getCategories()));
         data.setSources(copyOf(request.getSources()));
         data.setKeywords(copyOf(request.getKeywords()));
-
+        // Merk: version skal aldri kopieres fra request til entity.
         preUpdate();
     }
 

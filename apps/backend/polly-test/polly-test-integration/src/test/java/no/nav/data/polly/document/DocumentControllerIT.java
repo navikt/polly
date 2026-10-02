@@ -68,6 +68,8 @@ class DocumentControllerIT extends IntegrationTestBase {
 
         assertThat(documentResponse).isEqualTo(DocumentResponse.builder()
                 .id(documentResponse.getId())
+                // Optimistisk låsing: version følger med i responsen
+                .version(documentResponse.getVersion())
                 .name("Skattedata")
                 .description("desc")
                 .informationTypes(List.of(DocumentInfoTypeUseResponse.builder().informationTypeId(infoTypeRes.getId())
@@ -170,7 +172,9 @@ class DocumentControllerIT extends IntegrationTestBase {
         var docIds = new ArrayList<>(policy.getData().getDocumentIds());
         docIds.add(doc.getId());
         policy.getData().setDocumentIds(docIds);
-        policyRepository.save(policy);
+        // Optimistisk låsing: bruk instansen save() returnerer. Den opprinnelige instansen er detached
+        // med utdatert version etter lagring, og ville gitt ObjectOptimisticLockingFailureException ved delete.
+        policy = policyRepository.save(policy);
 
         var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
 
@@ -179,7 +183,7 @@ class DocumentControllerIT extends IntegrationTestBase {
         policyRepository.delete(policy);
 
         disclosure.getData().setDocumentId(doc.getId());
-        disclosureRepository.save(disclosure);
+        disclosure = disclosureRepository.save(disclosure);
         resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);

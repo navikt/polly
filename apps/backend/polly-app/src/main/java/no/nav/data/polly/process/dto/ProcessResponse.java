@@ -60,6 +60,8 @@ public class ProcessResponse {
     private ProcessStatus status;
     private String revisionText;
     private ChangeStampResponse changeStamp;
+    @Schema(description = "Versjon for optimistisk låsing. Må sendes tilbake ved oppdatering")
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
 
     private BehandlingsNivaa behandlingsNivaa;
 

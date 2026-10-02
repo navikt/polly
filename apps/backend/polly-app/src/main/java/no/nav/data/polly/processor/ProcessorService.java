@@ -1,7 +1,9 @@
 package no.nav.data.polly.processor;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.processor.domain.Processor;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
@@ -20,12 +22,16 @@ public class ProcessorService {
 
     @Transactional
     public Processor save(Processor processor) {
-        return repository.save(processor);
+        // saveAndFlush i tilfelle vi har en omsluttende transaksjon
+        return repository.saveAndFlush(processor);
     }
 
     @Transactional
     public Processor update(ProcessorRequest request) {
-        var processor = repository.findById(request.getIdAsUUID()).orElseThrow();
+        var processor = repository.findById(request.getIdAsUUID())
+                .orElseThrow(() -> new NotFoundException("No processor with id=" + request.getIdAsUUID()));
+        // Optimistisk låsing: sjekk før mapping. Hibernate øker version selv ved flush.
+        OptimisticLockingUtil.checkVersion(processor, request.getVersion());
         processor.convertFromRequest(request);
         return save(processor);
     }

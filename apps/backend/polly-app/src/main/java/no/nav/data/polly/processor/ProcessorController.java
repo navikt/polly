@@ -111,6 +111,7 @@ public class ProcessorController {
     @ApiResponse(description = "Processor deleted")
     @DeleteMapping("/{id}")
     public ResponseEntity<ProcessorResponse> delete(@PathVariable UUID id) {
+        // FIXME: Må implementere optimistisk låsing.
         log.info("Received a request to delete Processor with id={}", id);
         Optional<Processor> fromRepository = repository.findById(id);
         if (fromRepository.isEmpty()) {

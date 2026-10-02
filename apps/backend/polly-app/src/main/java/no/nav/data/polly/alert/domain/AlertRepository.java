@@ -26,6 +26,12 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID>, Al
     List<GenericStorage> findByDisclosureId(UUID disclosureId);
 
     // Deletes
+    // Merk: ALERT_EVENT-rader i GENERIC_STORAGE er avledet, serverside-beregnet cache/varselhistorikk.
+    // De eies ikke av noen klient, sendes aldri frem og tilbake med en version, og slettes/beregnes
+    // på nytt av AlertService. Derfor er optimistisk låsing bevisst utelatt her: en samtidig
+    // rekalkulering skal få lov til å overskrive, og antall slettede rader er lovlig 0..n.
+    // Kallerne (AlertService) logger antall slettede rader; det finnes ingen forventet antall å
+    // validere mot, så det kastes ikke exception.
     @Modifying
     @Query(value = "delete from generic_storage where data ->> 'informationTypeId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     int deleteByInformationTypeId(UUID informationTypeId);

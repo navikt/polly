@@ -76,6 +76,7 @@ public class Disclosure extends Auditable {
         data.setNomDepartmentId(request.getNomDepartmentId());
         data.setNomDepartmentName(request.getNomDepartmentName());
         data.setProductTeams(copyOf(request.getProductTeams()));
+        // Merk: version skal ALDRI kopieres fra requesten til entitet. 
         return this;
     }
 
@@ -103,6 +104,7 @@ public class Disclosure extends Auditable {
                 .nomDepartmentName(data.getNomDepartmentName())
                 .productTeams(copyOf(data.getProductTeams()))
                 .changeStamp(convertChangeStampResponse())
+                .version(getVersion())
                 .build();
     }
 
