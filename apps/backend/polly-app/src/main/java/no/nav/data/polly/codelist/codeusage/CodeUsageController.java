@@ -25,6 +25,8 @@ import java.util.List;
 @RequestMapping("/codelist/usage")
 public class CodeUsageController {
 
+    // Merk: Ingen optimistisk låsing nødvendig, siden det ikke fremkommer noen les → endre i klient → skriv
+    
     private final CodeUsageService service;
 
     public CodeUsageController(CodeUsageService service) {

@@ -24,6 +24,11 @@ import {
   IProcessor,
 } from '../../constants'
 import { lastModifiedDate } from '../../util/date-formatter'
+import {
+  CONFLICT_MESSAGE,
+  getConflictAwareErrorMessage,
+  isConflictError,
+} from '../../util/optimisticLocking'
 import { RetentionView } from '../Process/Retention'
 import Button from '../common/Button/CustomButton'
 import DataText from '../common/DataText'
@@ -67,11 +72,20 @@ const DpProcessView = () => {
       setErrorDpProcessModal('')
       setShowModal(false)
     } catch (error: any) {
-      if (error.response.data.message.includes('already exists')) {
+      if (isConflictError(error)) {
+        // Optimistisk låsing: databehandlingen er endret av en annen bruker.
+        // Hent inn gjeldende data på nytt i stedet for å overskrive i stillhet.
+        setErrorDpProcessModal(CONFLICT_MESSAGE)
+        if (dpProcess.id) {
+          setDpProcess(await getDpProcess(dpProcess.id))
+        }
+        return
+      }
+      if (error.response?.data?.message?.includes('already exists')) {
         setErrorDpProcessModal('Databehandlingen eksisterer allerede.')
         return
       }
-      setErrorDpProcessModal(error.response.data.message)
+      setErrorDpProcessModal(getConflictAwareErrorMessage(error))
     }
   }
 

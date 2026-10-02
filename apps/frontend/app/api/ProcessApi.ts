@@ -167,11 +167,14 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     retention,
     dpia,
     status,
+    version,
   } = process || {}
 
   return {
     legalBasesOpen: false,
     id: id,
+    // Optimistisk låsing: ta vare på versjonen vi leste, slik at den kan sendes ved lagring
+    version: version,
     name: name || '',
     description: description || '',
     additionalDescription: additionalDescription || '',
@@ -231,6 +234,8 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
 const convertFormValuesToProcess = (values: IProcessFormValues) => {
   return {
     id: values.id,
+    // Optimistisk låsing: versjonen klienten sist leste. Backend svarer 409 hvis den er utdatert.
+    version: values.version,
     name: values.name,
     description: values.description,
     additionalDescription: values.additionalDescription,

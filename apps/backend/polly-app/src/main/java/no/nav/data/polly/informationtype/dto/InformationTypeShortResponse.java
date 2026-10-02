@@ -16,6 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "sensitivity"})
 public class InformationTypeShortResponse {
+    
+    // Denne klassen brukes kun som referanse, og ikke til å opprette eller endre entiteter.
 
     private UUID id;
     private String name;

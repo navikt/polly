@@ -144,6 +144,8 @@ export interface IInformationtypeFormValues {
   categories: string[]
   sources: string[]
   keywords: string[]
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface IPolicyFormValues {
@@ -157,6 +159,8 @@ export interface IPolicyFormValues {
   legalBasesOpen: boolean
   documentIds: string[]
   otherPolicies: IPolicy[]
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface IProcessFormValues {
@@ -180,6 +184,8 @@ export interface IProcessFormValues {
   dataProcessing: IDataProcessingFormValues
   retention: IRetention
   disclosures: IDisclosure[]
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface IAffiliationFormValues {
@@ -297,6 +303,8 @@ export interface IInformationType {
   sources: ICode[]
   categories: ICode[]
   changeStamp: IChangeStamp
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export interface IPolicy {
@@ -308,6 +316,8 @@ export interface IPolicy {
   legalBasesUse: ELegalBasesUse
   legalBases: ILegalBasis[]
   documentIds?: string[]
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export const getPolicySort = (codelistUtils: ICodelistProps): TColumnCompares<IPolicy> => {
@@ -437,6 +447,8 @@ export interface IProcess extends IDurationed {
   dataProcessing: IDataProcessing
   retention: IRetention
   revisionText?: string
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export interface IAiUsageDescription {
@@ -462,6 +474,8 @@ export interface IDpProcess extends IDurationed {
   art9?: boolean
   art10?: boolean
   retention: IDpRetention
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export interface IDpProcessWithEmail extends IDurationed {
@@ -495,6 +509,8 @@ export interface IDpProcessFormValues {
   retention: IDpRetention
   start?: string
   end?: string
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface IChangeStamp {
@@ -562,6 +578,8 @@ export interface ICodeListFormValues {
   code: string
   shortName?: string
   description?: string
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface ITeam {
@@ -618,6 +636,8 @@ export interface IDisclosureFormValues {
   department?: string
   nomDepartmentId?: string
   nomDepartmentName?: string
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface IDisclosureAbroad {
@@ -651,6 +671,8 @@ export interface IDisclosure extends IDurationed {
   nomDepartmentName?: string
 
   changeStamp: IChangeStamp
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export interface IDocumentFormValues {
@@ -659,6 +681,8 @@ export interface IDocumentFormValues {
   description: string
   informationTypes: IDocumentInfoTypeUse[]
   dataAccessClass?: string
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface IDocument {
@@ -667,6 +691,8 @@ export interface IDocument {
   description: string
   informationTypes: IDocumentInfoTypeUse[]
   dataAccessClass: ICode
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export interface IDocumentInfoTypeUse {
@@ -713,6 +739,8 @@ export interface IProcessor {
   transferGroundsOutsideEUOther?: string
   countries?: string[]
   changeStamp?: IChangeStamp
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export interface IProcessorFormValues {
@@ -726,6 +754,8 @@ export interface IProcessorFormValues {
   transferGroundsOutsideEU?: string
   transferGroundsOutsideEUOther?: string
   countries: string[]
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
+  version?: number
 }
 
 export interface IAuditItem {

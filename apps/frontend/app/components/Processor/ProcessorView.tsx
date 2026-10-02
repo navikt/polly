@@ -24,6 +24,11 @@ import {
 } from '../../constants'
 import { lastModifiedDate } from '../../util/date-formatter'
 import { shortenLinksInText } from '../../util/helper-functions'
+import {
+  CONFLICT_MESSAGE,
+  getConflictAwareErrorMessage,
+  isConflictError,
+} from '../../util/optimisticLocking'
 import Button from '../common/Button/CustomButton'
 import DataText from '../common/DataText'
 import { boolToText } from '../common/Radio'
@@ -66,17 +71,27 @@ const ProcessorView = () => {
 
   const handleEditDataProcessor = (processor: IProcessorFormValues) => {
     if (!processor) return
-    try {
-      ;(async () => {
+    ;(async () => {
+      try {
         const newDataProcessor = await updateProcessor(processor)
         setIsLoading(true)
         setCurrentProcessor(await getProcessor(newDataProcessor.id))
         setIsLoading(false)
-      })()
-      setShowEditProcessorModal(false)
-    } catch (error: any) {
-      setModalErrorMessage(error.response.data.message)
-    }
+        setModalErrorMessage('')
+        setShowEditProcessorModal(false)
+      } catch (error: any) {
+        if (isConflictError(error)) {
+          // Optimistisk låsing: databehandleren er endret av en annen bruker.
+          // Hent inn gjeldende data på nytt i stedet for å overskrive i stillhet.
+          setModalErrorMessage(CONFLICT_MESSAGE)
+          if (params.id) {
+            setCurrentProcessor(await getProcessor(params.id))
+          }
+          return
+        }
+        setModalErrorMessage(getConflictAwareErrorMessage(error))
+      }
+    })()
   }
 
   const handleDeleteDataProcessor = async (processor: IProcessor) => {

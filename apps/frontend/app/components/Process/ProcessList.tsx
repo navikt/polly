@@ -39,6 +39,7 @@ import {
   IProcessShort,
 } from '../../constants'
 import { env } from '../../util/env'
+import { CONFLICT_MESSAGE, isConflictError } from '../../util/optimisticLocking'
 import Button from '../common/Button/CustomButton'
 import { ESection, genProcessPath } from '../mainPages/ProcessPage'
 import AccordionProcess from './Accordion/AccordionProcess'
@@ -83,7 +84,7 @@ const ProcessList = ({
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
   const [createProcessModalKey, setCreateProcessModalKey] = useState(0)
   const [errorProcessModal, setErrorProcessModal] = useState<string>('')
-  const [errorPolicyModal, setErrorPolicyModal] = useState(null)
+  const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
   const [errorDocumentModal, setErrorDocumentModal] = useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = useState(true)
@@ -219,6 +220,14 @@ const ProcessList = ({
       return true
     } catch (error: any) {
       console.debug(error)
+      if (isConflictError(error)) {
+        // Optimistisk låsing: behandlingen er endret av en annen bruker.
+        // Ikke overskriv i stillhet - vis melding og hent inn gjeldende data på nytt.
+        setErrorProcessModal(CONFLICT_MESSAGE)
+        if (values.id) {
+          await getProcessById(values.id)
+        }
+      }
       return false
     }
   }
@@ -271,6 +280,14 @@ const ProcessList = ({
       }
       return true
     } catch (error: any) {
+      if (isConflictError(error)) {
+        // Optimistisk låsing: opplysningstypen i behandlingen er endret av en annen bruker.
+        setErrorPolicyModal(CONFLICT_MESSAGE)
+        if (currentProcess) {
+          await getProcessById(currentProcess.id)
+        }
+        return false
+      }
       setErrorPolicyModal(error.message)
       return false
     }

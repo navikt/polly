@@ -28,7 +28,6 @@ import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
-import no.nav.data.polly.process.dto.sub.AiUsageDescriptionRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import org.hibernate.annotations.Type;
@@ -106,6 +105,7 @@ public class Process extends Auditable {
                 .changeStamp(ChangeStampResponse.from(this))
                 .status(data.getStatus())
                 .revisionText(data.getRevisionText())
+                .version(getVersion())
                 .build();
     }
 
@@ -148,6 +148,7 @@ public class Process extends Auditable {
         if (request.getStatus() != ProcessStatus.NEEDS_REVISION) {
             data.setRevisionText(null);
         }
+        // Merk: version skal ALDRI kopieres fra requesten til entitet. 
         return this;
     }
 
@@ -190,7 +191,7 @@ public class Process extends Auditable {
             return true;
         }
         if (!(obj instanceof Process process)) return false;
-        return id == process.id; //  Merk: Er dette riktig i alle tilfeller hvis id == process.id == null?
+        return id == process.id; // TODO: Helt feil implementering i nesten alle tilfeller
     }
 
     @Override

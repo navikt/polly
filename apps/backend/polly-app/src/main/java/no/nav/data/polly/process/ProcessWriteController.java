@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -37,7 +38,7 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Transactional // TODO: Flytt dette inn til tjenestelaget
+@Transactional // FIXME: Må flyttes til tjenestelaget før merge til master (lager krøll for optimistisk låsing)
 @Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
 @RequiredArgsConstructor
@@ -80,20 +81,13 @@ public class ProcessWriteController {
         return ResponseEntity.ok(service.update(request).convertToResponseWithPolicies());
     }
 
-    @Operation(summary = "Delete Process")
-    @ApiResponse(description = "Process deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProcessResponse> deleteProcessById(@PathVariable UUID id) {
+    public ResponseEntity<ProcessResponse> deleteProcessById(@PathVariable UUID id, @RequestParam(required = false) Integer version) {
+        // FIXME: Sjekk alle controllers for delete uten version
         log.info("Received a request to delete Process with id={}", id);
-        Optional<Process> fromRepository = repository.findById(id);
-        if (fromRepository.isEmpty()) {
-            log.info("Cannot find Process with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        service.deleteById(id);
-        log.info("Process with id={} deleted", id);
-        return new ResponseEntity<>(fromRepository.get().convertToResponse(), HttpStatus.OK);
+        return ResponseEntity.ok(service.deleteById(id, version).convertToResponse());
     }
+
 
     @Operation(summary = "Set revision for processe(s)")
     @PostMapping("/revision")

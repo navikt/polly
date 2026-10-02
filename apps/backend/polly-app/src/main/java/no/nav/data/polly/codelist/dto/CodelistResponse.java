@@ -25,6 +25,7 @@ public class CodelistResponse {
     private String code;
     private String shortName;
     private String description;
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
 
     @Override
     public String toString() {
@@ -42,6 +43,7 @@ public class CodelistResponse {
                 .code(cl.getCode())
                 .shortName(cl.getShortName())
                 .description(cl.getDescription())
+                .version(cl.getVersion())
                 .build();
     }
     

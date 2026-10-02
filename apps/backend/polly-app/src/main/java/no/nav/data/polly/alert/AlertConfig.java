@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.util.Optional;
 
@@ -24,25 +25,32 @@ public class AlertConfig {
             AlertService service
     ) {
         return (args) -> {
-            storage.usingAppState(appState -> {
-                if (!appState.isAlertEventsInitialized()) {
-                    PageRequest pageable = PageRequest.of(0, 10, Sort.by("id"));
-                    Page<Process> page = null;
-                    do {
-                        page = processRepository.findAll(
-                                Optional.ofNullable(page)
-                                        .map(Page::nextPageable)
-                                        .orElse(pageable)
-                        );
-                        page.get().forEach(p -> service.calculateEventsForProcess(p.getId()));
-                    } while (page.hasNext());
+            try {
+                storage.usingAppState(appState -> {
+                    if (!appState.isAlertEventsInitialized()) {
+                        PageRequest pageable = PageRequest.of(0, 10, Sort.by("id"));
+                        Page<Process> page = null;
+                        do {
+                            page = processRepository.findAll(
+                                    Optional.ofNullable(page)
+                                            .map(Page::nextPageable)
+                                            .orElse(pageable)
+                            );
+                            page.get().forEach(p -> service.calculateEventsForProcess(p.getId()));
+                        } while (page.hasNext());
 
-                    appState.setAlertEventsInitialized(true);
-                    log.info("Ran event alerts for {}", page.getTotalElements());
-                } else {
-                    log.info("Skipping init alert events");
-                }
-            });
+                        appState.setAlertEventsInitialized(true);
+                        log.info("Ran event alerts for {}", page.getTotalElements());
+                    } else {
+                        log.info("Skipping init alert events");
+                    }
+                });
+            } catch (OptimisticLockingFailureException e) {
+                // APP_STATE-raden har optimistisk låsing. Ved deploy starter begge replikaene
+                // samtidig, og kun én får ta låsen. Taperen skal ikke feile oppstarten - da ville
+                // poden gått i crash loop - men hoppe over initieringen som den andre kjører.
+                log.info("Another instance is initializing alert events, skipping");
+            }
         };
     }
 

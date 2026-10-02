@@ -187,6 +187,7 @@ public class InformationTypeController {
     @DeleteMapping("/{id}")
     @Transactional // TODO: Flytt dette inn til tjenestelaget
     public ResponseEntity<InformationTypeResponse> deleteInformationTypeById(@PathVariable UUID id) {
+        // FIXME: Opt Lock
         log.info("Received a request to delete InformationType with id={}", id);
         if (id == null) {
             log.info("id missing");

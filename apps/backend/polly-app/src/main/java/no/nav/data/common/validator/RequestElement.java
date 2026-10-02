@@ -9,6 +9,16 @@ public interface RequestElement extends Validated {
 
     String getId();
 
+    /**
+     * Versjonen klienten sist leste (optimistisk låsing). Returnerer {@code null} for requests som
+     * ikke støtter/sender versjon - da gjelder kun Hibernate sin versjonssjekk ved flush.
+     * Implementasjoner deklarerer et {@code Integer version}-felt, og Lombok genererer getteren.
+     */
+    default Integer getVersion() {
+        return null;
+    }
+
+
     @JsonIgnore
     String getIdentifyingFields();
 
