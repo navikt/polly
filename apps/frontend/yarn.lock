@@ -1888,10 +1888,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/ds-css@npm:^8.17.2":
-  version: 8.17.2
-  resolution: "@navikt/ds-css@npm:8.17.2"
-  checksum: 10c0/e70f50dad3e3d26ee3956a81286eb2c7f7fa39421a0df722cbcafe8b1d924d6d51db1ab67841e9fbda76abe1d17b0a54d5af8825a243c7b7c79bfb1a677e4ade
+"@navikt/ds-css@npm:^8.18.0":
+  version: 8.18.0
+  resolution: "@navikt/ds-css@npm:8.18.0"
+  checksum: 10c0/75cb6e264cc1f8399a6b57f5bf1050a72e9802b8f787f7abf7a7e71674ff997885590a68d319624c82695c9d2e142691b3376566d32b7acc454979c41ff08cc6
   languageName: node
   linkType: hard
 
@@ -8809,7 +8809,7 @@ __metadata:
   resolution: "polly-frontend@workspace:."
   dependencies:
     "@navikt/aksel-icons": "npm:^8.17.2"
-    "@navikt/ds-css": "npm:^8.17.2"
+    "@navikt/ds-css": "npm:^8.18.0"
     "@navikt/ds-react": "npm:^8.17.2"
     "@navikt/ds-tailwind": "npm:^8.17.2"
     "@next/eslint-plugin-next": "npm:^16.3.6"
