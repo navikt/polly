@@ -1881,10 +1881,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/aksel-icons@npm:^8.17.2":
-  version: 8.17.2
-  resolution: "@navikt/aksel-icons@npm:8.17.2"
-  checksum: 10c0/6ca3ac54f4769a19d9314ffc17ea65bd74d9d2bbe845851a709c2b1e9aacb1c793573ba894abc9bf58502b90a8c369cbecac8aa15920c0ccb023247a40315043
+"@navikt/aksel-icons@npm:^8.18.0":
+  version: 8.18.0
+  resolution: "@navikt/aksel-icons@npm:8.18.0"
+  checksum: 10c0/3799f55126f1c9383051c4385ccc805c7c97e6b17232629be4436236495ada0850357a699653efbc248f86ba8083a1ea7ae0a8b405ff89680bd702e4988c2a6b
   languageName: node
   linkType: hard
 
@@ -8808,7 +8808,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "polly-frontend@workspace:."
   dependencies:
-    "@navikt/aksel-icons": "npm:^8.17.2"
+    "@navikt/aksel-icons": "npm:^8.18.0"
     "@navikt/ds-css": "npm:^8.17.2"
     "@navikt/ds-react": "npm:^8.17.2"
     "@navikt/ds-tailwind": "npm:^8.17.2"
