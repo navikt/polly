@@ -1937,10 +1937,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/ds-tailwind@npm:^8.17.2":
-  version: 8.17.2
-  resolution: "@navikt/ds-tailwind@npm:8.17.2"
-  checksum: 10c0/70954d8907789c13d39f98aabadd7e87609192267611c17837a943e4378c4326496379e92a58dbf38976890b5a3b086cfcfe8760c4a3e85d04bfd04671cd1635
+"@navikt/ds-tailwind@npm:^8.18.0":
+  version: 8.18.0
+  resolution: "@navikt/ds-tailwind@npm:8.18.0"
+  checksum: 10c0/0596a4edb05fb054a92c31fbedcffeee56cc5206f0ab13b882c2513281026399f2d416e53e85d94f331e41027c63adcd8a4e7de1716cd1a54edcef710ddc149d
   languageName: node
   linkType: hard
 
@@ -8811,7 +8811,7 @@ __metadata:
     "@navikt/aksel-icons": "npm:^8.17.2"
     "@navikt/ds-css": "npm:^8.17.2"
     "@navikt/ds-react": "npm:^8.17.2"
-    "@navikt/ds-tailwind": "npm:^8.17.2"
+    "@navikt/ds-tailwind": "npm:^8.18.0"
     "@next/eslint-plugin-next": "npm:^16.3.6"
     "@tailwindcss/postcss": "npm:^4.3.3"
     "@trivago/prettier-plugin-sort-imports": "npm:^6.0.2"
