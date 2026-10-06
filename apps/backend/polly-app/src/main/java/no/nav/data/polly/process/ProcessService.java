@@ -12,6 +12,7 @@ import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
@@ -59,11 +60,27 @@ public class ProcessService {
         return saved;
     }
 
+    public void setOverordnetBehandling(Process process, ProcessRequest request) {
+        if (request.getOverordnetBehandling() == null) {
+            process.setOverordnetBehandling(null);
+            return;
+        }
+
+        UUID parentId = UUID.fromString(request.getOverordnetBehandling());
+        var overordnetBehandling = processRepository.findById(parentId)
+                .orElseThrow(() -> new ValidationException(String.format("overordnetBehandling %s not found", parentId)));
+        if (overordnetBehandling.getBehandlingsNivaa() == BehandlingsNivaa.UNDERORDNET || process.getBehandlingsNivaa() == BehandlingsNivaa.VANLIG) {
+            throw new ValidationException(String.format("kan ikke sette behandlingen med id %s som overordnet", parentId));
+        }
+        process.setOverordnetBehandling(overordnetBehandling);
+    }
+
     @Transactional
     public Process update(ProcessRequest request) {
         var process = processRepository.findById(request.getIdAsUUID()).orElseThrow();
         var oldPurposes = process.getData().getPurposes();
         process.convertFromRequest(request);
+        setOverordnetBehandling(process, request);
         if (!oldPurposes.equals(request.getPurposes())) {
             process.getPolicies().forEach(p -> p.getData().setPurposes(List.copyOf(request.getPurposes())));
         }

@@ -91,7 +91,7 @@ public class ProcessReadController {
             log.info("Cannot find the Process with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(process.get().convertToResponseWithPolicies());
+        return ResponseEntity.ok(process.get().convertToResponseWithPoliciesAndUnderordnetBehandlinger());
     }
 
     @Operation(summary = "Get All Processes, parameters filters are not combined unless stated otherwise")
