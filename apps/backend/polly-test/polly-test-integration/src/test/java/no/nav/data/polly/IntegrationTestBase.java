@@ -29,8 +29,10 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
+import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
@@ -237,6 +239,7 @@ public abstract class IntegrationTestBase {
             String commonExternalProcessResponsible, String transferGroundsOutsideEU) {
         return processRepository.save(Process.builder()
                 .generateId()
+                .behandlingsNivaa(BehandlingsNivaa.VANLIG)
                 .data(ProcessData.builder()
                         .name(name)
                         .purpose(purpose)
@@ -282,6 +285,7 @@ public abstract class IntegrationTestBase {
         return process.computeIfAbsent(purpose,
                 (p) -> processRepository
                         .save(Process.builder().generateId()
+                                .behandlingsNivaa(BehandlingsNivaa.VANLIG)
                                 .data(ProcessData.builder()
                                         .name("Auto_" + purpose).purpose(purpose)
                                         .description("process description")
@@ -417,6 +421,7 @@ public abstract class IntegrationTestBase {
                 .retention(retentionResponse())
                 .dpia(dpiaResponse())
                 .status(ProcessStatus.IN_PROGRESS)
+                .behandlingsNivaa(BehandlingsNivaa.VANLIG)
                 ;
     }
 
