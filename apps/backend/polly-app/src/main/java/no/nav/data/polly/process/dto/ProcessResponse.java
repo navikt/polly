@@ -12,6 +12,7 @@ import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
+import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.sub.AiUsageDescription;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
@@ -31,7 +32,7 @@ import java.util.UUID;
 @JsonPropertyOrder({"id", "number", "name", "description", "additionalDescription", "purpose", "purposes", "affiliation",
         "commonExternalProcessResponsible", "start", "end", "active",
         "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status", "revisionText", "changeStamp",
-        "legalBases", "policies"})
+        "behandlingsNivaa", "overordnetBehandling", "underordnetBehandlinger", "legalBases", "policies"})
 public class ProcessResponse {
 
     private UUID id;
@@ -58,6 +59,13 @@ public class ProcessResponse {
     private ProcessStatus status;
     private String revisionText;
     private ChangeStampResponse changeStamp;
+
+    private BehandlingsNivaa behandlingsNivaa;
+
+    private ProcessShortResponse overordnetBehandling;
+
+    @Singular("underordnetBehandling")
+    private List<ProcessShortResponse> underordnetBehandlinger;
 
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;

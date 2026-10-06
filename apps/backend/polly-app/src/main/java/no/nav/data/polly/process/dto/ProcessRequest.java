@@ -12,6 +12,7 @@ import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.sub.AiUsageDescription;
 import no.nav.data.polly.process.dto.sub.*;
@@ -58,6 +59,10 @@ public class ProcessRequest implements RequestElement {
     private DpiaRequest dpia;
     private ProcessStatus status;
 
+    private BehandlingsNivaa behandlingsNivaa;
+
+    private String overordnetBehandling;
+
     private boolean update;
     private int requestIndex;
 
@@ -90,6 +95,7 @@ public class ProcessRequest implements RequestElement {
     @Override
     public void validate(FieldValidator validator) {
         validator.checkUUID(Fields.id, id);
+        validator.checkUUID(Fields.overordnetBehandling, overordnetBehandling);
         validator.checkId(this);
         validator.checkBlank(Fields.name, name);
         validator.checkRequiredCodelists(Fields.purposes, purposes, ListName.PURPOSE);
