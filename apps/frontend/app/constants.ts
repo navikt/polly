@@ -437,8 +437,18 @@ export interface IProcess extends IDurationed {
   dataProcessing: IDataProcessing
   retention: IRetention
   revisionText?: string
+  behandlingsNivaa: EBehandlingsNivaa
+  overordnetBehandling?: IProcessShort
+  underordnetBehandlinger?: IProcessShort[]
+  relasjonsDato?: string
+  sistGodkjentAvvikFraOverordnetBehandling?: string
 }
 
+export enum EBehandlingsNivaa {
+  VANLIG = 'VANLIG',
+  OVERORDNET = 'OVERORDNET',
+  UNDERORDNET = 'UNDERORDNET',
+}
 export interface IAiUsageDescription {
   aiUsage?: boolean
   description?: string
