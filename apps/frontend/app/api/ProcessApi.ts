@@ -168,6 +168,10 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     retention,
     dpia,
     status,
+    behandlingsNivaa,
+    overordnetBehandling,
+    relasjonsDato,
+    sistGodkjentAvvikFraOverordnetBehandling,
   } = process || {}
 
   return {
@@ -177,12 +181,10 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     description: description || '',
     additionalDescription: additionalDescription || '',
     purposes: purposes?.map((p) => p.code) || [],
-    behandlingsNivaa:
-      process && process.behandlingsNivaa ? process?.behandlingsNivaa : EBehandlingsNivaa.VANLIG,
-    overordnetBehandling:
-      process && process.overordnetBehandling ? process.overordnetBehandling : null,
-    relasjonsDato: process?.relasjonsDato,
-    sistGodkjentAvvikFraOverordnetBehandling: process?.sistGodkjentAvvikFraOverordnetBehandling,
+    behandlingsNivaa: process && behandlingsNivaa ? behandlingsNivaa : EBehandlingsNivaa.VANLIG,
+    overordnetBehandling: process && overordnetBehandling ? overordnetBehandling : undefined,
+    relasjonsDato: relasjonsDato,
+    sistGodkjentAvvikFraOverordnetBehandling: sistGodkjentAvvikFraOverordnetBehandling,
     affiliation: {
       department: affiliation?.department?.code || '',
       nomDepartmentId: affiliation?.nomDepartmentId || '',

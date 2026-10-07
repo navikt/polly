@@ -9,6 +9,7 @@ import {
   NATIONAL_LAW_GDPR_ARTICLES,
 } from '@/constants/codelistConstant'
 import {
+  EBehandlingsNivaa,
   ELegalBasesUse,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
@@ -28,6 +29,7 @@ import {
   IPolicy,
   IPolicyFormValues,
   IProcessFormValues,
+  IProcessShort,
   IProcessorFormValues,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
@@ -382,6 +384,13 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
       .required(requiredMessage),
     description: yup.string(),
     additionalDescription: yup.string(),
+    behandlingsNivaa: yup
+      .mixed<EBehandlingsNivaa>()
+      .oneOf(Object.values(EBehandlingsNivaa))
+      .required(requiredMessage),
+    overordnetBehandling: yup.mixed<IProcessShort>(),
+    relasjonsDato: yup.string(),
+    sistGodkjentAvvikFraOverordnetBehandling: yup.string(),
     affiliation: yup.object({
       department: yup.string(),
       nomDepartmentId: yup.string(),

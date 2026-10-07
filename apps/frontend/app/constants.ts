@@ -180,6 +180,10 @@ export interface IProcessFormValues {
   dataProcessing: IDataProcessingFormValues
   retention: IRetention
   disclosures: IDisclosure[]
+  behandlingsNivaa: EBehandlingsNivaa
+  overordnetBehandling?: IProcessShort
+  relasjonsDato?: string
+  sistGodkjentAvvikFraOverordnetBehandling?: string
 }
 
 export interface IAffiliationFormValues {

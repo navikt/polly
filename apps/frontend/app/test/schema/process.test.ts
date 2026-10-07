@@ -1,6 +1,11 @@
 import { EListName, NATIONAL_LAW_GDPR_ARTICLES } from '@/constants/codelistConstant'
 import { processSchema } from '../../components/common/schemaValidation'
-import { EProcessStatus, ILegalBasisFormValues, IProcessFormValues } from '../../constants'
+import {
+  EBehandlingsNivaa,
+  EProcessStatus,
+  ILegalBasisFormValues,
+  IProcessFormValues,
+} from '../../constants'
 import { addCode } from '../config/codelist'
 import '../config/schemaValidator'
 
@@ -39,6 +44,7 @@ export const createProcess = (): IProcessFormValues => ({
     processImplemented: true,
   },
   disclosures: [],
+  behandlingsNivaa: EBehandlingsNivaa.VANLIG,
 })
 
 describe('Process', () => {

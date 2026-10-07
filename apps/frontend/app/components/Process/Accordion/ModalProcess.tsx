@@ -1,14 +1,19 @@
 'use client'
 
+import { InformationSquareIcon } from '@navikt/aksel-icons'
 import {
   Accordion,
   Alert,
   Button,
   ErrorSummary,
+  InfoCard,
+  InlineMessage,
   Label,
+  List,
   Modal,
   Radio,
   RadioGroup,
+  ReadMore,
   Select,
   Textarea,
 } from '@navikt/ds-react'
@@ -28,7 +33,13 @@ import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
-import { EProcessStatus, IDisclosure, IProcessFormValues, IProcessor } from '../../../constants'
+import {
+  EBehandlingsNivaa,
+  EProcessStatus,
+  IDisclosure,
+  IProcessFormValues,
+  IProcessor,
+} from '../../../constants'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
@@ -219,7 +230,70 @@ const ModalProcess = ({
                     setOrganizingOpen={setOrganizingOpen}
                   />
 
-                  <FieldName />
+                  <div className='mb-7'>
+                    <FieldName />
+                  </div>
+
+                  <ReadMore header='Skal denne behandlingen være overordnet eller underordnet andre behandlinger?'>
+                    Det er mulig å velge at en behandling skal være overordnet eller underordnet
+                    andre behandlinger. Dette kan være aktuelt der:
+                    <List as='ul' className='my-5'>
+                      <List.Item>Example</List.Item>
+                      <List.Item>Example</List.Item>
+                    </List>
+                    Det forutsettes at underordnede behandlinger deler samme behandlingsaktivitet
+                    som den overordnede behandlingen.
+                    {formikBag.values.status !== EProcessStatus.COMPLETED && (
+                      <div className='mt-7'>
+                        <InlineMessage status='info'>
+                          <strong>
+                            Dersom du vil bruke denne behandlingen som overordnet, må den først
+                            fylles ut og så settes til Ferdig utfylt.
+                          </strong>
+                        </InlineMessage>
+                      </div>
+                    )}
+                    <div className='mt-7'>
+                      <Field name='behandlingsNivaa'>
+                        {({ form }: FieldProps<string, IProcessFormValues>) => (
+                          <RadioGroup
+                            legend='Velg behandlingsnivå'
+                            value={form.values.behandlingsNivaa}
+                            onChange={(value: EBehandlingsNivaa) => {
+                              form.setFieldValue('behandlingsNivaa', value)
+                            }}
+                          >
+                            <Radio value={EBehandlingsNivaa.VANLIG}>
+                              Dette er en vanlig behandling uten kobling til andre{' '}
+                            </Radio>
+                            {form.values.status === EProcessStatus.COMPLETED && (
+                              <Radio value={EBehandlingsNivaa.OVERORDNET}>
+                                Denne behandlingen skal være overordnet andre
+                              </Radio>
+                            )}
+                            <Radio value={EBehandlingsNivaa.UNDERORDNET}>
+                              Denne behandlingen skal være underordnet en annen
+                            </Radio>
+                          </RadioGroup>
+                        )}
+                      </Field>
+                    </div>
+                    {formikBag.values.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
+                      <InfoCard data-color='info' className='mt-7'>
+                        <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+                          <InfoCard.Title>
+                            Denne behandlingen vil nå kunne finnes og brukes som overordnet
+                            behandling.
+                          </InfoCard.Title>
+                        </InfoCard.Header>
+                        <InfoCard.Content>
+                          Det blir nå mulig å gå inn på andre behandlinger og velge denne
+                          behandlingen som overordnet. I så fall vil den andre behandlingen
+                          automatisk arve behandlingsaktivitet fra denne behandlingen.
+                        </InfoCard.Content>
+                      </InfoCard>
+                    )}
+                  </ReadMore>
 
                   <div className='my-7'>
                     <div className='mb-3'>
