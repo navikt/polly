@@ -3,7 +3,12 @@ package no.nav.data.polly.process.domain;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
@@ -28,7 +33,6 @@ import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
-import no.nav.data.polly.process.dto.sub.AiUsageDescriptionRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import org.hibernate.annotations.Type;
@@ -69,6 +73,18 @@ public class Process extends Auditable {
     @OneToMany(mappedBy = "process")
     private Set<Policy> policies = new HashSet<>();
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "BEHANDLINGSNIVAA", nullable = false)
+    private BehandlingsNivaa behandlingsNivaa = BehandlingsNivaa.VANLIG;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "OVERORDNET_BEHANDLING")
+    private Process overordnetBehandling;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "overordnetBehandling")
+    private List<Process> underordnetBehandlinger;
+
     // Added outside builder to enforce backreference
     public void addPolicy(Policy policy) {
         if (policy != null) {
@@ -106,13 +122,18 @@ public class Process extends Auditable {
                 .changeStamp(ChangeStampResponse.from(this))
                 .status(data.getStatus())
                 .revisionText(data.getRevisionText())
+                .overordnetBehandling(overordnetBehandling == null ? null : overordnetBehandling.convertToShortResponse())
+                .behandlingsNivaa(behandlingsNivaa)
+                .datoNaarUnderordnetBehandlingRelasjonBleSatt(data.getDatoNaarUnderordnetBehandlingRelasjonBleSatt())
+                .sistGodkjentAvvikDatoFraOverordnetBehandling(data.getSistGodkjentAvvikDatoFraOverordnetBehandling())
                 .build();
     }
 
     // TODO: Snu avhengigheten innover
-    public ProcessResponse convertToResponseWithPolicies() {
+    public ProcessResponse convertToResponseWithPoliciesAndUnderordnetBehandlinger() {
         var response = convertToResponse();
         response.setPolicies(convert(policies, policy -> policy.convertToResponse(false)));
+        response.setUnderordnetBehandlinger(convert(underordnetBehandlinger, Process::convertToShortResponse));
         response.setChangeStamp(convertChangeStampResponse());
         return response;
     }
@@ -125,6 +146,7 @@ public class Process extends Auditable {
         }
 
         data.setName(request.getName());
+        behandlingsNivaa = request.getBehandlingsNivaa() == null ? BehandlingsNivaa.VANLIG : request.getBehandlingsNivaa();
         data.setPurposes(List.copyOf(request.getPurposes()));
         data.setDescription(request.getDescription());
         data.setAdditionalDescription(request.getAdditionalDescription());

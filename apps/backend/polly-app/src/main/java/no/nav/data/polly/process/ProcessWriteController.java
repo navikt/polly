@@ -59,8 +59,10 @@ public class ProcessWriteController {
         requestValidator.validateRequest(request, false);
 
         request.setNewProcessNumber(repository.nextProcessNumber());
-        Process process = service.save(new Process().convertFromRequest(request));
-        return new ResponseEntity<>(process.convertToResponseWithPolicies(), HttpStatus.CREATED);
+        Process process = new Process().convertFromRequest(request);
+        service.setOverordnetBehandling(process, request);
+        process = service.save(process);
+        return new ResponseEntity<>(process.convertToResponseWithPoliciesAndUnderordnetBehandlinger(), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update Process")
@@ -77,7 +79,7 @@ public class ProcessWriteController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         requestValidator.validateRequest(request, true);
-        return ResponseEntity.ok(service.update(request).convertToResponseWithPolicies());
+        return ResponseEntity.ok(service.update(request).convertToResponseWithPoliciesAndUnderordnetBehandlinger());
     }
 
     @Operation(summary = "Delete Process")
