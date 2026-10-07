@@ -1,13 +1,10 @@
 'use client'
 
-import { PlusIcon } from '@navikt/aksel-icons'
-import { Heading, Label, Loader, Select } from '@navikt/ds-react'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
+import { Heading, Loader } from '@navikt/ds-react'
+import { useContext, useEffect, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useLocation, useNavigate } from '@/util/router'
-import { theme } from '@/util/theme'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,
@@ -39,11 +36,10 @@ import {
   IProcessShort,
 } from '../../constants'
 import { env } from '../../util/env'
-import Button from '../common/Button/CustomButton'
 import { ESection, genProcessPath } from '../mainPages/ProcessPage'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
-import ExportProcessModal from './Export/ExportProcessModal'
+import ProcessPageButtonGroup from './common/processPageButtonGroup'
 
 type TProcessListProps = {
   section: ESection
@@ -74,7 +70,6 @@ const ProcessList = ({
   getCount,
 }: TProcessListProps) => {
   const navigate = useNavigate()
-  const user: IUserContext = useContext(UserContext)
   const { utils: codelistUtils, lists } = useContext(CodelistContext)
 
   const [processList, setProcessList] = useState<IProcessShort[]>([])
@@ -139,8 +134,6 @@ const ProcessList = ({
       navigate(genProcessPath(section, navCode, process, filter), { scroll: false })
     }
   }
-
-  const hasAccess = (): boolean => user.canWrite() || user.isAdmin()
 
   const getProcessById = async (id: string) => {
     try {
@@ -401,58 +394,13 @@ const ProcessList = ({
           )}
         </div>
 
-        <div className='flex flex-wrap items-center gap-2 w-full sm:w-auto'>
-          <Label style={{ color: theme.colors.primary, marginRight: '1rem' }}>Filter</Label>
-
-          <div className='w-full sm:w-72 min-w-0'>
-            <Select
-              label='Status filter'
-              hideLabel
-              onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-                navigate(
-                  genProcessPath(
-                    section,
-                    navCode,
-                    undefined,
-                    event.target.value as EProcessStatus | undefined
-                  )
-                )
-              }
-            >
-              <option value=''>Alle behandlinger</option>
-              <option value={EProcessStatus.IN_PROGRESS}>Behandlinger under arbeid</option>
-              <option value={EProcessStatus.NEEDS_REVISION}>Trenger revidering</option>
-              <option value={EProcessStatus.COMPLETED}>Ferdig dokumenterte behandlinger</option>
-            </Select>
-          </div>
-
-          <div className='flex flex-wrap gap-2 justify-start sm:justify-end w-full sm:w-auto'>
-            <ExportProcessModal
-              listName={listName}
-              code={code}
-              marginRight={true}
-              exportHref={exportHref}
-            />
-            {isEditable && hasAccess() && (
-              <Button
-                size='xsmall'
-                kind='tertiary'
-                icon={
-                  <span className='flex items-center leading-none'>
-                    <PlusIcon aria-hidden className='block' />
-                  </span>
-                }
-                onClick={() => {
-                  setErrorProcessModal('')
-                  setCreateProcessModalKey((k) => k + 1)
-                  setShowCreateProcessModal(true)
-                }}
-              >
-                Opprett ny behandling
-              </Button>
-            )}
-          </div>
-        </div>
+        <ProcessPageButtonGroup
+          isEditable={isEditable}
+          exportHref={exportHref}
+          setErrorProcessModal={setErrorProcessModal}
+          setCreateProcessModalKey={setCreateProcessModalKey}
+          setShowCreateProcessModal={setShowCreateProcessModal}
+        />
       </div>
 
       {isLoadingProcessList && (
