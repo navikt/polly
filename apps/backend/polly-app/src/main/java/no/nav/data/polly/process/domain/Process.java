@@ -33,7 +33,6 @@ import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
-import no.nav.data.polly.process.dto.sub.AiUsageDescriptionRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import org.hibernate.annotations.Type;
@@ -125,6 +124,8 @@ public class Process extends Auditable {
                 .revisionText(data.getRevisionText())
                 .overordnetBehandling(overordnetBehandling == null ? null : overordnetBehandling.convertToShortResponse())
                 .behandlingsNivaa(behandlingsNivaa)
+                .datoNaarUnderordnetBehandlingRelasjonBleSatt(data.getDatoNaarUnderordnetBehandlingRelasjonBleSatt())
+                .sistGodkjentAvvikDatoFraOverordnetBehandling(data.getSistGodkjentAvvikDatoFraOverordnetBehandling())
                 .build();
     }
 

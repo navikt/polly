@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +73,10 @@ public class ProcessService {
         if (overordnetBehandling.getBehandlingsNivaa() == BehandlingsNivaa.UNDERORDNET || process.getBehandlingsNivaa() == BehandlingsNivaa.VANLIG) {
             throw new ValidationException(String.format("kan ikke sette behandlingen med id %s som overordnet", parentId));
         }
+        if (process.getOverordnetBehandling() == null) {
+            process.getData().setDatoNaarUnderordnetBehandlingRelasjonBleSatt(LocalDateTime.now());
+            process.getData().setSistGodkjentAvvikDatoFraOverordnetBehandling(LocalDateTime.now());
+        }
         process.setOverordnetBehandling(overordnetBehandling);
     }
 
@@ -81,10 +86,21 @@ public class ProcessService {
         var oldPurposes = process.getData().getPurposes();
         process.convertFromRequest(request);
         setOverordnetBehandling(process, request);
+
         if (!oldPurposes.equals(request.getPurposes())) {
             process.getPolicies().forEach(p -> p.getData().setPurposes(List.copyOf(request.getPurposes())));
+            updateUnderOrdnetBehandlingWithNewAktivitetFromOverordnet(process);
         }
         return save(process);
+    }
+
+    @Transactional
+    public void updateUnderOrdnetBehandlingWithNewAktivitetFromOverordnet(Process overordnetBehandling) {
+        var underordnetBehandling = overordnetBehandling.getUnderordnetBehandlinger();
+        underordnetBehandling.forEach(p -> {
+            p.getData().setPurposes(List.copyOf(overordnetBehandling.getData().getPurposes()));
+            save(p);
+        });
     }
 
     @Transactional

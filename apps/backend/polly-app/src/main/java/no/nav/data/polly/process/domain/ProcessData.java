@@ -15,6 +15,7 @@ import no.nav.data.polly.process.domain.sub.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +64,10 @@ public class ProcessData implements Serializable {
     @Default
     private ProcessStatus status = ProcessStatus.IN_PROGRESS;
     private String revisionText;
+
+    private LocalDateTime datoNaarUnderordnetBehandlingRelasjonBleSatt;
+
+    private LocalDateTime sistGodkjentAvvikDatoFraOverordnetBehandling;
 
     public Period toPeriod() {
         return new Period(start, end);

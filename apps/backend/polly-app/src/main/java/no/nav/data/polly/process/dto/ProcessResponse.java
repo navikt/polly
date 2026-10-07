@@ -21,6 +21,7 @@ import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -66,6 +67,10 @@ public class ProcessResponse {
 
     @Singular("underordnetBehandling")
     private List<ProcessShortResponse> underordnetBehandlinger;
+
+    private LocalDateTime datoNaarUnderordnetBehandlingRelasjonBleSatt;
+
+    private LocalDateTime sistGodkjentAvvikDatoFraOverordnetBehandling;
 
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
