@@ -5,6 +5,7 @@ import {
   Alert,
   Button,
   ErrorSummary,
+  Label,
   Modal,
   Radio,
   RadioGroup,
@@ -21,6 +22,7 @@ import {
   FormikProps,
 } from 'formik'
 import { useEffect, useRef, useState } from 'react'
+import { LabelWithDescription } from '@/components/common/LabelWithTooltip'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
@@ -217,91 +219,72 @@ const ModalProcess = ({
                     setOrganizingOpen={setOrganizingOpen}
                   />
 
-                  <CustomizedModalBlock first>
-                    <ModalLabel
-                      label='Navn'
-                      tooltip='Et kort navn som beskriver hva behandlingen går ut på. Eksempel: Saksbehandling, håndtere brukerhenvendelser eller rekruttering.'
-                    />
-                    <FieldName />
-                  </CustomizedModalBlock>
+                  <FieldName />
 
-                  <CustomizedModalBlock>
-                    <ModalLabel
-                      label='Overordnet behandlingsaktivitet'
-                      tooltip='Et kort navn som beskriver hva behandlingen går ut på. Eksempel: Saksbehandling, håndtere brukerhenvendelser eller rekruttering.'
-                    />
+                  <div className='my-7'>
+                    <div className='mb-3'>
+                      <Label>Velg behandlingsaktivitet</Label>
+                    </div>
                     <FieldPurpose formikBag={formikBag} codelistUtils={codelistUtils} />
-                  </CustomizedModalBlock>
+                  </div>
 
-                  <CustomizedModalBlock>
-                    <ModalLabel
+                  <div className='my-7'>
+                    <LabelWithDescription
                       label='Formål med behandlingen'
-                      tooltip='Beskriv formålet med å bruke personopplysninger i denne behandlingen. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga nedsatt syn.'
+                      description='Skriv en kort oppsummering, for eksempel “Behandle og vurdere rett til
+                        stønad ved behov for førerhund på grunn av nedsatt syn.”'
                     />
                     <FieldDescription />
-                  </CustomizedModalBlock>
-                  <Error fieldName='description' />
+                    <Error fieldName='description' />
+                  </div>
 
-                  <CustomizedModalBlock>
-                    <ModalLabel
+                  <div className='my-7'>
+                    <LabelWithDescription
                       label='Ytterligere beskrivelse'
-                      tooltip='Personvernrelevant informasjon som ikke passer inn i andre felt kan beskrives her. Eksempelvis om man i behandlingen får uønskede personopplysninger gjennom et fritekstfelt o.l.'
+                      description='Personrelevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel, om man i behandlingen får uønskede personopplysninger gjennom et fritekstfelt.'
                     />
                     <FieldAdditionalDescription />
-                  </CustomizedModalBlock>
-                  <Error fieldName='additionalDescription' />
+                    <Error fieldName='additionalDescription' />
+                  </div>
 
-                  <CustomizedModalBlock>
-                    <ModalLabel label='Er behandlingen innført i Nav?' />
-                    <div>
-                      <BoolField
-                        value={formikBag.values.dpia?.processImplemented}
-                        fieldName='dpia.processImplemented'
-                        omitUndefined
-                        direction='horizontal'
-                      />
-                    </div>
-                  </CustomizedModalBlock>
+                  <div className='my-7'>
+                    <LabelWithDescription label='Er behandlingen innført i Nav?' />
+                    <BoolField
+                      value={formikBag.values.dpia?.processImplemented}
+                      fieldName='dpia.processImplemented'
+                      omitUndefined
+                      direction='horizontal'
+                    />
+                  </div>
 
                   {!env.disableRiskOwner && (
-                    <CustomizedModalBlock>
-                      <ModalLabel label='Risikoeier' />
+                    <div className='my-7'>
+                      <LabelWithDescription label='Risikoeier' />
                       <FieldRiskOwner riskOwner={formikBag.values.dpia?.riskOwner} />
-                    </CustomizedModalBlock>
+                    </div>
                   )}
 
-                  <CustomizedModalBlock>
-                    <ModalLabel label='Gyldighetsperiode for behandlingen' />
-                    <DateFieldsProcessModal showDates={true} showLabels={true} />
-                  </CustomizedModalBlock>
+                  <DateFieldsProcessModal showDates={true} showLabels={true} />
 
-                  <CustomizedModalBlock>
-                    <ModalLabel
-                      label='System'
-                      tooltip='Angi hvilke systemer som er primært i bruk i denne behandlingen.'
-                    />
+                  <div className='my-7'>
+                    <LabelWithDescription label='Angi hvilke systemer som er primært i bruk i denne behandlingen' />
                     <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
-                  </CustomizedModalBlock>
+                  </div>
 
-                  <CustomizedModalBlock>
-                    <div className='w-full flex flex-col'>
-                      <ModalLabel
-                        fullwidth
-                        label='Bruker alle opplysningstyper'
-                        tooltip='Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet.'
-                      />
-                      <div className='mt-2'>
-                        <BoolField
-                          value={formikBag.values.usesAllInformationTypes}
-                          fieldName='usesAllInformationTypes'
-                          omitUndefined
-                          firstButtonLabel='(Brukes unntaksvis)'
-                          direction='horizontal'
-                          reverseOrder
-                        />
-                      </div>
-                    </div>
-                  </CustomizedModalBlock>
+                  <div className='my-7'>
+                    <LabelWithDescription
+                      label='Bruker behandlingen alle opplysningstyper?'
+                      description='De aller fleste behandlinger vil ikke bruke alle opplysningstyper. Det vil kun skje unntaksvis for noen spesielle behandlinger, eksempelvis logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet.'
+                    />
+                    <BoolField
+                      value={formikBag.values.usesAllInformationTypes}
+                      fieldName='usesAllInformationTypes'
+                      omitUndefined
+                      firstButtonLabel='(Brukes unntaksvis)'
+                      direction='horizontal'
+                      reverseOrder
+                    />
+                  </div>
 
                   <Accordion>
                     <Accordion.Item open={organizingOpen} onOpenChange={setOrganizingOpen}>

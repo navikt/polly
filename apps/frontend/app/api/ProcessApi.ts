@@ -3,6 +3,7 @@
 import axios from 'axios'
 import queryString from 'query-string'
 import {
+  EBehandlingsNivaa,
   EProcessField,
   EProcessState,
   EProcessStatus,
@@ -176,6 +177,12 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     description: description || '',
     additionalDescription: additionalDescription || '',
     purposes: purposes?.map((p) => p.code) || [],
+    behandlingsNivaa:
+      process && process.behandlingsNivaa ? process?.behandlingsNivaa : EBehandlingsNivaa.VANLIG,
+    overordnetBehandling:
+      process && process.overordnetBehandling ? process.overordnetBehandling : null,
+    relasjonsDato: process?.relasjonsDato,
+    sistGodkjentAvvikFraOverordnetBehandling: process?.sistGodkjentAvvikFraOverordnetBehandling,
     affiliation: {
       department: affiliation?.department?.code || '',
       nomDepartmentId: affiliation?.nomDepartmentId || '',

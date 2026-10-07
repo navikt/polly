@@ -1,5 +1,6 @@
 import { Button } from '@navikt/ds-react'
 import { useState } from 'react'
+import { LabelWithDescription } from '../common/LabelWithTooltip'
 import { EndDate } from './EndDate'
 import { StartDate } from './StartDate'
 
@@ -22,11 +23,20 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
       )}{' '}
       {showDates && (
         <>
-          <div className='w-full'>
-            <div className='flex w-full'>
-              <StartDate />
-
-              <EndDate />
+          <div className='w-full max-w-lg'>
+            <div className='my-7'>
+              <LabelWithDescription
+                label='Behandlingen er gyldig fra og med'
+                description='Rediger dato dersom behandlingen ikke var gyldig allerede den datoen Nav ble opprettet. Datoen kan også settes fram i tid.'
+              />
+              <StartDate withoutLabel={true} />
+            </div>
+            <div className='my-7'>
+              <LabelWithDescription
+                label='Behandlingen er gyldig til og med'
+                description='Velg dato kun dersom behandlingen er midlertidig og har en sluttdato.'
+              />
+              <EndDate withoutLabel={true} />
             </div>
           </div>
         </>

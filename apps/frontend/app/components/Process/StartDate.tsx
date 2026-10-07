@@ -1,11 +1,15 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import { useField, useFormikContext } from 'formik'
-import { useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { IProcessFormValues } from '../../constants'
 import LabelWithToolTip from '../common/LabelWithTooltip'
 import { Error } from '../common/ModalSchema'
 
-export const StartDate = () => {
+type TProps = {
+  withoutLabel?: boolean
+}
+
+export const StartDate: FunctionComponent<TProps> = ({ withoutLabel }) => {
   const { datepickerProps } = useDatepicker()
 
   const formatYMD = (d: Date) => {
@@ -129,11 +133,13 @@ export const StartDate = () => {
                   validateRelative(ymd)
                 }}
                 label={
-                  <LabelWithToolTip
-                    label='Velg fra og med dato'
-                    tooltip='Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.'
-                    noMarginBottom
-                  />
+                  withoutLabel ? null : (
+                    <LabelWithToolTip
+                      label='Velg fra og med dato'
+                      tooltip='Fra og med-dato er preutfylt med den datoen Nav ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.'
+                      noMarginBottom
+                    />
+                  )
                 }
                 error={!!meta.error && (meta.touched || !!formik.submitCount)}
               />

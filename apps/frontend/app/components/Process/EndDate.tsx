@@ -1,11 +1,15 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import { useField, useFormikContext } from 'formik'
-import { useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { IProcessFormValues } from '../../constants'
 import LabelWithToolTip from '../common/LabelWithTooltip'
 import { Error } from '../common/ModalSchema'
 
-export const EndDate = () => {
+type TProps = {
+  withoutLabel?: boolean
+}
+
+export const EndDate: FunctionComponent<TProps> = ({ withoutLabel }) => {
   const { datepickerProps } = useDatepicker()
 
   const formatYMD = (d: Date) => {
@@ -137,11 +141,13 @@ export const EndDate = () => {
                   validateRelative(ymd)
                 }}
                 label={
-                  <LabelWithToolTip
-                    label='Velg til og med dato'
-                    tooltip='Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato.'
-                    noMarginBottom
-                  />
+                  withoutLabel ? null : (
+                    <LabelWithToolTip
+                      label='Velg til og med dato'
+                      tooltip='Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato.'
+                      noMarginBottom
+                    />
+                  )
                 }
                 error={!!meta.error && (meta.touched || !!formik.submitCount)}
               />

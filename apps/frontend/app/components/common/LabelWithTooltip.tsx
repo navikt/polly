@@ -38,7 +38,7 @@ export const LabelWithDescription = (props: {
         <Label>{props.label}</Label>
       </div>
       {props.description && (
-        <BodyShort className='navds-fieldset__description navds-body-short navds-body-short--medium'>
+        <BodyShort className='aksel-form-field__description aksel-body-short aksel-body-short--medium'>
           {props.description}
         </BodyShort>
       )}

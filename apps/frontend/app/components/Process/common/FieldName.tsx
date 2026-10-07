@@ -15,8 +15,8 @@ const FieldName = () => (
             type='text'
             className='w-full'
             {...field}
-            label=''
-            hideLabel
+            label='Navn'
+            description='Velg et kort navn, for eksempel Saksbehandling, Håndtering av brukerhenvendelser, eller Rekruttering.'
             error={showError ? nameError : undefined}
           />
         )
