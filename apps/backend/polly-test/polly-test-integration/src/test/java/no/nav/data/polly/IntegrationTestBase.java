@@ -164,9 +164,10 @@ public abstract class IntegrationTestBase {
         return IntStream.range(0, rows).mapToObj(i -> {
             Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
             callback.accept(i, policy);
-            policyRepository.save(policy);
-            processRepository.save(policy.getProcess());
-            return policy;
+            // Optimistisk låsing: save() returnerer en ny managed instans med oppdatert version,
+            // og den må brukes videre. Prosessen lagres ikke på nytt her - den er allerede lagret,
+            // og en ny save av den cachede (detached) instansen ville gitt StaleObjectStateException.
+            return policyRepository.save(policy);
         }).collect(Collectors.toList());
     }
 

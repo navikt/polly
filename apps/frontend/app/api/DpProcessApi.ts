@@ -84,9 +84,12 @@ export const dpProcessToFormValues = (dpProcess: Partial<IDpProcess>): IDpProces
     retention,
     start,
     subDataProcessing,
+    version,
   } = dpProcess || {}
 
   return {
+    // Optimistisk låsing: ta vare på versjonen vi leste, slik at den kan sendes ved lagring
+    version: version,
     affiliation: {
       department: affiliation?.department?.code || '',
       nomDepartmentId: affiliation?.nomDepartmentId || '',
@@ -123,6 +126,8 @@ export const dpProcessToFormValues = (dpProcess: Partial<IDpProcess>): IDpProces
 
 const fromValuesToDpProcess = (values: IDpProcessFormValues) => {
   return {
+    // Optimistisk låsing: versjonen klienten sist leste. Backend svarer 409 hvis den er utdatert.
+    version: values.version,
     affiliation: values.affiliation,
     art10: values.art10,
     art9: values.art9,

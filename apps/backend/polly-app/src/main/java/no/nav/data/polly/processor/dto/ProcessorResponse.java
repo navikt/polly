@@ -41,7 +41,9 @@ public class ProcessorResponse {
     private List<String> countries;
 
     private ChangeStampResponse changeStamp;
-    
+    @Schema(description = "Versjon for optimistisk låsing. Må sendes tilbake ved oppdatering")
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
+
     public static ProcessorResponse buidFrom(Processor p) {
         return ProcessorResponse.builder()
                 .id(p.getId())
@@ -55,6 +57,7 @@ public class ProcessorResponse {
                 .outsideEU(p.getData().getOutsideEU())
                 .countries(p.getData().getCountries())
                 .changeStamp(p.convertChangeStampResponse())
+                .version(p.getVersion())
                 .build();
     }
 

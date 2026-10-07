@@ -1,10 +1,13 @@
 package no.nav.data.polly.process;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.mail.EmailService;
 import no.nav.data.common.mail.MailTask;
 import no.nav.data.common.template.TemplateService;
+import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -43,6 +46,7 @@ import static no.nav.data.common.utils.StreamUtils.union;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProcessService {
 
     private final ProcessRepository processRepository;
@@ -57,7 +61,8 @@ public class ProcessService {
 
     @Transactional
     public Process save(Process process) {
-        var saved = processRepository.save(process);
+        // saveAndFlush for oppdatert version (i tilfelle vi har en omsluttende transaksjon)
+        Process saved = processRepository.saveAndFlush(process);
         alertService.calculateEventsForProcess(saved.getId());
         return saved;
     }
@@ -85,6 +90,8 @@ public class ProcessService {
     @Transactional
     public Process update(ProcessRequest request) {
         var process = processRepository.findById(request.getIdAsUUID()).orElseThrow();
+        // Optimistisk låsing: versjonen klienten sist leste må stemme med den i basen.
+        OptimisticLockingUtil.checkVersion(process, request.getVersion());
         var oldPurposes = process.getData().getPurposes();
         var oldOverordnetBehandlingId = process.getOverordnetBehandling() != null ? process.getOverordnetBehandling().getId() : null;
         process.convertFromRequest(request);
@@ -94,10 +101,11 @@ public class ProcessService {
             process.getPolicies().forEach(p -> p.getData().setPurposes(List.copyOf(request.getPurposes())));
             updateUnderOrdnetBehandlingWithNewAktivitetFromOverordnet(process);
         }
-        return save(process);
+        return save(process); // Denne kaller eksplisitt flush før retur
     }
 
     @Transactional
+
     public void updateUnderOrdnetBehandlingWithNewAktivitetFromOverordnet(Process overordnetBehandling) {
         var underordnetBehandling = overordnetBehandling.getUnderordnetBehandlinger();
         underordnetBehandling.forEach(p -> {
@@ -107,6 +115,7 @@ public class ProcessService {
     }
 
     @Transactional
+    @Deprecated // FIXME: Fjernes før merge til master, bruk deleteById(UUID id, Integer expectedVersion)
     public void deleteById(UUID id) {
         List<Disclosure> disclosures = disclosureRepository.findByProcessId(id);
         if (!disclosures.isEmpty()) {
@@ -115,6 +124,27 @@ public class ProcessService {
 
         processRepository.deleteById(id);
         alertService.deleteEventsForProcess(id);
+    }
+    
+    @Transactional
+    public Process deleteById(UUID id, Integer expectedVersion) {
+        Optional<Process> process = processRepository.findById(id);
+        if (process.isEmpty()) {
+            log.info("Cannot find Process with id={}", id);
+            throw new NotFoundException("Cannot find Process with id=" + id);
+        }
+        
+        List<Disclosure> disclosures = disclosureRepository.findByProcessId(id);
+        if (!disclosures.isEmpty()) {
+            throw new ValidationException(String.format("Process %s is used by %d disclosure(s)", id, disclosures.size()));
+        }
+
+        OptimisticLockingUtil.checkVersion(process.get(), expectedVersion); // ObjectOptimisticLockingFailureException if wrong version
+        
+        processRepository.deleteById(id);
+        alertService.deleteEventsForProcess(id);
+        log.info("Process with id={} deleted", id);
+        return process.get();
     }
 
     public List<Process> getAllProcessesForGdprAndLaw(String gdprArticle, String nationalLaw) {

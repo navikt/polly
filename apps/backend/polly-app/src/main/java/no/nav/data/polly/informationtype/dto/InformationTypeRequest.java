@@ -48,6 +48,9 @@ public class InformationTypeRequest implements RequestElement {
     private boolean update;
     private int requestIndex;
 
+    @Schema(description = "Versjonen klienten sist leste. Må sendes ved oppdatering (optimistisk låsing)")
+    private Integer version; // For optimistisk låsing, må sendes ved oppdatering, og ikke kopieres til entity.
+
     @Override
     public String getIdentifyingFields() {
         return name;

@@ -1,5 +1,9 @@
 'use client'
 
+import { getInformationType, mapInfoTypeToFormVals, updateInformationType } from '@/api/InfoTypeApi'
+import { IInformationType, IInformationtypeFormValues } from '@/constants'
+import { useNavigate } from '@/util/router'
+import { getConflictAwareErrorMessage, isConflictError } from '@/util/optimisticLocking'
 import { Heading, Loader } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { Fragment, useEffect, useMemo, useState } from 'react'
@@ -36,7 +40,12 @@ const InformationtypeEditPage = () => {
       await updateInformationType(body)
       navigate(`/informationtype/${params.id}`)
     } catch (error: any) {
-      setErrorSubmit(error.message)
+      if (isConflictError(error) && params.id) {
+        // Optimistisk låsing: opplysningstypen er endret av en annen bruker.
+        // Hent inn gjeldende data på nytt i stedet for å overskrive i stillhet.
+        setInformationType(await getInformationType(params.id))
+      }
+      setErrorSubmit(getConflictAwareErrorMessage(error, error.message) as any)
     }
   }
 

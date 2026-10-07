@@ -32,6 +32,11 @@ public class SettingsService {
         validate(settings);
         GenericStorage settingsStorage = storage.getSingletonAsStorage(Settings.class);
         settingsStorage.setDataObject(settings);
+        // FIXME: Settings er en singleton lagret som JSON i GENERIC_STORAGE, og Settings-DTO-en har
+        // ingen version-felt i API-et (den er ikke en identifiserbar ressurs med id for klienten).
+        // Optimistisk låsing er derfor kun dekket av Hibernate sin versjonssjekk ved flush
+        // (samtidige skrivinger gir 409), ikke av en version sendt fra klienten.
+        // Å innføre det trygt krever å endre Settings-kontrakten mot frontend.
         return storage.save(settingsStorage).getDataObject(Settings.class);
     }
 
