@@ -1,7 +1,7 @@
 'use client'
 
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyShort, Loader, Modal } from '@navikt/ds-react'
+import { Accordion, BodyShort, Loader, Modal, Tabs } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { TPathParams } from '@/components/mainPages/ProcessPage'
@@ -15,6 +15,7 @@ import {
   getResourceById,
 } from '../../../api/GetAllApi'
 import {
+  EBehandlingsNivaa,
   ELegalBasesUse,
   IAddDocumentToProcessFormValues,
   IDisclosure,
@@ -27,6 +28,7 @@ import {
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
+import UnderordnetBehandlingList from '../underordnetBehandling/underornetBehandlingList'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { AddDocumentModal } from './AddDocumentModal'
@@ -220,7 +222,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   }}
                   className='relative'
                 >
-                  <Accordion.Header className=' sticky top-0 z-10 bg-white'>
+                  <Accordion.Header className=' sticky top-0 z-10 bg-[#FFFFFF]'>
                     <AccordionTitle
                       codelistUtils={codelistUtils}
                       process={process}
@@ -251,6 +253,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             disclosures={disclosures}
                             codelistUtils={codelistUtils}
                           />
+
                           <div>
                             <div className='flex justify-end'>
                               <span>
@@ -294,25 +297,52 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                 </Button>
                               )}
                             </div>
-                            {hasAccess() && (
-                              <div className='flex flex-wrap justify-start sm:justify-center gap-2'>
-                                <div ref={InformationTypeRef} />
-                                {renderAddDocumentButton()}
-                                {renderCreatePolicyButton()}
-                                {renderDeleteAllPolicyButton()}
-                              </div>
-                            )}
                           </div>
                         </div>
-                        <TablePolicy
-                          codelistUtils={codelistUtils}
-                          process={currentProcess}
-                          hasAccess={hasAccess()}
-                          errorPolicyModal={errorPolicyModal}
-                          errorDeleteModal={errorPolicyModal}
-                          submitEditPolicy={submitEditPolicy}
-                          submitDeletePolicy={submitDeletePolicy}
-                        />
+
+                        <Tabs defaultValue='opplysninger' className='mt-5'>
+                          <Tabs.List>
+                            <Tabs.Tab
+                              value='opplysninger'
+                              label={`Opplysninger (${currentProcess.policies.length})`}
+                            />
+                            {currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
+                              <Tabs.Tab
+                                value='underordnet'
+                                label={`Underordnene behandlinger (${currentProcess.underordnetBehandlinger?.length})`}
+                              />
+                            )}
+                          </Tabs.List>
+                          <Tabs.Panel value='opplysninger'>
+                            {hasAccess() && (
+                              <div className='flex w-full mt-5 mb-3 justify-end'>
+                                <div className='gap-2'>
+                                  <div ref={InformationTypeRef} />
+                                  {renderAddDocumentButton()}
+                                  {renderCreatePolicyButton()}
+                                  {renderDeleteAllPolicyButton()}
+                                </div>
+                              </div>
+                            )}
+                            <TablePolicy
+                              codelistUtils={codelistUtils}
+                              process={currentProcess}
+                              hasAccess={hasAccess()}
+                              errorPolicyModal={errorPolicyModal}
+                              errorDeleteModal={errorPolicyModal}
+                              submitEditPolicy={submitEditPolicy}
+                              submitDeletePolicy={submitDeletePolicy}
+                            />
+                          </Tabs.Panel>
+                          {currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
+                            <Tabs.Panel value='underordnet'>
+                              <UnderordnetBehandlingList
+                                overordnetBehandling={currentProcess}
+                                codelistUtils={codelistUtils}
+                              />
+                            </Tabs.Panel>
+                          )}
+                        </Tabs>
                       </div>
                     )}
                   </Accordion.Content>
