@@ -74,8 +74,8 @@ public class ProcessService {
             throw new ValidationException(String.format("kan ikke sette behandlingen med id %s som overordnet", parentId));
         }
         if (process.getOverordnetBehandling() == null) {
-            process.getData().setDatoNaarUnderordnetBehandlingRelasjonBleSatt(LocalDateTime.now());
-            process.getData().setSistGodkjentAvvikDatoFraOverordnetBehandling(LocalDateTime.now());
+            process.getData().setRelasjonsDato(LocalDateTime.now());
+            process.getData().setSistGodkjentAvvikFraOverordnetBehandling(LocalDateTime.now());
         }
         process.setOverordnetBehandling(overordnetBehandling);
     }

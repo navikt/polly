@@ -68,9 +68,9 @@ public class ProcessResponse {
     @Singular("underordnetBehandling")
     private List<ProcessShortResponse> underordnetBehandlinger;
 
-    private LocalDateTime datoNaarUnderordnetBehandlingRelasjonBleSatt;
+    private LocalDateTime relasjonsDato;
 
-    private LocalDateTime sistGodkjentAvvikDatoFraOverordnetBehandling;
+    private LocalDateTime sistGodkjentAvvikFraOverordnetBehandling;
 
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;

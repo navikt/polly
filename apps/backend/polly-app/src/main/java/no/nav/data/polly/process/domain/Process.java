@@ -124,8 +124,8 @@ public class Process extends Auditable {
                 .revisionText(data.getRevisionText())
                 .overordnetBehandling(overordnetBehandling == null ? null : overordnetBehandling.convertToShortResponse())
                 .behandlingsNivaa(behandlingsNivaa)
-                .datoNaarUnderordnetBehandlingRelasjonBleSatt(data.getDatoNaarUnderordnetBehandlingRelasjonBleSatt())
-                .sistGodkjentAvvikDatoFraOverordnetBehandling(data.getSistGodkjentAvvikDatoFraOverordnetBehandling())
+                .relasjonsDato(data.getRelasjonsDato())
+                .sistGodkjentAvvikFraOverordnetBehandling(data.getSistGodkjentAvvikFraOverordnetBehandling())
                 .build();
     }
 

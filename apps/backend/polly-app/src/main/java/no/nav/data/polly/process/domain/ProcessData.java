@@ -65,9 +65,9 @@ public class ProcessData implements Serializable {
     private ProcessStatus status = ProcessStatus.IN_PROGRESS;
     private String revisionText;
 
-    private LocalDateTime datoNaarUnderordnetBehandlingRelasjonBleSatt;
+    private LocalDateTime relasjonsDato;
 
-    private LocalDateTime sistGodkjentAvvikDatoFraOverordnetBehandling;
+    private LocalDateTime sistGodkjentAvvikFraOverordnetBehandling;
 
     public Period toPeriod() {
         return new Period(start, end);
