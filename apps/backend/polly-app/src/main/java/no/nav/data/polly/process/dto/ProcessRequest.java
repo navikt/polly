@@ -18,6 +18,7 @@ import no.nav.data.polly.process.domain.sub.AiUsageDescription;
 import no.nav.data.polly.process.dto.sub.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static no.nav.data.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.common.utils.DateUtil.DEFAULT_END;
@@ -61,7 +62,7 @@ public class ProcessRequest implements RequestElement {
 
     private BehandlingsNivaa behandlingsNivaa;
 
-    private String overordnetBehandling;
+    private UUID overordnetBehandling;
 
     private boolean update;
     private int requestIndex;
@@ -95,7 +96,6 @@ public class ProcessRequest implements RequestElement {
     @Override
     public void validate(FieldValidator validator) {
         validator.checkUUID(Fields.id, id);
-        validator.checkUUID(Fields.overordnetBehandling, overordnetBehandling);
         validator.checkId(this);
         validator.checkBlank(Fields.name, name);
         validator.checkRequiredCodelists(Fields.purposes, purposes, ListName.PURPOSE);

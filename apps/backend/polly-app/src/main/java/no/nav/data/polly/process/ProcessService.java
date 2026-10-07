@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -61,31 +62,33 @@ public class ProcessService {
         return saved;
     }
 
-    public void setOverordnetBehandling(Process process, ProcessRequest request) {
+    public void setOverordnetBehandlingAndUpdateAktivitet(Process processToBeUpdated, ProcessRequest request, UUID oldOverordnetBehandlingId) {
         if (request.getOverordnetBehandling() == null) {
-            process.setOverordnetBehandling(null);
+            processToBeUpdated.setOverordnetBehandling(null);
             return;
         }
 
-        UUID parentId = UUID.fromString(request.getOverordnetBehandling());
+        UUID parentId = request.getOverordnetBehandling();
         var overordnetBehandling = processRepository.findById(parentId)
                 .orElseThrow(() -> new ValidationException(String.format("overordnetBehandling %s not found", parentId)));
-        if (overordnetBehandling.getBehandlingsNivaa() == BehandlingsNivaa.UNDERORDNET || process.getBehandlingsNivaa() == BehandlingsNivaa.VANLIG) {
+        if (overordnetBehandling.getBehandlingsNivaa() != BehandlingsNivaa.OVERORDNET) {
             throw new ValidationException(String.format("kan ikke sette behandlingen med id %s som overordnet", parentId));
         }
-        if (process.getOverordnetBehandling() == null) {
-            process.getData().setRelasjonsDato(LocalDateTime.now());
-            process.getData().setSistGodkjentAvvikFraOverordnetBehandling(LocalDateTime.now());
+        if (!Objects.equals(oldOverordnetBehandlingId, request.getOverordnetBehandling())) {
+            processToBeUpdated.getData().setRelasjonsDato(LocalDateTime.now());
+            processToBeUpdated.getData().setSistGodkjentAvvikFraOverordnetBehandling(LocalDateTime.now());
         }
-        process.setOverordnetBehandling(overordnetBehandling);
+        processToBeUpdated.getData().setPurposes(List.copyOf(overordnetBehandling.getData().getPurposes()));
+        processToBeUpdated.setOverordnetBehandling(overordnetBehandling);
     }
 
     @Transactional
     public Process update(ProcessRequest request) {
         var process = processRepository.findById(request.getIdAsUUID()).orElseThrow();
         var oldPurposes = process.getData().getPurposes();
+        var oldOverordnetBehandlingId = process.getOverordnetBehandling() != null ? process.getOverordnetBehandling().getId() : null;
         process.convertFromRequest(request);
-        setOverordnetBehandling(process, request);
+        setOverordnetBehandlingAndUpdateAktivitet(process, request, oldOverordnetBehandlingId);
 
         if (!oldPurposes.equals(request.getPurposes())) {
             process.getPolicies().forEach(p -> p.getData().setPurposes(List.copyOf(request.getPurposes())));

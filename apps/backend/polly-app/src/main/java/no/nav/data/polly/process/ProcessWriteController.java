@@ -53,14 +53,14 @@ public class ProcessWriteController {
     @Operation(summary = "Create Processes")
     @ApiResponse(responseCode = "201", description = "Processes to be created successfully accepted")
     @PostMapping
-    public ResponseEntity<ProcessResponse> createProcesses(@RequestBody ProcessRequest request) {
+    public ResponseEntity<ProcessResponse> createProcess(@RequestBody ProcessRequest request) {
         log.info("Received requests to create Process");
 
         requestValidator.validateRequest(request, false);
 
         request.setNewProcessNumber(repository.nextProcessNumber());
         Process process = new Process().convertFromRequest(request);
-        service.setOverordnetBehandling(process, request);
+        service.setOverordnetBehandlingAndUpdateAktivitet(process, request, null);
         process = service.save(process);
         return new ResponseEntity<>(process.convertToResponseWithPoliciesAndUnderordnetBehandlinger(), HttpStatus.CREATED);
     }
