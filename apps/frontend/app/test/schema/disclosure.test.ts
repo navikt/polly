@@ -1,5 +1,5 @@
 import { disclosureSchema } from '../../components/common/schemaValidation'
-import { IDisclosureFormValues } from '../../constants'
+import { EBehandlingsNivaa, IDisclosureFormValues } from '../../constants'
 import '../config/schemaValidator'
 
 describe('Disclosure', () => {
@@ -17,6 +17,7 @@ describe('Disclosure', () => {
       {
         id: 'process-1',
         name: 'Process',
+        behandlingsNivaa: EBehandlingsNivaa.VANLIG,
         number: 1,
         purposes: [],
         affiliation: {

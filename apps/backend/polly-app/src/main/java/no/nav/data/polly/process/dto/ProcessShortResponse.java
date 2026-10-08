@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 
@@ -32,5 +33,6 @@ public class ProcessShortResponse {
     private ProcessStatus status;
     private LocalDate end;
     private ChangeStampResponse changeStamp;
+    private BehandlingsNivaa behandlingsNivaa;
 
 }

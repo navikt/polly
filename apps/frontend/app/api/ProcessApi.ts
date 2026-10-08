@@ -325,7 +325,8 @@ export const searchProcessOptions = async (searchParam: string, kunOverordnet?: 
             end: behandling.end,
             commonExternalProcessResponsible: behandling.commonExternalProcessResponsible,
             changeStamp: behandling.changeStamp,
-          },
+            behandlingsNivaa: behandling.behandlingsNivaa,
+          } as IProcessShort,
         }
       })
     }

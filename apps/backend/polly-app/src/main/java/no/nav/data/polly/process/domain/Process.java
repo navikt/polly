@@ -186,6 +186,7 @@ public class Process extends Auditable {
                 .status(getData().getStatus())
                 .end(getData().getEnd())
                 .changeStamp(super.convertChangeStampResponse())
+                .behandlingsNivaa(behandlingsNivaa)
                 .build();
     }
 

@@ -399,6 +399,7 @@ export interface IProcessShort {
   end: string
   commonExternalProcessResponsible?: ICode
   changeStamp: IChangeStamp
+  behandlingsNivaa: EBehandlingsNivaa
 }
 
 export interface IProcessShortWithEmail {
