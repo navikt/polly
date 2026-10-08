@@ -150,6 +150,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           setCreateProcessModalKey={setCreateProcessModalKey}
           setShowCreateProcessModal={setShowCreateProcessModal}
           process={overordnetBehandling}
+          forUnderordnetBehandling={true}
         />
       </div>
 

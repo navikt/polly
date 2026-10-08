@@ -252,7 +252,7 @@ export const genUnderordnetProcessPath = (
   code: string,
   overordnetBehandling: IProcess,
   underordnetBehandling?: Partial<IProcess>,
-  filter?: EProcessStatus,
+  underordnetfilter?: EProcessStatus,
   create?: boolean
 ) => {
   if (underordnetBehandling && underordnetBehandling.id) {
@@ -265,7 +265,7 @@ export const genUnderordnetProcessPath = (
       }) +
       '?' +
       queryString.stringify(
-        { underordnetBehandlingId: underordnetBehandling.id, filter, create },
+        { underordnetBehandlingId: underordnetBehandling.id, underordnetfilter, create },
         { skipNull: true, skipEmptyString: true }
       )
     )
@@ -279,7 +279,7 @@ export const genUnderordnetProcessPath = (
     }) +
     '?' +
     queryString.stringify(
-      { underordnetBehandlingId: '', filter, create },
+      { underordnetBehandlingId: '', underordnetfilter, create },
       { skipNull: true, skipEmptyString: true }
     )
   )

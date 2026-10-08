@@ -8,7 +8,7 @@ import Button from '@/components/common/Button/CustomButton'
 import { ESection, TPathParams, listNameForSection } from '@/components/mainPages/ProcessPage'
 import { EProcessStatus, IProcess } from '@/constants'
 import { UserContext } from '@/provider/userProvider'
-import { genProcessPath } from '@/util/processUtils'
+import { genProcessPath, genUnderordnetProcessPath } from '@/util/processUtils'
 import { useNavigate } from '@/util/router'
 import { theme } from '@/util/theme'
 import ExportProcessModal from '../Export/ExportProcessModal'
@@ -19,6 +19,7 @@ type TProps = {
   setErrorProcessModal: (value: string) => void
   setCreateProcessModalKey: (value: SetStateAction<number>) => void
   setShowCreateProcessModal: (value: boolean) => void
+  forUnderordnetBehandling: boolean
   process?: IProcess
 }
 
@@ -28,6 +29,7 @@ const ProcessPageButtonGroup: FunctionComponent<TProps> = ({
   setErrorProcessModal,
   setCreateProcessModalKey,
   setShowCreateProcessModal,
+  forUnderordnetBehandling,
   process,
 }) => {
   const params = useParams<TPathParams>()
@@ -48,16 +50,26 @@ const ProcessPageButtonGroup: FunctionComponent<TProps> = ({
         <Select
           label='Status filter'
           hideLabel
-          onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-            navigate(
-              genProcessPath(
+          onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+            let path = ''
+            if (forUnderordnetBehandling && process) {
+              path = genUnderordnetProcessPath(
+                section,
+                navCode,
+                process,
+                undefined,
+                event.target.value as EProcessStatus | undefined
+              )
+            } else {
+              path = genProcessPath(
                 section,
                 navCode,
                 process,
                 event.target.value as EProcessStatus | undefined
               )
-            )
-          }
+            }
+            navigate(path)
+          }}
         >
           <option value=''>Alle behandlinger</option>
           <option value={EProcessStatus.IN_PROGRESS}>Behandlinger under arbeid</option>
