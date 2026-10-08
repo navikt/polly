@@ -71,7 +71,7 @@ const ProcessPageButtonGroup: FunctionComponent<TProps> = ({
                 event.target.value as EProcessStatus | undefined
               )
             }
-            navigate(path)
+            navigate(path, { scroll: false })
           }}
         >
           <option value=''>Alle behandlinger</option>

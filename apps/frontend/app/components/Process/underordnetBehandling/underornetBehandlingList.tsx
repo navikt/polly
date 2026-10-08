@@ -44,7 +44,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const searchParams = useSearchParams()
   const current_location = useLocation()
   const { section, code } = params
-  const filter = (searchParams.get('filter') as EProcessStatus) || undefined
+  const underordnetfilter = (searchParams.get('underordnetfilter') as EProcessStatus) || undefined
   const [underOrdnetBehandlinger, setUnderordnetBehandlinger] = useState<IProcessShort[]>([])
   const [currentUnderordnetBehandling, setCurrentUnderordnetBehandling] = useState<
     IProcess | undefined
@@ -70,7 +70,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
         setExportHref(`${env.pollyBaseUrl}/export/process?productTeam=${code}`)
       }
     })()
-  }, [code, filter])
+  }, [code, underordnetfilter])
 
   useEffect(() => {
     ;(async () => {
@@ -79,6 +79,22 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
       }
     })()
   }, [overordnetBehandling])
+
+  useEffect(() => {
+    ;(async () => {
+      if (overordnetBehandling.underordnetBehandlinger) {
+        if (underordnetfilter) {
+          setUnderordnetBehandlinger(
+            overordnetBehandling.underordnetBehandlinger.filter(
+              (behandling) => behandling.status === underordnetfilter
+            )
+          )
+        } else {
+          setUnderordnetBehandlinger(overordnetBehandling.underordnetBehandlinger)
+        }
+      }
+    })()
+  }, [underordnetfilter, overordnetBehandling])
 
   const getProcessById = async (id: string) => {
     try {
@@ -102,16 +118,34 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
     process?: Partial<IProcess>
   ) => {
     if (process?.id !== currentUnderordnetBehandling?.id) {
-      navigate(genUnderordnetProcessPath(section, navCode, overordnetBehandling, process, filter), {
-        scroll: false,
-      })
+      navigate(
+        genUnderordnetProcessPath(
+          section,
+          navCode,
+          overordnetBehandling,
+          process,
+          underordnetfilter
+        ),
+        {
+          scroll: false,
+        }
+      )
     }
     // reuse method to reload a process
     else if (process?.id) {
       getProcessById(process.id).catch(setErrorProcessModal)
-      navigate(genUnderordnetProcessPath(section, navCode, overordnetBehandling, process, filter), {
-        scroll: false,
-      })
+      navigate(
+        genUnderordnetProcessPath(
+          section,
+          navCode,
+          overordnetBehandling,
+          process,
+          underordnetfilter
+        ),
+        {
+          scroll: false,
+        }
+      )
     }
   }
 
@@ -150,7 +184,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           setShowCreateProcessModal={setShowCreateProcessModal}
           process={overordnetBehandling}
           forUnderordnetBehandling={true}
-          filter={filter}
+          filter={underordnetfilter}
         />
       </div>
 
