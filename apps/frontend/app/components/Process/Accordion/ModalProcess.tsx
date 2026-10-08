@@ -1,6 +1,10 @@
 'use client'
 
-import { InformationSquareIcon } from '@navikt/aksel-icons'
+import {
+  ExclamationmarkTriangleIcon,
+  InformationSquareIcon,
+  PadlockLockedFillIcon,
+} from '@navikt/aksel-icons'
 import {
   Accordion,
   Alert,
@@ -8,7 +12,6 @@ import {
   ErrorSummary,
   InfoCard,
   InlineMessage,
-  Label,
   List,
   Modal,
   Radio,
@@ -27,10 +30,12 @@ import {
   FormikProps,
 } from 'formik'
 import { useEffect, useRef, useState } from 'react'
+import AsyncSelect from 'react-select/async'
+import { DropdownIndicator, noOptionMessage } from '@/components/common/AsyncSelectComponents'
 import { LabelWithDescription } from '@/components/common/LabelWithTooltip'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
-import { getAll, getDisclosuresByRecipient } from '../../../api/GetAllApi'
+import { getAll, getDisclosuresByRecipient, searchProcessOptions } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
 import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import {
@@ -293,11 +298,65 @@ const ModalProcess = ({
                         </InfoCard.Content>
                       </InfoCard>
                     )}
+                    {formikBag.values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET && (
+                      <div className='mt-7 ml-8'>
+                        <LabelWithDescription
+                          label='Velg hvilken behandling som skal være den overordnede'
+                          description='Skriv minst 3 bokstaver eller sifre for å søke. Kun behandlinger som er satt til “Kan brukes som overordnet” vil vises i søketreff.'
+                        />
+
+                        <AsyncSelect<any>
+                          className='w-full mt-1'
+                          aria-label='Søk etter behandlinger'
+                          placeholder='Søk'
+                          components={{ DropdownIndicator }}
+                          noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
+                          loadingMessage={() => 'Søker...'}
+                          isClearable={true}
+                          value={
+                            formikBag.values.overordnetBehandling
+                              ? {
+                                  ...formikBag.values.overordnetBehandling,
+                                  value: formikBag.values.overordnetBehandling.id,
+                                  label: `B${formikBag.values.overordnetBehandling.number} ${formikBag.values.overordnetBehandling.purposes[0].shortName}: ${formikBag.values.overordnetBehandling.name}`,
+                                }
+                              : null
+                          }
+                          loadOptions={(input) => searchProcessOptions(input, true)}
+                          onChange={(val) => {
+                            formikBag.setFieldValue(
+                              'overordnetBehandling',
+                              val ? (val as any).processShort : undefined
+                            )
+                          }}
+                        />
+                      </div>
+                    )}
                   </ReadMore>
 
                   <div className='my-7'>
+                    {formikBag.values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+                      formikBag.values.overordnetBehandling && (
+                        <InfoCard data-color='warning' className='mb-5'>
+                          <InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+                            <strong>
+                              Fordi du har valgt at behandlingen skal være underordnet en annen, må
+                              du i denne behandlingen bruke samme behandlingsaktivitet som den
+                              overordnede.
+                            </strong>
+                          </InfoCard.Message>
+                        </InfoCard>
+                      )}
                     <div className='mb-3'>
-                      <Label>Velg behandlingsaktivitet</Label>
+                      <LabelWithDescription
+                        label='Velg behandlingsaktivitet'
+                        icon={
+                          formikBag.values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+                          formikBag.values.overordnetBehandling && (
+                            <PadlockLockedFillIcon aria-hidden />
+                          )
+                        }
+                      />
                     </div>
                     <FieldPurpose formikBag={formikBag} codelistUtils={codelistUtils} />
                   </div>

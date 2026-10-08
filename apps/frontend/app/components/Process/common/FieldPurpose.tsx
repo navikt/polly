@@ -3,7 +3,7 @@ import { FieldArray, FieldArrayRenderProps, FormikProps, getIn } from 'formik'
 import { useState } from 'react'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
-import { IProcessFormValues } from '../../../constants'
+import { EBehandlingsNivaa, IProcessFormValues } from '../../../constants'
 
 const FieldPurpose = (props: {
   formikBag: FormikProps<IProcessFormValues>
@@ -31,6 +31,10 @@ const FieldPurpose = (props: {
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className='flex-1 min-w-0'>
           <Select
+            disabled={
+              formikBag.values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+              formikBag.values.overordnetBehandling !== undefined
+            }
             className='w-full'
             id='purposes'
             label='Velg overordnet behandlingsaktivitet'

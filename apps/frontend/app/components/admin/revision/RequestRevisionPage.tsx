@@ -184,7 +184,7 @@ export const RequestRevisionPage = (props: IRequestRevisionPageProps) => {
                       loadingMessage={() => 'Søker...'}
                       isClearable={true}
                       styles={requestRevisionSearchSelectOverrides}
-                      loadOptions={searchProcessOptions}
+                      loadOptions={(input) => searchProcessOptions(input, false)}
                       onChange={(val) => {
                         formikBag.setFieldValue('processId', val ? (val as any).value : '')
                       }}

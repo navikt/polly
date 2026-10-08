@@ -246,7 +246,10 @@ const convertFormValuesToProcess = (values: IProcessFormValues) => {
     purposes: values.purposes,
     affiliation: values.affiliation,
     behandlingsNivaa: values.behandlingsNivaa,
-    overordnetBehandling: values.overordnetBehandling?.id,
+    overordnetBehandling:
+      values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET
+        ? values.overordnetBehandling?.id
+        : undefined,
     relasjonsDato: values.relasjonsDato,
     sistGodkjentAvvikFraOverordnetBehandling: values.sistGodkjentAvvikFraOverordnetBehandling,
     commonExternalProcessResponsible: values.commonExternalProcessResponsible
@@ -288,9 +291,17 @@ const convertFormValuesToProcess = (values: IProcessFormValues) => {
   }
 }
 
-export const searchProcessOptions = async (searchParam: string) => {
+export const searchProcessOptions = async (searchParam: string, kunOverordnet?: boolean) => {
   if (searchParam && searchParam.length > 2) {
-    const behandlinger = (await searchProcess(searchParam)).content
+    const behandlinger = (await searchProcess(searchParam)).content.filter(
+      (behandling: IProcess) => {
+        if (kunOverordnet === true) {
+          return behandling.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET
+        } else {
+          return true
+        }
+      }
+    )
     if (behandlinger && behandlinger.length) {
       return behandlinger.map((behandling) => {
         return {
@@ -303,6 +314,18 @@ export const searchProcessOptions = async (searchParam: string) => {
             ': ' +
             behandling.name,
           ...behandling,
+          processShort: {
+            id: behandling.id,
+            name: behandling.name,
+            number: behandling.number,
+            description: behandling.description,
+            purposes: behandling.purposes,
+            affiliation: behandling.affiliation,
+            status: behandling.status,
+            end: behandling.end,
+            commonExternalProcessResponsible: behandling.commonExternalProcessResponsible,
+            changeStamp: behandling.changeStamp,
+          },
         }
       })
     }
