@@ -60,6 +60,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const [, setShowCreateProcessModal] = useState<boolean>(false)
   const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
   const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
+  const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
 
   useEffect(() => {
     ;(async () => {
@@ -89,8 +90,6 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
     }
     setIsUnderordnetBehandlingLoading(false)
   }
-
-  const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
 
   useEffect(() => {
     ;(async () => {

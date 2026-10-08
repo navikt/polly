@@ -272,7 +272,7 @@ export const genUnderordnetProcessPath = (
   }
 
   return (
-    generatePath(processPathNoId, {
+    generatePath(processPath, {
       section,
       code: code,
       processId: overordnetBehandling.id,
