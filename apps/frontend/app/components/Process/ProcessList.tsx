@@ -4,29 +4,31 @@ import { Heading, Loader } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
+import {
+  genProcessPath,
+  handleAddDocument,
+  handleCreatePolicy,
+  handleDeleteAllPolicies,
+  handleDeletePolicy,
+  handleDeleteProcess,
+  handleEditPolicy,
+  handleEditProcess,
+  sortProcess,
+} from '@/util/processUtils'
 import { useLocation, useNavigate } from '@/util/router'
 import {
   convertDisclosureToFormValues,
   convertProcessToFormValues,
-  createPolicies,
-  createPolicy,
   createProcess,
-  deletePoliciesByProcessId,
-  deletePolicy,
-  deleteProcess,
   getCodelistUsage,
-  getDisclosuresByProcessId,
   getProcess,
   getProcessesFor,
   updateDisclosure,
-  updatePolicy,
-  updateProcess,
 } from '../../api/GetAllApi'
 import { getAvdelingByNomId } from '../../api/NomApi'
 import { getProcessesWithNoDepartment } from '../../api/ProcessApi'
 import {
   EBehandlingsNivaa,
-  ELegalBasesUse,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
   IPageResponse,
@@ -37,7 +39,7 @@ import {
   IProcessShort,
 } from '../../constants'
 import { env } from '../../util/env'
-import { ESection, genProcessPath } from '../mainPages/ProcessPage'
+import { ESection } from '../mainPages/ProcessPage'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ProcessPageButtonGroup from './common/processPageButtonGroup'
@@ -54,9 +56,6 @@ type TProcessListProps = {
   isEditable: boolean
   getCount?: (i: number) => void
 }
-
-const sortProcess = (list: IProcessShort[]) =>
-  list.sort((p1, p2) => p1.name.localeCompare(p2.name, 'nb'))
 
 const ProcessList = ({
   code,
@@ -79,8 +78,8 @@ const ProcessList = ({
   const [showCreateProcessModal, setShowCreateProcessModal] = useState(false)
   const [createProcessModalKey, setCreateProcessModalKey] = useState(0)
   const [errorProcessModal, setErrorProcessModal] = useState<string>('')
-  const [errorPolicyModal, setErrorPolicyModal] = useState(null)
-  const [errorDocumentModal, setErrorDocumentModal] = useState(null)
+  const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
+  const [errorDocumentModal, setErrorDocumentModal] = useState<string | null>(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = useState(true)
   const current_location = useLocation()
@@ -177,161 +176,6 @@ const ProcessList = ({
     }
   }
 
-  const handleEditProcess = async (values: IProcessFormValues): Promise<boolean> => {
-    try {
-      const updatedProcess = await updateProcess(values)
-      const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
-      const removedDisclosures = disclosures.filter(
-        (disclosure) => !values.disclosures.map((value) => value.id).includes(disclosure.id)
-      )
-      const addedDisclosures = values.disclosures.filter(
-        (disclosure) => !disclosures.map((value) => value.id).includes(disclosure.id)
-      )
-      removedDisclosures.forEach((disclosure) =>
-        updateDisclosure(
-          convertDisclosureToFormValues({
-            ...disclosure,
-            processIds: [
-              ...disclosure.processIds.filter((process) => process !== updatedProcess.id),
-            ],
-          })
-        )
-      )
-      addedDisclosures.forEach((disclosure) =>
-        updateDisclosure(
-          convertDisclosureToFormValues({
-            ...disclosure,
-            processIds: [...disclosure.processIds, updatedProcess.id],
-          })
-        )
-      )
-      setCurrentProcess(updatedProcess)
-      setProcessList(
-        sortProcess([
-          ...processList.filter((process) => process.id !== updatedProcess.id),
-          updatedProcess,
-        ])
-      )
-      return true
-    } catch (error: any) {
-      console.debug(error)
-      return false
-    }
-  }
-
-  const handleDeleteProcess = async (processToDelete: IProcess): Promise<boolean> => {
-    try {
-      await deleteProcess(processToDelete.id)
-      setProcessList(
-        sortProcess(
-          processList.filter((process: IProcessShort) => process.id !== processToDelete.id)
-        )
-      )
-      setErrorProcessModal('')
-      return true
-    } catch (error: any) {
-      if (error.response.data.message.includes('disclosure(s)')) {
-        setErrorProcessModal('Du kan ikke slette behandlinger med eksisterende utleveringer.')
-        return false
-      }
-      setErrorProcessModal(error.response.data.message)
-      return false
-    }
-  }
-
-  const handleCreatePolicy = async (values: IPolicyFormValues): Promise<boolean> => {
-    if (!values || !currentProcess) return false
-
-    try {
-      const policy: IPolicy = await createPolicy(values)
-      await getProcessById(policy.process.id)
-      setErrorPolicyModal(null)
-      return true
-    } catch (error: any) {
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-  const handleEditPolicy = async (values: IPolicyFormValues) => {
-    try {
-      const updatedPolicy: IPolicy = await updatePolicy(values)
-      if (currentProcess) {
-        setCurrentProcess({
-          ...currentProcess,
-          policies: [
-            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== updatedPolicy.id),
-            updatedPolicy,
-          ],
-        })
-        setErrorPolicyModal(null)
-      }
-      return true
-    } catch (error: any) {
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-  const handleDeletePolicy = async (policyToDelete?: IPolicy): Promise<boolean> => {
-    if (!policyToDelete) return false
-    try {
-      await deletePolicy(policyToDelete.id)
-      if (currentProcess) {
-        setCurrentProcess({
-          ...currentProcess,
-          policies: [
-            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== policyToDelete.id),
-          ],
-        })
-        setErrorPolicyModal(null)
-      }
-      return true
-    } catch (error: any) {
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-
-  const handleDeleteAllPolicies = async (processId: string): Promise<boolean> => {
-    if (!processId) return false
-    try {
-      await deletePoliciesByProcessId(processId)
-      if (currentProcess) {
-        setCurrentProcess({ ...currentProcess, policies: [] })
-        setErrorPolicyModal(null)
-      }
-      return true
-    } catch (error: any) {
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-
-  const handleAddDocument = async (
-    formValues: IAddDocumentToProcessFormValues
-  ): Promise<boolean> => {
-    try {
-      const policies: IPolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
-        subjectCategories: infoType.subjectCategories.map((category) => category.code),
-        informationType: infoType.informationType,
-        process: { ...formValues.process, legalBases: [] },
-        purposes: formValues.process.purposes.map((purpose) => purpose.code),
-        legalBases: [],
-        legalBasesOpen: false,
-        legalBasesUse: ELegalBasesUse.INHERITED_FROM_PROCESS,
-        documentIds: !formValues.linkDocumentToPolicies
-          ? []
-          : [formValues.document ? formValues.document.id : ''],
-        otherPolicies: [],
-      }))
-      await createPolicies(policies)
-      await getProcessById(formValues.process.id)
-    } catch (error: any) {
-      setErrorDocumentModal(error.message)
-      return false
-    }
-    return true
-  }
-
   useEffect(() => getCount && getCount(processList.length), [processList.length])
 
   useEffect(() => {
@@ -420,16 +264,36 @@ const ProcessList = ({
           setProcessList={setProcessList}
           currentProcess={currentProcess}
           onChangeProcess={(id) => handleChangePanel({ id })}
-          submitDeleteProcess={handleDeleteProcess}
-          submitEditProcess={handleEditProcess}
-          submitCreatePolicy={handleCreatePolicy}
-          submitEditPolicy={handleEditPolicy}
-          submitDeletePolicy={handleDeletePolicy}
-          submitDeleteAllPolicy={handleDeleteAllPolicies}
-          submitAddDocument={handleAddDocument}
+          submitDeleteProcess={(processTodelete) =>
+            handleDeleteProcess(processTodelete, processList, setProcessList, setErrorProcessModal)
+          }
+          submitEditProcess={(process: IProcessFormValues) =>
+            handleEditProcess(process, setCurrentProcess, processList, setProcessList)
+          }
+          submitCreatePolicy={(process: IPolicyFormValues) =>
+            handleCreatePolicy(process, currentProcess, getProcessById, setErrorPolicyModal)
+          }
+          submitEditPolicy={(values: IPolicyFormValues) =>
+            handleEditPolicy(values, currentProcess, setCurrentProcess, setErrorPolicyModal)
+          }
+          submitDeletePolicy={(values: IPolicy) =>
+            handleDeletePolicy(values, currentProcess, setCurrentProcess, setErrorPolicyModal)
+          }
+          submitDeleteAllPolicy={(processId: string) =>
+            handleDeleteAllPolicies(
+              processId,
+              currentProcess,
+              setCurrentProcess,
+              setErrorPolicyModal
+            )
+          }
+          submitAddDocument={(document: IAddDocumentToProcessFormValues) =>
+            handleAddDocument(document, getProcessById, setErrorDocumentModal)
+          }
           errorProcessModal={errorProcessModal}
           errorPolicyModal={errorPolicyModal}
           errorDocumentModal={errorDocumentModal}
+          forUnderordnetBehandlinger={false}
         />
       )}
       {!codelistLoading && showCreateProcessModal && (

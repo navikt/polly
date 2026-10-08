@@ -2,6 +2,7 @@
 
 import { BodyShort, Button, Label, Loader, Tooltip } from '@navikt/ds-react'
 import { useEffect, useState } from 'react'
+import { genProcessPath } from '@/util/processUtils'
 import { getAllNomAvdelinger, getAvdelingByNomId } from '../../api/NomApi'
 import {
   IDepartmentDashCount as DepartmentProcess,
@@ -10,7 +11,7 @@ import {
   IOrgEnhet,
 } from '../../constants'
 import RouteLink from '../common/RouteLink'
-import { ESection, genProcessPath } from '../mainPages/ProcessPage'
+import { ESection } from '../mainPages/ProcessPage'
 
 interface ITextWithNumberProps {
   label: string

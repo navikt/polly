@@ -2,7 +2,6 @@
 
 import { Heading, LocalAlert, Select } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
-import queryString from 'query-string'
 import { useEffect, useState } from 'react'
 import { getDashboard } from '@/api/DashboardApi'
 import { getDisclosureByDepartment } from '@/api/DisclosureApi'
@@ -16,21 +15,16 @@ import {
   IDisclosure,
   IDpProcess,
   IOrgEnhet,
-  IProcess,
   ISeksjonDashCount,
 } from '@/constants'
 import { EListName } from '@/constants/codelistConstant'
 import { useQueryParam } from '@/util/hooks'
-import { generatePath } from '@/util/router'
 import Charts from '../Charts/Charts'
 import DashboardBreadcrumbs from '../Dashboard/DashboardBreadcrumbs'
 import ProcessDisclosureTabs from '../Dashboard/ProcessDisclosureTabs'
 import Seksjoner from '../Dashboard/Seksjoner'
 import ProcessList from '../Process/ProcessList'
 import { PageHeader } from '../common/PageHeader'
-
-const processPath = '/process/:section/:code/:processId'
-const processPathNoId = '/process/:section/:code/'
 
 export enum ESection {
   purpose = 'purpose',
@@ -298,34 +292,3 @@ const ProcessPage = () => {
 }
 
 export default ProcessPage
-
-export const genProcessPath = (
-  section: ESection,
-  code: string,
-  process?: Partial<IProcess>,
-  filter?: EProcessStatus,
-  create?: boolean
-) => {
-  if (process && process.id) {
-    return (
-      generatePath(processPath, {
-        section,
-        // todo multipurpose url
-        code: section === ESection.purpose && !!process?.purposes ? process.purposes[0].code : code,
-        processId: process.id,
-      }) +
-      '?' +
-      queryString.stringify({ filter, create }, { skipNull: true, skipEmptyString: true })
-    )
-  }
-
-  return (
-    generatePath(processPathNoId, {
-      section,
-      // todo multipurpose url
-      code: section === ESection.purpose && !!process?.purposes ? process.purposes[0].code : code,
-    }) +
-    '?' +
-    queryString.stringify({ filter, create }, { skipNull: true, skipEmptyString: true })
-  )
-}

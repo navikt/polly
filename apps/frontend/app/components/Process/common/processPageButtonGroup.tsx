@@ -5,14 +5,10 @@ import { Label, Select } from '@navikt/ds-react'
 import { useParams } from 'next/navigation'
 import { ChangeEvent, FunctionComponent, SetStateAction, useContext } from 'react'
 import Button from '@/components/common/Button/CustomButton'
-import {
-  ESection,
-  TPathParams,
-  genProcessPath,
-  listNameForSection,
-} from '@/components/mainPages/ProcessPage'
+import { ESection, TPathParams, listNameForSection } from '@/components/mainPages/ProcessPage'
 import { EProcessStatus, IProcess } from '@/constants'
 import { UserContext } from '@/provider/userProvider'
+import { genProcessPath } from '@/util/processUtils'
 import { useNavigate } from '@/util/router'
 import { theme } from '@/util/theme'
 import ExportProcessModal from '../Export/ExportProcessModal'

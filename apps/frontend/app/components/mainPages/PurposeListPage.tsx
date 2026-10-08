@@ -9,10 +9,11 @@ import { convertProcessToFormValues, createProcess } from '@/api/ProcessApi'
 import { IProcessFormValues } from '@/constants'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
+import { genProcessPath } from '@/util/processUtils'
 import { useNavigate } from '@/util/router'
 import ModalProcess from '../Process/Accordion/ModalProcess'
 import { PurposeList } from './ListSearchPage'
-import { ESection, genProcessPath } from './ProcessPage'
+import { ESection } from './ProcessPage'
 
 export const PurposeListPage = () => {
   const user: IUserContext = useContext(UserContext)

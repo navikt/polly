@@ -2,7 +2,7 @@
 
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal, Tabs } from '@navikt/ds-react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { ICode } from '@/constants/codelistConstant'
@@ -53,11 +53,12 @@ type TAccordionProcessProps = {
   onChangeProcess: (processId?: string) => void
   submitDeleteProcess: (process: IProcess) => Promise<boolean>
   submitEditProcess: (process: IProcessFormValues) => Promise<boolean>
-  submitCreatePolicy: (process: IPolicyFormValues) => Promise<boolean>
-  submitEditPolicy: (process: IPolicyFormValues) => Promise<boolean>
-  submitDeletePolicy: (process: IPolicy) => Promise<boolean>
+  submitCreatePolicy: (policy: IPolicyFormValues) => Promise<boolean>
+  submitEditPolicy: (policy: IPolicyFormValues) => Promise<boolean>
+  submitDeletePolicy: (policy: IPolicy) => Promise<boolean>
   submitDeleteAllPolicy: (processId: string) => Promise<boolean>
   submitAddDocument: (document: IAddDocumentToProcessFormValues) => Promise<boolean>
+  forUnderordnetBehandlinger: boolean
 }
 
 const AccordionProcess = (props: TAccordionProcessProps) => {
@@ -77,6 +78,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     processList,
     submitAddDocument,
     errorDocumentModal,
+    forUnderordnetBehandlinger,
   } = props
   const history: TNavigateFunction = useNavigate()
   const user: IUserContext = useContext(UserContext)
@@ -95,6 +97,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const scrollToPolicyTable = useRef(false)
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
+  const searchParams = useSearchParams()
 
   const hasAccess = (): boolean => user.canWrite()
 
@@ -150,11 +153,21 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   useEffect(() => {
     ;(async () => {
-      if (params.processId) {
-        setDisclosures(await getDisclosuresByProcessId(params.processId))
+      if (forUnderordnetBehandlinger) {
+        if (
+          searchParams.get('underordnetBehandlingId') !== null &&
+          searchParams.get('underordnetBehandlingId') !== ''
+        ) {
+          const underordnetBehandlingId = searchParams.get('underordnetBehandlingId') || ''
+          setDisclosures(await getDisclosuresByProcessId(underordnetBehandlingId))
+        }
+      } else {
+        if (params.processId) {
+          setDisclosures(await getDisclosuresByProcessId(params.processId))
+        }
       }
     })()
-  }, [params.processId])
+  }, [params.processId, searchParams])
 
   useEffect(() => {
     if (params.processId && currentProcess?.id === params.processId && !isLoading) {
@@ -210,7 +223,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               return aname.localeCompare(bname)
             })
             .map((process: IProcessShort) => {
-              const expanded = params.processId === process.id
+              let expanded = params.processId === process.id
+
+              if (forUnderordnetBehandlinger) {
+                expanded = searchParams.get('underordnetBehandlingId') === process.id
+              }
 
               return (
                 <Accordion.Item

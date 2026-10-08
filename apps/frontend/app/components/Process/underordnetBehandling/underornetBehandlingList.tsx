@@ -1,14 +1,34 @@
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { InfoCard, List, ReadMore } from '@navikt/ds-react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { FunctionComponent, useEffect, useState } from 'react'
-import { TPathParams } from '@/components/mainPages/ProcessPage'
-import { EProcessStatus, IProcess } from '@/constants'
+import { getProcess } from '@/api/ProcessApi'
+import { ESection, TPathParams } from '@/components/mainPages/ProcessPage'
+import {
+  EProcessStatus,
+  IAddDocumentToProcessFormValues,
+  IPolicy,
+  IPolicyFormValues,
+  IProcess,
+  IProcessFormValues,
+  IProcessShort,
+} from '@/constants'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { env } from '@/util/env'
 import { useQueryParam } from '@/util/hooks'
-import { useLocation } from '@/util/router'
+import {
+  genUnderordnetProcessPath,
+  handleAddDocument,
+  handleCreatePolicy,
+  handleDeleteAllPolicies,
+  handleDeletePolicy,
+  handleDeleteProcess,
+  handleEditPolicy,
+  handleEditProcess,
+} from '@/util/processUtils'
+import { useLocation, useNavigate } from '@/util/router'
+import AccordionProcess from '../Accordion/AccordionProcess'
 import ProcessPageButtonGroup from '../common/processPageButtonGroup'
 
 type TProps = {
@@ -20,15 +40,26 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   overordnetBehandling,
   codelistUtils,
 }) => {
+  const navigate = useNavigate()
   const params = useParams<TPathParams>()
+  const searchParams = useSearchParams()
   const current_location = useLocation()
-  const { code } = params
+  const { section, code } = params
   const filter = useQueryParam<EProcessStatus>('filter')
+  const [underOrdnetBehandlinger, setUnderordnetBehandlinger] = useState<IProcessShort[]>([])
+  const [currentUnderordnetBehandling, setCurrentUnderordnetBehandling] = useState<
+    IProcess | undefined
+  >()
+  const [isUnderordnetBehandlingLoading, setIsUnderordnetBehandlingLoading] =
+    useState<boolean>(false)
 
   const [exportHref, setExportHref] = useState<string>('')
-  const [, setErrorProcessModal] = useState<string>('')
+  const [errorProcessModal, setErrorProcessModal] = useState<string>('')
+  const [errorDocumentModal, setErrorDocumentModal] = useState<string | null>(null)
   const [, setCreateProcessModalKey] = useState<number>(0)
   const [, setShowCreateProcessModal] = useState<boolean>(false)
+  const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
+  const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
 
   useEffect(() => {
     ;(async () => {
@@ -40,6 +71,51 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
       }
     })()
   }, [code, filter])
+
+  useEffect(() => {
+    ;(async () => {
+      if (overordnetBehandling.underordnetBehandlinger) {
+        setUnderordnetBehandlinger(overordnetBehandling.underordnetBehandlinger)
+      }
+    })()
+  }, [overordnetBehandling])
+
+  const getProcessById = async (id: string) => {
+    try {
+      setIsUnderordnetBehandlingLoading(true)
+      setCurrentUnderordnetBehandling(await getProcess(id))
+    } catch (error: any) {
+      console.debug(error)
+    }
+    setIsUnderordnetBehandlingLoading(false)
+  }
+
+  const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
+
+  useEffect(() => {
+    ;(async () => {
+      if (underordnetBehandlingId && currentUnderordnetBehandling?.id !== underordnetBehandlingId) {
+        await getProcessById(underordnetBehandlingId)
+      }
+    })()
+  }, [underordnetBehandlingId, currentUnderordnetBehandling?.id])
+
+  const handleChangePanel: (process?: Partial<IProcess>) => void = (
+    process?: Partial<IProcess>
+  ) => {
+    if (process?.id !== currentUnderordnetBehandling?.id) {
+      navigate(genUnderordnetProcessPath(section, navCode, overordnetBehandling, process, filter), {
+        scroll: false,
+      })
+    }
+    // reuse method to reload a process
+    else if (process?.id) {
+      getProcessById(process.id).catch(setErrorProcessModal)
+      navigate(genUnderordnetProcessPath(section, navCode, overordnetBehandling, process, filter), {
+        scroll: false,
+      })
+    }
+  }
 
   return (
     <div className='mt-5'>
@@ -86,6 +162,73 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           </InfoCard.Message>
         </InfoCard>
       )}
+
+      {overordnetBehandling.underordnetBehandlinger &&
+        overordnetBehandling.underordnetBehandlinger.length > 0 && (
+          <AccordionProcess
+            codelistUtils={codelistUtils}
+            isLoading={isUnderordnetBehandlingLoading}
+            processList={underOrdnetBehandlinger}
+            setProcessList={setUnderordnetBehandlinger}
+            currentProcess={currentUnderordnetBehandling}
+            onChangeProcess={(id) => handleChangePanel({ id })}
+            submitDeleteProcess={(processTodelete) =>
+              handleDeleteProcess(
+                processTodelete,
+                underOrdnetBehandlinger,
+                setUnderordnetBehandlinger,
+                setErrorProcessModal
+              )
+            }
+            submitEditProcess={(process: IProcessFormValues) =>
+              handleEditProcess(
+                process,
+                setCurrentUnderordnetBehandling,
+                underOrdnetBehandlinger,
+                setUnderordnetBehandlinger
+              )
+            }
+            submitCreatePolicy={(process: IPolicyFormValues) =>
+              handleCreatePolicy(
+                process,
+                currentUnderordnetBehandling,
+                getProcessById,
+                setErrorPolicyModal
+              )
+            }
+            submitEditPolicy={(values: IPolicyFormValues) =>
+              handleEditPolicy(
+                values,
+                currentUnderordnetBehandling,
+                setCurrentUnderordnetBehandling,
+                setErrorPolicyModal
+              )
+            }
+            submitDeletePolicy={(values: IPolicy) =>
+              handleDeletePolicy(
+                values,
+                currentUnderordnetBehandling,
+                setCurrentUnderordnetBehandling,
+                setErrorPolicyModal
+              )
+            }
+            submitDeleteAllPolicy={(processId: string) =>
+              handleDeleteAllPolicies(
+                processId,
+                currentUnderordnetBehandling,
+                setCurrentUnderordnetBehandling,
+                setErrorPolicyModal
+              )
+            }
+            submitAddDocument={(document: IAddDocumentToProcessFormValues) =>
+              handleAddDocument(document, getProcessById, setErrorDocumentModal)
+            }
+            errorProcessModal={errorProcessModal}
+            errorPolicyModal={errorPolicyModal}
+            errorDocumentModal={errorDocumentModal}
+            forUnderordnetBehandlinger={true}
+          />
+        )}
     </div>
   )
 }
