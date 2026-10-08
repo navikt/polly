@@ -25,6 +25,7 @@ import {
 import { getAvdelingByNomId } from '../../api/NomApi'
 import { getProcessesWithNoDepartment } from '../../api/ProcessApi'
 import {
+  EBehandlingsNivaa,
   ELegalBasesUse,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
@@ -112,7 +113,9 @@ const ProcessList = ({
         list = (await getCodelistUsage(listName as EListName, code)).processes
       }
       const filtered = sortProcess(list).filter(
-        (process: IProcessShort) => !filter || process.status === filter
+        (process: IProcessShort) =>
+          (!filter || process.status === filter) &&
+          process.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET
       )
       setFullProcessList(filtered)
     } catch (error: any) {
