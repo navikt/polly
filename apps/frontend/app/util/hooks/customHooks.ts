@@ -33,13 +33,3 @@ export function useRefs<T>(ids: string[]) {
 
   return refs
 }
-
-function useQuery() {
-  if (typeof window === 'undefined') return new URLSearchParams()
-  const location = window.location
-  return new URLSearchParams(location.search)
-}
-
-export function useQueryParam<T extends string>(queryParam: string) {
-  return (useQuery().get(queryParam) as T) || undefined
-}

@@ -248,6 +248,7 @@ const ProcessList = ({
           setCreateProcessModalKey={setCreateProcessModalKey}
           setShowCreateProcessModal={setShowCreateProcessModal}
           forUnderordnetBehandling={false}
+          filter={filter}
         />
       </div>
 

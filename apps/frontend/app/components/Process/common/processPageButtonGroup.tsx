@@ -20,6 +20,7 @@ type TProps = {
   setCreateProcessModalKey: (value: SetStateAction<number>) => void
   setShowCreateProcessModal: (value: boolean) => void
   forUnderordnetBehandling: boolean
+  filter?: EProcessStatus
   process?: IProcess
 }
 
@@ -30,6 +31,7 @@ const ProcessPageButtonGroup: FunctionComponent<TProps> = ({
   setCreateProcessModalKey,
   setShowCreateProcessModal,
   forUnderordnetBehandling,
+  filter,
   process,
 }) => {
   const params = useParams<TPathParams>()
@@ -50,6 +52,7 @@ const ProcessPageButtonGroup: FunctionComponent<TProps> = ({
         <Select
           label='Status filter'
           hideLabel
+          value={filter ?? ''}
           onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             let path = ''
             if (forUnderordnetBehandling && process) {

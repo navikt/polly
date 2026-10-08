@@ -2,6 +2,7 @@
 
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Label, Loader, Search, Table, ToggleGroup } from '@navikt/ds-react'
+import { useSearchParams } from 'next/navigation'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { searchAaregAvtale } from '@/api/AaregAvtaleApi'
 import { IDisclosureSummary, createDisclosure, getDisclosureSummaries } from '@/api/DisclosureApi'
@@ -9,7 +10,7 @@ import { getAll } from '@/api/GetAllApi'
 import { EObjectType, IAaregAvtale, IDisclosure, IDisclosureFormValues } from '@/constants'
 import { EListName } from '@/constants/codelistConstant'
 import { IUserContext, UserContext } from '@/provider/userProvider'
-import { useDebouncedState, useQueryParam, useTable } from '@/util/hooks'
+import { useDebouncedState, useTable } from '@/util/hooks'
 import { useNavigate } from '@/util/router'
 import { theme } from '@/util/theme'
 import AaregAvtaleTable from '../AaregAvtale/AaregAvtaleTable'
@@ -58,7 +59,7 @@ export const DisclosureListPage = () => {
   const [aaregAvtaler, setAaregAvtaler] = useState<IAaregAvtale[]>([])
   const [showAaregAvtaleTable, setShowAaregAvtaleTable] = useState<boolean>(false)
   const [isAaregAvtaleLoading, setAaregAvtaleLoading] = useState<boolean>(false)
-  const filter = useQueryParam<EFilterType>('filter')
+  const filter = (useSearchParams().get('filter') as EFilterType) || undefined
   const navigate = useNavigate()
 
   const initialFormValues: IDisclosureFormValues = {

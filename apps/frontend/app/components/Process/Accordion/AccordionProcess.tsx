@@ -326,7 +326,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             {currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
                               <Tabs.Tab
                                 value='underordnet'
-                                label={`Underordnene behandlinger (${currentProcess.underordnetBehandlinger?.length})`}
+                                label={`Underordnede behandlinger (${currentProcess.underordnetBehandlinger?.length})`}
                               />
                             )}
                           </Tabs.List>

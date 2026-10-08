@@ -1,7 +1,7 @@
 'use client'
 
 import { Heading, Loader } from '@navikt/ds-react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
   getProcessByStateAndStatus,
@@ -11,7 +11,6 @@ import {
   getProcessByStateAndStatusForSeksjon,
 } from '../../api/GetAllApi'
 import { EProcessField, EProcessState, EProcessStatusFilter, IProcessShort } from '../../constants'
-import { useQueryParam } from '../../util/hooks'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
 import DashboardBreadcrumbs from './DashboardBreadcrumbs'
 
@@ -26,10 +25,11 @@ const PurposeTable = () => {
   const [filtered, setFiltered] = useState<IProcessShort[]>([])
   const [title, setTitle] = useState('')
   const { filterName, filterValue, filterStatus } = useParams<TPathProps>()
-  const department: string | undefined = useQueryParam('department')
-  const productareaId: string | undefined = useQueryParam('productarea')
-  const seksjonId: string | undefined = useQueryParam('seksjon')
-  const noDepartment: string | undefined = useQueryParam('noDepartment')
+  const searchParams = useSearchParams()
+  const department = searchParams.get('department') || undefined
+  const productareaId = searchParams.get('productarea') || undefined
+  const seksjonId = searchParams.get('seksjon') || undefined
+  const noDepartment = searchParams.get('noDepartment') || undefined
 
   const changeTitle = () => {
     if (filterName === EProcessField.DPIA && filterValue) {

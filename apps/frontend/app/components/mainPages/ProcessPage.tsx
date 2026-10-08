@@ -1,7 +1,7 @@
 'use client'
 
 import { Heading, LocalAlert, Select } from '@navikt/ds-react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { getDashboard } from '@/api/DashboardApi'
 import { getDisclosureByDepartment } from '@/api/DisclosureApi'
@@ -18,7 +18,6 @@ import {
   ISeksjonDashCount,
 } from '@/constants'
 import { EListName } from '@/constants/codelistConstant'
-import { useQueryParam } from '@/util/hooks'
 import Charts from '../Charts/Charts'
 import DashboardBreadcrumbs from '../Dashboard/DashboardBreadcrumbs'
 import ProcessDisclosureTabs from '../Dashboard/ProcessDisclosureTabs'
@@ -65,9 +64,10 @@ const ProcessPage = () => {
   const [seksjonAvdelingName, setSeksjonAvdelingName] = useState<string>('')
   const [disclosureData, setDisclosureData] = useState<IDisclosure[]>([])
   const [dpProcessData, setDpProcessData] = useState<IDpProcess[]>([])
-  const filter = useQueryParam<EProcessStatus>('filter')
-  const tab = useQueryParam<string>('tab')
-  const avdeling = useQueryParam<string>('avdeling')
+  const searchParams = useSearchParams()
+  const filter = (searchParams.get('filter') as EProcessStatus) || undefined
+  const tab = searchParams.get('tab') || undefined
+  const avdeling = searchParams.get('avdeling') || undefined
   const params = useParams<TPathParams>()
   const { section, code, processId } = params
   const isNoDepartment = section === ESection.department && code === 'Ingen avdeling'

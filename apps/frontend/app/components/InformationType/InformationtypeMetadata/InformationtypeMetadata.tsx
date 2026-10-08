@@ -1,12 +1,12 @@
 import { ExclamationmarkIcon } from '@navikt/aksel-icons'
 import { BodyShort, Heading, Loader, Tabs } from '@navikt/ds-react'
+import { useSearchParams } from 'next/navigation'
 import { useContext, useState } from 'react'
 import { CodelistContext, ICodelistProps } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import { IDisclosure, IDocument, IInformationType, IPolicy } from '../../../constants'
 import { lastModifiedDate } from '../../../util/date-formatter'
-import { useQueryParam } from '../../../util/hooks'
 import Button from '../../common/Button/CustomButton'
 import TableDisclosure from '../../common/TableDisclosure'
 import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
@@ -29,7 +29,7 @@ interface IPurposesProps {
 
 const Purposes = (props: IPurposesProps) => {
   const { policies, codelistUtils } = props
-  const selectedPurpose: string | undefined = useQueryParam('purpose')
+  const selectedPurpose = useSearchParams().get('purpose') || undefined
   const [accordion, setAccordion] = useState(!!selectedPurpose)
 
   return (

@@ -1,5 +1,6 @@
 import { PersonGroupIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort } from '@navikt/ds-react'
+import { useSearchParams } from 'next/navigation'
 import queryString from 'query-string'
 import { useState } from 'react'
 import { TPurposeMap } from '@/components/mainPages/InformationtypePage'
@@ -7,7 +8,6 @@ import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { TLocation, TNavigateFunction, useLocation, useNavigate } from '@/util/router'
 import { IPolicy } from '../../../constants'
-import { useQueryParam } from '../../../util/hooks'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 
 const reducePolicyList = (list: IPolicy[]) => {
@@ -31,7 +31,7 @@ interface IAccordionInformationtypeProps {
 
 const AccordionInformationType = (props: IAccordionInformationtypeProps) => {
   const { policies, codelistUtils } = props
-  const selectedPurpose = useQueryParam('purpose')
+  const selectedPurpose = useSearchParams().get('purpose') || undefined
   const navigate: TNavigateFunction = useNavigate()
   const location: TLocation<any> = useLocation()
   const [openPurpose, setOpenPurpose] = useState<string | undefined>(selectedPurpose || undefined)

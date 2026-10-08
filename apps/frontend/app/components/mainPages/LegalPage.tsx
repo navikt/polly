@@ -1,20 +1,21 @@
 'use client'
 
 import { BodyLong, Heading, Select } from '@navikt/ds-react'
+import { useSearchParams } from 'next/navigation'
 import queryString from 'query-string'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { getProcessesFor } from '@/api/ProcessApi'
 import { IPageResponse, IProcess } from '@/constants'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { useQueryParam } from '@/util/hooks'
 import { useLocation, useNavigate } from '@/util/router'
 import { SimpleProcessTable } from '../Process/SimpleProcessTable'
 
 export const LegalPage = () => {
   const [processes, setProcesses] = useState<IProcess[]>([])
-  const gdprArticle = useQueryParam('gdprArticle')
-  const nationalLaw = useQueryParam('nationalLaw')
+  const searchParams = useSearchParams()
+  const gdprArticle = searchParams.get('gdprArticle') || undefined
+  const nationalLaw = searchParams.get('nationalLaw') || undefined
   const navigate = useNavigate()
   const location = useLocation()
 

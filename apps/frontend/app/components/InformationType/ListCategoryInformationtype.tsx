@@ -1,11 +1,11 @@
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyLong, Heading } from '@navikt/ds-react'
+import { useSearchParams } from 'next/navigation'
 import { useContext, useState } from 'react'
 import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { theme } from '@/util/theme'
 import { ICodeUsage, IUse } from '../../constants'
-import { useQueryParam } from '../../util/hooks'
 import RouteLink from '../common/RouteLink'
 
 type TInformationTypeAccordionProps = {
@@ -13,7 +13,7 @@ type TInformationTypeAccordionProps = {
 }
 
 const ListCategoryInformationtype = ({ categoryUsages }: TInformationTypeAccordionProps) => {
-  const category = useQueryParam('category')
+  const category = useSearchParams().get('category') || undefined
   const { utils: codelistUtils } = useContext(CodelistContext)
   const [openCategory, setOpenCategory] = useState<string | undefined>(category || undefined)
 

@@ -16,7 +16,6 @@ import {
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { env } from '@/util/env'
-import { useQueryParam } from '@/util/hooks'
 import {
   genUnderordnetProcessPath,
   handleAddDocument,
@@ -45,7 +44,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const searchParams = useSearchParams()
   const current_location = useLocation()
   const { section, code } = params
-  const filter = useQueryParam<EProcessStatus>('filter')
+  const filter = (searchParams.get('filter') as EProcessStatus) || undefined
   const [underOrdnetBehandlinger, setUnderordnetBehandlinger] = useState<IProcessShort[]>([])
   const [currentUnderordnetBehandling, setCurrentUnderordnetBehandling] = useState<
     IProcess | undefined
@@ -151,6 +150,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           setShowCreateProcessModal={setShowCreateProcessModal}
           process={overordnetBehandling}
           forUnderordnetBehandling={true}
+          filter={filter}
         />
       </div>
 
