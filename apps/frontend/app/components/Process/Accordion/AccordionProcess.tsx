@@ -222,7 +222,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   }}
                   className='relative'
                 >
-                  <Accordion.Header className=' sticky top-0 z-10 bg-[#FFFFFF]'>
+                  <Accordion.Header className='sticky top-0 z-10 bg-(--ax-bg-raised)'>
                     <AccordionTitle
                       codelistUtils={codelistUtils}
                       process={process}
