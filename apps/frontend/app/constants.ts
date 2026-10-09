@@ -182,6 +182,7 @@ export interface IProcessFormValues {
   disclosures: IDisclosure[]
   behandlingsNivaa: EBehandlingsNivaa
   overordnetBehandling?: IProcessShort
+  underordnetBehandlinger?: IProcessShort[]
   relasjonsDato?: string
   sistGodkjentAvvikFraOverordnetBehandling?: string
 }

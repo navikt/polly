@@ -170,6 +170,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     status,
     behandlingsNivaa,
     overordnetBehandling,
+    underordnetBehandlinger,
     relasjonsDato,
     sistGodkjentAvvikFraOverordnetBehandling,
   } = process || {}
@@ -183,6 +184,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
     purposes: purposes?.map((p) => p.code) || [],
     behandlingsNivaa: process && behandlingsNivaa ? behandlingsNivaa : EBehandlingsNivaa.VANLIG,
     overordnetBehandling: process && overordnetBehandling ? overordnetBehandling : undefined,
+    underordnetBehandlinger: process && underordnetBehandlinger ? underordnetBehandlinger : [],
     elasjonsDato: relasjonsDato ?? undefined,
     sistGodkjentAvvikFraOverordnetBehandling: sistGodkjentAvvikFraOverordnetBehandling ?? undefined,
     affiliation: {
@@ -250,6 +252,7 @@ const convertFormValuesToProcess = (values: IProcessFormValues) => {
       values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET
         ? values.overordnetBehandling?.id
         : undefined,
+    underodnetBehandlinger: values.underordnetBehandlinger,
     relasjonsDato: values.relasjonsDato,
     sistGodkjentAvvikFraOverordnetBehandling: values.sistGodkjentAvvikFraOverordnetBehandling,
     commonExternalProcessResponsible: values.commonExternalProcessResponsible

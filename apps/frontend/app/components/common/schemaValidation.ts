@@ -394,6 +394,7 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
         schema.required('Du må velge hvilken behandling som skal være den overordnede'),
       otherwise: (schema) => schema,
     }),
+    underordnetBehandlinger: yup.array().of(yup.mixed<IProcessShort>().nonNullable().required()),
     relasjonsDato: yup.string(),
     sistGodkjentAvvikFraOverordnetBehandling: yup.string(),
     affiliation: yup.object({

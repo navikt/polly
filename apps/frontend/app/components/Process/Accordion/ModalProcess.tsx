@@ -215,6 +215,11 @@ const ModalProcess = ({
     })()
   }, [])
 
+  const isOverordnetRelasjonLocked =
+    initialValues.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET &&
+    initialValues.underordnetBehandlinger &&
+    initialValues.underordnetBehandlinger.length > 0
+
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: title }} width='960px'>
       <Formik
@@ -258,15 +263,33 @@ const ModalProcess = ({
                         </InlineMessage>
                       </div>
                     )}
+                    {isOverordnetRelasjonLocked && (
+                      <div className='mt-7'>
+                        <InlineMessage status='warning'>
+                          <strong>
+                            Fordi denne behandlingen har underordnede behandlinger, kan du ikke
+                            endre hvilket behandlingsnivå som er valgt.
+                          </strong>
+                        </InlineMessage>
+                      </div>
+                    )}
                     <div className='mt-7'>
                       <Field name='behandlingsNivaa'>
                         {({ form }: FieldProps<string, IProcessFormValues>) => (
                           <RadioGroup
-                            legend='Velg behandlingsnivå'
+                            legend={
+                              <div className='flex gap-2 items-center'>
+                                {isOverordnetRelasjonLocked && (
+                                  <PadlockLockedFillIcon aria-hidden />
+                                )}
+                                Velg behandlingsnivå
+                              </div>
+                            }
                             value={form.values.behandlingsNivaa}
                             onChange={(value: EBehandlingsNivaa) => {
                               form.setFieldValue('behandlingsNivaa', value)
                             }}
+                            disabled={isOverordnetRelasjonLocked}
                           >
                             <Radio value={EBehandlingsNivaa.VANLIG}>
                               Dette er en vanlig behandling uten kobling til andre{' '}

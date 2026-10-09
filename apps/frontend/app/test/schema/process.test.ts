@@ -56,6 +56,11 @@ describe('Process', () => {
     expect(createProcess()).toBeSchema(schema)
   })
 
+  it('Underordnet processes can be empty', () => {
+    const process = { ...createProcess(), underordnetBehandlinger: [] }
+    expect(process).toBeSchema(schema)
+  })
+
   it('Process purposes required', () => {
     const process = { ...createProcess(), purposes: [] }
     expect(process).toBeSchemaErrorAt(schema, 'purposes')
