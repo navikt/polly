@@ -4,7 +4,7 @@ import { Ref, createRef } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { theme } from '@/util/theme'
-import { IProcessShort } from '../../../constants'
+import { EBehandlingsNivaa, IProcessShort } from '../../../constants'
 
 type TAccordionTitleProps = {
   codelistUtils: ICodelistProps
@@ -50,6 +50,11 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
           :{' '}
         </span>
         <span>{process.name}</span>
+        {process.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
+          <Tag className='ml-3' variant='outline' data-color='danger'>
+            Overordnet behandling
+          </Tag>
+        )}
       </Heading>
     </div>
   )
