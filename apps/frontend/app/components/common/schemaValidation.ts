@@ -388,7 +388,12 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
       .mixed<EBehandlingsNivaa>()
       .oneOf(Object.values(EBehandlingsNivaa))
       .required(requiredMessage),
-    overordnetBehandling: yup.mixed<IProcessShort>(),
+    overordnetBehandling: yup.mixed<IProcessShort>().when('behandlingsNivaa', {
+      is: EBehandlingsNivaa.UNDERORDNET,
+      then: (schema) =>
+        schema.required('Du må velge hvilken behandling som skal være den overordnede'),
+      otherwise: (schema) => schema,
+    }),
     relasjonsDato: yup.string(),
     sistGodkjentAvvikFraOverordnetBehandling: yup.string(),
     affiliation: yup.object({

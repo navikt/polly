@@ -55,6 +55,11 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
             Overordnet behandling
           </Tag>
         )}
+        {process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET && (
+          <Tag className='ml-3' variant='outline' data-color='brand-beige'>
+            Underordnet behandling
+          </Tag>
+        )}
       </Heading>
     </div>
   )

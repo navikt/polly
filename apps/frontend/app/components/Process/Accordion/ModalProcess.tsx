@@ -306,6 +306,7 @@ const ModalProcess = ({
                         />
 
                         <AsyncSelect<any>
+                          id='overordnetBehandling'
                           className='w-full mt-1'
                           aria-label='Søk etter behandlinger'
                           placeholder='Søk'
@@ -334,6 +335,8 @@ const ModalProcess = ({
                             }
                           }}
                         />
+
+                        <Error fieldName='overordnetBehandling' fullWidth={true} />
                       </div>
                     )}
                   </ReadMore>
@@ -372,7 +375,7 @@ const ModalProcess = ({
                         stønad ved behov for førerhund på grunn av nedsatt syn.”'
                     />
                     <FieldDescription />
-                    <Error fieldName='description' />
+                    <Error fieldName='description' fullWidth={true} />
                   </div>
 
                   <div className='my-7'>
@@ -381,7 +384,7 @@ const ModalProcess = ({
                       description='Personrelevant informasjon som ikke passer inn i andre felt kan beskrives her. For eksempel, om man i behandlingen får uønskede personopplysninger gjennom et fritekstfelt.'
                     />
                     <FieldAdditionalDescription />
-                    <Error fieldName='additionalDescription' />
+                    <Error fieldName='additionalDescription' fullWidth={true} />
                   </div>
 
                   <div className='my-7'>

@@ -61,6 +61,11 @@ describe('Process', () => {
     expect(process).toBeSchemaErrorAt(schema, 'purposes')
   })
 
+  it('Parent process required for underordnet process', () => {
+    const process = { ...createProcess(), behandlingsNivaa: EBehandlingsNivaa.UNDERORDNET }
+    expect(process).toBeSchemaErrorAt(schema, 'overordnetBehandling')
+  })
+
   it('Process status needs to be a type ProcessStatus', () => {
     const process = { ...createProcess(), status: '' }
     expect(process).toBeSchemaErrorAt(schema, 'status')
