@@ -37,7 +37,7 @@ const FieldPurpose = (props: {
             }
             className='w-full'
             id='purposes'
-            label='Velg overordnet behandlingsaktivitet'
+            label='Velg behandlingsaktivitet'
             hideLabel
             value={selectedValue}
             error={showError ? purposesError : undefined}
@@ -48,7 +48,7 @@ const FieldPurpose = (props: {
               arrayHelpers.form.setFieldTouched('purposes[0]', true, false)
             }}
           >
-            <option value=''>Velg overordnet behandlingsaktivitet</option>
+            <option value=''>Velg behandlingsaktivitet</option>
             {codelistUtils.getParsedOptions(EListName.PURPOSE).map((codeList, index) => (
               <option key={index + '_' + codeList.id} value={codeList.id}>
                 {codeList.label}

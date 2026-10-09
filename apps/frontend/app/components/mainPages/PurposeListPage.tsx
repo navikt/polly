@@ -112,7 +112,7 @@ export const PurposeListPage = () => {
         <Heading size='xlarge'>Behandlingsaktiviteter</Heading>
         <div className='flex w-full justify-between'>
           <div>
-            <BodyShort>Velg overordnet behandlingsaktivitet</BodyShort>
+            <BodyShort>Velg behandlingsaktivitet</BodyShort>
           </div>
 
           <div className='mt-auto flex items-center'>

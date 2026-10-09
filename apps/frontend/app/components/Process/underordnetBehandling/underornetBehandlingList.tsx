@@ -163,8 +163,8 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
         kan brukes som overordnet behandling. Dette kan gjøres hvis:
         <List as='ul' className='my-5'>
           <List.Item>
-            den underordnede behandlingen har, eller skal ha, samme overordnet behandlingsaktivitet
-            som B${overordnetBehandling.number}.
+            den underordnede behandlingen har, eller skal ha, samme behandlingsaktivitet som B$
+            {overordnetBehandling.number}.
           </List.Item>
           <List.Item>
             det ønskes samlet mange behandlinger under samme, overordnet behandling, nemlig B$

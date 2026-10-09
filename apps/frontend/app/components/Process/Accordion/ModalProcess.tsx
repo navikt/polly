@@ -109,7 +109,7 @@ const normalizeErrorPath = (path: string): string => path.replace(/\[\d+\]/g, ''
 
 const errorSummaryFieldLabels: Record<string, string> = {
   name: 'Navn',
-  purposes: 'Overordnet behandlingsaktivitet',
+  purposes: 'Behandlingsaktivitet',
   description: 'Formål med behandlingen',
   additionalDescription: 'Ytterligere beskrivelse',
   'dpia.processImplemented': 'Er behandlingen innført i Nav?',

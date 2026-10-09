@@ -72,7 +72,7 @@ export const PageHeader = (props: IPageHeaderProps) => {
     else if (section === ESection.system) return 'System'
     else if (section === ESection.processor) return 'Databehandler'
     else if (section === ESection.thirdparty) return 'Felles behandlingsansvarlig med ekstern part}'
-    return 'Overordnet behandlingsaktivitet'
+    return 'Behandlingsaktivitet'
   }
 
   const getDescription = () => {
