@@ -29,6 +29,7 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
+import InformationSquare from 'node_modules/@navikt/aksel-icons/dist/react/esm/InformationSquare'
 import { useEffect, useRef, useState } from 'react'
 import AsyncSelect from 'react-select/async'
 import { DropdownIndicator, noOptionMessage } from '@/components/common/AsyncSelectComponents'
@@ -377,6 +378,17 @@ const ModalProcess = ({
                           </InfoCard.Message>
                         </InfoCard>
                       )}
+                    {initialValues.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+                      formikBag.values.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET && (
+                        <InfoCard data-color='info' className='mb-5'>
+                          <InfoCard.Message icon={<InformationSquare aria-hidden />}>
+                            <strong>
+                              Nå som du har fjernet kobling til overordnet behandling, kan du
+                              vurdere om det også blir riktig å endre behandlingsaktivitet.
+                            </strong>
+                          </InfoCard.Message>
+                        </InfoCard>
+                      )}
                     <div className='mb-3'>
                       <LabelWithDescription
                         label='Velg behandlingsaktivitet'
@@ -389,6 +401,20 @@ const ModalProcess = ({
                       />
                     </div>
                     <FieldPurpose formikBag={formikBag} codelistUtils={codelistUtils} />
+                    {initialValues.purposes.length !== 0 &&
+                      initialValues.purposes.toLocaleString() !==
+                        formikBag.values.purposes.toLocaleString() && (
+                        <InfoCard data-color='info' className='my-5'>
+                          <InfoCard.Header icon={<InformationSquare aria-hidden />}>
+                            <InfoCard.Title> Du endrer behandlingsaktivitet</InfoCard.Title>
+                          </InfoCard.Header>
+                          <InfoCard.Content>
+                            Som følge vil behandlingen flyttes til den siden som gjelder for den nye
+                            behandlingsaktiviteten du har valgt. Etter at du har lagret endringen,
+                            vil du få en lenke til behandlingens nye side.
+                          </InfoCard.Content>
+                        </InfoCard>
+                      )}
                   </div>
 
                   <div className='my-7'>
