@@ -328,6 +328,10 @@ const ModalProcess = ({
                               'overordnetBehandling',
                               val ? (val as any).processShort : undefined
                             )
+
+                            if (val && (val as any).purpose) {
+                              formikBag.setFieldValue('purposes', [(val as any).purposes[0].code])
+                            }
                           }}
                         />
                       </div>

@@ -1,6 +1,6 @@
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps, getIn } from 'formik'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { EBehandlingsNivaa, IProcessFormValues } from '../../../constants'
@@ -24,6 +24,12 @@ const FieldPurpose = (props: {
   const purposesTouched =
     !!getIn(formikBag.touched, 'purposes[0]') || !!getIn(formikBag.touched, 'purposes')
   const showError = !!purposesError && (purposesTouched || formikBag.submitCount > 0)
+
+  useEffect(() => {
+    ;(async () => {
+      setSelectedValue(formikBag.values.purposes[0])
+    })()
+  }, [formikBag])
 
   return (
     <FieldArray
