@@ -2,9 +2,11 @@ import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { InfoCard, List, ReadMore } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { FunctionComponent, useEffect, useState } from 'react'
-import { getProcess } from '@/api/ProcessApi'
+import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
+import { convertProcessToFormValues, createProcess, getProcess } from '@/api/ProcessApi'
 import { ESection, TPathParams } from '@/components/mainPages/ProcessPage'
 import {
+  EBehandlingsNivaa,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
   IPolicy,
@@ -25,9 +27,11 @@ import {
   handleDeleteProcess,
   handleEditPolicy,
   handleEditProcess,
+  sortProcess,
 } from '@/util/processUtils'
 import { useLocation, useNavigate } from '@/util/router'
 import AccordionProcess from '../Accordion/AccordionProcess'
+import ModalProcess from '../Accordion/ModalProcess'
 import ProcessPageButtonGroup from '../common/processPageButtonGroup'
 
 type TProps = {
@@ -55,8 +59,8 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const [exportHref, setExportHref] = useState<string>('')
   const [errorProcessModal, setErrorProcessModal] = useState<string>('')
   const [errorDocumentModal, setErrorDocumentModal] = useState<string | null>(null)
-  const [, setCreateProcessModalKey] = useState<number>(0)
-  const [, setShowCreateProcessModal] = useState<boolean>(false)
+  const [createProcessModalKey, setCreateProcessModalKey] = useState<number>(0)
+  const [showCreateProcessModal, setShowCreateProcessModal] = useState<boolean>(false)
   const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
   const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
   const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
@@ -146,6 +150,42 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           scroll: false,
         }
       )
+    }
+  }
+
+  const handleCreateProcess = async (process: IProcessFormValues): Promise<void> => {
+    if (!process) return
+    try {
+      const newProcess = await createProcess(process)
+      setUnderordnetBehandlinger(sortProcess([...underOrdnetBehandlinger, newProcess]))
+      setErrorProcessModal('')
+      setShowCreateProcessModal(false)
+      setCurrentUnderordnetBehandling(newProcess)
+      // todo uh multipurpose url....
+      navigate(
+        genUnderordnetProcessPath(
+          section,
+          navCode,
+          overordnetBehandling,
+          newProcess,
+          undefined,
+          true
+        )
+      )
+      process.disclosures.forEach((d) => {
+        updateDisclosure(
+          convertDisclosureToFormValues({
+            ...d,
+            processIds: [...d.processIds, newProcess.id ? newProcess.id : ''],
+          })
+        )
+      })
+    } catch (error: any) {
+      if (error.response.data.message && error.response.data.message.includes('already exists')) {
+        setErrorProcessModal('Behandlingen eksisterer allerede.')
+        return
+      }
+      setErrorProcessModal(error.response.data.message)
     }
   }
 
@@ -263,6 +303,41 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             forUnderordnetBehandlinger={true}
           />
         )}
+
+      {showCreateProcessModal && (
+        <ModalProcess
+          key={createProcessModalKey}
+          codelistUtils={codelistUtils}
+          title='Opprett ny behandling'
+          onClose={() => {
+            setErrorProcessModal('')
+            setShowCreateProcessModal(false)
+          }}
+          isOpen={showCreateProcessModal}
+          submit={(values: IProcessFormValues) => handleCreateProcess(values)}
+          errorOnCreate={errorProcessModal}
+          isEdit={false}
+          initialValues={convertProcessToFormValues({
+            ...overordnetBehandling,
+            name: '',
+            number: undefined,
+            id: '',
+            behandlingsNivaa: EBehandlingsNivaa.UNDERORDNET,
+            overordnetBehandling: {
+              id: overordnetBehandling.id,
+              name: overordnetBehandling.name,
+              number: overordnetBehandling.number,
+              purposes: overordnetBehandling.purposes,
+              end: overordnetBehandling.end,
+              affiliation: overordnetBehandling.affiliation,
+              behandlingsNivaa: EBehandlingsNivaa.OVERORDNET,
+              changeStamp: overordnetBehandling.changeStamp,
+            },
+            status: EProcessStatus.IN_PROGRESS,
+            policies: [],
+          })}
+        />
+      )}
     </div>
   )
 }

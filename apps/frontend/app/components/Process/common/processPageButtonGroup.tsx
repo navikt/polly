@@ -103,7 +103,7 @@ const ProcessPageButtonGroup: FunctionComponent<TProps> = ({
               setShowCreateProcessModal(true)
             }}
           >
-            Opprett ny behandling
+            Opprett ny {forUnderordnetBehandling ? 'underordnet ' : ''}behandling
           </Button>
         )}
       </div>
