@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import org.apache.commons.lang3.BooleanUtils;
 import org.docx4j.com.google.common.base.Function;
 import org.docx4j.jaxb.Context;
@@ -143,6 +144,8 @@ public class ProcessToDocx {
 
     public byte[] generateDocForProcessList(List<Process> processes, String title, DocumentAccess documentAccess) {
         List<Process> processList = getProcesses(processes, documentAccess);
+        List<Process> overOrdnetOgVanligProcesses = processes.stream().filter(p -> !p.getBehandlingsNivaa().equals(BehandlingsNivaa.UNDERORDNET)).toList();
+
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd'.' MMMM yyyy 'kl 'HH:mm");
 
@@ -156,13 +159,26 @@ public class ProcessToDocx {
             doc.addHeading1(String.format(headingExternalProcessList, processList.size()));
         }
 
-        doc.addToc(processes);
+        doc.addToc(overOrdnetOgVanligProcesses);
 
-        for (int i = 0; i < processes.size(); i++) {
-            if (i != processes.size() - 1) {
+        for (int i = 0; i < overOrdnetOgVanligProcesses.size(); i++) {
+            if (i != overOrdnetOgVanligProcesses.size() - 1) {
                 doc.pageBreak();
             }
-            doc.generate(processes.get(i), documentAccess);
+            doc.generate(overOrdnetOgVanligProcesses.get(i), documentAccess);
+            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET)) {
+                doc.addHeading2("Underordnede behandlinger for B" + overOrdnetOgVanligProcesses.get(i).getData().getNumber());
+                List<Process> underOrdnetBehandlinger = Optional.ofNullable(overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger()).orElse(List.of())
+                        .stream()
+                        .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
+                        .toList();
+                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
+                    if (j != underOrdnetBehandlinger.size() - 1) {
+                        doc.pageBreak();
+                    }
+                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
+                }
+            }
         }
 
         return doc.build();
@@ -210,6 +226,7 @@ public class ProcessToDocx {
         }
 
         processes = getProcesses(processes, documentAccess);
+        List<Process> overOrdnetOgVanligProcesses = processes.stream().filter(p -> !p.getBehandlingsNivaa().equals(BehandlingsNivaa.UNDERORDNET)).toList();
 
         String subtitle;
         String description;
@@ -239,13 +256,26 @@ public class ProcessToDocx {
         } else {
             doc.addHeading1(String.format(headingExternalProcessList, processes.size()));
         }
-        doc.addToc(processes);
+        doc.addToc(overOrdnetOgVanligProcesses);
 
-        for (int i = 0; i < processes.size(); i++) {
-            if (i != processes.size() - 1) {
+        for (int i = 0; i < overOrdnetOgVanligProcesses.size(); i++) {
+            if (i != overOrdnetOgVanligProcesses.size() - 1) {
                 doc.pageBreak();
             }
-            doc.generate(processes.get(i), documentAccess);
+            doc.generate(overOrdnetOgVanligProcesses.get(i), documentAccess);
+            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET)) {
+                doc.addHeading2("Underordnede behandlinger for B" + overOrdnetOgVanligProcesses.get(i).getData().getNumber());
+                List<Process> underOrdnetBehandlinger = Optional.ofNullable(overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger()).orElse(List.of())
+                        .stream()
+                        .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
+                        .toList();
+                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
+                    if (j != underOrdnetBehandlinger.size() - 1) {
+                        doc.pageBreak();
+                    }
+                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
+                }
+            }
         }
 
         return doc.build();
@@ -664,18 +694,30 @@ public class ProcessToDocx {
             main.addObject(paragraph(text(values)));
         }
 
-        private void addToc(List<Process> processes) {
+        private void addToc(List<Process> overOrdnetOgVanligProcesses) {
             long currListId = listId++;
 
-            for (Process process : processes) {
-                var name = shortNames(ListName.PURPOSE, process.getData().getPurposes()) + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")";
-                var bookmark = process.getId().toString();
-
-                addListItem(name, currListId, bookmark);
+            for (Process process : overOrdnetOgVanligProcesses) {
+                addListItem(processTocName(process), currListId, process.getId().toString());
+                if (process.getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET)) {
+                    Optional.ofNullable(process.getUnderordnetBehandlinger())
+                            .orElse(List.of())
+                            .stream()
+                            .sorted(Comparator.comparing(this::processTocName, String.CASE_INSENSITIVE_ORDER))
+                            .forEach(underOrdnetBehandling -> addListItem(processTocName(underOrdnetBehandling), currListId, underOrdnetBehandling.getId().toString(), true));
+                }
             }
         }
 
+        private String processTocName(Process process) {
+            return shortNames(ListName.PURPOSE, process.getData().getPurposes()) + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")";
+        }
+
         private void addListItem(String text, long listId, String bookmark) {
+            addListItem(text, listId, bookmark, false);
+        }
+
+        private void addListItem(String text, long listId, String bookmark, boolean indented) {
             var p = paragraph();
             PPr pPr = fac.createPPr();
             NumPr numPr = fac.createPPrBaseNumPr();
@@ -688,6 +730,12 @@ public class ProcessToDocx {
             pPrBaseSpacing.setBefore(BigInteger.ZERO);
             pPrBaseSpacing.setAfter(BigInteger.ZERO);
             pPr.setSpacing(pPrBaseSpacing);
+
+            if (indented) {
+                var indent = fac.createPPrBaseInd();
+                indent.setLeft(BigInteger.valueOf(720));
+                pPr.setInd(indent);
+            }
 
             numPr.setNumId(numId);
             numId.setVal(BigInteger.valueOf(listId));
