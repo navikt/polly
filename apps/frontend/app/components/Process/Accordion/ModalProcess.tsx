@@ -279,18 +279,13 @@ const ModalProcess = ({
                         {({ form }: FieldProps<string, IProcessFormValues>) => (
                           <RadioGroup
                             legend={
-                              <div className='flex gap-2 items-center'>
-                                {isOverordnetRelasjonLocked && (
-                                  <PadlockLockedFillIcon aria-hidden />
-                                )}
-                                Velg behandlingsnivå
-                              </div>
+                              <div className='flex gap-2 items-center'>Velg behandlingsnivå</div>
                             }
                             value={form.values.behandlingsNivaa}
                             onChange={(value: EBehandlingsNivaa) => {
                               form.setFieldValue('behandlingsNivaa', value)
                             }}
-                            disabled={isOverordnetRelasjonLocked}
+                            readOnly={isOverordnetRelasjonLocked}
                           >
                             <Radio value={EBehandlingsNivaa.VANLIG}>
                               Dette er en vanlig behandling uten kobling til andre{' '}

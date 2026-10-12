@@ -37,7 +37,7 @@ const FieldPurpose = (props: {
       render={(arrayHelpers: FieldArrayRenderProps) => (
         <div className='flex-1 min-w-0'>
           <Select
-            disabled={
+            readOnly={
               formikBag.values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
               formikBag.values.overordnetBehandling !== undefined
             }
