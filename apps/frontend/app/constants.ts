@@ -184,16 +184,12 @@ export interface IProcessFormValues {
   dataProcessing: IDataProcessingFormValues
   retention: IRetention
   disclosures: IDisclosure[]
-<<<<<<< HEAD
   behandlingsNivaa: EBehandlingsNivaa
   overordnetBehandling?: IProcessShort
   underordnetBehandlinger?: IProcessShort[]
   relasjonsDato?: string
   sistGodkjentAvvikFraOverordnetBehandling?: string
-=======
-  /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
   version?: number
->>>>>>> 447525476 (Optimistisk låsing (wip))
 }
 
 export interface IAffiliationFormValues {

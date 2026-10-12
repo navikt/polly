@@ -445,13 +445,26 @@ const ProcessList = ({
             handleDeleteProcess(processTodelete, processList, setProcessList, setErrorProcessModal)
           }
           submitEditProcess={(process: IProcessFormValues) =>
-            handleEditProcess(process, setCurrentProcess, processList, setProcessList)
+            handleEditProcess(
+              process,
+              setCurrentProcess,
+              getProcessById,
+              processList,
+              setProcessList,
+              setErrorProcessModal
+            )
           }
           submitCreatePolicy={(process: IPolicyFormValues) =>
             handleCreatePolicy(process, currentProcess, getProcessById, setErrorPolicyModal)
           }
           submitEditPolicy={(values: IPolicyFormValues) =>
-            handleEditPolicy(values, currentProcess, setCurrentProcess, setErrorPolicyModal)
+            handleEditPolicy(
+              values,
+              currentProcess,
+              getProcessById,
+              setCurrentProcess,
+              setErrorPolicyModal
+            )
           }
           submitDeletePolicy={(values: IPolicy) =>
             handleDeletePolicy(values, currentProcess, setCurrentProcess, setErrorPolicyModal)

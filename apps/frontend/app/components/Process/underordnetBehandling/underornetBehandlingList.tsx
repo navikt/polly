@@ -258,8 +258,10 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
               handleEditProcess(
                 process,
                 setCurrentUnderordnetBehandling,
+                getProcessById,
                 underOrdnetBehandlinger,
-                setUnderordnetBehandlinger
+                setUnderordnetBehandlinger,
+                setErrorDocumentModal
               )
             }
             submitCreatePolicy={(process: IPolicyFormValues) =>
@@ -274,6 +276,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
               handleEditPolicy(
                 values,
                 currentUnderordnetBehandling,
+                getProcessById,
                 setCurrentUnderordnetBehandling,
                 setErrorPolicyModal
               )
