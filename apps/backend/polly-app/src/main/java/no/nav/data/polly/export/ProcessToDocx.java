@@ -199,7 +199,7 @@ public class ProcessToDocx {
                 processes = processRepository.findBySubDepartment(code);
             }
             case PURPOSE -> {
-                title = "Formål";
+                title = "Behandlingsaktivitet";
                 processes = processRepository.findByPurpose(code);
             }
             case SYSTEM -> {
@@ -285,7 +285,7 @@ public class ProcessToDocx {
             addText(Integer.toString(process.getData().getNumber()));
 
             data.getPurposes().forEach(purpose -> {
-                addHeading4("Overordnet formål: " + shortName(ListName.PURPOSE, purpose));
+                addHeading4("Behandlingsaktivitet: " + shortName(ListName.PURPOSE, purpose));
                 addText(CodelistStaticService.getCodelist(ListName.PURPOSE, purpose).getDescription());
             });
 
