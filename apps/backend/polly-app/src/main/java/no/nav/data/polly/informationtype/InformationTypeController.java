@@ -21,7 +21,6 @@ import no.nav.data.polly.teams.domain.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -185,15 +184,13 @@ public class InformationTypeController {
     @Operation(summary = "Delete InformationType")
     @ApiResponse(description = "InformationType deleted")
     @DeleteMapping("/{id}")
-    @Transactional // TODO: Flytt dette inn til tjenestelaget
-    public ResponseEntity<InformationTypeResponse> deleteInformationTypeById(@PathVariable UUID id) {
-        // FIXME: Opt Lock
-        log.info("Received a request to delete InformationType with id={}", id);
+    public ResponseEntity<InformationTypeResponse> deleteInformationTypeById(@PathVariable UUID id, @RequestParam(required = false) Integer expectedVersion) {
+        log.info("Received a request to delete InformationType with id={} and version={}", id, expectedVersion);
         if (id == null) {
             log.info("id missing");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok(service.delete(id).convertToResponse());
+        return ResponseEntity.ok(service.delete(id, expectedVersion).convertToResponse());
     }
 
     static final class InformationTypePage extends RestResponsePage<InformationTypeResponse> {

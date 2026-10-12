@@ -1,6 +1,7 @@
 package no.nav.data.polly.process.dpprocess;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
@@ -32,9 +33,11 @@ public class DpProcessService {
     }
 
     @Transactional
-    public void deleteById(UUID uuid) {
-        // FIXME: Mangler Opt lock ?
-        repository.deleteById(uuid);
+    public DpProcess deleteById(UUID id, Integer expectedVersion) {
+        DpProcess dpProcess = repository.findById(id).orElseThrow(() -> new NotFoundException("Cannot find Process with id=" + id));
+        OptimisticLockingUtil.checkVersion(dpProcess, expectedVersion); // ObjectOptimisticLockingFailureException if wrong version
+        repository.deleteById(id);
+        return dpProcess;
     }
 
 }

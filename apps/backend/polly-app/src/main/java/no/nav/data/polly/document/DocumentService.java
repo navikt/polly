@@ -89,7 +89,7 @@ public class DocumentService {
     }
 
     @Transactional
-    public Document delete(UUID uuid) {
+    public Document delete(UUID uuid, Integer expectedVersion) {
         var doc = repository.findById(uuid).orElseThrow(() -> new NotFoundException("Couldn't find document " + uuid));
         var disclosures = disclosureRepository.findByDocumentId(uuid.toString());
         if (!disclosures.isEmpty()) {
@@ -102,6 +102,7 @@ public class DocumentService {
         if (uuid.toString().equals(settingsService.getSettings().getDefaultProcessDocument())) {
             throw new ValidationException("Cannot delete default process document " + uuid);
         }
+        OptimisticLockingUtil.checkVersion(doc, expectedVersion);
         repository.delete(doc);
         return doc;
     }

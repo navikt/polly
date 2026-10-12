@@ -140,7 +140,7 @@ public class Process extends Auditable {
     }
 
     // TODO: Snu avhengigheten innover
-    public Process convertFromRequest(ProcessRequest request) {
+    public Process copyFieldsFrom(ProcessRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
             data.setNumber(request.getNewProcessNumber());

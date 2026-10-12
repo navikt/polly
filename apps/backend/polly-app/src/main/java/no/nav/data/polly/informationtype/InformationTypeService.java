@@ -69,7 +69,7 @@ public class InformationTypeService {
     }
 
     @Transactional
-    public InformationType delete(UUID id) {
+    public InformationType delete(UUID id, Integer expectedVersion) {
         InformationType infoType = repository.findById(id).orElseThrow(() -> new NotFoundException("Fant ikke id=" + id));
         if (!infoType.getPolicies().isEmpty()) {
             throw new ValidationException(String.format("InformationType %s is used by %d policie(s)", id, infoType.getPolicies().size()));
@@ -82,9 +82,10 @@ public class InformationTypeService {
         if (!disclosures.isEmpty()) {
             throw new ValidationException(String.format("InformationType %s is used by %d disclosure(s)", id, disclosures.size()));
         }
+        OptimisticLockingUtil.checkVersion(infoType, expectedVersion);
 
-        log.info("InformationType with id={} deleted", id);
         repository.delete(infoType);
+        log.info("InformationType with id={} deleted", id);
         alertService.deleteEventsForInformationType(infoType.getId());
         return infoType;
     }

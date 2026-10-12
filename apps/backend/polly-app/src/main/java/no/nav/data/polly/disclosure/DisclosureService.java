@@ -1,6 +1,7 @@
 package no.nav.data.polly.disclosure;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.disclosure.domain.Disclosure;
@@ -29,7 +30,7 @@ public class DisclosureService {
 
     @Transactional
     public Disclosure update(DisclosureRequest request) {
-        Disclosure existing = repository.findById(request.getIdAsUUID()).orElseThrow();
+        Disclosure existing = repository.findById(request.getIdAsUUID()).orElseThrow(() -> new NotFoundException("Cannot find Disclosure with id=" + request.getIdAsUUID()));
         OptimisticLockingUtil.checkVersion(existing, request.getVersion()); // Kaster OptimisticLockingFailureException hvis feil version 
         Disclosure disclosure = existing.convertFromRequest(request);
         alertService.calculateEventsForDisclosure(disclosure.getId());
@@ -38,9 +39,12 @@ public class DisclosureService {
     }
 
     @Transactional
-    public void deleteById(UUID id) {
+    public Disclosure deleteById(UUID id, Integer expectedVersion) {
+        Disclosure existing = repository.findById(id).orElseThrow(() -> new NotFoundException("Cannot find Disclosure with id=" + id));
+        OptimisticLockingUtil.checkVersion(existing, expectedVersion); // Kaster OptimisticLockingFailureException hvis feil version 
         repository.deleteById(id);
         alertService.deleteEventsForDisclosure(id);
+        return existing;
     }
 
 }

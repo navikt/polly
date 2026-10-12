@@ -20,19 +20,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.nav.data.common.auditing.domain.Auditable;
-import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
-import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import org.hibernate.annotations.Type;
 
-import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
@@ -87,23 +84,12 @@ public class Policy extends Auditable {
     }
 
     // TODO: Snu avhengigheten innover
-    public static Policy mapRequestToPolicy(PolicyRequest policyRequest) {
-        Policy policy;
-        if (policyRequest.getExistingPolicy() != null) {
-            policy = policyRequest.getExistingPolicy();
-            // Optimistisk låsing: sjekk før mapping. Hibernate øker version selv ved flush.
-            OptimisticLockingUtil.checkVersion(policy, policyRequest.getVersion());
-        } else {
-            policy = Policy.builder().generateId().data(new PolicyData()).build();
-        }
-        policyRequest.getInformationType().addPolicy(policy);
-        policyRequest.getProcess().addPolicy(policy);
-        policy.getData().setPurposes(List.copyOf(policyRequest.getPurposes()));
-        policy.getData().setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
-        policy.getData().setLegalBasesUse(policyRequest.getLegalBasesUse());
-        policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToDomain));
-        policy.getData().setDocumentIds(convert(policyRequest.getDocumentIds(), UUID::fromString));
-        return policy;
+    public Policy copyFieldsFrom(PolicyRequest policyRequest) {
+        // OptimisticLockingUtil.checkVersion(this, policyRequest.getVersion()); // FIXME: Er det bedre å ha denne sjekken her?
+        policyRequest.getInformationType().addPolicy(this);
+        policyRequest.getProcess().addPolicy(this);
+        policyRequest.mergeInto(this);
+        return this;
     }
 
     // TODO: Snu avhengigheten innover

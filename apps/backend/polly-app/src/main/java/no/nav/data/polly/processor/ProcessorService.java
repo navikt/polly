@@ -37,12 +37,15 @@ public class ProcessorService {
     }
 
     @Transactional
-    public void deleteById(UUID uuid) {
+    public Processor deleteById(UUID uuid, Integer expectedVersion) {
+        var processor = repository.findById(uuid).orElseThrow(() -> new NotFoundException("No processor with id=" + uuid));
         var processes = processRepository.findByProcessor(uuid);
         if (!processes.isEmpty()) {
             throw new ValidationException("Processor in use by " + processes.size() + " processes");
         }
+        OptimisticLockingUtil.checkVersion(processor, expectedVersion);
         repository.deleteById(uuid);
+        return processor;
     }
 
 }

@@ -24,7 +24,6 @@ import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -179,17 +178,11 @@ public class DisclosureController {
     @Operation(summary = "Delete Disclosure")
     @ApiResponse(description = "Disclosure deleted")
     @DeleteMapping("/{id}")
-    @Transactional // TODO: Flytt til tjenestelaget
-    public ResponseEntity<DisclosureResponse> deleteDisclosureById(@PathVariable UUID id) {
-        log.info("Received a request to delete Disclosure with id={}", id);
-        Optional<Disclosure> fromRepository = repository.findById(id);
-        if (fromRepository.isEmpty()) {
-            log.info("Cannot find Disclosure with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        service.deleteById(id);
+    public ResponseEntity<DisclosureResponse> deleteDisclosureById(@PathVariable UUID id, @RequestParam(required = false) Integer version) {
+        log.info("Received a request to delete Disclosure with id={} and version={}", id, version);
+        var deletedDisclosure = service.deleteById(id, version);
         log.info("Disclosure with id={} deleted", id);
-        return new ResponseEntity<>(convertAndAddObjects(fromRepository.get()), HttpStatus.OK);
+        return new ResponseEntity<>(convertAndAddObjects(deletedDisclosure), HttpStatus.OK);
     }
 
     private DisclosureResponse convertAndAddObjects(Disclosure disclosure) {

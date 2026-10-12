@@ -8,7 +8,7 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.policy.rest.PolicyRestController.PolicyPage;
+import no.nav.data.polly.policy.PolicyController.PolicyPage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,4 @@
-package no.nav.data.polly.policy.rest;
-
+package no.nav.data.polly.policy;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +10,6 @@ import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
-import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
@@ -20,7 +18,6 @@ import no.nav.data.polly.policy.dto.PolicyResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
@@ -44,11 +40,10 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @Tag(name = "Policy", description = "Data Catalog Policies")
 @RequestMapping("/policy")
-@Transactional // FIXME: MÅ flyttes til Service. Lager krøll for optimistisk låsing.
 @RequiredArgsConstructor
-public class PolicyRestController {
+public class PolicyController {
 
-    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk og *Repository-aksess til tjenestelaget.
     
     private final PolicyService service;
     private final PolicyRequestValidator requestValidator;
@@ -116,11 +111,10 @@ public class PolicyRestController {
     @ApiResponse(responseCode = "201", description = "Policy successfully created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<RestResponsePage<PolicyResponse>> createPolicy(@Valid @RequestBody List<PolicyRequest> policyRequests) {
+    public ResponseEntity<RestResponsePage<PolicyResponse>> createPolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received request to create Policies");
         requestValidator.validateRequests(policyRequests, false);
-        List<Policy> policies = policyRequests.stream().map(Policy::mapRequestToPolicy).collect(toList());
-        List<PolicyResponse> responses = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
+        List<PolicyResponse> responses = service.create(policyRequests).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
 
@@ -129,24 +123,17 @@ public class PolicyRestController {
     @GetMapping("/{id}")
     public ResponseEntity<PolicyResponse> getPolicy(@PathVariable UUID id) {
         log.debug("Received request for Policy with id={}", id);
-        Optional<Policy> optionalPolicy = policyRepository.findById(id);
-        if (optionalPolicy.isEmpty()) {
-            throw notFoundError(id);
-        }
-        return ResponseEntity.ok(optionalPolicy.get().convertToResponse(true));
+        Policy policy = policyRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot find Policy with id=" + id));
+        return ResponseEntity.ok(policy.convertToResponse(true));
     }
 
     @Operation(summary = "Delete Policy")
     @ApiResponse(description = "Policy deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<PolicyResponse> deletePolicy(@PathVariable UUID id) {
-        log.debug("Received request to delete Policy with id={}", id);
-        Optional<Policy> optionalPolicy = policyRepository.findById(id);
-        if (optionalPolicy.isEmpty()) {
-            throw notFoundError(id);
-        }
-        Policy policy = optionalPolicy.get();
-        service.delete(policy);
+    public ResponseEntity<PolicyResponse> deletePolicy(@PathVariable UUID id, @RequestParam(required = false) Integer version) {
+        log.debug("Received request to delete Policy with id={} and version={}", id, version);
+        Policy policy = service.deleteById(id, version);
+        log.info("Policy with id={} deleted", id);
         return ResponseEntity.ok(policy.convertToResponse(true));
     }
 
@@ -158,18 +145,8 @@ public class PolicyRestController {
         if (!Objects.equals(id, policyRequest.getId())) {
             throw new ValidationException(String.format("id mismatch in request %s and path %s", policyRequest.getId(), id));
         }
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch (Exception e) {
-            throw new ValidationException(String.format("invalid UUID %s", id));
-        }
-        if (policyRepository.findById(uuid).isEmpty()) {
-            throw notFoundError(uuid);
-        }
         requestValidator.validateRequests(List.of(policyRequest), true);
-        Policy policy = Policy.mapRequestToPolicy(policyRequest);
-        return ResponseEntity.ok(service.saveAll(List.of(policy)).get(0).convertToResponse(true));
+        return ResponseEntity.ok(service.update(policyRequest).convertToResponse(true));
     }
 
     @Operation(summary = "Update Policies")
@@ -178,15 +155,8 @@ public class PolicyRestController {
     public ResponseEntity<RestResponsePage<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received requests to update Policies");
         requestValidator.validateRequests(policyRequests, true);
-        List<Policy> policies = policyRequests.stream().map(Policy::mapRequestToPolicy).collect(toList());
-        List<PolicyResponse> response = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
-        return ResponseEntity.ok(new RestResponsePage<>(response));
-    }
-
-    private RuntimeException notFoundError(UUID id) {
-        String message = String.format("Cannot find Policy with id: %s", id);
-        log.warn(message);
-        throw new NotFoundException(message);
+        List<Policy> policies = service.update(policyRequests);
+        return ResponseEntity.ok(new RestResponsePage<>(policies.stream().map(policy -> policy.convertToResponse(true)).collect(toList())));
     }
 
     public static final class PolicyPage extends RestResponsePage<PolicyResponse> {

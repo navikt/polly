@@ -121,9 +121,9 @@ public class DocumentController {
     @Operation(summary = "Delete Document")
     @ApiResponse(description = "Document deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<DocumentResponse> deleteDocumentById(@PathVariable UUID id) {
-        log.info("Received a request to delete Document with id={}", id);
-        var doc = service.delete(id);
+    public ResponseEntity<DocumentResponse> deleteDocumentById(@PathVariable UUID id, @RequestParam(required = false) Integer version) {
+        log.info("Received a request to delete Document with id={} and version={}", id, version);
+        var doc = service.delete(id, version);
         log.info("Document with id={} deleted", id);
         return new ResponseEntity<>(convertToResponseWithInfoTypes(doc), HttpStatus.OK);
     }

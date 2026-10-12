@@ -6,6 +6,7 @@ import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.mail.EmailService;
 import no.nav.data.common.mail.MailTask;
+import no.nav.data.common.storage.domain.LastModified;
 import no.nav.data.common.template.TemplateService;
 import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.alert.AlertService;
@@ -20,8 +21,11 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import no.nav.data.polly.process.dto.ProcessRevisionRequest;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.teams.ResourceService;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +61,7 @@ public class ProcessService {
     private final TemplateService templateService;
     private final EmailService emailService;
     private final PolicyRepository policyRepository;
+    private final TeamService teamService;
 
 
     @Transactional
@@ -67,6 +72,7 @@ public class ProcessService {
         return saved;
     }
 
+    // Merk: Endrer ikke state i databasen.
     public void setOverordnetBehandlingAndUpdateAktivitet(Process processToBeUpdated, ProcessRequest request, UUID oldOverordnetBehandlingId) {
         if (request.getOverordnetBehandling() == null) {
             processToBeUpdated.setOverordnetBehandling(null);
@@ -89,12 +95,12 @@ public class ProcessService {
 
     @Transactional
     public Process update(ProcessRequest request) {
-        var process = processRepository.findById(request.getIdAsUUID()).orElseThrow();
+        var process = processRepository.findById(request.getIdAsUUID()).orElseThrow(() -> new NotFoundException("Finner ikke behandling med id=" + request.getId()));
         // Optimistisk låsing: versjonen klienten sist leste må stemme med den i basen.
         OptimisticLockingUtil.checkVersion(process, request.getVersion());
         var oldPurposes = process.getData().getPurposes();
         var oldOverordnetBehandlingId = process.getOverordnetBehandling() != null ? process.getOverordnetBehandling().getId() : null;
-        process.convertFromRequest(request);
+        process.copyFieldsFrom(request);
         setOverordnetBehandlingAndUpdateAktivitet(process, request, oldOverordnetBehandlingId);
 
         if (!oldPurposes.equals(request.getPurposes())) {
@@ -105,7 +111,6 @@ public class ProcessService {
     }
 
     @Transactional
-
     public void updateUnderOrdnetBehandlingWithNewAktivitetFromOverordnet(Process overordnetBehandling) {
         var underordnetBehandling = overordnetBehandling.getUnderordnetBehandlinger();
         underordnetBehandling.forEach(p -> {
@@ -115,36 +120,20 @@ public class ProcessService {
     }
 
     @Transactional
-    @Deprecated // FIXME: Fjernes før merge til master, bruk deleteById(UUID id, Integer expectedVersion)
-    public void deleteById(UUID id) {
-        List<Disclosure> disclosures = disclosureRepository.findByProcessId(id);
-        if (!disclosures.isEmpty()) {
-            throw new ValidationException(String.format("Process %s is used by %d disclosure(s)", id, disclosures.size()));
-        }
-
-        processRepository.deleteById(id);
-        alertService.deleteEventsForProcess(id);
-    }
-    
-    @Transactional
     public Process deleteById(UUID id, Integer expectedVersion) {
-        Optional<Process> process = processRepository.findById(id);
-        if (process.isEmpty()) {
-            log.info("Cannot find Process with id={}", id);
-            throw new NotFoundException("Cannot find Process with id=" + id);
-        }
+        Process process = processRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot find Process with id=" + id));
         
         List<Disclosure> disclosures = disclosureRepository.findByProcessId(id);
         if (!disclosures.isEmpty()) {
             throw new ValidationException(String.format("Process %s is used by %d disclosure(s)", id, disclosures.size()));
         }
 
-        OptimisticLockingUtil.checkVersion(process.get(), expectedVersion); // ObjectOptimisticLockingFailureException if wrong version
+        OptimisticLockingUtil.checkVersion(process, expectedVersion); // ObjectOptimisticLockingFailureException if wrong version
         
         processRepository.deleteById(id);
         alertService.deleteEventsForProcess(id);
         log.info("Process with id={} deleted", id);
-        return process.get();
+        return process;
     }
 
     public List<Process> getAllProcessesForGdprAndLaw(String gdprArticle, String nationalLaw) {
@@ -187,7 +176,28 @@ public class ProcessService {
     }
 
     @Transactional
-    public void requireRevision(List<UUID> processIds, String revisionText, boolean completedOnly) {
+    public void requireRevision(ProcessRevisionRequest request) {
+        var ids = switch (request.getProcessSelection()) {
+        case ONE -> List.of(request.getProcessId());
+        case PRODUCT_AREA -> {
+            var teams = teamService.getTeamsForProductArea(request.getProductAreaId());
+            yield convert(processRepository.findByProductTeams(convert(teams, Team::getId)), Process::getId);
+        }
+        case DEPARTMENT -> processRepository.findIdByDepartment(request.getDepartment());
+        case ALL -> processRepository.findAllIds();
+    };
+
+    var lastModifiedByList = processRepository.getLastModifiedBy(ids);
+    var lastModifiedBy = lastModifiedByList.stream().collect(Collectors.groupingBy(LastModified::getLastModifiedBy));
+
+    lastModifiedBy.values()
+            .stream().map(it -> convert(it, LastModified::getId))
+            .forEach(processIds -> requireRevision(processIds, request.getRevisionText(), request.isCompletedOnly()));
+        
+    }
+
+    @Transactional
+    private void requireRevision(List<UUID> processIds, String revisionText, boolean completedOnly) {
         var processes = processRepository.findAllById(processIds)
                 .stream()
                 .filter(p -> !completedOnly || p.getData().getStatus() == ProcessStatus.COMPLETED)

@@ -2,7 +2,7 @@ package no.nav.data.polly.process.dto;
 
 import java.util.List;
 
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

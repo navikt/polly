@@ -89,8 +89,6 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
         } else if (!policy.getData().getPurposes().equals(request.getPurposes())) {
             validations.add(new ValidationError(request.getReference(), "cannotChangePurpose",
                     String.format("Cannot change purpose from %s to %s for policy %s", policy.getData().getPurposes(), request.getPurposes(), request.getId())));
-        } else {
-            request.setExistingPolicy(policy);
         }
     }
 
