@@ -179,8 +179,11 @@ public class ProcessToDocx {
                         .stream()
                         .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
                         .toList();
-                for (Process process : underOrdnetBehandlinger) {
-                    doc.generate(process, documentAccess);
+                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
+                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
+                    if (j == underOrdnetBehandlinger.size() - 1) {
+                        doc.pageBreak();
+                    }
                 }
             }
         }
@@ -274,10 +277,10 @@ public class ProcessToDocx {
                         .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
                         .toList();
                 for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
-                    if (j != underOrdnetBehandlinger.size() - 1) {
+                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
+                    if (j == underOrdnetBehandlinger.size() - 1) {
                         doc.pageBreak();
                     }
-                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
                 }
             }
         }
