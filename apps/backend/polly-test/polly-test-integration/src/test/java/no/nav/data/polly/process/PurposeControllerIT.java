@@ -27,7 +27,11 @@ class PurposeControllerIT extends IntegrationTestBase {
         assertThat(purposeResponse).isNotNull();
 
         assertThat(purposeResponse.getNumberOfElements()).isOne();
-        purposeResponse.getContent().forEach(p -> p.setChangeStamp(null));
+        // dont compare fluid values
+        purposeResponse.getContent().forEach(p -> {
+            p.setChangeStamp(null);
+            p.setVersion(null);
+        });
         assertThat(purposeResponse.getContent().get(0)).isEqualTo(
                 processResponseBuilder(policy.getProcess().getId())
                         .build());

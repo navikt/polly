@@ -19,7 +19,6 @@ import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,16 +115,15 @@ public class DocumentController {
         log.debug("Received request to update Document");
         Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
         requestValidator.validateRequest(request, true);
-        return ResponseEntity.ok(convertToResponseWithInfoTypes(service.update(request.convertToDocument())));
+        return ResponseEntity.ok(convertToResponseWithInfoTypes(service.update(request)));
     }
 
     @Operation(summary = "Delete Document")
     @ApiResponse(description = "Document deleted")
     @DeleteMapping("/{id}")
-    @Transactional // TODO: Flytt til tjenestelaget
-    public ResponseEntity<DocumentResponse> deleteDocumentById(@PathVariable UUID id) {
-        log.info("Received a request to delete Document with id={}", id);
-        var doc = service.delete(id);
+    public ResponseEntity<DocumentResponse> deleteDocumentById(@PathVariable UUID id, @RequestParam(required = false) Integer version) {
+        log.info("Received a request to delete Document with id={} and version={}", id, version);
+        var doc = service.delete(id, version);
         log.info("Document with id={} deleted", id);
         return new ResponseEntity<>(convertToResponseWithInfoTypes(doc), HttpStatus.OK);
     }

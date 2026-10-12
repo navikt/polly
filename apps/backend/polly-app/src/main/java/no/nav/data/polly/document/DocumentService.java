@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.utils.HibernateUtils;
+import no.nav.data.common.utils.OptimisticLockingUtil;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
@@ -58,24 +59,37 @@ public class DocumentService {
         if (!request.isUpdate()) {
             doc.setId(UUID.randomUUID());
         }
-        return repository.save(doc);
+        // saveAndFlush i tilfelle metoden kalles fra en annen transasksjon 
+        return repository.saveAndFlush(doc);
     }
 
     @Transactional
-    public Document update(Document doc) {
+    public Document update(DocumentRequest request) {
+        return update(request.convertToDocument(), request.getVersion());
+    }
+
+    /**
+     * @param expectedVersion versjonen klienten sist leste (optimistisk låsing), eller null for
+     * interne kall der det ikke finnes en klientlest versjon. Ved null gjelder kun Hibernate sin
+     * versjonssjekk ved flush.
+     */
+    @Transactional
+    public Document update(Document doc, Integer expectedVersion) {
         Document existingDoc = repository.getById(doc.getId());
         if (existingDoc == null) {
             throw new NotFoundException("Couldn't find document " + doc.getId());
         }
         // Merge...
         HibernateUtils.initialize(existingDoc); // I noen tester blir existingDoc av en eller annen grunn en detached proxy
+        // Optimistisk låsing: sjekk før mapping. Hibernate øker version ved flush.
+        OptimisticLockingUtil.checkVersion(existingDoc, expectedVersion);
         existingDoc.setData(doc.getData());
-        // Save & return...
-        return repository.save(existingDoc);
+        // saveAndFlush i tilfelle metoden kalles fra en annen transasksjon 
+        return repository.saveAndFlush(existingDoc);
     }
 
     @Transactional
-    public Document delete(UUID uuid) {
+    public Document delete(UUID uuid, Integer expectedVersion) {
         var doc = repository.findById(uuid).orElseThrow(() -> new NotFoundException("Couldn't find document " + uuid));
         var disclosures = disclosureRepository.findByDocumentId(uuid.toString());
         if (!disclosures.isEmpty()) {
@@ -88,6 +102,7 @@ public class DocumentService {
         if (uuid.toString().equals(settingsService.getSettings().getDefaultProcessDocument())) {
             throw new ValidationException("Cannot delete default process document " + uuid);
         }
+        OptimisticLockingUtil.checkVersion(doc, expectedVersion);
         repository.delete(doc);
         return doc;
     }

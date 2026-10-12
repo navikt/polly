@@ -6,6 +6,7 @@ import { Fragment, useEffect, useState } from 'react'
 import shortid from 'shortid'
 import { getDocument, updateInformationTypesDocument } from '@/api/DocumentApi'
 import { IDocument, IDocumentFormValues, IDocumentInfoTypeUse } from '@/constants'
+import { getConflictAwareErrorMessage, isConflictError } from '@/util/optimisticLocking'
 import { useNavigate } from '@/util/router'
 import DocumentForm from '../document/component/DocumentForm'
 import { convertDocumentToFormRequest } from './DocumentCreatePage'
@@ -13,6 +14,8 @@ import { convertDocumentToFormRequest } from './DocumentCreatePage'
 const convertToDocumentFormValues = (document: IDocument) => {
   return {
     id: document.id,
+    // Optimistisk låsing: ta vare på versjonen vi leste, slik at den kan sendes ved lagring
+    version: document.version,
     name: document.name,
     description: document.description,
     dataAccessClass: document.dataAccessClass?.code || '',
@@ -30,6 +33,7 @@ const convertToDocumentFormValues = (document: IDocument) => {
 const DocumentEditPage = () => {
   const [document, setDocument] = useState<IDocument>()
   const [isLoading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const params = useParams<{ id: string }>()
   const navigate = useNavigate()
 
@@ -39,6 +43,12 @@ const DocumentEditPage = () => {
       navigate(`/document/${res.id}`)
     } catch (error: any) {
       console.debug(error, 'ERR')
+      if (isConflictError(error) && params.id) {
+        // Optimistisk låsing: dokumentet er endret av en annen bruker.
+        // Hent inn gjeldende data på nytt i stedet for å overskrive i stillhet.
+        setDocument(await getDocument(params.id))
+      }
+      setErrorMessage(getConflictAwareErrorMessage(error))
     }
   }
 
@@ -61,6 +71,7 @@ const DocumentEditPage = () => {
             initialValues={convertToDocumentFormValues(document)}
             handleSubmit={handleEditDocument}
           />
+          {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
         </Fragment>
       )}
     </Fragment>

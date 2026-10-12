@@ -30,6 +30,7 @@ public class DocumentResponse {
     @Singular
     private List<DocumentInfoTypeUseResponse> informationTypes;
     private CodelistResponse dataAccessClass;
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
 
     public static DocumentResponse buildFrom(Document d) {
         DocumentData data = d.getData();
@@ -39,6 +40,7 @@ public class DocumentResponse {
                 .description(data.getDescription())
                 .informationTypes(convert(data.getInformationTypes(), Document::convertToInfoTypeUseResponse))
                 .dataAccessClass(CodelistStaticService.getCodelistResponse(ListName.DATA_ACCESS_CLASS, data.getDataAccessClass()))
+                .version(d.getVersion())
                 .build();
     }
     

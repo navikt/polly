@@ -46,7 +46,7 @@ class PolicyMapperTest {
                 .purpose(PURPOSE_CODE1)
                 .informationType(informationType)
                 .build();
-        Policy policy = Policy.mapRequestToPolicy(request);
+        Policy policy = new Policy().copyFieldsFrom(request);
         assertThat(policy.getProcess().getData().getName(), is("process"));
         assertThat(policy.getData().getSubjectCategories(), hasItem("Bruker"));
         assertThat(policy.getData().getPurposes(), is(List.of(PURPOSE_CODE1)));

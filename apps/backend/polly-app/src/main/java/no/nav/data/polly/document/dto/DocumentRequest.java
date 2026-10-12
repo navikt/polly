@@ -32,6 +32,8 @@ public class DocumentRequest implements RequestElement {
     private boolean update;
     private int requestIndex;
 
+    private Integer version; // For optimistisk låsing, må sendes ved oppdatering, og ikke kopieres til entity.
+
     @Override
     public String getIdentifyingFields() {
         return getId();
@@ -67,6 +69,7 @@ public class DocumentRequest implements RequestElement {
                         .dataAccessClass(getDataAccessClass())
                         .informationTypes(convert(getInformationTypes(), DocumentData.InformationTypeUse::convertFromRequest))
                         .build())
+                // Merk: version skal ALDRI kopieres fra requesten til entitet. 
                 .build();
     }
 

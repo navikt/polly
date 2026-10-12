@@ -57,6 +57,7 @@ public class Processor extends Auditable {
         data.setTransferGroundsOutsideEU(request.getTransferGroundsOutsideEU());
         data.setTransferGroundsOutsideEUOther(request.getTransferGroundsOutsideEUOther());
         data.setCountries(copyOf(request.getCountries()));
+        // Version skal aldri koieres fra request til entity.
 
         return this;
     }

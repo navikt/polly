@@ -1,5 +1,6 @@
 package no.nav.data.polly.policy.dto;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
@@ -34,6 +35,7 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
 
+    @Transactional // FIXME: Denne må kanskje flyttes til et fornuftig sted før merge til master
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
         initialize(requests, isUpdate);
         List<ValidationError> validations = new ArrayList<>();
@@ -89,8 +91,6 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
         } else if (!policy.getData().getPurposes().equals(request.getPurposes())) {
             validations.add(new ValidationError(request.getReference(), "cannotChangePurpose",
                     String.format("Cannot change purpose from %s to %s for policy %s", policy.getData().getPurposes(), request.getPurposes(), request.getId())));
-        } else {
-            request.setExistingPolicy(policy);
         }
     }
 

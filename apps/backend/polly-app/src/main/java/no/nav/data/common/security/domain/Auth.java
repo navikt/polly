@@ -37,6 +37,13 @@ public class Auth {
     @Column(name = "LAST_ACTIVE")
     private LocalDateTime lastActive;
 
+    // Merk: Auth skal ikke ha optimistisk låsing (@Version).
+    // Raden er serverside sesjonsbokføring, ikke en ressurs klienten redigerer, og den skrives
+    // implisitt (LAST_ACTIVE) på nesten hvert autentiserte kall - se AuthService.getAuth.
+    // Med to replikaer og parallelle kall fra samme nettleser ville en versjonssjekk gitt
+    // tilfeldige 409-svar på vanlige API-kall, og den periodiske opprydningen (cleanOldAuth)
+    // ville feilet når en sesjon var aktiv samtidig. "Siste skriver vinner" er ønsket her.
+
     @Transient
     private transient Encryptor encryptor;
     @Transient

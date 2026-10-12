@@ -32,6 +32,8 @@ public class CodelistRequest implements RequestElement {
     private boolean update;
     private int requestIndex;
 
+    private Integer version; // For optimistisk låsing, må sendes ved oppdatering, og ikke kopieres til entity.
+
     public Codelist convertToCodelist() {
         return Codelist.builder()
                 .list(ListName.valueOf(list))

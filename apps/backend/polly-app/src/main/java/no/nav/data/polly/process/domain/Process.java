@@ -126,6 +126,7 @@ public class Process extends Auditable {
                 .behandlingsNivaa(behandlingsNivaa)
                 .relasjonsDato(data.getRelasjonsDato())
                 .sistGodkjentAvvikFraOverordnetBehandling(data.getSistGodkjentAvvikFraOverordnetBehandling())
+                .version(getVersion())
                 .build();
     }
 
@@ -139,7 +140,7 @@ public class Process extends Auditable {
     }
 
     // TODO: Snu avhengigheten innover
-    public Process convertFromRequest(ProcessRequest request) {
+    public Process copyFieldsFrom(ProcessRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
             data.setNumber(request.getNewProcessNumber());
@@ -170,6 +171,7 @@ public class Process extends Auditable {
         if (request.getStatus() != ProcessStatus.NEEDS_REVISION) {
             data.setRevisionText(null);
         }
+        // Merk: version skal ALDRI kopieres fra requesten til entitet. 
         return this;
     }
 
@@ -213,7 +215,7 @@ public class Process extends Auditable {
             return true;
         }
         if (!(obj instanceof Process process)) return false;
-        return id == process.id; //  Merk: Er dette riktig i alle tilfeller hvis id == process.id == null?
+        return id == process.id; // TODO: Helt feil implementering i nesten alle tilfeller
     }
 
     @Override

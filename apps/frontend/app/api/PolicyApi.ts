@@ -82,4 +82,6 @@ export const convertPolicyToFormValues = (
   legalBases: convertLegalBasesToFormValues(policy.legalBases),
   documentIds: policy.documentIds || [],
   otherPolicies,
+  // Optimistisk låsing: ta vare på versjonen vi leste (sendes videre av mapPolicyFromForm)
+  version: policy.version,
 })
