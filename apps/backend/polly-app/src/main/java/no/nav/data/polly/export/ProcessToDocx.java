@@ -35,16 +35,23 @@ import org.docx4j.model.table.TblFactory;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.FooterPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
 import org.docx4j.wml.BooleanDefaultTrue;
 import org.docx4j.wml.Br;
 import org.docx4j.wml.CTLanguage;
 import org.docx4j.wml.HdrFtrRef;
 import org.docx4j.wml.HpsMeasure;
 import org.docx4j.wml.JcEnumeration;
+import org.docx4j.wml.Lvl;
+import org.docx4j.wml.NumFmt;
+import org.docx4j.wml.NumberFormat;
+import org.docx4j.wml.Numbering;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.PPr;
+import org.docx4j.wml.PPrBase.Ind;
 import org.docx4j.wml.PPrBase.NumPr;
+import org.docx4j.wml.PPrBase.NumPr.Ilvl;
 import org.docx4j.wml.PPrBase.NumPr.NumId;
 import org.docx4j.wml.PPrBase.Spacing;
 import org.docx4j.wml.R;
@@ -172,11 +179,8 @@ public class ProcessToDocx {
                         .stream()
                         .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
                         .toList();
-                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
-                    if (j != underOrdnetBehandlinger.size() - 1) {
-                        doc.pageBreak();
-                    }
-                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
+                for (Process process : underOrdnetBehandlinger) {
+                    doc.generate(process, documentAccess);
                 }
             }
         }
@@ -299,7 +303,57 @@ public class ProcessToDocx {
             pack = WordprocessingMLPackage.createPackage();
             main = pack.getMainDocumentPart();
 
+            addNumbering();
             addFooter();
+        }
+
+        @SneakyThrows
+        private void addNumbering() {
+            NumberingDefinitionsPart ndp = new NumberingDefinitionsPart();
+            main.addTargetPart(ndp);
+
+            Numbering numbering = fac.createNumbering();
+
+            Numbering.AbstractNum abstractNum = fac.createNumberingAbstractNum();
+            abstractNum.setAbstractNumId(BigInteger.ZERO);
+            abstractNum.getLvl().add(createNumberingLevel(0, "%1.", 360));
+            abstractNum.getLvl().add(createNumberingLevel(1, "%1.%2", 1080));
+            numbering.getAbstractNum().add(abstractNum);
+
+            Numbering.Num num = fac.createNumberingNum();
+            num.setNumId(BigInteger.ONE);
+            Numbering.Num.AbstractNumId abstractNumId = fac.createNumberingNumAbstractNumId();
+            abstractNumId.setVal(BigInteger.ZERO);
+            num.setAbstractNumId(abstractNumId);
+            numbering.getNum().add(num);
+
+            ndp.setJaxbElement(numbering);
+        }
+
+        private Lvl createNumberingLevel(int level, String lvlText, int indentLeft) {
+            Lvl lvl = fac.createLvl();
+            lvl.setIlvl(BigInteger.valueOf(level));
+
+            Lvl.Start start = fac.createLvlStart();
+            start.setVal(BigInteger.ONE);
+            lvl.setStart(start);
+
+            NumFmt numFmt = fac.createNumFmt();
+            numFmt.setVal(NumberFormat.DECIMAL);
+            lvl.setNumFmt(numFmt);
+
+            Lvl.LvlText text = fac.createLvlLvlText();
+            text.setVal(lvlText);
+            lvl.setLvlText(text);
+
+            PPr pPr = fac.createPPr();
+            Ind ind = fac.createPPrBaseInd();
+            ind.setLeft(BigInteger.valueOf(indentLeft));
+            ind.setHanging(BigInteger.valueOf(360));
+            pPr.setInd(ind);
+            lvl.setPPr(pPr);
+
+            return lvl;
         }
 
         public void generate(Process process, DocumentAccess documentAccess) {
@@ -722,6 +776,7 @@ public class ProcessToDocx {
             PPr pPr = fac.createPPr();
             NumPr numPr = fac.createPPrBaseNumPr();
             NumId numId = fac.createPPrBaseNumPrNumId();
+            Ilvl ilvl = fac.createPPrBaseNumPrIlvl();
             Spacing pPrBaseSpacing = fac.createPPrBaseSpacing();
             p.setPPr(pPr);
             pPr.setNumPr(numPr);
@@ -731,12 +786,8 @@ public class ProcessToDocx {
             pPrBaseSpacing.setAfter(BigInteger.ZERO);
             pPr.setSpacing(pPrBaseSpacing);
 
-            if (indented) {
-                var indent = fac.createPPrBaseInd();
-                indent.setLeft(BigInteger.valueOf(720));
-                pPr.setInd(indent);
-            }
-
+            ilvl.setVal(BigInteger.valueOf(indented ? 1 : 0));
+            numPr.setIlvl(ilvl);
             numPr.setNumId(numId);
             numId.setVal(BigInteger.valueOf(listId));
             main.getContent().add(p);
