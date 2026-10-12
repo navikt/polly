@@ -94,10 +94,30 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const [showDeleteAllPolicyModal, setShowDeleteAllPolicyModal] = useState(false)
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
   const purposeRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLButtonElement>(null)
   const scrollToPolicyTable = useRef(false)
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
   const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (forUnderordnetBehandlinger || !headerRef.current || !purposeRef.current) return
+
+    const header = headerRef.current
+    const item = purposeRef.current
+    const updateHeaderHeight = () => {
+      item.style.setProperty(
+        '--polly-process-header-height',
+        `${header.getBoundingClientRect().height}px`
+      )
+    }
+
+    updateHeaderHeight()
+    const observer = new ResizeObserver(updateHeaderHeight)
+    observer.observe(header)
+
+    return () => observer.disconnect()
+  }, [forUnderordnetBehandlinger, params.processId, processList])
 
   const hasAccess = (): boolean => user.canWrite()
 
@@ -239,7 +259,15 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                   }}
                   className='relative'
                 >
-                  <Accordion.Header className='sticky top-0 z-10 bg-(--ax-bg-raised)'>
+                  <Accordion.Header
+                    ref={expanded ? headerRef : undefined}
+                    className={`sticky bg-(--ax-bg-raised) ${forUnderordnetBehandlinger ? 'z-10' : 'z-20'}`}
+                    style={{
+                      top: forUnderordnetBehandlinger
+                        ? 'var(--polly-process-header-height, 0px)'
+                        : 0,
+                    }}
+                  >
                     <AccordionTitle
                       codelistUtils={codelistUtils}
                       process={process}
@@ -247,7 +275,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                       noChevron
                     />
                   </Accordion.Header>
-                  <Accordion.Content>
+                  <Accordion.Content className={expanded ? 'overflow-visible' : undefined}>
                     {expanded && isLoading && (
                       <div className='p-2.5'>
                         <div className='flex w-full justify-center'>
