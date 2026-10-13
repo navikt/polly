@@ -209,6 +209,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           forUnderordnetBehandlinger && headerRef.current
             ? parseFloat(window.getComputedStyle(headerRef.current).top) || 0
             : 0
+        const accordionOffset = forUnderordnetBehandlinger ? parentHeaderOffset : headerOffset + 16
         if (scrollToPolicyTable.current && InformationTypeRef.current) {
           scrollToPolicyTable.current = false
           window.scrollTo({
@@ -217,12 +218,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           })
         } else if (purposeRef.current) {
           window.scrollTo({
-            top:
-              window.scrollY +
-              purposeRef.current.getBoundingClientRect().top -
-              headerOffset -
-              parentHeaderOffset -
-              16,
+            top: window.scrollY + purposeRef.current.getBoundingClientRect().top - accordionOffset,
           })
         }
       }, 300)
