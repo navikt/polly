@@ -1,6 +1,6 @@
 'use client'
 
-import { Heading, Link, Loader, LocalAlert } from '@navikt/ds-react'
+import { Heading, Loader } from '@navikt/ds-react'
 import { useRouter } from 'next/navigation'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
@@ -44,6 +44,7 @@ import { ESection } from '../mainPages/ProcessPage'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ProcessPageButtonGroup from './common/processPageButtonGroup'
+import SavedAlertMovedBehandling from './common/savedAlertMovedBehandling'
 
 type TProcessListProps = {
   section: ESection
@@ -260,30 +261,13 @@ const ProcessList = ({
   return (
     <>
       {movedBehandlingLink !== '' && (
-        <LocalAlert
+        <SavedAlertMovedBehandling
           ref={movedBehandlingAlertRef}
-          tabIndex={-1}
-          status='success'
-          className='max-w-[100ch] mb-5'
-        >
-          <LocalAlert.Header>
-            <LocalAlert.Title>
-              Endringene dine er lagret, og behandlingen er flyttet til riktig sted i den
-              forbindelse.
-            </LocalAlert.Title>
-            <LocalAlert.CloseButton
-              onClick={() => {
-                setMovedBehandlingLink('')
-                setMovedBehandlingNavn('')
-              }}
-            />
-          </LocalAlert.Header>
-          <LocalAlert.Content>
-            <Link href={movedBehandlingLink} target='_blank' rel='noopener noreferrer'>
-              Gå til {movedBehandlingNavn} (åpner i en ny fane)
-            </Link>
-          </LocalAlert.Content>
-        </LocalAlert>
+          movedBehandlingLink={movedBehandlingLink}
+          setMovedBehandlingLink={setMovedBehandlingLink}
+          movedBehandlingNavn={movedBehandlingNavn}
+          setMovedBehandlingNavn={setMovedBehandlingNavn}
+        />
       )}
 
       <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'>
