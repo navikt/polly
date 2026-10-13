@@ -1,8 +1,8 @@
 'use client'
 
-import { Heading, Loader } from '@navikt/ds-react'
+import { Heading, Link, Loader, LocalAlert } from '@navikt/ds-react'
 import { useRouter } from 'next/navigation'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import {
@@ -88,6 +88,19 @@ const ProcessList = ({
   const [codelistLoading, setCodelistLoading] = useState(true)
   const [exportHref, setExportHref] = useState<string>('')
   const [nomAvdelingName, setNomAvdelingName] = useState<string>('')
+  const [movedBehandlingLink, setMovedBehandlingLink] = useState<string>('')
+  const [movedBehandlingNavn, setMovedBehandlingNavn] = useState<string>('')
+  const movedBehandlingAlertRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!movedBehandlingLink) return
+
+    const frameId = window.requestAnimationFrame(() => {
+      movedBehandlingAlertRef.current?.focus()
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [movedBehandlingLink])
 
   const getProcessList = async (): Promise<void> => {
     try {
@@ -246,6 +259,33 @@ const ProcessList = ({
 
   return (
     <>
+      {movedBehandlingLink !== '' && (
+        <LocalAlert
+          ref={movedBehandlingAlertRef}
+          tabIndex={-1}
+          status='success'
+          className='max-w-[100ch] mb-5'
+        >
+          <LocalAlert.Header>
+            <LocalAlert.Title>
+              Endringene dine er lagret, og behandlingen er flyttet til riktig sted i den
+              forbindelse.
+            </LocalAlert.Title>
+            <LocalAlert.CloseButton
+              onClick={() => {
+                setMovedBehandlingLink('')
+                setMovedBehandlingNavn('')
+              }}
+            />
+          </LocalAlert.Header>
+          <LocalAlert.Content>
+            <Link href={movedBehandlingLink} target='_blank' rel='noopener noreferrer'>
+              Gå til {movedBehandlingNavn} (åpner i en ny fane)
+            </Link>
+          </LocalAlert.Content>
+        </LocalAlert>
+      )}
+
       <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'>
         <div className='min-w-0 sm:mr-auto'>
           {!hideTitle && (
@@ -265,13 +305,11 @@ const ProcessList = ({
           filter={filter}
         />
       </div>
-
       {isLoadingProcessList && (
         <div className='flex w-full justify-center'>
           <Loader size='3xlarge' />
         </div>
       )}
-
       {!isLoadingProcessList && (
         <AccordionProcess
           codelistUtils={codelistUtils}
@@ -284,7 +322,16 @@ const ProcessList = ({
             handleDeleteProcess(processTodelete, processList, setProcessList, setErrorProcessModal)
           }
           submitEditProcess={(process: IProcessFormValues) =>
-            handleEditProcess(process, setCurrentProcess, processList, setProcessList)
+            handleEditProcess(
+              process,
+              currentProcess,
+              setCurrentProcess,
+              processList,
+              setProcessList,
+              code,
+              setMovedBehandlingLink,
+              setMovedBehandlingNavn
+            )
           }
           submitCreatePolicy={(process: IPolicyFormValues) =>
             handleCreatePolicy(process, currentProcess, getProcessById, setErrorPolicyModal)

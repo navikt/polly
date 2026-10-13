@@ -64,6 +64,8 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
   const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
   const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
+  const [, setMovedBehandlingLink] = useState<string>('')
+  const [, setMovedBehandlingNavn] = useState<string>('')
 
   useEffect(() => {
     ;(async () => {
@@ -257,9 +259,13 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             submitEditProcess={(process: IProcessFormValues) =>
               handleEditProcess(
                 process,
+                currentUnderordnetBehandling,
                 setCurrentUnderordnetBehandling,
                 underOrdnetBehandlinger,
-                setUnderordnetBehandlinger
+                setUnderordnetBehandlinger,
+                code,
+                setMovedBehandlingLink,
+                setMovedBehandlingNavn
               )
             }
             submitCreatePolicy={(process: IPolicyFormValues) =>

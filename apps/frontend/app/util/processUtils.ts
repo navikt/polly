@@ -1,4 +1,7 @@
+'use client'
+
 import queryString from 'query-string'
+import { Dispatch, SetStateAction } from 'react'
 import {
   convertDisclosureToFormValues,
   getDisclosuresByProcessId,
@@ -14,6 +17,7 @@ import {
 import { deleteProcess, updateProcess } from '@/api/ProcessApi'
 import { ESection } from '@/components/mainPages/ProcessPage'
 import {
+  EBehandlingsNivaa,
   ELegalBasesUse,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
@@ -56,42 +60,74 @@ export const handleDeleteProcess = async (
 
 export const handleEditProcess = async (
   values: IProcessFormValues,
-  setCurrentProcess: (value: IProcess) => void,
+  currentProcess: IProcess | undefined,
+  setCurrentProcess: Dispatch<SetStateAction<IProcess | undefined>>,
   processList: IProcessShort[],
-  setProcessList: (value: IProcessShort[]) => void
+  setProcessList: (value: IProcessShort[]) => void,
+  code: string,
+  setMovedBehandlingLink: (value: string) => void,
+  setMovedBehandlingNavn: (value: string) => void
 ): Promise<boolean> => {
   try {
     const updatedProcess = await updateProcess(values)
-    const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
-    const removedDisclosures = disclosures.filter(
-      (disclosure) => !values.disclosures.map((value) => value.id).includes(disclosure.id)
-    )
-    const addedDisclosures = values.disclosures.filter(
-      (disclosure) => !disclosures.map((value) => value.id).includes(disclosure.id)
-    )
-    removedDisclosures.forEach((disclosure) =>
-      updateDisclosure(
-        convertDisclosureToFormValues({
-          ...disclosure,
-          processIds: [...disclosure.processIds.filter((process) => process !== updatedProcess.id)],
-        })
+    if (
+      code !== updatedProcess.purposes[0].code ||
+      (currentProcess?.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET &&
+        updatedProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET)
+    ) {
+      setMovedBehandlingLink(`/process/${updatedProcess.id}`)
+      setMovedBehandlingNavn(
+        `${updatedProcess.purposes[0].shortName}: B${updatedProcess.number} ${updatedProcess.name}`
       )
-    )
-    addedDisclosures.forEach((disclosure) =>
-      updateDisclosure(
-        convertDisclosureToFormValues({
-          ...disclosure,
-          processIds: [...disclosure.processIds, updatedProcess.id],
-        })
+      setProcessList(processList.filter((process) => process.id !== updatedProcess.id))
+      setCurrentProcess(undefined)
+      const url = new URL(window.location.href)
+      if (updatedProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET) {
+        url.searchParams.delete('underordnetBehandlingId')
+        window.history.replaceState(null, '', url)
+      } else {
+        const pathSegments = url.pathname.split('/').filter(Boolean)
+        if (pathSegments.at(-1) === updatedProcess.id) {
+          pathSegments.pop()
+          url.pathname = `/${pathSegments.join('/')}/`
+          window.history.replaceState(null, '', url)
+        }
+      }
+    } else {
+      const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
+      const removedDisclosures = disclosures.filter(
+        (disclosure) => !values.disclosures.map((value) => value.id).includes(disclosure.id)
       )
-    )
-    setCurrentProcess(updatedProcess)
-    setProcessList(
-      sortProcess([
-        ...processList.filter((process) => process.id !== updatedProcess.id),
-        updatedProcess,
-      ])
-    )
+      const addedDisclosures = values.disclosures.filter(
+        (disclosure) => !disclosures.map((value) => value.id).includes(disclosure.id)
+      )
+      removedDisclosures.forEach((disclosure) =>
+        updateDisclosure(
+          convertDisclosureToFormValues({
+            ...disclosure,
+            processIds: [
+              ...disclosure.processIds.filter((process) => process !== updatedProcess.id),
+            ],
+          })
+        )
+      )
+      addedDisclosures.forEach((disclosure) =>
+        updateDisclosure(
+          convertDisclosureToFormValues({
+            ...disclosure,
+            processIds: [...disclosure.processIds, updatedProcess.id],
+          })
+        )
+      )
+      setCurrentProcess(updatedProcess)
+      setProcessList(
+        sortProcess([
+          ...processList.filter((process) => process.id !== updatedProcess.id),
+          updatedProcess,
+        ])
+      )
+    }
+
     return true
   } catch (error: any) {
     console.debug(error)
