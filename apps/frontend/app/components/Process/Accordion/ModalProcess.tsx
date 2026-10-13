@@ -165,6 +165,7 @@ type TModalProcessProps = {
   errorOnCreate: any | undefined
   submit: (process: IProcessFormValues) => void
   onClose: () => void
+  forUnderordnetBehandling?: boolean
 }
 
 const ModalProcess = ({
@@ -175,6 +176,7 @@ const ModalProcess = ({
   isOpen,
   initialValues,
   title,
+  forUnderordnetBehandling,
 }: TModalProcessProps) => {
   const [showResponsibleSelect, setShowResponsibleSelect] = useState<boolean>(
     !!initialValues.commonExternalProcessResponsible
@@ -240,11 +242,33 @@ const ModalProcess = ({
                     setLegalBasesOpen={setLegalBasesOpen}
                     setOrganizingOpen={setOrganizingOpen}
                   />
+
+                  {forUnderordnetBehandling && (
+                    <InfoCard data-color='warning' className='mb-5'>
+                      <InfoCard.Header icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+                        <InfoCard.Title>
+                          Dere må sjekke om innholdet som dere arver fra den overordnede
+                          behandlingen, faktisk stemmer.
+                        </InfoCard.Title>
+                      </InfoCard.Header>
+                      <InfoCard.Content>
+                        Før dere kan sette behandlingen til ferdig, må dere gjennomgå alle felt og
+                        vurdere om det finnes forskjeller mellom det som står i den overordnede
+                        behandlingen, og det som gjelder for deres egen behandling. Rediger
+                        gjeldende felt i så fall. Felt som dere har redigert, vil vises etter at
+                        dere har lagret endringene deres.
+                      </InfoCard.Content>
+                    </InfoCard>
+                  )}
+
                   <div className='mb-7'>
                     <FieldName />
                   </div>
 
-                  <ReadMore header='Skal denne behandlingen være overordnet eller underordnet andre behandlinger?'>
+                  <ReadMore
+                    defaultOpen={forUnderordnetBehandling}
+                    header='Skal denne behandlingen være overordnet eller underordnet andre behandlinger?'
+                  >
                     Det er mulig å velge at en behandling skal være overordnet eller underordnet
                     andre behandlinger. Dette kan være aktuelt ved:
                     <List as='ul' className='my-5'>
@@ -256,12 +280,24 @@ const ModalProcess = ({
                     </List>
                     Det forutsettes at underordnede behandlinger deler samme behandlingsaktivitet
                     som den overordnede behandlingen.
-                    {formikBag.values.status !== EProcessStatus.COMPLETED && (
+                    {formikBag.values.status !== EProcessStatus.COMPLETED &&
+                      !forUnderordnetBehandling && (
+                        <div className='mt-7'>
+                          <InlineMessage status='info'>
+                            <strong>
+                              Dersom du vil bruke denne behandlingen som overordnet, må den først
+                              fylles ut og så settes til Ferdig utfylt.
+                            </strong>
+                          </InlineMessage>
+                        </div>
+                      )}
+                    {forUnderordnetBehandling && (
                       <div className='mt-7'>
-                        <InlineMessage status='info'>
+                        <InlineMessage status='warning'>
                           <strong>
-                            Dersom du vil bruke denne behandlingen som overordnet, må den først
-                            fylles ut og så settes til Ferdig utfylt.
+                            Fordi du oppretter en underordnet behandling, kan du ikke endre hvilket
+                            behandlingsnivå som er valgt, eller hvilken behandling som denne er
+                            underordnet.
                           </strong>
                         </InlineMessage>
                       </div>
@@ -287,7 +323,7 @@ const ModalProcess = ({
                             onChange={(value: EBehandlingsNivaa) => {
                               form.setFieldValue('behandlingsNivaa', value)
                             }}
-                            readOnly={isOverordnetRelasjonLocked}
+                            readOnly={isOverordnetRelasjonLocked || forUnderordnetBehandling}
                           >
                             <Radio value={EBehandlingsNivaa.VANLIG}>
                               Dette er en vanlig behandling uten kobling til andre{' '}
@@ -324,10 +360,14 @@ const ModalProcess = ({
                         <LabelWithDescription
                           label='Velg hvilken behandling som skal være den overordnede'
                           description='Skriv minst 3 bokstaver eller sifre for å søke. Kun behandlinger som er satt til “Kan brukes som overordnet” vil vises i søketreff.'
+                          icon={
+                            forUnderordnetBehandling ? <PadlockLockedFillIcon aria-hidden /> : null
+                          }
                         />
 
                         <AsyncSelect<any>
                           id='overordnetBehandling'
+                          isDisabled={forUnderordnetBehandling}
                           className='w-full mt-1'
                           aria-label='Søk etter behandlinger'
                           placeholder='Søk'
@@ -361,9 +401,11 @@ const ModalProcess = ({
                       </div>
                     )}
                   </ReadMore>
+
                   <div className='my-7'>
                     {formikBag.values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
-                      formikBag.values.overordnetBehandling && (
+                      formikBag.values.overordnetBehandling &&
+                      !forUnderordnetBehandling && (
                         <InfoCard data-color='warning' className='mb-5'>
                           <InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
                             <strong>
@@ -463,6 +505,16 @@ const ModalProcess = ({
                       reverseOrder
                     />
                   </div>
+
+                  {formikBag.values.usesAllInformationTypes === false && (
+                    <InfoCard data-color='warning' className='my-7'>
+                      <InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+                        Fordi du har valgt “Nei, bruker ikke alle”, må du når du lagrer behandlingen
+                        legge til opplysninger nederst i behandlingen.
+                      </InfoCard.Message>
+                    </InfoCard>
+                  )}
+
                   <Accordion>
                     <Accordion.Item open={organizingOpen} onOpenChange={setOrganizingOpen}>
                       <Accordion.Header>Organisering</Accordion.Header>

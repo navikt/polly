@@ -340,6 +340,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
 
       {showCreateProcessModal && (
         <ModalProcess
+          forUnderordnetBehandling={true}
           key={createProcessModalKey}
           codelistUtils={codelistUtils}
           title='Opprett ny behandling'
@@ -355,7 +356,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             ...overordnetBehandling,
             name: '',
             number: undefined,
-            id: '',
+            id: undefined,
             behandlingsNivaa: EBehandlingsNivaa.UNDERORDNET,
             overordnetBehandling: {
               id: overordnetBehandling.id,
