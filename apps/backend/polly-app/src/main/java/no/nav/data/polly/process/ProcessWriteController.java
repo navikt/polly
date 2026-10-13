@@ -32,6 +32,8 @@ import java.util.UUID;
 @Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
 @RequiredArgsConstructor
+@jakarta.transaction.Transactional // FIXME: Fjern før merge til master
+
 public class ProcessWriteController {
 
     // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.

@@ -111,7 +111,7 @@ public class ProcessorController {
     @Operation(summary = "Delete Processor")
     @ApiResponse(description = "Processor deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProcessorResponse> delete(@PathVariable UUID id, @RequestParam Integer expectedVersion) {
+    public ResponseEntity<ProcessorResponse> delete(@PathVariable UUID id, @RequestParam(required = false) Integer expectedVersion) {
         log.info("Received a request to delete Processor with id={} and version={}", id, expectedVersion);
         Processor deletedProcessor = service.deleteById(id, expectedVersion);
         log.info("Processor with id={} deleted", id);

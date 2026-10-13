@@ -3,6 +3,7 @@ package no.nav.data.polly.policy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +42,12 @@ import static java.util.stream.Collectors.toList;
 @Tag(name = "Policy", description = "Data Catalog Policies")
 @RequestMapping("/policy")
 @RequiredArgsConstructor
+@Transactional // TODO: Flytt til tjenestelaget
 public class PolicyController {
 
-    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk og *Repository-aksess til tjenestelaget.
+    // TODO: Implementerer ikke controller → service → DB. Flytt all @Transactional, forretningslogikk og *Repository-aksess til tjenestelaget.
+    // Hvorfor @Transactional her: Lesing, lagring og konvertering til respons (som leser lazy-relasjoner) må skje i samme transaksjon.
+
     
     private final PolicyService service;
     private final PolicyRequestValidator requestValidator;
