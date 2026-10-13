@@ -101,6 +101,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const searchParams = useSearchParams()
   const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
   const selectedProcessId = forUnderordnetBehandlinger ? underordnetBehandlingId : params.processId
+  const previousUnderordnetBehandlingId = useRef(underordnetBehandlingId)
 
   useEffect(() => {
     if (forUnderordnetBehandlinger || !headerRef.current || !purposeRef.current) return
@@ -192,6 +193,11 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   }, [params.processId, searchParams])
 
   useEffect(() => {
+    const closedUnderordnetBehandling =
+      !!previousUnderordnetBehandlingId.current && !underordnetBehandlingId
+    previousUnderordnetBehandlingId.current = underordnetBehandlingId
+
+    if (closedUnderordnetBehandling) return
     if (!forUnderordnetBehandlinger && underordnetBehandlingId) return
 
     if (selectedProcessId && currentProcess?.id === selectedProcessId && !isLoading) {
