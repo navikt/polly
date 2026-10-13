@@ -149,6 +149,7 @@ public class ProcessToDocx {
         doc.addTitle("Behandling: " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
         doc.addText("Eksportert " + formatter.format(date));
         doc.generate(process, documentAccess);
+        generateDocForUnderordnetBehandlinger(process, documentAccess, doc);
         return doc.build();
     }
 
@@ -176,26 +177,13 @@ public class ProcessToDocx {
                 doc.pageBreak();
             }
             doc.generate(overOrdnetOgVanligProcesses.get(i), documentAccess);
-            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET)) {
-                doc.lineBreaks(2);
-                doc.addHeading1("Underordnede behandlinger for B" + overOrdnetOgVanligProcesses.get(i).getData().getNumber());
-                List<Process> underOrdnetBehandlinger = Optional.ofNullable(overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger()).orElse(List.of())
-                        .stream()
-                        .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
-                        .toList();
-                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
-                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
-                    doc.lineBreaks(1);
-                    doc.addBottomBorder();
-                    if (j == underOrdnetBehandlinger.size() - 1) {
-                        doc.pageBreak();
-                    }
-                }
-            }
+            generateDocForUnderordnetBehandlinger(overOrdnetOgVanligProcesses.get(i), documentAccess, doc);
         }
 
         return doc.build();
     }
+
+
 
     private List<Process> getProcesses(List<Process> processes, DocumentAccess documentAccess) {
         List<Process> processList;
@@ -276,25 +264,29 @@ public class ProcessToDocx {
                 doc.pageBreak();
             }
             doc.generate(overOrdnetOgVanligProcesses.get(i), documentAccess);
-            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET) && overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger() != null && !overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger().isEmpty()) {
-                doc.lineBreaks(1);
-                doc.addHeading1("Underordnede behandlinger for B" + overOrdnetOgVanligProcesses.get(i).getData().getNumber());
-                List<Process> underOrdnetBehandlinger = Optional.ofNullable(overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger()).orElse(List.of())
-                        .stream()
-                        .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
-                        .toList();
-                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
-                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
-                    doc.lineBreaks(1);
-                    doc.addBottomBorder();
-                    if (j == underOrdnetBehandlinger.size() - 1) {
-                        doc.pageBreak();
-                    }
-                }
-            }
+            generateDocForUnderordnetBehandlinger(overOrdnetOgVanligProcesses.get(i), documentAccess, doc);
         }
 
         return doc.build();
+    }
+
+    private void generateDocForUnderordnetBehandlinger (Process process, DocumentAccess documentAccess, DocumentBuilder doc) {
+        if(process.getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET) && process.getUnderordnetBehandlinger() != null && !process.getUnderordnetBehandlinger().isEmpty()) {
+            doc.lineBreaks(1);
+            doc.addHeading1("Underordnede behandlinger for B" + process.getData().getNumber());
+            List<Process> underOrdnetBehandlinger = Optional.ofNullable(process.getUnderordnetBehandlinger()).orElse(List.of())
+                    .stream()
+                    .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
+                    .toList();
+            for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
+                doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
+                doc.lineBreaks(1);
+                doc.addBottomBorder();
+                if (j == underOrdnetBehandlinger.size() - 1) {
+                    doc.pageBreak();
+                }
+            }
+        }
     }
 
     class DocumentBuilder {
