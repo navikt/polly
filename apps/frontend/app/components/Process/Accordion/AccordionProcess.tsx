@@ -49,7 +49,7 @@ type TAccordionProcessProps = {
   errorProcessModal: any | null
   errorPolicyModal: string | null
   errorDocumentModal: string | null
-  setProcessList: (processes: IProcess[]) => void
+  setProcessList: (processes: IProcessShort[]) => void
   onChangeProcess: (processId?: string) => void
   submitDeleteProcess: (process: IProcess) => Promise<boolean>
   submitEditProcess: (process: IProcessFormValues) => Promise<boolean>
@@ -76,6 +76,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     submitDeletePolicy,
     submitDeleteAllPolicy,
     processList,
+    setProcessList,
     submitAddDocument,
     errorDocumentModal,
     forUnderordnetBehandlinger,
@@ -415,6 +416,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               <UnderordnetBehandlingList
                                 overordnetBehandling={currentProcess}
                                 codelistUtils={codelistUtils}
+                                overordnetOgVanligBehandlingList={processList}
+                                setOverordnetOgVanligBehandlingList={setProcessList}
                               />
                             </Tabs.Panel>
                           )}

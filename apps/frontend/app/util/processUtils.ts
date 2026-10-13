@@ -66,7 +66,9 @@ export const handleEditProcess = async (
   setProcessList: (value: IProcessShort[]) => void,
   code: string,
   setMovedBehandlingLink: (value: string) => void,
-  setMovedBehandlingNavn: (value: string) => void
+  setMovedBehandlingNavn: (value: string) => void,
+  overordnetOgVanligBehandlingList?: IProcessShort[],
+  setOverordnetOgVanligBehandlingList?: (value: IProcessShort[]) => void
 ): Promise<boolean> => {
   try {
     const updatedProcess = await updateProcess(values)
@@ -94,6 +96,19 @@ export const handleEditProcess = async (
           url.pathname = `/${pathSegments.join('/')}/`
           window.history.replaceState(null, '', url)
         }
+      }
+
+      if (
+        code === updatedProcess.purposes[0].code &&
+        currentProcess?.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+        updatedProcess.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET &&
+        overordnetOgVanligBehandlingList &&
+        setOverordnetOgVanligBehandlingList
+      ) {
+        setOverordnetOgVanligBehandlingList([
+          ...overordnetOgVanligBehandlingList,
+          updatedProcess as IProcessShort,
+        ])
       }
     } else {
       const disclosures = await getDisclosuresByProcessId(updatedProcess.id)

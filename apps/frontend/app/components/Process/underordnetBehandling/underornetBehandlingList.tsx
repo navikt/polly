@@ -38,11 +38,15 @@ import SavedAlertMovedBehandling from '../common/savedAlertMovedBehandling'
 type TProps = {
   overordnetBehandling: IProcess
   codelistUtils: ICodelistProps
+  overordnetOgVanligBehandlingList: IProcessShort[]
+  setOverordnetOgVanligBehandlingList: (value: IProcessShort[]) => void
 }
 
 const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   overordnetBehandling,
   codelistUtils,
+  overordnetOgVanligBehandlingList,
+  setOverordnetOgVanligBehandlingList,
 }) => {
   const navigate = useNavigate()
   const params = useParams<TPathParams>()
@@ -287,7 +291,9 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
                 setUnderordnetBehandlinger,
                 code,
                 setMovedBehandlingLink,
-                setMovedBehandlingNavn
+                setMovedBehandlingNavn,
+                overordnetOgVanligBehandlingList,
+                setOverordnetOgVanligBehandlingList
               )
             }
             submitCreatePolicy={(process: IPolicyFormValues) =>
