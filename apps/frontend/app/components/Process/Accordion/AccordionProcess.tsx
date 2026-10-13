@@ -99,6 +99,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
   const searchParams = useSearchParams()
+  const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
+  const selectedProcessId = forUnderordnetBehandlinger ? underordnetBehandlingId : params.processId
 
   useEffect(() => {
     if (forUnderordnetBehandlinger || !headerRef.current || !purposeRef.current) return
@@ -190,10 +192,16 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   }, [params.processId, searchParams])
 
   useEffect(() => {
-    if (params.processId && currentProcess?.id === params.processId && !isLoading) {
+    if (!forUnderordnetBehandlinger && underordnetBehandlingId) return
+
+    if (selectedProcessId && currentProcess?.id === selectedProcessId && !isLoading) {
       const timeoutId = window.setTimeout(() => {
         const headerEl = document.querySelector('.polly-white-internalheader') as HTMLElement | null
         const headerOffset = headerEl?.offsetHeight ?? 0
+        const parentHeaderOffset =
+          forUnderordnetBehandlinger && headerRef.current
+            ? parseFloat(window.getComputedStyle(headerRef.current).top) || 0
+            : 0
         if (scrollToPolicyTable.current && InformationTypeRef.current) {
           scrollToPolicyTable.current = false
           window.scrollTo({
@@ -203,14 +211,24 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
         } else if (purposeRef.current) {
           window.scrollTo({
             top:
-              window.scrollY + purposeRef.current.getBoundingClientRect().top - headerOffset - 16,
+              window.scrollY +
+              purposeRef.current.getBoundingClientRect().top -
+              headerOffset -
+              parentHeaderOffset -
+              16,
           })
         }
       }, 300)
 
       return () => window.clearTimeout(timeoutId)
     }
-  }, [currentProcess?.id, isLoading, params.processId])
+  }, [
+    currentProcess?.id,
+    isLoading,
+    selectedProcessId,
+    forUnderordnetBehandlinger,
+    underordnetBehandlingId,
+  ])
 
   useEffect(() => {
     ;(async () => {

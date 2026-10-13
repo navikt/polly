@@ -4,6 +4,7 @@ import { Loader } from '@navikt/ds-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { getProcess } from '@/api/GetAllApi'
+import { EBehandlingsNivaa } from '@/constants'
 
 const BNummer_RE = /[0-9]*/i
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -15,7 +16,13 @@ const Page = () => {
   useEffect(() => {
     if (!section || (!UUID_RE.test(section) && !BNummer_RE.test(section))) return
     getProcess(section).then((process) => {
-      router.replace(`/process/purpose/${process.purposes[0].code}/${process.id}`)
+      if (process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET) {
+        router.replace(
+          `/process/purpose/${process.purposes[0].code}/${process.overordnetBehandling?.id}?underordnetBehandlingId=${process.id}`
+        )
+      } else {
+        router.replace(`/process/purpose/${process.purposes[0].code}/${process.id}`)
+      }
     })
   }, [section, router])
 
