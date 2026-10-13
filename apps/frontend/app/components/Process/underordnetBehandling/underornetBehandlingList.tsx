@@ -1,7 +1,7 @@
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { InfoCard, List, ReadMore } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
 import { convertProcessToFormValues, createProcess, getProcess } from '@/api/ProcessApi'
 import { ESection, TPathParams } from '@/components/mainPages/ProcessPage'
@@ -33,6 +33,7 @@ import { useLocation, useNavigate } from '@/util/router'
 import AccordionProcess from '../Accordion/AccordionProcess'
 import ModalProcess from '../Accordion/ModalProcess'
 import ProcessPageButtonGroup from '../common/processPageButtonGroup'
+import SavedAlertMovedBehandling from '../common/savedAlertMovedBehandling'
 
 type TProps = {
   overordnetBehandling: IProcess
@@ -64,8 +65,9 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
   const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
   const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
-  const [, setMovedBehandlingLink] = useState<string>('')
-  const [, setMovedBehandlingNavn] = useState<string>('')
+  const [movedBehandlingLink, setMovedBehandlingLink] = useState<string>('')
+  const [movedBehandlingNavn, setMovedBehandlingNavn] = useState<string>('')
+  const movedBehandlingAlertRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     ;(async () => {
@@ -77,6 +79,16 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
       }
     })()
   }, [code, underordnetfilter])
+
+  useEffect(() => {
+    if (!movedBehandlingLink) return
+
+    const frameId = window.requestAnimationFrame(() => {
+      movedBehandlingAlertRef.current?.focus()
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [movedBehandlingLink])
 
   useEffect(() => {
     ;(async () => {
@@ -216,6 +228,16 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
         Koblingen oppretter du ved å redigere den behandlingen som skal bli underordnet denne. Les
         mer om overordnede og underordnede behandlinger (åpner i en ny fane).
       </ReadMore>
+
+      {movedBehandlingLink !== '' && (
+        <SavedAlertMovedBehandling
+          ref={movedBehandlingAlertRef}
+          movedBehandlingLink={movedBehandlingLink}
+          setMovedBehandlingLink={setMovedBehandlingLink}
+          movedBehandlingNavn={movedBehandlingNavn}
+          setMovedBehandlingNavn={setMovedBehandlingNavn}
+        />
+      )}
 
       <div className='w-full flex justify-end my-5'>
         <ProcessPageButtonGroup

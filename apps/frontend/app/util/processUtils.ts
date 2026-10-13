@@ -73,7 +73,9 @@ export const handleEditProcess = async (
     if (
       code !== updatedProcess.purposes[0].code ||
       (currentProcess?.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET &&
-        updatedProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET)
+        updatedProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET) ||
+      (currentProcess?.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+        updatedProcess.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET)
     ) {
       setMovedBehandlingLink(`/process/${updatedProcess.id}`)
       setMovedBehandlingNavn(
