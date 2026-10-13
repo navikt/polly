@@ -280,7 +280,6 @@ public class ProcessToDocx {
                     .toList();
             for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
                 doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
-                doc.lineBreaks(1);
                 doc.addBottomBorder();
                 if (j == underOrdnetBehandlinger.size() - 1) {
                     doc.pageBreak();
