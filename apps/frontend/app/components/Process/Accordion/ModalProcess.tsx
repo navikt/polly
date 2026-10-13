@@ -240,17 +240,19 @@ const ModalProcess = ({
                     setLegalBasesOpen={setLegalBasesOpen}
                     setOrganizingOpen={setOrganizingOpen}
                   />
-
                   <div className='mb-7'>
                     <FieldName />
                   </div>
 
                   <ReadMore header='Skal denne behandlingen være overordnet eller underordnet andre behandlinger?'>
                     Det er mulig å velge at en behandling skal være overordnet eller underordnet
-                    andre behandlinger. Dette kan være aktuelt der:
+                    andre behandlinger. Dette kan være aktuelt ved:
                     <List as='ul' className='my-5'>
-                      <List.Item>Example</List.Item>
-                      <List.Item>Example</List.Item>
+                      <List.Item>
+                        Ulik type saksbehandling på Nav-kontor, basert på lovpålagte forpliktelser
+                      </List.Item>
+                      <List.Item>Inngåelse av avtaler om hjelpemidler</List.Item>
+                      <List.Item>Kameraovervåkning på ulike Nav-kontor</List.Item>
                     </List>
                     Det forutsettes at underordnede behandlinger deler samme behandlingsaktivitet
                     som den overordnede behandlingen.
@@ -359,7 +361,6 @@ const ModalProcess = ({
                       </div>
                     )}
                   </ReadMore>
-
                   <div className='my-7'>
                     {formikBag.values.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
                       formikBag.values.overordnetBehandling && (
@@ -411,7 +412,6 @@ const ModalProcess = ({
                         </InfoCard>
                       )}
                   </div>
-
                   <div className='my-7'>
                     <LabelWithDescription
                       label='Formål med behandlingen'
@@ -421,7 +421,6 @@ const ModalProcess = ({
                     <FieldDescription />
                     <Error fieldName='description' fullWidth={true} />
                   </div>
-
                   <div className='my-7'>
                     <LabelWithDescription
                       label='Ytterligere beskrivelse'
@@ -430,7 +429,6 @@ const ModalProcess = ({
                     <FieldAdditionalDescription />
                     <Error fieldName='additionalDescription' fullWidth={true} />
                   </div>
-
                   <div className='my-7'>
                     <LabelWithDescription label='Er behandlingen innført i Nav?' />
                     <BoolField
@@ -440,21 +438,17 @@ const ModalProcess = ({
                       direction='horizontal'
                     />
                   </div>
-
                   {!env.disableRiskOwner && (
                     <div className='my-7'>
                       <LabelWithDescription label='Risikoeier' />
                       <FieldRiskOwner riskOwner={formikBag.values.dpia?.riskOwner} />
                     </div>
                   )}
-
                   <DateFieldsProcessModal showDates={true} showLabels={true} />
-
                   <div className='my-7'>
                     <LabelWithDescription label='Angi hvilke systemer som er primært i bruk i denne behandlingen' />
                     <FieldProduct formikBag={formikBag} codelistUtils={codelistUtils} />
                   </div>
-
                   <div className='my-7'>
                     <LabelWithDescription
                       label='Bruker behandlingen alle opplysningstyper?'
@@ -469,7 +463,6 @@ const ModalProcess = ({
                       reverseOrder
                     />
                   </div>
-
                   <Accordion>
                     <Accordion.Item open={organizingOpen} onOpenChange={setOrganizingOpen}>
                       <Accordion.Header>Organisering</Accordion.Header>
@@ -835,7 +828,6 @@ const ModalProcess = ({
                       </Accordion.Content>
                     </Accordion.Item>
                   </Accordion>
-
                   <CustomizedModalBlock>
                     <div className='w-full flex flex-col'>
                       <ModalLabel fullwidth label='Status på utfylling' />
