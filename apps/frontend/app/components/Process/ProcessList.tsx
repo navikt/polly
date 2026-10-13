@@ -205,19 +205,22 @@ const ProcessList = ({
   useEffect(() => {
     ;(async () => {
       if (processId) {
-        getProcessById(processId)
+        await getProcessById(processId)
       }
     })()
   }, [processId])
 
   useEffect(() => {
-    if (![undefined, null, ''].includes(processId) && fullProcessList !== null) {
-      const processFound = fullProcessList.filter((process) => process.id === processId)
-      if (processFound.length === 0) {
-        router.replace(`/process/${processId}`)
-      }
+    if (
+      processId &&
+      currentProcess?.id === processId &&
+      !isLoadingProcess &&
+      section === ESection.purpose &&
+      !currentProcess.purposes.some((purpose) => purpose.code === code)
+    ) {
+      router.replace(`/process/${processId}`)
     }
-  }, [processId, fullProcessList])
+  }, [processId, currentProcess, isLoadingProcess, section, code, router])
 
   useEffect(() => {
     ;(async () => {
