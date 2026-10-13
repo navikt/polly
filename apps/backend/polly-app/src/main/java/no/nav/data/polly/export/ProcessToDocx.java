@@ -276,8 +276,8 @@ public class ProcessToDocx {
                 doc.pageBreak();
             }
             doc.generate(overOrdnetOgVanligProcesses.get(i), documentAccess);
-            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET)) {
-                doc.lineBreaks(2);
+            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET) && overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger() != null && !overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger().isEmpty()) {
+                doc.lineBreaks(1);
                 doc.addHeading1("Underordnede behandlinger for B" + overOrdnetOgVanligProcesses.get(i).getData().getNumber());
                 List<Process> underOrdnetBehandlinger = Optional.ofNullable(overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger()).orElse(List.of())
                         .stream()
