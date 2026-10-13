@@ -1,6 +1,7 @@
 'use client'
 
 import { Heading, Loader } from '@navikt/ds-react'
+import { useRouter } from 'next/navigation'
 import { useContext, useEffect, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
@@ -70,6 +71,7 @@ const ProcessList = ({
   getCount,
 }: TProcessListProps) => {
   const navigate = useNavigate()
+  const router = useRouter()
   const { utils: codelistUtils, lists } = useContext(CodelistContext)
 
   const [processList, setProcessList] = useState<IProcessShort[]>([])
@@ -207,6 +209,15 @@ const ProcessList = ({
       }
     })()
   }, [processId])
+
+  useEffect(() => {
+    if (![undefined, null, ''].includes(processId) && fullProcessList !== null) {
+      const processFound = fullProcessList.filter((process) => process.id === processId)
+      if (processFound.length === 0) {
+        router.replace(`/process/${processId}`)
+      }
+    }
+  }, [processId, fullProcessList])
 
   useEffect(() => {
     ;(async () => {
