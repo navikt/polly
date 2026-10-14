@@ -80,7 +80,7 @@
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.25",
-    "@types/node": "^26.6.4",
+    "@types/node": "^26.6.5",
     "@types/randomcolor": "^0.5.9",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
