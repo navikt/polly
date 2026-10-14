@@ -343,7 +343,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           forUnderordnetBehandling={true}
           key={createProcessModalKey}
           codelistUtils={codelistUtils}
-          title='Opprett ny behandling'
+          title='Opprett ny underordnet behandling'
           onClose={() => {
             setErrorProcessModal('')
             setShowCreateProcessModal(false)
