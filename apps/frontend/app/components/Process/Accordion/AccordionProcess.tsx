@@ -203,8 +203,10 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
     if (selectedProcessId && currentProcess?.id === selectedProcessId && !isLoading) {
       const timeoutId = window.setTimeout(() => {
-        const headerEl = document.querySelector('.polly-white-internalheader') as HTMLElement | null
-        const headerOffset = headerEl?.offsetHeight ?? 0
+        const MainSearchHeaderEl = document.querySelector(
+          '.polly-white-internalheader'
+        ) as HTMLElement | null
+        const headerOffset = MainSearchHeaderEl?.offsetHeight ?? 0
         const parentHeaderOffset =
           forUnderordnetBehandlinger && headerRef.current
             ? parseFloat(window.getComputedStyle(headerRef.current).top) || 0
