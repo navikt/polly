@@ -335,6 +335,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             errorPolicyModal={errorPolicyModal}
             errorDocumentModal={errorDocumentModal}
             forUnderordnetBehandlinger={true}
+            overordnetBehandling={overordnetBehandling}
           />
         )}
 

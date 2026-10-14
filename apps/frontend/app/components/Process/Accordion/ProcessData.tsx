@@ -7,6 +7,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { checkForAvvikKeys } from '@/util/processUtils'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -98,10 +99,13 @@ interface IProcessDataProps {
   process: IProcess
   disclosures: IDisclosure[]
   codelistUtils: ICodelistProps
+  forUnderordnetBehandlinger: boolean
+  overordnetBehandling?: IProcess
 }
 
 const ProcessData = (props: IProcessDataProps) => {
-  const { process, disclosures, codelistUtils } = props
+  const { process, disclosures, codelistUtils, forUnderordnetBehandlinger, overordnetBehandling } =
+    props
 
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])
@@ -132,6 +136,13 @@ const ProcessData = (props: IProcessDataProps) => {
     process.policies.flatMap((policy) => policy.subjectCategories),
     'code'
   )
+
+  if (forUnderordnetBehandlinger && overordnetBehandling) {
+    console.debug(checkForAvvikKeys(overordnetBehandling, process))
+
+    console.debug(overordnetBehandling.retention, 'overordnet')
+    console.debug(process.retention, 'underordnet')
+  }
 
   return (
     <div>

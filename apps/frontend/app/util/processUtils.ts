@@ -1,5 +1,6 @@
 'use client'
 
+import { isEqual } from 'lodash'
 import queryString from 'query-string'
 import { Dispatch, SetStateAction } from 'react'
 import {
@@ -14,7 +15,7 @@ import {
   deletePolicy,
   updatePolicy,
 } from '@/api/PolicyApi'
-import { deleteProcess, updateProcess } from '@/api/ProcessApi'
+import { deleteProcess, getProcess, updateProcess } from '@/api/ProcessApi'
 import { ESection } from '@/components/mainPages/ProcessPage'
 import {
   EBehandlingsNivaa,
@@ -336,4 +337,78 @@ export const genUnderordnetProcessPath = (
       { skipNull: true, skipEmptyString: true }
     )
   )
+}
+
+const ignoredProcessFields: ReadonlySet<keyof IProcess> = new Set([
+  'id',
+  'name',
+  'description',
+  'number',
+  'changeStamp',
+  'status',
+  'behandlingsNivaa',
+  'overordnetBehandling',
+  'underordnetBehandlinger',
+  'relasjonsDato',
+  'sistGodkjentAvvikFraOverordnetBehandling',
+  'policies',
+])
+
+const flattenProcessValues = (process: IProcess): Map<string, unknown> => {
+  const flattenedValues = new Map<string, unknown>()
+  const maxDepth = 2
+
+  const addValue = (value: unknown, path: string, depth: number): void => {
+    if (depth >= maxDepth) {
+      flattenedValues.set(path, value)
+      return
+    }
+
+    if (Array.isArray(value)) {
+      flattenedValues.set(path, value)
+      return
+    }
+
+    if (value !== null && typeof value === 'object') {
+      const entries = Object.entries(value)
+      if (entries.length === 0) {
+        flattenedValues.set(path, value)
+        return
+      }
+
+      entries.forEach(([key, nestedValue]) => addValue(nestedValue, `${path}.${key}`, depth + 1))
+      return
+    }
+
+    flattenedValues.set(path, value)
+  }
+
+  Object.entries(process).forEach(([field, value]) => {
+    if (!ignoredProcessFields.has(field as keyof IProcess)) addValue(value, field, 0)
+  })
+
+  return flattenedValues
+}
+
+export const checkForAvvikKeys = (
+  overordnetBehandling: IProcess,
+  underordnetBehandling: IProcess
+): string[] => {
+  const parentValues = flattenProcessValues(overordnetBehandling)
+  const childValues = flattenProcessValues(underordnetBehandling)
+  const paths = new Set([...parentValues.keys(), ...childValues.keys()])
+
+  return [...paths].filter(
+    (path) =>
+      parentValues.has(path) !== childValues.has(path) ||
+      !isEqual(parentValues.get(path), childValues.get(path))
+  )
+}
+
+export const checkForAvvik = async (
+  overordnetBehandling: IProcess,
+  underordnetBehandling: IProcessShort
+): Promise<boolean> => {
+  const process = await getProcess(underordnetBehandling.id)
+  return checkForAvvikKeys(overordnetBehandling, process).length > 0
 }

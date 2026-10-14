@@ -59,6 +59,7 @@ type TAccordionProcessProps = {
   submitDeleteAllPolicy: (processId: string) => Promise<boolean>
   submitAddDocument: (document: IAddDocumentToProcessFormValues) => Promise<boolean>
   forUnderordnetBehandlinger: boolean
+  overordnetBehandling?: IProcess
 }
 
 const AccordionProcess = (props: TAccordionProcessProps) => {
@@ -80,6 +81,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     submitAddDocument,
     errorDocumentModal,
     forUnderordnetBehandlinger,
+    overordnetBehandling,
   } = props
   const history: TNavigateFunction = useNavigate()
   const user: IUserContext = useContext(UserContext)
@@ -296,6 +298,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                       process={process}
                       expanded={expanded}
                       noChevron
+                      forUnderordnetBehandlinger={forUnderordnetBehandlinger}
+                      overordnetBehandling={overordnetBehandling}
                     />
                   </Accordion.Header>
                   <Accordion.Content className={expanded ? 'overflow-visible' : undefined}>
@@ -320,6 +324,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             process={currentProcess}
                             disclosures={disclosures}
                             codelistUtils={codelistUtils}
+                            forUnderordnetBehandlinger={forUnderordnetBehandlinger}
+                            overordnetBehandling={overordnetBehandling}
                           />
 
                           <div>
