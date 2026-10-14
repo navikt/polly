@@ -3,7 +3,7 @@
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
 import { isNil, sum, uniqBy } from 'lodash'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
@@ -38,6 +38,7 @@ import RouteLink, { ObjectLink } from '../../common/RouteLink'
 import { TeamList } from '../../common/Team'
 import StartEndDateView from '../AiUsageDescription/StartEndDateView'
 import { RetentionView } from '../Retention'
+import AvvikTag from '../common/AvvikTag'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
   if (dpia) {
@@ -110,6 +111,12 @@ const ProcessData = (props: IProcessDataProps) => {
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])
   const [pvkDokumenter, setPvkDokumenter] = useState<IPvkDokumentShort[]>([])
+  const avikkKeys = useMemo(() => {
+    if (forUnderordnetBehandlinger && overordnetBehandling) {
+      return checkForAvvikKeys(overordnetBehandling, process)
+    }
+    return []
+  }, [forUnderordnetBehandlinger, overordnetBehandling])
 
   useEffect(() => {
     ;(async () => {
@@ -137,25 +144,26 @@ const ProcessData = (props: IProcessDataProps) => {
     'code'
   )
 
-  if (forUnderordnetBehandlinger && overordnetBehandling) {
-    console.debug(checkForAvvikKeys(overordnetBehandling, process))
-
-    console.debug(overordnetBehandling.retention, 'overordnet')
-    console.debug(process.retention, 'underordnet')
-  }
-
   return (
     <div>
       <DataText label='Behandlingsnummer' text={'B' + process.number} />
 
-      <DataText label='Formål med behandlingen' text=''>
+      <DataText
+        label='Formål med behandlingen'
+        text=''
+        badge={avikkKeys.includes('description') && <AvvikTag />}
+      >
         <div className='max-w-[100ch]'>
           {shortenLinksInText(process.description?.length ? process.description : 'Ikke utfylt')}
         </div>
       </DataText>
 
       {process.additionalDescription && (
-        <DataText label='Ytterligere beskrivelse' text=''>
+        <DataText
+          label='Ytterligere beskrivelse'
+          text=''
+          badge={avikkKeys.includes('additionalDescription') && <AvvikTag />}
+        >
           <div className='max-w-[100ch]'>{shortenLinksInText(process.additionalDescription)}</div>
         </DataText>
       )}
