@@ -375,11 +375,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                         </div>
 
                         <Tabs
-                          defaultValue={
-                            searchParams.get('underordnetBehandlingId')
-                              ? 'underordnet'
-                              : 'opplysninger'
-                          }
+                          defaultValue={overordnetBehandling ? 'underordnet' : 'opplysninger'}
                           className='mt-5'
                         >
                           <Tabs.List>

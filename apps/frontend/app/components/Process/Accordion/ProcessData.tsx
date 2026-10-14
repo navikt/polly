@@ -1,7 +1,16 @@
 'use client'
 
 import { InformationSquareIcon } from '@navikt/aksel-icons'
-import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
+import {
+  BodyLong,
+  Checkbox,
+  CheckboxGroup,
+  InfoCard,
+  Link,
+  List,
+  ProgressBar,
+  Tooltip,
+} from '@navikt/ds-react'
 import { isNil, sum, uniqBy } from 'lodash'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
@@ -117,6 +126,9 @@ const ProcessData = (props: IProcessDataProps) => {
     }
     return []
   }, [forUnderordnetBehandlinger, overordnetBehandling])
+  const [visAvvik, setVisAvvik] = useState<boolean>(
+    forUnderordnetBehandlinger && overordnetBehandling && avikkKeys.length > 0 ? true : false
+  )
 
   useEffect(() => {
     ;(async () => {
@@ -146,6 +158,24 @@ const ProcessData = (props: IProcessDataProps) => {
 
   return (
     <div>
+      {avikkKeys.length > 0 && (
+        <CheckboxGroup
+          className='mb-3'
+          legend='Vis endringer i forhold til overordnet behandling'
+          hideLegend
+          defaultValue={visAvvik ? ['vis'] : []}
+          onChange={(value: string[]) => {
+            if (value && value[0] === 'vis') {
+              setVisAvvik(true)
+            } else {
+              setVisAvvik(false)
+            }
+          }}
+        >
+          <Checkbox value='vis'>Vis endringer i forhold til overordnet behandling</Checkbox>
+        </CheckboxGroup>
+      )}
+
       <DataText label='Behandlingsnummer' text={'B' + process.number} />
 
       <DataText
@@ -162,7 +192,7 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText
           label='Ytterligere beskrivelse'
           text=''
-          badge={avikkKeys.includes('additionalDescription') && <AvvikTag />}
+          badge={visAvvik && avikkKeys.includes('additionalDescription') && <AvvikTag />}
         >
           <div className='max-w-[100ch]'>{shortenLinksInText(process.additionalDescription)}</div>
         </DataText>
