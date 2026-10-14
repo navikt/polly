@@ -1874,35 +1874,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/aksel-icons@npm:^8.16.1":
-  version: 8.16.1
-  resolution: "@navikt/aksel-icons@npm:8.16.1"
-  checksum: 10c0/f7d5d8f3d325179da5353093501e84d06f5637015b3d58208b2b6c2cfbfa545ef3910d111d3afc26cb9617ea7c07234bda599f9730c82b4ee5edd30cada8a255
+"@navikt/aksel-icons@npm:^8.19.2":
+  version: 8.19.2
+  resolution: "@navikt/aksel-icons@npm:8.19.2"
+  checksum: 10c0/11a011d0a92596e0022fd827d68958d8e10f2554fd2e555c38567b266f45999a354340d296a8a7eb42fb189846fe4681ff0173b511b0167dc3aef44e073ccc09
   languageName: node
   linkType: hard
 
-"@navikt/aksel-icons@npm:^8.18.0":
-  version: 8.18.0
-  resolution: "@navikt/aksel-icons@npm:8.18.0"
-  checksum: 10c0/3799f55126f1c9383051c4385ccc805c7c97e6b17232629be4436236495ada0850357a699653efbc248f86ba8083a1ea7ae0a8b405ff89680bd702e4988c2a6b
+"@navikt/ds-css@npm:^8.19.2":
+  version: 8.19.2
+  resolution: "@navikt/ds-css@npm:8.19.2"
+  checksum: 10c0/6a4d4f7fe941471132999d7cedc29edb31de89c6c5455036b13a7f3dfdab1a5df397f56affb4d178133706215dd4771e5b4c33d159a330b6d6df0a592b5f7010
   languageName: node
   linkType: hard
 
-"@navikt/ds-css@npm:^8.18.0":
-  version: 8.18.0
-  resolution: "@navikt/ds-css@npm:8.18.0"
-  checksum: 10c0/75cb6e264cc1f8399a6b57f5bf1050a72e9802b8f787f7abf7a7e71674ff997885590a68d319624c82695c9d2e142691b3376566d32b7acc454979c41ff08cc6
-  languageName: node
-  linkType: hard
-
-"@navikt/ds-react@npm:8.16.1":
-  version: 8.16.1
-  resolution: "@navikt/ds-react@npm:8.16.1"
+"@navikt/ds-react@npm:8.19.2":
+  version: 8.19.2
+  resolution: "@navikt/ds-react@npm:8.19.2"
   dependencies:
     "@floating-ui/react": "npm:0.27.20"
     "@floating-ui/react-dom": "npm:^2.1.9"
-    "@navikt/aksel-icons": "npm:^8.16.1"
-    "@navikt/ds-tokens": "npm:^8.16.1"
+    "@navikt/aksel-icons": "npm:^8.19.2"
+    "@navikt/ds-tokens": "npm:^8.19.2"
     date-fns: "npm:^4.0.0"
     react-day-picker: "npm:10.0.1"
   peerDependencies:
@@ -1912,18 +1905,18 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10c0/d1fbf9cdc7ee4e29723515ce85c120ce860a835f1f23225baaef60d8f8697c20b3d52425b8e316ca216f314b9be4b93940d670f6d24a4cb128a66bfbe21052cf
+  checksum: 10c0/c917c404fe87ed5bd09debd0986c9b03f64019c6c799bc4951f612f9bbbced61db767ba57b9a31174cb26f1c66d203b85270569cb73334fc2ff542c8184b74c7
   languageName: node
   linkType: hard
 
-"@navikt/ds-react@patch:@navikt/ds-react@npm%3A8.16.1#~/.yarn/patches/@navikt-ds-react-npm-8.16.1-07df5781d1.patch":
-  version: 8.16.1
-  resolution: "@navikt/ds-react@patch:@navikt/ds-react@npm%3A8.16.1#~/.yarn/patches/@navikt-ds-react-npm-8.16.1-07df5781d1.patch::version=8.16.1&hash=e1fe3b"
+"@navikt/ds-react@patch:@navikt/ds-react@npm%3A8.19.2#~/.yarn/patches/@navikt-ds-react-npm-8.19.2-07df5781d1.patch":
+  version: 8.19.2
+  resolution: "@navikt/ds-react@patch:@navikt/ds-react@npm%3A8.19.2#~/.yarn/patches/@navikt-ds-react-npm-8.19.2-07df5781d1.patch::version=8.19.2&hash=e1fe3b"
   dependencies:
     "@floating-ui/react": "npm:0.27.20"
     "@floating-ui/react-dom": "npm:^2.1.9"
-    "@navikt/aksel-icons": "npm:^8.16.1"
-    "@navikt/ds-tokens": "npm:^8.16.1"
+    "@navikt/aksel-icons": "npm:^8.19.2"
+    "@navikt/ds-tokens": "npm:^8.19.2"
     date-fns: "npm:^4.0.0"
     react-day-picker: "npm:10.0.1"
   peerDependencies:
@@ -1933,21 +1926,21 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10c0/63c81ad53a4f2c46ab132261eb73eaf6efc4051d67edfeacbd30958f42ad46d462886c190458eb64d9b74b73a874c55a2e79ffefefa92de4dd6932d91fe77986
+  checksum: 10c0/b0b14506ef50569f915af88a75c4d5472611670526ae35612a603a89ff362cb1a70abe157ae816df59e8cc5acf0ddf7a7133d7c801de5dda1bdc909a7a0ceae5
   languageName: node
   linkType: hard
 
-"@navikt/ds-tailwind@npm:^8.18.0":
-  version: 8.18.0
-  resolution: "@navikt/ds-tailwind@npm:8.18.0"
-  checksum: 10c0/0596a4edb05fb054a92c31fbedcffeee56cc5206f0ab13b882c2513281026399f2d416e53e85d94f331e41027c63adcd8a4e7de1716cd1a54edcef710ddc149d
+"@navikt/ds-tailwind@npm:^8.19.2":
+  version: 8.19.2
+  resolution: "@navikt/ds-tailwind@npm:8.19.2"
+  checksum: 10c0/0d468622e4f856a608db772e19a578d663d84c5bd62ce0b8f4f92bc30664419a6c45547dbfd43737e9a894795c268a3f427aa875f517747cc3b7a9e8e6b7d9bc
   languageName: node
   linkType: hard
 
-"@navikt/ds-tokens@npm:^8.16.1":
-  version: 8.16.1
-  resolution: "@navikt/ds-tokens@npm:8.16.1"
-  checksum: 10c0/7446392e544709a97c41c0c28c1f2dca4921847ea7dc039b53cee9c8d0eb636b593a2feaaa3bd0d24075764b850f0a118fd5a632b1cfba25b7dc96c8132af532
+"@navikt/ds-tokens@npm:^8.19.2":
+  version: 8.19.2
+  resolution: "@navikt/ds-tokens@npm:8.19.2"
+  checksum: 10c0/e421709925b436fb8afdf6304a24c0631dfd5865cbf55bea1d7aa4d37278ce969ad613a423b356fb168c70c2c2aeebc2103044f602c39d725ee781113088059e
   languageName: node
   linkType: hard
 
@@ -8808,10 +8801,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "polly-frontend@workspace:."
   dependencies:
-    "@navikt/aksel-icons": "npm:^8.18.0"
-    "@navikt/ds-css": "npm:^8.18.0"
-    "@navikt/ds-react": "npm:^8.18.0"
-    "@navikt/ds-tailwind": "npm:^8.18.0"
+    "@navikt/aksel-icons": "npm:^8.19.2"
+    "@navikt/ds-css": "npm:^8.19.2"
+    "@navikt/ds-react": "npm:^8.19.2"
+    "@navikt/ds-tailwind": "npm:^8.19.2"
     "@next/eslint-plugin-next": "npm:^16.4.0"
     "@tailwindcss/postcss": "npm:^4.3.3"
     "@trivago/prettier-plugin-sort-imports": "npm:^6.0.2"

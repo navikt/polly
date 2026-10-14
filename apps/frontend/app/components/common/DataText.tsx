@@ -26,7 +26,7 @@ const DataText = (props: TDataTextProps) => {
     <>
       {!hideComponent && (
         <div className='flex content-start mb-4 w-full'>
-          <div className='w-[40%] max-w-75 pr-2.5'>
+          <div className='w-[40%] max-w-75 pr-2.5 flex items-center'>
             <Label>{label}</Label>
             {badge}
           </div>

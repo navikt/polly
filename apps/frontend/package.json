@@ -46,10 +46,10 @@
     ]
   },
   "dependencies": {
-    "@navikt/aksel-icons": "^8.18.0",
-    "@navikt/ds-css": "^8.18.0",
-    "@navikt/ds-react": "^8.18.0",
-    "@navikt/ds-tailwind": "^8.18.0",
+    "@navikt/aksel-icons": "^8.19.2",
+    "@navikt/ds-css": "^8.19.2",
+    "@navikt/ds-react": "^8.19.2",
+    "@navikt/ds-tailwind": "^8.19.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "axios": "^1.20.0",
@@ -104,7 +104,7 @@
     "ts-node": "^10.9.2"
   },
   "resolutions": {
-    "@navikt/ds-react": "patch:@navikt/ds-react@npm%3A8.16.1#~/.yarn/patches/@navikt-ds-react-npm-8.16.1-07df5781d1.patch",
+    "@navikt/ds-react": "patch:@navikt/ds-react@npm%3A8.19.2#~/.yarn/patches/@navikt-ds-react-npm-8.19.2-07df5781d1.patch",
     "json-diff-kit": "patch:json-diff-kit@npm%3A1.0.35#~/.yarn/patches/json-diff-kit-npm-1.0.35-99a2649175.patch"
   },
   "packageManager": "yarn@4.16.0"
