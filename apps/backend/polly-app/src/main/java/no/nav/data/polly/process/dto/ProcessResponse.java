@@ -66,7 +66,7 @@ public class ProcessResponse {
     private ProcessShortResponse overordnetBehandling;
 
     @Singular("underordnetBehandling")
-    private List<ProcessResponse> underordnetBehandlinger;
+    private List<ProcessShortResponse> underordnetBehandlinger;
 
     private LocalDateTime relasjonsDato;
 

@@ -133,7 +133,7 @@ public class Process extends Auditable {
     public ProcessResponse convertToResponseWithPoliciesAndUnderordnetBehandlinger() {
         var response = convertToResponse();
         response.setPolicies(convert(policies, policy -> policy.convertToResponse(false)));
-        response.setUnderordnetBehandlinger(convert(underordnetBehandlinger, Process::convertToResponse));
+        response.setUnderordnetBehandlinger(convert(underordnetBehandlinger, Process::convertToShortResponse));
         response.setChangeStamp(convertChangeStampResponse());
         return response;
     }
