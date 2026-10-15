@@ -339,10 +339,9 @@ export const genUnderordnetProcessPath = (
   )
 }
 
-const ignoredProcessFields: ReadonlySet<keyof IProcess> = new Set([
+const ignoredProcessFields = new Set([
   'id',
   'name',
-  'description',
   'number',
   'changeStamp',
   'status',
@@ -351,7 +350,9 @@ const ignoredProcessFields: ReadonlySet<keyof IProcess> = new Set([
   'underordnetBehandlinger',
   'relasjonsDato',
   'sistGodkjentAvvikFraOverordnetBehandling',
-  'policies',
+  'dpia.needForDpia',
+  'dpia.refToDpia',
+  'dpia.noDpiaReasons',
 ])
 
 const flattenProcessValues = (process: IProcess): Map<string, unknown> => {
@@ -384,7 +385,7 @@ const flattenProcessValues = (process: IProcess): Map<string, unknown> => {
   }
 
   Object.entries(process).forEach(([field, value]) => {
-    if (!ignoredProcessFields.has(field as keyof IProcess)) addValue(value, field, 0)
+    if (!ignoredProcessFields.has(field)) addValue(value, field, 0)
   })
 
   return flattenedValues
@@ -398,11 +399,13 @@ export const checkForAvvikKeys = (
   const childValues = flattenProcessValues(underordnetBehandling)
   const paths = new Set([...parentValues.keys(), ...childValues.keys()])
 
-  return [...paths].filter(
-    (path) =>
-      parentValues.has(path) !== childValues.has(path) ||
-      !isEqual(parentValues.get(path), childValues.get(path))
-  )
+  return [...paths]
+    .filter(
+      (path) =>
+        parentValues.has(path) !== childValues.has(path) ||
+        !isEqual(parentValues.get(path), childValues.get(path))
+    )
+    .filter((key) => !ignoredProcessFields.has(key))
 }
 
 export const checkForAvvik = async (

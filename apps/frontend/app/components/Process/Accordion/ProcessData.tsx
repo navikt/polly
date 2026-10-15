@@ -1,16 +1,7 @@
 'use client'
 
 import { InformationSquareIcon } from '@navikt/aksel-icons'
-import {
-  BodyLong,
-  Checkbox,
-  CheckboxGroup,
-  InfoCard,
-  Link,
-  List,
-  ProgressBar,
-  Tooltip,
-} from '@navikt/ds-react'
+import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
 import { isNil, sum, uniqBy } from 'lodash'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
@@ -120,15 +111,12 @@ const ProcessData = (props: IProcessDataProps) => {
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])
   const [pvkDokumenter, setPvkDokumenter] = useState<IPvkDokumentShort[]>([])
-  const avikkKeys = useMemo(() => {
+  const avvikKeys = useMemo(() => {
     if (forUnderordnetBehandlinger && overordnetBehandling) {
       return checkForAvvikKeys(overordnetBehandling, process)
     }
     return []
-  }, [forUnderordnetBehandlinger, overordnetBehandling])
-  const [visAvvik, setVisAvvik] = useState<boolean>(
-    forUnderordnetBehandlinger && overordnetBehandling && avikkKeys.length > 0 ? true : false
-  )
+  }, [forUnderordnetBehandlinger, overordnetBehandling, process])
 
   useEffect(() => {
     ;(async () => {
@@ -156,32 +144,44 @@ const ProcessData = (props: IProcessDataProps) => {
     'code'
   )
 
+  const avvikCheck = (key: string) => avvikKeys.length !== 0 && !avvikKeys.includes(key)
+
+  const organiseringAvvikCheck = () => {
+    if (
+      avvikKeys.includes('affiliation.nomDepartmentId') ||
+      avvikKeys.includes('affiliation.seksjoner') ||
+      avvikKeys.includes('affiliation.subDepartments') ||
+      avvikKeys.includes('affiliation.productTeams') ||
+      avvikKeys.includes('commonExternalProcessResponsible')
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   return (
     <div>
-      {avikkKeys.length > 0 && (
-        <CheckboxGroup
-          className='mb-3'
-          legend='Vis endringer i forhold til overordnet behandling'
-          hideLegend
-          defaultValue={visAvvik ? ['vis'] : []}
-          onChange={(value: string[]) => {
-            if (value && value[0] === 'vis') {
-              setVisAvvik(true)
-            } else {
-              setVisAvvik(false)
-            }
-          }}
-        >
-          <Checkbox value='vis'>Vis endringer i forhold til overordnet behandling</Checkbox>
-        </CheckboxGroup>
+      {avvikKeys.length > 0 && (
+        <BodyLong className='mb-5'>
+          <strong>
+            Felt som er endret i forhold til den overordnede behandling merkeres med &nbsp;
+            <AvvikTag />
+          </strong>
+        </BodyLong>
       )}
 
-      <DataText label='Behandlingsnummer' text={'B' + process.number} />
+      <DataText
+        label='Behandlingsnummer'
+        text={'B' + process.number}
+        labelMarginLeft={forUnderordnetBehandlinger && !!overordnetBehandling}
+      />
 
       <DataText
         label='Formål med behandlingen'
         text=''
-        badge={avikkKeys.includes('description') && <AvvikTag />}
+        labelMarginLeft={avvikCheck('description')}
+        badge={avvikKeys.includes('description') && <AvvikTag marginRight marginTop />}
       >
         <div className='max-w-[100ch]'>
           {shortenLinksInText(process.description?.length ? process.description : 'Ikke utfylt')}
@@ -192,14 +192,20 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText
           label='Ytterligere beskrivelse'
           text=''
-          badge={visAvvik && avikkKeys.includes('additionalDescription') && <AvvikTag />}
+          labelMarginLeft={avvikCheck('additionalDescription')}
+          badge={avvikKeys.includes('additionalDescription') && <AvvikTag marginRight marginTop />}
         >
           <div className='max-w-[100ch]'>{shortenLinksInText(process.additionalDescription)}</div>
         </DataText>
       )}
 
       {process.legalBases.length ? (
-        <DataText label='Behandlingsgrunnlag for hele behandlingen' text={''}>
+        <DataText
+          label='Behandlingsgrunnlag for hele behandlingen'
+          text={''}
+          labelMarginLeft={avvikCheck('legalBases')}
+          badge={avvikKeys.includes('legalBases') && <AvvikTag marginRight marginTop />}
+        >
           {process.legalBases
             .sort((a, b) =>
               codelistUtils
@@ -214,16 +220,29 @@ const ProcessData = (props: IProcessDataProps) => {
         </DataText>
       ) : (
         <>
-          <DataText label='Behandlingsgrunnlag for hele behandlingen' />
+          <DataText
+            label='Behandlingsgrunnlag for hele behandlingen'
+            labelMarginLeft={avvikCheck('legalBases')}
+            badge={avvikKeys.includes('legalBases') && <AvvikTag marginRight marginTop />}
+          />
         </>
       )}
 
-      <DataText label='Er behandlingen innført i NAV?' text={''}>
+      <DataText
+        label='Er behandlingen innført i NAV?'
+        text={''}
+        labelMarginLeft={avvikCheck('dpia.processImplemented')}
+        badge={avvikKeys.includes('dpia.processImplemented') && <AvvikTag marginRight marginTop />}
+      >
         {process.dpia?.processImplemented ? 'Ja' : 'Nei'}
       </DataText>
 
       {!env.disableRiskOwner && (
-        <DataText label='Risikoeier'>
+        <DataText
+          label='Risikoeier'
+          labelMarginLeft={avvikCheck('dpia.riskOwner')}
+          badge={avvikKeys.includes('dpia.riskOwner') && <AvvikTag marginRight marginTop />}
+        >
           <>
             <span>{process.dpia?.riskOwner ? riskOwnerFullName : 'Ikke utfylt'}</span>
             {!!process.dpia?.riskOwnerFunction && (
@@ -233,7 +252,16 @@ const ProcessData = (props: IProcessDataProps) => {
         </DataText>
       )}
 
-      <DataText label='Gyldighetsperiode for behandlingen' text={''}>
+      <DataText
+        label='Gyldighetsperiode for behandlingen'
+        text={''}
+        labelMarginLeft={avvikCheck('start') || avvikCheck('end')}
+        badge={
+          (avvikKeys.includes('start') || avvikKeys.includes('end')) && (
+            <AvvikTag marginRight marginTop />
+          )
+        }
+      >
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
@@ -244,6 +272,8 @@ const ProcessData = (props: IProcessDataProps) => {
             ? 'Ikke utfylt'
             : ''
         }
+        labelMarginLeft={avvikCheck('usesAllInformationTypes')}
+        badge={avvikKeys.includes('usesAllInformationTypes') && <AvvikTag marginRight marginTop />}
       >
         {process.usesAllInformationTypes
           ? 'Bruker potensielt alle personkategorier'
@@ -258,7 +288,12 @@ const ProcessData = (props: IProcessDataProps) => {
             )}
       </DataText>
 
-      <DataText label='Organisering' text={''}>
+      <DataText
+        label='Organisering'
+        text={''}
+        labelMarginLeft={avvikKeys.length !== 0 && !organiseringAvvikCheck()}
+        badge={organiseringAvvikCheck() && <AvvikTag marginRight marginTop />}
+      >
         {process.affiliation.nomDepartmentId ? (
           <div className='flex gap-1 items-center'>
             <span className='whitespace-nowrap'>Avdeling: </span>
@@ -362,7 +397,12 @@ const ProcessData = (props: IProcessDataProps) => {
         </div>
       </DataText>
 
-      <DataText label='System' text={''}>
+      <DataText
+        label='System'
+        text={''}
+        labelMarginLeft={avvikCheck('affiliation.products')}
+        badge={avvikKeys.includes('affiliation.products') && <AvvikTag marginRight marginTop />}
+      >
         {process.affiliation.products?.length ? (
           <ul className='mt-0 list-disc list-inside'>
             {process.affiliation.products.map((system, index: number) => (
@@ -378,7 +418,16 @@ const ProcessData = (props: IProcessDataProps) => {
         )}
       </DataText>
 
-      <DataText label='Automatisering og profilering' text={''}>
+      <DataText
+        label='Automatisering og profilering'
+        text={''}
+        labelMarginLeft={avvikCheck('automaticProcessing') || avvikCheck('profiling')}
+        badge={
+          (avvikKeys.includes('automaticProcessing') || avvikKeys.includes('profiling')) && (
+            <AvvikTag marginRight marginTop />
+          )
+        }
+      >
         <div>
           <span>Helautomatisk behandling: </span>
           <span>{boolToText(process.automaticProcessing)}</span>
