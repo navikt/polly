@@ -60,6 +60,7 @@ type TAccordionProcessProps = {
   submitAddDocument: (document: IAddDocumentToProcessFormValues) => Promise<boolean>
   forUnderordnetBehandlinger: boolean
   overordnetBehandling?: IProcess
+  overordnetBehandlingUtleveringer?: IDisclosure[]
 }
 
 const AccordionProcess = (props: TAccordionProcessProps) => {
@@ -82,6 +83,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     errorDocumentModal,
     forUnderordnetBehandlinger,
     overordnetBehandling,
+    overordnetBehandlingUtleveringer,
   } = props
   const history: TNavigateFunction = useNavigate()
   const user: IUserContext = useContext(UserContext)
@@ -326,6 +328,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             codelistUtils={codelistUtils}
                             forUnderordnetBehandlinger={forUnderordnetBehandlinger}
                             overordnetBehandling={overordnetBehandling}
+                            overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
                           />
 
                           <div>
@@ -421,6 +424,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             <Tabs.Panel value='underordnet'>
                               <UnderordnetBehandlingList
                                 overordnetBehandling={currentProcess}
+                                overordnetBehandlingUtleveringer={disclosures}
                                 codelistUtils={codelistUtils}
                                 overordnetOgVanligBehandlingList={processList}
                                 setOverordnetOgVanligBehandlingList={setProcessList}

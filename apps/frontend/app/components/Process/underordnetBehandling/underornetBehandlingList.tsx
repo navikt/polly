@@ -9,6 +9,7 @@ import {
   EBehandlingsNivaa,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
+  IDisclosure,
   IPolicy,
   IPolicyFormValues,
   IProcess,
@@ -37,6 +38,7 @@ import SavedAlertMovedBehandling from '../common/savedAlertMovedBehandling'
 
 type TProps = {
   overordnetBehandling: IProcess
+  overordnetBehandlingUtleveringer: IDisclosure[]
   codelistUtils: ICodelistProps
   overordnetOgVanligBehandlingList: IProcessShort[]
   setOverordnetOgVanligBehandlingList: (value: IProcessShort[]) => void
@@ -44,6 +46,7 @@ type TProps = {
 
 const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   overordnetBehandling,
+  overordnetBehandlingUtleveringer,
   codelistUtils,
   overordnetOgVanligBehandlingList,
   setOverordnetOgVanligBehandlingList,
@@ -336,6 +339,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             errorDocumentModal={errorDocumentModal}
             forUnderordnetBehandlinger={true}
             overordnetBehandling={overordnetBehandling}
+            overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
           />
         )}
 
