@@ -375,7 +375,13 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                         </div>
 
                         <Tabs
-                          defaultValue={overordnetBehandling ? 'underordnet' : 'opplysninger'}
+                          defaultValue={
+                            !forUnderordnetBehandlinger &&
+                            underordnetBehandlingId &&
+                            currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET
+                              ? 'underordnet'
+                              : 'opplysninger'
+                          }
                           className='mt-5'
                         >
                           <Tabs.List>

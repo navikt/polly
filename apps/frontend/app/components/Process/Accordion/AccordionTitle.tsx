@@ -85,7 +85,7 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
 
         {isAvvik && (
           <Tag className='ml-3' variant='outline' data-color='meta-purple'>
-            Endringer ift overordnet
+            Endringer fra overordnet
           </Tag>
         )}
       </Heading>
