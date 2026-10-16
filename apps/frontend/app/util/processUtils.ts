@@ -415,3 +415,6 @@ export const checkForAvvik = async (
   const process = await getProcess(underordnetBehandling.id)
   return checkForAvvikKeys(overordnetBehandling, process).length > 0
 }
+
+export const avvikCheck = (key: string, avvikKeys: string[]) =>
+  avvikKeys.length !== 0 && !avvikKeys.includes(key)

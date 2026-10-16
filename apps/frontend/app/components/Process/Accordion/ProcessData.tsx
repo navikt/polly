@@ -7,7 +7,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
-import { checkForAvvikKeys } from '@/util/processUtils'
+import { avvikCheck, checkForAvvikKeys } from '@/util/processUtils'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -151,8 +151,6 @@ const ProcessData = (props: IProcessDataProps) => {
     'code'
   )
 
-  const avvikCheck = (key: string) => avvikKeys.length !== 0 && !avvikKeys.includes(key)
-
   const organiseringAvvikCheck = () => {
     if (
       avvikKeys.includes('affiliation.nomDepartmentId') ||
@@ -176,8 +174,6 @@ const ProcessData = (props: IProcessDataProps) => {
     )
   }
 
-  console.debug(avvikKeys)
-
   return (
     <div>
       {avvikKeys.length > 0 && (
@@ -198,7 +194,7 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Formål med behandlingen'
         text=''
-        labelMarginLeft={avvikCheck('description')}
+        labelMarginLeft={avvikCheck('description', avvikKeys)}
         badge={avvikKeys.includes('description') && <AvvikTag marginRight marginTop />}
       >
         <div className='max-w-[100ch]'>
@@ -210,7 +206,7 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText
           label='Ytterligere beskrivelse'
           text=''
-          labelMarginLeft={avvikCheck('additionalDescription')}
+          labelMarginLeft={avvikCheck('additionalDescription', avvikKeys)}
           badge={avvikKeys.includes('additionalDescription') && <AvvikTag marginRight marginTop />}
         >
           <div className='max-w-[100ch]'>{shortenLinksInText(process.additionalDescription)}</div>
@@ -221,7 +217,7 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText
           label='Behandlingsgrunnlag for hele behandlingen'
           text={''}
-          labelMarginLeft={avvikCheck('legalBases')}
+          labelMarginLeft={avvikCheck('legalBases', avvikKeys)}
           badge={avvikKeys.includes('legalBases') && <AvvikTag marginRight marginTop />}
         >
           {process.legalBases
@@ -240,7 +236,7 @@ const ProcessData = (props: IProcessDataProps) => {
         <>
           <DataText
             label='Behandlingsgrunnlag for hele behandlingen'
-            labelMarginLeft={avvikCheck('legalBases')}
+            labelMarginLeft={avvikCheck('legalBases', avvikKeys)}
             badge={avvikKeys.includes('legalBases') && <AvvikTag marginRight marginTop />}
           />
         </>
@@ -249,7 +245,7 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Er behandlingen innført i NAV?'
         text={''}
-        labelMarginLeft={avvikCheck('dpia.processImplemented')}
+        labelMarginLeft={avvikCheck('dpia.processImplemented', avvikKeys)}
         badge={avvikKeys.includes('dpia.processImplemented') && <AvvikTag marginRight marginTop />}
       >
         {process.dpia?.processImplemented ? 'Ja' : 'Nei'}
@@ -258,7 +254,7 @@ const ProcessData = (props: IProcessDataProps) => {
       {!env.disableRiskOwner && (
         <DataText
           label='Risikoeier'
-          labelMarginLeft={avvikCheck('dpia.riskOwner')}
+          labelMarginLeft={avvikCheck('dpia.riskOwner', avvikKeys)}
           badge={avvikKeys.includes('dpia.riskOwner') && <AvvikTag marginRight marginTop />}
         >
           <>
@@ -273,7 +269,7 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Gyldighetsperiode for behandlingen'
         text={''}
-        labelMarginLeft={avvikCheck('start') || avvikCheck('end')}
+        labelMarginLeft={avvikCheck('start', avvikKeys) || avvikCheck('end', avvikKeys)}
         badge={
           (avvikKeys.includes('start') || avvikKeys.includes('end')) && (
             <AvvikTag marginRight marginTop />
@@ -290,7 +286,7 @@ const ProcessData = (props: IProcessDataProps) => {
             ? 'Ikke utfylt'
             : ''
         }
-        labelMarginLeft={avvikCheck('usesAllInformationTypes')}
+        labelMarginLeft={avvikCheck('usesAllInformationTypes', avvikKeys)}
         badge={avvikKeys.includes('usesAllInformationTypes') && <AvvikTag marginRight marginTop />}
       >
         {process.usesAllInformationTypes
@@ -418,7 +414,7 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='System'
         text={''}
-        labelMarginLeft={avvikCheck('affiliation.products')}
+        labelMarginLeft={avvikCheck('affiliation.products', avvikKeys)}
         badge={avvikKeys.includes('affiliation.products') && <AvvikTag marginRight marginTop />}
       >
         {process.affiliation.products?.length ? (
@@ -439,7 +435,9 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Automatisering og profilering'
         text={''}
-        labelMarginLeft={avvikCheck('automaticProcessing') || avvikCheck('profiling')}
+        labelMarginLeft={
+          avvikCheck('automaticProcessing', avvikKeys) || avvikCheck('profiling', avvikKeys)
+        }
         badge={
           (avvikKeys.includes('automaticProcessing') || avvikKeys.includes('profiling')) && (
             <AvvikTag marginRight marginTop />
@@ -501,7 +499,7 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Databehandler'
         text={''}
-        labelMarginLeft={avvikCheck('dataProcessing')}
+        labelMarginLeft={avvikCheck('dataProcessing', avvikKeys)}
         badge={avvikKeys.includes('dataProcessing') && <AvvikTag marginRight marginTop />}
       >
         <>
@@ -600,7 +598,7 @@ const ProcessData = (props: IProcessDataProps) => {
         <DataText
           label='Avsender'
           text={''}
-          labelMarginLeft={avvikCheck('affiliation.disclosureDispatchers')}
+          labelMarginLeft={avvikCheck('affiliation.disclosureDispatchers', avvikKeys)}
           badge={
             avvikKeys.includes('affiliation.disclosureDispatchers') && (
               <AvvikTag marginRight marginTop />

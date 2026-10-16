@@ -3,11 +3,12 @@
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal, Tabs } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
+import { checkForAvvikKeys } from '@/util/processUtils'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import {
   convertProcessToFormValues,
@@ -28,6 +29,7 @@ import {
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
+import AvvikTag from '../common/AvvikTag'
 import UnderordnetBehandlingList from '../underordnetBehandling/underornetBehandlingList'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
@@ -107,6 +109,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
   const selectedProcessId = forUnderordnetBehandlinger ? underordnetBehandlingId : params.processId
   const previousUnderordnetBehandlingId = useRef(underordnetBehandlingId)
+  const avvikKeys = useMemo(() => {
+    if (forUnderordnetBehandlinger && overordnetBehandling && currentProcess) {
+      return checkForAvvikKeys(overordnetBehandling, currentProcess)
+    }
+    return []
+  }, [forUnderordnetBehandlinger, overordnetBehandling, currentProcess])
 
   useEffect(() => {
     if (forUnderordnetBehandlinger || !headerRef.current || !purposeRef.current) return
@@ -390,7 +398,16 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                           <Tabs.List>
                             <Tabs.Tab
                               value='opplysninger'
-                              label={`Opplysninger (${currentProcess.policies.length})`}
+                              label={
+                                <span>
+                                  {forUnderordnetBehandlinger &&
+                                    !!overordnetBehandling &&
+                                    avvikKeys.includes('policies') && (
+                                      <AvvikTag marginRight marginTop />
+                                    )}
+                                  Opplysninger ({currentProcess.policies.length})
+                                </span>
+                              }
                             />
                             {currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
                               <Tabs.Tab
