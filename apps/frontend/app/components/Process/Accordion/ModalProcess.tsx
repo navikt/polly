@@ -8,7 +8,6 @@ import {
 } from '@navikt/aksel-icons'
 import {
   Accordion,
-  BodyLong,
   Button,
   ErrorSummary,
   InfoCard,
@@ -210,7 +209,6 @@ const ModalProcess = ({
 
   const utleveringAvvik = useMemo(() => {
     if (!overordnetBehandlingUtleveringer || !underordnetBehandlingUtleveringer) return false
-    console.debug(underordnetBehandlingUtleveringer)
 
     return !isEqual(
       sortBy(overordnetBehandlingUtleveringer.map((utlevering) => utlevering.id)),
@@ -291,13 +289,13 @@ const ModalProcess = ({
                   )}
 
                   {avvikKeys.length > 0 && (
-                    <BodyLong className='mb-5'>
+                    <InlineMessage status='info' className='mb-5'>
                       <strong>
                         Felt som er endret i forhold til den overordnede behandling merkeres med
                         &nbsp;
                         <AvvikTag />
                       </strong>
-                    </BodyLong>
+                    </InlineMessage>
                   )}
 
                   <div className='mb-7'>

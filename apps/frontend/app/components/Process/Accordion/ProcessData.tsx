@@ -1,7 +1,15 @@
 'use client'
 
 import { InformationSquareIcon } from '@navikt/aksel-icons'
-import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
+import {
+  BodyLong,
+  InfoCard,
+  InlineMessage,
+  Link,
+  List,
+  ProgressBar,
+  Tooltip,
+} from '@navikt/ds-react'
 import { isEqual, isNil, sortBy, sum, uniqBy } from 'lodash'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
@@ -163,12 +171,12 @@ const ProcessData = (props: IProcessDataProps) => {
   return (
     <div>
       {avvikKeys.length > 0 && (
-        <BodyLong className='mb-5'>
+        <InlineMessage status='info' className='mb-5'>
           <strong>
             Felt som er endret i forhold til den overordnede behandling merkeres med &nbsp;
             <AvvikTag />
           </strong>
-        </BodyLong>
+        </InlineMessage>
       )}
 
       <DataText

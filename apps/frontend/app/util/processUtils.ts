@@ -399,13 +399,52 @@ export const checkForAvvikKeys = (
   const childValues = flattenProcessValues(underordnetBehandling)
   const paths = new Set([...parentValues.keys(), ...childValues.keys()])
 
-  return [...paths]
+  let avvikkKeys = [...paths]
     .filter(
       (path) =>
         parentValues.has(path) !== childValues.has(path) ||
         !isEqual(parentValues.get(path), childValues.get(path))
     )
     .filter((key) => !ignoredProcessFields.has(key))
+
+  if (
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.aiUsage') as boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.aiUsage') === childValues.get('aiUsageDescription.aiUsage')
+  ) {
+    avvikkKeys = avvikkKeys.filter((key) => key !== 'aiUsageDescription.description')
+  }
+
+  if (
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.reusingPersonalInformation') as
+        boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.reusingPersonalInformation') ===
+      childValues.get('aiUsageDescription.reusingPersonalInformation')
+  ) {
+    avvikkKeys = avvikkKeys.filter((key) => key !== 'aiUsageDescription.registryNumber')
+  }
+
+  if (
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.reusingPersonalInformation') as
+        boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.reusingPersonalInformation') ===
+      childValues.get('aiUsageDescription.reusingPersonalInformation') &&
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.aiUsage') as boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.aiUsage') === childValues.get('aiUsageDescription.aiUsage')
+  ) {
+    avvikkKeys = avvikkKeys.filter(
+      (key) => !['aiUsageDescription.endDate', 'aiUsageDescription.startDate'].includes(key)
+    )
+  }
+
+  return avvikkKeys
 }
 
 export const checkForAvvik = async (
