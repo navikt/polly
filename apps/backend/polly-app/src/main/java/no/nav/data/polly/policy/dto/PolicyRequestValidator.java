@@ -38,7 +38,7 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
 
-    @Transactional // FIXME: Denne må kanskje flyttes til et fornuftig sted før merge til master
+    @Transactional // TODO: Å sjekke (bl.a.) at ting eksisterer er forretningslogikk. Transactional må flyttes til service.
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
         initialize(requests, isUpdate);
         List<ValidationError> validations = new ArrayList<>();

@@ -3,6 +3,7 @@ package no.nav.data.polly.process;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,7 @@ import java.util.UUID;
 @Tag(name = "Process", description = "REST API for Process")
 @RequestMapping("/process")
 @RequiredArgsConstructor
-@jakarta.transaction.Transactional // FIXME: Fjern før merge til master
-
+@Transactional
 public class ProcessWriteController {
 
     // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.

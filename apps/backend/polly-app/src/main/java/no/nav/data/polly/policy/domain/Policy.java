@@ -85,10 +85,10 @@ public class Policy extends Auditable {
 
     // TODO: Snu avhengigheten innover
     public Policy copyFieldsFrom(PolicyRequest policyRequest) {
-        // OptimisticLockingUtil.checkVersion(this, policyRequest.getVersion()); // FIXME: Er det bedre å ha denne sjekken her?
         policyRequest.getInformationType().addPolicy(this);
         policyRequest.getProcess().addPolicy(this);
         policyRequest.mergeInto(this);
+        // Version skal aldri settes fra request
         return this;
     }
 
