@@ -480,6 +480,10 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                 ...convertProcessToFormValues(currentProcess),
                 disclosures: disclosures,
               }}
+              overordnetBehandling={overordnetBehandling}
+              underordnetBehandling={currentProcess}
+              overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
+              underordnetBehandlingUtleveringer={disclosures}
             />
           )}
 

@@ -3,10 +3,12 @@ import { useState } from 'react'
 import { LabelWithDescription } from '../common/LabelWithTooltip'
 import { EndDate } from './EndDate'
 import { StartDate } from './StartDate'
+import AvvikTag from './common/AvvikTag'
 
 interface IDateModalProps {
   showDates: boolean
   showLabels?: boolean
+  avvikKeys?: string[]
 }
 
 export const DateFieldsProcessModal = (props: IDateModalProps) => {
@@ -28,6 +30,7 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
               <LabelWithDescription
                 label='Behandlingen er gyldig fra og med'
                 description='Rediger dato dersom behandlingen ikke var gyldig allerede den datoen Nav ble opprettet. Datoen kan også settes fram i tid.'
+                icon={props.avvikKeys && props.avvikKeys.includes('start') && <AvvikTag />}
               />
               <StartDate withoutLabel={true} />
             </div>
@@ -35,6 +38,7 @@ export const DateFieldsProcessModal = (props: IDateModalProps) => {
               <LabelWithDescription
                 label='Behandlingen er gyldig til og med'
                 description='Velg dato kun dersom behandlingen er midlertidig og har en sluttdato.'
+                icon={props.avvikKeys && props.avvikKeys.includes('end') && <AvvikTag />}
               />
               <EndDate withoutLabel={true} />
             </div>

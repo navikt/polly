@@ -1,13 +1,16 @@
 import { TextField } from '@navikt/ds-react'
 import { Field, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
+import { LabelWithDescription } from '@/components/common/LabelWithTooltip'
 import { IProcessFormValues } from '../../../constants'
-import { Error, ModalLabel } from '../../common/ModalSchema'
+import { Error } from '../../common/ModalSchema'
+import AvvikTag from './AvvikTag'
 import BoolField from './BoolField'
 import FieldInput from './FieldInput'
 
 interface IProps {
   formikBag: FormikProps<IProcessFormValues>
+  avvikKeys?: string[]
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -32,7 +35,12 @@ const RetentionItems = (props: IProps) => {
   return (
     <>
       <div className='w-full mt-0'>
-        <ModalLabel fullwidth label='Omfattes av Navs bevarings- og kassasjonsvedtak?' />
+        <LabelWithDescription
+          label='Omfattes av Navs bevarings- og kassasjonsvedtak?'
+          icon={
+            props.avvikKeys && props.avvikKeys.includes('retention.retentionPlan') && <AvvikTag />
+          }
+        />
         <div className='mt-2'>
           <BoolField
             fieldName='retention.retentionPlan'
@@ -45,10 +53,13 @@ const RetentionItems = (props: IProps) => {
       {
         <>
           <div className='w-full mt-4'>
-            <ModalLabel
-              fullwidth
+            <LabelWithDescription
               label='Lagringsbehov for Nav'
-              tooltip='Det er hvor lenge Nav har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket.'
+              description='Det er hvor lenge Nav har behov for tilgang til opplysningene vi ønsker svar på her. Når den tiden nås skal opplysningene enten kasseres eller gjøres klar for avlevering til Arkivverket.'
+              icon={
+                props.avvikKeys &&
+                props.avvikKeys.includes('retention.retentionMonths') && <AvvikTag />
+              }
             />
             <Field name='retention.retentionMonths'>
               {() => (
@@ -90,10 +101,13 @@ const RetentionItems = (props: IProps) => {
           <Error fieldName='retention.retentionMonths' fullWidth={true} />
 
           <div className='w-full mt-4'>
-            <ModalLabel
-              fullwidth
+            <LabelWithDescription
               label='Lagringsbehovet beregnes fra følgende tidspunkt eller hendelse'
-              tooltip='Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.'
+              description='Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.'
+              icon={
+                props.avvikKeys &&
+                props.avvikKeys.includes('retention.retentionStart') && <AvvikTag />
+              }
             />
             <div className='mt-2 w-full'>
               <FieldInput
@@ -106,7 +120,13 @@ const RetentionItems = (props: IProps) => {
         </>
       }
       <div className='w-full mt-4'>
-        <ModalLabel fullwidth label='Ref. til relevant dokumentasjon' />
+        <LabelWithDescription
+          label='Ref. til relevant dokumentasjon'
+          icon={
+            props.avvikKeys &&
+            props.avvikKeys.includes('retention.retentionDescription') && <AvvikTag />
+          }
+        />
         <div className='mt-2'>
           <FieldInput
             fieldName='retention.retentionDescription'

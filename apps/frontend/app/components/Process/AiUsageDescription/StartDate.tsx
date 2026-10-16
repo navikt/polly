@@ -1,10 +1,15 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import { useField, useFormikContext } from 'formik'
-import { useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { IProcessFormValues } from '../../../constants'
 import { Error } from '../../common/ModalSchema'
+import AvvikTag from '../common/AvvikTag'
 
-export const StartDate = () => {
+type TProps = {
+  hasStartDateAvvik?: boolean
+}
+
+export const StartDate: FunctionComponent<TProps> = ({ hasStartDateAvvik }) => {
   const { datepickerProps } = useDatepicker()
 
   const ymdToDmy = (ymd?: string) => {
@@ -88,7 +93,7 @@ export const StartDate = () => {
                 helpers.setError('Ugyldig datoformat (dd-mm-åååå)')
               }
             }}
-            label='Fra og med dato'
+            label={<span>{hasStartDateAvvik && <AvvikTag />} Fra og med dato</span>}
             error={!!meta.error && (meta.touched || !!formik.submitCount)}
           />
         </DatePicker>

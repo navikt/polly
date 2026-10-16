@@ -7,7 +7,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
-import { avvikCheck, checkForAvvikKeys } from '@/util/processUtils'
+import { avvikCheck, checkForAvvikKeys, organiseringAvvikCheck } from '@/util/processUtils'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -151,20 +151,6 @@ const ProcessData = (props: IProcessDataProps) => {
     'code'
   )
 
-  const organiseringAvvikCheck = () => {
-    if (
-      avvikKeys.includes('affiliation.nomDepartmentId') ||
-      avvikKeys.includes('affiliation.seksjoner') ||
-      avvikKeys.includes('affiliation.subDepartments') ||
-      avvikKeys.includes('affiliation.productTeams') ||
-      avvikKeys.includes('commonExternalProcessResponsible')
-    ) {
-      return true
-    } else {
-      return false
-    }
-  }
-
   const checkForUtleveringAvvik = () => {
     if (!overordnetBehandlingUtleveringer) return false
 
@@ -305,8 +291,8 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Organisering'
         text={''}
-        labelMarginLeft={avvikKeys.length !== 0 && !organiseringAvvikCheck()}
-        badge={organiseringAvvikCheck() && <AvvikTag marginRight marginTop />}
+        labelMarginLeft={avvikKeys.length !== 0 && !organiseringAvvikCheck(avvikKeys)}
+        badge={organiseringAvvikCheck(avvikKeys) && <AvvikTag marginRight marginTop />}
       >
         {process.affiliation.nomDepartmentId ? (
           <div className='flex gap-1 items-center'>
@@ -499,8 +485,10 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Databehandler'
         text={''}
-        labelMarginLeft={avvikCheck('dataProcessing', avvikKeys)}
-        badge={avvikKeys.includes('dataProcessing') && <AvvikTag marginRight marginTop />}
+        labelMarginLeft={avvikCheck('dataProcessing.dataProcessor', avvikKeys)}
+        badge={
+          avvikKeys.includes('dataProcessing.dataProcessor') && <AvvikTag marginRight marginTop />
+        }
       >
         <>
           {process.dataProcessing?.dataProcessor === null && 'Uavklart om databehandler benyttes'}
@@ -622,7 +610,12 @@ const ProcessData = (props: IProcessDataProps) => {
           label='Utleveringer'
           text={''}
           labelMarginLeft={!checkForUtleveringAvvik()}
-          badge={checkForUtleveringAvvik() && <AvvikTag marginRight marginTop />}
+          badge={
+            (checkForUtleveringAvvik() ||
+              avvikKeys.includes('affiliation.disclosureDispatchers')) && (
+              <AvvikTag marginRight marginTop />
+            )
+          }
         >
           <div>
             {checkForAaregDispatcher(process) ? (

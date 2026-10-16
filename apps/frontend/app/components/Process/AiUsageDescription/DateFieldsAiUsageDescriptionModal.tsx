@@ -5,11 +5,12 @@ import { StartDate } from './StartDate'
 
 interface IDateModalProps {
   showDates: boolean
+  hasStartDateAvvik?: boolean
+  hasEndDateAvvik?: boolean
 }
 
 export const DateFieldsAiUsageDescriptionModal = (props: IDateModalProps) => {
   const [showDates, setShowDates] = useState<boolean>(props.showDates)
-
   return (
     <>
       {!showDates && (
@@ -23,9 +24,9 @@ export const DateFieldsAiUsageDescriptionModal = (props: IDateModalProps) => {
         <>
           <div className='w-full'>
             <div className='flex w-full'>
-              <StartDate />
+              <StartDate hasStartDateAvvik={props.hasStartDateAvvik} />
 
-              <EndDate />
+              <EndDate hasEndDateAvvik={props.hasEndDateAvvik} />
             </div>
           </div>
         </>

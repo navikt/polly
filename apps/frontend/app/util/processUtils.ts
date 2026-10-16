@@ -418,3 +418,17 @@ export const checkForAvvik = async (
 
 export const avvikCheck = (key: string, avvikKeys: string[]) =>
   avvikKeys.length !== 0 && !avvikKeys.includes(key)
+
+export const organiseringAvvikCheck = (avvikKeys: string[]) => {
+  if (
+    avvikKeys.includes('affiliation.nomDepartmentId') ||
+    avvikKeys.includes('affiliation.seksjoner') ||
+    avvikKeys.includes('affiliation.subDepartments') ||
+    avvikKeys.includes('affiliation.productTeams') ||
+    avvikKeys.includes('commonExternalProcessResponsible')
+  ) {
+    return true
+  } else {
+    return false
+  }
+}

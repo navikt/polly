@@ -35,7 +35,7 @@ export const LabelWithDescription = (props: {
 }) => {
   return (
     <div className={`${props.noMarginBottom ? undefined : 'mb-3'}`}>
-      <div className={`${props.description ? 'mb-0.5' : undefined} flex gap-1 items-center`}>
+      <div className={`${props.description ? 'mb-0.5' : undefined} flex gap-2 items-center`}>
         {props.icon}
         <Label>{props.label}</Label>
       </div>
