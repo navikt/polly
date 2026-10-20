@@ -263,7 +263,7 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Gyldighetsperiode for behandlingen'
         text={''}
-        labelMarginLeft={avvikCheck('start', avvikKeys) || avvikCheck('end', avvikKeys)}
+        labelMarginLeft={avvikCheck('start', avvikKeys) && avvikCheck('end', avvikKeys)}
         badge={
           (avvikKeys.includes('start') || avvikKeys.includes('end')) && (
             <AvvikTag marginRight marginTop />
@@ -430,7 +430,7 @@ const ProcessData = (props: IProcessDataProps) => {
         label='Automatisering og profilering'
         text={''}
         labelMarginLeft={
-          avvikCheck('automaticProcessing', avvikKeys) || avvikCheck('profiling', avvikKeys)
+          avvikCheck('automaticProcessing', avvikKeys) && avvikCheck('profiling', avvikKeys)
         }
         badge={
           (avvikKeys.includes('automaticProcessing') || avvikKeys.includes('profiling')) && (
