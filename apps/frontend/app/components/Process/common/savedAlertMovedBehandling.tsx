@@ -20,7 +20,7 @@ const SavedAlertMovedBehandling: FunctionComponent<TProps> = ({
     <LocalAlert ref={ref} tabIndex={-1} status='success' className='max-w-[100ch] mb-5'>
       <LocalAlert.Header>
         <LocalAlert.Title>
-          Endringene dine er lagret, og behandlingen er flyttet til riktig sted i den forbindelse.
+          Endringene dine er lagret, og behandlingen er flyttet til riktig sted.
         </LocalAlert.Title>
         <LocalAlert.CloseButton
           onClick={() => {
