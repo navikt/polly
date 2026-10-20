@@ -698,7 +698,7 @@ const Completeness = (props: ICompletenessProps) => {
 
   const getContent = () => {
     let content = ''
-    content += completed === completables ? 'Godkjent' : 'Ikke utfylt: '
+    content += completed === completables ? '' : 'Ikke utfylt: '
     if (!completeness.dpiaReference) content += 'Ref. til PVK, '
     if (!completeness.profiling) content += 'Profilering, '
     if (!completeness.automation) content += 'Automatisering og profilering, '
