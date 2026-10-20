@@ -29,20 +29,20 @@
         <springdoc-openapi-starter-webmvc-ui.version>3.1.1</springdoc-openapi-starter-webmvc-ui.version>
         <simpleclient.version>0.16.0</simpleclient.version>
         <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
-        <docx4j.version>17.2.1</docx4j.version>
+        <docx4j.version>17.3.2</docx4j.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
 
-        <microsoft-graph.version>6.70.0</microsoft-graph.version>
+        <microsoft-graph.version>6.71.0</microsoft-graph.version>
         <msal4j.version>1.26.0</msal4j.version>
         <graphql.version>24.0</graphql.version>
 
         <!-- transitive versions -->
         <commons-compress.version>1.28.0</commons-compress.version>
         <commons-io.version>2.22.0</commons-io.version>
-        <guava.version>33.7.1-jre</guava.version>
+        <guava.version>33.7.2-jre</guava.version>
         <jna.version>5.19.1</jna.version>
         <jetbrains.annotation.version>26.1.0</jetbrains.annotation.version>
-        <stax2-api.version>4.3.1</stax2-api.version>
+        <stax2-api.version>4.3.2</stax2-api.version>
 
         <!-- Test -->
         <testcontainers.version>2.0.5</testcontainers.version>
@@ -91,7 +91,7 @@
             <dependency>
                 <groupId>com.azure</groupId>
                 <artifactId>azure-core</artifactId>
-                <version>1.59.1</version>
+                <version>1.60.0</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
@@ -166,7 +166,7 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
-                <version>26.89.0</version>
+                <version>26.90.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
