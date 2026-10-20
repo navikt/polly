@@ -291,7 +291,7 @@ const ModalProcess = ({
                   {avvikKeys.length > 0 && (
                     <InlineMessage status='info' className='mb-5'>
                       <strong>
-                        Felt som er endret i forhold til den overordnede behandling merkeres med
+                        Felt som er endret i forhold til den overordnede behandlingen merkeres med
                         &nbsp;
                         <AvvikTag />
                       </strong>
@@ -316,7 +316,7 @@ const ModalProcess = ({
                       <List.Item>Kameraovervåkning på ulike Nav-kontor</List.Item>
                     </List>
                     Det forutsettes at underordnede behandlinger deler samme behandlingsaktivitet
-                    som den overordnede behandlingen.
+                    som den overordnede behandlingenen.
                     {formikBag.values.status !== EProcessStatus.COMPLETED &&
                       !forUnderordnetBehandling && (
                         <div className='mt-7'>

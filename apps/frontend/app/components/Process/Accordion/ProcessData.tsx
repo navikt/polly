@@ -173,7 +173,7 @@ const ProcessData = (props: IProcessDataProps) => {
       {avvikKeys.length > 0 && (
         <InlineMessage status='info' className='mb-5'>
           <strong>
-            Felt som er endret i forhold til den overordnede behandling merkeres med &nbsp;
+            Felt som er endret i forhold til den overordnede behandlingen merkeres med &nbsp;
             <AvvikTag />
           </strong>
         </InlineMessage>
