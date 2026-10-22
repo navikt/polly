@@ -82,12 +82,14 @@ const ProcessPageButtonGroup: FunctionComponent<TProps> = ({
       </div>
 
       <div className='flex flex-wrap gap-2 justify-start sm:justify-end w-full sm:w-auto'>
-        <ExportProcessModal
-          listName={listName}
-          code={code}
-          marginRight={true}
-          exportHref={exportHref}
-        />
+        {!forUnderordnetBehandling && (
+          <ExportProcessModal
+            listName={listName}
+            code={code}
+            marginRight={true}
+            exportHref={exportHref}
+          />
+        )}
         {isEditable && hasAccess() && (
           <Button
             size='xsmall'

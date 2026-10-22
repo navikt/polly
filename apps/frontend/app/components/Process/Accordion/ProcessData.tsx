@@ -1,12 +1,21 @@
 'use client'
 
 import { InformationSquareIcon } from '@navikt/aksel-icons'
-import { BodyLong, InfoCard, Link, List, ProgressBar, Tooltip } from '@navikt/ds-react'
-import { isNil, sum, uniqBy } from 'lodash'
-import { Fragment, useEffect, useState } from 'react'
+import {
+  BodyLong,
+  InfoCard,
+  InlineMessage,
+  Link,
+  List,
+  ProgressBar,
+  Tooltip,
+} from '@navikt/ds-react'
+import { isEqual, isNil, sortBy, sum, uniqBy } from 'lodash'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { avvikCheck, checkForAvvikKeys, organiseringAvvikCheck } from '@/util/processUtils'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
@@ -37,6 +46,7 @@ import RouteLink, { ObjectLink } from '../../common/RouteLink'
 import { TeamList } from '../../common/Team'
 import StartEndDateView from '../AiUsageDescription/StartEndDateView'
 import { RetentionView } from '../Retention'
+import AvvikTag from '../common/AvvikTag'
 
 const showDpiaRequiredField = (dpia?: IDpia) => {
   if (dpia) {
@@ -98,14 +108,30 @@ interface IProcessDataProps {
   process: IProcess
   disclosures: IDisclosure[]
   codelistUtils: ICodelistProps
+  forUnderordnetBehandlinger: boolean
+  overordnetBehandling?: IProcess
+  overordnetBehandlingUtleveringer?: IDisclosure[]
 }
 
 const ProcessData = (props: IProcessDataProps) => {
-  const { process, disclosures, codelistUtils } = props
+  const {
+    process,
+    disclosures,
+    codelistUtils,
+    forUnderordnetBehandlinger,
+    overordnetBehandling,
+    overordnetBehandlingUtleveringer,
+  } = props
 
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
   const [processors, setProcessors] = useState<IProcessor[]>([])
   const [pvkDokumenter, setPvkDokumenter] = useState<IPvkDokumentShort[]>([])
+  const avvikKeys = useMemo(() => {
+    if (forUnderordnetBehandlinger && overordnetBehandling) {
+      return checkForAvvikKeys(overordnetBehandling, process)
+    }
+    return []
+  }, [forUnderordnetBehandlinger, overordnetBehandling, process])
 
   useEffect(() => {
     ;(async () => {
@@ -133,24 +159,61 @@ const ProcessData = (props: IProcessDataProps) => {
     'code'
   )
 
+  const checkForUtleveringAvvik = () => {
+    if (!overordnetBehandlingUtleveringer) return false
+
+    return !isEqual(
+      sortBy(overordnetBehandlingUtleveringer.map((utlevering) => utlevering.id)),
+      sortBy(disclosures.map((utlevering) => utlevering.id))
+    )
+  }
+
   return (
     <div>
-      <DataText label='Behandlingsnummer' text={'B' + process.number} />
+      {avvikKeys.length > 0 && (
+        <InlineMessage status='info' className='mb-5'>
+          <strong>
+            Felt som er endret i forhold til den overordnede behandlingen markeres med &nbsp;
+            <AvvikTag />
+          </strong>
+        </InlineMessage>
+      )}
 
-      <DataText label='Formål med behandlingen' text=''>
+      <DataText
+        label='Behandlingsnummer'
+        text={'B' + process.number}
+        labelMarginLeft={forUnderordnetBehandlinger && !!overordnetBehandling}
+      />
+
+      <DataText
+        label='Formål med behandlingen'
+        text=''
+        labelMarginLeft={avvikCheck('description', avvikKeys)}
+        badge={avvikKeys.includes('description') && <AvvikTag marginRight marginTop />}
+      >
         <div className='max-w-[100ch]'>
           {shortenLinksInText(process.description?.length ? process.description : 'Ikke utfylt')}
         </div>
       </DataText>
 
       {process.additionalDescription && (
-        <DataText label='Ytterligere beskrivelse' text=''>
+        <DataText
+          label='Ytterligere beskrivelse'
+          text=''
+          labelMarginLeft={avvikCheck('additionalDescription', avvikKeys)}
+          badge={avvikKeys.includes('additionalDescription') && <AvvikTag marginRight marginTop />}
+        >
           <div className='max-w-[100ch]'>{shortenLinksInText(process.additionalDescription)}</div>
         </DataText>
       )}
 
       {process.legalBases.length ? (
-        <DataText label='Behandlingsgrunnlag for hele behandlingen' text={''}>
+        <DataText
+          label='Behandlingsgrunnlag for hele behandlingen'
+          text={''}
+          labelMarginLeft={avvikCheck('legalBases', avvikKeys)}
+          badge={avvikKeys.includes('legalBases') && <AvvikTag marginRight marginTop />}
+        >
           {process.legalBases
             .sort((a, b) =>
               codelistUtils
@@ -165,16 +228,29 @@ const ProcessData = (props: IProcessDataProps) => {
         </DataText>
       ) : (
         <>
-          <DataText label='Behandlingsgrunnlag for hele behandlingen' />
+          <DataText
+            label='Behandlingsgrunnlag for hele behandlingen'
+            labelMarginLeft={avvikCheck('legalBases', avvikKeys)}
+            badge={avvikKeys.includes('legalBases') && <AvvikTag marginRight marginTop />}
+          />
         </>
       )}
 
-      <DataText label='Er behandlingen innført i NAV?' text={''}>
+      <DataText
+        label='Er behandlingen innført i NAV?'
+        text={''}
+        labelMarginLeft={avvikCheck('dpia.processImplemented', avvikKeys)}
+        badge={avvikKeys.includes('dpia.processImplemented') && <AvvikTag marginRight marginTop />}
+      >
         {process.dpia?.processImplemented ? 'Ja' : 'Nei'}
       </DataText>
 
       {!env.disableRiskOwner && (
-        <DataText label='Risikoeier'>
+        <DataText
+          label='Risikoeier'
+          labelMarginLeft={avvikCheck('dpia.riskOwner', avvikKeys)}
+          badge={avvikKeys.includes('dpia.riskOwner') && <AvvikTag marginRight marginTop />}
+        >
           <>
             <span>{process.dpia?.riskOwner ? riskOwnerFullName : 'Ikke utfylt'}</span>
             {!!process.dpia?.riskOwnerFunction && (
@@ -184,7 +260,16 @@ const ProcessData = (props: IProcessDataProps) => {
         </DataText>
       )}
 
-      <DataText label='Gyldighetsperiode for behandlingen' text={''}>
+      <DataText
+        label='Gyldighetsperiode for behandlingen'
+        text={''}
+        labelMarginLeft={avvikCheck('start', avvikKeys) && avvikCheck('end', avvikKeys)}
+        badge={
+          (avvikKeys.includes('start') || avvikKeys.includes('end')) && (
+            <AvvikTag marginRight marginTop />
+          )
+        }
+      >
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
@@ -195,6 +280,8 @@ const ProcessData = (props: IProcessDataProps) => {
             ? 'Ikke utfylt'
             : ''
         }
+        labelMarginLeft={avvikCheck('usesAllInformationTypes', avvikKeys)}
+        badge={avvikKeys.includes('usesAllInformationTypes') && <AvvikTag marginRight marginTop />}
       >
         {process.usesAllInformationTypes
           ? 'Bruker potensielt alle personkategorier'
@@ -209,7 +296,12 @@ const ProcessData = (props: IProcessDataProps) => {
             )}
       </DataText>
 
-      <DataText label='Organisering' text={''}>
+      <DataText
+        label='Organisering'
+        text={''}
+        labelMarginLeft={avvikKeys.length !== 0 && !organiseringAvvikCheck(avvikKeys)}
+        badge={organiseringAvvikCheck(avvikKeys) && <AvvikTag marginRight marginTop />}
+      >
         {process.affiliation.nomDepartmentId ? (
           <div className='flex gap-1 items-center'>
             <span className='whitespace-nowrap'>Avdeling: </span>
@@ -313,7 +405,12 @@ const ProcessData = (props: IProcessDataProps) => {
         </div>
       </DataText>
 
-      <DataText label='System' text={''}>
+      <DataText
+        label='System'
+        text={''}
+        labelMarginLeft={avvikCheck('affiliation.products', avvikKeys)}
+        badge={avvikKeys.includes('affiliation.products') && <AvvikTag marginRight marginTop />}
+      >
         {process.affiliation.products?.length ? (
           <ul className='mt-0 list-disc list-inside'>
             {process.affiliation.products.map((system, index: number) => (
@@ -329,7 +426,18 @@ const ProcessData = (props: IProcessDataProps) => {
         )}
       </DataText>
 
-      <DataText label='Automatisering og profilering' text={''}>
+      <DataText
+        label='Automatisering og profilering'
+        text={''}
+        labelMarginLeft={
+          avvikCheck('automaticProcessing', avvikKeys) && avvikCheck('profiling', avvikKeys)
+        }
+        badge={
+          (avvikKeys.includes('automaticProcessing') || avvikKeys.includes('profiling')) && (
+            <AvvikTag marginRight marginTop />
+          )
+        }
+      >
         <div>
           <span>Helautomatisk behandling: </span>
           <span>{boolToText(process.automaticProcessing)}</span>
@@ -340,7 +448,19 @@ const ProcessData = (props: IProcessDataProps) => {
         </div>
       </DataText>
 
-      <DataText label='Kunstig intelligens' text={''}>
+      <DataText
+        label='Kunstig intelligens'
+        text={''}
+        labelMarginLeft={
+          avvikKeys.length !== 0 &&
+          !avvikKeys.some((key: string) => key.includes('aiUsageDescription'))
+        }
+        badge={
+          avvikKeys.some((key: string) => key.includes('aiUsageDescription')) && (
+            <AvvikTag marginRight marginTop />
+          )
+        }
+      >
         <div>
           <span>KI-systemer benyttes: </span>
           <span>{boolToText(process.aiUsageDescription.aiUsage)}</span>
@@ -370,7 +490,14 @@ const ProcessData = (props: IProcessDataProps) => {
         )}
       </DataText>
 
-      <DataText label='Databehandler' text={''}>
+      <DataText
+        label='Databehandler'
+        text={''}
+        labelMarginLeft={avvikCheck('dataProcessing.dataProcessor', avvikKeys)}
+        badge={
+          avvikKeys.includes('dataProcessing.dataProcessor') && <AvvikTag marginRight marginTop />
+        }
+      >
         <>
           {process.dataProcessing?.dataProcessor === null && 'Uavklart om databehandler benyttes'}
           {process.dataProcessing?.dataProcessor === false && 'Databehandler benyttes ikke'}
@@ -395,7 +522,18 @@ const ProcessData = (props: IProcessDataProps) => {
         </>
       </DataText>
 
-      <DataText label='Lagringsbehov' text={''}>
+      <DataText
+        label='Lagringsbehov'
+        text={''}
+        labelMarginLeft={
+          avvikKeys.length !== 0 && !avvikKeys.some((key: string) => key.includes('retention'))
+        }
+        badge={
+          avvikKeys.some((key: string) => key.includes('retention')) && (
+            <AvvikTag marginRight marginTop />
+          )
+        }
+      >
         <>
           {process.retention?.retentionPlan === null &&
             'Uavklart om omfattes av NAVs bevarings- og kassasjonsvedtak'}
@@ -419,7 +557,10 @@ const ProcessData = (props: IProcessDataProps) => {
         </>
       </DataText>
 
-      <DataText label='Gjeldende etterlevelser og PVK'>
+      <DataText
+        label='Gjeldende etterlevelser og PVK'
+        labelMarginLeft={forUnderordnetBehandlinger && !!overordnetBehandling}
+      >
         {pvkDokumenter.length === 0 && (
           <BodyLong className='mb-3'>
             Behandlingen er ikke koblet til et etterlevelsesdokument
@@ -450,7 +591,16 @@ const ProcessData = (props: IProcessDataProps) => {
       </DataText>
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
-        <DataText label='Avsender' text={''}>
+        <DataText
+          label='Avsender'
+          text={''}
+          labelMarginLeft={avvikCheck('affiliation.disclosureDispatchers', avvikKeys)}
+          badge={
+            avvikKeys.includes('affiliation.disclosureDispatchers') && (
+              <AvvikTag marginRight marginTop />
+            )
+          }
+        >
           <ul className='mt-0 list-disc list-inside'>
             {process.affiliation.disclosureDispatchers.map((dispatcher, index) => (
               <li key={`${dispatcher.code}-${index}`}>
@@ -464,7 +614,17 @@ const ProcessData = (props: IProcessDataProps) => {
       )}
 
       {(disclosures.length !== 0 || checkForAaregDispatcher(process)) && (
-        <DataText label='Utleveringer' text={''}>
+        <DataText
+          label='Utleveringer'
+          text={''}
+          labelMarginLeft={!checkForUtleveringAvvik()}
+          badge={
+            (checkForUtleveringAvvik() ||
+              avvikKeys.includes('affiliation.disclosureDispatchers')) && (
+              <AvvikTag marginRight marginTop />
+            )
+          }
+        >
           <div>
             {checkForAaregDispatcher(process) ? (
               <>
@@ -486,9 +646,16 @@ const ProcessData = (props: IProcessDataProps) => {
           </div>
         </DataText>
       )}
-      <Completeness process={process} />
+      <Completeness
+        process={process}
+        marginLeft={forUnderordnetBehandlinger && !!overordnetBehandling}
+      />
 
-      <DataText label='Status' text={''}>
+      <DataText
+        label='Status'
+        text={''}
+        labelMarginLeft={forUnderordnetBehandlinger && !!overordnetBehandling}
+      >
         {processStatusText(process.status)}
         {process.revisionText && `: ${process.revisionText}`}
       </DataText>
@@ -498,10 +665,11 @@ const ProcessData = (props: IProcessDataProps) => {
 
 interface ICompletenessProps {
   process: IProcess
+  marginLeft?: boolean
 }
 
 const Completeness = (props: ICompletenessProps) => {
-  const { process } = props
+  const { process, marginLeft } = props
   const completeness = {
     dpiaReference: !process.dpia?.needForDpia || !isNil(process.dpia?.refToDpia),
     profiling: !isNil(process.profiling),
@@ -530,7 +698,7 @@ const Completeness = (props: ICompletenessProps) => {
 
   const getContent = () => {
     let content = ''
-    content += completed === completables ? 'Godkjent' : 'Ikke utfylt: '
+    content += completed === completables ? '' : 'Ikke utfylt: '
     if (!completeness.dpiaReference) content += 'Ref. til PVK, '
     if (!completeness.profiling) content += 'Profilering, '
     if (!completeness.automation) content += 'Automatisering og profilering, '
@@ -544,7 +712,7 @@ const Completeness = (props: ICompletenessProps) => {
   }
 
   return (
-    <DataText label='Kompletthet' text={''}>
+    <DataText label='Kompletthet' text={''} labelMarginLeft={marginLeft}>
       <Tooltip content={getContent()}>
         <div className='flex h-6 w-full max-w-[75ch] items-center cursor-help'>
           <ProgressBar

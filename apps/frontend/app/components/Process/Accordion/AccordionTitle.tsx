@@ -1,10 +1,13 @@
+'use client'
+
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 import { Heading, Tag } from '@navikt/ds-react'
-import { Ref, createRef } from 'react'
+import { Ref, createRef, useEffect, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { checkForAvvik } from '@/util/processUtils'
 import { theme } from '@/util/theme'
-import { EBehandlingsNivaa, IProcessShort } from '../../../constants'
+import { EBehandlingsNivaa, IProcess, IProcessShort } from '../../../constants'
 
 type TAccordionTitleProps = {
   codelistUtils: ICodelistProps
@@ -12,15 +15,34 @@ type TAccordionTitleProps = {
   expanded: boolean
   forwardRef?: Ref<any>
   noChevron?: boolean
+  forUnderordnetBehandlinger: boolean
+  overordnetBehandling?: IProcess
 }
 
 export const InformationTypeRef = createRef<HTMLDivElement>()
 
 const AccordionTitle = (props: TAccordionTitleProps) => {
-  const { process, expanded, forwardRef, codelistUtils, noChevron } = props
+  const {
+    process,
+    expanded,
+    forwardRef,
+    codelistUtils,
+    noChevron,
+    forUnderordnetBehandlinger,
+    overordnetBehandling,
+  } = props
+  const [isAvvik, setIsAvvik] = useState<boolean>()
   const today: string = new Date().toISOString().split('T')[0]
 
   const isActive: boolean = today < process.end
+
+  useEffect(() => {
+    ;(async () => {
+      if (forUnderordnetBehandlinger && overordnetBehandling) {
+        await checkForAvvik(overordnetBehandling, process).then(setIsAvvik)
+      }
+    })()
+  }, [forUnderordnetBehandlinger, overordnetBehandling])
 
   return (
     <div ref={forwardRef}>
@@ -58,6 +80,12 @@ const AccordionTitle = (props: TAccordionTitleProps) => {
         {process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET && (
           <Tag className='ml-3' variant='outline' data-color='brand-beige'>
             Underordnet behandling
+          </Tag>
+        )}
+
+        {isAvvik && (
+          <Tag className='ml-3' variant='outline' data-color='meta-purple'>
+            Endringer fra overordnet
           </Tag>
         )}
       </Heading>

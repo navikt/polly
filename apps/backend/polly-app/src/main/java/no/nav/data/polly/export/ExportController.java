@@ -62,7 +62,6 @@ public class ExportController {
     public void getExport(
             HttpServletResponse response,
             @RequestParam(name = "processId", required = false) UUID processId,
-            @RequestParam(name = "processId", required = false) boolean underordnetBehandling,
             @RequestParam(name = "department", required = false) String department,
             @RequestParam(name = "subDepartment", required = false) String subDepartment,
             @RequestParam(name = "system", required = false) String system,

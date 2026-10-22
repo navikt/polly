@@ -1,7 +1,8 @@
 'use client'
 
 import { Heading, Loader } from '@navikt/ds-react'
-import { useContext, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import {
@@ -46,6 +47,7 @@ import { ESection, genProcessPath } from '../mainPages/ProcessPage'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ProcessPageButtonGroup from './common/processPageButtonGroup'
+import SavedAlertMovedBehandling from './common/savedAlertMovedBehandling'
 
 type TProcessListProps = {
   section: ESection
@@ -73,6 +75,7 @@ const ProcessList = ({
   getCount,
 }: TProcessListProps) => {
   const navigate = useNavigate()
+  const router = useRouter()
   const { utils: codelistUtils, lists } = useContext(CodelistContext)
 
   const [processList, setProcessList] = useState<IProcessShort[]>([])
@@ -90,6 +93,19 @@ const ProcessList = ({
   const [codelistLoading, setCodelistLoading] = useState(true)
   const [exportHref, setExportHref] = useState<string>('')
   const [nomAvdelingName, setNomAvdelingName] = useState<string>('')
+  const [movedBehandlingLink, setMovedBehandlingLink] = useState<string>('')
+  const [movedBehandlingNavn, setMovedBehandlingNavn] = useState<string>('')
+  const movedBehandlingAlertRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!movedBehandlingLink) return
+
+    const frameId = window.requestAnimationFrame(() => {
+      movedBehandlingAlertRef.current?.focus()
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [movedBehandlingLink])
 
   const getProcessList = async (): Promise<void> => {
     try {
@@ -378,10 +394,22 @@ const ProcessList = ({
   useEffect(() => {
     ;(async () => {
       if (processId) {
-        getProcessById(processId)
+        await getProcessById(processId)
       }
     })()
   }, [processId])
+
+  useEffect(() => {
+    if (
+      processId &&
+      currentProcess?.id === processId &&
+      !isLoadingProcess &&
+      section === ESection.purpose &&
+      !currentProcess.purposes.some((purpose) => purpose.code === code)
+    ) {
+      router.replace(`/process/${processId}`)
+    }
+  }, [processId, currentProcess, isLoadingProcess, section, code, router])
 
   useEffect(() => {
     ;(async () => {
@@ -407,6 +435,16 @@ const ProcessList = ({
 
   return (
     <>
+      {movedBehandlingLink !== '' && (
+        <SavedAlertMovedBehandling
+          ref={movedBehandlingAlertRef}
+          movedBehandlingLink={movedBehandlingLink}
+          setMovedBehandlingLink={setMovedBehandlingLink}
+          movedBehandlingNavn={movedBehandlingNavn}
+          setMovedBehandlingNavn={setMovedBehandlingNavn}
+        />
+      )}
+
       <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'>
         <div className='min-w-0 sm:mr-auto'>
           {!hideTitle && (
@@ -426,13 +464,11 @@ const ProcessList = ({
           filter={filter}
         />
       </div>
-
       {isLoadingProcessList && (
         <div className='flex w-full justify-center'>
           <Loader size='3xlarge' />
         </div>
       )}
-
       {!isLoadingProcessList && (
         <AccordionProcess
           codelistUtils={codelistUtils}
@@ -447,11 +483,13 @@ const ProcessList = ({
           submitEditProcess={(process: IProcessFormValues) =>
             handleEditProcess(
               process,
+              currentProcess,
               setCurrentProcess,
-              getProcessById,
               processList,
               setProcessList,
-              setErrorProcessModal
+              code,
+              setMovedBehandlingLink,
+              setMovedBehandlingNavn
             )
           }
           submitCreatePolicy={(process: IPolicyFormValues) =>

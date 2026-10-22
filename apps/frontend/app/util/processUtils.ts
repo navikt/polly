@@ -1,4 +1,8 @@
+'use client'
+
+import { isEqual } from 'lodash'
 import queryString from 'query-string'
+import { Dispatch, SetStateAction } from 'react'
 import {
   convertDisclosureToFormValues,
   getDisclosuresByProcessId,
@@ -11,9 +15,10 @@ import {
   deletePolicy,
   updatePolicy,
 } from '@/api/PolicyApi'
-import { deleteProcess, updateProcess } from '@/api/ProcessApi'
+import { deleteProcess, getProcess, updateProcess } from '@/api/ProcessApi'
 import { ESection } from '@/components/mainPages/ProcessPage'
 import {
+  EBehandlingsNivaa,
   ELegalBasesUse,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
@@ -57,44 +62,91 @@ export const handleDeleteProcess = async (
 
 export const handleEditProcess = async (
   values: IProcessFormValues,
-  setCurrentProcess: (value: IProcess) => void,
-  getProcessById: (id: string) => Promise<void>,
+  currentProcess: IProcess | undefined,
+  setCurrentProcess: Dispatch<SetStateAction<IProcess | undefined>>,
   processList: IProcessShort[],
   setProcessList: (value: IProcessShort[]) => void,
-  setErrorProcessModal: (value: string) => void
+  code: string,
+  setMovedBehandlingLink: (value: string) => void,
+  setMovedBehandlingNavn: (value: string) => void,
+  overordnetOgVanligBehandlingList?: IProcessShort[],
+  setOverordnetOgVanligBehandlingList?: (value: IProcessShort[]) => void
 ): Promise<boolean> => {
   try {
     const updatedProcess = await updateProcess(values)
-    const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
-    const removedDisclosures = disclosures.filter(
-      (disclosure) => !values.disclosures.map((value) => value.id).includes(disclosure.id)
-    )
-    const addedDisclosures = values.disclosures.filter(
-      (disclosure) => !disclosures.map((value) => value.id).includes(disclosure.id)
-    )
-    removedDisclosures.forEach((disclosure) =>
-      updateDisclosure(
-        convertDisclosureToFormValues({
-          ...disclosure,
-          processIds: [...disclosure.processIds.filter((process) => process !== updatedProcess.id)],
-        })
+    if (
+      code !== updatedProcess.purposes[0].code ||
+      (currentProcess?.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET &&
+        updatedProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET) ||
+      (currentProcess?.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+        updatedProcess.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET)
+    ) {
+      setMovedBehandlingLink(`/process/${updatedProcess.id}`)
+      setMovedBehandlingNavn(
+        `${updatedProcess.purposes[0].shortName}: B${updatedProcess.number} ${updatedProcess.name}`
       )
-    )
-    addedDisclosures.forEach((disclosure) =>
-      updateDisclosure(
-        convertDisclosureToFormValues({
-          ...disclosure,
-          processIds: [...disclosure.processIds, updatedProcess.id],
-        })
+      setProcessList(processList.filter((process) => process.id !== updatedProcess.id))
+      setCurrentProcess(undefined)
+      const url = new URL(window.location.href)
+      if (updatedProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET) {
+        url.searchParams.delete('underordnetBehandlingId')
+        window.history.replaceState(null, '', url)
+      } else {
+        const pathSegments = url.pathname.split('/').filter(Boolean)
+        if (pathSegments.at(-1) === updatedProcess.id) {
+          pathSegments.pop()
+          url.pathname = `/${pathSegments.join('/')}/`
+          window.history.replaceState(null, '', url)
+        }
+      }
+
+      if (
+        code === updatedProcess.purposes[0].code &&
+        currentProcess?.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+        updatedProcess.behandlingsNivaa !== EBehandlingsNivaa.UNDERORDNET &&
+        overordnetOgVanligBehandlingList &&
+        setOverordnetOgVanligBehandlingList
+      ) {
+        setOverordnetOgVanligBehandlingList([
+          ...overordnetOgVanligBehandlingList,
+          updatedProcess as IProcessShort,
+        ])
+      }
+    } else {
+      const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
+      const removedDisclosures = disclosures.filter(
+        (disclosure) => !values.disclosures.map((value) => value.id).includes(disclosure.id)
       )
-    )
-    setCurrentProcess(updatedProcess)
-    setProcessList(
-      sortProcess([
-        ...processList.filter((process) => process.id !== updatedProcess.id),
-        updatedProcess,
-      ])
-    )
+      const addedDisclosures = values.disclosures.filter(
+        (disclosure) => !disclosures.map((value) => value.id).includes(disclosure.id)
+      )
+      removedDisclosures.forEach((disclosure) =>
+        updateDisclosure(
+          convertDisclosureToFormValues({
+            ...disclosure,
+            processIds: [
+              ...disclosure.processIds.filter((process) => process !== updatedProcess.id),
+            ],
+          })
+        )
+      )
+      addedDisclosures.forEach((disclosure) =>
+        updateDisclosure(
+          convertDisclosureToFormValues({
+            ...disclosure,
+            processIds: [...disclosure.processIds, updatedProcess.id],
+          })
+        )
+      )
+      setCurrentProcess(updatedProcess)
+      setProcessList(
+        sortProcess([
+          ...processList.filter((process) => process.id !== updatedProcess.id),
+          updatedProcess,
+        ])
+      )
+    }
+
     return true
   } catch (error: any) {
     console.debug(error)
@@ -303,4 +355,137 @@ export const genUnderordnetProcessPath = (
       { skipNull: true, skipEmptyString: true }
     )
   )
+}
+
+const ignoredProcessFields = new Set([
+  'id',
+  'name',
+  'number',
+  'changeStamp',
+  'status',
+  'behandlingsNivaa',
+  'overordnetBehandling',
+  'underordnetBehandlinger',
+  'relasjonsDato',
+  'sistGodkjentAvvikFraOverordnetBehandling',
+  'dpia.needForDpia',
+  'dpia.refToDpia',
+  'dpia.noDpiaReasons',
+])
+
+const flattenProcessValues = (process: IProcess): Map<string, unknown> => {
+  const flattenedValues = new Map<string, unknown>()
+  const maxDepth = 2
+
+  const addValue = (value: unknown, path: string, depth: number): void => {
+    if (depth >= maxDepth) {
+      flattenedValues.set(path, value)
+      return
+    }
+
+    if (Array.isArray(value)) {
+      flattenedValues.set(path, value)
+      return
+    }
+
+    if (value !== null && typeof value === 'object') {
+      const entries = Object.entries(value)
+      if (entries.length === 0) {
+        flattenedValues.set(path, value)
+        return
+      }
+
+      entries.forEach(([key, nestedValue]) => addValue(nestedValue, `${path}.${key}`, depth + 1))
+      return
+    }
+
+    flattenedValues.set(path, value)
+  }
+
+  Object.entries(process).forEach(([field, value]) => {
+    if (!ignoredProcessFields.has(field)) addValue(value, field, 0)
+  })
+
+  return flattenedValues
+}
+
+export const checkForAvvikKeys = (
+  overordnetBehandling: IProcess,
+  underordnetBehandling: IProcess
+): string[] => {
+  const parentValues = flattenProcessValues(overordnetBehandling)
+  const childValues = flattenProcessValues(underordnetBehandling)
+  const paths = new Set([...parentValues.keys(), ...childValues.keys()])
+
+  let avvikkKeys = [...paths]
+    .filter(
+      (path) =>
+        parentValues.has(path) !== childValues.has(path) ||
+        !isEqual(parentValues.get(path), childValues.get(path))
+    )
+    .filter((key) => !ignoredProcessFields.has(key))
+
+  if (
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.aiUsage') as boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.aiUsage') === childValues.get('aiUsageDescription.aiUsage')
+  ) {
+    avvikkKeys = avvikkKeys.filter((key) => key !== 'aiUsageDescription.description')
+  }
+
+  if (
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.reusingPersonalInformation') as
+        boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.reusingPersonalInformation') ===
+      childValues.get('aiUsageDescription.reusingPersonalInformation')
+  ) {
+    avvikkKeys = avvikkKeys.filter((key) => key !== 'aiUsageDescription.registryNumber')
+  }
+
+  if (
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.reusingPersonalInformation') as
+        boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.reusingPersonalInformation') ===
+      childValues.get('aiUsageDescription.reusingPersonalInformation') &&
+    [false, null, undefined].includes(
+      parentValues.get('aiUsageDescription.aiUsage') as boolean | null | undefined
+    ) &&
+    parentValues.get('aiUsageDescription.aiUsage') === childValues.get('aiUsageDescription.aiUsage')
+  ) {
+    avvikkKeys = avvikkKeys.filter(
+      (key) => !['aiUsageDescription.endDate', 'aiUsageDescription.startDate'].includes(key)
+    )
+  }
+
+  return avvikkKeys
+}
+
+export const checkForAvvik = async (
+  overordnetBehandling: IProcess,
+  underordnetBehandling: IProcessShort
+): Promise<boolean> => {
+  const process = await getProcess(underordnetBehandling.id)
+  return checkForAvvikKeys(overordnetBehandling, process).length > 0
+}
+
+export const avvikCheck = (key: string, avvikKeys: string[]) =>
+  avvikKeys.length !== 0 && !avvikKeys.includes(key)
+
+export const organiseringAvvikCheck = (avvikKeys: string[]) => {
+  if (
+    avvikKeys.includes('affiliation.nomDepartmentId') ||
+    avvikKeys.includes('affiliation.seksjoner') ||
+    avvikKeys.includes('affiliation.subDepartments') ||
+    avvikKeys.includes('affiliation.productTeams') ||
+    avvikKeys.includes('commonExternalProcessResponsible')
+  ) {
+    return true
+  } else {
+    return false
+  }
 }

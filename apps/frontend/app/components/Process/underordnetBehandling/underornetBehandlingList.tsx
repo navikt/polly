@@ -1,7 +1,7 @@
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { InfoCard, List, ReadMore } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
 import { convertProcessToFormValues, createProcess, getProcess } from '@/api/ProcessApi'
 import { ESection, TPathParams } from '@/components/mainPages/ProcessPage'
@@ -9,6 +9,7 @@ import {
   EBehandlingsNivaa,
   EProcessStatus,
   IAddDocumentToProcessFormValues,
+  IDisclosure,
   IPolicy,
   IPolicyFormValues,
   IProcess,
@@ -33,15 +34,22 @@ import { useLocation, useNavigate } from '@/util/router'
 import AccordionProcess from '../Accordion/AccordionProcess'
 import ModalProcess from '../Accordion/ModalProcess'
 import ProcessPageButtonGroup from '../common/processPageButtonGroup'
+import SavedAlertMovedBehandling from '../common/savedAlertMovedBehandling'
 
 type TProps = {
   overordnetBehandling: IProcess
+  overordnetBehandlingUtleveringer: IDisclosure[]
   codelistUtils: ICodelistProps
+  overordnetOgVanligBehandlingList: IProcessShort[]
+  setOverordnetOgVanligBehandlingList: (value: IProcessShort[]) => void
 }
 
 const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   overordnetBehandling,
+  overordnetBehandlingUtleveringer,
   codelistUtils,
+  overordnetOgVanligBehandlingList,
+  setOverordnetOgVanligBehandlingList,
 }) => {
   const navigate = useNavigate()
   const params = useParams<TPathParams>()
@@ -64,6 +72,9 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
   const navCode = section === ESection.department && !code ? 'Ingen avdeling' : code
   const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
+  const [movedBehandlingLink, setMovedBehandlingLink] = useState<string>('')
+  const [movedBehandlingNavn, setMovedBehandlingNavn] = useState<string>('')
+  const movedBehandlingAlertRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     ;(async () => {
@@ -75,6 +86,16 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
       }
     })()
   }, [code, underordnetfilter])
+
+  useEffect(() => {
+    if (!movedBehandlingLink) return
+
+    const frameId = window.requestAnimationFrame(() => {
+      movedBehandlingAlertRef.current?.focus()
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [movedBehandlingLink])
 
   useEffect(() => {
     ;(async () => {
@@ -203,17 +224,27 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
         kan brukes som overordnet behandling. Dette kan gjøres hvis:
         <List as='ul' className='my-5'>
           <List.Item>
-            den underordnede behandlingen har, eller skal ha, samme behandlingsaktivitet som B$
+            den underordnede behandlingen har, eller skal ha, samme behandlingsaktivitet som B
             {overordnetBehandling.number}.
           </List.Item>
           <List.Item>
-            det ønskes samlet mange behandlinger under samme, overordnet behandling, nemlig B$
+            det ønskes samlet mange behandlinger under samme, overordnet behandling, nemlig B
             {overordnetBehandling.number}.
           </List.Item>
         </List>
         Koblingen oppretter du ved å redigere den behandlingen som skal bli underordnet denne. Les
         mer om overordnede og underordnede behandlinger (åpner i en ny fane).
       </ReadMore>
+
+      {movedBehandlingLink !== '' && (
+        <SavedAlertMovedBehandling
+          ref={movedBehandlingAlertRef}
+          movedBehandlingLink={movedBehandlingLink}
+          setMovedBehandlingLink={setMovedBehandlingLink}
+          movedBehandlingNavn={movedBehandlingNavn}
+          setMovedBehandlingNavn={setMovedBehandlingNavn}
+        />
+      )}
 
       <div className='w-full flex justify-end my-5'>
         <ProcessPageButtonGroup
@@ -257,11 +288,15 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             submitEditProcess={(process: IProcessFormValues) =>
               handleEditProcess(
                 process,
+                currentUnderordnetBehandling,
                 setCurrentUnderordnetBehandling,
-                getProcessById,
                 underOrdnetBehandlinger,
                 setUnderordnetBehandlinger,
-                setErrorDocumentModal
+                code,
+                setMovedBehandlingLink,
+                setMovedBehandlingNavn,
+                overordnetOgVanligBehandlingList,
+                setOverordnetOgVanligBehandlingList
               )
             }
             submitCreatePolicy={(process: IPolicyFormValues) =>
@@ -304,14 +339,17 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             errorPolicyModal={errorPolicyModal}
             errorDocumentModal={errorDocumentModal}
             forUnderordnetBehandlinger={true}
+            overordnetBehandling={overordnetBehandling}
+            overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
           />
         )}
 
       {showCreateProcessModal && (
         <ModalProcess
+          forUnderordnetBehandling={true}
           key={createProcessModalKey}
           codelistUtils={codelistUtils}
-          title='Opprett ny behandling'
+          title='Opprett ny underordnet behandling'
           onClose={() => {
             setErrorProcessModal('')
             setShowCreateProcessModal(false)
@@ -324,7 +362,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
             ...overordnetBehandling,
             name: '',
             number: undefined,
-            id: '',
+            id: undefined,
             behandlingsNivaa: EBehandlingsNivaa.UNDERORDNET,
             overordnetBehandling: {
               id: overordnetBehandling.id,

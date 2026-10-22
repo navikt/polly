@@ -3,13 +3,15 @@ import { ReactNode } from 'react'
 
 type TDataTextProps = {
   label?: string
+  badge?: ReactNode
   text?: false | string | string[]
   children?: ReactNode
   hideComponent?: boolean
+  labelMarginLeft?: boolean
 }
 
 const DataText = (props: TDataTextProps) => {
-  const { hideComponent, text, children, label } = props
+  const { hideComponent, text, children, label, badge, labelMarginLeft } = props
   const texts: false | string[] | undefined =
     typeof text === 'string'
       ? text.length
@@ -26,7 +28,10 @@ const DataText = (props: TDataTextProps) => {
       {!hideComponent && (
         <div className='flex content-start mb-4 w-full'>
           <div className='w-[40%] max-w-75 pr-2.5'>
-            <Label>{label}</Label>
+            <div className='flex'>
+              {badge}
+              <Label className={`${labelMarginLeft ? 'ml-5' : ''}`}>{label}</Label>
+            </div>
           </div>
           <div className='w-[60%]'>
             {texts &&

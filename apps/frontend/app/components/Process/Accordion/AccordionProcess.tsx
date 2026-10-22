@@ -3,11 +3,12 @@
 import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Accordion, BodyShort, Loader, Modal, Tabs } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
+import { checkForAvvikKeys } from '@/util/processUtils'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import {
   convertProcessToFormValues,
@@ -28,6 +29,7 @@ import {
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
+import AvvikTag from '../common/AvvikTag'
 import UnderordnetBehandlingList from '../underordnetBehandling/underornetBehandlingList'
 import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
@@ -49,7 +51,7 @@ type TAccordionProcessProps = {
   errorProcessModal: any | null
   errorPolicyModal: string | null
   errorDocumentModal: string | null
-  setProcessList: (processes: IProcess[]) => void
+  setProcessList: (processes: IProcessShort[]) => void
   onChangeProcess: (processId?: string) => void
   submitDeleteProcess: (process: IProcess) => Promise<boolean>
   submitEditProcess: (process: IProcessFormValues) => Promise<boolean>
@@ -59,6 +61,8 @@ type TAccordionProcessProps = {
   submitDeleteAllPolicy: (processId: string) => Promise<boolean>
   submitAddDocument: (document: IAddDocumentToProcessFormValues) => Promise<boolean>
   forUnderordnetBehandlinger: boolean
+  overordnetBehandling?: IProcess
+  overordnetBehandlingUtleveringer?: IDisclosure[]
 }
 
 const AccordionProcess = (props: TAccordionProcessProps) => {
@@ -76,9 +80,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     submitDeletePolicy,
     submitDeleteAllPolicy,
     processList,
+    setProcessList,
     submitAddDocument,
     errorDocumentModal,
     forUnderordnetBehandlinger,
+    overordnetBehandling,
+    overordnetBehandlingUtleveringer,
   } = props
   const history: TNavigateFunction = useNavigate()
   const user: IUserContext = useContext(UserContext)
@@ -99,6 +106,15 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
   const searchParams = useSearchParams()
+  const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
+  const selectedProcessId = forUnderordnetBehandlinger ? underordnetBehandlingId : params.processId
+  const previousUnderordnetBehandlingId = useRef(underordnetBehandlingId)
+  const avvikKeys = useMemo(() => {
+    if (forUnderordnetBehandlinger && overordnetBehandling && currentProcess) {
+      return checkForAvvikKeys(overordnetBehandling, currentProcess)
+    }
+    return []
+  }, [forUnderordnetBehandlinger, overordnetBehandling, currentProcess])
 
   useEffect(() => {
     if (forUnderordnetBehandlinger || !headerRef.current || !purposeRef.current) return
@@ -190,10 +206,24 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   }, [params.processId, searchParams])
 
   useEffect(() => {
-    if (params.processId && currentProcess?.id === params.processId && !isLoading) {
+    const closedUnderordnetBehandling =
+      !!previousUnderordnetBehandlingId.current && !underordnetBehandlingId
+    previousUnderordnetBehandlingId.current = underordnetBehandlingId
+
+    if (closedUnderordnetBehandling) return
+    if (!forUnderordnetBehandlinger && underordnetBehandlingId) return
+
+    if (selectedProcessId && currentProcess?.id === selectedProcessId && !isLoading) {
       const timeoutId = window.setTimeout(() => {
-        const headerEl = document.querySelector('.polly-white-internalheader') as HTMLElement | null
-        const headerOffset = headerEl?.offsetHeight ?? 0
+        const MainSearchHeaderEl = document.querySelector(
+          '.polly-white-internalheader'
+        ) as HTMLElement | null
+        const headerOffset = MainSearchHeaderEl?.offsetHeight ?? 0
+        const parentHeaderOffset =
+          forUnderordnetBehandlinger && headerRef.current
+            ? parseFloat(window.getComputedStyle(headerRef.current).top) || 0
+            : 0
+        const accordionOffset = forUnderordnetBehandlinger ? parentHeaderOffset : headerOffset + 16
         if (scrollToPolicyTable.current && InformationTypeRef.current) {
           scrollToPolicyTable.current = false
           window.scrollTo({
@@ -202,15 +232,20 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
           })
         } else if (purposeRef.current) {
           window.scrollTo({
-            top:
-              window.scrollY + purposeRef.current.getBoundingClientRect().top - headerOffset - 16,
+            top: window.scrollY + purposeRef.current.getBoundingClientRect().top - accordionOffset,
           })
         }
       }, 300)
 
       return () => window.clearTimeout(timeoutId)
     }
-  }, [currentProcess?.id, isLoading, params.processId])
+  }, [
+    currentProcess?.id,
+    isLoading,
+    selectedProcessId,
+    forUnderordnetBehandlinger,
+    underordnetBehandlingId,
+  ])
 
   useEffect(() => {
     ;(async () => {
@@ -273,6 +308,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                       process={process}
                       expanded={expanded}
                       noChevron
+                      forUnderordnetBehandlinger={forUnderordnetBehandlinger}
+                      overordnetBehandling={overordnetBehandling}
                     />
                   </Accordion.Header>
                   <Accordion.Content className={expanded ? 'overflow-visible' : undefined}>
@@ -297,6 +334,9 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             process={currentProcess}
                             disclosures={disclosures}
                             codelistUtils={codelistUtils}
+                            forUnderordnetBehandlinger={forUnderordnetBehandlinger}
+                            overordnetBehandling={overordnetBehandling}
+                            overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
                           />
 
                           <div>
@@ -347,7 +387,9 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
                         <Tabs
                           defaultValue={
-                            searchParams.get('underordnetBehandlingId')
+                            !forUnderordnetBehandlinger &&
+                            underordnetBehandlingId &&
+                            currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET
                               ? 'underordnet'
                               : 'opplysninger'
                           }
@@ -356,7 +398,16 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                           <Tabs.List>
                             <Tabs.Tab
                               value='opplysninger'
-                              label={`Opplysninger (${currentProcess.policies.length})`}
+                              label={
+                                <span>
+                                  {forUnderordnetBehandlinger &&
+                                    !!overordnetBehandling &&
+                                    avvikKeys.includes('policies') && (
+                                      <AvvikTag marginRight marginTop />
+                                    )}
+                                  Opplysninger ({currentProcess.policies.length})
+                                </span>
+                              }
                             />
                             {currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
                               <Tabs.Tab
@@ -390,7 +441,10 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             <Tabs.Panel value='underordnet'>
                               <UnderordnetBehandlingList
                                 overordnetBehandling={currentProcess}
+                                overordnetBehandlingUtleveringer={disclosures}
                                 codelistUtils={codelistUtils}
+                                overordnetOgVanligBehandlingList={processList}
+                                setOverordnetOgVanligBehandlingList={setProcessList}
                               />
                             </Tabs.Panel>
                           )}
@@ -426,6 +480,10 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                 ...convertProcessToFormValues(currentProcess),
                 disclosures: disclosures,
               }}
+              overordnetBehandling={overordnetBehandling}
+              underordnetBehandling={currentProcess}
+              overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
+              underordnetBehandlingUtleveringer={disclosures}
             />
           )}
 

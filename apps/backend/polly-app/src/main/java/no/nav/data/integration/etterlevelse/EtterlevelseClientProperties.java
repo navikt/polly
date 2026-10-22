@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "client.etterlevelse")
+@ConfigurationProperties(prefix = "client.etterlevelse-api")
 public class EtterlevelseClientProperties {
     private String url;
 }

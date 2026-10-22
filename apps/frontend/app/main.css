@@ -147,6 +147,29 @@
   }
 }
 
+/* overwrite style for async select component disabled mode to look like aksels readonly mode*/
+div[aria-disabled='true'][class*='-control'] {
+  background-color: var(--ax-bg-neutral-moderate) !important;
+  border-color: var(--ax-border-neutral-subtleA) !important;
+  color: var(--ax-text-neutral) !important;
+  box-shadow: none !important;
+  cursor: default;
+}
+
+div[aria-disabled='true'][class*='-control'] [class*='-singleValue'],
+div[aria-disabled='true'][class*='-control'] [class*='-multiValue'] {
+  color: var(--ax-text-neutral) !important;
+}
+
+div[aria-disabled='true'][class*='-control'] [class*='-placeholder'],
+div[aria-disabled='true'][class*='-control'] [class*='-indicatorContainer'] {
+  color: var(--ax-text-neutral-subtle) !important;
+}
+
+div[aria-disabled='true'][class*='-control'] [class*='-indicatorSeparator'] {
+  background-color: var(--ax-border-neutral-subtleA) !important;
+}
+
 /* json-diff-kit (admin audit diff viewer)
    Needs to be unlayered to override `json-diff-kit/dist/viewer.css`. */
 .json-diff-viewer pre {

@@ -38,6 +38,7 @@ import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
 import org.docx4j.wml.BooleanDefaultTrue;
 import org.docx4j.wml.Br;
+import org.docx4j.wml.CTBorder;
 import org.docx4j.wml.CTLanguage;
 import org.docx4j.wml.HdrFtrRef;
 import org.docx4j.wml.HpsMeasure;
@@ -50,6 +51,7 @@ import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.PPr;
 import org.docx4j.wml.PPrBase.Ind;
+import org.docx4j.wml.PPrBase.PBdr;
 import org.docx4j.wml.PPrBase.NumPr;
 import org.docx4j.wml.PPrBase.NumPr.Ilvl;
 import org.docx4j.wml.PPrBase.NumPr.NumId;
@@ -57,6 +59,7 @@ import org.docx4j.wml.PPrBase.Spacing;
 import org.docx4j.wml.R;
 import org.docx4j.wml.RPr;
 import org.docx4j.wml.STBrType;
+import org.docx4j.wml.STBorder;
 import org.docx4j.wml.Tbl;
 import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
@@ -146,6 +149,7 @@ public class ProcessToDocx {
         doc.addTitle("Behandling: " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
         doc.addText("Eksportert " + formatter.format(date));
         doc.generate(process, documentAccess);
+        generateDocForUnderordnetBehandlinger(process, documentAccess, doc);
         return doc.build();
     }
 
@@ -173,23 +177,13 @@ public class ProcessToDocx {
                 doc.pageBreak();
             }
             doc.generate(overOrdnetOgVanligProcesses.get(i), documentAccess);
-            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET)) {
-                doc.addHeading2("Underordnede behandlinger for B" + overOrdnetOgVanligProcesses.get(i).getData().getNumber());
-                List<Process> underOrdnetBehandlinger = Optional.ofNullable(overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger()).orElse(List.of())
-                        .stream()
-                        .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
-                        .toList();
-                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
-                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
-                    if (j == underOrdnetBehandlinger.size() - 1) {
-                        doc.pageBreak();
-                    }
-                }
-            }
+            generateDocForUnderordnetBehandlinger(overOrdnetOgVanligProcesses.get(i), documentAccess, doc);
         }
 
         return doc.build();
     }
+
+
 
     private List<Process> getProcesses(List<Process> processes, DocumentAccess documentAccess) {
         List<Process> processList;
@@ -270,22 +264,28 @@ public class ProcessToDocx {
                 doc.pageBreak();
             }
             doc.generate(overOrdnetOgVanligProcesses.get(i), documentAccess);
-            if(overOrdnetOgVanligProcesses.get(i).getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET)) {
-                doc.addHeading2("Underordnede behandlinger for B" + overOrdnetOgVanligProcesses.get(i).getData().getNumber());
-                List<Process> underOrdnetBehandlinger = Optional.ofNullable(overOrdnetOgVanligProcesses.get(i).getUnderordnetBehandlinger()).orElse(List.of())
-                        .stream()
-                        .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
-                        .toList();
-                for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
-                    doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
-                    if (j == underOrdnetBehandlinger.size() - 1) {
-                        doc.pageBreak();
-                    }
-                }
-            }
+            generateDocForUnderordnetBehandlinger(overOrdnetOgVanligProcesses.get(i), documentAccess, doc);
         }
 
         return doc.build();
+    }
+
+    private void generateDocForUnderordnetBehandlinger (Process process, DocumentAccess documentAccess, DocumentBuilder doc) {
+        if(process.getBehandlingsNivaa().equals(BehandlingsNivaa.OVERORDNET) && process.getUnderordnetBehandlinger() != null && !process.getUnderordnetBehandlinger().isEmpty()) {
+            doc.lineBreaks(1);
+            doc.addHeading1("Underordnede behandlinger for B" + process.getData().getNumber());
+            List<Process> underOrdnetBehandlinger = Optional.ofNullable(process.getUnderordnetBehandlinger()).orElse(List.of())
+                    .stream()
+                    .sorted(Comparator.comparing(behandling -> behandling.getData().getName(), String.CASE_INSENSITIVE_ORDER))
+                    .toList();
+            for (int j = 0; j < underOrdnetBehandlinger.size(); j++) {
+                doc.generate(underOrdnetBehandlinger.get(j), documentAccess);
+                doc.addBottomBorder();
+                if (j == underOrdnetBehandlinger.size() - 1) {
+                    doc.pageBreak();
+                }
+            }
+        }
     }
 
     class DocumentBuilder {
@@ -363,7 +363,14 @@ public class ProcessToDocx {
             ProcessData data = process.getData();
             String purposeNames = shortNames(ListName.PURPOSE, data.getPurposes());
 
-            var header = addHeading1(purposeNames + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")");
+
+            P header;
+            String behandlingName = purposeNames + ": " + process.getData().getName() + " (Behandlingsnummer: " + process.getData().getNumber() + ")";
+            if (process.getBehandlingsNivaa().equals(BehandlingsNivaa.UNDERORDNET)) {
+                header = addHeading2(behandlingName);
+            } else {
+               header = addHeading1(behandlingName);
+            }
 
             addBookmark(header, process.getId().toString());
             //addText(periodText(process.getData().toPeriod()));
@@ -695,9 +702,10 @@ public class ProcessToDocx {
             return p;
         }
 
-        private void addHeading2(String text) {
+        private P addHeading2(String text) {
             P p = main.addStyledParagraphOfText(HEADING_2, text);
             ((R) p.getContent().get(0)).setRPr(createRpr());
+            return p;
         }
 
         private void addHeading4(String text) {
@@ -810,6 +818,31 @@ public class ProcessToDocx {
             br.setType(STBrType.PAGE);
             p.getContent().add(r);
             r.getContent().add(br);
+            main.getContent().add(p);
+        }
+
+        private void lineBreaks(int count) {
+            P p = fac.createP();
+            R r = fac.createR();
+            for (int i = 0; i < count; i++) {
+                r.getContent().add(fac.createBr());
+            }
+            p.getContent().add(r);
+            main.getContent().add(p);
+        }
+
+        private void addBottomBorder() {
+            P p = fac.createP();
+            PPr ppr = fac.createPPr();
+            PBdr pbdr = new PBdr();
+            CTBorder border = new CTBorder();
+            border.setVal(STBorder.SINGLE);
+            border.setSz(BigInteger.valueOf(6));
+            border.setSpace(BigInteger.valueOf(1));
+            border.setColor("auto");
+            pbdr.setBottom(border);
+            ppr.setPBdr(pbdr);
+            p.setPPr(ppr);
             main.getContent().add(p);
         }
 
