@@ -68,11 +68,6 @@ public class DocumentService {
         return update(request.convertToDocument(), request.getVersion());
     }
 
-    /**
-     * @param expectedVersion versjonen klienten sist leste (optimistisk låsing), eller null for
-     * interne kall der det ikke finnes en klientlest versjon. Ved null gjelder kun Hibernate sin
-     * versjonssjekk ved flush.
-     */
     @Transactional
     public Document update(Document doc, Integer expectedVersion) {
         Document existingDoc = repository.getById(doc.getId());
