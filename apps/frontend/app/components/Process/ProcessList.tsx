@@ -41,9 +41,6 @@ import {
 } from '../../constants'
 import { env } from '../../util/env'
 import { ESection } from '../mainPages/ProcessPage'
-import { CONFLICT_MESSAGE, isConflictError } from '../../util/optimisticLocking'
-import Button from '../common/Button/CustomButton'
-import { ESection, genProcessPath } from '../mainPages/ProcessPage'
 import AccordionProcess from './Accordion/AccordionProcess'
 import ModalProcess from './Accordion/ModalProcess'
 import ProcessPageButtonGroup from './common/processPageButtonGroup'
@@ -86,7 +83,6 @@ const ProcessList = ({
   const [errorProcessModal, setErrorProcessModal] = useState<string>('')
   const [errorPolicyModal, setErrorPolicyModal] = useState<string | null>(null)
   const [errorDocumentModal, setErrorDocumentModal] = useState<string | null>(null)
-  const [errorDocumentModal, setErrorDocumentModal] = useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = useState(true)
   const current_location = useLocation()
@@ -194,177 +190,6 @@ const ProcessList = ({
       }
       setErrorProcessModal(error.response.data.message)
     }
-  }
-
-  const handleEditProcess = async (values: IProcessFormValues): Promise<boolean> => {
-    try {
-      const updatedProcess = await updateProcess(values)
-      const disclosures = await getDisclosuresByProcessId(updatedProcess.id)
-      const removedDisclosures = disclosures.filter(
-        (disclosure) => !values.disclosures.map((value) => value.id).includes(disclosure.id)
-      )
-      const addedDisclosures = values.disclosures.filter(
-        (disclosure) => !disclosures.map((value) => value.id).includes(disclosure.id)
-      )
-      removedDisclosures.forEach((disclosure) =>
-        updateDisclosure(
-          convertDisclosureToFormValues({
-            ...disclosure,
-            processIds: [
-              ...disclosure.processIds.filter((process) => process !== updatedProcess.id),
-            ],
-          })
-        )
-      )
-      addedDisclosures.forEach((disclosure) =>
-        updateDisclosure(
-          convertDisclosureToFormValues({
-            ...disclosure,
-            processIds: [...disclosure.processIds, updatedProcess.id],
-          })
-        )
-      )
-      setCurrentProcess(updatedProcess)
-      setProcessList(
-        sortProcess([
-          ...processList.filter((process) => process.id !== updatedProcess.id),
-          updatedProcess,
-        ])
-      )
-      return true
-    } catch (error: any) {
-      console.debug(error)
-      if (isConflictError(error)) {
-        // Optimistisk låsing: behandlingen er endret av en annen bruker.
-        // Ikke overskriv i stillhet - vis melding og hent inn gjeldende data på nytt.
-        setErrorProcessModal(CONFLICT_MESSAGE)
-        if (values.id) {
-          await getProcessById(values.id)
-        }
-      }
-      return false
-    }
-  }
-
-  const handleDeleteProcess = async (processToDelete: IProcess): Promise<boolean> => {
-    try {
-      await deleteProcess(processToDelete.id)
-      setProcessList(
-        sortProcess(
-          processList.filter((process: IProcessShort) => process.id !== processToDelete.id)
-        )
-      )
-      setErrorProcessModal('')
-      return true
-    } catch (error: any) {
-      if (error.response.data.message.includes('disclosure(s)')) {
-        setErrorProcessModal('Du kan ikke slette behandlinger med eksisterende utleveringer.')
-        return false
-      }
-      setErrorProcessModal(error.response.data.message)
-      return false
-    }
-  }
-
-  const handleCreatePolicy = async (values: IPolicyFormValues): Promise<boolean> => {
-    if (!values || !currentProcess) return false
-
-    try {
-      const policy: IPolicy = await createPolicy(values)
-      await getProcessById(policy.process.id)
-      setErrorPolicyModal(null)
-      return true
-    } catch (error: any) {
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-  const handleEditPolicy = async (values: IPolicyFormValues) => {
-    try {
-      const updatedPolicy: IPolicy = await updatePolicy(values)
-      if (currentProcess) {
-        setCurrentProcess({
-          ...currentProcess,
-          policies: [
-            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== updatedPolicy.id),
-            updatedPolicy,
-          ],
-        })
-        setErrorPolicyModal(null)
-      }
-      return true
-    } catch (error: any) {
-      if (isConflictError(error)) {
-        // Optimistisk låsing: opplysningstypen i behandlingen er endret av en annen bruker.
-        setErrorPolicyModal(CONFLICT_MESSAGE)
-        if (currentProcess) {
-          await getProcessById(currentProcess.id)
-        }
-        return false
-      }
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-  const handleDeletePolicy = async (policyToDelete?: IPolicy): Promise<boolean> => {
-    if (!policyToDelete) return false
-    try {
-      await deletePolicy(policyToDelete.id)
-      if (currentProcess) {
-        setCurrentProcess({
-          ...currentProcess,
-          policies: [
-            ...currentProcess.policies.filter((policy: IPolicy) => policy.id !== policyToDelete.id),
-          ],
-        })
-        setErrorPolicyModal(null)
-      }
-      return true
-    } catch (error: any) {
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-
-  const handleDeleteAllPolicies = async (processId: string): Promise<boolean> => {
-    if (!processId) return false
-    try {
-      await deletePoliciesByProcessId(processId)
-      if (currentProcess) {
-        setCurrentProcess({ ...currentProcess, policies: [] })
-        setErrorPolicyModal(null)
-      }
-      return true
-    } catch (error: any) {
-      setErrorPolicyModal(error.message)
-      return false
-    }
-  }
-
-  const handleAddDocument = async (
-    formValues: IAddDocumentToProcessFormValues
-  ): Promise<boolean> => {
-    try {
-      const policies: IPolicyFormValues[] = formValues.informationTypes.map((infoType) => ({
-        subjectCategories: infoType.subjectCategories.map((category) => category.code),
-        informationType: infoType.informationType,
-        process: { ...formValues.process, legalBases: [] },
-        purposes: formValues.process.purposes.map((purpose) => purpose.code),
-        legalBases: [],
-        legalBasesOpen: false,
-        legalBasesUse: ELegalBasesUse.INHERITED_FROM_PROCESS,
-        documentIds: !formValues.linkDocumentToPolicies
-          ? []
-          : [formValues.document ? formValues.document.id : ''],
-        otherPolicies: [],
-      }))
-      await createPolicies(policies)
-      await getProcessById(formValues.process.id)
-    } catch (error: any) {
-      setErrorDocumentModal(error.message)
-      return false
-    }
-    return true
   }
 
   useEffect(() => getCount && getCount(processList.length), [processList.length])
@@ -487,6 +312,8 @@ const ProcessList = ({
               setCurrentProcess,
               processList,
               setProcessList,
+              getProcessById,
+              setErrorProcessModal,
               code,
               setMovedBehandlingLink,
               setMovedBehandlingNavn
@@ -499,9 +326,9 @@ const ProcessList = ({
             handleEditPolicy(
               values,
               currentProcess,
-              getProcessById,
               setCurrentProcess,
-              setErrorPolicyModal
+              setErrorPolicyModal,
+              getProcessById
             )
           }
           submitDeletePolicy={(values: IPolicy) =>

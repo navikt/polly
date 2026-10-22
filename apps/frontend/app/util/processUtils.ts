@@ -66,6 +66,8 @@ export const handleEditProcess = async (
   setCurrentProcess: Dispatch<SetStateAction<IProcess | undefined>>,
   processList: IProcessShort[],
   setProcessList: (value: IProcessShort[]) => void,
+  getProcessById: (id: string) => Promise<void>,
+  setErrorProcessModal: (value: string) => void,
   code: string,
   setMovedBehandlingLink: (value: string) => void,
   setMovedBehandlingNavn: (value: string) => void,
@@ -184,9 +186,9 @@ export const handleCreatePolicy = async (
 export const handleEditPolicy = async (
   values: IPolicyFormValues,
   currentProcess: IProcess | undefined,
-  getProcessById: (id: string) => Promise<void>,
   setCurrentProcess: (value: IProcess) => void,
-  setErrorPolicyModal: (value: string | null) => void
+  setErrorPolicyModal: (value: string | null) => void,
+  getProcessById: (id: string) => Promise<void>
 ) => {
   try {
     const updatedPolicy: IPolicy = await updatePolicy(values)
