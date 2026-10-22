@@ -46,6 +46,8 @@ public class DpProcessResponse {
     private int dpProcessNumber;
 
     private ChangeStampResponse changeStamp;
+    private Integer version; // For optimistisk låsing, kopieres fra entity (etter flush) og sendes til klienten
+
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);

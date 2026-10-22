@@ -312,6 +312,8 @@ const ProcessList = ({
               setCurrentProcess,
               processList,
               setProcessList,
+              getProcessById,
+              setErrorProcessModal,
               code,
               setMovedBehandlingLink,
               setMovedBehandlingNavn
@@ -321,7 +323,13 @@ const ProcessList = ({
             handleCreatePolicy(process, currentProcess, getProcessById, setErrorPolicyModal)
           }
           submitEditPolicy={(values: IPolicyFormValues) =>
-            handleEditPolicy(values, currentProcess, setCurrentProcess, setErrorPolicyModal)
+            handleEditPolicy(
+              values,
+              currentProcess,
+              setCurrentProcess,
+              setErrorPolicyModal,
+              getProcessById
+            )
           }
           submitDeletePolicy={(values: IPolicy) =>
             handleDeletePolicy(values, currentProcess, setCurrentProcess, setErrorPolicyModal)

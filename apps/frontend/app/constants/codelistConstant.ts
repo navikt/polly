@@ -41,6 +41,8 @@ export interface ICode {
   shortName: string
   description: string
   invalidCode?: boolean
+  /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
+  version?: number
 }
 
 export interface ICountryCode {

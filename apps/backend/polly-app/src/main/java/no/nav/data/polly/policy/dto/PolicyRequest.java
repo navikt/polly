@@ -50,12 +50,15 @@ public class PolicyRequest implements RequestElement {
     private int requestIndex;
     private boolean update;
 
+    @Schema(description = "Versjonen klienten sist leste. Må sendes ved oppdatering (optimistisk låsing)")
+    private Integer version; // For optimistisk låsing, må sendes ved oppdatering, og ikke kopieres til entity.
+
     @JsonIgnore
     private InformationType informationType;
+    
+    // TODO: process og existingPolicy trengs sannsynligvis bare hvis arbeid gjøres i feil lag
     @JsonIgnore
     private Process process;
-    @JsonIgnore
-    private Policy existingPolicy;
 
     @Override
     public String getIdentifyingFields() {
@@ -111,4 +114,13 @@ public class PolicyRequest implements RequestElement {
             return null;
         }
     }
+    
+    public void mergeInto(Policy policy) {
+        policy.getData().setPurposes(List.copyOf(getPurposes()));
+        policy.getData().setSubjectCategories(List.copyOf(getSubjectCategories()));
+        policy.getData().setLegalBasesUse(getLegalBasesUse());
+        policy.getData().setLegalBases(convert(getLegalBases(), LegalBasisRequest::convertToDomain));
+        policy.getData().setDocumentIds(convert(getDocumentIds(), UUID::fromString));
+    }
+
 }

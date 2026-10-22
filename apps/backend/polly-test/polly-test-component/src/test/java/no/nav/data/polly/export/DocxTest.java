@@ -118,7 +118,7 @@ public class DocxTest {
         req.setUpdate(false);
         req.format();
 
-        Process process = new Process().convertFromRequest(req);
+        Process process = new Process().copyFieldsFrom(req);
         var docx = processToDocx.generateDocForProcess(process,DocumentAccess.INTERNAL);
         assertThat(docx).isNotNull();
     }

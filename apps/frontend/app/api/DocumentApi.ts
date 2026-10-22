@@ -56,6 +56,8 @@ export const deleteDocument = async (id: string) => {
 
 const mapFormValuesToDocument = (document: IDocumentFormValues) => ({
   id: document.id ? document.id : undefined,
+  // Optimistisk låsing: versjonen klienten sist leste. Backend svarer 409 hvis den er utdatert.
+  version: document.version,
   name: document.name,
   description: document.description,
   informationTypes: document.informationTypes.map(

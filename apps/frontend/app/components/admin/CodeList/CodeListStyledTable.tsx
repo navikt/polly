@@ -7,6 +7,7 @@ import { ICode } from '@/constants/codelistConstant'
 import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../../api/GetAllApi'
 import { ICodeListFormValues, ICodeUsage } from '../../../constants'
 import { handleSort, sortTableData } from '../../../util/handleTableSort'
+import { getConflictAwareErrorMessage, isConflictError } from '../../../util/optimisticLocking'
 import { AuditButtonDS } from '../audit/AuditButtonDS'
 import { Usage } from './CodeListUsage'
 import DeleteCodeListModal from './ModalDeleteCodeList'
@@ -42,12 +43,17 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
 
   const handleEditCodelist = async (values: ICodeListFormValues): Promise<void> => {
     try {
-      await updateCodelist({ ...values } as ICode)
+      // Optimistisk låsing: send med versjonen vi leste, slik at vi ikke overskriver andres endringer
+      await updateCodelist({ ...values, version: selectedCode?.version } as ICode)
       refresh()
       setShowEditModal(false)
     } catch (error: any) {
       setShowEditModal(true)
-      setErrorOnResponse(error.message)
+      setErrorOnResponse(getConflictAwareErrorMessage(error, error.message) as any)
+      if (isConflictError(error)) {
+        // Data er endret av andre - hent inn på nytt slik at brukeren ser gjeldende verdier
+        refresh()
+      }
     }
   }
 
@@ -58,7 +64,7 @@ const CodeListTable = ({ tableData, refresh }: TTableCodelistProps) => {
       setShowDeleteModal(false)
     } catch (error: any) {
       setShowDeleteModal(true)
-      setErrorOnResponse(error.message)
+      setErrorOnResponse(getConflictAwareErrorMessage(error, error.message) as any)
     }
   }
 

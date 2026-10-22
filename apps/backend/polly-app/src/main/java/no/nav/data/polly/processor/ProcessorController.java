@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
@@ -110,15 +111,11 @@ public class ProcessorController {
     @Operation(summary = "Delete Processor")
     @ApiResponse(description = "Processor deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProcessorResponse> delete(@PathVariable UUID id) {
-        log.info("Received a request to delete Processor with id={}", id);
-        Optional<Processor> fromRepository = repository.findById(id);
-        if (fromRepository.isEmpty()) {
-            log.info("Cannot find Processor with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        service.deleteById(id);
-        return new ResponseEntity<>(ProcessorResponse.buidFrom(fromRepository.get()), HttpStatus.OK);
+    public ResponseEntity<ProcessorResponse> delete(@PathVariable UUID id, @RequestParam(required = false) Integer expectedVersion) {
+        log.info("Received a request to delete Processor with id={} and version={}", id, expectedVersion);
+        Processor deletedProcessor = service.deleteById(id, expectedVersion);
+        log.info("Processor with id={} deleted", id);
+        return ResponseEntity.ok(ProcessorResponse.buidFrom(deletedProcessor));
     }
 
     static class ProcessorPage extends RestResponsePage<ProcessorResponse> {

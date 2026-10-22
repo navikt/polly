@@ -13,7 +13,7 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.policy.rest.PolicyRestController.PolicyPage;
+import no.nav.data.polly.policy.PolicyController.PolicyPage;
 import no.nav.data.polly.process.ProcessReadController.LastEditedPage;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.ProcessStateController.ProcessShortPage;
@@ -63,6 +63,10 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(processResponse.getChangeStamp().getLastModifiedBy()).isNotNull();
         assertThat(processResponse.getChangeStamp().getLastModifiedDate()).isNotNull();
         processResponse.setChangeStamp(null);
+        // Optimistisk låsing: version er en flytende verdi, sammenlignes ikke her
+        assertThat(processResponse.getVersion()).isNotNull();
+        processResponse.setVersion(null);
+        processResponse.getPolicies().forEach(p -> p.setVersion(null));
 
         assertThat(processResponse).isEqualTo(processResponseBuilder(policy.getProcess().getId())
                 .policy(PolicyResponse.builder()
@@ -122,9 +126,9 @@ class ProcessControllerIT extends IntegrationTestBase {
         }
         var deleted = createAndSaveProcess("deleted");
         var deleted2 = createAndSaveProcess("deleted2");
-        processService.deleteById(deleted.getId());
+        processService.deleteById(deleted.getId(), null);
         MdcUtils.clearUser();
-        processService.deleteById(deleted2.getId());
+        processService.deleteById(deleted2.getId(), null);
 
         MockFilter.setUser(userInfo);
         ResponseEntity<LastEditedPage> resp = restTemplate.getForEntity("/process/myedits", LastEditedPage.class);
@@ -228,7 +232,11 @@ class ProcessControllerIT extends IntegrationTestBase {
             assertThat(processPage).isNotNull();
 
             assertThat(processPage.getContent()).hasSize(2);
-            processPage.getContent().forEach(p -> p.setChangeStamp(null));
+            // dont compare fluid values
+            processPage.getContent().forEach(p -> {
+                p.setChangeStamp(null);
+                p.setVersion(null);
+            });
             assertThat(processPage.getContent()).contains(
                     processResponseBuilder(policy.getProcess().getId())
                             .name("Auto_" + PURPOSE_CODE1)

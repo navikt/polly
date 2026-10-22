@@ -292,6 +292,8 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
                 setCurrentUnderordnetBehandling,
                 underOrdnetBehandlinger,
                 setUnderordnetBehandlinger,
+                getProcessById,
+                setErrorProcessModal,
                 code,
                 setMovedBehandlingLink,
                 setMovedBehandlingNavn,
@@ -312,7 +314,8 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
                 values,
                 currentUnderordnetBehandling,
                 setCurrentUnderordnetBehandling,
-                setErrorPolicyModal
+                setErrorPolicyModal,
+                getProcessById
               )
             }
             submitDeletePolicy={(values: IPolicy) =>

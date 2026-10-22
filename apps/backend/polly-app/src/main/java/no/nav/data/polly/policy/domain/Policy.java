@@ -25,13 +25,11 @@ import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
-import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import org.hibernate.annotations.Type;
 
-import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
@@ -86,16 +84,12 @@ public class Policy extends Auditable {
     }
 
     // TODO: Snu avhengigheten innover
-    public static Policy mapRequestToPolicy(PolicyRequest policyRequest) {
-        Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : Policy.builder().generateId().data(new PolicyData()).build();
-        policyRequest.getInformationType().addPolicy(policy);
-        policyRequest.getProcess().addPolicy(policy);
-        policy.getData().setPurposes(List.copyOf(policyRequest.getPurposes()));
-        policy.getData().setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
-        policy.getData().setLegalBasesUse(policyRequest.getLegalBasesUse());
-        policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToDomain));
-        policy.getData().setDocumentIds(convert(policyRequest.getDocumentIds(), UUID::fromString));
-        return policy;
+    public Policy copyFieldsFrom(PolicyRequest policyRequest) {
+        policyRequest.getInformationType().addPolicy(this);
+        policyRequest.getProcess().addPolicy(this);
+        policyRequest.mergeInto(this);
+        // Version skal aldri settes fra request
+        return this;
     }
 
     // TODO: Snu avhengigheten innover
@@ -111,6 +105,7 @@ public class Policy extends Auditable {
                 .legalBasesUse(getData().getLegalBasesUse())
                 .legalBases(convert(getData().getLegalBases(), LegalBasis::convertToResponse))
                 .documentIds(getData().getDocumentIds())
+                .version(getVersion())
                 .build();
     }
 

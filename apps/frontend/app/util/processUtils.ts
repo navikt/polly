@@ -28,6 +28,7 @@ import {
   IProcessFormValues,
   IProcessShort,
 } from '@/constants'
+import { CONFLICT_MESSAGE, isConflictError } from './optimisticLocking'
 import { generatePath } from './router'
 
 export const processPath = '/process/:section/:code/:processId'
@@ -65,6 +66,8 @@ export const handleEditProcess = async (
   setCurrentProcess: Dispatch<SetStateAction<IProcess | undefined>>,
   processList: IProcessShort[],
   setProcessList: (value: IProcessShort[]) => void,
+  getProcessById: (id: string) => Promise<void>,
+  setErrorProcessModal: (value: string) => void,
   code: string,
   setMovedBehandlingLink: (value: string) => void,
   setMovedBehandlingNavn: (value: string) => void,
@@ -149,6 +152,14 @@ export const handleEditProcess = async (
     return true
   } catch (error: any) {
     console.debug(error)
+    if (isConflictError(error)) {
+      // Optimistisk låsing: behandlingen er endret av en annen bruker.
+      // Ikke overskriv i stillhet - vis melding og hent inn gjeldende data på nytt.
+      setErrorProcessModal(CONFLICT_MESSAGE)
+      if (values.id) {
+        await getProcessById(values.id)
+      }
+    }
     return false
   }
 }
@@ -176,7 +187,8 @@ export const handleEditPolicy = async (
   values: IPolicyFormValues,
   currentProcess: IProcess | undefined,
   setCurrentProcess: (value: IProcess) => void,
-  setErrorPolicyModal: (value: string | null) => void
+  setErrorPolicyModal: (value: string | null) => void,
+  getProcessById: (id: string) => Promise<void>
 ) => {
   try {
     const updatedPolicy: IPolicy = await updatePolicy(values)
@@ -192,6 +204,14 @@ export const handleEditPolicy = async (
     }
     return true
   } catch (error: any) {
+    if (isConflictError(error)) {
+      // Optimistisk låsing: opplysningstypen i behandlingen er endret av en annen bruker.
+      setErrorPolicyModal(CONFLICT_MESSAGE)
+      if (currentProcess) {
+        await getProcessById(currentProcess.id)
+      }
+      return false
+    }
     setErrorPolicyModal(error.message)
     return false
   }

@@ -74,6 +74,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
+                // Optimistisk låsing: version følger med i responsen
+                .version(disclosureResponse.getVersion())
                 .name("disc name")
                 .description("disc desc")
                 .recipient(CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, disclosureResponse.getRecipient().getCode()))
@@ -86,6 +88,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .documentId(document.getId())
                 .document(DocumentResponse.builder()
                         .id(document.getId())
+                        .version(document.getVersion())
                         .name(document.getData().getName())
                         .description(document.getData().getDescription())
                         .informationTypes(List.of(DocumentInfoTypeUseResponse.builder()

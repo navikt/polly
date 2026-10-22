@@ -75,6 +75,7 @@ export const infoTypeSchema: () => yup.ObjectSchema<IInformationtypeFormValues> 
     keywords: yup.array().of(yup.string().required()).required(),
     orgMaster: yup.string(),
     description: yup.string(),
+    version: yup.number(),
   })
 
 const dpDataProcessingSchema: () => yup.ObjectSchema<IDataProcessingFormValues> = () =>
@@ -92,6 +93,7 @@ export const dataProcessorSchema: () => yup.ObjectSchema<IProcessorFormValues> =
     note: yup.string(),
     contract: yup.string(),
     outsideEU: yup.boolean(),
+    version: yup.number(),
     transferGroundsOutsideEU: yup.string().test({
       name: 'transferGrounds',
       message: 'Du må velge et behandlingsgrunnlag',
@@ -256,6 +258,7 @@ export const dpProcessSchema: () => yup.ObjectSchema<IDpProcessFormValues> = () 
     }),
     start: yup.string().matches(DATE_REGEX, { message: incorrectDateMessage }),
     subDataProcessing: dpDataProcessingSchema(),
+    version: yup.number(),
   })
 
 export const createDocumentSchema: () => yup.ObjectSchema<ICreateDocumentFormValues> = () =>
@@ -306,6 +309,7 @@ export const codeListSchema: () => yup.ObjectSchema<ICode> = () =>
     shortName: yup.string().required(requiredMessage),
     description: yup.string().required(requiredMessage),
     invalidCode: yup.boolean(),
+    version: yup.number(),
   })
 
 const disclosureAbroadSchema: () => yup.ObjectSchema<IDisclosureAbroad> = () =>
@@ -345,6 +349,7 @@ export const disclosureSchema: () => yup.ObjectSchema<IDisclosureFormValues> = (
     nomDepartmentId: yup.string(),
     nomDepartmentName: yup.string(),
     productTeams: yup.array<any>(),
+    version: yup.number(),
   })
 
 export const addDocumentToProcessSchema: () => yup.ObjectSchema<IAddDocumentToProcessFormValues> =
@@ -383,6 +388,7 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
       .min(1, requiredMessage)
       .required(requiredMessage),
     description: yup.string(),
+    version: yup.number(),
     additionalDescription: yup.string(),
     behandlingsNivaa: yup
       .mixed<EBehandlingsNivaa>()
@@ -566,6 +572,7 @@ export const policySchema: (subjectCategoryList: ICode[]) => yup.ObjectSchema<IP
     id: yup.string(),
     documentIds: yup.array().of(yup.string().required()).required(),
     otherPolicies: yup.array<any>().default([]), // only used for validations
+    version: yup.number(),
   })
 
 export const addBatchInfoTypesToProcessSchema: (

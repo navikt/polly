@@ -24,7 +24,7 @@ public final class CodelistStaticService {
         }
         Codelist codelist = getCodelist(listName, code);
         if (codelist == null) {
-            return new CodelistResponse(listName, code, null, null);
+            return new CodelistResponse(listName, code, null, null, null);
         }
         return CodelistResponse.buildFrom(codelist);
     }

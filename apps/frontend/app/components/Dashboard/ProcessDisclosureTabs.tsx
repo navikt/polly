@@ -7,7 +7,9 @@ import { Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react
 import { EListName } from '@/constants/codelistConstant'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { createDisclosure, deleteDisclosure, updateDisclosure } from '../../api/GetAllApi'
+import { getDisclosure } from '../../api/DisclosureApi'
 import { EProcessStatus, IDisclosure, IDisclosureFormValues, IDpProcess } from '../../constants'
+import { getConflictAwareErrorMessage, isConflictError } from '../../util/optimisticLocking'
 import DpProcessTable from '../DpProcess/DpProcessTable'
 import ProcessList from '../Process/ProcessList'
 import AccordionDisclosure from '../ThirdParty/AccordionDisclosure'
@@ -91,7 +93,15 @@ const ProcessDisclosureTabs = (props: IProps) => {
 
       return true
     } catch (error: any) {
-      setError(error.message)
+      if (isConflictError(error) && disclosure.id) {
+        // Optimistisk låsing: utleveringen er endret av en annen bruker.
+        // Hent inn gjeldende data på nytt i stedet for å overskrive i stillhet.
+        const fresh: IDisclosure = await getDisclosure(disclosure.id)
+        setDisclosureData(
+          disclosureData.map((item: IDisclosure) => (item.id === fresh.id ? fresh : item))
+        )
+      }
+      setError(getConflictAwareErrorMessage(error, error.message))
       return false
     }
   }

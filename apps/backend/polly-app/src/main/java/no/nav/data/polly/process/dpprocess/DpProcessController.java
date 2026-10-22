@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
-import no.nav.data.polly.disclosure.domain.Disclosure;
-import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
@@ -27,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -142,15 +141,11 @@ public class DpProcessController {
     @Operation(summary = "Delete DpProcess")
     @ApiResponse(description = "DpProcess deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<DpProcessResponse> delete(@PathVariable UUID id) {
-        log.info("Received a request to delete DpProcess with id={}", id);
-        Optional<DpProcess> fromRepository = repository.findById(id);
-        if (fromRepository.isEmpty()) {
-            log.info("Cannot find DpProcess with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        service.deleteById(id);
-        return new ResponseEntity<>(fromRepository.get().convertToResponse(), HttpStatus.OK);
+    public ResponseEntity<DpProcessResponse> delete(@PathVariable UUID id, @RequestParam(required = false) Integer expectedVersion) {
+        log.info("Received a request to delete DpProcess with id={} and version={}", id, expectedVersion);
+        DpProcess deleted = service.deleteById(id, expectedVersion);
+        log.info("DpProcess with id={} deleted", id);
+        return ResponseEntity.ok(deleted.convertToResponse());
     }
 
     static class DpProcessPage extends RestResponsePage<DpProcessResponse> {

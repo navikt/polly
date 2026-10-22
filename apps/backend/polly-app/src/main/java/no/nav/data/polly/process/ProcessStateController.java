@@ -29,7 +29,7 @@ import no.nav.data.polly.teams.domain.Team;
 @RequestMapping("/process/state")
 public class ProcessStateController {
 
-    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
+    // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk og *Repository-aksess til tjenestelaget.
     
     private final ProcessRepository processRepository;
     private final TeamService teamService;

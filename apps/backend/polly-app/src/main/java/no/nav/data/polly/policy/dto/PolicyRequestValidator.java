@@ -1,7 +1,9 @@
 package no.nav.data.polly.policy.dto;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
@@ -14,6 +16,8 @@ import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +38,7 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
 
+    @Transactional // TODO: Å sjekke (bl.a.) at ting eksisterer er forretningslogikk. Transactional må flyttes til service.
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
         initialize(requests, isUpdate);
         List<ValidationError> validations = new ArrayList<>();
@@ -41,6 +46,7 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
         requests.forEach(PolicyRequest::format); // format all first to ensure duplicate logic is correct
         requests.forEach(r -> PolicyIdent.from(r).forEach(ident -> requestIdents.put(ident, r.getRequestIndex())));
         requests.forEach(request -> {
+            validations.addAll(validateId(request));
             validations.addAll(request.validateFields());
             validations.addAll(validateRepositoryForPolicyRequest(request));
             validateDuplicates(validations, requestIdents, request);
@@ -52,6 +58,17 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
             log.warn("Validation errors occurred when validating PolicyRequest: {}", validations);
             throw new ValidationException(validations, "Validation errors occurred when validating PolicyRequest.");
         }
+    }
+
+    private Collection<? extends ValidationError> validateId(PolicyRequest request) {
+        if (request.getId() != null) {
+            try {
+                UUID.fromString(request.getId());
+            } catch (IllegalArgumentException e) {
+                return List.of(new ValidationError(request.getReference(), "invalidUuid", "malformed UUID: " + request.getId()));
+            }
+        }
+        return Collections.emptyList();
     }
 
     private void validateDuplicates(List<ValidationError> validations, Map<PolicyIdent, Integer> allRequestIdents, PolicyRequest request) {
@@ -85,12 +102,10 @@ public class PolicyRequestValidator extends RequestValidator<PolicyRequest> {
         }
         Policy policy = Optional.ofNullable(request.getIdAsUUID()).flatMap(policyRepository::findById).orElse(null);
         if (policy == null) {
-            validations.add(new ValidationError(request.getReference(), "notFound", String.format("A policy with id: %s was not found", request.getId())));
+            throw new NotFoundException("No policy found with id=" + request.getId());
         } else if (!policy.getData().getPurposes().equals(request.getPurposes())) {
             validations.add(new ValidationError(request.getReference(), "cannotChangePurpose",
                     String.format("Cannot change purpose from %s to %s for policy %s", policy.getData().getPurposes(), request.getPurposes(), request.getId())));
-        } else {
-            request.setExistingPolicy(policy);
         }
     }
 
