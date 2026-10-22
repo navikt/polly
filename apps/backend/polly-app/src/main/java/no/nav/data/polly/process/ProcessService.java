@@ -197,7 +197,7 @@ public class ProcessService {
     }
 
     @Transactional
-    private void requireRevision(List<UUID> processIds, String revisionText, boolean completedOnly) {
+    protected void requireRevision(List<UUID> processIds, String revisionText, boolean completedOnly) {
         var processes = processRepository.findAllById(processIds)
                 .stream()
                 .filter(p -> !completedOnly || p.getData().getStatus() == ProcessStatus.COMPLETED)
