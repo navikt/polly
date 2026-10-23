@@ -4,6 +4,7 @@ import {
   ExclamationmarkIcon,
   ExclamationmarkTriangleIcon,
   GavelIcon,
+  InformationSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@navikt/aksel-icons'
@@ -12,6 +13,8 @@ import {
   BodyShort,
   InfoCard,
   InlineMessage,
+  Link,
+  List,
   Loader,
   Modal,
   Tabs,
@@ -22,7 +25,7 @@ import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
-import { checkForAvvikKeys, getPolicyAvvik } from '@/util/processUtils'
+import { checkForAvvikKeys, getMissingPolicies, getPolicyAvvik } from '@/util/processUtils'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import {
   convertProcessToFormValues,
@@ -134,6 +137,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
       return getPolicyAvvik(overordnetBehandling.policies, currentProcess.policies).map(
         (policy) => policy.id
       )
+    }
+    return []
+  }, [forUnderordnetBehandlinger, overordnetBehandling, currentProcess])
+  const policyNotInUnderordnet = useMemo(() => {
+    if (forUnderordnetBehandlinger && overordnetBehandling && currentProcess) {
+      return getMissingPolicies(overordnetBehandling.policies, currentProcess.policies)
     }
     return []
   }, [forUnderordnetBehandlinger, overordnetBehandling, currentProcess])
@@ -481,6 +490,33 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               submitDeletePolicy={submitDeletePolicy}
                               avvikPolicyIds={avvikPolicyIds}
                             />
+
+                            {currentProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+                              policyNotInUnderordnet.length !== 0 && (
+                                <InfoCard data-color='meta-purple' className='mt-5'>
+                                  <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+                                    <InfoCard.Title>
+                                      Følgende opplysningstyper brukes i den overordnede
+                                      behandlingen, men ikke i denne, underordnede behandlingen.
+                                    </InfoCard.Title>
+                                  </InfoCard.Header>
+                                  <InfoCard.Content>
+                                    <List as='ul'>
+                                      {policyNotInUnderordnet.map((policy) => (
+                                        <List.Item key={policy.id}>
+                                          <Link
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            href={`/informationtype/${policy.informationType.id}`}
+                                          >
+                                            {policy.informationType.name} (åpner i en ny fane)
+                                          </Link>
+                                        </List.Item>
+                                      ))}
+                                    </List>
+                                  </InfoCard.Content>
+                                </InfoCard>
+                              )}
                           </Tabs.Panel>
                           {currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (
                             <Tabs.Panel value='underordnet'>

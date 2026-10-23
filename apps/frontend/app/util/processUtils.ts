@@ -394,15 +394,20 @@ const normalizePolicy = (policy: IPolicy): string =>
     documentIds: [...(policy.documentIds ?? [])].sort(),
   })
 
+const getPoliciesNotIn = (policies: IPolicy[] = [], comparePolicies: IPolicy[] = []): IPolicy[] => {
+  const comparePolicyValues = new Set(comparePolicies.map(normalizePolicy))
+  return policies.filter((policy) => !comparePolicyValues.has(normalizePolicy(policy)))
+}
+
 export const getPolicyAvvik = (
   overordnetPolicies: IPolicy[] = [],
   underordnetPolicies: IPolicy[] = []
-): IPolicy[] => {
-  const overordnetPolicyValues = new Set(overordnetPolicies.map(normalizePolicy))
-  return underordnetPolicies.filter(
-    (policy) => !overordnetPolicyValues.has(normalizePolicy(policy))
-  )
-}
+): IPolicy[] => getPoliciesNotIn(underordnetPolicies, overordnetPolicies)
+
+export const getMissingPolicies = (
+  overordnetPolicies: IPolicy[] = [],
+  underordnetPolicies: IPolicy[] = []
+): IPolicy[] => getPoliciesNotIn(overordnetPolicies, underordnetPolicies)
 
 const flattenProcessValues = (process: IProcess): Map<string, unknown> => {
   const flattenedValues = new Map<string, unknown>()
@@ -495,7 +500,7 @@ export const checkForAvvikKeys = (
 
   if (
     getPolicyAvvik(overordnetBehandling.policies, underordnetBehandling.policies).length > 0 ||
-    (overordnetBehandling.policies ?? []).length !== (underordnetBehandling.policies ?? []).length
+    getMissingPolicies(overordnetBehandling.policies, underordnetBehandling.policies).length > 0
   ) {
     avvikkKeys.push('policies')
   }
