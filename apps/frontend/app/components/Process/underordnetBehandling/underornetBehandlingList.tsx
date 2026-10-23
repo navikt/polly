@@ -91,7 +91,8 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
     if (!movedBehandlingLink) return
 
     const frameId = window.requestAnimationFrame(() => {
-      movedBehandlingAlertRef.current?.focus()
+      movedBehandlingAlertRef.current?.focus({ preventScroll: true })
+      movedBehandlingAlertRef.current?.scrollIntoView({ block: 'start' })
     })
 
     return () => window.cancelAnimationFrame(frameId)

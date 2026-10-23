@@ -17,7 +17,12 @@ const SavedAlertMovedBehandling: FunctionComponent<TProps> = ({
   setMovedBehandlingNavn,
 }) => {
   return (
-    <LocalAlert ref={ref} tabIndex={-1} status='success' className='max-w-[100ch] mb-5'>
+    <LocalAlert
+      ref={ref}
+      tabIndex={-1}
+      status='success'
+      className='max-w-[100ch] mb-5 scroll-mt-(--polly-process-header-height)'
+    >
       <LocalAlert.Header>
         <LocalAlert.Title>
           Endringene dine er lagret, og behandlingen er flyttet til riktig sted.
