@@ -3,6 +3,7 @@ import { InfoCard, List, ReadMore } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
+import { convertPolicyToFormValues, createPolicies } from '@/api/PolicyApi'
 import { convertProcessToFormValues, createProcess, getProcess } from '@/api/ProcessApi'
 import { ESection, TPathParams } from '@/components/mainPages/ProcessPage'
 import {
@@ -179,11 +180,18 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
     if (!process) return
     try {
       const newProcess = await createProcess(process)
+      const policyCopies: IPolicyFormValues[] = overordnetBehandling.policies.map((policy) => ({
+        ...convertPolicyToFormValues(policy, []),
+        id: undefined,
+        version: undefined,
+        process: newProcess,
+      }))
+      const copiedPolicies = policyCopies.length > 0 ? await createPolicies(policyCopies) : []
+
       setUnderordnetBehandlinger(sortProcess([...underOrdnetBehandlinger, newProcess]))
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
-      setCurrentUnderordnetBehandling(newProcess)
-      // todo uh multipurpose url....
+      setCurrentUnderordnetBehandling({ ...newProcess, policies: copiedPolicies })
       navigate(
         genUnderordnetProcessPath(
           section,
