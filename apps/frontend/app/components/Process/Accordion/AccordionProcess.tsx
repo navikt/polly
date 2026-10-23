@@ -1,7 +1,13 @@
 'use client'
 
-import { ExclamationmarkIcon, GavelIcon, PlusIcon, TrashIcon } from '@navikt/aksel-icons'
-import { Accordion, BodyShort, Loader, Modal, Tabs } from '@navikt/ds-react'
+import {
+  ExclamationmarkIcon,
+  ExclamationmarkTriangleIcon,
+  GavelIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@navikt/aksel-icons'
+import { Accordion, BodyShort, InfoCard, Loader, Modal, Tabs } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { TPathParams } from '@/components/mainPages/ProcessPage'
@@ -417,6 +423,16 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             )}
                           </Tabs.List>
                           <Tabs.Panel value='opplysninger'>
+                            {currentProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET && (
+                              <InfoCard data-color='warning' className='mt-3'>
+                                <InfoCard.Message
+                                  icon={<ExclamationmarkTriangleIcon aria-hidden />}
+                                >
+                                  Dere må sjekke om opplysningstypene og enkelte opplysninger
+                                  stemmer for deres behandling
+                                </InfoCard.Message>
+                              </InfoCard>
+                            )}
                             {hasAccess() && (
                               <div className='flex w-full mt-5 mb-3 justify-end'>
                                 <div className='gap-2'>
