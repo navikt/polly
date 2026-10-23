@@ -373,7 +373,36 @@ const ignoredProcessFields = new Set([
   'dpia.needForDpia',
   'dpia.refToDpia',
   'dpia.noDpiaReasons',
+  'policies',
 ])
+
+const normalizePolicy = (policy: IPolicy): string =>
+  JSON.stringify({
+    informationTypeId: policy.informationType?.id,
+    purposes: policy.purposes.map((purpose) => purpose.code).sort(),
+    subjectCategories: policy.subjectCategories.map((category) => category.code).sort(),
+    legalBasesUse: policy.legalBasesUse,
+    legalBases: policy.legalBases
+      .map((legalBasis) =>
+        JSON.stringify({
+          gdpr: legalBasis.gdpr?.code,
+          nationalLaw: legalBasis.nationalLaw?.code,
+          description: legalBasis.description || undefined,
+        })
+      )
+      .sort(),
+    documentIds: [...(policy.documentIds ?? [])].sort(),
+  })
+
+export const getPolicyAvvik = (
+  overordnetPolicies: IPolicy[] = [],
+  underordnetPolicies: IPolicy[] = []
+): IPolicy[] => {
+  const overordnetPolicyValues = new Set(overordnetPolicies.map(normalizePolicy))
+  return underordnetPolicies.filter(
+    (policy) => !overordnetPolicyValues.has(normalizePolicy(policy))
+  )
+}
 
 const flattenProcessValues = (process: IProcess): Map<string, unknown> => {
   const flattenedValues = new Map<string, unknown>()
@@ -462,6 +491,13 @@ export const checkForAvvikKeys = (
     avvikkKeys = avvikkKeys.filter(
       (key) => !['aiUsageDescription.endDate', 'aiUsageDescription.startDate'].includes(key)
     )
+  }
+
+  if (
+    getPolicyAvvik(overordnetBehandling.policies, underordnetBehandling.policies).length > 0 ||
+    (overordnetBehandling.policies ?? []).length !== (underordnetBehandling.policies ?? []).length
+  ) {
+    avvikkKeys.push('policies')
   }
 
   return avvikkKeys

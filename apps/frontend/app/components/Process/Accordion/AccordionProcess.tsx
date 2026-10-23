@@ -7,14 +7,22 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@navikt/aksel-icons'
-import { Accordion, BodyShort, InfoCard, Loader, Modal, Tabs } from '@navikt/ds-react'
+import {
+  Accordion,
+  BodyShort,
+  InfoCard,
+  InlineMessage,
+  Loader,
+  Modal,
+  Tabs,
+} from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { TPathParams } from '@/components/mainPages/ProcessPage'
 import { ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
-import { checkForAvvikKeys } from '@/util/processUtils'
+import { checkForAvvikKeys, getPolicyAvvik } from '@/util/processUtils'
 import { TNavigateFunction, useNavigate } from '@/util/router'
 import {
   convertProcessToFormValues,
@@ -118,6 +126,14 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const avvikKeys = useMemo(() => {
     if (forUnderordnetBehandlinger && overordnetBehandling && currentProcess) {
       return checkForAvvikKeys(overordnetBehandling, currentProcess)
+    }
+    return []
+  }, [forUnderordnetBehandlinger, overordnetBehandling, currentProcess])
+  const avvikPolicyIds = useMemo(() => {
+    if (forUnderordnetBehandlinger && overordnetBehandling && currentProcess) {
+      return getPolicyAvvik(overordnetBehandling.policies, currentProcess.policies).map(
+        (policy) => policy.id
+      )
     }
     return []
   }, [forUnderordnetBehandlinger, overordnetBehandling, currentProcess])
@@ -433,6 +449,18 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                 </InfoCard.Message>
                               </InfoCard>
                             )}
+
+                            {currentProcess.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+                              avvikKeys.includes('policies') && (
+                                <InlineMessage status='info' className='my-5'>
+                                  <strong>
+                                    Opplysningstyper som ikke brukes i den overordnede behandlingen,
+                                    eller som inneholder endringer i forhold til den overordnede
+                                    behandlingen, markeres med &nbsp;
+                                    <AvvikTag />
+                                  </strong>
+                                </InlineMessage>
+                              )}
                             {hasAccess() && (
                               <div className='flex w-full mt-5 mb-3 justify-end'>
                                 <div className='gap-2'>
@@ -451,6 +479,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                               errorDeleteModal={errorPolicyModal}
                               submitEditPolicy={submitEditPolicy}
                               submitDeletePolicy={submitDeletePolicy}
+                              avvikPolicyIds={avvikPolicyIds}
                             />
                           </Tabs.Panel>
                           {currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET && (

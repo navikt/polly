@@ -8,6 +8,7 @@ import { theme } from '@/util/theme'
 import { getAlertForProcess } from '../../../api/AlertApi'
 import { convertPolicyToFormValues, getDocument } from '../../../api/GetAllApi'
 import {
+  EBehandlingsNivaa,
   IDocument,
   IPolicy,
   IPolicyFormValues,
@@ -21,6 +22,7 @@ import { AuditButton } from '../../admin/audit/AuditButton'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import RouteLink from '../../common/RouteLink'
 import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import AvvikTag from '../common/AvvikTag'
 import ModalPolicy from './ModalPolicy'
 
 type TTablePurposeProps = {
@@ -31,6 +33,7 @@ type TTablePurposeProps = {
   errorDeleteModal: string | null
   submitEditPolicy: (policy: IPolicyFormValues) => Promise<boolean>
   submitDeletePolicy: (policy: IPolicy) => Promise<boolean>
+  avvikPolicyIds?: string[]
 }
 
 export type TDocs = {
@@ -45,6 +48,7 @@ const TablePolicy = ({
   errorDeleteModal,
   submitEditPolicy,
   submitDeletePolicy,
+  avvikPolicyIds = [],
 }: TTablePurposeProps) => {
   const [currentPolicy, setCurrentPolicy] = useState<IPolicy>()
   const [showEditModal, setShowEditModal] = useState(false)
@@ -116,27 +120,35 @@ const TablePolicy = ({
             <Row>
               <Cell>
                 <div className='w-full min-w-0'>
-                  <div className='min-w-0'>
-                    <Sensitivity
-                      sensitivity={row.informationType.sensitivity}
-                      codelistUtils={codelistUtils}
-                    />
-                    &nbsp;
-                    <RouteLink
-                      href={`/informationtype/${row.informationType.id}`}
-                      className='block wrap-break-word whitespace-normal'
-                    >
-                      {row.informationType.name}
-                    </RouteLink>
-                    {!!row.documentIds?.length && (
-                      <Tooltip content='Dokument'>
-                        <span className='block opacity-80 wrap-break-word whitespace-normal mt-1'>
-                          {'(' +
-                            row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') +
-                            ')'}
-                        </span>
-                      </Tooltip>
-                    )}
+                  <div className='flex items-center'>
+                    {avvikPolicyIds.length !== 0 &&
+                      process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+                      !avvikPolicyIds.includes(row.id) && <div className='ml-5' />}
+                    {avvikPolicyIds.length !== 0 &&
+                      process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET &&
+                      avvikPolicyIds.includes(row.id) && <AvvikTag marginRight />}
+                    <div className='min-w-0'>
+                      <Sensitivity
+                        sensitivity={row.informationType.sensitivity}
+                        codelistUtils={codelistUtils}
+                      />
+                      &nbsp;
+                      <RouteLink
+                        href={`/informationtype/${row.informationType.id}`}
+                        className='block wrap-break-word whitespace-normal'
+                      >
+                        {row.informationType.name}
+                      </RouteLink>
+                      {!!row.documentIds?.length && (
+                        <Tooltip content='Dokument'>
+                          <span className='block opacity-80 wrap-break-word whitespace-normal mt-1'>
+                            {'(' +
+                              row.documentIds?.map((id) => (docs[id] || {}).name).join(', ') +
+                              ')'}
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Cell>
