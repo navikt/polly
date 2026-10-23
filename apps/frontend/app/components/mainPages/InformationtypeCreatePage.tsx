@@ -1,6 +1,6 @@
 'use client'
 
-import { Heading } from '@navikt/ds-react'
+import { Heading, LocalAlert } from '@navikt/ds-react'
 import { Fragment, useContext, useMemo, useState } from 'react'
 import { createInformationType, mapInfoTypeToFormVals } from '@/api/InfoTypeApi'
 import { IInformationtypeFormValues } from '@/constants'
@@ -47,10 +47,22 @@ const InformationtypeCreatePage = () => {
                 submit={handleSubmit}
                 isEdit={false}
               />
-              {errorSubmit && <p>{errorSubmit}</p>}
+              {errorSubmit && (
+                <LocalAlert status='error' className='max-w-[75ch]'>
+                  <LocalAlert.Header>
+                    <LocalAlert.Title>{errorSubmit}</LocalAlert.Title>
+                  </LocalAlert.Header>
+                </LocalAlert>
+              )}
             </>
           )}
-          {!codelistUtils && <p>Feil i henting av codelist</p>}
+          {!codelistUtils && (
+            <LocalAlert status='error' className='max-w-[75ch]'>
+              <LocalAlert.Header>
+                <LocalAlert.Title> Feil i henting av codelist</LocalAlert.Title>
+              </LocalAlert.Header>
+            </LocalAlert>
+          )}
         </>
       )}
     </Fragment>
