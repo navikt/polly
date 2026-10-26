@@ -79,7 +79,7 @@
     "@next/eslint-plugin-next": "^16.4.2",
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@types/jest": "^30.0.0",
-    "@types/lodash": "^4.17.26",
+    "@types/lodash": "^4.17.27",
     "@types/node": "^26.6.5",
     "@types/randomcolor": "^0.5.9",
     "@types/react": "^19.3.0",
