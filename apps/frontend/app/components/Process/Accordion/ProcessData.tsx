@@ -661,7 +661,7 @@ const ProcessData = (props: IProcessDataProps) => {
         {process.revisionText && `: ${process.revisionText}`}
       </DataText>
 
-      {process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET && (
+      {process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET && avvikKeys.length > 0 && (
         <DataText
           label='Eventuelle forskjeller mellom overordnet og underordnet behandling'
           text={''}
