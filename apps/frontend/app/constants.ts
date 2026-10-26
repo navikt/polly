@@ -189,6 +189,7 @@ export interface IProcessFormValues {
   underordnetBehandlinger?: IProcessShort[]
   relasjonsDato?: string
   sistGodkjentAvvikFraOverordnetBehandling?: string
+  avviksBegrunnelse?: string
   version?: number
 }
 
@@ -457,6 +458,7 @@ export interface IProcess extends IDurationed {
   underordnetBehandlinger?: IProcessShort[]
   relasjonsDato?: string
   sistGodkjentAvvikFraOverordnetBehandling?: string
+  avviksBegrunnelse?: string
   /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
   version?: number
 }

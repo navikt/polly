@@ -73,6 +73,7 @@ public class ProcessResponse {
     private LocalDateTime relasjonsDato;
 
     private LocalDateTime sistGodkjentAvvikFraOverordnetBehandling;
+    private String avviksBegrunnelse;
 
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;

@@ -68,6 +68,7 @@ public class ProcessData implements Serializable {
     private LocalDateTime relasjonsDato;
 
     private LocalDateTime sistGodkjentAvvikFraOverordnetBehandling;
+    private String avviksBegrunnelse;
 
     public Period toPeriod() {
         return new Period(start, end);

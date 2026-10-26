@@ -370,6 +370,7 @@ const ignoredProcessFields = new Set([
   'underordnetBehandlinger',
   'relasjonsDato',
   'sistGodkjentAvvikFraOverordnetBehandling',
+  'avviksBegrunnelse',
   'dpia.needForDpia',
   'dpia.refToDpia',
   'dpia.noDpiaReasons',

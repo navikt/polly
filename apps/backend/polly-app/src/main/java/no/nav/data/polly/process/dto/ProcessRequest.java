@@ -73,6 +73,8 @@ public class ProcessRequest implements RequestElement {
     @JsonIgnore
     private int newProcessNumber;
 
+    private String avviksBegrunnelse;
+
     @Override
     public String getIdentifyingFields() {
         return name;
@@ -84,6 +86,7 @@ public class ProcessRequest implements RequestElement {
         setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
         setAdditionalDescription(trimToNull(getAdditionalDescription()));
+        setAvviksBegrunnelse(trimToNull(getAvviksBegrunnelse()));
 
         setAffiliation(getAffiliation() != null ? getAffiliation() : new AffiliationRequest());
         setDataProcessing(getDataProcessing() != null ? getDataProcessing() : new DataProcessingRequest());

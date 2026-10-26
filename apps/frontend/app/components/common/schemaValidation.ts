@@ -403,6 +403,7 @@ export const processSchema: (purposeList: ICode[]) => yup.ObjectSchema<IProcessF
     underordnetBehandlinger: yup.array().of(yup.mixed<IProcessShort>().nonNullable().required()),
     relasjonsDato: yup.string(),
     sistGodkjentAvvikFraOverordnetBehandling: yup.string(),
+    avviksBegrunnelse: yup.string(),
     affiliation: yup.object({
       department: yup.string(),
       nomDepartmentId: yup.string(),

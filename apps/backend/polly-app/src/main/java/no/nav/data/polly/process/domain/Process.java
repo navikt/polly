@@ -126,6 +126,7 @@ public class Process extends Auditable {
                 .behandlingsNivaa(behandlingsNivaa)
                 .relasjonsDato(data.getRelasjonsDato())
                 .sistGodkjentAvvikFraOverordnetBehandling(data.getSistGodkjentAvvikFraOverordnetBehandling())
+                .avviksBegrunnelse(data.getAvviksBegrunnelse())
                 .version(getVersion())
                 .build();
     }
@@ -157,6 +158,7 @@ public class Process extends Auditable {
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToDomain));
         data.setUsesAllInformationTypes(request.isUsesAllInformationTypes());
+        data.setAvviksBegrunnelse(request.getAvviksBegrunnelse());
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());
         data.setAiUsageDescription(request.getAiUsageDescription() == null ? new AiUsageDescription() : request.getAiUsageDescription().convertToAiUsageDescription());
