@@ -1005,6 +1005,23 @@ const ModalProcess = ({
                       </Accordion.Content>
                     </Accordion.Item>
                   </Accordion>
+
+                  {avvikKeys.length > 0 && (
+                    <div className='w-full flex flex-col'>
+                      <Field name='avviksBegrunnelse'>
+                        {({ field }: FieldProps<string, IProcessFormValues>) => (
+                          <Textarea
+                            id='avviksBegrunnelse'
+                            className='w-full my-5'
+                            label='Beskriv eventuelle forskjeller i denne, underordnede behandlingen, i forhold til den overordnede (valgfritt)'
+                            description='For eksempel bruk av andre systemer, databehandlere  eller enkelte opplysninger.'
+                            {...field}
+                          />
+                        )}
+                      </Field>
+                    </div>
+                  )}
+
                   <CustomizedModalBlock>
                     <div className='w-full flex flex-col'>
                       <ModalLabel fullwidth label='Status på utfylling' />

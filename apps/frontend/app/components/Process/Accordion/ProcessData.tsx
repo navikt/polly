@@ -20,6 +20,7 @@ import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { getResourceById } from '../../../api/GetAllApi'
 import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import {
+  EBehandlingsNivaa,
   EObjectType,
   EProcessStatus,
   EPvkVurdering,
@@ -659,6 +660,16 @@ const ProcessData = (props: IProcessDataProps) => {
         {processStatusText(process.status)}
         {process.revisionText && `: ${process.revisionText}`}
       </DataText>
+
+      {process.behandlingsNivaa === EBehandlingsNivaa.UNDERORDNET && (
+        <DataText
+          label='Eventuelle forskjeller mellom overordnet og underordnet behandling'
+          text={''}
+          labelMarginLeft={forUnderordnetBehandlinger && !!overordnetBehandling}
+        >
+          {!!process.avviksBegrunnelse ? process.avviksBegrunnelse : 'Ikke utfylt'}
+        </DataText>
+      )}
     </div>
   )
 }
