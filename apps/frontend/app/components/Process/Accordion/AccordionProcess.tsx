@@ -198,7 +198,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
         </div>
       }
     >
-      Slett hele tabellen
+      Tøm tabellen
     </Button>
   )
 
@@ -436,7 +436,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                     avvikKeys.includes('policies') && (
                                       <AvvikTag marginRight marginTop />
                                     )}
-                                  Opplysninger ({currentProcess.policies.length})
+                                  Opplysningstyper ({currentProcess.policies.length})
                                 </span>
                               }
                             />
