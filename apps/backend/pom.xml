@@ -96,7 +96,7 @@
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-json</artifactId>
-                <version>1.10.2</version>
+                <version>1.10.3</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
