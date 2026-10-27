@@ -1,7 +1,7 @@
 import { InformationSquareIcon } from '@navikt/aksel-icons'
 import { InfoCard, List, ReadMore } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
-import { FunctionComponent, useEffect, useRef, useState } from 'react'
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
 import { convertPolicyToFormValues, createPolicies } from '@/api/PolicyApi'
 import { convertProcessToFormValues, createProcess, getProcess } from '@/api/ProcessApi'
@@ -43,7 +43,7 @@ type TProps = {
   codelistUtils: ICodelistProps
   overordnetOgVanligBehandlingList: IProcessShort[]
   setOverordnetOgVanligBehandlingList: (value: IProcessShort[]) => void
-  onUnderordnetBehandlingerChange?: (underordnetBehandlinger: IProcessShort[]) => void
+  onUnderordnetBehandlingerChange: (underordnetBehandlinger: IProcessShort[]) => void
 }
 
 const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
@@ -60,10 +60,6 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const current_location = useLocation()
   const { section, code } = params
   const underordnetfilter = (searchParams.get('underordnetfilter') as EProcessStatus) || undefined
-  const [allUnderordnetBehandlinger, setAllUnderordnetBehandlinger] = useState<IProcessShort[]>(
-    overordnetBehandling.underordnetBehandlinger ?? []
-  )
-  const [underOrdnetBehandlinger, setUnderordnetBehandlinger] = useState<IProcessShort[]>([])
   const [currentUnderordnetBehandling, setCurrentUnderordnetBehandling] = useState<
     IProcess | undefined
   >()
@@ -82,10 +78,17 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const [movedBehandlingNavn, setMovedBehandlingNavn] = useState<string>('')
   const movedBehandlingAlertRef = useRef<HTMLDivElement>(null)
 
-  const updateAllUnderordnetBehandlinger = (value: IProcessShort[]) => {
-    setAllUnderordnetBehandlinger(value)
-    onUnderordnetBehandlingerChange?.(value)
-  }
+  const allUnderordnetBehandlinger = useMemo(
+    () => overordnetBehandling.underordnetBehandlinger ?? [],
+    [overordnetBehandling.underordnetBehandlinger]
+  )
+  const underOrdnetBehandlinger = useMemo(
+    () =>
+      underordnetfilter
+        ? allUnderordnetBehandlinger.filter((behandling) => behandling.status === underordnetfilter)
+        : allUnderordnetBehandlinger,
+    [underordnetfilter, allUnderordnetBehandlinger]
+  )
 
   useEffect(() => {
     ;(async () => {
@@ -108,24 +111,6 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
 
     return () => window.cancelAnimationFrame(frameId)
   }, [movedBehandlingLink])
-
-  useEffect(() => {
-    ;(async () => {
-      setAllUnderordnetBehandlinger(overordnetBehandling.underordnetBehandlinger ?? [])
-    })()
-  }, [overordnetBehandling])
-
-  useEffect(() => {
-    ;(async () => {
-      if (underordnetfilter) {
-        setUnderordnetBehandlinger(
-          allUnderordnetBehandlinger.filter((behandling) => behandling.status === underordnetfilter)
-        )
-      } else {
-        setUnderordnetBehandlinger(allUnderordnetBehandlinger)
-      }
-    })()
-  }, [underordnetfilter, allUnderordnetBehandlinger])
 
   const getProcessById = async (id: string) => {
     try {
@@ -192,7 +177,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
       }))
       const copiedPolicies = policyCopies.length > 0 ? await createPolicies(policyCopies) : []
 
-      updateAllUnderordnetBehandlinger(sortProcess([...allUnderordnetBehandlinger, newProcess]))
+      onUnderordnetBehandlingerChange(sortProcess([...allUnderordnetBehandlinger, newProcess]))
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentUnderordnetBehandling({ ...newProcess, policies: copiedPolicies })
@@ -286,14 +271,14 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           codelistUtils={codelistUtils}
           isLoading={isUnderordnetBehandlingLoading}
           processList={underOrdnetBehandlinger}
-          setProcessList={setUnderordnetBehandlinger}
+          setProcessList={onUnderordnetBehandlingerChange}
           currentProcess={currentUnderordnetBehandling}
           onChangeProcess={(id) => handleChangePanel({ id })}
           submitDeleteProcess={(processTodelete) =>
             handleDeleteProcess(
               processTodelete,
               allUnderordnetBehandlinger,
-              updateAllUnderordnetBehandlinger,
+              onUnderordnetBehandlingerChange,
               setErrorProcessModal
             )
           }
@@ -303,7 +288,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
               currentUnderordnetBehandling,
               setCurrentUnderordnetBehandling,
               allUnderordnetBehandlinger,
-              updateAllUnderordnetBehandlinger,
+              onUnderordnetBehandlingerChange,
               getProcessById,
               setErrorProcessModal,
               code,

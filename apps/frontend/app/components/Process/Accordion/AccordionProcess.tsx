@@ -558,7 +558,9 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                 codelistUtils={codelistUtils}
                                 overordnetOgVanligBehandlingList={processList}
                                 setOverordnetOgVanligBehandlingList={setProcessList}
-                                onUnderordnetBehandlingerChange={onUnderordnetBehandlingerChange}
+                                onUnderordnetBehandlingerChange={(underordnetBehandlinger) =>
+                                  onUnderordnetBehandlingerChange?.(underordnetBehandlinger)
+                                }
                               />
                             </Tabs.Panel>
                           )}
