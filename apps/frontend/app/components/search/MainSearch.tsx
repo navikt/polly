@@ -159,7 +159,8 @@ const MainSearch = () => {
   const [type, setType] = useState<TSearchType>('all')
   const navigate = useNavigate()
 
-  const useMainSearchOption = async (searchParam: string) => {
+  const useMainSearchOption = async (inputValue: string) => {
+    const searchParam = inputValue.trim()
     if (searchParam && searchParam.length > 2) {
       if (type === 'purpose') {
         return getCodelistByListnameAndType(searchParam, EListName.PURPOSE, 'Formål', codelistUtils)
@@ -417,6 +418,7 @@ const MainSearch = () => {
           loadingMessage={() => 'Søker...'}
           isClearable={false}
           styles={mainSearchSelectOverrides}
+          onInputChange={(inputValue: string) => inputValue.replace(/%20/g, ' ').trimStart()}
           onChange={(value: any) => {
             const item = value as TSearchItem
             ;(async () => {
