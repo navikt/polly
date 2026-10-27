@@ -2,7 +2,7 @@
 
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons'
 import { Heading, Tag } from '@navikt/ds-react'
-import { Ref, createRef, useEffect, useState } from 'react'
+import { Ref, useEffect, useState } from 'react'
 import { EListName, ICode } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { checkForAvvik } from '@/util/processUtils'
@@ -18,8 +18,6 @@ type TAccordionTitleProps = {
   forUnderordnetBehandlinger: boolean
   overordnetBehandling?: IProcess
 }
-
-export const InformationTypeRef = createRef<HTMLDivElement>()
 
 const AccordionTitle = (props: TAccordionTitleProps) => {
   const {

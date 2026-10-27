@@ -6,17 +6,17 @@ import { EProcessStatus, IProcessShort } from '../../../constants'
 import { env } from '../../../util/env'
 import { AuditButton } from '../../admin/audit/AuditButton'
 import Button from '../../common/Button/CustomButton'
-import { InformationTypeRef } from './AccordionTitle'
 
 interface IProcessButtonGroupProps {
   process: IProcessShort
   hasAccess: boolean
   editProcess: () => void
   deleteProcess: () => void
+  editPolicies: () => void
 }
 
 export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
-  const { process, hasAccess, editProcess, deleteProcess } = props
+  const { process, hasAccess, editProcess, deleteProcess, editPolicies } = props
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false)
   const [isExportLoading, setIsExportLoading] = useState<boolean>(false)
   const [exportError, setExportError] = useState<string>('')
@@ -129,11 +129,7 @@ export const ProcessButtonGroup = (props: IProcessButtonGroupProps) => {
                 <DocPencilIcon aria-hidden className='block' />
               </span>
             }
-            onClick={() => {
-              if (InformationTypeRef && InformationTypeRef.current) {
-                InformationTypeRef.current.scrollIntoView()
-              }
-            }}
+            onClick={editPolicies}
           >
             Rediger opplysningstyper
           </Button>

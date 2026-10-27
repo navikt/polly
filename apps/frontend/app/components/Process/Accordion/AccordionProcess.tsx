@@ -48,7 +48,7 @@ import { RequestRevisionForm } from '../../admin/revision/RequestRevisionForm'
 import Button from '../../common/Button/CustomButton'
 import AvvikTag from '../common/AvvikTag'
 import UnderordnetBehandlingList from '../underordnetBehandling/underornetBehandlingList'
-import AccordionTitle, { InformationTypeRef } from './AccordionTitle'
+import AccordionTitle from './AccordionTitle'
 import { AddBatchInformationTypesModal } from './AddBatchInformationTypesModal'
 import { AddDocumentModal } from './AddDocumentModal'
 import DeleteAllPolicyModal from './DeleteAllPolicyModal'
@@ -120,12 +120,27 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
   const purposeRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLButtonElement>(null)
   const scrollToPolicyTable = useRef(false)
+  const informationTypeRef = useRef<HTMLDivElement>(null)
+  const [selectedTab, setSelectedTab] = useState<string>()
+  const [selectedTabProcessId, setSelectedTabProcessId] = useState<string>()
+  const [editPoliciesRequest, setEditPoliciesRequest] = useState(0)
 
   const params: Readonly<Partial<TPathParams>> = useParams<TPathParams>()
   const searchParams = useSearchParams()
   const underordnetBehandlingId = searchParams.get('underordnetBehandlingId')
   const selectedProcessId = forUnderordnetBehandlinger ? underordnetBehandlingId : params.processId
   const previousUnderordnetBehandlingId = useRef(underordnetBehandlingId)
+
+  if (currentProcess && currentProcess.id !== selectedTabProcessId) {
+    setSelectedTabProcessId(currentProcess.id)
+    setSelectedTab(
+      !forUnderordnetBehandlinger &&
+        underordnetBehandlingId &&
+        currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET
+        ? 'underordnet'
+        : 'opplysninger'
+    )
+  }
   const avvikKeys = useMemo(() => {
     if (forUnderordnetBehandlinger && overordnetBehandling && currentProcess) {
       return checkForAvvikKeys(overordnetBehandling, currentProcess)
@@ -255,10 +270,18 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
             ? parseFloat(window.getComputedStyle(headerRef.current).top) || 0
             : 0
         const accordionOffset = forUnderordnetBehandlinger ? parentHeaderOffset : headerOffset + 16
-        if (scrollToPolicyTable.current && InformationTypeRef.current) {
+        if (scrollToPolicyTable.current && informationTypeRef.current) {
           scrollToPolicyTable.current = false
+          const stickyHeaderBottom = headerRef.current
+            ? (parseFloat(window.getComputedStyle(headerRef.current).top) || 0) +
+              headerRef.current.getBoundingClientRect().height
+            : headerOffset
           window.scrollTo({
-            top: InformationTypeRef.current.offsetTop - headerOffset - 16,
+            top:
+              window.scrollY +
+              informationTypeRef.current.getBoundingClientRect().top -
+              stickyHeaderBottom -
+              16,
             behavior: 'smooth',
           })
         } else if (purposeRef.current) {
@@ -277,6 +300,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     forUnderordnetBehandlinger,
     underordnetBehandlingId,
   ])
+
+  useEffect(() => {
+    if (editPoliciesRequest > 0) {
+      informationTypeRef.current?.scrollIntoView()
+    }
+  }, [editPoliciesRequest])
 
   useEffect(() => {
     ;(async () => {
@@ -360,6 +389,10 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             hasAccess={hasAccess()}
                             editProcess={() => setShowEditProcessModal(true)}
                             deleteProcess={() => setShowDeleteModal(true)}
+                            editPolicies={() => {
+                              setSelectedTab('opplysninger')
+                              setEditPoliciesRequest((request) => request + 1)
+                            }}
                           />
                           <ProcessData
                             process={currentProcess}
@@ -416,16 +449,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                           </div>
                         </div>
 
-                        <Tabs
-                          defaultValue={
-                            !forUnderordnetBehandlinger &&
-                            underordnetBehandlingId &&
-                            currentProcess.behandlingsNivaa === EBehandlingsNivaa.OVERORDNET
-                              ? 'underordnet'
-                              : 'opplysninger'
-                          }
-                          className='mt-5'
-                        >
+                        <Tabs value={selectedTab} onChange={setSelectedTab} className='mt-5'>
                           <Tabs.List>
                             <Tabs.Tab
                               value='opplysninger'
@@ -473,7 +497,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                             {hasAccess() && (
                               <div className='flex w-full mt-5 mb-3 justify-end'>
                                 <div className='gap-2'>
-                                  <div ref={InformationTypeRef} />
+                                  <div ref={informationTypeRef} />
                                   {renderAddDocumentButton()}
                                   {renderCreatePolicyButton()}
                                   {renderDeleteAllPolicyButton()}
@@ -588,7 +612,13 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               submit={(values: IPolicyFormValues) => {
                 scrollToPolicyTable.current = true
                 submitCreatePolicy(values)
-                  .then(() => setShowCreatePolicyModal(false))
+                  .then((success) => {
+                    if (success) {
+                      setShowCreatePolicyModal(false)
+                    } else {
+                      scrollToPolicyTable.current = false
+                    }
+                  })
                   .catch(() => {
                     scrollToPolicyTable.current = false
                     setShowCreatePolicyModal(true)
