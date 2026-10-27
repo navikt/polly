@@ -183,6 +183,23 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   const hasAccess = (): boolean => user.canWrite()
 
+  const scrollToInformationType = () => {
+    if (!informationTypeRef.current) return
+
+    const stickyHeaderBottom = headerRef.current
+      ? (parseFloat(window.getComputedStyle(headerRef.current).top) || 0) +
+        headerRef.current.getBoundingClientRect().height
+      : 0
+    window.scrollTo({
+      top:
+        window.scrollY +
+        informationTypeRef.current.getBoundingClientRect().top -
+        stickyHeaderBottom -
+        16,
+      behavior: 'smooth',
+    })
+  }
+
   const today: string = new Date().toISOString().split('T')[0]
 
   const renderCreatePolicyButton = () => (
@@ -272,18 +289,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
         const accordionOffset = forUnderordnetBehandlinger ? parentHeaderOffset : headerOffset + 16
         if (scrollToPolicyTable.current && informationTypeRef.current) {
           scrollToPolicyTable.current = false
-          const stickyHeaderBottom = headerRef.current
-            ? (parseFloat(window.getComputedStyle(headerRef.current).top) || 0) +
-              headerRef.current.getBoundingClientRect().height
-            : headerOffset
-          window.scrollTo({
-            top:
-              window.scrollY +
-              informationTypeRef.current.getBoundingClientRect().top -
-              stickyHeaderBottom -
-              16,
-            behavior: 'smooth',
-          })
+          scrollToInformationType()
         } else if (purposeRef.current) {
           window.scrollTo({
             top: window.scrollY + purposeRef.current.getBoundingClientRect().top - accordionOffset,
@@ -303,7 +309,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
 
   useEffect(() => {
     if (editPoliciesRequest > 0) {
-      informationTypeRef.current?.scrollIntoView()
+      scrollToInformationType()
     }
   }, [editPoliciesRequest])
 
