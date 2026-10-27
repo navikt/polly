@@ -32,7 +32,7 @@
         <docx4j.version>17.3.3</docx4j.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
 
-        <microsoft-graph.version>6.71.0</microsoft-graph.version>
+        <microsoft-graph.version>6.72.0</microsoft-graph.version>
         <msal4j.version>1.26.0</msal4j.version>
         <graphql.version>24.0</graphql.version>
 
