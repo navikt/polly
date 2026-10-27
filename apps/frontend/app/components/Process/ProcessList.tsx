@@ -302,6 +302,9 @@ const ProcessList = ({
           processList={processList}
           setProcessList={setProcessList}
           currentProcess={currentProcess}
+          onUnderordnetBehandlingerChange={(underordnetBehandlinger) =>
+            setCurrentProcess((process) => process && { ...process, underordnetBehandlinger })
+          }
           onChangeProcess={(id) => handleChangePanel({ id })}
           submitDeleteProcess={(processTodelete) =>
             handleDeleteProcess(processTodelete, processList, setProcessList, setErrorProcessModal)

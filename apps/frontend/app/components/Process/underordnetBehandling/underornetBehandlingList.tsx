@@ -43,6 +43,7 @@ type TProps = {
   codelistUtils: ICodelistProps
   overordnetOgVanligBehandlingList: IProcessShort[]
   setOverordnetOgVanligBehandlingList: (value: IProcessShort[]) => void
+  onUnderordnetBehandlingerChange?: (underordnetBehandlinger: IProcessShort[]) => void
 }
 
 const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
@@ -51,6 +52,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   codelistUtils,
   overordnetOgVanligBehandlingList,
   setOverordnetOgVanligBehandlingList,
+  onUnderordnetBehandlingerChange,
 }) => {
   const navigate = useNavigate()
   const params = useParams<TPathParams>()
@@ -58,6 +60,9 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const current_location = useLocation()
   const { section, code } = params
   const underordnetfilter = (searchParams.get('underordnetfilter') as EProcessStatus) || undefined
+  const [allUnderordnetBehandlinger, setAllUnderordnetBehandlinger] = useState<IProcessShort[]>(
+    overordnetBehandling.underordnetBehandlinger ?? []
+  )
   const [underOrdnetBehandlinger, setUnderordnetBehandlinger] = useState<IProcessShort[]>([])
   const [currentUnderordnetBehandling, setCurrentUnderordnetBehandling] = useState<
     IProcess | undefined
@@ -76,6 +81,11 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
   const [movedBehandlingLink, setMovedBehandlingLink] = useState<string>('')
   const [movedBehandlingNavn, setMovedBehandlingNavn] = useState<string>('')
   const movedBehandlingAlertRef = useRef<HTMLDivElement>(null)
+
+  const updateAllUnderordnetBehandlinger = (value: IProcessShort[]) => {
+    setAllUnderordnetBehandlinger(value)
+    onUnderordnetBehandlingerChange?.(value)
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -101,27 +111,21 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
 
   useEffect(() => {
     ;(async () => {
-      if (overordnetBehandling.underordnetBehandlinger) {
-        setUnderordnetBehandlinger(overordnetBehandling.underordnetBehandlinger)
-      }
+      setAllUnderordnetBehandlinger(overordnetBehandling.underordnetBehandlinger ?? [])
     })()
   }, [overordnetBehandling])
 
   useEffect(() => {
     ;(async () => {
-      if (overordnetBehandling.underordnetBehandlinger) {
-        if (underordnetfilter) {
-          setUnderordnetBehandlinger(
-            overordnetBehandling.underordnetBehandlinger.filter(
-              (behandling) => behandling.status === underordnetfilter
-            )
-          )
-        } else {
-          setUnderordnetBehandlinger(overordnetBehandling.underordnetBehandlinger)
-        }
+      if (underordnetfilter) {
+        setUnderordnetBehandlinger(
+          allUnderordnetBehandlinger.filter((behandling) => behandling.status === underordnetfilter)
+        )
+      } else {
+        setUnderordnetBehandlinger(allUnderordnetBehandlinger)
       }
     })()
-  }, [underordnetfilter, overordnetBehandling])
+  }, [underordnetfilter, allUnderordnetBehandlinger])
 
   const getProcessById = async (id: string) => {
     try {
@@ -188,7 +192,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
       }))
       const copiedPolicies = policyCopies.length > 0 ? await createPolicies(policyCopies) : []
 
-      setUnderordnetBehandlinger(sortProcess([...underOrdnetBehandlinger, newProcess]))
+      updateAllUnderordnetBehandlinger(sortProcess([...allUnderordnetBehandlinger, newProcess]))
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentUnderordnetBehandling({ ...newProcess, policies: copiedPolicies })
@@ -268,7 +272,7 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
         />
       </div>
 
-      {overordnetBehandling.underordnetBehandlinger?.length === 0 && (
+      {allUnderordnetBehandlinger.length === 0 && (
         <InfoCard data-color='info'>
           <InfoCard.Message icon={<InformationSquareIcon aria-hidden />}>
             Det finnes ingen underordnede behandlinger, men det er mulig å velge denne behandlingen
@@ -277,83 +281,82 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
         </InfoCard>
       )}
 
-      {overordnetBehandling.underordnetBehandlinger &&
-        overordnetBehandling.underordnetBehandlinger.length > 0 && (
-          <AccordionProcess
-            codelistUtils={codelistUtils}
-            isLoading={isUnderordnetBehandlingLoading}
-            processList={underOrdnetBehandlinger}
-            setProcessList={setUnderordnetBehandlinger}
-            currentProcess={currentUnderordnetBehandling}
-            onChangeProcess={(id) => handleChangePanel({ id })}
-            submitDeleteProcess={(processTodelete) =>
-              handleDeleteProcess(
-                processTodelete,
-                underOrdnetBehandlinger,
-                setUnderordnetBehandlinger,
-                setErrorProcessModal
-              )
-            }
-            submitEditProcess={(process: IProcessFormValues) =>
-              handleEditProcess(
-                process,
-                currentUnderordnetBehandling,
-                setCurrentUnderordnetBehandling,
-                underOrdnetBehandlinger,
-                setUnderordnetBehandlinger,
-                getProcessById,
-                setErrorProcessModal,
-                code,
-                setMovedBehandlingLink,
-                setMovedBehandlingNavn,
-                overordnetOgVanligBehandlingList,
-                setOverordnetOgVanligBehandlingList
-              )
-            }
-            submitCreatePolicy={(process: IPolicyFormValues) =>
-              handleCreatePolicy(
-                process,
-                currentUnderordnetBehandling,
-                getProcessById,
-                setErrorPolicyModal
-              )
-            }
-            submitEditPolicy={(values: IPolicyFormValues) =>
-              handleEditPolicy(
-                values,
-                currentUnderordnetBehandling,
-                setCurrentUnderordnetBehandling,
-                setErrorPolicyModal,
-                getProcessById
-              )
-            }
-            submitDeletePolicy={(values: IPolicy) =>
-              handleDeletePolicy(
-                values,
-                currentUnderordnetBehandling,
-                setCurrentUnderordnetBehandling,
-                setErrorPolicyModal
-              )
-            }
-            submitDeleteAllPolicy={(processId: string) =>
-              handleDeleteAllPolicies(
-                processId,
-                currentUnderordnetBehandling,
-                setCurrentUnderordnetBehandling,
-                setErrorPolicyModal
-              )
-            }
-            submitAddDocument={(document: IAddDocumentToProcessFormValues) =>
-              handleAddDocument(document, getProcessById, setErrorDocumentModal)
-            }
-            errorProcessModal={errorProcessModal}
-            errorPolicyModal={errorPolicyModal}
-            errorDocumentModal={errorDocumentModal}
-            forUnderordnetBehandlinger={true}
-            overordnetBehandling={overordnetBehandling}
-            overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
-          />
-        )}
+      {allUnderordnetBehandlinger.length > 0 && (
+        <AccordionProcess
+          codelistUtils={codelistUtils}
+          isLoading={isUnderordnetBehandlingLoading}
+          processList={underOrdnetBehandlinger}
+          setProcessList={setUnderordnetBehandlinger}
+          currentProcess={currentUnderordnetBehandling}
+          onChangeProcess={(id) => handleChangePanel({ id })}
+          submitDeleteProcess={(processTodelete) =>
+            handleDeleteProcess(
+              processTodelete,
+              allUnderordnetBehandlinger,
+              updateAllUnderordnetBehandlinger,
+              setErrorProcessModal
+            )
+          }
+          submitEditProcess={(process: IProcessFormValues) =>
+            handleEditProcess(
+              process,
+              currentUnderordnetBehandling,
+              setCurrentUnderordnetBehandling,
+              allUnderordnetBehandlinger,
+              updateAllUnderordnetBehandlinger,
+              getProcessById,
+              setErrorProcessModal,
+              code,
+              setMovedBehandlingLink,
+              setMovedBehandlingNavn,
+              overordnetOgVanligBehandlingList,
+              setOverordnetOgVanligBehandlingList
+            )
+          }
+          submitCreatePolicy={(process: IPolicyFormValues) =>
+            handleCreatePolicy(
+              process,
+              currentUnderordnetBehandling,
+              getProcessById,
+              setErrorPolicyModal
+            )
+          }
+          submitEditPolicy={(values: IPolicyFormValues) =>
+            handleEditPolicy(
+              values,
+              currentUnderordnetBehandling,
+              setCurrentUnderordnetBehandling,
+              setErrorPolicyModal,
+              getProcessById
+            )
+          }
+          submitDeletePolicy={(values: IPolicy) =>
+            handleDeletePolicy(
+              values,
+              currentUnderordnetBehandling,
+              setCurrentUnderordnetBehandling,
+              setErrorPolicyModal
+            )
+          }
+          submitDeleteAllPolicy={(processId: string) =>
+            handleDeleteAllPolicies(
+              processId,
+              currentUnderordnetBehandling,
+              setCurrentUnderordnetBehandling,
+              setErrorPolicyModal
+            )
+          }
+          submitAddDocument={(document: IAddDocumentToProcessFormValues) =>
+            handleAddDocument(document, getProcessById, setErrorDocumentModal)
+          }
+          errorProcessModal={errorProcessModal}
+          errorPolicyModal={errorPolicyModal}
+          errorDocumentModal={errorDocumentModal}
+          forUnderordnetBehandlinger={true}
+          overordnetBehandling={overordnetBehandling}
+          overordnetBehandlingUtleveringer={overordnetBehandlingUtleveringer}
+        />
+      )}
 
       {showCreateProcessModal && (
         <ModalProcess

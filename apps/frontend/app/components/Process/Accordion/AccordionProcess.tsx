@@ -80,6 +80,7 @@ type TAccordionProcessProps = {
   forUnderordnetBehandlinger: boolean
   overordnetBehandling?: IProcess
   overordnetBehandlingUtleveringer?: IDisclosure[]
+  onUnderordnetBehandlingerChange?: (underordnetBehandlinger: IProcessShort[]) => void
 }
 
 const AccordionProcess = (props: TAccordionProcessProps) => {
@@ -103,6 +104,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
     forUnderordnetBehandlinger,
     overordnetBehandling,
     overordnetBehandlingUtleveringer,
+    onUnderordnetBehandlingerChange,
   } = props
   const history: TNavigateFunction = useNavigate()
   const user: IUserContext = useContext(UserContext)
@@ -556,6 +558,7 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                 codelistUtils={codelistUtils}
                                 overordnetOgVanligBehandlingList={processList}
                                 setOverordnetOgVanligBehandlingList={setProcessList}
+                                onUnderordnetBehandlingerChange={onUnderordnetBehandlingerChange}
                               />
                             </Tabs.Panel>
                           )}
