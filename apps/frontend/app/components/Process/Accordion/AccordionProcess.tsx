@@ -468,7 +468,12 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                     avvikKeys.includes('policies') && (
                                       <AvvikTag marginRight marginTop />
                                     )}
-                                  Opplysningstyper ({currentProcess.policies.length})
+                                  Opplysningstyper (
+                                  {currentProcess.usesAllInformationTypes &&
+                                  currentProcess.policies.length === 0
+                                    ? '?'
+                                    : currentProcess.policies.length}
+                                  )
                                 </span>
                               }
                             />
