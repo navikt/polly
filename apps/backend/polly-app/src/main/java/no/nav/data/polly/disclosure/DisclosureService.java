@@ -7,9 +7,11 @@ import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
+import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,6 +21,11 @@ public class DisclosureService {
     private final DisclosureRepository repository;
     private final AlertService alertService;
 
+
+    @Transactional
+    public List<Disclosure> getAllDisclosures() {
+        return repository.findAll();
+    }
 
     @Transactional
     public Disclosure save(DisclosureRequest request) {

@@ -107,6 +107,13 @@
             <version>2.11.6</version>
         </dependency>
 
+        <!--Excel export -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
         <!-- Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -145,6 +152,10 @@
                 <exclusion>
                     <groupId>com.google.errorprone</groupId>
                     <artifactId>error_prone_annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-collections4</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

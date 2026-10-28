@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.integration.nom.NomGraphClient;
@@ -23,6 +24,8 @@ import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
@@ -31,12 +34,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 
+@Slf4j
 @RestController
 @RequestMapping("/export")
 @Tag(name = "Export", description = "REST API for exports")
@@ -50,6 +55,7 @@ public class ExportController {
     private final ProcessRepository processRepository;
     private final CodelistRequestValidator codelistRequestValidator;
     private final ProcessToDocx processToDocx;
+    private final DisclosureToExcel disclosureToExcel;
     private final TeamService teamService;
     private final NomGraphClient nomGraphClient;
 
@@ -157,6 +163,23 @@ public class ExportController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=archive.zip");
         StreamUtils.copy(zipFile, response.getOutputStream());
         response.flushBuffer();
+    }
+
+    @Operation(summary = "Get export for all disclosure")
+    @ApiResponse(description = "Doc fetched")
+    @GetMapping(value = "/disclosure/alldisclosure")
+    public ResponseEntity<byte[]> getExportForAllDisclosure() {
+        log.info("Exporting all disclosure in excel format");
+        ByteArrayOutputStream excelFile = disclosureToExcel.generateExcelForAllDisclosure();
+
+        String filename = "disclosureExport.xlsx";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment", filename);
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelFile.toByteArray());
     }
 
     private String cleanCodelistName(ListName listName, String codelist) {
