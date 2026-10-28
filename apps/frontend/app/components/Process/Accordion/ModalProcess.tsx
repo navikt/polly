@@ -458,8 +458,8 @@ const ModalProcess = ({
                         <InfoCard data-color='info' className='mb-5'>
                           <InfoCard.Message icon={<InformationSquare aria-hidden />}>
                             <strong>
-                              Nå som du har fjernet kobling til overordnet behandling, kan du
-                              vurdere om det også blir riktig å endre behandlingsaktivitet.
+                              Du er nå i ferd med å fjerne koblingen til overordnet behandling. Du
+                              kan vurdere om det også blir riktig å endre behandlingsaktivitet.
                             </strong>
                           </InfoCard.Message>
                         </InfoCard>
