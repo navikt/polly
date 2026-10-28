@@ -70,7 +70,7 @@ public class DisclosureToExcel {
                 row.createCell(7).setCellValue(disclosure.getDocumentId() != null ? disclosure.getDocumentId().toString() : "");
                 row.createCell(8).setCellValue(disclosure.getLegalBases().stream().sorted(Comparator.comparing(lb -> lb.getGdpr().getShortName())).map(lb -> lb.getGdpr().getShortName()).toList().toString());
                 row.createCell(9).setCellValue(Boolean.TRUE.equals(disclosure.getAbroad().getAbroad()) ? "Ja" : "Nei");
-                row.createCell(10).setCellValue(disclosure.getAssessedConfidentiality() != null ? disclosure.getAssessedConfidentiality().toString() : "Ikke angitt");
+                row.createCell(10).setCellValue(disclosure.getAssessedConfidentiality() != null ?  disclosure.getAssessedConfidentiality() ? "Ja" : "Nei" : "Ikke angitt");
                 row.createCell(11).setCellValue(disclosure.getConfidentialityDescription() != null ? disclosure.getConfidentialityDescription() : "Ikke angitt");
                 row.createCell(12).setCellValue(disclosure.getNomDepartmentName() != null ? disclosure.getNomDepartmentName() : "");
                 row.createCell(13).setCellValue(disclosure.getProductTeams() != null ? String.join(", ", disclosure.getProductTeams()) : "");
