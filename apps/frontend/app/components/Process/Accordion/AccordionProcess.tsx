@@ -490,8 +490,8 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
                                 <InfoCard.Message
                                   icon={<ExclamationmarkTriangleIcon aria-hidden />}
                                 >
-                                  Dere må sjekke om opplysningstypene og enkelte opplysninger
-                                  stemmer for deres behandling
+                                  Dere må sjekke om opplysningstypene som er lagt til stemmer for
+                                  deres behandling.
                                 </InfoCard.Message>
                               </InfoCard>
                             )}
