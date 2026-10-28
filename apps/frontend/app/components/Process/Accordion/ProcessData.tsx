@@ -183,7 +183,9 @@ const ProcessData = (props: IProcessDataProps) => {
       <DataText
         label='Behandlingsnummer'
         text={'B' + process.number}
-        labelMarginLeft={forUnderordnetBehandlinger && !!overordnetBehandling}
+        labelMarginLeft={
+          forUnderordnetBehandlinger && !!overordnetBehandling && avvikKeys.length > 0
+        }
       />
 
       <DataText

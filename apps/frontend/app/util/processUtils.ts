@@ -361,6 +361,7 @@ export const genUnderordnetProcessPath = (
 
 const ignoredProcessFields = new Set([
   'id',
+  'version',
   'name',
   'number',
   'changeStamp',
