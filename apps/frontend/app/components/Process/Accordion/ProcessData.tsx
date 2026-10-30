@@ -584,7 +584,9 @@ const ProcessData = (props: IProcessDataProps) => {
               </Link>
               <BodyLong className='mb-3'>
                 {pvkVurderingToText(pvkDokument.pvkVurdering)}
-                {pvkDokument.pvkVurdering !== EPvkVurdering.ALLEREDE_UTFORT &&
+                {![EPvkVurdering.ALLEREDE_UTFORT, EPvkVurdering.SKAL_IKKE_UTFORE].includes(
+                  pvkDokument.pvkVurdering
+                ) &&
                   ` (${getPvkDokumentStatus(pvkDokument.status, pvkDokument.hasPvkDocumentationStarted)})`}
               </BodyLong>
             </div>
