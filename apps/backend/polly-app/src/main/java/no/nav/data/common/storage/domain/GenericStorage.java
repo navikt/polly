@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -36,7 +36,9 @@ public class GenericStorage extends Auditable {
 
     @Id
     @Column(name = "ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -67,14 +69,6 @@ public class GenericStorage extends Auditable {
     public GenericStorage(GenericStorageData data) {
         id = UUID.randomUUID();
         setDataObject(data);
-    }
-
-    public static class GenericStorageBuilder {
-
-        public GenericStorageBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
     }
 
     public AlertEvent toAlertEvent() {

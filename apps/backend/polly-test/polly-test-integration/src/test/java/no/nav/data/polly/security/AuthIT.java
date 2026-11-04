@@ -28,6 +28,6 @@ public class AuthIT extends IntegrationTestBase {
     }
 
     private Auth createAuth(String s, LocalDateTime now) {
-        return Auth.builder().generateId().encryptedRefreshToken("a").initiated(LocalDateTime.now().minusDays(2)).userId(s).lastActive(now).build();
+        return Auth.builder().encryptedRefreshToken("a").initiated(LocalDateTime.now().minusDays(2)).userId(s).lastActive(now).build();
     }
 }

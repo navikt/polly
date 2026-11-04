@@ -18,7 +18,6 @@ class InformationTypeRepoIT extends IntegrationTestBase {
     @Test
     void save() {
         InformationType type = InformationType.builder()
-                .generateId()
                 .data(InformationTypeData.builder()
                         .name("name")
                         .description("desc")

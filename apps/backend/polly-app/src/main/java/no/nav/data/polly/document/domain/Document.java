@@ -24,7 +24,7 @@ import org.hibernate.annotations.Type;
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +34,9 @@ public class Document extends Auditable {
 
     @Id
     @Column(name = "DOCUMENT_ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Valid
     @NotNull
@@ -60,10 +62,4 @@ public class Document extends Auditable {
         return new UsedInInstance(id.toString(), data.getName());
     }
 
-    public static class DocumentBuilder {
-        public Document.DocumentBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
-    }
 }

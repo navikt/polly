@@ -37,7 +37,7 @@ public class StorageService {
     }
 
     private GenericStorage create(StorageType type) {
-        return repository.save(GenericStorage.builder().generateId().type(type).data(JsonNodeFactory.instance.objectNode()).build());
+        return repository.save(GenericStorage.builder().type(type).data(JsonNodeFactory.instance.objectNode()).build());
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class StorageService {
 
     @Transactional
     public void save(GenericStorageData data) {
-        var storage = GenericStorage.builder().generateId().build();
+        var storage = new GenericStorage();
         storage.setDataObject(data);
         repository.save(storage);
     }

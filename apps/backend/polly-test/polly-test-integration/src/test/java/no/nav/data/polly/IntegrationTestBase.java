@@ -32,7 +32,6 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.BehandlingsNivaa;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
@@ -45,16 +44,24 @@ import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.sub.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
-import no.nav.data.polly.process.dto.sub.*;
+import no.nav.data.polly.process.dto.sub.AffiliationRequest;
+import no.nav.data.polly.process.dto.sub.AffiliationResponse;
+import no.nav.data.polly.process.dto.sub.AiUsageDescriptionRequest;
+import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
+import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
+import no.nav.data.polly.process.dto.sub.DpiaRequest;
+import no.nav.data.polly.process.dto.sub.DpiaResponse;
+import no.nav.data.polly.process.dto.sub.RetentionRequest;
+import no.nav.data.polly.process.dto.sub.RetentionResponse;
 import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.processor.dto.ProcessorRequest;
+import no.nav.data.polly.teams.teamcat.TeamcatTeamClient;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.test.TestConfig;
 import no.nav.data.polly.test.TestConfig.MockFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import no.nav.data.polly.teams.teamcat.TeamcatTeamClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -66,7 +73,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
+// FIXME import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -98,7 +106,7 @@ public abstract class IntegrationTestBase {
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.3");
+    private static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.3");
     @Autowired
     protected TransactionTemplate transactionTemplate;
     @Autowired
@@ -184,7 +192,6 @@ public abstract class IntegrationTestBase {
 
     protected Policy createPolicy(String purpose, String subjectCategory, List<LegalBasis> legalBases) {
         return Policy.builder()
-                .generateId()
                 .data(PolicyData.builder()
                         .purpose(purpose)
                         .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
@@ -239,7 +246,6 @@ public abstract class IntegrationTestBase {
     protected Process createProcess(String name, String purpose, String department, String subDepartment, List<LegalBasis> legalBases, String product,
             String commonExternalProcessResponsible, String transferGroundsOutsideEU) {
         return processRepository.save(Process.builder()
-                .generateId()
                 .behandlingsNivaa(BehandlingsNivaa.VANLIG)
                 .data(ProcessData.builder()
                         .name(name)
@@ -264,7 +270,6 @@ public abstract class IntegrationTestBase {
     protected DpProcess createDpProcess(String department, String subDepartment, String product,
             String externalProcessResponsible, String transferGroundsOutsideEU) {
         return dpProcessRepository.save(DpProcess.builder()
-                .generateId()
                 .data(DpProcessData.builder()
                         .name("dpnavn")
                         .start(LocalDate.now()).end(LocalDate.now())
@@ -285,7 +290,7 @@ public abstract class IntegrationTestBase {
     protected Process createAndSaveProcess(String purpose) {
         return process.computeIfAbsent(purpose,
                 (p) -> processRepository
-                        .save(Process.builder().generateId()
+                        .save(Process.builder()
                                 .behandlingsNivaa(BehandlingsNivaa.VANLIG)
                                 .data(ProcessData.builder()
                                         .name("Auto_" + purpose).purpose(purpose)
@@ -361,7 +366,6 @@ public abstract class IntegrationTestBase {
 
     protected Disclosure createDisclosure(String recipientCode, String gdpr, String nationalLaw) {
         return Disclosure.builder()
-                .generateId()
                 .data(DisclosureData.builder()
                         .description("disc desc")
                         .recipient(recipientCode)
@@ -374,7 +378,6 @@ public abstract class IntegrationTestBase {
 
     protected Document createDocument(String subjectCategory, UUID informationTypeId) {
         return Document.builder()
-                .generateId()
                 .data(DocumentData.builder()
                         .name("doc name")
                         .description("doc desc")

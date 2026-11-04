@@ -36,14 +36,16 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"policies"})
-@EqualsAndHashCode(callSuper = false, exclude = {"policies"})
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "INFORMATION_TYPE")
 public class InformationType extends Auditable {
 
     @Id
     @Column(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Builder.Default
     @Valid
@@ -111,14 +113,6 @@ public class InformationType extends Auditable {
 
     public void preUpdate() {
         data.setSuggest(data.getName() + " " + String.join(" ", data.getKeywords()) + " " + StringUtils.trimToEmpty(data.getDescription()));
-    }
-
-    public static class InformationTypeBuilder {
-
-        public InformationTypeBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
     }
 
 }

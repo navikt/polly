@@ -14,6 +14,7 @@ import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.ProductAreaResponse;
 import no.nav.data.polly.teams.dto.Resource;
 import no.nav.data.polly.teams.dto.TeamResponse;
+import org.apache.commons.lang3.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,6 @@ import java.util.stream.Stream;
 import static java.util.Comparator.comparing;
 import static no.nav.data.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.common.utils.StreamUtils.convert;
-import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 @Slf4j
 @RestController
@@ -74,7 +74,7 @@ public class TeamController {
         if (name.length() < 3) {
             throw new ValidationException("Search teams must be at least 3 characters");
         }
-        var teams = StreamUtils.filter(teamsService.getAllTeams(), team -> containsIgnoreCase(team.getName(), name));
+        var teams = StreamUtils.filter(teamsService.getAllTeams(), team -> Strings.CI.contains(team.getName(), name));
         teams.sort(comparing(Team::getName, startsWith(name)));
         log.info("Returned {} teams", teams.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(teams, TeamResponse::buildFrom)), HttpStatus.OK);
@@ -110,7 +110,7 @@ public class TeamController {
         if (name.length() < 3) {
             throw new ValidationException("Search product area must be at least 3 characters");
         }
-        var pas = StreamUtils.filter(teamsService.getAllProductAreas(), pa -> containsIgnoreCase(pa.getName(), name));
+        var pas = StreamUtils.filter(teamsService.getAllProductAreas(), pa -> Strings.CI.contains(pa.getName(), name));
         pas.sort(comparing(ProductArea::getName, startsWith(name)));
         log.info("Returned {} pas", pas.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(pas, ProductAreaResponse::buildFrom)), HttpStatus.OK);

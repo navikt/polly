@@ -23,7 +23,7 @@ import java.util.UUID;
 @Table(name = "CODELIST")
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(Codelist.IdClass.class)
@@ -32,10 +32,12 @@ public class Codelist extends Auditable {
     @Id
     @Column(name = "LIST_NAME")
     @Enumerated(EnumType.STRING)
+    @EqualsAndHashCode.Include
     private ListName list;
 
     @Id
     @Column(name = "CODE")
+    @EqualsAndHashCode.Include
     private String code;
 
     @Column(name = "SHORT_NAME")

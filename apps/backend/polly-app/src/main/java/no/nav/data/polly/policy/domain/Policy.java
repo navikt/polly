@@ -38,7 +38,7 @@ import static no.nav.data.polly.codelist.CodelistStaticService.getCodelistRespon
 @Data
 @Builder
 @ToString(exclude = {"informationType", "process"})
-@EqualsAndHashCode(callSuper = false, exclude = {"informationType", "process"})
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -47,7 +47,9 @@ public class Policy extends Auditable {
 
     @Id
     @Column(name = "POLICY_ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Valid
     @NotNull
@@ -122,11 +124,6 @@ public class Policy extends Auditable {
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class PolicyBuilder {
-
-        public PolicyBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
 
         public PolicyBuilder informationType(InformationType informationType) {
             this.informationType = informationType;

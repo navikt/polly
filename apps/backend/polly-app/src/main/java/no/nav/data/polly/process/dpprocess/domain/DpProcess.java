@@ -32,7 +32,7 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.polly.process.dpprocess.domain.sub.DpRetention.convertRetention;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,7 +42,9 @@ public class DpProcess extends Auditable {
 
     @Id
     @Column(name = "DP_PROCESS_ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Valid
     @Builder.Default
@@ -58,7 +60,6 @@ public class DpProcess extends Auditable {
     // TODO: Snu avhengigheten innover
     public DpProcess convertFromRequest(DpProcessRequest request) {
         if (!request.isUpdate()) {
-            id = UUID.randomUUID();
             data.setDpProcessNumber(request.getNewDpProcessNmber());
         }
         data.setName(request.getName());
@@ -99,8 +100,6 @@ public class DpProcess extends Auditable {
                 .build();
     }
 
-    // TODO: Snu avhengigheten innover
-    // TODO: Skal ikke ha kall til service her.
     private CodelistResponse getExternalProcessResponsibleCodeResponse() {
         return CodelistStaticService.getCodelistResponse(ListName.THIRD_PARTY, data.getExternalProcessResponsible());
     }
@@ -108,16 +107,6 @@ public class DpProcess extends Auditable {
     // TODO: Snu avhengigheten innover
     public DpProcessShortResponse convertToShortResponse() {
         return new DpProcessShortResponse(id, data.getName(), AffiliationResponse.buildFrom(data.getAffiliation()));
-    }
-
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    public static class DpProcessBuilder {
-
-        public DpProcessBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
-
     }
 
 }

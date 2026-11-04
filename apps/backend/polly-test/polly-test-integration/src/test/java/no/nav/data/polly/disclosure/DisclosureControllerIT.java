@@ -299,7 +299,6 @@ class DisclosureControllerIT extends IntegrationTestBase {
     private Document createAndSaveDocument() {
         InformationType infoType = createAndSaveInformationType();
         var document = Document.builder()
-                .generateId()
                 .data(DocumentData.builder()
                         .name("doc 1")
                         .description("desc")

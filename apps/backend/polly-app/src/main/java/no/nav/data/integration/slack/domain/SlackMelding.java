@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Denne klassen inneholder en slack melding som skal sendes.
  * Meldingene persisteres i en arbeidstabell og slettes når de er sendt.
+ * Merk: hashcode basert på mutable felt. Ikke put i Set eller Map uten å ta høyde for det.
  */
 @Data
 @Builder

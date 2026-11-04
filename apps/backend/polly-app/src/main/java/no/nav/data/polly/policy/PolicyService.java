@@ -25,7 +25,7 @@ public class PolicyService {
     public List<Policy> create(List<PolicyRequest> policyRequests) {
         List<Policy> policies = new ArrayList<>();
         for (PolicyRequest request : policyRequests) {
-            Policy policy = Policy.builder().generateId().build().copyFieldsFrom(request);
+            Policy policy = new Policy().copyFieldsFrom(request);
             policies.add(policy);
         }
         return saveAll(policies);

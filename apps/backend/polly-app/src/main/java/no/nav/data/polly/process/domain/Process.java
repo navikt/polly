@@ -13,9 +13,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import kotlin.uuid.Uuid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.common.auditing.domain.Auditable;
@@ -39,7 +41,6 @@ import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,6 +53,7 @@ import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 @Data
 @Builder
 @ToString(exclude = {"policies"})
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -60,7 +62,9 @@ public class Process extends Auditable {
 
     @Id
     @Column(name = "PROCESS_ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Valid
     @Builder.Default
@@ -143,7 +147,6 @@ public class Process extends Auditable {
     // TODO: Snu avhengigheten innover
     public Process copyFieldsFrom(ProcessRequest request) {
         if (!request.isUpdate()) {
-            id = UUID.randomUUID();
             data.setNumber(request.getNewProcessNumber());
         }
 
@@ -211,27 +214,4 @@ public class Process extends Auditable {
         return policyCs.isPresent() && policyCs.get().getLastModifiedDate().isAfter(cs.getLastModifiedDate()) ? policyCs.get() : cs;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof Process process)) return false;
-        return id == process.id; // TODO: Helt feil implementering i nesten alle tilfeller
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    public static class ProcessBuilder {
-
-        public ProcessBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
-
-    }
 }
