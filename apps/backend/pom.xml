@@ -33,6 +33,7 @@
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
 
         <microsoft-graph.version>6.72.0</microsoft-graph.version>
+        <microsoft-kiota.version>1.10.4</microsoft-kiota.version>
         <msal4j.version>1.26.0</msal4j.version>
         <graphql.version>24.0</graphql.version>
 
@@ -86,7 +87,7 @@
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-abstractions</artifactId>
-                <version>1.10.3</version>
+                <version>${microsoft-kiota.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.azure</groupId>
@@ -96,32 +97,32 @@
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-json</artifactId>
-                <version>1.10.3</version>
+                <version>${microsoft-kiota.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-form</artifactId>
-                <version>1.10.3</version>
+                <version>${microsoft-kiota.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-multipart</artifactId>
-                <version>1.10.3</version>
+                <version>${microsoft-kiota.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-serialization-text</artifactId>
-                <version>1.10.3</version>
+                <version>${microsoft-kiota.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-authentication-azure</artifactId>
-                <version>1.10.3</version>
+                <version>${microsoft-kiota.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.kiota</groupId>
                 <artifactId>microsoft-kiota-http-okHttp</artifactId>
-                <version>1.10.3</version>
+                <version>${microsoft-kiota.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
