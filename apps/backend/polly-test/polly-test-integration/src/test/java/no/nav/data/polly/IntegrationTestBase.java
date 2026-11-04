@@ -74,7 +74,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.postgresql.PostgreSQLContainer;
-// FIXME import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
 import java.util.HashMap;
