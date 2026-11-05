@@ -149,7 +149,6 @@ public class DocxTest {
 
     private Process createProcess() {
         return Process.builder()
-                .generateId()
                 .data(ProcessData.builder()
                         .name("Saksbehandling")
                         .number(245)
@@ -195,7 +194,6 @@ public class DocxTest {
 
                 .policies(Set.of(
                         Policy.builder()
-                                .generateId()
                                 .informationTypeName("Falsk identitet")
                                 .data(PolicyData.builder()
                                         .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
@@ -206,7 +204,6 @@ public class DocxTest {
                                         .build())
                                 .build(),
                         Policy.builder()
-                                .generateId()
                                 .informationTypeName("Personnavn")
                                 .data(PolicyData.builder()
                                         .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)

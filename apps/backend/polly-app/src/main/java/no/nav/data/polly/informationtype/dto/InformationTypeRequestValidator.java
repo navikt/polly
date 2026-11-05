@@ -1,22 +1,13 @@
 package no.nav.data.polly.informationtype.dto;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.NotFoundException;
-import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
-import no.nav.data.polly.alert.AlertService;
-import no.nav.data.polly.disclosure.domain.Disclosure;
-import no.nav.data.polly.disclosure.domain.DisclosureRepository;
-import no.nav.data.polly.document.domain.Document;
-import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.term.TermService;
 import org.springframework.stereotype.Component;
@@ -25,10 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
-import static java.util.stream.Collectors.toList;
-import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 
 @Component

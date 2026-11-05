@@ -33,7 +33,6 @@ class TemplateServiceTest {
 
         var html = templateService.needsRevision(List.of(
                 Process.builder()
-                        .generateId()
                         .data(ProcessData.builder()
                                 .purpose("KONTROLL")
                                 .name("name 1")
@@ -41,7 +40,6 @@ class TemplateServiceTest {
                                 .build())
                         .build(),
                 Process.builder()
-                        .generateId()
                         .data(ProcessData.builder()
                                 .purpose("AAP")
                                 .name("name 2")

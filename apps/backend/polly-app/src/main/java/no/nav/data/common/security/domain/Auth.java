@@ -8,6 +8,7 @@ import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.security.Encryptor;
 import org.springframework.util.Assert;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -25,7 +27,9 @@ public class Auth {
 
     @Id
     @Column(name = "ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Column(name = "USER_ID")
     private String userId;
@@ -69,11 +73,4 @@ public class Auth {
         return encryptedRefreshToken;
     }
 
-    public static class AuthBuilder {
-
-        public AuthBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
-    }
 }

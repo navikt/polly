@@ -34,7 +34,7 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -43,7 +43,9 @@ public class Disclosure extends Auditable {
 
     @Id
     @Column(name = "DISCLOSURE_ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Valid
     @NotNull
@@ -54,9 +56,6 @@ public class Disclosure extends Auditable {
 
     // TODO: Snu avhengigheten innover
     public Disclosure convertFromRequest(DisclosureRequest request) {
-        if (!request.isUpdate()) {
-            setId(UUID.randomUUID());
-        }
         data.setName(request.getName());
         data.setDescription(request.getDescription());
         data.setRecipient(request.getRecipient());
@@ -122,11 +121,4 @@ public class Disclosure extends Auditable {
                 .build();
     }
 
-    public static class DisclosureBuilder {
-
-        public DisclosureBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
-    }
 }

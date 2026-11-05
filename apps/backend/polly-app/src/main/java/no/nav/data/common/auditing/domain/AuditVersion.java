@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.auditing.event.EventResponse;
@@ -33,6 +34,7 @@ import java.util.stream.StreamSupport;
 
 @Data
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -42,6 +44,7 @@ public class AuditVersion {
 
     @Id
     @Column(name = "AUDIT_ID")
+    @EqualsAndHashCode.Include
     @Builder.Default
     private UUID id = UUID.randomUUID();
 

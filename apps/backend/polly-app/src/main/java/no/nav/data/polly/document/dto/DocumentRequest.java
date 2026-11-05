@@ -59,9 +59,7 @@ public class DocumentRequest implements RequestElement {
         var db = Document.builder();
         if (id != null) {
             db.id(no.nav.data.common.utils.StringUtils.toUUID(id));
-        } else if (!isUpdate()) {
-            db.generateId();
-        } else {
+        } else if (isUpdate()) {
             throw new IllegalArgumentException("Update request without id of existing Document");
         }
         return db

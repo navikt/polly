@@ -22,7 +22,7 @@ import java.util.UUID;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,7 +32,9 @@ public class Processor extends Auditable {
 
     @Id
     @Column(name = "PROCESSOR_ID")
-    private UUID id;
+    @EqualsAndHashCode.Include
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Valid
     @Builder.Default
@@ -43,16 +45,11 @@ public class Processor extends Auditable {
 
     // TODO: Snu avhengigheten innover
     public Processor convertFromRequest(ProcessorRequest request) {
-        if (!request.isUpdate()) {
-            id = UUID.randomUUID();
-        }
-
         data.setName(request.getName());
         data.setContract(request.getContract());
         data.setContractOwner(request.getContractOwner());
         data.setOperationalContractManagers(copyOf(request.getOperationalContractManagers()));
         data.setNote(request.getNote());
-
         data.setOutsideEU(request.getOutsideEU());
         data.setTransferGroundsOutsideEU(request.getTransferGroundsOutsideEU());
         data.setTransferGroundsOutsideEUOther(request.getTransferGroundsOutsideEUOther());
@@ -66,13 +63,4 @@ public class Processor extends Auditable {
         return new UsedInInstance(id.toString(), data.getName());
     }
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    public static class ProcessorBuilder {
-
-        public ProcessorBuilder generateId() {
-            id = UUID.randomUUID();
-            return this;
-        }
-
-    }
 }

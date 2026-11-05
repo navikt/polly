@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.integration.slack.domain.SlackMeldingData;
 import tools.jackson.databind.JsonNode;

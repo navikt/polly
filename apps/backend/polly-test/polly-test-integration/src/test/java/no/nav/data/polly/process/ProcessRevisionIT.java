@@ -121,7 +121,6 @@ class ProcessRevisionIT extends IntegrationTestBase {
 
     private Process createProcess() {
         return processRepository.save(Process.builder()
-                .generateId()
                 .data(ProcessData.builder()
                         .name("Name")
                         .purpose(PURPOSE_CODE1)

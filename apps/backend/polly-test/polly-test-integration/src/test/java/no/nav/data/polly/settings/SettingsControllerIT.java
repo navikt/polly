@@ -22,7 +22,7 @@ public class SettingsControllerIT extends IntegrationTestBase {
     @Test
     void getSettings() {
         Settings settings = Settings.builder().defaultProcessDocument("4f02253c-bbba-4a8e-8c47-15fc32fcc373").build();
-        genericStorageRepository.save(GenericStorage.builder().generateId().type(StorageType.SETTINGS).data(JsonUtils.toJsonNode(settings)).build());
+        genericStorageRepository.save(GenericStorage.builder().type(StorageType.SETTINGS).data(JsonUtils.toJsonNode(settings)).build());
         assertGetSettings(settings);
     }
 
