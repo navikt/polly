@@ -1,5 +1,5 @@
 import { InformationSquareIcon } from '@navikt/aksel-icons'
-import { InfoCard, List, ReadMore } from '@navikt/ds-react'
+import { InfoCard, Link, List, ReadMore } from '@navikt/ds-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 import { convertDisclosureToFormValues, updateDisclosure } from '@/api/DisclosureApi'
@@ -231,7 +231,17 @@ const UnderordnetBehandlingList: FunctionComponent<TProps> = ({
           </List.Item>
         </List>
         Koblingen oppretter du ved å redigere den behandlingen som skal bli underordnet denne. Les
-        mer om overordnede og underordnede behandlinger (åpner i en ny fane).
+        mer om{' '}
+        <Link
+          href={
+            'https://navikt.github.io/naka/behandlingskatalog#32overordnet-og-underordnet-behandling'
+          }
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          overordnede og underordnede behandlinger (åpner i en ny fane)
+        </Link>
+        .
       </ReadMore>
 
       {movedBehandlingLink !== '' && (
