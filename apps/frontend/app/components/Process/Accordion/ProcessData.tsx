@@ -11,10 +11,11 @@ import {
   Tooltip,
 } from '@navikt/ds-react'
 import { isEqual, isNil, sortBy, sum, uniqBy } from 'lodash'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 import { getPvkDokumentForBehandling } from '@/api/EtterlevelseApi'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
+import { UserContext } from '@/provider/userProvider'
 import { avvikCheck, checkForAvvikKeys, organiseringAvvikCheck } from '@/util/processUtils'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
 import { getResourceById } from '../../../api/GetAllApi'
@@ -115,6 +116,7 @@ interface IProcessDataProps {
 }
 
 const ProcessData = (props: IProcessDataProps) => {
+  const user = useContext(UserContext)
   const {
     process,
     disclosures,
@@ -592,7 +594,7 @@ const ProcessData = (props: IProcessDataProps) => {
             </div>
           ))}
 
-        {showDpiaRequiredField(process.dpia)}
+        {user.isAdmin() && showDpiaRequiredField(process.dpia)}
       </DataText>
 
       {process.affiliation.disclosureDispatchers.length !== 0 && (
