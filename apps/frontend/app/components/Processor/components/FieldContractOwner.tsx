@@ -2,15 +2,11 @@
 
 import { Field, FieldProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import AsyncSelect from 'react-select/async'
 import { getResourceById, useTeamResourceSearchOptions } from '../../../api/TeamApi'
 import { IProcessorFormValues, ITeamResource } from '../../../constants'
-import {
-  DropdownIndicator,
-  noOptionMessage,
-  selectOverrides,
-} from '../../common/AsyncSelectComponents'
+import CustomSearchSelect from '../../common/AsyncSelectComponents'
 import { LabelWithDescription } from '../../common/LabelWithTooltip'
+import { RenderTagList } from '../../common/RenderTagList'
 
 type TFieldContractOwnerProps = {
   formikBag: FormikProps<IProcessorFormValues>
@@ -50,35 +46,31 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
       />
       <Field name='contractOwner'>
         {({ form }: FieldProps<string, IProcessorFormValues>) => (
-          <AsyncSelect
-            className='w-full'
-            aria-label='Avtaleeier'
-            inputId='contractOwner'
-            instanceId='contractOwner'
-            placeholder=''
-            components={{ DropdownIndicator }}
-            noOptionsMessage={({ inputValue }) => noOptionMessage(inputValue)}
-            controlShouldRenderValue={true}
-            loadingMessage={() => 'Søker...'}
-            isClearable={!!form.values.contractOwner}
-            loadOptions={useTeamResourceSearchOptions}
-            onChange={(option: any) => {
-              if (option) {
-                form.setFieldValue('contractOwner', option.value).finally()
-                setSelected(option)
-                return
-              }
-
-              form.setFieldValue('contractOwner', '').finally()
-              setDisplayName(undefined)
-              setSelected(null)
-            }}
-            styles={selectOverrides}
-            value={
-              selected ||
-              (displayName ? { value: displayName.navIdent, label: displayName.fullName } : null)
-            }
-          />
+          <>
+            <CustomSearchSelect
+              ariaLabel='Avtaleeier'
+              placeholder=''
+              inputId='contractOwner'
+              instanceId='contractOwner'
+              onChange={(option: any) => {
+                if (option?.value) {
+                  form.setFieldValue('contractOwner', option.value).finally()
+                  setSelected(option)
+                }
+              }}
+              loadOptions={useTeamResourceSearchOptions}
+            />
+            {form.values.contractOwner && (
+              <RenderTagList
+                list={[selected?.label || displayName?.fullName || form.values.contractOwner]}
+                onRemove={() => {
+                  form.setFieldValue('contractOwner', '').finally()
+                  setDisplayName(undefined)
+                  setSelected(null)
+                }}
+              />
+            )}
+          </>
         )}
       </Field>
     </div>
