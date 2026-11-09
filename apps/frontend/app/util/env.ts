@@ -8,4 +8,6 @@ export const env = {
   defaultStartDate: process.env.NEXT_PUBLIC_DEFAULT_START_DATE || '0001-01-01',
   disableRiskOwner: process.env.NEXT_PUBLIC_DISABLE_RISK_OWNER,
   disableDpProcess: process.env.NEXT_PUBLIC_DISABLE_DP_PROCESS,
+  innblikkScriptUrl: process.env.NEXT_PUBLIC_INNBLIKK_SCRIPT_URL,
+  innblikkWebsiteId: process.env.NEXT_PUBLIC_INNBLIKK_WEBSITE_ID,
 }
