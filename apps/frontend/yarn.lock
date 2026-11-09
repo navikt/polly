@@ -8821,7 +8821,7 @@ __metadata:
   dependencies:
     "@navikt/aksel-icons": "npm:^8.22.1"
     "@navikt/ds-css": "npm:^8.22.1"
-    "@navikt/ds-react": "npm:^8.21.0"
+    "@navikt/ds-react": "npm:^8.22.1"
     "@navikt/ds-tailwind": "npm:^8.22.1"
     "@next/eslint-plugin-next": "npm:^16.4.5"
     "@tailwindcss/postcss": "npm:^4.3.4"
