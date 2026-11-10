@@ -24,7 +24,11 @@ const CookieConsentBanner: FunctionComponent = () => {
           <BodyLong className='mt-1'>
             Vi bruker analyseverktøyet Innblikk for å forstå hvordan Behandlingskatalogen brukes og
             forbedre brukeropplevelsen. Vi lagrer valget ditt i en informasjonskapsel i seks
-            måneder. Du kan godta eller avvise målingen.
+            måneder. Du kan godta eller avvise målingen. Les{' '}
+            <a href='/personvern' className='underline'>
+              personvernerklæringen
+            </a>{' '}
+            for mer informasjon.
           </BodyLong>
         </div>
         <div className='flex flex-wrap items-center gap-2'>
