@@ -4,6 +4,8 @@ import { Theme } from '@navikt/ds-react'
 import { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react'
 import Header from './components/Header'
 import SideBar from './components/SideBar/SideBar'
+import CookieConsentBanner from './components/common/cookieConsent/CookieConsentBanner'
+import InnblikkSporing from './components/common/cookieConsent/InnblikkSporing'
 import { TThemeMode, persistThemeMode, useStoredThemeMode } from './util/themeMode'
 
 type TProps = {
@@ -38,6 +40,8 @@ const PageThemeWrapper: FunctionComponent<TProps> = ({ children, origin }) => {
     <Fragment>
       <Theme theme={themeMode} asChild>
         <div className='flex min-h-screen w-full flex-col'>
+          <CookieConsentBanner />
+          <InnblikkSporing />
           <Header themeMode={themeMode} onThemeModeChange={handleThemeModeChange} origin={origin} />
 
           <div className='flex w-full flex-1'>

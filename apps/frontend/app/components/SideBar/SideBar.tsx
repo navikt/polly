@@ -1,6 +1,6 @@
 import { BodyShort, Link } from '@navikt/ds-react'
 import Image from 'next/image'
-import { datajegerSlackLink } from '../../util/config'
+import { datajegerSlackLink } from '@/util/config'
 import NavItem from './NavItem'
 
 const SideBar = () => (
@@ -47,6 +47,11 @@ const SideBar = () => (
           to='/dashboard'
           text='Dashboard'
           tooltip='Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen'
+        />
+        <NavItem
+          to='/personvern'
+          text='Personvernerklæring'
+          tooltip='Peronvernerklæring for Behandlingskatalogen og samtykke til måling med Innblikk'
         />
         <Link
           href='//navikt.github.io/naka/behandlingskatalog'
