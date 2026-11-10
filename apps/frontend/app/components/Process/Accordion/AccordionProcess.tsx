@@ -627,17 +627,16 @@ const AccordionProcess = (props: TAccordionProcessProps) => {
               isOpen={showCreatePolicyModal}
               submit={(values: IPolicyFormValues) => {
                 scrollToPolicyTable.current = true
-                submitCreatePolicy(values)
+                return submitCreatePolicy(values)
                   .then((success) => {
-                    if (success) {
-                      setShowCreatePolicyModal(false)
-                    } else {
+                    if (!success) {
                       scrollToPolicyTable.current = false
                     }
+                    return success
                   })
-                  .catch(() => {
+                  .catch((error: unknown) => {
                     scrollToPolicyTable.current = false
-                    setShowCreatePolicyModal(true)
+                    throw error
                   })
               }}
               addBatch={() => {

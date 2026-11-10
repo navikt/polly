@@ -8,7 +8,7 @@ import {
   Formik,
   FormikProps,
 } from 'formik'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { getInformationTypesShort } from '../../../api/GetAllApi'
@@ -107,7 +107,7 @@ type TModalPolicyProps = {
   initialValues: IPolicyFormValues
   docs?: TDocs
   errorOnCreate: any | undefined
-  submit: (values: IPolicyFormValues) => void
+  submit: (values: IPolicyFormValues) => Promise<boolean>
   onClose: () => void
   addBatch?: () => void
   codelistUtils: ICodelistProps
@@ -123,133 +123,151 @@ const ModalPolicy = ({
   title,
   addBatch,
   codelistUtils,
-}: TModalPolicyProps) => (
-  <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width='750px'>
-    <div className='w-[750px] px-8'>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={policySchema(codelistUtils.getCodes(EListName.SUBJECT_CATEGORY))}
-        onSubmit={(values: IPolicyFormValues) => {
-          submit(values)
-          onClose()
-        }}
-      >
-        {(formikBag: FormikProps<IPolicyFormValues>) => {
-          return (
-            <Form onKeyDown={disableEnter}>
-              <Modal.Body>
-                {addBatch && (
-                  <div className='w-full mt-4'>
-                    <Button type='button' variant='secondary' size='small' onClick={addBatch}>
-                      Legg til flere fra et system
-                    </Button>
-                  </div>
-                )}
+}: TModalPolicyProps) => {
+  const submitting = useRef(false)
 
-                <div className='flex w-full mt-4'>
-                  <ModalLabel label='Opplysningstype' fullwidth />
-                </div>
+  return (
+    <Modal onClose={onClose} open={isOpen} header={{ heading: title || '' }} width='750px'>
+      <div className='w-[750px] px-8'>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={policySchema(codelistUtils.getCodes(EListName.SUBJECT_CATEGORY))}
+          onSubmit={async (values: IPolicyFormValues) => {
+            if (submitting.current) return
 
-                <div className='w-full mt-2'>
-                  <FieldInformationType />
-                </div>
-                <Error fieldName='informationType' fullWidth />
+            submitting.current = true
+            try {
+              if (await submit(values)) {
+                onClose()
+              }
+            } finally {
+              submitting.current = false
+            }
+          }}
+        >
+          {(formikBag: FormikProps<IPolicyFormValues>) => {
+            return (
+              <Form onKeyDown={disableEnter}>
+                <Modal.Body>
+                  {addBatch && (
+                    <div className='w-full mt-4'>
+                      <Button type='button' variant='secondary' size='small' onClick={addBatch}>
+                        Legg til flere fra et system
+                      </Button>
+                    </div>
+                  )}
 
-                <div className='flex w-full mt-4'>
-                  <ModalLabel label='Personkategori' fullwidth />
-                </div>
-
-                <div className='w-full mt-2'>
-                  <FieldArray
-                    name='subjectCategories'
-                    render={(arrayHelpers: FieldArrayRenderProps) => (
-                      <div className='w-full'>
-                        <Select
-                          label='Personkategori'
-                          hideLabel
-                          value=''
-                          onChange={(event) => {
-                            arrayHelpers.push(event.target.value ? event.target.value : null)
-                          }}
-                          error={
-                            !!formikBag.errors.subjectCategories &&
-                            !!formikBag.touched.subjectCategories
-                          }
-                        >
-                          <option value=''>Velg personkategori</option>
-                          {codelistUtils
-                            .getParsedOptionsFilterOutSelected(
-                              EListName.SUBJECT_CATEGORY,
-                              formikBag.values.subjectCategories
-                            )
-                            .map((catergories) => (
-                              <option key={catergories.id} value={catergories.id}>
-                                {catergories.label}
-                              </option>
-                            ))}
-                        </Select>
-                        <div className='mt-2 flex flex-wrap gap-2'>
-                          {renderTagList(
-                            codelistUtils.getShortnames(
-                              EListName.SUBJECT_CATEGORY,
-                              formikBag.values.subjectCategories
-                            ),
-                            arrayHelpers
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  />
-                </div>
-                <Error fieldName='subjectCategories' fullWidth />
-
-                {!!formikBag.values.documentIds?.length && docs && (
                   <div className='flex w-full mt-4'>
-                    <ModalLabel label='Dokumenter' />
+                    <ModalLabel label='Opplysningstype' fullwidth />
+                  </div>
+
+                  <div className='w-full mt-2'>
+                    <FieldInformationType />
+                  </div>
+                  <Error fieldName='informationType' fullWidth />
+
+                  <div className='flex w-full mt-4'>
+                    <ModalLabel label='Personkategori' fullwidth />
+                  </div>
+
+                  <div className='w-full mt-2'>
                     <FieldArray
-                      name='documentIds'
+                      name='subjectCategories'
                       render={(arrayHelpers: FieldArrayRenderProps) => (
                         <div className='w-full'>
-                          {renderTagList(
-                            formikBag.values.documentIds.map((id: string) => docs[id].name),
-                            arrayHelpers
-                          )}
+                          <Select
+                            label='Personkategori'
+                            hideLabel
+                            value=''
+                            onChange={(event) => {
+                              arrayHelpers.push(event.target.value ? event.target.value : null)
+                            }}
+                            error={
+                              !!formikBag.errors.subjectCategories &&
+                              !!formikBag.touched.subjectCategories
+                            }
+                          >
+                            <option value=''>Velg personkategori</option>
+                            {codelistUtils
+                              .getParsedOptionsFilterOutSelected(
+                                EListName.SUBJECT_CATEGORY,
+                                formikBag.values.subjectCategories
+                              )
+                              .map((catergories) => (
+                                <option key={catergories.id} value={catergories.id}>
+                                  {catergories.label}
+                                </option>
+                              ))}
+                          </Select>
+                          <div className='mt-2 flex flex-wrap gap-2'>
+                            {renderTagList(
+                              codelistUtils.getShortnames(
+                                EListName.SUBJECT_CATEGORY,
+                                formikBag.values.subjectCategories
+                              ),
+                              arrayHelpers
+                            )}
+                          </div>
                         </div>
                       )}
                     />
                   </div>
-                )}
+                  <Error fieldName='subjectCategories' fullWidth />
 
-                <div className='flex w-full mt-4'>
-                  <ModalLabel label='Behandlingsgrunnlag' fullwidth />
-                </div>
+                  {!!formikBag.values.documentIds?.length && docs && (
+                    <div className='flex w-full mt-4'>
+                      <ModalLabel label='Dokumenter' />
+                      <FieldArray
+                        name='documentIds'
+                        render={(arrayHelpers: FieldArrayRenderProps) => (
+                          <div className='w-full'>
+                            {renderTagList(
+                              formikBag.values.documentIds.map((id: string) => docs[id].name),
+                              arrayHelpers
+                            )}
+                          </div>
+                        )}
+                      />
+                    </div>
+                  )}
 
-                <div className='w-full mt-2'>
-                  <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
-                </div>
-                <Error fieldName='legalBasesUse' fullWidth />
+                  <div className='flex w-full mt-4'>
+                    <ModalLabel label='Behandlingsgrunnlag' fullwidth />
+                  </div>
 
-                {formikBag.values.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES && (
-                  <FieldLegalBasis formikBag={formikBag} codelistUtils={codelistUtils} />
-                )}
-              </Modal.Body>
-              <Error fieldName='legalBasesOpen' fullWidth={true} />
+                  <div className='w-full mt-2'>
+                    <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
+                  </div>
+                  <Error fieldName='legalBasesUse' fullWidth />
 
-              <Modal.Footer>
-                <div className='flex justify-end'>
-                  <div className='self-end'>{errorOnCreate && <p>{errorOnCreate}</p>}</div>
-                  <Button type='button' variant='tertiary' onClick={onClose}>
-                    Avbryt
-                  </Button>
-                  <Button type='submit'>Lagre</Button>
-                </div>
-              </Modal.Footer>
-            </Form>
-          )
-        }}
-      </Formik>
-    </div>
-  </Modal>
-)
+                  {formikBag.values.legalBasesUse === ELegalBasesUse.DEDICATED_LEGAL_BASES && (
+                    <FieldLegalBasis formikBag={formikBag} codelistUtils={codelistUtils} />
+                  )}
+                </Modal.Body>
+                <Error fieldName='legalBasesOpen' fullWidth={true} />
+
+                <Modal.Footer>
+                  <div className='flex justify-end'>
+                    <div className='self-end'>{errorOnCreate && <p>{errorOnCreate}</p>}</div>
+                    <Button type='button' variant='tertiary' onClick={onClose}>
+                      Avbryt
+                    </Button>
+                    <Button
+                      type='submit'
+                      loading={formikBag.isSubmitting}
+                      disabled={formikBag.isSubmitting}
+                    >
+                      Lagre
+                    </Button>
+                  </div>
+                </Modal.Footer>
+              </Form>
+            )
+          }}
+        </Formik>
+      </div>
+    </Modal>
+  )
+}
 
 export default ModalPolicy
