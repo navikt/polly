@@ -25,7 +25,7 @@ const UsageTable = (props: IProps) => {
   const { usage } = props
   const informationTypes = !!usage.informationTypes.length
   const processes = !!usage.processes.length
-  const processors = !!usage.processors.length
+  const processors = !!usage.processors.length // TODO: databehandler
   const dpProcesses = !!usage.dpProcesses.length
   const policies = !!usage.policies.length
   const disclosures = !!usage.disclosures.length
@@ -99,7 +99,11 @@ const UsageTable = (props: IProps) => {
               {processors && (
                 <Table.DataCell>
                   {processes && (
-                    <ObjectLink id={processors.id} type={EObjectType.PROCESSOR} withHistory={true}>
+                    <ObjectLink
+                      id={processors.id}
+                      type={EObjectType.DATABEHANDLER}
+                      withHistory={true}
+                    >
                       {processors.name}
                     </ObjectLink>
                   )}

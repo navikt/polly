@@ -33,7 +33,7 @@ export enum ESection {
   team = 'team',
   productarea = 'productarea',
   thirdparty = 'thirdparty',
-  processor = 'processor',
+  processor = 'processor', // TODO: databehandler
   seksjon = 'seksjon',
 }
 

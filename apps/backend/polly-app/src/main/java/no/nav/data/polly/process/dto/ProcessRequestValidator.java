@@ -5,9 +5,9 @@ import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
+import no.nav.data.polly.databehandler.domain.repo.DatabehandlerRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class ProcessRequestValidator extends RequestValidator<ProcessRequest> {
     // MERK: Ingen testdekning
 
     private final ProcessRepository processRepository;
-    private final ProcessorRepository processorRepository;
+    private final DatabehandlerRepository databehandlerRepository;
     private final TeamService teamService;
     private final ResourceService resourceService;
 
@@ -58,7 +58,7 @@ public class ProcessRequestValidator extends RequestValidator<ProcessRequest> {
             validateTeams(request, List.of(), validations);
             validateRiskOwner(request, null, validations);
             validations.addAll(validateRepositoryValues(request, false));
-            validations.addAll(validateObjects(request.getDataProcessing().getProcessors(), processorRepository::findAllById, request.getReference(), "processor"));
+            validations.addAll(validateObjects(request.getDataProcessing().getProcessors(), databehandlerRepository::findAllById, request.getReference(), "processor")); // TODO: databehandler
         }
         Optional<Process> byNameAndPurpose = processRepository.findByNameAndPurposes(request.getName(), request.getPurposes())
                 .filter(p -> !p.getId().equals(request.getIdAsUUID()));

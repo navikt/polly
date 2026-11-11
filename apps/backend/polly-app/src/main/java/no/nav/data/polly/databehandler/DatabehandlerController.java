@@ -1,4 +1,4 @@
-package no.nav.data.polly.processor;
+package no.nav.data.polly.databehandler;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
-import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
-import no.nav.data.polly.processor.dto.ProcessorRequest;
-import no.nav.data.polly.processor.dto.ProcessorRequestValidator;
-import no.nav.data.polly.processor.dto.ProcessorResponse;
+import no.nav.data.polly.databehandler.domain.Databehandler;
+import no.nav.data.polly.databehandler.domain.repo.DatabehandlerRepository;
+import no.nav.data.polly.databehandler.dto.DatabehandlerRequest;
+import no.nav.data.polly.databehandler.dto.DatabehandlerRequestValidator;
+import no.nav.data.polly.databehandler.dto.DatabehandlerResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,90 +35,90 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Tag(name = "Data Processor")
+@Tag(name = "Databehandler")
 @RequiredArgsConstructor
-@RequestMapping("/processor")
-public class ProcessorController {
+@RequestMapping("/databehandler")
+public class DatabehandlerController {
 
     // TODO: Implementerer ikke controller → service → DB. Flytt all forretningslogikk, *Repository-aksess og @Transactional til tjenestelaget.
     
-    private final ProcessorRepository repository;
-    private final ProcessorService service;
-    private final ProcessorRequestValidator requestValidator;
+    private final DatabehandlerRepository repository;
+    private final DatabehandlerService service;
+    private final DatabehandlerRequestValidator requestValidator;
 
-    @Operation(summary = "Get ProcessorTypes")
-    @ApiResponse(description = "Processor fetched")
+    @Operation(summary = "Get Databehandler")
+    @ApiResponse(description = "Databehandler fetched")
     @GetMapping("/{id}")
-    public ResponseEntity<ProcessorResponse> findForId(@PathVariable UUID id) {
-        log.info("Received request for Processor with id={}", id);
-        var processor = repository.findById(id).map(ProcessorResponse::buidFrom);
-        if (processor.isEmpty()) {
-            log.info("Cannot find Processor with id={}", id);
+    public ResponseEntity<DatabehandlerResponse> findForId(@PathVariable UUID id) {
+        log.info("Received request for Databehandler with id={}", id);
+        var databehandler = repository.findById(id).map(DatabehandlerResponse::buidFrom);
+        if (databehandler.isEmpty()) {
+            log.info("Cannot find Databehandler with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(processor.get());
+        return ResponseEntity.ok(databehandler.get());
     }
 
-    @Operation(summary = "Get All Processors")
-    @ApiResponse(description = "All Processes fetched")
+    @Operation(summary = "Get All Databehandlere")
+    @ApiResponse(description = "All Databehandlere fetched")
     @GetMapping
-    public ResponseEntity<RestResponsePage<ProcessorResponse>> getAll(PageParameters pageParameters) {
-        log.info("Received request for all Processors");
-        var page = repository.findAll(pageParameters.createIdSortedPage()).map(ProcessorResponse::buidFrom);
+    public ResponseEntity<RestResponsePage<DatabehandlerResponse>> getAll(PageParameters pageParameters) {
+        log.info("Received request for all Databehandlere");
+        var page = repository.findAll(pageParameters.createIdSortedPage()).map(DatabehandlerResponse::buidFrom);
         return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 
-    @Operation(summary = "Search Processors")
-    @ApiResponse(description = "Processors fetched")
+    @Operation(summary = "Search Databehandlere")
+    @ApiResponse(description = "Databehandlere fetched")
     @GetMapping("/search/{search}")
-    public ResponseEntity<RestResponsePage<ProcessorResponse>> search(@PathVariable String search) {
-        log.info("Received request for Processors search={}", search);
+    public ResponseEntity<RestResponsePage<DatabehandlerResponse>> search(@PathVariable String search) {
+        log.info("Received request for Databehandlere search={}", search);
         if (search.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
         }
-        var processors = repository.findByNameContaining(search);
-        return ResponseEntity.ok(new RestResponsePage<>(convert(processors, ProcessorResponse::buidFrom)));
+        var databehandlere = repository.findByNavnContaining(search);
+        return ResponseEntity.ok(new RestResponsePage<>(convert(databehandlere, DatabehandlerResponse::buidFrom)));
     }
 
-    @Operation(summary = "Create Processors")
-    @ApiResponse(responseCode = "201", description = "Processors to be created successfully accepted")
+    @Operation(summary = "Create Databehandler")
+    @ApiResponse(responseCode = "201", description = "Databehandler to be created successfully accepted")
     @PostMapping
-    public ResponseEntity<ProcessorResponse> create(@RequestBody ProcessorRequest request) {
-        log.info("Received requests to create Processor");
+    public ResponseEntity<DatabehandlerResponse> create(@RequestBody DatabehandlerRequest request) {
+        log.info("Received requests to create Databehandler");
         requestValidator.validateRequest(request, false);
 
-        Processor processor = service.save(new Processor().convertFromRequest(request));
-        return new ResponseEntity<>(ProcessorResponse.buidFrom(processor), HttpStatus.CREATED);
+        Databehandler databehandler = service.save(new Databehandler().convertFromRequest(request));
+        return new ResponseEntity<>(DatabehandlerResponse.buidFrom(databehandler), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Update Processor")
-    @ApiResponse(description = "Processor updated")
+    @Operation(summary = "Update Databehandler")
+    @ApiResponse(description = "Databehandler updated")
     @PutMapping("/{id}")
-    public ResponseEntity<ProcessorResponse> update(@PathVariable UUID id, @Valid @RequestBody ProcessorRequest request) {
-        log.debug("Received request to update Processor with id={}", id);
+    public ResponseEntity<DatabehandlerResponse> update(@PathVariable UUID id, @Valid @RequestBody DatabehandlerRequest request) {
+        log.debug("Received request to update Databehandler with id={}", id);
         if (!Objects.equals(id, request.getIdAsUUID())) {
             throw new ValidationException(String.format("id mismatch in request %s and path %s", request.getId(), id));
         }
-        Optional<Processor> fromRepository = repository.findById(id);
+        Optional<Databehandler> fromRepository = repository.findById(id);
         if (fromRepository.isEmpty()) {
-            log.info("Cannot find Processor with id={}", id);
+            log.info("Cannot find Databehandler with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         requestValidator.validateRequest(request, true);
-        return ResponseEntity.ok(ProcessorResponse.buidFrom(service.update(request)));
+        return ResponseEntity.ok(DatabehandlerResponse.buidFrom(service.update(request)));
     }
 
-    @Operation(summary = "Delete Processor")
-    @ApiResponse(description = "Processor deleted")
+    @Operation(summary = "Delete Databehandler")
+    @ApiResponse(description = "Databehandler deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProcessorResponse> delete(@PathVariable UUID id, @RequestParam(required = false) Integer expectedVersion) {
-        log.info("Received a request to delete Processor with id={} and version={}", id, expectedVersion);
-        Processor deletedProcessor = service.deleteById(id, expectedVersion);
-        log.info("Processor with id={} deleted", id);
-        return ResponseEntity.ok(ProcessorResponse.buidFrom(deletedProcessor));
+    public ResponseEntity<DatabehandlerResponse> delete(@PathVariable UUID id, @RequestParam(required = false) Integer expectedVersion) {
+        log.info("Received a request to delete Databehandler with id={} and version={}", id, expectedVersion);
+        Databehandler deletedDatabehandler = service.deleteById(id, expectedVersion);
+        log.info("Databehandler with id={} deleted", id);
+        return ResponseEntity.ok(DatabehandlerResponse.buidFrom(deletedDatabehandler));
     }
 
-    static class ProcessorPage extends RestResponsePage<ProcessorResponse> {
+    static class DatabehandlerPage extends RestResponsePage<DatabehandlerResponse> {
     }
 
 }

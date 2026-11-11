@@ -1,5 +1,5 @@
-import ProcessorListPage from '@/components/mainPages/ProcessorListPage'
+import DatabehandlerListPage from '@/components/mainPages/DatabehandlerListPage'
 
-const Page = () => <ProcessorListPage />
+const Page = () => <DatabehandlerListPage />
 
 export default Page

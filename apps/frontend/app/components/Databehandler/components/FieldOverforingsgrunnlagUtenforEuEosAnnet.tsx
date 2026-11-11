@@ -1,13 +1,13 @@
 import { TextField } from '@navikt/ds-react'
 import { Field, FieldProps } from 'formik'
-import { IProcessorFormValues } from '../../../constants'
+import { IDatabehandlerFormValues } from '../../../constants'
 
-const FieldTransferGroundsOutsideEUOther = () => (
-  <Field name='transferGroundsOutsideEUOther'>
-    {({ field }: FieldProps<string, IProcessorFormValues>) => (
+const FieldOverforingsgrunnlagUtenforEuEosAnnet = () => (
+  <Field name='overforingsgrunnlagUtenforEuEosAnnet'>
+    {({ field }: FieldProps<string, IDatabehandlerFormValues>) => (
       <TextField
         type='text'
-        id='transferGroundsOutsideEUOther'
+        id='overforingsgrunnlagUtenforEuEosAnnet'
         className='w-full mt-4'
         label='Spesifiser overføringsgrunnlaget'
         {...field}
@@ -16,4 +16,4 @@ const FieldTransferGroundsOutsideEUOther = () => (
   </Field>
 )
 
-export default FieldTransferGroundsOutsideEUOther
+export default FieldOverforingsgrunnlagUtenforEuEosAnnet

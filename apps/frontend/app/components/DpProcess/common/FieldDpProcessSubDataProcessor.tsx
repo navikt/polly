@@ -2,13 +2,17 @@
 
 import { FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
+import {
+  getDatabehandlereByIds,
+  getDatabehandlereByPageAndPageSize,
+} from '../../../api/DatabehandlerApi'
 import { getAll } from '../../../api/GetAllApi'
-import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
-import { IDpProcessFormValues, IProcessor } from '../../../constants'
+import { IDatabehandler, IDpProcessFormValues } from '../../../constants'
 import BoolField from '../../Process/common/BoolField'
 import { Error, ModalLabel } from '../../common/ModalSchema'
 import FieldDpDataProcessors from './FieldDpDataProcessors'
 
+// TODO: databehandler (FieldDpProcessSubDataProcessor, processorList, subDataProcessors)
 type TFieldDpProcessSubDataProcessorProps = {
   formikBag: FormikProps<IDpProcessFormValues>
   initialValues: IDpProcessFormValues
@@ -16,15 +20,15 @@ type TFieldDpProcessSubDataProcessorProps = {
 
 const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorProps) => {
   const { formikBag, initialValues } = props
-  const [processorList, setProcessorList] = useState<IProcessor[]>([])
+  const [processorList, setProcessorList] = useState<IDatabehandler[]>([])
   const [subDataProcessors, setSubDataProcessors] = useState(new Map<string, string>())
 
   useEffect(() => {
     ;(async () => {
       if (initialValues.subDataProcessing.processors.length > 0) {
-        const response = await getProcessorsByIds(initialValues.subDataProcessing.processors)
+        const response = await getDatabehandlereByIds(initialValues.subDataProcessing.processors)
         const newProcs = new Map<string, string>()
-        response.forEach((processor) => newProcs.set(processor.id, processor.name))
+        response.forEach((processor) => newProcs.set(processor.id, processor.navn))
         setSubDataProcessors(newProcs)
       }
     })()
@@ -32,7 +36,7 @@ const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorPr
 
   useEffect(() => {
     ;(async () => {
-      const response: IProcessor[] = await getAll(getProcessorsByPageAndPageSize)()
+      const response: IDatabehandler[] = await getAll(getDatabehandlereByPageAndPageSize)()
       if (response) {
         setProcessorList(response)
       }
@@ -64,10 +68,10 @@ const FieldDpProcessSubDataProcessor = (props: TFieldDpProcessSubDataProcessorPr
               <FieldDpDataProcessors
                 formikBag={formikBag}
                 subDataProcessors={subDataProcessors}
-                options={processorList.map((processor: IProcessor) => {
+                options={processorList.map((processor: IDatabehandler) => {
                   return {
                     id: processor.id,
-                    label: processor.name,
+                    label: processor.navn,
                   }
                 })}
               />

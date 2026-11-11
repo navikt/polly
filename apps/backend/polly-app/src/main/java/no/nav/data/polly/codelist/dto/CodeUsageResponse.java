@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"code", "informationTypes", "policies", "processes", "dpProcesses", "disclosures", "documents", "processors"})
+@JsonPropertyOrder({"code", "informationTypes", "policies", "processes", "dpProcesses", "disclosures", "documents", "processors"}) // TODO: processors → databehandlere
 public class CodeUsageResponse {
 
     private ListName listName;
@@ -25,7 +25,7 @@ public class CodeUsageResponse {
     private List<DpProcessShortResponse> dpProcesses = new ArrayList<>();
     private List<UsedInInstance> disclosures = new ArrayList<>();
     private List<UsedInInstance> documents = new ArrayList<>();
-    private List<UsedInInstance> processors = new ArrayList<>();
+    private List<UsedInInstance> processors = new ArrayList<>(); // TODO: processors → databehandlere
 
     public CodeUsageResponse(ListName listName, String code) {
         this.listName = listName;

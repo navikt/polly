@@ -1,30 +1,30 @@
-import { dataProcessorSchema } from '../../components/common/schemaValidation'
-import { IProcessorFormValues } from '../../constants'
+import { databehandlerSchema } from '../../components/common/schemaValidation'
+import { IDatabehandlerFormValues } from '../../constants'
 import '../config/schemaValidator'
 
-const schema = dataProcessorSchema()
-const createProcessor = (): IProcessorFormValues => ({
-  name: 'name',
-  countries: [],
-  operationalContractManagers: [],
+const schema = databehandlerSchema()
+const createDatabehandler = (): IDatabehandlerFormValues => ({
+  navn: 'navn',
+  landDataOverforesTil: [],
+  fagansvarlig: [],
 })
 
-test('processor ok', () => {
-  expect(createProcessor()).toBeSchema(schema)
+test('databehandler ok', () => {
+  expect(createDatabehandler()).toBeSchema(schema)
 })
 
-test('processor outsideEU requires transfer grounds', () => {
-  const processor = createProcessor()
-  processor.outsideEU = true
-  expect(processor).toBeSchemaErrorAt(schema, 'countries')
-  processor.countries = ['USA']
-  expect(processor).toBeSchemaErrorAt(schema, 'transferGroundsOutsideEU')
-  processor.transferGroundsOutsideEU = 'REASON'
-  expect(processor).toBeSchema(schema)
+test('databehandler behandlingUtenforEuEos krever overforingsgrunnlag', () => {
+  const databehandler = createDatabehandler()
+  databehandler.behandlingUtenforEuEos = true
+  expect(databehandler).toBeSchemaErrorAt(schema, 'landDataOverforesTil')
+  databehandler.landDataOverforesTil = ['USA']
+  expect(databehandler).toBeSchemaErrorAt(schema, 'overforingsgrunnlagUtenforEuEos')
+  databehandler.overforingsgrunnlagUtenforEuEos = 'REASON'
+  expect(databehandler).toBeSchema(schema)
 
   // OTHER requires an additional manual reason
-  processor.transferGroundsOutsideEU = 'OTHER'
-  expect(processor).toBeSchemaErrorAt(schema, 'transferGroundsOutsideEUOther')
-  processor.transferGroundsOutsideEUOther = 'some reason'
-  expect(processor).toBeSchema(schema)
+  databehandler.overforingsgrunnlagUtenforEuEos = 'OTHER'
+  expect(databehandler).toBeSchemaErrorAt(schema, 'overforingsgrunnlagUtenforEuEosAnnet')
+  databehandler.overforingsgrunnlagUtenforEuEosAnnet = 'some reason'
+  expect(databehandler).toBeSchema(schema)
 })

@@ -1,5 +1,5 @@
-import ProcessorView from '@/components/Processor/ProcessorView'
+import DatabehandlerView from '@/components/Databehandler/DatabehandlerView'
 
-const Page = () => <ProcessorView />
+const Page = () => <DatabehandlerView />
 
 export default Page

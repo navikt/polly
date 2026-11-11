@@ -1,4 +1,4 @@
-package no.nav.data.polly.processor.domain;
+package no.nav.data.polly.databehandler.domain;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,27 +18,28 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProcessorData implements Serializable {
+public class DatabehandlerData implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull
-    private String name;
-    private String contract;
-    private String contractOwner;
-    @Singular
-    private List<String> operationalContractManagers;
-    private String note;
-    private Boolean outsideEU;
-    private String transferGroundsOutsideEU;
-    private String transferGroundsOutsideEUOther;
-    @Singular
-    private List<String> countries;
+    private String navn;
+    private String avtalereferanse;
+    private String avtaleeier;
+    @Singular("leggTilFagansvarlig")
+    private List<String> fagansvarlig;
+    private String merknad;
+    private Boolean behandlingUtenforEuEos;
+    private String overforingsgrunnlagUtenforEuEos;
+    private String overforingsgrunnlagUtenforEuEosAnnet;
+    @Singular("leggTilLandDataOverforesTil")
+    private List<String> landDataOverforesTil;
 
     // TODO: Snu avhengigheten innover
-    public CodelistResponse getTransferGroundsOutsideEUCodeResponse() {
-        return CodelistStaticService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, getTransferGroundsOutsideEU());
+    public CodelistResponse getOverforingsgrunnlagUtenforEuEosCodeResponse() {
+        // TODO: overforingsgrunnlagUtenforEuEos (kodelisten TRANSFER_GROUNDS_OUTSIDE_EU)
+        return CodelistStaticService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, getOverforingsgrunnlagUtenforEuEos());
     }
 
 }

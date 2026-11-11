@@ -22,9 +22,9 @@ import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.process.dto.ProcessRequest;
-import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.ProcessorData;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.polly.databehandler.domain.Databehandler;
+import no.nav.data.polly.databehandler.domain.DatabehandlerData;
+import no.nav.data.polly.databehandler.domain.repo.DatabehandlerRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,13 +61,13 @@ public class DocxTest {
     @Mock
     private ProcessRepository processRepository;
     @Mock
-    private ProcessorRepository processorRepository;
+    private DatabehandlerRepository databehandlerRepository;
     @Mock
     private CommonCodeService commonCodeService;
     @InjectMocks
     private ProcessToDocx processToDocx;
 
-    UUID PROCESSOR_ID = UUID.fromString("f6749fdd-5e95-4507-bd83-b1720aca534e");
+    UUID databehandlerId = UUID.fromString("f6749fdd-5e95-4507-bd83-b1720aca534e");
     Process process = createProcess();
 
     @BeforeEach
@@ -75,18 +75,18 @@ public class DocxTest {
         CodelistStub.initializeCodelist();
         lenient().when(resourceService.getResource(anyString())).thenReturn(Optional.empty());
         lenient().when(teamService.getTeam(anyString())).thenReturn(Optional.empty());
-        lenient().when(processorRepository.findAllById(List.of(PROCESSOR_ID))).thenReturn(List.of(
-                Processor.builder()
-                        .data(ProcessorData.builder()
-                                .name("Sky")
-                                .contract("2019-02-44.21")
-                                .contractOwner("A123456")
-                                .operationalContractManager("A123457")
-                                .note("Notat")
-                                .outsideEU(true)
-                                .transferGroundsOutsideEU("OTHER")
-                                .transferGroundsOutsideEUOther("Usikker")
-                                .country("FJI")
+        lenient().when(databehandlerRepository.findAllById(List.of(databehandlerId))).thenReturn(List.of(
+                Databehandler.builder()
+                        .data(DatabehandlerData.builder()
+                                .navn("Sky")
+                                .avtalereferanse("2019-02-44.21")
+                                .avtaleeier("A123456")
+                                .leggTilFagansvarlig("A123457")
+                                .merknad("Merknad")
+                                .behandlingUtenforEuEos(true)
+                                .overforingsgrunnlagUtenforEuEos("OTHER")
+                                .overforingsgrunnlagUtenforEuEosAnnet("Usikker")
+                                .leggTilLandDataOverforesTil("FJI")
                                 .build())
                         .build()
         ));
@@ -169,9 +169,9 @@ public class DocxTest {
                         .usesAllInformationTypes(false)
                         .automaticProcessing(true)
                         .profiling(true)
-                        .dataProcessing(DataProcessing.builder()
-                                .dataProcessor(true)
-                                .processors(List.of(PROCESSOR_ID))
+                        .dataProcessing(DataProcessing.builder() // TODO: databehandling
+                                .dataProcessor(true) // TODO: databehandlerBenyttes
+                                .processors(List.of(databehandlerId)) // TODO: databehandler
                                 .build())
                         .status(ProcessStatus.COMPLETED)
                         .dpia(Dpia.builder()

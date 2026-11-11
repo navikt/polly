@@ -110,6 +110,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<IDpProcess>): IDpProces
     externalProcessResponsible:
       (externalProcessResponsible && externalProcessResponsible.code) || undefined,
     subDataProcessing: {
+      // TODO: databehandling (dataProcessor -> databehandlerBenyttes, processors -> databehandler)
       dataProcessor: mapBool(subDataProcessing?.dataProcessor),
       processors: subDataProcessing?.processors || [],
     },
@@ -138,6 +139,7 @@ const fromValuesToDpProcess = (values: IDpProcessFormValues) => {
       ? values.externalProcessResponsible
       : undefined,
     subDataProcessing: {
+      // TODO: databehandling (dataProcessor -> databehandlerBenyttes, processors -> databehandler)
       dataProcessor: values.subDataProcessing.dataProcessor,
       processors: values.subDataProcessing.processors || [],
     },

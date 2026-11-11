@@ -3,32 +3,32 @@
 import { Field, FieldProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getResourceById, useTeamResourceSearchOptions } from '../../../api/TeamApi'
-import { IProcessorFormValues, ITeamResource } from '../../../constants'
+import { IDatabehandlerFormValues, ITeamResource } from '../../../constants'
 import CustomSearchSelect from '../../common/AsyncSelectComponents'
 import { LabelWithDescription } from '../../common/LabelWithTooltip'
 import { RenderTagList } from '../../common/RenderTagList'
 
-type TFieldContractOwnerProps = {
-  formikBag: FormikProps<IProcessorFormValues>
+type TFieldAvtaleeierProps = {
+  formikBag: FormikProps<IDatabehandlerFormValues>
 }
 
-const FieldContractOwner = (props: TFieldContractOwnerProps) => {
+const FieldAvtaleeier = (props: TFieldAvtaleeierProps) => {
   const { formikBag } = props
   const [displayName, setDisplayName] = useState<ITeamResource>()
   const [selected, setSelected] = useState<{ value: string; label: string } | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      if (formikBag.values.contractOwner) {
+      if (formikBag.values.avtaleeier) {
         try {
-          const resource = await getResourceById(formikBag.values.contractOwner)
+          const resource = await getResourceById(formikBag.values.avtaleeier)
           setDisplayName(resource)
           setSelected({ value: resource.navIdent, label: resource.fullName })
         } catch {
           setDisplayName(undefined)
           setSelected({
-            value: formikBag.values.contractOwner,
-            label: formikBag.values.contractOwner,
+            value: formikBag.values.avtaleeier,
+            label: formikBag.values.avtaleeier,
           })
         }
       } else {
@@ -36,7 +36,7 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
         setSelected(null)
       }
     })()
-  }, [formikBag.values.contractOwner])
+  }, [formikBag.values.avtaleeier])
 
   return (
     <div className='w-full mt-4'>
@@ -44,27 +44,27 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
         label='Avtaleeier'
         description='Den som formelt står som eier av avtalen'
       />
-      <Field name='contractOwner'>
-        {({ form }: FieldProps<string, IProcessorFormValues>) => (
+      <Field name='avtaleeier'>
+        {({ form }: FieldProps<string, IDatabehandlerFormValues>) => (
           <>
             <CustomSearchSelect
               ariaLabel='Avtaleeier'
               placeholder=''
-              inputId='contractOwner'
-              instanceId='contractOwner'
+              inputId='avtaleeier'
+              instanceId='avtaleeier'
               onChange={(option: any) => {
                 if (option?.value) {
-                  form.setFieldValue('contractOwner', option.value).finally()
+                  form.setFieldValue('avtaleeier', option.value).finally()
                   setSelected(option)
                 }
               }}
               loadOptions={useTeamResourceSearchOptions}
             />
-            {form.values.contractOwner && (
+            {form.values.avtaleeier && (
               <RenderTagList
-                list={[selected?.label || displayName?.fullName || form.values.contractOwner]}
+                list={[selected?.label || displayName?.fullName || form.values.avtaleeier]}
                 onRemove={() => {
-                  form.setFieldValue('contractOwner', '').finally()
+                  form.setFieldValue('avtaleeier', '').finally()
                   setDisplayName(undefined)
                   setSelected(null)
                 }}
@@ -76,4 +76,4 @@ const FieldContractOwner = (props: TFieldContractOwnerProps) => {
     </div>
   )
 }
-export default FieldContractOwner
+export default FieldAvtaleeier

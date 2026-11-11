@@ -24,8 +24,8 @@ import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dpprocess.dto.DpProcessShortResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
-import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.polly.databehandler.domain.Databehandler;
+import no.nav.data.polly.databehandler.domain.repo.DatabehandlerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,20 +49,20 @@ public class CodeUsageService {
     private final InformationTypeRepository informationTypeRepository;
     private final DisclosureRepository disclosureRepository;
     private final DocumentRepository documentRepository;
-    private final ProcessorRepository processorRepository;
+    private final DatabehandlerRepository databehandlerRepository;
     private final Summary summary;
     private final CodelistRequestValidator requestValidator;
 
     public CodeUsageService(ProcessRepository processRepository, DpProcessRepository dpProcessRepository, PolicyRepository policyRepository,
             InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, DocumentRepository documentRepository,
-            ProcessorRepository processorRepository, CodelistRequestValidator requestValidator) {
+            DatabehandlerRepository databehandlerRepository, CodelistRequestValidator requestValidator) {
         this.processRepository = processRepository;
         this.dpProcessRepository = dpProcessRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
         this.documentRepository = documentRepository;
-        this.processorRepository = processorRepository;
+        this.databehandlerRepository = databehandlerRepository;
         List<String[]> listnames = Stream.of(ListName.values()).map(e -> new String[]{e.name()}).collect(toList());
         this.summary = MetricUtils.summary()
                 .labels(listnames)
@@ -107,7 +107,7 @@ public class CodeUsageService {
             codeUsage.setInformationTypes(findInformationTypes(listName, code));
             codeUsage.setDisclosures(findDisclosures(listName, code));
             codeUsage.setDocuments(findDocuments(listName, code));
-            codeUsage.setProcessors(findProcessors(listName, code));
+            codeUsage.setProcessors(findDatabehandlere(listName, code)); // TODO: databehandler 
             return codeUsage;
         });
     }
@@ -170,8 +170,8 @@ public class CodeUsageService {
                     getProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getProducts(), oldCode, newCode));
                     getDpProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getProducts(), oldCode, newCode));
                 }
-                case TRANSFER_GROUNDS_OUTSIDE_EU -> {
-                    getProcessors(usage).forEach(p -> p.getData().setTransferGroundsOutsideEU(newCode));
+                case TRANSFER_GROUNDS_OUTSIDE_EU -> { // TODO: overforingsgrunnlagUtenforEuEos
+                    getDatabehandlere(usage).forEach(d -> d.getData().setOverforingsgrunnlagUtenforEuEos(newCode));
                 }
                 case DATA_ACCESS_CLASS -> {} // TODO: Er det riktig at dette er en no-op?
             }
@@ -257,9 +257,9 @@ public class CodeUsageService {
         return List.of();
     }
 
-    private List<UsedInInstance> findProcessors(ListName listName, String code) {
+    private List<UsedInInstance> findDatabehandlere(ListName listName, String code) {
         if (listName == ListName.TRANSFER_GROUNDS_OUTSIDE_EU) {
-            return convert(processorRepository.findByTransferGroundsOutsideEU(code), Processor::getInstanceIdentification);
+            return convert(databehandlerRepository.findByOverforingsgrunnlagUtenforEuEos(code), Databehandler::getInstanceIdentification);
         }
         return List.of();
     }
@@ -288,8 +288,8 @@ public class CodeUsageService {
         return documentRepository.findAllById(convert(usage.getDocuments(), UsedInInstance::getIdAsUUID));
     }
 
-    private List<Processor> getProcessors(CodeUsageResponse usage) {
-        return processorRepository.findAllById(convert(usage.getProcessors(), UsedInInstance::getIdAsUUID));
+    private List<Databehandler> getDatabehandlere(CodeUsageResponse usage) {
+        return databehandlerRepository.findAllById(convert(usage.getProcessors(), UsedInInstance::getIdAsUUID)); // TODO: databehandler
     }
 
 }

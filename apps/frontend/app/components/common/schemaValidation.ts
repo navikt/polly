@@ -17,6 +17,7 @@ import {
   ICreateDocumentFormValues,
   ICustomizedProcess,
   IDataProcessingFormValues,
+  IDatabehandlerFormValues,
   IDisclosure,
   IDisclosureAbroad,
   IDisclosureFormValues,
@@ -30,7 +31,6 @@ import {
   IPolicyFormValues,
   IProcessFormValues,
   IProcessShort,
-  IProcessorFormValues,
   TRANSFER_GROUNDS_OUTSIDE_EU_OTHER,
 } from '../../constants'
 import { subjectCategoryExistsGen } from './schema'
@@ -44,18 +44,19 @@ const incorrectDateMessage = 'Feil dato format, eksempel: 2018-08-22'
 const legalBasesOpenMessage =
   'Du har en pågående redigering av behandlingsgrunnlag. Klikk «Legg til»/«Oppdater» eller Avbryt redigeringen før du lagrer.'
 
-const transferGroundsOutsideEUMissing = (values: IProcessorFormValues) => {
-  return !!values.outsideEU && !values.transferGroundsOutsideEU
+const overforingsgrunnlagUtenforEuEosMissing = (values: IDatabehandlerFormValues) => {
+  return !!values.behandlingUtenforEuEos && !values.overforingsgrunnlagUtenforEuEos
 }
 
-const transferCountriesMissing = (values: IProcessorFormValues) => {
-  return !!values.outsideEU && !values.countries?.length
+const landDataOverforesTilMissing = (values: IDatabehandlerFormValues) => {
+  return !!values.behandlingUtenforEuEos && !values.landDataOverforesTil?.length
 }
 
-const transferGroundsOutsideEUOtherMissing = (values: IProcessorFormValues) => {
+const overforingsgrunnlagUtenforEuEosAnnetMissing = (values: IDatabehandlerFormValues) => {
   return (
-    values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
-    !values.transferGroundsOutsideEUOther
+    // TODO: overforingsgrunnlagUtenforEuEos (kodelisten TRANSFER_GROUNDS_OUTSIDE_EU)
+    values.overforingsgrunnlagUtenforEuEos === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
+    !values.overforingsgrunnlagUtenforEuEosAnnet
   )
 }
 
@@ -80,48 +81,48 @@ export const infoTypeSchema: () => yup.ObjectSchema<IInformationtypeFormValues> 
 
 const dpDataProcessingSchema: () => yup.ObjectSchema<IDataProcessingFormValues> = () =>
   yup.object({
-    dataProcessor: yup.boolean(),
-    processors: yup.array().of(yup.string().required()).required(),
+    dataProcessor: yup.boolean(), // TODO: databehandlerBenyttes
+    processors: yup.array().of(yup.string().required()).required(), // TODO: databehandler
   })
 
-export const dataProcessorSchema: () => yup.ObjectSchema<IProcessorFormValues> = () =>
+export const databehandlerSchema: () => yup.ObjectSchema<IDatabehandlerFormValues> = () =>
   yup.object({
     id: yup.string(),
-    name: yup.string().max(max, maxError()).required('Databehandler må ha et navn'),
-    contractOwner: yup.string(),
-    operationalContractManagers: yup.array().of(yup.string().required()).required(),
-    note: yup.string(),
-    contract: yup.string(),
-    outsideEU: yup.boolean(),
+    navn: yup.string().max(max, maxError()).required('Databehandler må ha et navn'),
+    avtaleeier: yup.string(),
+    fagansvarlig: yup.array().of(yup.string().required()).required(),
+    merknad: yup.string(),
+    avtalereferanse: yup.string(),
+    behandlingUtenforEuEos: yup.boolean(),
     version: yup.number(),
-    transferGroundsOutsideEU: yup.string().test({
-      name: 'transferGrounds',
+    overforingsgrunnlagUtenforEuEos: yup.string().test({
+      name: 'overforingsgrunnlag',
       message: 'Du må velge et behandlingsgrunnlag',
       test: function () {
         const { parent } = this
-        return !transferGroundsOutsideEUMissing(parent)
+        return !overforingsgrunnlagUtenforEuEosMissing(parent)
       },
     }),
-    transferGroundsOutsideEUOther: yup.string().test({
-      name: 'transferGroundsOther',
+    overforingsgrunnlagUtenforEuEosAnnet: yup.string().test({
+      name: 'overforingsgrunnlagAnnet',
       message: 'Du må spesifisere overføringsgrunnlaget',
       test: function () {
         const { parent } = this
-        return !transferGroundsOutsideEUOtherMissing(parent)
+        return !overforingsgrunnlagUtenforEuEosAnnetMissing(parent)
       },
     }),
-    countries: yup
+    landDataOverforesTil: yup
       .array()
       .of(yup.string().required())
       .required()
       .test({
-        name: 'transferCountries',
+        name: 'landDataOverforesTil',
         test: function () {
           const { parent } = this
-          const error: boolean = transferCountriesMissing(parent)
+          const error: boolean = landDataOverforesTilMissing(parent)
           if (!error) return true
           return this.createError({
-            path: 'countries',
+            path: 'landDataOverforesTil',
             message: 'Du må angi hvilke(t) land',
           })
         },
@@ -130,8 +131,8 @@ export const dataProcessorSchema: () => yup.ObjectSchema<IProcessorFormValues> =
 
 const dataProcessingSchema: () => yup.ObjectSchema<IDataProcessingFormValues> = () =>
   yup.object({
-    dataProcessor: yup.boolean(),
-    processors: yup.array().of(yup.string().required()).required(),
+    dataProcessor: yup.boolean(), // TODO: databehandlerBenyttes
+    processors: yup.array().of(yup.string().required()).required(), // TODO: databehandler
   })
 
 const missingArt9LegalBasisForSensitiveInfoType = (

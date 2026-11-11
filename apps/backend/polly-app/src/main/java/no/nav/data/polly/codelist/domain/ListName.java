@@ -11,6 +11,6 @@ public enum ListName {
     DEPARTMENT,
     SUB_DEPARTMENT,
     SYSTEM,
-    TRANSFER_GROUNDS_OUTSIDE_EU,
+    TRANSFER_GROUNDS_OUTSIDE_EU, // TODO: overforingsgrunnlagUtenforEuEos
     DATA_ACCESS_CLASS
 }

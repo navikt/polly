@@ -1,40 +1,49 @@
 import { BodyLong, Button, Modal } from '@navikt/ds-react'
-import { IProcessor } from '../../constants'
+import { IDatabehandler } from '../../constants'
 
-interface IDeleteProcessProps {
+interface IDeleteDatabehandlerProps {
   onClose: () => void
   isOpen: boolean
-  processor: IProcessor
-  submitDeleteProcessor: (dp: IProcessor) => Promise<boolean>
-  errorProcessorModal: undefined | any
+  databehandler: IDatabehandler
+  submitDeleteDatabehandler: (dp: IDatabehandler) => Promise<boolean>
+  errorDatabehandlerModal: undefined | any
   usageCount: number
 }
 
-export const DeleteProcessorModal = (props: IDeleteProcessProps) => {
-  const { processor, onClose, isOpen, submitDeleteProcessor, errorProcessorModal, usageCount } =
-    props
+export const DeleteDatabehandlerModal = (props: IDeleteDatabehandlerProps) => {
+  const {
+    databehandler,
+    onClose,
+    isOpen,
+    submitDeleteDatabehandler,
+    errorDatabehandlerModal,
+    usageCount,
+  } = props
 
   return (
     <Modal onClose={onClose} open={isOpen} header={{ heading: 'Bekreft sletting' }}>
       <Modal.Body>
         {usageCount === 0 ? (
-          <BodyLong>Er du sikker på at du vil slette {processor.name}?</BodyLong>
+          <BodyLong>Er du sikker på at du vil slette {databehandler.navn}?</BodyLong>
         ) : (
           <BodyLong>
-            Kan ikke slette {processor.name} siden den er knyttet til {usageCount} behandling(er)
+            Kan ikke slette {databehandler.navn} siden den er knyttet til {usageCount}{' '}
+            behandling(er)
           </BodyLong>
         )}
       </Modal.Body>
 
       <Modal.Footer>
         <div className='flex justify-end'>
-          <div className='self-end'>{errorProcessorModal && <p>{errorProcessorModal}</p>}</div>
+          <div className='self-end'>
+            {errorDatabehandlerModal && <p>{errorDatabehandlerModal}</p>}
+          </div>
           <Button variant='secondary' onClick={onClose}>
             Avbryt
           </Button>
           <div className='inline mr-3' />
           <Button
-            onClick={() => submitDeleteProcessor(processor).then(onClose)}
+            onClick={() => submitDeleteDatabehandler(databehandler).then(onClose)}
             disabled={usageCount > 0}
           >
             Slett

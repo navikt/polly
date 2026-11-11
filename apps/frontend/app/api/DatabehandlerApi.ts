@@ -1,59 +1,63 @@
 'use client'
 
 import axios from 'axios'
-import { IPageResponse, IProcessor, IProcessorFormValues } from '../constants'
+import { IDatabehandler, IDatabehandlerFormValues, IPageResponse } from '../constants'
 import { env } from '../util/env'
 import { mapBool } from '../util/helper-functions'
 
-export const getProcessor = async (processorId: string) => {
-  return (await axios.get<IProcessor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
+export const getDatabehandler = async (databehandlerId: string) => {
+  return (await axios.get<IDatabehandler>(`${env.pollyBaseUrl}/databehandler/${databehandlerId}`))
+    .data
 }
 
-export const getProcessorsByIds = async (ids: string[]) => {
-  const processesPromise: Promise<any>[] = []
+export const getDatabehandlereByIds = async (ids: string[]) => {
+  const databehandlerePromise: Promise<IDatabehandler>[] = []
   for (const id of ids) {
-    processesPromise.push(getProcessor(id))
+    databehandlerePromise.push(getDatabehandler(id))
   }
-  return processesPromise.length > 0 ? await Promise.all(processesPromise) : []
+  return databehandlerePromise.length > 0 ? await Promise.all(databehandlerePromise) : []
 }
 
-export const getProcessorsByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
+export const getDatabehandlereByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
   return (
-    await axios.get<IPageResponse<IProcessor>>(
-      `${env.pollyBaseUrl}/processor?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    await axios.get<IPageResponse<IDatabehandler>>(
+      `${env.pollyBaseUrl}/databehandler?pageNumber=${pageNumber}&pageSize=${pageSize}`
     )
   ).data
 }
 
-export const createProcessor = async (processor: IProcessorFormValues) => {
-  const body = convertFormValuesToProcessor(processor)
-  return (await axios.post<IProcessor>(`${env.pollyBaseUrl}/processor`, body)).data
+export const createDatabehandler = async (databehandler: IDatabehandlerFormValues) => {
+  const body = convertFormValuesToDatabehandler(databehandler)
+  return (await axios.post<IDatabehandler>(`${env.pollyBaseUrl}/databehandler`, body)).data
 }
 
-export const updateProcessor = async (processor: IProcessorFormValues) => {
-  const body = convertFormValuesToProcessor(processor)
-  return (await axios.put<IProcessor>(`${env.pollyBaseUrl}/processor/${body.id}`, body)).data
+export const updateDatabehandler = async (databehandler: IDatabehandlerFormValues) => {
+  const body = convertFormValuesToDatabehandler(databehandler)
+  return (await axios.put<IDatabehandler>(`${env.pollyBaseUrl}/databehandler/${body.id}`, body))
+    .data
 }
 
-export const deleteProcessor = async (processorId: string) => {
-  return (await axios.delete<IProcessor>(`${env.pollyBaseUrl}/processor/${processorId}`)).data
+export const deleteDatabehandler = async (databehandlerId: string) => {
+  return (
+    await axios.delete<IDatabehandler>(`${env.pollyBaseUrl}/databehandler/${databehandlerId}`)
+  ).data
 }
 
-export const convertProcessorToFormValues = (
-  values?: Partial<IProcessor>
-): IProcessorFormValues => {
+export const convertDatabehandlerToFormValues = (
+  values?: Partial<IDatabehandler>
+): IDatabehandlerFormValues => {
   const {
     id,
-    name,
-    contract,
-    contractOwner,
-    operationalContractManagers,
-    note,
+    navn,
+    avtalereferanse,
+    avtaleeier,
+    fagansvarlig,
+    merknad,
 
-    outsideEU,
-    transferGroundsOutsideEU,
-    transferGroundsOutsideEUOther,
-    countries,
+    behandlingUtenforEuEos,
+    overforingsgrunnlagUtenforEuEos,
+    overforingsgrunnlagUtenforEuEosAnnet,
+    landDataOverforesTil,
     version,
   } = values || {}
 
@@ -61,33 +65,33 @@ export const convertProcessorToFormValues = (
     id: id || '',
     // Optimistisk låsing: ta vare på versjonen vi leste, slik at den kan sendes ved lagring
     version: version,
-    name: name || '',
-    contract: contract || '',
-    contractOwner: contractOwner || '',
-    operationalContractManagers: operationalContractManagers || [],
-    note: note || '',
+    navn: navn || '',
+    avtalereferanse: avtalereferanse || '',
+    avtaleeier: avtaleeier || '',
+    fagansvarlig: fagansvarlig || [],
+    merknad: merknad || '',
 
-    outsideEU: mapBool(outsideEU),
-    transferGroundsOutsideEU: transferGroundsOutsideEU?.code || undefined,
-    transferGroundsOutsideEUOther: transferGroundsOutsideEUOther || '',
-    countries: countries || [],
+    behandlingUtenforEuEos: mapBool(behandlingUtenforEuEos),
+    overforingsgrunnlagUtenforEuEos: overforingsgrunnlagUtenforEuEos?.code || undefined,
+    overforingsgrunnlagUtenforEuEosAnnet: overforingsgrunnlagUtenforEuEosAnnet || '',
+    landDataOverforesTil: landDataOverforesTil || [],
   }
 }
 
-const convertFormValuesToProcessor = (values: IProcessorFormValues) => {
+const convertFormValuesToDatabehandler = (values: IDatabehandlerFormValues) => {
   return {
     id: values.id,
     // Optimistisk låsing: versjonen klienten sist leste. Backend svarer 409 hvis den er utdatert.
     version: values.version,
-    name: values.name,
-    contract: values.contract,
-    contractOwner: values.contractOwner,
-    operationalContractManagers: values.operationalContractManagers || [],
-    note: values.note,
+    navn: values.navn,
+    avtalereferanse: values.avtalereferanse,
+    avtaleeier: values.avtaleeier,
+    fagansvarlig: values.fagansvarlig || [],
+    merknad: values.merknad,
 
-    outsideEU: values.outsideEU,
-    transferGroundsOutsideEU: values.transferGroundsOutsideEU,
-    transferGroundsOutsideEUOther: values.transferGroundsOutsideEUOther,
-    countries: values.countries,
+    behandlingUtenforEuEos: values.behandlingUtenforEuEos,
+    overforingsgrunnlagUtenforEuEos: values.overforingsgrunnlagUtenforEuEos,
+    overforingsgrunnlagUtenforEuEosAnnet: values.overforingsgrunnlagUtenforEuEosAnnet,
+    landDataOverforesTil: values.landDataOverforesTil,
   }
 }

@@ -80,7 +80,7 @@ const ExportProcessModal: FunctionComponent<TProps> = ({
         SUB_DEPARTMENT: 'subDepartment',
         PURPOSE: 'purpose',
         SYSTEM: 'system',
-        DATA_PROCESSOR: 'processor',
+        DATA_PROCESSOR: 'processor', // TODO: databehandler
         THIRD_PARTY: 'thirdparty',
       } as { [l: string]: string }
     )[listName]

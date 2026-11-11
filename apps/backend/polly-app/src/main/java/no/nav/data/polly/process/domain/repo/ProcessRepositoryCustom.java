@@ -13,7 +13,7 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findByPurpose(String purpose);
 
-    List<Process> findByProcessor(UUID processor);
+    List<Process> findByProcessor(UUID processor); // TODO: databehandler
 
     List<Process> findByGDPRArticle(String gdpr);
 

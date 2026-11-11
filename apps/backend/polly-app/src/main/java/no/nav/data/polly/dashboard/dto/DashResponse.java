@@ -129,7 +129,7 @@ public class DashResponse {
         private Counter retention = new Counter();
         private long retentionDataIncomplete;
         @Builder.Default
-        private Counter dataProcessor = new Counter();
+        private Counter dataProcessor = new Counter(); // TODO: ?? databehandlerBenyttes
         private long commonExternalProcessResponsible;
 
         public void processes() {

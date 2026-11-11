@@ -96,8 +96,8 @@ import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 import no.nav.data.polly.process.domain.sub.Retention;
-import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.polly.databehandler.domain.Databehandler;
+import no.nav.data.polly.databehandler.domain.repo.DatabehandlerRepository;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
@@ -115,7 +115,7 @@ public class ProcessToDocx {
     private final ResourceService resourceService;
     private final TeamService teamService;
     private final ProcessRepository processRepository;
-    private final ProcessorRepository processorRepository;
+    private final DatabehandlerRepository databehandlerRepository;
     private final CommonCodeService commonCodeService;
     private static final String headingProcessList = "Dokumentet inneholder følgende behandlinger (%s)";
     private static final String headingExternalProcessList = "Dokumentet inneholder følgende ferdigstilte behandlinger (%s)";
@@ -426,9 +426,9 @@ public class ProcessToDocx {
                     text("Profilering: ", boolToText(data.getProfiling()))
             );
             aiUsageDescription(process.getData().getAiUsageDescription(), documentAccess);
-            List<UUID> processorIds = process.getData().getDataProcessing().getProcessors();
-            var processors = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? processorRepository.findAllById(processorIds) : List.<Processor>of();
-            dataProcessing(process.getData().getDataProcessing(), processors, documentAccess);
+            List<UUID> databehandlerIds = process.getData().getDataProcessing().getProcessors(); // TODO: databehandler
+            var databehandlerListe = process.getData().getDataProcessing().getDataProcessor() == Boolean.TRUE ? databehandlerRepository.findAllById(databehandlerIds) : List.<Databehandler>of(); // TODO: databehandlerBenyttes
+            dataProcessing(process.getData().getDataProcessing(), databehandlerListe, documentAccess);
             retention(process.getData().getRetention(), documentAccess);
             dpia(process.getData().getDpia(), documentAccess);
 
@@ -627,46 +627,46 @@ public class ProcessToDocx {
             }
         }
 
-        private void dataProcessing(DataProcessing data, List<Processor> processors, DocumentAccess documentAccess) {
+        private void dataProcessing(DataProcessing data, List<Databehandler> databehandlerListe, DocumentAccess documentAccess) { // TODO: databehandling
             if (data == null) {
                 return;
             }
             addHeading4("Databehandlere");
 
             addTexts(
-                    text("Databehandler benyttes: ", boolToText(data.getDataProcessor()))
+                    text("Databehandler benyttes: ", boolToText(data.getDataProcessor())) // TODO: databehandlerBenyttes
             );
             var resources = new ArrayList<String>();
-            processors.forEach(p -> {
-                if (p.getData().getContractOwner() != null) {
-                    resources.add(p.getData().getContractOwner());
+            databehandlerListe.forEach(d -> {
+                if (d.getData().getAvtaleeier() != null) {
+                    resources.add(d.getData().getAvtaleeier());
                 }
-                resources.addAll(copyOf(p.getData().getOperationalContractManagers()));
+                resources.addAll(copyOf(d.getData().getFagansvarlig()));
             });
             var resourceInfo = resourceService.getResources(resources);
             Function<String, String> navn = (ident) -> Optional.ofNullable(resourceInfo.get(ident)).map(Resource::getFullName).orElse(ident);
 
-            processors.forEach(processor -> {
-                var pd = processor.getData();
-                var transferGrounds = Boolean.TRUE.equals(pd.getOutsideEU()) ?
+            databehandlerListe.forEach(databehandler -> {
+                var pd = databehandler.getData();
+                var transferGrounds = Boolean.TRUE.equals(pd.getBehandlingUtenforEuEos()) ?
                         text("Overføringsgrunnlag for behandling utenfor EU/EØS: ",
-                                shortName(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, pd.getTransferGroundsOutsideEU()),
-                                Optional.ofNullable(pd.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
+                                shortName(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, pd.getOverforingsgrunnlagUtenforEuEos()), // TODO: overforingsgrunnlagUtenforEuEos
+                                Optional.ofNullable(pd.getOverforingsgrunnlagUtenforEuEosAnnet()).map(s -> ": " + s).orElse(""))
                         : text("");
 
                 if (documentAccess.equals(DocumentAccess.INTERNAL)) {
-                    addHeading4(" • " + pd.getName());
+                    addHeading4(" • " + pd.getNavn());
                     addTexts(
-                            text("Ref. til databehandleravtale: ", nullToEmpty(pd.getContract())),
-                            text("Avtaleeier: ", navn.apply(pd.getContractOwner())),
-                            text("Avtaleforvaltere: ", String.join(", ", convert(pd.getOperationalContractManagers(), navn))),
-                            text("Notat: ", nullToEmpty(pd.getNote())),
-                            text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getOutsideEU())),
+                            text("Ref. til databehandleravtale: ", nullToEmpty(pd.getAvtalereferanse())),
+                            text("Avtaleeier: ", navn.apply(pd.getAvtaleeier())),
+                            text("Fagansvarlig: ", String.join(", ", convert(pd.getFagansvarlig(), navn))),
+                            text("Merknad: ", nullToEmpty(pd.getMerknad())),
+                            text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(pd.getBehandlingUtenforEuEos())),
                             transferGrounds,
-                            text("Overføres til land: ", String.join(", ", convert(pd.getCountries(), ProcessToDocx.this::countryName)))
+                            text("Overføres til land: ", String.join(", ", convert(pd.getLandDataOverforesTil(), ProcessToDocx.this::countryName)))
                     );
                 } else {
-                    addText(" • " + pd.getName());
+                    addText(" • " + pd.getNavn());
                 }
             });
         }

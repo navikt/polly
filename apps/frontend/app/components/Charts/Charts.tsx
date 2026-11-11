@@ -192,6 +192,7 @@ const Charts = (props: TChartsProps) => {
       </div>
 
       <div className={chartCardStyle}>
+        {/* TODO: databehandlerBenyttes */}
         <TriChart
           counter={chartData.dataProcessor}
           processStatus={processStatus}

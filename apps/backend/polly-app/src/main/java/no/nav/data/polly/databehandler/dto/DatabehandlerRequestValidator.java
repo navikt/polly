@@ -1,13 +1,13 @@
-package no.nav.data.polly.processor.dto;
+package no.nav.data.polly.databehandler.dto;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
-import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.domain.ProcessorData;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
+import no.nav.data.polly.databehandler.domain.Databehandler;
+import no.nav.data.polly.databehandler.domain.DatabehandlerData;
+import no.nav.data.polly.databehandler.domain.repo.DatabehandlerRepository;
 import no.nav.data.polly.teams.ResourceService;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +21,14 @@ import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 
 @Component
 @RequiredArgsConstructor
-public class ProcessorRequestValidator extends RequestValidator<ProcessorRequest> {
+public class DatabehandlerRequestValidator extends RequestValidator<DatabehandlerRequest> {
 
     // MERK: Ingen testdekning
     
-    private final ProcessorRepository repository;
+    private final DatabehandlerRepository repository;
     private final ResourceService resourceService;
 
-    public void validateRequest(ProcessorRequest request, boolean update) {
+    public void validateRequest(DatabehandlerRequest request, boolean update) {
         initialize(List.of(request), update);
 
         var existing = Optional.ofNullable(request.getIdAsUUID())
@@ -37,18 +37,18 @@ public class ProcessorRequestValidator extends RequestValidator<ProcessorRequest
         var validationErrors = StreamUtils.applyAll(request,
                 RequestElement::validateFields,
                 r -> validateRepositoryValues(r, existing.isPresent()),
-                r -> validateUsers(r, existing.map(Processor::getData).map(ProcessorData::getOperationalContractManagers).orElse(List.of()), r.getOperationalContractManagers()),
-                r -> validateUser(r, existing.map(Processor::getData).map(ProcessorData::getContractOwner), r.getContractOwner())
+                r -> validateUsers(r, existing.map(Databehandler::getData).map(DatabehandlerData::getFagansvarlig).orElse(List.of()), r.getFagansvarlig()),
+                r -> validateUser(r, existing.map(Databehandler::getData).map(DatabehandlerData::getAvtaleeier), r.getAvtaleeier())
         );
 
         ifErrorsThrowValidationException(validationErrors);
     }
 
-    private List<ValidationError> validateUser(ProcessorRequest request, Optional<String> oldValue, String newValue) {
+    private List<ValidationError> validateUser(DatabehandlerRequest request, Optional<String> oldValue, String newValue) {
         return validateUsers(request, nullToEmptyList(oldValue.orElse(null)), nullToEmptyList(newValue));
     }
 
-    private List<ValidationError> validateUsers(ProcessorRequest request, List<String> oldValue, List<String> newValue) {
+    private List<ValidationError> validateUsers(DatabehandlerRequest request, List<String> oldValue, List<String> newValue) {
         var resources = resourceService.getResources(difference(oldValue, newValue).getAdded());
         return resources.entrySet().stream()
                 .filter(e -> e.getValue() == null)

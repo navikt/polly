@@ -2,28 +2,31 @@ import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useContext } from 'react'
 import { CodelistContext } from '@/provider/kodeverkProvider'
-import { IProcessorFormValues } from '../../../constants'
+import { IDatabehandlerFormValues } from '../../../constants'
 import { RenderTagList } from '../../common/RenderTagList'
 
 interface IProps {
-  formikBag: FormikProps<IProcessorFormValues>
+  formikBag: FormikProps<IDatabehandlerFormValues>
 }
 
-const FieldCountries = (props: IProps) => {
+const FieldLandDataOverforesTil = (props: IProps) => {
   const { formikBag } = props
   const { utils: codelistUtils } = useContext(CodelistContext)
 
-  const countries: string[] = formikBag.values.countries
+  const countries: string[] = formikBag.values.landDataOverforesTil
 
   return (
-    <FieldArray name='countries'>
+    <FieldArray name='landDataOverforesTil'>
       {(arrayHelpers: FieldArrayRenderProps) => (
         <div className='w-full mt-4'>
           <Select
-            id='countries'
+            id='landDataOverforesTil'
             label='I hvilke(t) land lagrer databehandleren personopplysninger i?'
             onChange={(event) => {
-              arrayHelpers.form.setFieldValue('countries', [...countries, event.target.value])
+              arrayHelpers.form.setFieldValue('landDataOverforesTil', [
+                ...countries,
+                event.target.value,
+              ])
             }}
           >
             <option value=''></option>
@@ -46,4 +49,4 @@ const FieldCountries = (props: IProps) => {
   )
 }
 
-export default FieldCountries
+export default FieldLandDataOverforesTil

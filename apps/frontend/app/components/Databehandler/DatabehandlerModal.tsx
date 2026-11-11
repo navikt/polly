@@ -3,26 +3,26 @@
 import { Button, ErrorSummary, Modal, Radio, RadioGroup, TextField } from '@navikt/ds-react'
 import { Field, FieldProps, Form, Formik } from 'formik'
 import { useRef, useState } from 'react'
-import { IProcessorFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
+import { IDatabehandlerFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER } from '../../constants'
 import { FormError } from '../common/ModalSchema'
-import { dataProcessorSchema } from '../common/schemaValidation'
-import FieldContractOwner from './components/FieldContractOwner'
-import FieldCountries from './components/FieldCountries'
-import FieldNote from './components/FieldNote'
-import FieldOperationalContractManagers from './components/FieldOperationalContractManagers'
-import FieldTransferGroundsOutsideEU from './components/FieldTransferGroundsOutsideEU'
-import FieldTransferGroundsOutsideEUOther from './components/FieldTransferGroundsOutsideEUOther'
+import { databehandlerSchema } from '../common/schemaValidation'
+import FieldAvtaleeier from './components/FieldAvtaleeier'
+import FieldFagansvarlig from './components/FieldFagansvarlig'
+import FieldLandDataOverforesTil from './components/FieldLandDataOverforesTil'
+import FieldMerknad from './components/FieldMerknad'
+import FieldOverforingsgrunnlagUtenforEuEos from './components/FieldOverforingsgrunnlagUtenforEuEos'
+import FieldOverforingsgrunnlagUtenforEuEosAnnet from './components/FieldOverforingsgrunnlagUtenforEuEosAnnet'
 
-type TModalProcessorProps = {
+type TDatabehandlerModalProps = {
   title: string
   isOpen: boolean
-  initialValues: IProcessorFormValues
+  initialValues: IDatabehandlerFormValues
   errorMessage: any | undefined
-  submit: (processor: IProcessorFormValues) => void
+  submit: (databehandler: IDatabehandlerFormValues) => void
   onClose: () => void
 }
 
-const ProcessorModal = (props: TModalProcessorProps) => {
+const DatabehandlerModal = (props: TDatabehandlerModalProps) => {
   const { title, isOpen, initialValues, errorMessage, submit, onClose } = props
   const errorSummaryRef = useRef<HTMLDivElement>(null)
   const [validateOnBlur, setValidateOnBlur] = useState(false)
@@ -37,33 +37,33 @@ const ProcessorModal = (props: TModalProcessorProps) => {
       }}
     >
       <Formik
-        onSubmit={(values: IProcessorFormValues) => {
+        onSubmit={(values: IDatabehandlerFormValues) => {
           submit(values)
         }}
         initialValues={initialValues}
-        validationSchema={dataProcessorSchema()}
+        validationSchema={databehandlerSchema()}
         validateOnBlur={false}
         validateOnChange={validateOnBlur}
       >
         {(formikBag) => (
           <>
             <Modal.Body>
-              <Form id='modal-processor-form'>
-                <Field name='name'>
-                  {({ field }: FieldProps<string, IProcessorFormValues>) => (
+              <Form id='modal-databehandler-form'>
+                <Field name='navn'>
+                  {({ field }: FieldProps<string, IDatabehandlerFormValues>) => (
                     <TextField
                       type='text'
-                      id='name'
+                      id='navn'
                       className='w-full'
                       label='Navn på databehandler'
                       {...field}
                     />
                   )}
                 </Field>
-                <FormError fieldName='name' akselStyling />
+                <FormError fieldName='navn' akselStyling />
 
-                <Field name='contract'>
-                  {({ field }: FieldProps<string, IProcessorFormValues>) => (
+                <Field name='avtalereferanse'>
+                  {({ field }: FieldProps<string, IDatabehandlerFormValues>) => (
                     <TextField
                       type='url'
                       className='w-full mt-4'
@@ -73,37 +73,37 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                   )}
                 </Field>
 
-                <FieldContractOwner formikBag={formikBag} />
-                <FieldOperationalContractManagers formikBag={formikBag} />
-                <FieldNote />
+                <FieldAvtaleeier formikBag={formikBag} />
+                <FieldFagansvarlig formikBag={formikBag} />
+                <FieldMerknad />
 
                 <RadioGroup
-                  value={formikBag.values.outsideEU}
+                  value={formikBag.values.behandlingUtenforEuEos}
                   className=' w-full mt-4'
                   legend='Overføres data til utlandet'
                   description='Behandler databehandler personopplysninger utenfor EU/EØS?'
-                  onChange={(value) => formikBag.setFieldValue('outsideEU', value)}
+                  onChange={(value) => formikBag.setFieldValue('behandlingUtenforEuEos', value)}
                 >
                   <Radio value={true}>Ja</Radio>
                   <Radio value={false}>Nei</Radio>
                   <Radio value={undefined}>Uavklart</Radio>
                 </RadioGroup>
 
-                {formikBag.values.outsideEU && (
+                {formikBag.values.behandlingUtenforEuEos && (
                   <>
-                    <FieldTransferGroundsOutsideEU />
-                    <FormError fieldName='transferGroundsOutsideEU' akselStyling />
+                    <FieldOverforingsgrunnlagUtenforEuEos />
+                    <FormError fieldName='overforingsgrunnlagUtenforEuEos' akselStyling />
 
-                    {formikBag.values.transferGroundsOutsideEU ===
+                    {formikBag.values.overforingsgrunnlagUtenforEuEos ===
                       TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && (
                       <>
-                        <FieldTransferGroundsOutsideEUOther />
-                        <FormError fieldName='transferGroundsOutsideEUOther' akselStyling />
+                        <FieldOverforingsgrunnlagUtenforEuEosAnnet />
+                        <FormError fieldName='overforingsgrunnlagUtenforEuEosAnnet' akselStyling />
                       </>
                     )}
 
-                    <FieldCountries formikBag={formikBag} />
-                    <FormError fieldName='countries' akselStyling />
+                    <FieldLandDataOverforesTil formikBag={formikBag} />
+                    <FormError fieldName='landDataOverforesTil' akselStyling />
                   </>
                 )}
 
@@ -132,7 +132,7 @@ const ProcessorModal = (props: TModalProcessorProps) => {
                 </Button>
                 <Button
                   type='submit'
-                  form='modal-processor-form'
+                  form='modal-databehandler-form'
                   variant='primary'
                   onClick={() => setValidateOnBlur(true)}
                 >
@@ -147,4 +147,4 @@ const ProcessorModal = (props: TModalProcessorProps) => {
   )
 }
 
-export default ProcessorModal
+export default DatabehandlerModal

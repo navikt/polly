@@ -3,36 +3,36 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { Button, Heading, Loader } from '@navikt/ds-react'
 import { useContext, useEffect, useState } from 'react'
-import { getAll } from '@/api/GetAllApi'
 import {
-  convertProcessorToFormValues,
-  createProcessor,
-  getProcessorsByPageAndPageSize,
-} from '@/api/ProcessorApi'
-import { IProcessor, IProcessorFormValues } from '@/constants'
+  convertDatabehandlerToFormValues,
+  createDatabehandler,
+  getDatabehandlereByPageAndPageSize,
+} from '@/api/DatabehandlerApi'
+import { getAll } from '@/api/GetAllApi'
+import { IDatabehandler, IDatabehandlerFormValues } from '@/constants'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { useNavigate } from '@/util/router'
-import ProcessorModal from '../Processor/ProcessorModal'
+import DatabehandlerModal from '../Databehandler/DatabehandlerModal'
 import AlphabeticList from '../common/AlphabeticList'
 
-const ProcessorListPage = () => {
+const DatabehandlerListPage = () => {
   const user: IUserContext = useContext(UserContext)
 
-  const [processors, setProcessors] = useState<IProcessor[]>([])
-  const [showCreateProcessorModal, setShowCreateProcessorModal] = useState<boolean>(false)
+  const [databehandlere, setDatabehandlere] = useState<IDatabehandler[]>([])
+  const [showCreateDatabehandlerModal, setShowCreateDatabehandlerModal] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [modalErrorMessage, setModalErrorMessage] = useState<string>()
   const navigate = useNavigate()
   const hasAccess = () => user.canWrite()
 
-  const handleCreateProcessor = (processor: IProcessorFormValues) => {
-    if (!processor) return
+  const handleCreateDatabehandler = (databehandler: IDatabehandlerFormValues) => {
+    if (!databehandler) return
     try {
       ;(async () => {
-        const newDataProcessor = await createProcessor(processor)
-        navigate(`/processor/${newDataProcessor.id}`)
+        const newDatabehandler = await createDatabehandler(databehandler)
+        navigate(`/databehandler/${newDatabehandler.id}`)
       })()
-      setShowCreateProcessorModal(false)
+      setShowCreateDatabehandlerModal(false)
     } catch (error: any) {
       setModalErrorMessage(error.response.data.message)
     }
@@ -41,9 +41,9 @@ const ProcessorListPage = () => {
   useEffect(() => {
     ;(async () => {
       setIsLoading(true)
-      const res = await getAll(getProcessorsByPageAndPageSize)()
+      const res = await getAll(getDatabehandlereByPageAndPageSize)()
       if (res) {
-        setProcessors(res)
+        setDatabehandlere(res)
       }
       setIsLoading(false)
     })()
@@ -69,7 +69,7 @@ const ProcessorListPage = () => {
                       <PlusCircleIcon aria-hidden className='block' />
                     </span>
                   }
-                  onClick={() => setShowCreateProcessorModal(true)}
+                  onClick={() => setShowCreateDatabehandlerModal(true)}
                 >
                   Opprett ny databehandler
                 </Button>
@@ -78,20 +78,20 @@ const ProcessorListPage = () => {
           </div>
           <div>
             <AlphabeticList
-              items={processors.map((value) => {
-                return { id: value.id, label: value.name }
+              items={databehandlere.map((value) => {
+                return { id: value.id, label: value.navn }
               })}
-              baseUrl={'/processor/'}
+              baseUrl={'/databehandler/'}
               columns={1}
             />
           </div>
-          <ProcessorModal
+          <DatabehandlerModal
             title='Opprett ny databehandler'
-            isOpen={showCreateProcessorModal}
-            initialValues={convertProcessorToFormValues({})}
-            submit={handleCreateProcessor}
+            isOpen={showCreateDatabehandlerModal}
+            initialValues={convertDatabehandlerToFormValues({})}
+            submit={handleCreateDatabehandler}
             errorMessage={modalErrorMessage}
-            onClose={() => setShowCreateProcessorModal(false)}
+            onClose={() => setShowCreateDatabehandlerModal(false)}
           />
         </>
       )}
@@ -99,4 +99,4 @@ const ProcessorListPage = () => {
   )
 }
 
-export default ProcessorListPage
+export default DatabehandlerListPage

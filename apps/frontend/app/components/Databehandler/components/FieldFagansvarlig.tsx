@@ -3,20 +3,20 @@
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
 import { getResourcesByIds, useTeamResourceSearchOptions } from '../../../api/TeamApi'
-import { IProcessorFormValues } from '../../../constants'
+import { IDatabehandlerFormValues } from '../../../constants'
 import CustomSearchSelect from '../../common/AsyncSelectComponents'
 import { LabelWithDescription } from '../../common/LabelWithTooltip'
 import { RenderTagList } from '../../common/RenderTagList'
 
-type TFieldOperationalContractManagersProps = {
-  formikBag: FormikProps<IProcessorFormValues>
+type TFieldFagansvarligProps = {
+  formikBag: FormikProps<IDatabehandlerFormValues>
 }
 
-const FieldOperationalContractManagers = (props: TFieldOperationalContractManagersProps) => {
+const FieldFagansvarlig = (props: TFieldFagansvarligProps) => {
   const { formikBag } = props
   const [resourceNamesById, setResourceNamesById] = useState<Record<string, string>>({})
 
-  const currentIds = formikBag.values.operationalContractManagers || []
+  const currentIds = formikBag.values.fagansvarlig || []
 
   const displayList = currentIds.map((id) => resourceNamesById[id] || id)
 
@@ -44,15 +44,15 @@ const FieldOperationalContractManagers = (props: TFieldOperationalContractManage
   }, [currentIds.join('|')])
 
   return (
-    <FieldArray name='operationalContractManagers'>
+    <FieldArray name='fagansvarlig'>
       {(arrayHelpers: FieldArrayRenderProps) => (
         <div className='mt-4'>
           <LabelWithDescription label='Angi de(n) fagansvarlige som kan svare ut detaljer knyttet til avtalen og operasjonalisering av denne.' />
           <CustomSearchSelect
             ariaLabel='Fagansvarlig'
             placeholder=''
-            inputId='operationalContractManagers'
-            instanceId='operationalContractManagers'
+            inputId='fagansvarlig'
+            instanceId='fagansvarlig'
             onChange={(event: any) => {
               if (!event) {
                 return
@@ -83,4 +83,4 @@ const FieldOperationalContractManagers = (props: TFieldOperationalContractManage
   )
 }
 
-export default FieldOperationalContractManagers
+export default FieldFagansvarlig

@@ -1,11 +1,11 @@
-package no.nav.data.polly.processor;
+package no.nav.data.polly.databehandler;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistStaticService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.processor.ProcessorController.ProcessorPage;
-import no.nav.data.polly.processor.domain.Processor;
-import no.nav.data.polly.processor.dto.ProcessorResponse;
+import no.nav.data.polly.databehandler.DatabehandlerController.DatabehandlerPage;
+import no.nav.data.polly.databehandler.domain.Databehandler;
+import no.nav.data.polly.databehandler.dto.DatabehandlerResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import no.nav.data.polly.test.TestRestTemplate;
@@ -17,37 +17,37 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ProcessorControllerIT extends IntegrationTestBase {
+class DatabehandlerControllerIT extends IntegrationTestBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Test
-    void createProcessor() {
-        var request = createProcessorRequest();
-        var resp = restTemplate.postForEntity("/processor", request, ProcessorResponse.class);
+    void createDatabehandler() {
+        var request = createDatabehandlerRequest();
+        var resp = restTemplate.postForEntity("/databehandler", request, DatabehandlerResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertBody(resp.getBody());
     }
 
     @Test
-    void getProcessor() {
-        var request = createProcessorRequest();
-        var resp = restTemplate.postForEntity("/processor", request, ProcessorResponse.class);
+    void getDatabehandler() {
+        var request = createDatabehandlerRequest();
+        var resp = restTemplate.postForEntity("/databehandler", request, DatabehandlerResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
         String id = resp.getBody().getId().toString();
 
-        resp = restTemplate.getForEntity("/processor/{id}", ProcessorResponse.class, id);
+        resp = restTemplate.getForEntity("/databehandler/{id}", DatabehandlerResponse.class, id);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertBody(resp.getBody());
     }
 
     @Test
-    void searchProcessor() {
-        restTemplate.postForEntity("/processor", createProcessorRequest(), ProcessorResponse.class);
+    void searchDatabehandler() {
+        restTemplate.postForEntity("/databehandler", createDatabehandlerRequest(), DatabehandlerResponse.class);
 
-        var resp = restTemplate.getForEntity("/processor/search/{name}", ProcessorPage.class, "name");
+        var resp = restTemplate.getForEntity("/databehandler/search/{navn}", DatabehandlerPage.class, "navn");
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
         assertThat(resp.getBody().getContent()).hasSize(1);
@@ -55,10 +55,10 @@ class ProcessorControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void getAllProcessor() {
-        restTemplate.postForEntity("/processor", createProcessorRequest(), ProcessorResponse.class);
+    void getAllDatabehandler() {
+        restTemplate.postForEntity("/databehandler", createDatabehandlerRequest(), DatabehandlerResponse.class);
 
-        var resp = restTemplate.getForEntity("/processor", ProcessorPage.class);
+        var resp = restTemplate.getForEntity("/databehandler", DatabehandlerPage.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
         assertThat(resp.getBody().getContent()).hasSize(1);
@@ -66,48 +66,48 @@ class ProcessorControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void updateProcessor() {
-        var request = createProcessorRequest();
-        var resp = restTemplate.postForEntity("/processor", request, ProcessorResponse.class);
+    void updateDatabehandler() {
+        var request = createDatabehandlerRequest();
+        var resp = restTemplate.postForEntity("/databehandler", request, DatabehandlerResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
         String id = resp.getBody().getId().toString();
 
         request.setId(id);
-        request.setName("name 2");
-        resp = restTemplate.exchange("/processor/{id}", HttpMethod.PUT, new HttpEntity<>(request), ProcessorResponse.class, id);
+        request.setNavn("navn 2");
+        resp = restTemplate.exchange("/databehandler/{id}", HttpMethod.PUT, new HttpEntity<>(request), DatabehandlerResponse.class, id);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getName()).isEqualTo("name 2");
+        assertThat(resp.getBody().getNavn()).isEqualTo("navn 2");
     }
 
     @Test
-    void deleteProcessor() {
-        var resp = restTemplate.postForEntity("/processor", createProcessorRequest(), ProcessorResponse.class);
+    void deleteDatabehandler() {
+        var resp = restTemplate.postForEntity("/databehandler", createDatabehandlerRequest(), DatabehandlerResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(processorRepository.count()).isOne();
+        assertThat(databehandlerRepository.count()).isOne();
 
-        restTemplate.delete("/processor/{id}", resp.getBody().getId().toString());
-        assertThat(processorRepository.count()).isZero();
+        restTemplate.delete("/databehandler/{id}", resp.getBody().getId().toString());
+        assertThat(databehandlerRepository.count()).isZero();
     }
 
     @Test
-    void deleteProcessorFail() {
-        var p = new Processor().convertFromRequest(createProcessorRequest());
-        p.setId(PROCESSOR_ID1);
-        processorRepository.save(p);
-        assertThat(processorRepository.count()).isOne();
+    void deleteDatabehandlerFail() {
+        var d = new Databehandler().convertFromRequest(createDatabehandlerRequest());
+        d.setId(DATABEHANDLER_ID1);
+        databehandlerRepository.save(d);
+        assertThat(databehandlerRepository.count()).isOne();
         var process = createAndSaveProcess(PURPOSE_CODE1);
-        process.getData().getDataProcessing().setProcessors(List.of(p.getId()));
+        process.getData().getDataProcessing().setProcessors(List.of(d.getId())); // TODO: databehandler
         processRepository.save(process);
 
-        restTemplate.delete("/processor/{id}", PROCESSOR_ID1);
+        restTemplate.delete("/databehandler/{id}", DATABEHANDLER_ID1);
 
-        assertThat(processorRepository.count()).isOne();
+        assertThat(databehandlerRepository.count()).isOne();
     }
 
-    private void assertBody(ProcessorResponse body) {
+    private void assertBody(DatabehandlerResponse body) {
         assertThat(body).isNotNull();
         assertThat(body.getId()).isNotNull();
         assertThat(body.getChangeStamp()).isNotNull();
@@ -115,18 +115,18 @@ class ProcessorControllerIT extends IntegrationTestBase {
         body.setId(null);
         body.setChangeStamp(null);
         body.setVersion(null);
-        assertThat(body).isEqualTo(ProcessorResponse.builder()
-                .name("name")
-                .contract("contract")
-                .contractOwner("A123456")
-                .operationalContractManager("A123456")
-                .operationalContractManager("A123457")
-                .note("note")
+        assertThat(body).isEqualTo(DatabehandlerResponse.builder()
+                .navn("navn")
+                .avtalereferanse("avtalereferanse")
+                .avtaleeier("A123456")
+                .leggTilFagansvarlig("A123456")
+                .leggTilFagansvarlig("A123457")
+                .merknad("merknad")
 
-                .outsideEU(true)
-                .transferGroundsOutsideEU(CodelistStaticService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
-                .transferGroundsOutsideEUOther("reason")
-                .country("FJI")
+                .behandlingUtenforEuEos(true)
+                .overforingsgrunnlagUtenforEuEos(CodelistStaticService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
+                .overforingsgrunnlagUtenforEuEosAnnet("reason")
+                .leggTilLandDataOverforesTil("FJI")
                 .build());
     }
 

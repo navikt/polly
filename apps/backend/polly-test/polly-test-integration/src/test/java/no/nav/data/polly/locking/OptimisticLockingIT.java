@@ -1,13 +1,13 @@
 package no.nav.data.polly.locking;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.databehandler.dto.DatabehandlerRequest;
+import no.nav.data.polly.databehandler.dto.DatabehandlerResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
-import no.nav.data.polly.processor.dto.ProcessorRequest;
-import no.nav.data.polly.processor.dto.ProcessorResponse;
 import no.nav.data.polly.test.TestRestTemplate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +67,9 @@ class OptimisticLockingIT extends IntegrationTestBase {
     }
 
     @Test
-    void processorUpdateWithStaleVersionGives409() {
-        ResponseEntity<ProcessorResponse> created = restTemplate
-                .postForEntity("/processor", createProcessorRequest(), ProcessorResponse.class);
+    void databehandlerUpdateWithStaleVersionGives409() {
+        ResponseEntity<DatabehandlerResponse> created = restTemplate
+                .postForEntity("/databehandler", createDatabehandlerRequest(), DatabehandlerResponse.class);
         assertThat(created.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(created.getBody()).isNotNull();
 
@@ -77,22 +77,22 @@ class OptimisticLockingIT extends IntegrationTestBase {
         Integer staleVersion = created.getBody().getVersion();
         assertThat(staleVersion).isNotNull();
 
-        ProcessorRequest first = createProcessorRequest();
+        DatabehandlerRequest first = createDatabehandlerRequest();
         first.setId(id);
-        first.setName("first update");
+        first.setNavn("first update");
         first.setVersion(staleVersion);
-        ResponseEntity<ProcessorResponse> resp1 = restTemplate
-                .exchange("/processor/{id}", HttpMethod.PUT, new HttpEntity<>(first), ProcessorResponse.class, id);
+        ResponseEntity<DatabehandlerResponse> resp1 = restTemplate
+                .exchange("/databehandler/{id}", HttpMethod.PUT, new HttpEntity<>(first), DatabehandlerResponse.class, id);
         assertThat(resp1.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp1.getBody()).isNotNull();
         assertThat(resp1.getBody().getVersion()).isEqualTo(staleVersion + 1);
 
-        ProcessorRequest second = createProcessorRequest();
+        DatabehandlerRequest second = createDatabehandlerRequest();
         second.setId(id);
-        second.setName("second update");
+        second.setNavn("second update");
         second.setVersion(staleVersion);
         ResponseEntity<String> resp2 = restTemplate
-                .exchange("/processor/{id}", HttpMethod.PUT, new HttpEntity<>(second), String.class, id);
+                .exchange("/databehandler/{id}", HttpMethod.PUT, new HttpEntity<>(second), String.class, id);
         assertThat(resp2.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 

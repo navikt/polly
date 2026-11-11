@@ -1,4 +1,4 @@
-package no.nav.data.polly.processor.domain;
+package no.nav.data.polly.databehandler.domain;
 
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
-import no.nav.data.polly.processor.dto.ProcessorRequest;
+import no.nav.data.polly.databehandler.dto.DatabehandlerRequest;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
@@ -27,11 +27,11 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PROCESSOR")
-public class Processor extends Auditable {
+@Table(name = "DATABEHANDLER")
+public class Databehandler extends Auditable {
 
     @Id
-    @Column(name = "PROCESSOR_ID")
+    @Column(name = "ID")
     @EqualsAndHashCode.Include
     @Builder.Default
     private UUID id = UUID.randomUUID();
@@ -41,26 +41,26 @@ public class Processor extends Auditable {
     @NotNull
     @Type(value = JsonBinaryType.class)
     @Column(name = "DATA", nullable = false)
-    private ProcessorData data = new ProcessorData();
+    private DatabehandlerData data = new DatabehandlerData();
 
     // TODO: Snu avhengigheten innover
-    public Processor convertFromRequest(ProcessorRequest request) {
-        data.setName(request.getName());
-        data.setContract(request.getContract());
-        data.setContractOwner(request.getContractOwner());
-        data.setOperationalContractManagers(copyOf(request.getOperationalContractManagers()));
-        data.setNote(request.getNote());
-        data.setOutsideEU(request.getOutsideEU());
-        data.setTransferGroundsOutsideEU(request.getTransferGroundsOutsideEU());
-        data.setTransferGroundsOutsideEUOther(request.getTransferGroundsOutsideEUOther());
-        data.setCountries(copyOf(request.getCountries()));
+    public Databehandler convertFromRequest(DatabehandlerRequest request) {
+        data.setNavn(request.getNavn());
+        data.setAvtalereferanse(request.getAvtalereferanse());
+        data.setAvtaleeier(request.getAvtaleeier());
+        data.setFagansvarlig(copyOf(request.getFagansvarlig()));
+        data.setMerknad(request.getMerknad());
+        data.setBehandlingUtenforEuEos(request.getBehandlingUtenforEuEos());
+        data.setOverforingsgrunnlagUtenforEuEos(request.getOverforingsgrunnlagUtenforEuEos());
+        data.setOverforingsgrunnlagUtenforEuEosAnnet(request.getOverforingsgrunnlagUtenforEuEosAnnet());
+        data.setLandDataOverforesTil(copyOf(request.getLandDataOverforesTil()));
         // Version skal aldri koieres fra request til entity.
 
         return this;
     }
 
     public UsedInInstance getInstanceIdentification() {
-        return new UsedInInstance(id.toString(), data.getName());
+        return new UsedInInstance(id.toString(), data.getNavn());
     }
 
 }

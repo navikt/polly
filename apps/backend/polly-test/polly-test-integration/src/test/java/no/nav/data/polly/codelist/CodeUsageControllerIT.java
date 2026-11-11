@@ -9,7 +9,7 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
-import no.nav.data.polly.processor.domain.Processor;
+import no.nav.data.polly.databehandler.domain.Databehandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -119,7 +119,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"TRANSFER_GROUNDS_OUTSIDE_EU,OTHER,0", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,1"})
-        void findProcessors(String list, String code, int expected) {
+        void findProcessors(String list, String code, int expected) { // TODO: databehandler
             assertThat(expected).isEqualTo(countProcessors(getForListAndCode(list, code)));
         }
 
@@ -225,9 +225,9 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         disclosureRepository.save(disclosure);
         documentRepository.save(document);
 
-        var processor = new Processor().convertFromRequest(createProcessorRequest());
-        processor.getData().setTransferGroundsOutsideEU("APPROVED_THIRD_COUNTRY");
-        processorRepository.save(processor);
+        var databehandler = new Databehandler().convertFromRequest(createDatabehandlerRequest());
+        databehandler.getData().setOverforingsgrunnlagUtenforEuEos("APPROVED_THIRD_COUNTRY");
+        databehandlerRepository.save(databehandler);
     }
 
     private void createCodelistsByRequests() {
@@ -292,7 +292,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         return Objects.requireNonNull(response.getBody()).getDocuments().size();
     }
 
-    private int countProcessors(ResponseEntity<CodeUsageResponse> response) {
+    private int countProcessors(ResponseEntity<CodeUsageResponse> response) { // TODO: databehandler
         return Objects.requireNonNull(response.getBody()).getProcessors().size();
     }
 

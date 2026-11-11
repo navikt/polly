@@ -22,11 +22,11 @@ import static no.nav.data.common.utils.StringUtils.formatList;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
-public class DataProcessingRequest implements Validated {
+public class DataProcessingRequest implements Validated { // TODO: databehandling
 
-    private Boolean dataProcessor;
+    private Boolean dataProcessor; // TODO: databehandlerBenyttes
     @Singular
-    private List<String> processors;
+    private List<String> processors; // TODO: databehandler
 
     @Override
     public void format() {
