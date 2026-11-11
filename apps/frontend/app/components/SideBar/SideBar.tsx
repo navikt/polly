@@ -42,7 +42,7 @@ const SideBar = () => (
           text='Systemer'
           tooltip='En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg'
         />
-        <NavItem to='/processor' text='Databehandlere' />
+        <NavItem to='/databehandler' text='Databehandlere' />
         <NavItem
           to='/dashboard'
           text='Dashboard'

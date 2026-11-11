@@ -94,12 +94,18 @@ public class AuditVersion {
     }
 
     private String findName(JsonNode json) {
-        return json.has("name") ?
-                json.get("name").textValue() :
-                Optional.ofNullable(json.get("data"))
-                        .map(dataField -> dataField.get("name"))
-                        .map(JsonNode::textValue)
-                        .orElse("");
+        // Databehandler bruker norske feltnavn ("navn"), øvrige entiteter "name"
+        var data = json.get("data");
+        if (json.has("name")) {
+            return json.get("name").textValue();
+        } else if (json.has("navn")) {
+            return json.get("navn").textValue();
+        } else if (data != null && data.has("name")) {
+            return data.get("name").textValue();
+        } else if (data != null && data.has("navn")) {
+            return data.get("navn").textValue();
+        }
+        return "";
     }
 
     private List<String> getPurposes(JsonNode json) {

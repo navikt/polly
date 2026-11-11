@@ -38,16 +38,19 @@ import { LabelWithDescription } from '@/components/common/LabelWithTooltip'
 import { EListName } from '@/constants/codelistConstant'
 import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { checkForAvvikKeys, organiseringAvvikCheck } from '@/util/processUtils'
+import {
+  getDatabehandlereByIds,
+  getDatabehandlereByPageAndPageSize,
+} from '../../../api/DatabehandlerApi'
 import { getAll, getDisclosuresByRecipient, searchProcessOptions } from '../../../api/GetAllApi'
 import { writeLog } from '../../../api/LogApi'
-import { getProcessorsByIds, getProcessorsByPageAndPageSize } from '../../../api/ProcessorApi'
 import {
   EBehandlingsNivaa,
   EProcessStatus,
+  IDatabehandler,
   IDisclosure,
   IProcess,
   IProcessFormValues,
-  IProcessor,
 } from '../../../constants'
 import { env } from '../../../util/env'
 import { disableEnter } from '../../../util/helper-functions'
@@ -197,7 +200,7 @@ const ModalProcess = ({
   const [dataProcessors, setDataProcessors] = useState(new Map<string, string>())
   const [thirdParty, setThirdParty] = useState<string>('')
   const [disclosures, setDisclosures] = useState<IDisclosure[]>([])
-  const [processorList, setProcessorList] = useState<IProcessor[]>([])
+  const [processorList, setProcessorList] = useState<IDatabehandler[]>([]) // TODO: databehandler
   const [legalBasesOpen, setLegalBasesOpen] = useState<boolean>(false)
   const [organizingOpen, setOrganizingOpen] = useState<boolean>(false)
   const avvikKeys = useMemo(() => {
@@ -219,9 +222,10 @@ const ModalProcess = ({
   useEffect(() => {
     ;(async () => {
       if (initialValues.dataProcessing.processors?.length > 0) {
-        const result = await getProcessorsByIds(initialValues.dataProcessing.processors)
+        // TODO: databehandler
+        const result = await getDatabehandlereByIds(initialValues.dataProcessing.processors)
         const newProcs = new Map<string, string>()
-        result.forEach((process) => newProcs.set(process.id, process.name))
+        result.forEach((process) => newProcs.set(process.id, process.navn))
         setDataProcessors(newProcs)
       }
     })()
@@ -238,7 +242,7 @@ const ModalProcess = ({
 
   useEffect(() => {
     ;(async () => {
-      const response: IProcessor[] = await getAll(getProcessorsByPageAndPageSize)()
+      const response: IDatabehandler[] = await getAll(getDatabehandlereByPageAndPageSize)()
       if (response) {
         setProcessorList(response)
       }
@@ -879,8 +883,8 @@ const ModalProcess = ({
                                 <FieldDataProcessors
                                   formikBag={formikBag}
                                   dataProcessors={dataProcessors}
-                                  options={processorList.map((processor: IProcessor) => {
-                                    return { id: processor.id, label: processor.name }
+                                  options={processorList.map((processor: IDatabehandler) => {
+                                    return { id: processor.id, label: processor.navn }
                                   })}
                                 />
                               </div>

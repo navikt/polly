@@ -1,7 +1,7 @@
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import { getProcessorsByIds } from '../../../api/ProcessorApi'
+import { getDatabehandlereByIds } from '../../../api/DatabehandlerApi'
 import { IProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
@@ -24,9 +24,10 @@ const FieldDataProcessors = (props: TFieldDataProcessorsProps) => {
 
   useEffect(() => {
     ;(async () => {
+      // TODO: databehandler
       if (formikBag.values.dataProcessing.processors?.length) {
-        const response = await getProcessorsByIds(formikBag.values.dataProcessing.processors)
-        response.forEach((response) => dataProcessors.set(response.id, response.name))
+        const response = await getDatabehandlereByIds(formikBag.values.dataProcessing.processors)
+        response.forEach((response) => dataProcessors.set(response.id, response.navn))
       }
     })()
   }, [])

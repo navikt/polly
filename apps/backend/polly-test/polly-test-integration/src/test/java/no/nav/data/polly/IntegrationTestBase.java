@@ -53,8 +53,8 @@ import no.nav.data.polly.process.dto.sub.DpiaRequest;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionRequest;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
-import no.nav.data.polly.processor.domain.repo.ProcessorRepository;
-import no.nav.data.polly.processor.dto.ProcessorRequest;
+import no.nav.data.polly.databehandler.domain.repo.DatabehandlerRepository;
+import no.nav.data.polly.databehandler.dto.DatabehandlerRequest;
 import no.nav.data.polly.teams.teamcat.TeamcatTeamClient;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.test.TestConfig;
@@ -100,7 +100,7 @@ public abstract class IntegrationTestBase {
     protected static final String PROCESS_NAME_1 = "Saksbehandling";
     protected static final UUID PROCESS_ID_1 = UUID.fromString("60db8589-f383-4405-82f1-148b0333899b");
     protected static final UUID PROCESS_ID_2 = UUID.fromString("0045b96b-8af8-4b1f-8bc5-81a6bde8506d");
-    protected static final UUID PROCESSOR_ID1 = UUID.fromString("106045a5-582f-4214-a2f4-14bd758e70e2");
+    protected static final UUID DATABEHANDLER_ID1 = UUID.fromString("106045a5-582f-4214-a2f4-14bd758e70e2");
     protected static final String PURPOSE_CODE1 = "KONTROLL";
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
@@ -121,7 +121,7 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected DocumentRepository documentRepository;
     @Autowired
-    protected ProcessorRepository processorRepository;
+    protected DatabehandlerRepository databehandlerRepository;
     @Autowired
     protected GenericStorageRepository genericStorageRepository;
     @Autowired
@@ -159,7 +159,7 @@ public abstract class IntegrationTestBase {
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
         dpProcessRepository.deleteAll();
-        processorRepository.deleteAll();
+        databehandlerRepository.deleteAll();
     }
 
     protected List<Policy> createAndSavePolicy(int rows) {
@@ -261,7 +261,7 @@ public abstract class IntegrationTestBase {
                         .commonExternalProcessResponsible(commonExternalProcessResponsible)
                         .aiUsageDescription(AiUsageDescription.builder().startDate(LocalDate.now()).endDate(LocalDate.now()).build())
                         .legalBases(legalBases)
-                        .dataProcessing(DataProcessing.builder().dataProcessor(true).build())
+                        .dataProcessing(DataProcessing.builder().dataProcessor(true).build()) // TODO: databehandling, databehandlerBenyttes
                         .build())
                 .build());
     }
@@ -281,7 +281,7 @@ public abstract class IntegrationTestBase {
                                 .products(List.of(product))
                                 .build())
                         .externalProcessResponsible(externalProcessResponsible)
-                        .subDataProcessing(DataProcessing.builder().dataProcessor(true).build())
+                        .subDataProcessing(DataProcessing.builder().dataProcessor(true).build()) // TODO: databehandling, databehandlerBenyttes
                         .build())
                 .build());
     }
@@ -342,24 +342,24 @@ public abstract class IntegrationTestBase {
 
     protected DataProcessingRequest dataProcessingRequest() {
         return DataProcessingRequest.builder()
-                .dataProcessor(true)
-                .processor(PROCESSOR_ID1.toString())
+                .dataProcessor(true) // TODO: databehandlerBenyttes
+                .processor(DATABEHANDLER_ID1.toString()) // TODO: databehandler
                 .build();
     }
 
-    protected ProcessorRequest createProcessorRequest() {
-        return ProcessorRequest.builder()
-                .name("name")
-                .contract("contract")
-                .contractOwner("A123456")
-                .operationalContractManager("A123456")
-                .operationalContractManager("A123457")
-                .note("note")
+    protected DatabehandlerRequest createDatabehandlerRequest() {
+        return DatabehandlerRequest.builder()
+                .navn("navn")
+                .avtalereferanse("avtalereferanse")
+                .avtaleeier("A123456")
+                .leggTilFagansvarlig("A123456")
+                .leggTilFagansvarlig("A123457")
+                .merknad("merknad")
 
-                .outsideEU(true)
-                .transferGroundsOutsideEU("OTHER")
-                .transferGroundsOutsideEUOther("reason")
-                .country("FJI")
+                .behandlingUtenforEuEos(true)
+                .overforingsgrunnlagUtenforEuEos("OTHER")
+                .overforingsgrunnlagUtenforEuEosAnnet("reason")
+                .leggTilLandDataOverforesTil("FJI")
                 .build();
     }
 
@@ -445,7 +445,7 @@ public abstract class IntegrationTestBase {
     protected DataProcessingResponse dataProcessingResponse() {
         return DataProcessingResponse.builder()
                 .dataProcessor(true)
-                .processor(PROCESSOR_ID1)
+                .processor(DATABEHANDLER_ID1) // TODO: databehandler
                 .build();
     }
 

@@ -62,8 +62,8 @@ export const urlForObject = (type: TNavigableItem, id: string, audit?: IAuditIte
       return `/policy/${id}`
     case EObjectType.PROCESS:
       return `/process/${id}`
-    case EObjectType.PROCESSOR:
-      return `/processor/${id}`
+    case EObjectType.DATABEHANDLER:
+      return `/databehandler/${id}`
     case EObjectType.DP_PROCESS:
       return `/dpprocess/${id}`
     case EObjectType.DISCLOSURE:

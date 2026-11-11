@@ -18,11 +18,11 @@ import static no.nav.data.common.utils.StreamUtils.copyOf;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"dataProcessor", "processors"})
-public class DataProcessingResponse {
+public class DataProcessingResponse { // TODO: databehandling
 
-    private Boolean dataProcessor;
+    private Boolean dataProcessor; // TODO: databehandlerBenyttes
     @Singular
-    private List<UUID> processors;
+    private List<UUID> processors; // TODO: databehandler
 
     public static DataProcessingResponse buildFrom(DataProcessing dp) {
         return DataProcessingResponse.builder()

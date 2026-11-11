@@ -18,20 +18,20 @@ import { ICodelistProps } from '@/provider/kodeverkProvider'
 import { UserContext } from '@/provider/userProvider'
 import { avvikCheck, checkForAvvikKeys, organiseringAvvikCheck } from '@/util/processUtils'
 import { getPvkDokumentStatus, pvkVurderingToText } from '@/util/pvkDokument'
+import { getDatabehandlereByIds } from '../../../api/DatabehandlerApi'
 import { getResourceById } from '../../../api/GetAllApi'
-import { getProcessorsByIds } from '../../../api/ProcessorApi'
 import {
   EBehandlingsNivaa,
   EObjectType,
   EProcessStatus,
   EPvkVurdering,
+  IDatabehandler,
   IDisclosure,
   IDpia,
   ILegalBasis,
   INomData,
   INomSeksjon,
   IProcess,
-  IProcessor,
   IPvkDokumentShort,
 } from '../../../constants'
 import { env } from '../../../util/env'
@@ -127,7 +127,7 @@ const ProcessData = (props: IProcessDataProps) => {
   } = props
 
   const [riskOwnerFullName, setRiskOwnerFullName] = useState<string>()
-  const [processors, setProcessors] = useState<IProcessor[]>([])
+  const [processors, setProcessors] = useState<IDatabehandler[]>([]) // TODO: databehandler
   const [pvkDokumenter, setPvkDokumenter] = useState<IPvkDokumentShort[]>([])
   const avvikKeys = useMemo(() => {
     if (forUnderordnetBehandlinger && overordnetBehandling) {
@@ -151,7 +151,7 @@ const ProcessData = (props: IProcessDataProps) => {
   useEffect(() => {
     ;(async () => {
       if (process.dataProcessing.processors?.length) {
-        const result = await getProcessorsByIds(process.dataProcessing.processors)
+        const result = await getDatabehandlereByIds(process.dataProcessing.processors)
         setProcessors([...result])
       }
     })()
@@ -514,9 +514,11 @@ const ProcessData = (props: IProcessDataProps) => {
               <div>
                 {processors && (
                   <ul className='mt-0 list-disc list-inside'>
-                    {processors.map((processor: IProcessor, index: number) => (
+                    {processors.map((processor: IDatabehandler, index: number) => (
                       <li key={`${processor.id}-${index}`}>
-                        <RouteLink href={'/processor/' + processor.id}>{processor.name}</RouteLink>
+                        <RouteLink href={'/databehandler/' + processor.id}>
+                          {processor.navn}
+                        </RouteLink>
                       </li>
                     ))}
                   </ul>

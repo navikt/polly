@@ -55,7 +55,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public List<Process> findByProcessor(UUID processor) {
+    public List<Process> findByProcessor(UUID processor) { // TODO: databehandler
         var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{dataProcessing,processors}' ?? :processor::text",
                 new MapSqlParameterSource().addValue("processor", processor));
         return getProcesses(resp);
@@ -187,7 +187,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case AIUSAGE -> " data #> '{aiUsageDescription,aiUsage}' %s ";
             case AUTOMATION -> " data #> '{automaticProcessing}' %s ";
             case RETENTION -> " data #> '{retention,retentionPlan}' %s ";
-            case DATA_PROCESSOR -> " data #> '{dataProcessing,dataProcessor}' %s ";
+            case DATA_PROCESSOR -> " data #> '{dataProcessing,dataProcessor}' %s "; // TODO: databehandlerBenyttes
 
             // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
             // Covered by the retention plan, but no retention period (years/months) registered

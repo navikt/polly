@@ -58,6 +58,7 @@ const PurposeTable = () => {
     } else if (filterName === EProcessField.AUTOMATION && filterValue) {
       setTitle(`Helautomatisk behandling: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === EProcessField.DATA_PROCESSOR && filterValue) {
+      // TODO: databehandlerBenyttes
       setTitle(`Databehandler: ${translateToNorwegian(filterValue)} `)
     } else if (filterName === EProcessField.COMMON_EXTERNAL_PROCESSOR) {
       setTitle('Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part')

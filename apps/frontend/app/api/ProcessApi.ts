@@ -102,6 +102,7 @@ export const getProcessesWithNoDepartment = async () => {
     .data
 }
 
+// TODO: databehandler (getProcessesByProcessor, query-param processorId)
 export const getProcessesByProcessor = async (processorId: string) => {
   return (
     await axios.get<IPageResponse<IProcess>>(
@@ -221,6 +222,7 @@ export const convertProcessToFormValues: (process?: Partial<IProcess>) => IProce
       registryNumber: aiUsageDescription?.registryNumber || '',
     },
     dataProcessing: {
+      // TODO: databehandling (dataProcessor -> databehandlerBenyttes, processors -> databehandler)
       dataProcessor: mapBool(dataProcessing?.dataProcessor),
       processors: dataProcessing?.processors || [],
     },
@@ -281,6 +283,7 @@ const convertFormValuesToProcess = (values: IProcessFormValues) => {
       registryNumber: values.aiUsageDescription.registryNumber,
     },
     dataProcessing: {
+      // TODO: databehandling (dataProcessor -> databehandlerBenyttes, processors -> databehandler)
       dataProcessor: values.dataProcessing.dataProcessor,
       processors: values.dataProcessing.processors || [],
     },

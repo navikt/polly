@@ -14,12 +14,12 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DataProcessing implements Serializable {
+public class DataProcessing implements Serializable { // TODO: databehandling
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private Boolean dataProcessor;
-    private List<UUID> processors;
+    private Boolean dataProcessor; // TODO: databehandlerBenyttes
+    private List<UUID> processors; // TODO: databehandler
 
 }

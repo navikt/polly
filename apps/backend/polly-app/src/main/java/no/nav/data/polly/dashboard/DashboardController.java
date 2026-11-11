@@ -146,7 +146,7 @@ public class DashboardController {
         }
 
         var dataProc = pd.map(ProcessData::getDataProcessing);
-        dashes.stream().map(DashCount::getDataProcessor).forEach(d -> count(d, dataProc.map(DataProcessing::getDataProcessor).orElse(null)));
+        dashes.stream().map(DashCount::getDataProcessor).forEach(d -> count(d, dataProc.map(DataProcessing::getDataProcessor).orElse(null))); // TODO: databehandlerBenyttes
         pd.map(ProcessData::getCommonExternalProcessResponsible).ifPresent(c -> dashes.forEach(DashCount::commonExternalProcessResponsible));
     }
 

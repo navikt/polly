@@ -68,7 +68,7 @@ public class WebSecurityConfig {
                 "/informationtype/**",
                 "/policy/**",
                 "/process/**",
-                "/processor/**",
+                "/databehandler/**",
                 "/dpprocess/**",
                 "/term/**",
                 "/aaregavtale/**",

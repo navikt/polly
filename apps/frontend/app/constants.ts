@@ -33,7 +33,7 @@ export enum EObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
-  PROCESSOR = 'PROCESSOR',
+  DATABEHANDLER = 'DATABEHANDLER',
   DP_PROCESS = 'DP_PROCESS',
   DISCLOSURE = 'DISCLOSURE',
   DOCUMENT = 'DOCUMENT',
@@ -49,7 +49,7 @@ export enum EProcessField {
   AUTOMATION = 'AUTOMATION',
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
-  DATA_PROCESSOR = 'DATA_PROCESSOR',
+  DATA_PROCESSOR = 'DATA_PROCESSOR', // TODO: databehandlerBenyttes
   EXCESS_INFO = 'EXCESS_INFO',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
@@ -240,13 +240,15 @@ export interface IDpia {
 }
 
 export interface IDataProcessingFormValues {
-  dataProcessor?: boolean
-  processors: string[]
+  // TODO: databehandling
+  dataProcessor?: boolean // TODO: databehandlerBenyttes
+  processors: string[] // TODO: databehandler
 }
 
 export interface IDataProcessing {
-  dataProcessor?: boolean
-  processors: string[]
+  // TODO: databehandling
+  dataProcessor?: boolean // TODO: databehandlerBenyttes
+  processors: string[] // TODO: databehandler
 }
 
 export interface IRetention {
@@ -744,33 +746,33 @@ export interface IDocumentInformationTypes {
   subjectCategories: string[]
 }
 
-export interface IProcessor {
+export interface IDatabehandler {
   id: string
-  name: string
-  contract?: string
-  contractOwner?: string
-  operationalContractManagers: string[]
-  note?: string
-  outsideEU?: boolean
-  transferGroundsOutsideEU?: ICode
-  transferGroundsOutsideEUOther?: string
-  countries?: string[]
+  navn: string
+  avtalereferanse?: string
+  avtaleeier?: string
+  fagansvarlig: string[]
+  merknad?: string
+  behandlingUtenforEuEos?: boolean
+  overforingsgrunnlagUtenforEuEos?: ICode
+  overforingsgrunnlagUtenforEuEosAnnet?: string
+  landDataOverforesTil?: string[]
   changeStamp?: IChangeStamp
   /** Optimistisk låsing: versjonen som sist ble lest fra backend. */
   version?: number
 }
 
-export interface IProcessorFormValues {
+export interface IDatabehandlerFormValues {
   id?: string
-  name: string
-  contract?: string
-  contractOwner?: string
-  operationalContractManagers: string[]
-  note?: string
-  outsideEU?: boolean
-  transferGroundsOutsideEU?: string
-  transferGroundsOutsideEUOther?: string
-  countries: string[]
+  navn: string
+  avtalereferanse?: string
+  avtaleeier?: string
+  fagansvarlig: string[]
+  merknad?: string
+  behandlingUtenforEuEos?: boolean
+  overforingsgrunnlagUtenforEuEos?: string
+  overforingsgrunnlagUtenforEuEosAnnet?: string
+  landDataOverforesTil: string[]
   /** Optimistisk låsing: versjonen som sist ble lest fra backend. Sendes tilbake ved oppdatering. */
   version?: number
 }
@@ -801,7 +803,7 @@ export interface ICodeUsage {
   informationTypes: [IUse]
   policies: [IUseWithPurpose]
   processes: [IProcessShort]
-  processors: [IUse]
+  processors: [IUse] // TODO: databehandler
   dpProcesses: [IDpProcessShort]
 }
 
@@ -896,9 +898,9 @@ interface IDashCount {
   automation: ICounter
   retention: ICounter
   retentionDataIncomplete: number
-  dataProcessor: ICounter
-  dataProcessorAgreementMissing: number
-  dataProcessorOutsideEU: ICounter
+  dataProcessor: ICounter // TODO: databehandlerBenyttes
+  dataProcessorAgreementMissing: number // TODO: databehandler
+  dataProcessorOutsideEU: ICounter // TODO: databehandler
   commonExternalProcessResponsible: number
   dpiaReferenceMissing: number
 }

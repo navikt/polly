@@ -1,10 +1,11 @@
 import { Select } from '@navikt/ds-react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import { useEffect, useState } from 'react'
-import { getProcessorsByIds } from '../../../api/ProcessorApi'
+import { getDatabehandlereByIds } from '../../../api/DatabehandlerApi'
 import { IDpProcessFormValues } from '../../../constants'
 import { renderTagList } from '../../common/TagList'
 
+// TODO: databehandler (TProcessorOption, FieldDpDataProcessors)
 type TProcessorOption = {
   id: string
   label: string
@@ -24,10 +25,11 @@ const FieldDpDataProcessors = (props: TFieldDpDataProcessorsProps) => {
 
   useEffect(() => {
     ;(async () => {
+      // TODO: databehandler
       if (formikBag.values.subDataProcessing.processors?.length) {
-        const response = await getProcessorsByIds(formikBag.values.subDataProcessing.processors)
+        const response = await getDatabehandlereByIds(formikBag.values.subDataProcessing.processors)
         const resDataProcessors = new Map<string, string>()
-        response.forEach((process) => resDataProcessors.set(process.id, process.name))
+        response.forEach((process) => resDataProcessors.set(process.id, process.navn))
         setSubDataProcessors(resDataProcessors)
       }
     })()

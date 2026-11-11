@@ -1,6 +1,6 @@
 # Polly – Domenemodell
 
-**Sist oppdatert:** 20. april 2026
+**Sist oppdatert:** 10. november 2026 (Databehandler: norske fagtermer i backend, tabell og REST-endepunkt `/databehandler`)
 
 ## Innholdsfortegnelse
 
@@ -44,7 +44,7 @@
 | Opplysningstype-kobling             | Policy                 |
 | Personkategori                      | SubjectCategory        |
 | Rettslig grunnlag                   | LegalBasis             |
-| Databehandler                       | Processor              |
+| Databehandler                       | Databehandler (tidligere Processor) |
 | Utlevering                          | Disclosure             |
 | Dokument                            | Document               |
 | Varslingshendelse                   | AlertEvent             |
@@ -98,15 +98,20 @@ classDiagram
         String nasjonal_lov
         String beskrivelse
     }
-    class Databehandler["Databehandler (Processor)"] {
+    class Databehandler["Databehandler (tabell DATABEHANDLER)"] {
         UUID id
         DatabehandlerData data
     }
-    class DatabehandlerData["DatabehandlerData (ProcessorData)"] {
+    class DatabehandlerData["DatabehandlerData"] {
         String navn
-        String kontrakt
-        Boolean utenforEU
-        List~String~ land
+        String avtalereferanse
+        String avtaleeier
+        List~String~ fagansvarlig
+        String merknad
+        Boolean behandlingUtenforEuEos
+        String overforingsgrunnlagUtenforEuEos
+        String overforingsgrunnlagUtenforEuEosAnnet
+        List~String~ landDataOverforesTil
     }
     class Utlevering["Utlevering (Disclosure)"] {
         UUID id
@@ -219,7 +224,7 @@ sequenceDiagram
     participant ExportController
     participant ProcessToDocx
     participant ProcessRepository
-    participant ProcessorRepository
+    participant DatabehandlerRepository
     participant AlertService
 
     Bruker->>Frontend: Klikker "Last ned DOCX"
@@ -227,8 +232,8 @@ sequenceDiagram
     ExportController->>ProcessRepository: findByPurpose("XYZ")
     ProcessRepository-->>ExportController: List<Process>
     ExportController->>ProcessToDocx: generateDocFor(PURPOSE, "XYZ", INTERNAL)
-    ProcessToDocx->>ProcessorRepository: findAllById(processorIds)
-    ProcessorRepository-->>ProcessToDocx: List<Processor>
+    ProcessToDocx->>DatabehandlerRepository: findAllById(dataProcessing.processors)
+    DatabehandlerRepository-->>ProcessToDocx: List<Databehandler>
     ProcessToDocx->>AlertService: checkAlertsForProcess(process)
     AlertService-->>ProcessToDocx: ProcessAlert
     ProcessToDocx-->>ExportController: byte[] (DOCX)

@@ -8,6 +8,7 @@ import { EListName } from '@/constants/codelistConstant'
 import { CodelistContext } from '@/provider/kodeverkProvider'
 import { IUserContext, UserContext } from '@/provider/userProvider'
 import { TNavigateFunction, useNavigate } from '@/util/router'
+import { getDatabehandlereByIds } from '../../api/DatabehandlerApi'
 import {
   deleteDpProcess,
   dpProcessToFormValues,
@@ -15,13 +16,12 @@ import {
   updateDpProcess,
 } from '../../api/DpProcessApi'
 import { getResourceById } from '../../api/GetAllApi'
-import { getProcessorsByIds } from '../../api/ProcessorApi'
 import {
+  IDatabehandler,
   IDpProcess,
   IDpProcessFormValues,
   INomData,
   INomSeksjon,
-  IProcessor,
 } from '../../constants'
 import { lastModifiedDate } from '../../util/date-formatter'
 import {
@@ -55,7 +55,7 @@ const DpProcessView = () => {
   const [isLoading, setLoading] = useState<boolean>(true)
   const [showModal, setShowModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [processors, setProcessors] = useState<IProcessor[]>([])
+  const [processors, setProcessors] = useState<IDatabehandler[]>([]) // TODO: databehandler
 
   const [errorDpProcessModal, setErrorDpProcessModal] = useState<string>('')
   const [lastModifiedUserEmail, setLastModifiedUserEmail] = useState('')
@@ -119,7 +119,7 @@ const DpProcessView = () => {
   useEffect(() => {
     ;(async () => {
       if (dpProcess?.subDataProcessing.processors.length) {
-        const response = await getProcessorsByIds(dpProcess.subDataProcessing.processors)
+        const response = await getDatabehandlereByIds(dpProcess.subDataProcessing.processors)
         setProcessors([...response])
       }
 
@@ -359,10 +359,10 @@ const DpProcessView = () => {
                       <div className='flex items-center'>
                         <div className='whitespace-nowrap mt-4 mr-0' />
                         <ul className='list-disc list-inside'>
-                          {processors.map((processor: IProcessor) => (
+                          {processors.map((processor: IDatabehandler) => (
                             <li key={processor.id}>
-                              <RouteLink href={'/processor/' + processor.id}>
-                                {processor.name}
+                              <RouteLink href={'/databehandler/' + processor.id}>
+                                {processor.navn}
                               </RouteLink>
                             </li>
                           ))}
