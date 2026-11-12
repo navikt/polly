@@ -4,19 +4,17 @@
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Requires Node 22.22+
+## Requires Node 26.7+
 
 ### Install dependencies
 
 `yarn install`
-
 
 #### For windows users
 
 you may need to add the path where corepack executable is located to your PATH variable in Environment variables.
 
 I.e.`C:\Users\(User Name)\AppData\Roaming\npm\`
-
 
 To check node version:
 
