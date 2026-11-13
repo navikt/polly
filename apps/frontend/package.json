@@ -52,7 +52,7 @@
     "@navikt/ds-tailwind": "^8.22.1",
     "@tailwindcss/postcss": "^4.3.5",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
-    "axios": "^1.21.0",
+    "axios": "^1.21.1",
     "formik": "^2.4.9",
     "husky": "^9.1.7",
     "json-diff-kit": "^1.0.35",
