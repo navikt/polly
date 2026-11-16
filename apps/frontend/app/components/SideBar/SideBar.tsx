@@ -79,7 +79,7 @@ const SideBar = () => (
         <div className='my-2'>
           <NavItem
             to='/personvern'
-            text='Om personvern og informsjonskapsler'
+            text='Om personvern og informasjonskapsler'
             tooltip='Personvernerklæring for Behandlingskatalogen og samtykke til måling med Innblikk'
           />
         </div>
