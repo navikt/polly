@@ -23,9 +23,9 @@ export const saveConsentPreference = (value: TConsentValue): void => {
     return
   }
 
-  const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 180).toUTCString()
+  const seksManeder = new Date(Date.now() + 1000 * 60 * 60 * 24 * 180).toUTCString()
   const secure = window.location.protocol === 'https:' ? '; Secure' : ''
-  document.cookie = `${CONSENT_COOKIE_NAME}=${value}; expires=${expires}; path=/; SameSite=Lax${secure}`
+  document.cookie = `${CONSENT_COOKIE_NAME}=${value}; expires=${seksManeder}; path=/; SameSite=Lax${secure}`
 
   window.dispatchEvent(new CustomEvent(CONSENT_EVENT_NAME, { detail: value }))
 }
