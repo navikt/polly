@@ -29,7 +29,7 @@ const NavItem = (props: INavItemProps) => {
         {props.tooltip ? (
           <Tooltip content={props.tooltip} maxChar={200}>
             <BodyShort
-              size='small'
+              size='medium'
               style={{
                 color: textColor,
                 fontWeight: isActive ? 600 : undefined,
@@ -41,7 +41,7 @@ const NavItem = (props: INavItemProps) => {
           </Tooltip>
         ) : (
           <BodyShort
-            size='small'
+            size='medium'
             style={{
               color: textColor,
               fontWeight: isActive ? 600 : undefined,

@@ -43,15 +43,11 @@ const SideBar = () => (
           tooltip='En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg'
         />
         <NavItem to='/databehandler' text='Databehandlere' />
+        <hr className='my-2 border-[#fff]' />
         <NavItem
           to='/dashboard'
           text='Dashboard'
           tooltip='Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen'
-        />
-        <NavItem
-          to='/personvern'
-          text='Personvernerklæring'
-          tooltip='Peronvernerklæring for Behandlingskatalogen og samtykke til måling med Innblikk'
         />
         <Link
           href='//navikt.github.io/naka/behandlingskatalog'
@@ -62,8 +58,41 @@ const SideBar = () => (
         >
           Veileder
         </Link>
+        <Link
+          href='https://etterlevelse.ansatt.nav.no/om-behandlingskatalogen'
+          target='_blank'
+          rel='noreferrer'
+          className='flex items-center h-8.75'
+          style={{ color: '#E0E1E5' }}
+        >
+          Om Behandlingskatalogen
+        </Link>
+        <Link
+          href='https://etterlevelse.ansatt.nav.no/oversikt-over-losningene'
+          target='_blank'
+          rel='noreferrer'
+          className='flex items-center h-8.75'
+          style={{ color: '#E0E1E5' }}
+        >
+          Oversikt over løsningene
+        </Link>
+        <div className='my-2'>
+          <NavItem
+            to='/personvern'
+            text='Om personvern og informsjonskapsler'
+            tooltip='Personvernerklæring for Behandlingskatalogen og samtykke til måling med Innblikk'
+          />
+        </div>
+        <Link
+          href={datajegerSlackLink}
+          target='_blank'
+          rel='noreferrer'
+          className='flex items-center h-8.75'
+          style={{ color: '#E0E1E5' }}
+        >
+          <BodyShort size='medium'>#behandlingskatalogen</BodyShort>
+        </Link>
       </div>
-
       <div className='max-w-62 mt-auto pt-6 pb-22'>
         <div className='flex justify-center'>
           <div className='pb-4 w-[40%]'>
@@ -77,22 +106,6 @@ const SideBar = () => (
             />
           </div>
         </div>
-
-        <a href={datajegerSlackLink} style={{ textDecoration: 'none' }}>
-          <div className='flex justify-center items-center'>
-            <Image
-              src='/Slack_Monochrome_White.svg'
-              width={60}
-              height={60}
-              loading='eager'
-              alt='slack logo'
-              style={{ width: 60, height: 60 }}
-            />
-            <BodyShort size='small' style={{ color: '#E0E1E5' }}>
-              #behandlingskatalogen
-            </BodyShort>
-          </div>
-        </a>
       </div>
     </div>
   </div>

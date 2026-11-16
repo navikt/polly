@@ -122,7 +122,7 @@ const OmPersonvernerklaeringPage = () => {
         </BodyLong>
 
         <Heading size='medium' level='2' spacing>
-          Samtykke om måling
+          Samtykke til måling
         </Heading>
         <BodyLong spacing>
           Selv om det ikke behandles personopplysninger, har ansatte likevel anledning til å
