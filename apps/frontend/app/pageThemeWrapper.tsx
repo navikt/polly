@@ -40,11 +40,11 @@ const PageThemeWrapper: FunctionComponent<TProps> = ({ children, origin }) => {
     <Fragment>
       <Theme theme={themeMode} asChild>
         <div className='flex min-h-screen w-full flex-col'>
+          <Header themeMode={themeMode} onThemeModeChange={handleThemeModeChange} origin={origin} />
           <CookieConsentBanner />
           <InnblikkSporing />
-          <Header themeMode={themeMode} onThemeModeChange={handleThemeModeChange} origin={origin} />
 
-          <div className='flex w-full flex-1'>
+          <div className='isolate flex w-full flex-1'>
             <div className='min-w-60'>
               <SideBar />
             </div>

@@ -1,9 +1,10 @@
 'use client'
 
-import { BodyLong, Heading, List, Radio, RadioGroup } from '@navikt/ds-react'
+import { BodyLong, BodyShort, Heading, Link, List, Radio, RadioGroup } from '@navikt/ds-react'
 import RouteLink from '@/components/common/RouteLink'
 import { TConsentValue } from '@/util/analytics/innblikk'
 import { useConsent } from '@/util/analytics/useConsent'
+import { datajegerSlackLink } from '@/util/config'
 
 const OmPersonvernerklaeringPage = () => {
   const { consent, setConsent } = useConsent()
@@ -155,7 +156,12 @@ const OmPersonvernerklaeringPage = () => {
           med Team Datajegerne:
         </BodyLong>
         <List className='mb-6'>
-          <List.Item>Bli med på #behandlingskatalogen på Slack</List.Item>
+          <List.Item>
+            Bli med på{' '}
+            <Link href={datajegerSlackLink} target='_blank' rel='noreferrer'>
+              <BodyShort size='medium'>#behandlingskatalogen på Slack</BodyShort>
+            </Link>
+          </List.Item>
           <List.Item>Send mail til: teamdatajegerne@nav.no</List.Item>
         </List>
       </div>

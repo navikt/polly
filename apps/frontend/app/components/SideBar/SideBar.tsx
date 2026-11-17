@@ -76,22 +76,24 @@ const SideBar = () => (
         >
           Oversikt over løsningene
         </Link>
-        <div className='my-2'>
+        <div className='my-3'>
           <NavItem
             to='/personvern'
             text='Om personvern og informasjonskapsler'
             tooltip='Personvernerklæring for Behandlingskatalogen og samtykke til måling med Innblikk'
           />
         </div>
-        <Link
-          href={datajegerSlackLink}
-          target='_blank'
-          rel='noreferrer'
-          className='flex items-center h-8.75'
-          style={{ color: '#E0E1E5' }}
-        >
-          <BodyShort size='medium'>#behandlingskatalogen</BodyShort>
-        </Link>
+        <div className='mt-7'>
+          <Link
+            href={datajegerSlackLink}
+            target='_blank'
+            rel='noreferrer'
+            className='flex items-center h-8.75'
+            style={{ color: '#E0E1E5' }}
+          >
+            <BodyShort size='medium'>#behandlingskatalogen på Slack</BodyShort>
+          </Link>
+        </div>
       </div>
       <div className='max-w-62 mt-auto pt-6 pb-22'>
         <div className='flex justify-center'>

@@ -14,7 +14,7 @@ const CookieConsentBanner: FunctionComponent = () => {
   return (
     <section
       aria-labelledby='cookie-consent-heading'
-      className='sticky top-0 z-50 w-full border-b border-gray-200 bg-white shadow-sm'
+      className='sticky top-0 z-50 w-full border-b border-gray-200 bg-(--ax-bg-default) shadow-sm'
     >
       <div className='mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between'>
         <div className='max-w-3xl'>
