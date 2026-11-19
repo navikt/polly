@@ -43,12 +43,13 @@ const SideBar = () => (
           tooltip='En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg'
         />
         <NavItem to='/databehandler' text='Databehandlere' />
-        <hr className='my-2 border-[#fff]' />
+
         <NavItem
           to='/dashboard'
           text='Dashboard'
           tooltip='Oversikt og statistikk over behandlinger og andre samlinger i behandlingskatalogen'
         />
+        <hr className='my-2 border-[#fff]' />
         <Link
           href='//navikt.github.io/naka/behandlingskatalog'
           target='_blank'
@@ -76,13 +77,15 @@ const SideBar = () => (
         >
           Oversikt over løsningene
         </Link>
-        <div className='my-3'>
-          <NavItem
-            to='/personvern'
-            text='Om personvern og informasjonskapsler'
-            tooltip='Personvernerklæring for Behandlingskatalogen og samtykke til måling med Innblikk'
-          />
-        </div>
+        <Link
+          href='/personvern'
+          target='_blank'
+          rel='noreferrer'
+          className='flex items-center h-8.75 my-3'
+          style={{ color: '#E0E1E5' }}
+        >
+          Om personvern og informasjonskapsler
+        </Link>
         <div className='mt-7'>
           <Link
             href={datajegerSlackLink}

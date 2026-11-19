@@ -79,7 +79,7 @@ const OmPersonvernerklaeringPage = () => {
         </BodyLong>
         <BodyLong className='mb-6'>
           For utfyllende informasjon om hvordan vi behandler personopplysninger kan du lese mer i{' '}
-          <RouteLink href='https://behandlingskatalog.ansatt.nav.no/process/purpose/ETTERLEVELSE/608fdba9-ba47-4c86-878b-f229591ae1ba?'>
+          <RouteLink href='https://behandlingskatalog.ansatt.nav.no/process/purpose/ETTERLEVELSE/547d49b0-1154-4c00-a017-ad72f41f305a'>
             Behandlingskatalogen
           </RouteLink>{' '}
           og i{' '}
